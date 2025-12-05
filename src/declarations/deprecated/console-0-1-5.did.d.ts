@@ -10,14 +10,6 @@ import type { ActorMethod } from '@icp-sdk/core/agent';
 import type { IDL } from '@icp-sdk/core/candid';
 import type { Principal } from '@icp-sdk/core/principal';
 
-export interface Account {
-	updated_at: bigint;
-	credits: Tokens;
-	mission_control_id: [] | [Principal];
-	provider: [] | [Provider];
-	owner: Principal;
-	created_at: bigint;
-}
 export interface AssertMissionControlCenterArgs {
 	mission_control_id: Principal;
 	user: Principal;
@@ -48,7 +40,7 @@ export interface AssetsUpgradeOptions {
 }
 export interface Authentication {
 	delegation: PreparedDelegation;
-	account: Account;
+	mission_control: MissionControl;
 }
 export type AuthenticationArgs = { OpenId: OpenIdPrepareDelegationArgs };
 export interface AuthenticationConfig {
@@ -232,6 +224,14 @@ export interface ListResults {
 	items_length: bigint;
 }
 export type Memory = { Heap: null } | { Stable: null };
+export interface MissionControl {
+	updated_at: bigint;
+	credits: Tokens;
+	mission_control_id: [] | [Principal];
+	provider: [] | [Provider];
+	owner: Principal;
+	created_at: bigint;
+}
 export interface OpenId {
 	provider: OpenIdProvider;
 	data: OpenIdData;
@@ -415,7 +415,6 @@ export interface _SERVICE {
 	del_controllers: ActorMethod<[DeleteControllersArgs], undefined>;
 	del_custom_domain: ActorMethod<[string], undefined>;
 	delete_proposal_assets: ActorMethod<[DeleteProposalAssets], undefined>;
-	get_account: ActorMethod<[], [] | [Account]>;
 	get_auth_config: ActorMethod<[], [] | [AuthenticationConfig]>;
 	get_config: ActorMethod<[], Config>;
 	get_create_orbiter_fee: ActorMethod<[GetCreateCanisterFeeArgs], [] | [Tokens]>;
@@ -424,6 +423,7 @@ export interface _SERVICE {
 	get_delegation: ActorMethod<[GetDelegationArgs], Result_1>;
 	get_proposal: ActorMethod<[bigint], [] | [Proposal]>;
 	get_storage_config: ActorMethod<[], StorageConfig>;
+	get_user_mission_control_center: ActorMethod<[], [] | [MissionControl]>;
 	http_request: ActorMethod<[HttpRequest], HttpResponse>;
 	http_request_streaming_callback: ActorMethod<
 		[StreamingCallbackToken],
@@ -435,13 +435,13 @@ export interface _SERVICE {
 		[Array<InitAssetKey>, bigint],
 		Array<[string, InitUploadResult]>
 	>;
-	init_user_mission_control_center: ActorMethod<[], Account>;
-	list_accounts: ActorMethod<[], Array<[Principal, Account]>>;
+	init_user_mission_control_center: ActorMethod<[], MissionControl>;
 	list_assets: ActorMethod<[string, ListParams], ListResults>;
 	list_controllers: ActorMethod<[], Array<[Principal, Controller]>>;
 	list_custom_domains: ActorMethod<[], Array<[string, CustomDomain]>>;
 	list_payments: ActorMethod<[], Array<[bigint, Payment]>>;
 	list_proposals: ActorMethod<[ListProposalsParams], ListProposalResults>;
+	list_user_mission_control_centers: ActorMethod<[], Array<[Principal, MissionControl]>>;
 	reject_proposal: ActorMethod<[CommitProposal], null>;
 	set_auth_config: ActorMethod<[SetAuthenticationConfig], AuthenticationConfig>;
 	set_controllers: ActorMethod<[SetControllersArgs], undefined>;

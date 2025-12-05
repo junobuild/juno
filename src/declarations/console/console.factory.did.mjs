@@ -51,7 +51,7 @@ export const idlFactory = ({ IDL }) => {
 	});
 	const Authentication = IDL.Record({
 		delegation: PreparedDelegation,
-		mission_control: Account
+		account: Account
 	});
 	const JwtFindProviderError = IDL.Variant({
 		BadClaim: IDL.Text,
@@ -440,6 +440,7 @@ export const idlFactory = ({ IDL }) => {
 		del_controllers: IDL.Func([DeleteControllersArgs], [], []),
 		del_custom_domain: IDL.Func([IDL.Text], [], []),
 		delete_proposal_assets: IDL.Func([DeleteProposalAssets], [], []),
+		get_account: IDL.Func([], [IDL.Opt(Account)], ['query']),
 		get_auth_config: IDL.Func([], [IDL.Opt(AuthenticationConfig)], ['query']),
 		get_config: IDL.Func([], [Config], ['query']),
 		get_create_orbiter_fee: IDL.Func([GetCreateCanisterFeeArgs], [IDL.Opt(Tokens)], ['query']),
@@ -448,7 +449,6 @@ export const idlFactory = ({ IDL }) => {
 		get_delegation: IDL.Func([GetDelegationArgs], [Result_1], ['query']),
 		get_proposal: IDL.Func([IDL.Nat], [IDL.Opt(Proposal)], ['query']),
 		get_storage_config: IDL.Func([], [StorageConfig], ['query']),
-		get_user_mission_control_center: IDL.Func([], [IDL.Opt(Account)], ['query']),
 		http_request: IDL.Func([HttpRequest], [HttpResponse], ['query']),
 		http_request_streaming_callback: IDL.Func(
 			[StreamingCallbackToken],
@@ -463,16 +463,12 @@ export const idlFactory = ({ IDL }) => {
 			[]
 		),
 		init_user_mission_control_center: IDL.Func([], [Account], []),
+		list_accounts: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Principal, Account))], ['query']),
 		list_assets: IDL.Func([IDL.Text, ListParams], [ListResults], ['query']),
 		list_controllers: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Principal, Controller))], ['query']),
 		list_custom_domains: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Text, CustomDomain))], ['query']),
 		list_payments: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Nat64, Payment))], ['query']),
 		list_proposals: IDL.Func([ListProposalsParams], [ListProposalResults], ['query']),
-		list_user_mission_control_centers: IDL.Func(
-			[],
-			[IDL.Vec(IDL.Tuple(IDL.Principal, Account))],
-			['query']
-		),
 		reject_proposal: IDL.Func([CommitProposal], [IDL.Null], []),
 		set_auth_config: IDL.Func([SetAuthenticationConfig], [AuthenticationConfig], []),
 		set_controllers: IDL.Func([SetControllersArgs], [], []),

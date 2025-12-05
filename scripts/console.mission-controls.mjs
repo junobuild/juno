@@ -12,11 +12,9 @@ import { targetMainnet } from './utils.mjs';
  * @returns {Promise<void>}
  */
 const saveMissionControls = async (mainnet) => {
-	const { list_user_mission_control_centers } = await (mainnet
-		? consoleActorIC()
-		: consoleActorLocal());
+	const { list_accounts } = await (mainnet ? consoleActorIC() : consoleActorLocal());
 
-	const users = await list_user_mission_control_centers();
+	const users = await list_accounts();
 
 	await writeFile(
 		join(process.cwd(), 'console.mission-controls.json'),

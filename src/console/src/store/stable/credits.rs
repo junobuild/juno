@@ -1,22 +1,20 @@
 use crate::constants::E8S_PER_ICP;
-use crate::store::services::{mutate_stable_state, read_stable_state};
-use crate::store::stable::get_existing_account;
-use crate::types::state::{Account, StableState};
+use crate::store::stable::get_account_with_existing_mission_control;
+use crate::store::{with_accounts, with_accounts_mut};
+use crate::types::state::{Account, AccountsStable};
 use ic_cdk::api::time;
 use ic_ledger_types::Tokens;
 use junobuild_shared::types::state::{MissionControlId, UserId};
 
 pub fn get_credits(user: &UserId) -> Result<Tokens, &'static str> {
-    read_stable_state(|stable| get_credits_impl(user, stable))
+    with_accounts(|accounts| get_credits_impl(user, accounts))
 }
 
-fn get_credits_impl(user: &UserId, state: &StableState) -> Result<Tokens, &'static str> {
-    let existing_account = state.accounts.get(user);
-
-    match existing_account {
-        None => Err("User does not have an account"),
-        Some(account) => Ok(account.credits),
-    }
+fn get_credits_impl(user: &UserId, accounts: &AccountsStable) -> Result<Tokens, &'static str> {
+    accounts
+        .get(user)
+        .map(|account| account.credits)
+        .ok_or("User does not have an account")
 }
 
 // ---------------------------------------------------------
@@ -37,7 +35,7 @@ pub fn has_mission_control_and_credits(
     mission_control_id: &MissionControlId,
     fee: &Tokens,
 ) -> bool {
-    get_existing_account(user, mission_control_id)
+    get_account_with_existing_mission_control(user, mission_control_id)
         .map(|account| has_credits(&account, fee))
         .unwrap_or(false)
 }
@@ -47,20 +45,20 @@ pub fn has_credits(account: &Account, fee: &Tokens) -> bool {
 }
 
 pub fn use_credits(user: &UserId) -> Result<Tokens, &'static str> {
-    mutate_stable_state(|stable| update_credits_impl(user, false, &E8S_PER_ICP, stable))
+    with_accounts_mut(|accounts| update_credits_impl(user, false, &E8S_PER_ICP, accounts))
 }
 
 pub fn add_credits(user: &UserId, credits: &Tokens) -> Result<Tokens, &'static str> {
-    mutate_stable_state(|stable| update_credits_impl(user, true, credits, stable))
+    with_accounts_mut(|accounts| update_credits_impl(user, true, credits, accounts))
 }
 
 fn update_credits_impl(
     user: &UserId,
     increment: bool,
     credits: &Tokens,
-    state: &mut StableState,
+    accounts: &mut AccountsStable,
 ) -> Result<Tokens, &'static str> {
-    let existing_account = state.accounts.get(user);
+    let existing_account = accounts.get(user);
 
     match existing_account {
         None => Err("User does not have an account"),
@@ -83,7 +81,7 @@ fn update_credits_impl(
                 ..account
             };
 
-            state.accounts.insert(*user, update_account);
+            accounts.insert(*user, update_account);
 
             Ok(remaining_credits)
         }

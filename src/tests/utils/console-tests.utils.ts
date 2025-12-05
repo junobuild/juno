@@ -2,6 +2,7 @@ import {
 	type ConsoleActor,
 	type ConsoleActor0014,
 	type ConsoleActor008,
+	type ConsoleActor015,
 	type MissionControlActor,
 	idlFactoryConsole,
 	idlFactoryMissionControl
@@ -76,7 +77,7 @@ const uploadSegment = async ({
 }: {
 	segment: 'satellite' | 'mission_control' | 'orbiter';
 	version: string;
-	actor: Actor<ConsoleActor | ConsoleActor0014>;
+	actor: Actor<ConsoleActor | ConsoleActor0014 | ConsoleActor015>;
 	proposalId: bigint;
 }) => {
 	const init_proposal_asset_upload =
@@ -195,7 +196,7 @@ export const deploySegments = async ({
 	withMissionControl = true,
 	withSatellite = true
 }: {
-	actor: Actor<ConsoleActor | ConsoleActor0014>;
+	actor: Actor<ConsoleActor | ConsoleActor0014 | ConsoleActor015>;
 	withOrbiter?: boolean;
 	withMissionControl?: boolean;
 	withSatellite?: boolean;
@@ -291,7 +292,7 @@ export const initMissionControls = async ({
 	pic,
 	length
 }: {
-	actor: Actor<ConsoleActor | ConsoleActor008 | ConsoleActor0014>;
+	actor: Actor<ConsoleActor | ConsoleActor008 | ConsoleActor0014 | ConsoleActor015>;
 	pic: PocketIc;
 	length: number;
 }): Promise<Identity[]> => {
@@ -315,7 +316,7 @@ export const testSatelliteExists = async ({
 	pic
 }: {
 	users: Identity[];
-	actor: Actor<ConsoleActor | ConsoleActor008 | ConsoleActor0014>;
+	actor: Actor<ConsoleActor015 | ConsoleActor008 | ConsoleActor0014>;
 	pic: PocketIc;
 }) => {
 	const { list_user_mission_control_centers } = actor;
@@ -488,7 +489,7 @@ export const assertAssetServed = async ({
 export const updateRateConfig = async ({
 	actor
 }: {
-	actor: Actor<ConsoleActor008 | ConsoleActor0014 | ConsoleActor>;
+	actor: Actor<ConsoleActor008 | ConsoleActor0014 | ConsoleActor015 | ConsoleActor>;
 }) => {
 	const { update_rate_config } = actor;
 

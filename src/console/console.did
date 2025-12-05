@@ -34,7 +34,7 @@ type AssetNoContent = record {
 type AssetsUpgradeOptions = record { clear_existing_assets : opt bool };
 type Authentication = record {
   delegation : PreparedDelegation;
-  mission_control : Account;
+  account : Account;
 };
 type AuthenticationArgs = variant { OpenId : OpenIdPrepareDelegationArgs };
 type AuthenticationConfig = record {
@@ -356,6 +356,7 @@ service : () -> {
   del_controllers : (DeleteControllersArgs) -> ();
   del_custom_domain : (text) -> ();
   delete_proposal_assets : (DeleteProposalAssets) -> ();
+  get_account : () -> (opt Account) query;
   get_auth_config : () -> (opt AuthenticationConfig) query;
   get_config : () -> (Config) query;
   get_create_orbiter_fee : (GetCreateCanisterFeeArgs) -> (opt Tokens) query;
@@ -364,7 +365,6 @@ service : () -> {
   get_delegation : (GetDelegationArgs) -> (Result_1) query;
   get_proposal : (nat) -> (opt Proposal) query;
   get_storage_config : () -> (StorageConfig) query;
-  get_user_mission_control_center : () -> (opt Account) query;
   http_request : (HttpRequest) -> (HttpResponse) query;
   http_request_streaming_callback : (StreamingCallbackToken) -> (
       StreamingCallbackHttpResponse,
@@ -375,14 +375,12 @@ service : () -> {
       vec record { text; InitUploadResult },
     );
   init_user_mission_control_center : () -> (Account);
+  list_accounts : () -> (vec record { principal; Account }) query;
   list_assets : (text, ListParams) -> (ListResults) query;
   list_controllers : () -> (vec record { principal; Controller }) query;
   list_custom_domains : () -> (vec record { text; CustomDomain }) query;
   list_payments : () -> (vec record { nat64; Payment }) query;
   list_proposals : (ListProposalsParams) -> (ListProposalResults) query;
-  list_user_mission_control_centers : () -> (
-      vec record { principal; Account },
-    ) query;
   reject_proposal : (CommitProposal) -> (null);
   set_auth_config : (SetAuthenticationConfig) -> (AuthenticationConfig);
   set_controllers : (SetControllersArgs) -> ();

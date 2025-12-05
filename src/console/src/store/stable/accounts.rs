@@ -52,16 +52,11 @@ fn get_account_with_existing_mission_control_impl(
     Err("User does not have the permission to access the mission control center.")
 }
 
-pub fn init_account_with_empty_mission_control(
-    user: &UserId,
-    provider: &Option<Provider>,
-) -> Account {
-    with_accounts_mut(|accounts| {
-        init_account_with_empty_mission_control_impl(user, provider, accounts)
-    })
+pub fn init_account(user: &UserId, provider: &Option<Provider>) -> Account {
+    with_accounts_mut(|accounts| init_account_impl(user, provider, accounts))
 }
 
-fn init_account_with_empty_mission_control_impl(
+fn init_account_impl(
     user: &UserId,
     provider: &Option<Provider>,
     accounts: &mut AccountsStable,

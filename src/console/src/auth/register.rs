@@ -1,5 +1,4 @@
-use crate::factory::mission_control::init_user_mission_control_with_provider;
-use crate::store::stable::{get_account, update_provider};
+use crate::store::stable::{get_account, init_account, update_provider};
 use crate::types::state::OpenId;
 use crate::types::state::{Account, OpenIdData, Provider};
 use candid::Principal;
@@ -7,7 +6,7 @@ use junobuild_auth::delegation::types::UserKey;
 use junobuild_auth::openid::types::interface::OpenIdCredential;
 use junobuild_auth::openid::types::provider::OpenIdProvider;
 
-pub async fn register_account_with_mission_control(
+pub async fn register_account(
     public_key: &UserKey,
     credential: &OpenIdCredential,
 ) -> Result<Account, String> {
@@ -53,5 +52,6 @@ pub async fn register_account_with_mission_control(
         return Ok(updated_account);
     }
 
-    init_user_mission_control_with_provider(&user_id, &provider).await
+    let new_account = init_account(&user_id, &Some(provider));
+    Ok(new_account)
 }

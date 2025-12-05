@@ -1,5 +1,6 @@
 #![deny(clippy::disallowed_methods)]
 
+mod accounts;
 mod api;
 mod auth;
 mod cdn;

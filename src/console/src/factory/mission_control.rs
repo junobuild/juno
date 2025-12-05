@@ -1,46 +1,18 @@
 use crate::constants::FREEZING_THRESHOLD_ONE_YEAR;
 use crate::factory::utils::controllers::update_mission_control_controllers;
 use crate::factory::utils::wasm::mission_control_wasm_arg;
-use crate::store::heap::increment_mission_controls_rate;
-use crate::store::stable::{
-    delete_account, get_account, init_account_with_empty_mission_control, update_account,
-};
-use crate::types::state::{Account, Provider};
-use candid::Nat;
+use crate::store::stable::{delete_account, update_account};
+use candid::{Nat, Principal};
 use junobuild_shared::constants_shared::CREATE_MISSION_CONTROL_CYCLES;
-use junobuild_shared::ic::api::{caller, id};
+use junobuild_shared::ic::api::id;
 use junobuild_shared::mgmt::ic::create_canister_install_code;
 use junobuild_shared::mgmt::types::ic::CreateCanisterInitSettingsArg;
 use junobuild_shared::types::state::UserId;
 
-pub fn init_user_mission_control_with_caller() -> Result<Account, String> {
-    let caller = caller();
+pub async fn create_mission_control(user_id: &UserId) -> Result<Principal, String> {
+    // TODO: assert account has not yet a mission control
+    // TODO: credits and payments
 
-    let account = get_account(&caller)?;
-
-    match account {
-        Some(account) => Ok(account),
-        None => {
-            // Guard too many requests
-            increment_mission_controls_rate()?;
-
-            let account = init_account_with_empty_mission_control(&caller, &None);
-
-            Ok(account)
-        }
-    }
-}
-
-pub async fn init_user_mission_control_with_provider(
-    user: &UserId,
-    provider: &Provider,
-) -> Result<Account, String> {
-    init_account_with_empty_mission_control(user, &Some(provider.clone()));
-
-    create_mission_control(user).await
-}
-
-async fn create_mission_control(user_id: &UserId) -> Result<Account, String> {
     let wasm_arg = mission_control_wasm_arg(user_id)?;
 
     let console = id();
@@ -66,11 +38,11 @@ async fn create_mission_control(user_id: &UserId) -> Result<Account, String> {
         Ok(mission_control_id) => {
             // There error is unlikely to happen as the implementation ensures an
             // account was created before calling this factory function.
-            let account = update_account(user_id, &mission_control_id)?;
+            let _ = update_account(user_id, &mission_control_id)?;
 
             update_mission_control_controllers(&mission_control_id, user_id).await?;
 
-            Ok(account)
+            Ok(mission_control_id)
         }
     }
 }

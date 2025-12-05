@@ -105,7 +105,7 @@
 		"prettier-plugin-toml": "^2.0.6",
 		"prompts": "^2.4.2",
 		"sass": "^1.94.2",
-		"svelte": "^5.45.5",
+		"svelte": "^5.39.2",
 		"svelte-check": "^4.3.4",
 		"tslib": "^2.8.1",
 		"typescript": "^5.9.3",

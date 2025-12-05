@@ -50,10 +50,10 @@ export const signInWithII = async (): Promise<{
 
 export const signOut = (): Promise<void> => logout({});
 
-export const missionControlErrorSignOut = async () =>
+export const accountErrorSignOut = async () =>
 	await logout({
 		msg: {
-			text: get(i18n).errors.mission_control_sign_out,
+			text: get(i18n).errors.account_sign_out,
 			level: 'error'
 		}
 	});

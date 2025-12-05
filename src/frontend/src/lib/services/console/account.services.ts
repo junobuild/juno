@@ -1,11 +1,11 @@
 import type { ConsoleDid } from '$declarations';
 import {
-	getMissionControl as getMissionControlApi,
-	initMissionControl as initMissionControlApi
+	getAccount as getAccountApi,
+	initAccountAndMissionControl as initAccountAndMissionControlApi
 } from '$lib/api/console.api';
-import { missionControlErrorSignOut } from '$lib/services/console/auth/auth.services';
+import { accountErrorSignOut } from '$lib/services/console/auth/auth.services';
 import { i18n } from '$lib/stores/i18n.store';
-import { missionControlCertifiedStore } from '$lib/stores/mission-control.store';
+import { accountCertifiedStore } from '$lib/stores/mission-control.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
 import { fromNullable, isNullish } from '@dfinity/utils';
@@ -17,10 +17,10 @@ interface Certified {
 }
 
 type PollAndInitResult = {
-	missionControl: ConsoleDid.MissionControl;
+	account: ConsoleDid.Account;
 } & Certified;
 
-export const initMissionControl = async ({
+export const initAccountAndMissionControl = async ({
 	identity
 }: {
 	identity: OptionIdentity;
@@ -32,12 +32,12 @@ export const initMissionControl = async ({
 
 	try {
 		// Poll to init mission control center
-		const { missionControl, certified } = await pollAndInitMissionControl({
+		const { account, certified } = await pollAndInitMissionControl({
 			identity
 		});
 
-		missionControlCertifiedStore.set({
-			data: missionControl,
+		accountCertifiedStore.set({
+			data: account,
 			certified
 		});
 
@@ -46,7 +46,7 @@ export const initMissionControl = async ({
 		}
 
 		// We deliberately do not await the promise to avoid blocking the main UX. However, if necessary, we take the required measures if Mission Control cannot be certified.
-		assertMissionControl({ identity });
+		assertAccount({ identity });
 
 		return { result: 'success' };
 	} catch (err: unknown) {
@@ -56,7 +56,7 @@ export const initMissionControl = async ({
 		});
 
 		// There was an error so, we sign the user out otherwise skeleton and other spinners will be displayed forever
-		await missionControlErrorSignOut();
+		await accountErrorSignOut();
 
 		return { result: 'error' };
 	}
@@ -71,11 +71,11 @@ const pollAndInitMissionControl = async ({
 	// eslint-disable-next-line no-async-promise-executor
 	new Promise<PollAndInitResult>(async (resolve, reject) => {
 		try {
-			const { missionControl, certified } = await getOrInitMissionControl({
+			const { account, certified } = await getOrInitMissionControl({
 				identity
 			});
 
-			const missionControlId = fromNullable(missionControl.mission_control_id);
+			const missionControlId = fromNullable(account.mission_control_id);
 
 			// TODO: we can/should probably add a max time to not retry forever even though the user will probably close their browsers.
 			if (isNullish(missionControlId)) {
@@ -90,7 +90,7 @@ const pollAndInitMissionControl = async ({
 				return;
 			}
 
-			resolve({ missionControl, certified });
+			resolve({ account, certified });
 		} catch (err: unknown) {
 			reject(err);
 		}
@@ -100,28 +100,28 @@ export const getOrInitMissionControl = async ({
 	identity
 }: {
 	identity: Identity;
-}): Promise<{ missionControl: ConsoleDid.MissionControl } & Certified> => {
-	const existingMissionControl = await getMissionControlApi({ identity, certified: false });
+}): Promise<{ account: ConsoleDid.Account } & Certified> => {
+	const existingAccount = await getAccountApi({ identity, certified: false });
 
-	if (isNullish(existingMissionControl)) {
-		const newMissionControl = await initMissionControlApi(identity);
+	if (isNullish(existingAccount)) {
+		const newAccount = await initAccountAndMissionControlApi(identity);
 
 		return {
-			missionControl: newMissionControl,
+			account: newAccount,
 			certified: true
 		};
 	}
 
 	return {
-		missionControl: existingMissionControl,
+		account: existingAccount,
 		certified: false
 	};
 };
 
-const assertMissionControl = async ({ identity }: { identity: Identity }) => {
+const assertAccount = async ({ identity }: { identity: Identity }) => {
 	try {
-		await getMissionControlApi({ identity, certified: true });
+		await getAccountApi({ identity, certified: true });
 	} catch (_err: unknown) {
-		await missionControlErrorSignOut();
+		await accountErrorSignOut();
 	}
 };

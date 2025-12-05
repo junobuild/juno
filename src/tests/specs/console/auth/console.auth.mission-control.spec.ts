@@ -1,9 +1,9 @@
 import {
 	type ConsoleActor,
+	type ConsoleDid,
 	idlFactoryMissionControl,
 	type MissionControlActor
 } from '$declarations';
-import type { MissionControl } from '$declarations/console/console.did';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
 import type { DelegationIdentity } from '@icp-sdk/core/identity';
@@ -53,7 +53,7 @@ describe('Satellite > Auth > Mission Control', () => {
 			identity,
 			mission_control: missionControl,
 			jwt
-		} = await authenticateAndMakeIdentity<{ mission_control: MissionControl }>({
+		} = await authenticateAndMakeIdentity<{ mission_control: ConsoleDid.Account }>({
 			pic,
 			session,
 			actor: consoleActor

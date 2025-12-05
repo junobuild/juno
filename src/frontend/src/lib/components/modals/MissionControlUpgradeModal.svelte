@@ -4,7 +4,7 @@
 	import { type UpgradeCodeParams, upgradeMissionControl } from '@junobuild/admin';
 	import CanisterUpgradeModal from '$lib/components/modals/CanisterUpgradeModal.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
-	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
+	import { missionControlId } from '$lib/derived/account.mission-control.derived';
 	import { reloadMissionControlVersion } from '$lib/services/version/version.mission-control.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -29,7 +29,7 @@
 				// TODO: resolve no-non-null-assertion
 				// We know for sure that the mission control is defined at this point.
 				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-				missionControlId: $missionControlIdDerived!.toText(),
+				missionControlId: $missionControlId!.toText(),
 				identity: $authStore.identity ?? new AnonymousIdentity(),
 				...container()
 			},
@@ -41,14 +41,14 @@
 			// TODO: resolve no-non-null-assertion
 			// We know for sure that the mission control is defined at this point.
 			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-			missionControlId: $missionControlIdDerived!
+			missionControlId: $missionControlId!
 		});
 	};
 </script>
 
-{#if nonNullish($missionControlIdDerived)}
+{#if nonNullish($missionControlId)}
 	<CanisterUpgradeModal
-		canisterId={$missionControlIdDerived}
+		canisterId={$missionControlId}
 		{currentVersion}
 		{newerReleases}
 		{onclose}

@@ -4,7 +4,7 @@
 	import IconEdit from '$lib/components/icons/IconEdit.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
-	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
+	import { missionControlId } from '$lib/derived/account.mission-control.derived';
 	import { setSatelliteMetadata } from '$lib/services/mission-control/mission-control.services';
 	import { busy, isBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -44,7 +44,7 @@
 			return;
 		}
 
-		if (isNullish($missionControlIdDerived)) {
+		if (isNullish($missionControlId)) {
 			toasts.error({
 				text: $i18n.errors.no_mission_control
 			});
@@ -54,7 +54,7 @@
 		busy.start();
 
 		const { success } = await setSatelliteMetadata({
-			missionControlId: $missionControlIdDerived,
+			missionControlId: $missionControlId,
 			satellite,
 			metadata: {
 				name: satName,

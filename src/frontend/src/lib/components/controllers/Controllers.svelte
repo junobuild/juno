@@ -8,7 +8,7 @@
 	import ControllerInfo from '$lib/components/controllers/ControllerInfo.svelte';
 	import ButtonTableAction from '$lib/components/ui/ButtonTableAction.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
-	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
+	import { missionControlId } from '$lib/derived/account.mission-control.derived';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
@@ -61,8 +61,7 @@
 	>(undefined);
 
 	const isMissionControl = (controllerId: Principal): boolean =>
-		nonNullish($missionControlIdDerived) &&
-		$missionControlIdDerived.toText() === controllerId.toText();
+		nonNullish($missionControlId) && $missionControlId.toText() === controllerId.toText();
 	const isDev = (controllerId: Principal): boolean =>
 		nonNullish($authStore.identity) &&
 		$authStore.identity.getPrincipal().toText() === controllerId.toText();

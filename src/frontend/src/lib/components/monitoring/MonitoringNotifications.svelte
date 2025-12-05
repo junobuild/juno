@@ -4,9 +4,9 @@
 	import { fade } from 'svelte/transition';
 	import Toggle from '$lib/components/ui/Toggle.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
+	import { missionControlId } from '$lib/derived/account.mission-control.derived';
 	import { missionControlSettingsLoaded } from '$lib/derived/mission-control-settings.derived';
 	import { missionControlConfigMonitoring } from '$lib/derived/mission-control-user.derived';
-	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { setMonitoringNotification } from '$lib/services/mission-control/monitoring.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { busy } from '$lib/stores/busy.store';
@@ -33,7 +33,7 @@
 
 		await setMonitoringNotification({
 			identity: $authStore.identity,
-			missionControlId: $missionControlIdDerived,
+			missionControlId: $missionControlId,
 			monitoringConfig: $missionControlConfigMonitoring,
 			enabled
 		});

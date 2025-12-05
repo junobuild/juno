@@ -6,7 +6,7 @@
 	import CanisterUpgradeModal from '$lib/components/modals/CanisterUpgradeModal.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import { SATELLITE_v0_0_7, SATELLITE_v0_0_9 } from '$lib/constants/version.constants';
-	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
+	import { missionControlId } from '$lib/derived/account.mission-control.derived';
 	import { reloadSatelliteVersion } from '$lib/services/version/version.satellite.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -36,7 +36,7 @@
 				...container()
 			},
 			...params,
-			...(nonNullish($missionControlIdDerived) && { missionControlId: $missionControlIdDerived }),
+			...(nonNullish($missionControlId) && { missionControlId: $missionControlId }),
 			// TODO: option to be removed
 			deprecated: compare(currentVersion, SATELLITE_v0_0_7) < 0,
 			deprecatedNoScope: compare(currentVersion, SATELLITE_v0_0_9) < 0

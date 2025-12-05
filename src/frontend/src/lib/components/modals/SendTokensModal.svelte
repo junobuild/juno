@@ -6,8 +6,8 @@
 	import SendTokensReview from '$lib/components/tokens/SendTokensReview.svelte';
 	import Confetti from '$lib/components/ui/Confetti.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
+	import { missionControlId } from '$lib/derived/account.mission-control.derived';
 	import { balance } from '$lib/derived/balance.derived';
-	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { sendTokens } from '$lib/services/mission-control/tokens.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { wizardBusy } from '$lib/stores/busy.store';
@@ -44,7 +44,7 @@
 		step = 'in_progress';
 
 		const { success } = await sendTokens({
-			missionControlId: $missionControlIdDerived,
+			missionControlId: $missionControlId,
 			identity: $authStore.identity,
 			destination,
 			token,
@@ -62,7 +62,7 @@
 	};
 </script>
 
-{#if nonNullish($missionControlIdDerived)}
+{#if nonNullish($missionControlId)}
 	<Modal {onclose}>
 		{#if step === 'ready'}
 			<Confetti />
@@ -77,7 +77,7 @@
 			<div in:fade>
 				<SendTokensReview
 					balance={$balance}
-					missionControlId={$missionControlIdDerived}
+					missionControlId={$missionControlId}
 					onback={() => (step = 'form')}
 					{onsubmit}
 					bind:amount

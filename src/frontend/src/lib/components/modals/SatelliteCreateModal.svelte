@@ -9,8 +9,8 @@
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { testIds } from '$lib/constants/test-ids.constants';
+	import { missionControlId } from '$lib/derived/account.mission-control.derived';
 	import { authSignedOut } from '$lib/derived/auth.derived';
-	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { createSatelliteWizard } from '$lib/services/wizard.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { wizardBusy } from '$lib/stores/busy.store';
@@ -49,7 +49,7 @@
 
 		const result = await createSatelliteWizard({
 			identity: $authStore.identity,
-			missionControlId: $missionControlIdDerived,
+			missionControlId: $missionControlId,
 			subnetId,
 			monitoringStrategy,
 			satelliteName,
@@ -166,7 +166,7 @@
 
 				<button
 					{...testId(testIds.createSatellite.create)}
-					disabled={$authSignedOut || isNullish($missionControlIdDerived) || insufficientFunds}
+					disabled={$authSignedOut || isNullish($missionControlId) || insufficientFunds}
 					type="submit"
 				>
 					{$i18n.satellites.create}

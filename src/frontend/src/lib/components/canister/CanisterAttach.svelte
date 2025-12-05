@@ -3,7 +3,7 @@
 	import { Principal } from '@icp-sdk/core/principal';
 	import type { Snippet } from 'svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
-	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
+	import { missionControlId } from '$lib/derived/account.mission-control.derived';
 	import { busy, isBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
@@ -49,7 +49,7 @@
 			return;
 		}
 
-		if (isNullish($missionControlIdDerived)) {
+		if (isNullish($missionControlId)) {
 			toasts.error({
 				text: $i18n.errors.no_mission_control
 			});
@@ -60,7 +60,7 @@
 
 		try {
 			await setFn({
-				missionControlId: $missionControlIdDerived,
+				missionControlId: $missionControlId,
 				canisterId: Principal.fromText(canisterId)
 			});
 

@@ -5,8 +5,8 @@
 	import Confirmation from '$lib/components/core/Confirmation.svelte';
 	import IconLinkOff from '$lib/components/icons/IconLinkOff.svelte';
 	import Text from '$lib/components/ui/Text.svelte';
+	import { missionControlId } from '$lib/derived/account.mission-control.derived';
 	import { authSignedOut } from '$lib/derived/auth.derived';
-	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import {
 		detachOrbiter,
 		detachSatellite
@@ -37,7 +37,7 @@
 			return;
 		}
 
-		if (isNullish($missionControlIdDerived)) {
+		if (isNullish($missionControlId)) {
 			toasts.error({
 				text: $i18n.errors.no_mission_control
 			});
@@ -57,7 +57,7 @@
 
 			await fn({
 				canisterId: segmentId,
-				missionControlId: $missionControlIdDerived
+				missionControlId: $missionControlId
 			});
 
 			await goto('/', { replaceState: true });

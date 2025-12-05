@@ -8,8 +8,8 @@
 	import NoTabs from '$lib/components/ui/NoTabs.svelte';
 	import Wallet from '$lib/components/wallet/Wallet.svelte';
 	import Warnings from '$lib/components/warning/Warnings.svelte';
+	import { missionControlId } from '$lib/derived/account.mission-control.derived';
 	import { authSignedIn } from '$lib/derived/auth.derived';
-	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import {
 		type Tab,
 		TABS_CONTEXT_KEY,
@@ -45,9 +45,9 @@
 
 		<Loaders>
 			<MissionControlGuard>
-				{#if nonNullish($missionControlIdDerived)}
+				{#if nonNullish($missionControlId)}
 					{#if $store.tabId === $store.tabs[0].id}
-						<Wallet missionControlId={$missionControlIdDerived} />
+						<Wallet missionControlId={$missionControlId} />
 					{/if}
 				{/if}
 			</MissionControlGuard>

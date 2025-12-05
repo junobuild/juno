@@ -6,7 +6,7 @@
 	import MonitoringLoader from '$lib/components/loaders/MonitoringLoader.svelte';
 	import NoMonitoringLoader from '$lib/components/loaders/NoMonitoringLoader.svelte';
 	import RegistryLoader from '$lib/components/loaders/RegistryLoader.svelte';
-	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
+	import { missionControlId } from '$lib/derived/account.mission-control.derived';
 	import { orbiterStore } from '$lib/derived/orbiter.derived';
 	import type { CanisterSegment } from '$lib/types/canister';
 
@@ -19,10 +19,10 @@
 	let { children, satellites = [], monitoring = false }: Props = $props();
 
 	let segments: CanisterSegment[] = $derived([
-		...(nonNullish($missionControlIdDerived)
+		...(nonNullish($missionControlId)
 			? [
 					{
-						canisterId: $missionControlIdDerived.toText(),
+						canisterId: $missionControlId.toText(),
 						segment: 'mission_control' as const
 					}
 				]

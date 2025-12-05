@@ -10,7 +10,7 @@
 	import SatelliteSettings from '$lib/components/satellites/SatelliteSettings.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
 	import Warnings from '$lib/components/warning/Warnings.svelte';
-	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
+	import { missionControlId } from '$lib/derived/account.mission-control.derived';
 	import { satelliteStore } from '$lib/derived/satellite.derived';
 	import {
 		type Tab,
@@ -52,7 +52,7 @@
 				{/snippet}
 
 				<MissionControlGuard>
-					{#if nonNullish($satelliteStore) && nonNullish($missionControlIdDerived)}
+					{#if nonNullish($satelliteStore) && nonNullish($missionControlId)}
 						{#if $store.tabId === $store.tabs[0].id}
 							<SatelliteOverview satellite={$satelliteStore} />
 						{:else if $store.tabId === $store.tabs[1].id}

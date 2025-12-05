@@ -11,7 +11,7 @@
 	import Html from '$lib/components/ui/Html.svelte';
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import CanisterUpgradeOptions from '$lib/components/upgrade/wizard/CanisterUpgradeOptions.svelte';
-	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
+	import { missionControlId } from '$lib/derived/account.mission-control.derived';
 	import { prepareWasmUpgrade } from '$lib/services/upgrade/upgrade.cdn.services';
 	import { reloadSatelliteVersion } from '$lib/services/version/version.satellite.services';
 	import { authStore } from '$lib/stores/auth.store';
@@ -55,7 +55,7 @@
 				...container()
 			},
 			...params,
-			...(nonNullish($missionControlIdDerived) && { missionControlId: $missionControlIdDerived }),
+			...(nonNullish($missionControlId) && { missionControlId: $missionControlId }),
 			// TODO: option to be removed
 			deprecated: false, // Proposals supported > SATELLITE_v0_0_7,
 			deprecatedNoScope: false // Proposals supported >  SATELLITE_v0_0_9

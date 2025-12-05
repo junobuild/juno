@@ -126,17 +126,17 @@
 		"@junobuild/ic-client": "^6.0.0",
 		"@junobuild/storage": "^2.1.0",
 		"@junobuild/utils": "^0.2.3",
-		"@zip.js/zip.js": "^2.8.10",
+		"@zip.js/zip.js": "^2.8.11",
 		"date-fns": "^4.1.0",
-		"dompurify": "^3.2.7",
+		"dompurify": "^3.3.0",
 		"idb-keyval": "^6.2.2",
 		"layercake": "^10.0.2",
 		"nanoid": "^5.1.6",
 		"qrcode-generator": "^2.0.4",
-		"semver": "^7.7.2",
+		"semver": "^7.7.3",
 		"svelte-confetti": "^2.3.2",
-		"ua-parser-js": "^1.0.40",
-		"zod": "^4.1.11"
+		"ua-parser-js": "1.0.40",
+		"zod": "^4.1.13"
 	},
 	"engines": {
 		"node": ">=24",

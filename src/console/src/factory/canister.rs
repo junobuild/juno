@@ -1,7 +1,7 @@
 use crate::constants::SATELLITE_CREATION_FEE_ICP;
 use crate::store::stable::{
-    get_existing_account, has_mission_control_and_credits, insert_new_payment, is_known_payment,
-    update_payment_completed, update_payment_refunded, use_credits,
+    get_account_with_existing_mission_control, has_mission_control_and_credits, insert_new_payment,
+    is_known_payment, update_payment_completed, update_payment_refunded, use_credits,
 };
 use crate::types::ledger::Payment;
 use candid::Principal;
@@ -32,7 +32,7 @@ where
     Fut: Future<Output = Result<Principal, String>>,
 {
     // User should have a mission control center
-    let mission_control = get_existing_account(&user, &caller)?;
+    let mission_control = get_account_with_existing_mission_control(&user, &caller)?;
 
     match mission_control.mission_control_id {
         None => Err("No mission control center found.".to_string()),

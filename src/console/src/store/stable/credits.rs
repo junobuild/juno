@@ -1,5 +1,5 @@
 use crate::constants::E8S_PER_ICP;
-use crate::store::stable::get_existing_account;
+use crate::store::stable::get_account_with_existing_mission_control;
 use crate::store::{with_accounts, with_accounts_mut};
 use crate::types::state::{Account, AccountsStable};
 use ic_cdk::api::time;
@@ -35,7 +35,7 @@ pub fn has_mission_control_and_credits(
     mission_control_id: &MissionControlId,
     fee: &Tokens,
 ) -> bool {
-    get_existing_account(user, mission_control_id)
+    get_account_with_existing_mission_control(user, mission_control_id)
         .map(|account| has_credits(&account, fee))
         .unwrap_or(false)
 }

@@ -1,6 +1,7 @@
 use crate::store::services::raw::{mutate_heap_state, read_heap_state};
 use crate::store::{mutate_stable_state, read_stable_state};
 use crate::types::state::AccountsStable;
+use crate::types::state::PaymentsStable;
 use junobuild_auth::state::types::state::AuthenticationHeapState;
 use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::state::AssetsHeap;
@@ -43,4 +44,15 @@ pub fn with_accounts<R>(f: impl FnOnce(&AccountsStable) -> R) -> R {
 
 pub fn with_accounts_mut<R>(f: impl FnOnce(&mut AccountsStable) -> R) -> R {
     mutate_stable_state(|state| f(&mut state.accounts))
+}
+
+pub fn with_payments<R>(f: impl FnOnce(&PaymentsStable) -> R) -> R {
+    read_stable_state(|state| {
+        let payments = &state.payments;
+        f(&payments)
+    })
+}
+
+pub fn with_payments_mut<R>(f: impl FnOnce(&mut PaymentsStable) -> R) -> R {
+    mutate_stable_state(|state| f(&mut state.payments))
 }

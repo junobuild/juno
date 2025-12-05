@@ -51,7 +51,7 @@ export const idlFactory = ({ IDL }) => {
 	});
 	const Authentication = IDL.Record({
 		delegation: PreparedDelegation,
-		mission_control: Account
+		account: Account
 	});
 	const JwtFindProviderError = IDL.Variant({
 		BadClaim: IDL.Text,

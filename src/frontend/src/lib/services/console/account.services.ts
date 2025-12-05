@@ -1,14 +1,14 @@
 import type { ConsoleDid } from '$declarations';
 import {
 	getAccount as getAccountApi,
-	initAccountAndMissionControl as initAccountAndMissionControlApi
+	getOrInitAccount as getOrInitAccountApi
 } from '$lib/api/console.api';
 import { accountErrorSignOut } from '$lib/services/console/auth/auth.services';
 import { i18n } from '$lib/stores/i18n.store';
 import { accountCertifiedStore } from '$lib/stores/mission-control.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
-import { fromNullable, isNullish } from '@dfinity/utils';
+import { isNullish } from '@dfinity/utils';
 import type { Identity } from '@icp-sdk/core/agent';
 import { get } from 'svelte/store';
 
@@ -20,7 +20,7 @@ type PollAndInitResult = {
 	account: ConsoleDid.Account;
 } & Certified;
 
-export const initAccountAndMissionControl = async ({
+export const initAccount = async ({
 	identity
 }: {
 	identity: OptionIdentity;
@@ -31,8 +31,7 @@ export const initAccountAndMissionControl = async ({
 	}
 
 	try {
-		// Poll to init mission control center
-		const { account, certified } = await pollAndInitMissionControl({
+		const { account, certified } = await getOrInitAccount({
 			identity
 		});
 
@@ -62,55 +61,12 @@ export const initAccountAndMissionControl = async ({
 	}
 };
 
-const pollAndInitMissionControl = async ({
-	identity
-}: {
-	identity: Identity;
-	// eslint-disable-next-line require-await
-}): Promise<PollAndInitResult> =>
-	// eslint-disable-next-line no-async-promise-executor
-	new Promise<PollAndInitResult>(async (resolve, reject) => {
-		try {
-			const { account, certified } = await getOrInitMissionControl({
-				identity
-			});
-
-			const missionControlId = fromNullable(account.mission_control_id);
-
-			// TODO: we can/should probably add a max time to not retry forever even though the user will probably close their browsers.
-			if (isNullish(missionControlId)) {
-				setTimeout(async () => {
-					try {
-						const result = await pollAndInitMissionControl({ identity });
-						resolve(result);
-					} catch (err: unknown) {
-						reject(err);
-					}
-				}, 2000);
-				return;
-			}
-
-			resolve({ account, certified });
-		} catch (err: unknown) {
-			reject(err);
-		}
-	});
-
-export const getOrInitMissionControl = async ({
+export const getOrInitAccount = async ({
 	identity
 }: {
 	identity: Identity;
 }): Promise<{ account: ConsoleDid.Account } & Certified> => {
-	const existingAccount = await getAccountApi({ identity, certified: false });
-
-	if (isNullish(existingAccount)) {
-		const newAccount = await initAccountAndMissionControlApi(identity);
-
-		return {
-			account: newAccount,
-			certified: true
-		};
-	}
+	const existingAccount = await getOrInitAccountApi({ identity, certified: false });
 
 	return {
 		account: existingAccount,

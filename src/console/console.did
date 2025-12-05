@@ -228,6 +228,7 @@ type Payment = record {
   mission_control_id : opt principal;
   created_at : nat64;
   block_index_refunded : opt nat64;
+  purchaser : opt principal;
 };
 type PaymentStatus = variant { Refunded; Acknowledged; Completed };
 type PrepareDelegationError = variant {
@@ -351,6 +352,7 @@ service : () -> {
   commit_proposal_asset_upload : (CommitBatch) -> ();
   commit_proposal_many_assets_upload : (vec CommitBatch) -> ();
   count_proposals : () -> (nat64) query;
+  create_mission_control : () -> (principal);
   create_orbiter : (CreateCanisterArgs) -> (principal);
   create_satellite : (CreateSatelliteArgs) -> (principal);
   del_controllers : (DeleteControllersArgs) -> ();
@@ -363,6 +365,7 @@ service : () -> {
   get_create_satellite_fee : (GetCreateCanisterFeeArgs) -> (opt Tokens) query;
   get_credits : () -> (Tokens) query;
   get_delegation : (GetDelegationArgs) -> (Result_1) query;
+  get_or_init_account : () -> (Account);
   get_proposal : (nat) -> (opt Proposal) query;
   get_storage_config : () -> (StorageConfig) query;
   http_request : (HttpRequest) -> (HttpResponse) query;
@@ -374,7 +377,6 @@ service : () -> {
   init_proposal_many_assets_upload : (vec InitAssetKey, nat) -> (
       vec record { text; InitUploadResult },
     );
-  init_user_mission_control_center : () -> (Account);
   list_accounts : () -> (vec record { principal; Account }) query;
   list_assets : (text, ListParams) -> (ListResults) query;
   list_controllers : () -> (vec record { principal; Controller }) query;

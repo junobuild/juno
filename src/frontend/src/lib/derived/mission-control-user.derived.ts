@@ -1,4 +1,4 @@
-import { missionControlUserUncertifiedStore } from '$lib/stores/mission-control.store';
+import { missionControlUserUncertifiedStore } from '$lib/stores/mission-control/mission-control.store';
 import { metadataEmail } from '$lib/utils/metadata.utils';
 import { fromNullishNullable } from '@dfinity/utils';
 import { derived } from 'svelte/store';

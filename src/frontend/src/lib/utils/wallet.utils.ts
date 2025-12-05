@@ -6,7 +6,7 @@ import {
 	MEMO_ORBITER_CREATE_REFUND,
 	MEMO_SATELLITE_CREATE_REFUND
 } from '$lib/constants/wallet.constants';
-import { i18n } from '$lib/stores/i18n.store';
+import { i18n } from '$lib/stores/app/i18n.store';
 import type { IcTransactionUi } from '$lib/types/ic-transaction';
 import type { MissionControlId } from '$lib/types/mission-control';
 import { emit } from '$lib/utils/events.utils';

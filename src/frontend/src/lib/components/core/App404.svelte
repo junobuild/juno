@@ -2,7 +2,7 @@
 	import IconJunoLogo from '$lib/components/icons/IconJunoLogo.svelte';
 	import ContainerCentered from '$lib/components/ui/ContainerCentered.svelte';
 	import { authSignedIn } from '$lib/derived/auth.derived';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 </script>
 
 <ContainerCentered>

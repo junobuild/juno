@@ -2,7 +2,7 @@
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { untrack } from 'svelte';
 	import WizardProgressSteps from '$lib/components/ui/WizardProgressSteps.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import { type HostingProgress, HostingProgressStep } from '$lib/types/progress-hosting';
 	import type { ProgressStep } from '$lib/types/progress-step';
 	import { mapProgressState } from '$lib/utils/progress.utils';

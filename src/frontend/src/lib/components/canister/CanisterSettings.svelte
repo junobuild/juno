@@ -11,8 +11,8 @@
 		SIX_MONTHS,
 		TWO_YEARS
 	} from '$lib/constants/canister.constants';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { toasts } from '$lib/stores/toasts.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
+	import { toasts } from '$lib/stores/app/toasts.store';
 	import type {
 		CanisterData,
 		CanisterInfo,

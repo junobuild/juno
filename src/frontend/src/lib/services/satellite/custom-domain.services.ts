@@ -5,10 +5,10 @@ import {
 } from '$lib/api/satellites.api';
 import { deleteDomainV0 } from '$lib/rest/bn.v0.rest';
 import { deleteDomain } from '$lib/rest/bn.v1.rest';
+import { i18n } from '$lib/stores/app/i18n.store';
+import { toasts } from '$lib/stores/app/toasts.store';
 import { authStore } from '$lib/stores/auth.store';
-import { customDomainsStore } from '$lib/stores/custom-domains.store';
-import { i18n } from '$lib/stores/i18n.store';
-import { toasts } from '$lib/stores/toasts.store';
+import { customDomainsStore } from '$lib/stores/satellite/custom-domains.store';
 import type { CustomDomainName } from '$lib/types/custom-domain';
 import type { OptionIdentity } from '$lib/types/itentity';
 import { assertNonNullish, fromNullable, nonNullish } from '@dfinity/utils';

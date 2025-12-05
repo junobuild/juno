@@ -9,7 +9,7 @@
 	import ButtonTableAction from '$lib/components/ui/ButtonTableAction.svelte';
 	import ExternalLink from '$lib/components/ui/ExternalLink.svelte';
 	import { HostingWorker } from '$lib/services/workers/worker.hosting.services';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { CustomDomain, CustomDomainState } from '$lib/types/custom-domain';
 	import type { PostMessageDataResponseHosting } from '$lib/types/post-message';
 	import type { Option } from '$lib/types/utils';

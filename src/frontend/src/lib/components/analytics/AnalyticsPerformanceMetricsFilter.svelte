@@ -2,7 +2,7 @@
 	import type { OrbiterDid } from '$declarations';
 	import Toolbar from '$lib/components/ui/Toolbar.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 
 	interface Props {
 		performanceMetrics: OrbiterDid.AnalyticsWebVitalsPerformanceMetrics;

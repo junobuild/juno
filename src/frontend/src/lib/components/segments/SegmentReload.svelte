@@ -1,7 +1,7 @@
 <script lang="ts">
 	import IconRefresh from '$lib/components/icons/IconRefresh.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { toasts } from '$lib/stores/toasts.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
+	import { toasts } from '$lib/stores/app/toasts.store';
 
 	interface Props {
 		reloadVersion: () => Promise<void>;

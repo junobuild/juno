@@ -5,7 +5,7 @@ import {
 	listSatelliteStatuses
 } from '$lib/api/mission-control.deprecated.api';
 import { SYNC_MONITORING_TIMER_INTERVAL } from '$lib/constants/app.constants';
-import { monitoringIdbStore } from '$lib/stores/idb.store';
+import { monitoringIdbStore } from '$lib/stores/app/idb.store';
 import type { CanisterSegment, CanisterSyncMonitoring } from '$lib/types/canister';
 import type { ChartsData, TimeOfDayChartData } from '$lib/types/chart';
 import type {

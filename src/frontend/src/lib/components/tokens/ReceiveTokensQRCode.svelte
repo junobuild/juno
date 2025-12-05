@@ -2,7 +2,7 @@
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import QRCodeContainer from '$lib/components/ui/QRCodeContainer.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 
 	interface Props {
 		value: string;

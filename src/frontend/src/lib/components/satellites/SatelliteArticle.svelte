@@ -4,8 +4,8 @@
 	import LaunchpadLink from '$lib/components/launchpad/LaunchpadLink.svelte';
 	import SatelliteEnvironment from '$lib/components/satellites/SatelliteEnvironment.svelte';
 	import Badge from '$lib/components/ui/Badge.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { layoutSatellites } from '$lib/stores/layout-launchpad.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
+	import { layoutSatellites } from '$lib/stores/app/layout-launchpad.store';
 	import { SatellitesLayout } from '$lib/types/layout';
 	import type { SatelliteUi } from '$lib/types/satellite';
 	import { overviewLink } from '$lib/utils/nav.utils';

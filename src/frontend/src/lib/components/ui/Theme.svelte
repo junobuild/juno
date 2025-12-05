@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Toggle from '$lib/components/ui/Toggle.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { theme } from '$lib/stores/theme.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
+	import { theme } from '$lib/stores/app/theme.store';
 	import { Theme } from '$lib/types/theme';
 
 	interface Props {

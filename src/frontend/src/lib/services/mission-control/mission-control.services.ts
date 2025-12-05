@@ -35,15 +35,15 @@ import {
 } from '$lib/schemas/satellite.schema';
 import { loadDataStore } from '$lib/services/_loader.services';
 import { loadSatellites } from '$lib/services/mission-control/mission-control.satellites.services';
+import { i18n } from '$lib/stores/app/i18n.store';
+import { toasts } from '$lib/stores/app/toasts.store';
 import { authStore } from '$lib/stores/auth.store';
-import { i18n } from '$lib/stores/i18n.store';
 import {
 	missionControlSettingsUncertifiedStore,
 	missionControlUserUncertifiedStore
-} from '$lib/stores/mission-control.store';
-import { orbitersUncertifiedStore } from '$lib/stores/orbiter.store';
-import { satellitesUncertifiedStore } from '$lib/stores/satellite.store';
-import { toasts } from '$lib/stores/toasts.store';
+} from '$lib/stores/mission-control/mission-control.store';
+import { orbitersUncertifiedStore } from '$lib/stores/orbiter/orbiter.store';
+import { satellitesUncertifiedStore } from '$lib/stores/satellite/satellite.store';
 import { versionStore } from '$lib/stores/version.store';
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { OptionIdentity } from '$lib/types/itentity';

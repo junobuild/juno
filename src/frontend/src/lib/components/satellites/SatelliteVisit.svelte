@@ -6,7 +6,7 @@
 		satelliteCustomDomain,
 		satelliteCustomDomainsLoaded
 	} from '$lib/derived/satellite-custom-domains.derived';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import { satelliteUrl } from '$lib/utils/satellite.utils';
 
 	interface Props {

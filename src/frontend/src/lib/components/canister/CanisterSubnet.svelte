@@ -8,8 +8,8 @@
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { loadSubnetId } from '$lib/services/ic-mgmt/subnets.services';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { subnetStore } from '$lib/stores/subnet.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
+	import { subnetStore } from '$lib/stores/ic-mgmt/subnet.store';
 	import type { Subnet } from '$lib/types/subnet';
 	import type { Option } from '$lib/types/utils';
 

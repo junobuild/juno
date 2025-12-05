@@ -2,7 +2,7 @@
 	import IconArrowUpward from '$lib/components/icons/IconArrowUpward.svelte';
 	import IconJunoLogo from '$lib/components/icons/IconJunoLogo.svelte';
 	import IconUser from '$lib/components/icons/IconUser.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { VersionMetadataUi } from '$lib/types/version';
 
 	interface Props {

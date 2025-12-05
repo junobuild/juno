@@ -1,6 +1,6 @@
 <script lang="ts">
 	import ListParamsFilter from '$lib/components/list/ListParamsFilter.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 </script>
 
 <ListParamsFilter

@@ -2,7 +2,7 @@
 	import IconCheckCircle from '$lib/components/icons/IconCheckCircle.svelte';
 	import IconClose from '$lib/components/icons/IconClose.svelte';
 	import Spinner from '$lib/components/ui/Spinner.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { ProgressStep } from '$lib/types/progress-step';
 
 	interface Props {

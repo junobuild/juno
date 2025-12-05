@@ -7,7 +7,7 @@
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import { authSignedIn } from '$lib/derived/auth.derived';
 	import { spotlightItems } from '$lib/derived/spotlight.derived';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import { isDesktop } from '$lib/utils/device.utils';
 
 	let visible = $state(false);

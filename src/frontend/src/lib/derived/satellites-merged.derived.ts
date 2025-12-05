@@ -1,6 +1,6 @@
 import type { MissionControlDid } from '$declarations';
 import { sortedSatellites } from '$lib/derived/satellites.derived';
-import { canistersSyncDataUncertifiedStore } from '$lib/stores/canister-sync-data.store';
+import { canistersSyncDataUncertifiedStore } from '$lib/stores/ic-mgmt/canister-sync-data.store';
 import type { SegmentWithSyncData } from '$lib/types/satellite';
 import { nonNullish } from '@dfinity/utils';
 import { derived } from 'svelte/store';

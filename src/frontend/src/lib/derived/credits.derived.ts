@@ -1,4 +1,4 @@
-import { creditsUncertifiedStore } from '$lib/stores/credits.store';
+import { creditsUncertifiedStore } from '$lib/stores/console/credits.store';
 import { derived } from 'svelte/store';
 
 export const credits = derived([creditsUncertifiedStore], ([$creditsStore]) => $creditsStore?.data);

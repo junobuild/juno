@@ -3,8 +3,8 @@
 	import type { Principal } from '@icp-sdk/core/principal';
 	import { onDestroy } from 'svelte';
 	import IconShoppingCart from '$lib/components/icons/IconShoppingCart.svelte';
-	import { busy } from '$lib/stores/busy.store';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { busy } from '$lib/stores/app/busy.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import { emit } from '$lib/utils/events.utils';
 	import { popupCenter } from '$lib/utils/window.utils';
 

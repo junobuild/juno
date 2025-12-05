@@ -1,4 +1,4 @@
-import { notificationPreferencesStore } from '$lib/stores/notification-preferences.store';
+import { notificationPreferencesStore } from '$lib/stores/app/notification-preferences.store';
 import { derived } from 'svelte/store';
 
 export const notificationFreezingThresholdEnabled = derived(

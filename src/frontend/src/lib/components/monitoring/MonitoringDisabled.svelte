@@ -3,7 +3,7 @@
 	import { fade } from 'svelte/transition';
 	import type { MissionControlDid } from '$declarations';
 	import Value from '$lib/components/ui/Value.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 
 	interface Props {
 		monitoring: MissionControlDid.Monitoring | undefined;

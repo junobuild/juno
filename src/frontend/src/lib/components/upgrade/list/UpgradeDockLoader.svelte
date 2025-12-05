@@ -2,7 +2,7 @@
 	import type { Snippet } from 'svelte';
 	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
 	import { versionsNotLoaded } from '$lib/derived/version.derived';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 
 	interface Props {
 		children: Snippet;

@@ -1,8 +1,8 @@
 import { queryAndUpdate } from '$lib/api/call/query.api';
 import { getTransactions } from '$lib/api/icp-index.api';
-import { i18n } from '$lib/stores/i18n.store';
-import { toasts } from '$lib/stores/toasts.store';
-import { transactionsCertifiedStore } from '$lib/stores/transactions.store';
+import { i18n } from '$lib/stores/app/i18n.store';
+import { toasts } from '$lib/stores/app/toasts.store';
+import { transactionsCertifiedStore } from '$lib/stores/wallet/transactions.store';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { MissionControlId } from '$lib/types/mission-control';
 import type { CertifiedTransactions } from '$lib/types/transaction';

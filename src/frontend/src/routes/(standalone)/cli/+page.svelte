@@ -11,8 +11,8 @@
 	import { authSignedIn } from '$lib/derived/auth.derived';
 	import { sortedSatellites } from '$lib/derived/satellites.derived';
 	import { onIntersection } from '$lib/directives/intersection.directives';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { onLayoutTitleIntersection } from '$lib/stores/layout-intersecting.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
+	import { onLayoutTitleIntersection } from '$lib/stores/app/layout-intersecting.store';
 	import type { Option } from '$lib/types/utils';
 
 	interface Props {

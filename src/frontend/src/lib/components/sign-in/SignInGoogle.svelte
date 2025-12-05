@@ -3,8 +3,8 @@
 	import IconGoogle from '$lib/components/icons/IconGoogle.svelte';
 	import { GOOGLE_CLIENT_ID } from '$lib/constants/app.constants';
 	import { signInWithGoogle } from '$lib/services/console/auth/auth.openid.services';
-	import { isBusy } from '$lib/stores/busy.store';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { isBusy } from '$lib/stores/app/busy.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 </script>
 
 {#if nonNullish(GOOGLE_CLIENT_ID)}

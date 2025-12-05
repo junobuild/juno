@@ -5,7 +5,7 @@
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { icpToUsd, icpToUsdDefined } from '$lib/derived/exchange.derived';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { MissionControlId } from '$lib/types/mission-control';
 	import { formatICP, formatICPToUsd } from '$lib/utils/icp.utils';
 

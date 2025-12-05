@@ -3,7 +3,7 @@
 	import SatelliteEnvironment from '$lib/components/satellites/SatelliteEnvironment.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import { sortedSatelliteUis } from '$lib/derived/satellites.derived';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import { overviewLink } from '$lib/utils/nav.utils';
 
 	let button: HTMLButtonElement | undefined = $state();

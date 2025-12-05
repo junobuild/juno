@@ -8,7 +8,7 @@
 		icpToUsd,
 		icpToUsdDefined
 	} from '$lib/derived/exchange.derived';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import { formatICP, formatICPToUsd } from '$lib/utils/icp.utils';
 
 	interface Props {

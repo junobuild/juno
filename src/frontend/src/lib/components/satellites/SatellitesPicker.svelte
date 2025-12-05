@@ -11,7 +11,7 @@
 	import { Principal } from '@icp-sdk/core/principal';
 	import { onMount } from 'svelte';
 	import { pageSatelliteId } from '$lib/derived/page.derived.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { SatelliteIdText } from '$lib/types/satellite';
 
 	let { disabled = false, onChange, satellites }: SatellitePickerProps = $props();

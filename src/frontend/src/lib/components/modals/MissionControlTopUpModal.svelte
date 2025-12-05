@@ -5,7 +5,7 @@
 	import Html from '$lib/components/ui/Html.svelte';
 	import { missionControlId } from '$lib/derived/account.mission-control.derived';
 	import { balanceOrZero } from '$lib/derived/balance.derived';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { JunoModalDetail, JunoModalTopUpMissionControlDetail } from '$lib/types/modal';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 

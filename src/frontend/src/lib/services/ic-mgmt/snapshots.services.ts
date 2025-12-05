@@ -15,10 +15,10 @@ import {
 	syncIdbStore
 } from '$lib/services/_idb-store.services';
 import { execute } from '$lib/services/_progress.services';
-import { i18n } from '$lib/stores/i18n.store';
-import { snapshotsIdbStore } from '$lib/stores/idb.store';
-import { snapshotStore } from '$lib/stores/snapshot.store';
-import { toasts } from '$lib/stores/toasts.store';
+import { i18n } from '$lib/stores/app/i18n.store';
+import { snapshotsIdbStore } from '$lib/stores/app/idb.store';
+import { toasts } from '$lib/stores/app/toasts.store';
+import { snapshotStore } from '$lib/stores/ic-mgmt/snapshot.store';
 import type { OptionIdentity } from '$lib/types/itentity';
 import { type SnapshotProgress, SnapshotProgressStep } from '$lib/types/progress-snapshot';
 import { assertNonNullish, nonNullish } from '@dfinity/utils';

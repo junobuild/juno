@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Toast from '$lib/components/ui/Toast.svelte';
-	import { toasts } from '$lib/stores/toasts.store';
+	import { toasts } from '$lib/stores/app/toasts.store';
 </script>
 
 {#if $toasts.length > 0}

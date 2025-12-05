@@ -4,7 +4,7 @@
 	import type { MissionControlDid } from '$declarations';
 	import MonitoringCreateStrategy from '$lib/components/monitoring/MonitoringCreateStrategy.svelte';
 	import Checkbox from '$lib/components/ui/Checkbox.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 
 	interface Props {
 		minCycles: bigint | undefined;

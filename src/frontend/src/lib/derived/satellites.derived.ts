@@ -1,4 +1,4 @@
-import { satellitesUncertifiedStore } from '$lib/stores/satellite.store';
+import { satellitesUncertifiedStore } from '$lib/stores/satellite/satellite.store';
 import type { SatelliteUi } from '$lib/types/satellite';
 import { satelliteMetadata, satelliteName } from '$lib/utils/satellite.utils';
 import { derived } from 'svelte/store';

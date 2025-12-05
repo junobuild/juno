@@ -7,7 +7,7 @@
 	import { missionControlId } from '$lib/derived/account.mission-control.derived';
 	import { orbiterStore } from '$lib/derived/orbiter.derived';
 	import { sortedSatellites } from '$lib/derived/satellites.derived';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import { formatTCycles } from '$lib/utils/cycles.utils';
 	import { satelliteName } from '$lib/utils/satellite.utils';
 

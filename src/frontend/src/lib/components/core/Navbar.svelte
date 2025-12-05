@@ -18,7 +18,7 @@
 	import { provider } from '$lib/derived/account.provider.derived';
 	import { authSignedIn } from '$lib/derived/auth.derived';
 	import { isSkylab } from '$lib/env/app.env';
-	import { layoutTitleIntersecting } from '$lib/stores/layout-intersecting.store';
+	import { layoutTitleIntersecting } from '$lib/stores/app/layout-intersecting.store';
 
 	interface Props {
 		start?: 'logo' | 'back' | 'menu';

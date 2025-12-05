@@ -19,7 +19,7 @@
 	import { menuCollapsed, menuExpanded } from '$lib/derived/layout-menu.derived';
 	import { pageSatelliteId } from '$lib/derived/page.derived.svelte';
 	import { isSatelliteRoute } from '$lib/derived/route.derived.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import { isRouteSelected } from '$lib/utils/nav.utils';
 
 	let routeId: string | null = $derived(page.route.id);

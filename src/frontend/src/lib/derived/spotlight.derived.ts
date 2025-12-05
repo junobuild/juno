@@ -19,8 +19,8 @@ import { missionControlId } from '$lib/derived/account.mission-control.derived';
 import { authNotSignedIn } from '$lib/derived/auth.derived';
 import { satelliteStore } from '$lib/derived/satellite.derived';
 import { sortedSatelliteUis } from '$lib/derived/satellites.derived';
-import { i18n } from '$lib/stores/i18n.store';
-import { theme } from '$lib/stores/theme.store';
+import { i18n } from '$lib/stores/app/i18n.store';
+import { theme } from '$lib/stores/app/theme.store';
 import type { SatelliteUi } from '$lib/types/satellite';
 import type {
 	SpotlightActionItem,

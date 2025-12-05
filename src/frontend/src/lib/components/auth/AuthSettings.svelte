@@ -7,8 +7,8 @@
 	import AuthProviders from '$lib/components/auth/AuthProviders.svelte';
 	import AuthSettingsLoader from '$lib/components/auth/AuthSettingsLoader.svelte';
 	import { listCustomDomains } from '$lib/services/satellite/custom-domain.services';
-	import { initAuthConfigContext } from '$lib/stores/auth.context.store';
-	import { busy } from '$lib/stores/busy.store';
+	import { busy } from '$lib/stores/app/busy.store';
+	import { initAuthConfigContext } from '$lib/stores/satellite/auth.context.store';
 	import { AUTH_CONFIG_CONTEXT_KEY, type AuthConfigContext } from '$lib/types/auth.context';
 	import type { JunoModalEditAuthConfigDetailType } from '$lib/types/modal';
 	import { emit } from '$lib/utils/events.utils';

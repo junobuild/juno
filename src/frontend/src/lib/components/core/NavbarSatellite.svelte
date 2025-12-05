@@ -7,7 +7,7 @@
 	import { authSignedIn } from '$lib/derived/auth.derived';
 	import { layoutTitle } from '$lib/derived/layout-title.derived';
 	import { satelliteStore, satelliteUi } from '$lib/derived/satellite.derived';
-	import { layoutNavigation } from '$lib/stores/layout-navigation.store';
+	import { layoutNavigation } from '$lib/stores/app/layout-navigation.store';
 	import { satelliteName } from '$lib/utils/satellite.utils';
 
 	let label = $derived(nonNullish($satelliteStore) ? satelliteName($satelliteStore) : undefined);

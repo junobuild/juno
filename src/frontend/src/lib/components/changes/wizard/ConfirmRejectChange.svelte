@@ -2,7 +2,7 @@
 	import type { ProposalType } from '@junobuild/cdn';
 	import ChangeOptions from '$lib/components/changes/wizard/ChangeOptions.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 
 	interface Props {

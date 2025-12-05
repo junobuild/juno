@@ -1,6 +1,6 @@
 use crate::constants::E8S_PER_ICP;
 use crate::store::services::{mutate_stable_state, read_stable_state};
-use crate::store::stable::get_existing_account;
+use crate::store::stable::get_account_with_existing_mission_control;
 use crate::types::state::{Account, StableState};
 use ic_cdk::api::time;
 use ic_ledger_types::Tokens;
@@ -33,7 +33,7 @@ fn get_credits_impl(user: &UserId, state: &StableState) -> Result<Tokens, &'stat
 // ---------------------------------------------------------
 
 pub fn has_credits(user: &UserId, mission_control: &MissionControlId, fee: &Tokens) -> bool {
-    let account = get_existing_account(user, mission_control);
+    let account = get_account_with_existing_mission_control(user, mission_control);
 
     match account {
         Err(_) => false,

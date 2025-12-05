@@ -11,9 +11,9 @@
 	import { balance } from '$lib/derived/balance.derived';
 	import { transactions } from '$lib/derived/transactions.derived';
 	import { loadNextTransactions } from '$lib/services/wallet/wallet.services';
-	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
+	import { authStore } from '$lib/stores/auth.store';
 	import type { MissionControlId } from '$lib/types/mission-control';
 	import { last } from '$lib/utils/utils';
 

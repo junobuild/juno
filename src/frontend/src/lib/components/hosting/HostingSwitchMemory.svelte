@@ -3,8 +3,8 @@
 	import type { SatelliteDid, MissionControlDid } from '$declarations';
 	import Confirmation from '$lib/components/core/Confirmation.svelte';
 	import { switchHostingMemory } from '$lib/services/satellite/hosting.storage.services';
-	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
+	import { authStore } from '$lib/stores/auth.store';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 
 	interface Props {

@@ -13,10 +13,10 @@
 	import DocForm from '$lib/components/docs/DocHeader.svelte';
 	import Docs from '$lib/components/docs/Docs.svelte';
 	import { SATELLITE_v0_0_9 } from '$lib/constants/version.constants';
-	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { initPaginationContext } from '$lib/stores/app/pagination.context.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
+	import { authStore } from '$lib/stores/auth.store';
 	import { versionStore } from '$lib/stores/version.store';
 	import { DATA_CONTEXT_KEY, type DataContext, type DataStoreData } from '$lib/types/data.context';
 	import type { ListParams } from '$lib/types/list';

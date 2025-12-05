@@ -8,9 +8,9 @@
 	import { missionControlSettingsLoaded } from '$lib/derived/mission-control-settings.derived';
 	import { missionControlConfigMonitoring } from '$lib/derived/mission-control-user.derived';
 	import { setMonitoringNotification } from '$lib/services/mission-control/monitoring.services';
-	import { authStore } from '$lib/stores/auth.store';
 	import { busy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
+	import { authStore } from '$lib/stores/auth.store';
 
 	let enabled = $state(false);
 

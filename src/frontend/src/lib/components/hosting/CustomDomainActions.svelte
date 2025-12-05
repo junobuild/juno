@@ -9,10 +9,10 @@
 	import Html from '$lib/components/ui/Html.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import { deleteCustomDomain as deleteCustomDomainService } from '$lib/services/satellite/custom-domain.services';
-	import { authStore } from '$lib/stores/auth.store';
 	import { busy, isBusy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
+	import { authStore } from '$lib/stores/auth.store';
 	import type { CustomDomain } from '$lib/types/custom-domain';
 	import type { JunoModalCustomDomainDetail } from '$lib/types/modal';
 	import type { Option } from '$lib/types/utils';

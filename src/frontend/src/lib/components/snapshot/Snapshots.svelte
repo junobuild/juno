@@ -10,8 +10,8 @@
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import SkeletonTableRow from '$lib/components/ui/SkeletonTableRow.svelte';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import { snapshotStore } from '$lib/stores/ic-mgmt/snapshot.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
+	import { snapshotStore } from '$lib/stores/ic-mgmt/snapshot.store';
 	import type { CanisterSegmentWithLabel, Segment } from '$lib/types/canister';
 	import type { Snapshots } from '$lib/types/progress-snapshot';
 	import type { Option } from '$lib/types/utils';

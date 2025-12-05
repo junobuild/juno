@@ -15,9 +15,9 @@
 		applyMonitoringCyclesStrategy,
 		type ApplyMonitoringCyclesStrategyOptions
 	} from '$lib/services/mission-control/monitoring.services';
-	import { authStore } from '$lib/stores/auth.store';
 	import { wizardBusy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
+	import { authStore } from '$lib/stores/auth.store';
 	import type { JunoModalDetail, JunoModalCreateMonitoringStrategyDetail } from '$lib/types/modal';
 	import type { MonitoringStrategyProgress } from '$lib/types/progress-strategy';
 	import type { Option } from '$lib/types/utils';

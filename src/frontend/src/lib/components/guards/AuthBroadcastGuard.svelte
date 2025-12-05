@@ -2,9 +2,9 @@
 	import { onMount, type Snippet } from 'svelte';
 	import { authNotSignedIn, authSignedIn } from '$lib/derived/auth.derived';
 	import { AuthBroadcastChannel } from '$lib/providers/auth-broadcast.provider';
-	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
+	import { authStore } from '$lib/stores/auth.store';
 
 	interface Props {
 		children: Snippet;

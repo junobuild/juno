@@ -10,8 +10,8 @@
 	import { authSignedOut } from '$lib/derived/auth.derived';
 	import { credits } from '$lib/derived/credits.derived';
 	import { loadCredits as loadCreditsServices } from '$lib/services/console/credits.services';
-	import { authRemainingTimeStore, authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
+	import { authRemainingTimeStore, authStore } from '$lib/stores/auth.store';
 	import type { Languages } from '$lib/types/languages';
 	import { secondsToDuration } from '$lib/utils/date.utils';
 	import { formatCredits } from '$lib/utils/icp.utils';

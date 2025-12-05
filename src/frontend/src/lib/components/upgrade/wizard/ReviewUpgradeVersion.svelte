@@ -5,8 +5,8 @@
 		upgrade as upgradeServices,
 		type UpgradeParams
 	} from '$lib/services/upgrade/upgrade.services';
-	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
+	import { authStore } from '$lib/stores/auth.store';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 
 	type Props = {

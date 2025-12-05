@@ -4,8 +4,8 @@
 	import StorageCollections from '$lib/components/storage/StorageCollections.svelte';
 	import StorageData from '$lib/components/storage/StorageData.svelte';
 	import { StorageCollectionType } from '$lib/constants/rules.constants';
-	import { authStore } from '$lib/stores/auth.store';
 	import { initListParamsContext } from '$lib/stores/app/list-params.context.store';
+	import { authStore } from '$lib/stores/auth.store';
 	import { initRulesContext } from '$lib/stores/satellite/rules.context.store';
 	import {
 		type ListParamsContext,

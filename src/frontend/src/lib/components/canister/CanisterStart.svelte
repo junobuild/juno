@@ -8,10 +8,10 @@
 	import { authSignedOut } from '$lib/derived/auth.derived';
 	import { reloadOrbiterVersion } from '$lib/services/version/version.orbiter.services';
 	import { reloadSatelliteVersion } from '$lib/services/version/version.satellite.services';
-	import { authStore } from '$lib/stores/auth.store';
 	import { busy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
+	import { authStore } from '$lib/stores/auth.store';
 	import type { CanisterSyncData } from '$lib/types/canister';
 	import { emit } from '$lib/utils/events.utils';
 	import { i18nCapitalize, i18nFormat } from '$lib/utils/i18n.utils';

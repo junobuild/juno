@@ -1,4 +1,4 @@
-import { accountCertifiedStore } from '$lib/stores/mission-control.store';
+import { accountCertifiedStore } from '$lib/stores/account.store';
 import { fromNullable } from '@dfinity/utils';
 import { derived } from 'svelte/store';
 

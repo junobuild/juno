@@ -4,7 +4,8 @@ import {
 	idlFactoryConsole008,
 	type ConsoleActor,
 	type ConsoleActor0014,
-	type ConsoleActor008
+	type ConsoleActor008,
+	type ConsoleActor015
 } from '$declarations';
 import { PocketIc, type Actor } from '@dfinity/pic';
 import { assertNonNullish, fromNullable } from '@dfinity/utils';
@@ -60,11 +61,31 @@ describe('Console > Upgrade', () => {
 		users
 	}: {
 		users: Identity[];
-		actor: Actor<ConsoleActor008 | ConsoleActor0014 | ConsoleActor>;
+		actor: Actor<ConsoleActor008 | ConsoleActor0014 | ConsoleActor015>;
 	}) => {
 		const { list_user_mission_control_centers } = actor;
 
 		const missionControls = await list_user_mission_control_centers();
+
+		expect(missionControls).toHaveLength(users.length);
+
+		for (const user of users) {
+			expect(
+				missionControls.find(([key]) => key.toText() === user.getPrincipal().toText())
+			).not.toBeUndefined();
+		}
+	};
+
+	const testUserAccounts = async ({
+		actor,
+		users
+	}: {
+		users: Identity[];
+		actor: Actor<ConsoleActor>;
+	}) => {
+		const { list_accounts } = actor;
+
+		const missionControls = await list_accounts();
 
 		expect(missionControls).toHaveLength(users.length);
 
@@ -210,7 +231,7 @@ describe('Console > Upgrade', () => {
 				controllers: [admin1.getPrincipal()]
 			});
 
-			const assertControllers = async (actor: ConsoleActor) => {
+			const assertControllers = async (actor: ConsoleActor | ConsoleActor015) => {
 				const { list_controllers } = actor;
 
 				const controllers = await list_controllers();
@@ -241,7 +262,7 @@ describe('Console > Upgrade', () => {
 
 			await upgradeTo0_1_0();
 
-			const newActor = pic.createActor<ConsoleActor>(idlFactoryConsole, canisterId);
+			const newActor = pic.createActor<ConsoleActor015>(idlFactoryConsole, canisterId);
 			newActor.setIdentity(controller);
 
 			await assertControllers(newActor);
@@ -271,7 +292,7 @@ describe('Console > Upgrade', () => {
 
 					await upgradeTo0_1_0();
 
-					const newActor = pic.createActor<ConsoleActor>(idlFactoryConsole, canisterId);
+					const newActor = pic.createActor<ConsoleActor015>(idlFactoryConsole, canisterId);
 					newActor.setIdentity(controller);
 
 					await testUsers({ users: originalUsers, actor: newActor });
@@ -359,7 +380,7 @@ describe('Console > Upgrade', () => {
 		});
 	});
 
-	describe('v0.1.5 -> current', () => {
+	describe('v0.1.5 -> v0.2.0', () => {
 		let actor: Actor<ConsoleActor>;
 
 		const upgradeCurrent = async () => {
@@ -393,7 +414,7 @@ describe('Console > Upgrade', () => {
 			await deploySegments({ actor });
 		});
 
-		it('should still provide mission control after rename to accounts', async () => {
+		it('should still provide mission control (users) after move to accounts', async () => {
 			const originalUsers = await initMissionControls({ actor, pic, length: 3 });
 
 			await upgradeCurrent();
@@ -401,7 +422,7 @@ describe('Console > Upgrade', () => {
 			const newActor = pic.createActor<ConsoleActor>(idlFactoryConsole, canisterId);
 			newActor.setIdentity(controller);
 
-			await testUsers({ users: originalUsers, actor: newActor });
+			await testUserAccounts({ users: originalUsers, actor: newActor });
 		});
 	});
 });

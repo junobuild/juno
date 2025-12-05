@@ -25,14 +25,16 @@ fn get_account_impl(user: &UserId, state: &StableState) -> Result<Option<Account
     }
 }
 
-pub fn get_existing_account(
+pub fn get_account_with_existing_mission_control(
     user: &UserId,
     mission_control_id: &MissionControlId,
 ) -> Result<Account, &'static str> {
-    read_stable_state(|stable| get_existing_account_impl(user, mission_control_id, stable))
+    read_stable_state(|stable| {
+        get_account_with_existing_mission_control_impl(user, mission_control_id, stable)
+    })
 }
 
-fn get_existing_account_impl(
+fn get_account_with_existing_mission_control_impl(
     user: &UserId,
     mission_control_id: &MissionControlId,
     state: &StableState,

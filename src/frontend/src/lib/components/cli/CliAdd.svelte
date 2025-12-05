@@ -8,7 +8,7 @@
 	import Html from '$lib/components/ui/Html.svelte';
 	import Warning from '$lib/components/ui/Warning.svelte';
 	import { REVOKED_CONTROLLERS } from '$lib/constants/app.constants';
-	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
+	import { missionControlId } from '$lib/derived/account.mission-control.derived';
 	import {
 		setMissionControlControllerForVersion,
 		setSatellitesControllerForVersion
@@ -46,7 +46,7 @@
 			return;
 		}
 
-		if (isNullish($missionControlIdDerived)) {
+		if (isNullish($missionControlId)) {
 			toasts.error({
 				text: $i18n.errors.no_mission_control
 			});
@@ -81,7 +81,7 @@
 				...(selectedMissionControl
 					? [
 							setMissionControlControllerForVersion({
-								missionControlId: $missionControlIdDerived,
+								missionControlId: $missionControlId,
 								controllerId: principal,
 								profile,
 								scope: 'admin',
@@ -92,7 +92,7 @@
 				...(selectedSatellites.length > 0
 					? [
 							setSatellitesControllerForVersion({
-								missionControlId: $missionControlIdDerived,
+								missionControlId: $missionControlId,
 								controllerId: principal,
 								satelliteIds: selectedSatellites.map((s) => s[0]),
 								profile,
@@ -104,7 +104,7 @@
 				...(selectedOrbiters.length > 0
 					? [
 							setOrbitersController({
-								missionControlId: $missionControlIdDerived,
+								missionControlId: $missionControlId,
 								controllerId: principal,
 								orbiterIds: selectedOrbiters.map((s) => s[0]),
 								profile,
@@ -138,7 +138,7 @@
 							)
 						)}`
 					: undefined,
-				selectedMissionControl ? `mission_control=${$missionControlIdDerived.toText()}` : undefined,
+				selectedMissionControl ? `mission_control=${$missionControlId.toText()}` : undefined,
 				profile !== '' ? `profile=${profile}` : undefined
 			].filter((param) => nonNullish(param));
 

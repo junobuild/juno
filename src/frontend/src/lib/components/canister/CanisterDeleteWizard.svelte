@@ -11,8 +11,8 @@
 		ONE_TRILLION,
 		DEFAULT_TCYCLES_TO_RETAIN_ON_DELETION
 	} from '$lib/constants/app.constants';
+	import { missionControlId } from '$lib/derived/account.mission-control.derived';
 	import { authSignedOut } from '$lib/derived/auth.derived';
-	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { loadSatellites } from '$lib/services/mission-control/mission-control.satellites.services';
 	import { isBusy, wizardBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -64,7 +64,7 @@
 			return;
 		}
 
-		if (isNullish($missionControlIdDerived)) {
+		if (isNullish($missionControlId)) {
 			toasts.error({
 				text: $i18n.errors.no_mission_control
 			});
@@ -84,12 +84,12 @@
 
 		try {
 			await deleteFn({
-				missionControlId: $missionControlIdDerived,
+				missionControlId: $missionControlId,
 				cyclesToDeposit
 			});
 
 			await loadSatellites({
-				missionControlId: $missionControlIdDerived,
+				missionControlId: $missionControlId,
 				reload: true
 			});
 

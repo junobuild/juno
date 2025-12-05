@@ -6,12 +6,12 @@
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { EMAIL_PLACEHOLDER } from '$lib/constants/monitoring.constants';
+	import { missionControlId } from '$lib/derived/account.mission-control.derived';
 	import {
 		missionControlEmail,
 		missionControlMetadata,
 		missionControlUserDataLoaded
 	} from '$lib/derived/mission-control-user.derived';
-	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { setMetadataEmail } from '$lib/services/mission-control/mission-control.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { busy, isBusy } from '$lib/stores/busy.store';
@@ -36,7 +36,7 @@
 
 		const { success } = await setMetadataEmail({
 			identity: $authStore.identity,
-			missionControlId: $missionControlIdDerived,
+			missionControlId: $missionControlId,
 			metadata: $missionControlMetadata ?? [],
 			email
 		});

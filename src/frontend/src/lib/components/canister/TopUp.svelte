@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { getAccountIdentifier } from '$lib/api/icp-index.api';
-	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
+	import { missionControlId } from '$lib/derived/account.mission-control.derived';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import type { JunoModalWithSatellite } from '$lib/types/modal';
@@ -18,14 +18,14 @@
 	const topUp = () => {
 		onclose();
 
-		if (isNullish($missionControlIdDerived)) {
+		if (isNullish($missionControlId)) {
 			toasts.error({
 				text: $i18n.errors.no_mission_control
 			});
 			return;
 		}
 
-		const accountIdentifier = getAccountIdentifier($missionControlIdDerived);
+		const accountIdentifier = getAccountIdentifier($missionControlId);
 
 		emit({
 			message: 'junoModal',

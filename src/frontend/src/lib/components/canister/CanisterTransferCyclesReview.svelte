@@ -4,7 +4,7 @@
 	import Segment from '$lib/components/segments/Segment.svelte';
 	import GridArrow from '$lib/components/ui/GridArrow.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
-	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
+	import { missionControlId } from '$lib/derived/account.mission-control.derived';
 	import { orbiterStore } from '$lib/derived/orbiter.derived';
 	import { sortedSatellites } from '$lib/derived/satellites.derived';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -59,7 +59,7 @@
 					{/snippet}
 
 					<p>
-						{#if nonNullish($missionControlIdDerived) && $missionControlIdDerived.toText() === destinationId}
+						{#if nonNullish($missionControlId) && $missionControlId.toText() === destinationId}
 							<Segment id={Principal.fromText(destinationId)}>
 								{$i18n.mission_control.title}
 							</Segment>

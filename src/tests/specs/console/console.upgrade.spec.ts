@@ -2,6 +2,7 @@ import {
 	idlFactoryConsole,
 	idlFactoryConsole0014,
 	idlFactoryConsole008,
+	idlFactoryConsole015,
 	type ConsoleActor,
 	type ConsoleActor0014,
 	type ConsoleActor008,
@@ -262,7 +263,7 @@ describe('Console > Upgrade', () => {
 
 			await upgradeTo0_1_0();
 
-			const newActor = pic.createActor<ConsoleActor015>(idlFactoryConsole, canisterId);
+			const newActor = pic.createActor<ConsoleActor015>(idlFactoryConsole015, canisterId);
 			newActor.setIdentity(controller);
 
 			await assertControllers(newActor);
@@ -292,7 +293,7 @@ describe('Console > Upgrade', () => {
 
 					await upgradeTo0_1_0();
 
-					const newActor = pic.createActor<ConsoleActor015>(idlFactoryConsole, canisterId);
+					const newActor = pic.createActor<ConsoleActor015>(idlFactoryConsole015, canisterId);
 					newActor.setIdentity(controller);
 
 					await testUsers({ users: originalUsers, actor: newActor });
@@ -381,7 +382,7 @@ describe('Console > Upgrade', () => {
 	});
 
 	describe('v0.1.5 -> v0.2.0', () => {
-		let actor: Actor<ConsoleActor>;
+		let actor: Actor<ConsoleActor015>;
 
 		const upgradeCurrent = async () => {
 			await tick(pic);
@@ -398,8 +399,8 @@ describe('Console > Upgrade', () => {
 
 			const destination = await downloadConsole({ junoVersion: '0.0.61', version: '0.1.5' });
 
-			const { actor: c, canisterId: cId } = await pic.setupCanister<ConsoleActor>({
-				idlFactory: idlFactoryConsole,
+			const { actor: c, canisterId: cId } = await pic.setupCanister<ConsoleActor015>({
+				idlFactory: idlFactoryConsole015,
 				wasm: destination,
 				arg: controllersInitArgs(controller),
 				sender: controller.getPrincipal()

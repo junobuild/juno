@@ -365,7 +365,6 @@ service : () -> {
   get_delegation : (GetDelegationArgs) -> (Result_1) query;
   get_proposal : (nat) -> (opt Proposal) query;
   get_storage_config : () -> (StorageConfig) query;
-  get_user_mission_control_center : () -> (opt Account) query;
   http_request : (HttpRequest) -> (HttpResponse) query;
   http_request_streaming_callback : (StreamingCallbackToken) -> (
       StreamingCallbackHttpResponse,
@@ -382,9 +381,6 @@ service : () -> {
   list_custom_domains : () -> (vec record { text; CustomDomain }) query;
   list_payments : () -> (vec record { nat64; Payment }) query;
   list_proposals : (ListProposalsParams) -> (ListProposalResults) query;
-  list_user_mission_control_centers : () -> (
-      vec record { principal; Account },
-    ) query;
   reject_proposal : (CommitProposal) -> (null);
   set_auth_config : (SetAuthenticationConfig) -> (AuthenticationConfig);
   set_controllers : (SetControllersArgs) -> ();

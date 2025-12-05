@@ -9,7 +9,7 @@
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { testIds } from '$lib/constants/test-ids.constants';
-	import { missionControlId } from '$lib/derived/account.mission-control.derived';
+	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import { authSignedOut } from '$lib/derived/auth.derived';
 	import { createSatelliteWizard } from '$lib/services/wizard.services';
 	import { wizardBusy } from '$lib/stores/app/busy.store';

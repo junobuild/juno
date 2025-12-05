@@ -11,7 +11,7 @@
 		ONE_TRILLION,
 		DEFAULT_TCYCLES_TO_RETAIN_ON_DELETION
 	} from '$lib/constants/app.constants';
-	import { missionControlId } from '$lib/derived/account.mission-control.derived';
+	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import { authSignedOut } from '$lib/derived/auth.derived';
 	import { loadSatellites } from '$lib/services/mission-control/mission-control.satellites.services';
 	import { isBusy, wizardBusy } from '$lib/stores/app/busy.store';

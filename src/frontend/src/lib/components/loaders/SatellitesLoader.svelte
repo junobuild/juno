@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Principal } from '@icp-sdk/core/principal';
 	import type { Snippet } from 'svelte';
-	import { missionControlId } from '$lib/derived/account.mission-control.derived';
+	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import { loadSatellites } from '$lib/services/mission-control/mission-control.satellites.services';
 	import type { Option } from '$lib/types/utils';
 

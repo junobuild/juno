@@ -1,7 +1,7 @@
 <script lang="ts">
 	import IconRocket from '$lib/components/icons/IconRocket.svelte';
 	import { testIds } from '$lib/constants/test-ids.constants';
-	import { missionControlId } from '$lib/derived/account.mission-control.derived';
+	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import { initSatelliteWizard } from '$lib/services/wizard.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { authStore } from '$lib/stores/auth.store';

@@ -3,7 +3,7 @@
 	import IconSatellite from '$lib/components/icons/IconSatellite.svelte';
 	import CanisterTopUpModal from '$lib/components/modals/CanisterTopUpModal.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
-	import { balanceOrZero } from '$lib/derived/balance.derived';
+	import { balanceOrZero } from '$lib/derived/wallet/balance.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { JunoModalTopUpSatelliteDetail, JunoModalDetail } from '$lib/types/modal';
 	import { i18nFormat } from '$lib/utils/i18n.utils';

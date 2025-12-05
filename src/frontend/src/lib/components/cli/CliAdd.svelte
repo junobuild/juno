@@ -8,7 +8,7 @@
 	import Html from '$lib/components/ui/Html.svelte';
 	import Warning from '$lib/components/ui/Warning.svelte';
 	import { REVOKED_CONTROLLERS } from '$lib/constants/app.constants';
-	import { missionControlId as missionControlIdDerived } from '$lib/derived/account.mission-control.derived';
+	import { missionControlId as missionControlIdDerived } from '$lib/derived/console/account.mission-control.derived';
 	import {
 		setMissionControlControllerForVersion,
 		setSatellitesControllerForVersion

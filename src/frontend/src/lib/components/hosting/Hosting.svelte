@@ -8,7 +8,7 @@
 		type SelectedCustomDomain
 	} from '$lib/components/hosting/CustomDomainInfo.svelte';
 	import HostingCount from '$lib/components/hosting/HostingCount.svelte';
-	import { sortedSatelliteCustomDomains } from '$lib/derived/satellite-custom-domains.derived';
+	import { sortedSatelliteCustomDomains } from '$lib/derived/satellite/satellite-custom-domains.derived';
 	import { getAuthConfig } from '$lib/services/console/auth/auth.config.services';
 	import { listCustomDomains } from '$lib/services/satellite/custom-domain.services';
 	import { i18n } from '$lib/stores/app/i18n.store';

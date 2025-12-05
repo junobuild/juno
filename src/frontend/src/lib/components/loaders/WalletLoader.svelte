@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { isNullish } from '@dfinity/utils';
 	import { onDestroy, onMount, type Snippet } from 'svelte';
-	import { missionControlId } from '$lib/derived/account.mission-control.derived';
+	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import { WalletWorker } from '$lib/services/workers/worker.wallet.services';
 
 	interface Props {

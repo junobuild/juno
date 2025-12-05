@@ -3,7 +3,7 @@
 	import SatellitesPicker, {
 		type SatellitePickerProps
 	} from '$lib/components/satellites/SatellitesPicker.svelte';
-	import { orbiterSatellitesConfig } from '$lib/derived/orbiter-satellites.derived';
+	import { orbiterSatellitesConfig } from '$lib/derived/orbiter/orbiter-satellites.derived';
 	import { navigateToAnalytics } from '$lib/utils/nav.utils';
 
 	interface Props {

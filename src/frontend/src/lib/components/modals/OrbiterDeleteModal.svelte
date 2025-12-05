@@ -3,7 +3,7 @@
 	import { deleteOrbiter } from '$lib/api/mission-control.api';
 	import CanisterDeleteWizard from '$lib/components/canister/CanisterDeleteWizard.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
-	import { orbiterStore } from '$lib/derived/orbiter.derived';
+	import { orbiterStore } from '$lib/derived/orbiter/orbiter.derived';
 	import { authStore } from '$lib/stores/auth.store';
 	import type { MissionControlId } from '$lib/types/mission-control';
 	import type { JunoModalCycles, JunoModalDetail } from '$lib/types/modal';

@@ -7,7 +7,7 @@
 		exchangePricesNotLoaded,
 		icpToUsd,
 		icpToUsdDefined
-	} from '$lib/derived/exchange.derived';
+	} from '$lib/derived/wallet/exchange.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { formatICP, formatICPToUsd } from '$lib/utils/icp.utils';
 

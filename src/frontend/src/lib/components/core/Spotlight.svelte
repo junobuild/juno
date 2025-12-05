@@ -6,7 +6,7 @@
 	import Input from '$lib/components/ui/Input.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import { authSignedIn } from '$lib/derived/auth.derived';
-	import { spotlightItems } from '$lib/derived/spotlight.derived';
+	import { spotlightItems } from '$lib/derived/app/spotlight.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { isDesktop } from '$lib/utils/device.utils';
 

@@ -9,7 +9,7 @@
 	import MissionControlSettings from '$lib/components/mission-control/MissionControlSettings.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
 	import Warnings from '$lib/components/warning/Warnings.svelte';
-	import { missionControlId } from '$lib/derived/account.mission-control.derived';
+	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import { authSignedIn } from '$lib/derived/auth.derived';
 	import {
 		type Tab,

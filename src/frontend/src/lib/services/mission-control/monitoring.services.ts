@@ -9,10 +9,10 @@ import { METADATA_KEY_EMAIL } from '$lib/constants/metadata.constants';
 import {
 	missionControlSettings,
 	missionControlSettingsNotLoaded
-} from '$lib/derived/mission-control-settings.derived';
-import { missionControlUserData } from '$lib/derived/mission-control-user.derived';
-import { orbiterNotLoaded, orbiterStore } from '$lib/derived/orbiter.derived';
-import { satellitesNotLoaded, satellitesStore } from '$lib/derived/satellites.derived';
+} from '$lib/derived/mission-control/mission-control-settings.derived';
+import { missionControlUserData } from '$lib/derived/mission-control/mission-control-user.derived';
+import { orbiterNotLoaded, orbiterStore } from '$lib/derived/orbiter/orbiter.derived';
+import { satellitesNotLoaded, satellitesStore } from '$lib/derived/satellite/satellites.derived';
 import { execute } from '$lib/services/_progress.services';
 import { loadSatellites } from '$lib/services/mission-control/mission-control.satellites.services';
 import { loadSettings, loadUserData } from '$lib/services/mission-control/mission-control.services';

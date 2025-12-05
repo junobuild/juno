@@ -6,12 +6,12 @@
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { EMAIL_PLACEHOLDER } from '$lib/constants/monitoring.constants';
-	import { missionControlId } from '$lib/derived/account.mission-control.derived';
+	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import {
 		missionControlEmail,
 		missionControlMetadata,
 		missionControlUserDataLoaded
-	} from '$lib/derived/mission-control-user.derived';
+	} from '$lib/derived/mission-control/mission-control-user.derived';
 	import { setMetadataEmail } from '$lib/services/mission-control/mission-control.services';
 	import { busy, isBusy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';

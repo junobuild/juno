@@ -3,7 +3,7 @@
 	import Logo from '$lib/components/core/Logo.svelte';
 	import IconBack from '$lib/components/icons/IconBack.svelte';
 	import ButtonIcon from '$lib/components/ui/ButtonIcon.svelte';
-	import { menuCollapsed, menuExpanded } from '$lib/derived/layout-menu.derived';
+	import { menuCollapsed, menuExpanded } from '$lib/derived/app/layout-menu.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { layoutMenuState, layoutMenuOpen } from '$lib/stores/app/layout-menu.store';
 	import { handleKeyPress } from '$lib/utils/keyboard.utils';

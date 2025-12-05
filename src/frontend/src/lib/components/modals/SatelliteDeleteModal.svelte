@@ -3,7 +3,7 @@
 	import CanisterDeleteWizard from '$lib/components/canister/CanisterDeleteWizard.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
-	import { satelliteCustomDomains } from '$lib/derived/satellite-custom-domains.derived';
+	import { satelliteCustomDomains } from '$lib/derived/satellite/satellite-custom-domains.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { authStore } from '$lib/stores/auth.store';
 	import type { MissionControlId } from '$lib/types/mission-control';

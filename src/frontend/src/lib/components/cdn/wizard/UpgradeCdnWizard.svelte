@@ -11,7 +11,7 @@
 	import Html from '$lib/components/ui/Html.svelte';
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import CanisterUpgradeOptions from '$lib/components/upgrade/wizard/CanisterUpgradeOptions.svelte';
-	import { missionControlId } from '$lib/derived/account.mission-control.derived';
+	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import { prepareWasmUpgrade } from '$lib/services/upgrade/upgrade.cdn.services';
 	import { reloadSatelliteVersion } from '$lib/services/version/version.satellite.services';
 	import { wizardBusy } from '$lib/stores/app/busy.store';

@@ -3,7 +3,7 @@
 	import { Principal } from '@icp-sdk/core/principal';
 	import type { Snippet } from 'svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
-	import { missionControlId } from '$lib/derived/account.mission-control.derived';
+	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import { busy, isBusy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';

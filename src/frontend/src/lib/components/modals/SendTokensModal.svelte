@@ -6,8 +6,8 @@
 	import SendTokensReview from '$lib/components/tokens/SendTokensReview.svelte';
 	import Confetti from '$lib/components/ui/Confetti.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
-	import { missionControlId } from '$lib/derived/account.mission-control.derived';
-	import { balance } from '$lib/derived/balance.derived';
+	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
+	import { balance } from '$lib/derived/wallet/balance.derived';
 	import { sendTokens } from '$lib/services/mission-control/tokens.services';
 	import { wizardBusy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';

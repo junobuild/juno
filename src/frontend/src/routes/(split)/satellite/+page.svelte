@@ -10,8 +10,8 @@
 	import SatelliteSettings from '$lib/components/satellites/SatelliteSettings.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
 	import Warnings from '$lib/components/warning/Warnings.svelte';
-	import { missionControlId } from '$lib/derived/account.mission-control.derived';
-	import { satelliteStore } from '$lib/derived/satellite.derived';
+	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
+	import { satelliteStore } from '$lib/derived/satellite/satellite.derived';
 	import {
 		type Tab,
 		TABS_CONTEXT_KEY,

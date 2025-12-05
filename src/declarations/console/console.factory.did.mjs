@@ -440,6 +440,7 @@ export const idlFactory = ({ IDL }) => {
 		del_controllers: IDL.Func([DeleteControllersArgs], [], []),
 		del_custom_domain: IDL.Func([IDL.Text], [], []),
 		delete_proposal_assets: IDL.Func([DeleteProposalAssets], [], []),
+		get_account: IDL.Func([], [IDL.Opt(Account)], ['query']),
 		get_auth_config: IDL.Func([], [IDL.Opt(AuthenticationConfig)], ['query']),
 		get_config: IDL.Func([], [Config], ['query']),
 		get_create_orbiter_fee: IDL.Func([GetCreateCanisterFeeArgs], [IDL.Opt(Tokens)], ['query']),
@@ -463,6 +464,7 @@ export const idlFactory = ({ IDL }) => {
 			[]
 		),
 		init_user_mission_control_center: IDL.Func([], [Account], []),
+		list_accounts: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Principal, Account))], ['query']),
 		list_assets: IDL.Func([IDL.Text, ListParams], [ListResults], ['query']),
 		list_controllers: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Principal, Controller))], ['query']),
 		list_custom_domains: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Text, CustomDomain))], ['query']),

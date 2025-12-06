@@ -180,7 +180,7 @@ impl Account {
         Self {
             mission_control_id: Some(*mission_control_id),
             updated_at: time(),
-            ..*self
+            ..self.clone()
         }
     }
 }

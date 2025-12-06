@@ -4,6 +4,7 @@ use crate::accounts::{
 };
 use crate::constants::SATELLITE_CREATION_FEE_ICP;
 use crate::factory::types::CanisterCreator;
+use crate::factory::utils::ledger::{transfer_from, verify_payment};
 use crate::store::stable::{
     insert_new_payment, is_known_payment, update_payment_completed, update_payment_refunded,
 };
@@ -12,9 +13,8 @@ use crate::types::state::Account;
 use candid::Principal;
 use ic_ledger_types::{BlockIndex, Tokens};
 use junobuild_shared::constants_shared::{IC_TRANSACTION_FEE_ICP, MEMO_SATELLITE_CREATE_REFUND};
-use junobuild_shared::ic::api::id;
 use junobuild_shared::ledger::icp::{
-    find_payment, principal_to_account_identifier, transfer_payment, SUB_ACCOUNT,
+    transfer_payment, SUB_ACCOUNT,
 };
 use junobuild_shared::mgmt::types::cmc::SubnetId;
 use junobuild_shared::types::interface::CreateCanisterArgs;
@@ -139,47 +139,33 @@ where
 {
     let purchaser = creator.purchaser().clone();
 
+    let purchaser_payment_block_index = if let Some(block_index) = block_index {
+        if is_known_payment(&block_index) {
+            return Err("Payment has been or is being processed.".to_string());
+        }
 
+        verify_payment(&purchaser, &block_index, fee).await?
+    } else {
+        transfer_from(&purchaser, &fee).await?
+    };
 
-    if block_index.is_none() {
-        return Err("No block index provided to verify payment.".to_string());
-    }
+    // We acknowledge the new payment
+    insert_new_payment(&purchaser, &purchaser_payment_block_index)?;
 
+    // Create the canister (satellite or orbiter)
+    let create_canister_result = create(creator, subnet_id).await;
 
+    match create_canister_result {
+        Err(error) => {
+            refund_canister_creation(&purchaser, &purchaser_payment_block_index).await?;
 
-    match block {
-        None => Err([
-            "No valid payment found to create satellite.",
-            &format!(" Purchaser: {purchaser_account_identifier}"),
-            &format!(" Console: {console_account_identifier}"),
-            &format!(" Amount: {fee}"),
-            &format!(" Block index: {:?}", block_index),
-        ]
-        .join("")),
-        Some(_) => {
-            if is_known_payment(&purchaser_payment_block_index) {
-                return Err("Payment has been or is being processed.".to_string());
-            }
+            Err(["Canister creation failed. Buyer has been refunded.", &error].join(" - "))
+        }
+        Ok(satellite_id) => {
+            // Satellite or orbiter is created, we can update the payment has being processed
+            update_payment_completed(&purchaser_payment_block_index)?;
 
-            // We acknowledge the new payment
-            insert_new_payment(&purchaser, &purchaser_payment_block_index)?;
-
-            // Create the canister (satellite or orbiter)
-            let create_canister_result = create(creator, subnet_id).await;
-
-            match create_canister_result {
-                Err(error) => {
-                    refund_canister_creation(&purchaser, &purchaser_payment_block_index).await?;
-
-                    Err(["Canister creation failed. Buyer has been refunded.", &error].join(" - "))
-                }
-                Ok(satellite_id) => {
-                    // Satellite or orbiter is created, we can update the payment has being processed
-                    update_payment_completed(&purchaser_payment_block_index)?;
-
-                    Ok(satellite_id)
-                }
-            }
+            Ok(satellite_id)
         }
     }
 }

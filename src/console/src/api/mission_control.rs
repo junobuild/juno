@@ -1,6 +1,6 @@
+use crate::accounts::get_account_with_existing_mission_control;
 use crate::factory::mission_control::init_user_mission_control_with_caller;
 use crate::guards::caller_is_observatory;
-use crate::store::stable::get_account_with_existing_mission_control;
 use crate::types::state::Account;
 use ic_cdk_macros::{query, update};
 use junobuild_shared::ic::UnwrapOrTrap;

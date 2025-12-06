@@ -1,5 +1,5 @@
+use crate::accounts::{get_account, update_provider};
 use crate::factory::mission_control::init_user_mission_control_with_provider;
-use crate::store::stable::{get_account, update_provider};
 use crate::types::state::OpenId;
 use crate::types::state::{Account, OpenIdData, Provider};
 use candid::Principal;

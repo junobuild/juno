@@ -4,6 +4,7 @@ type Account = record {
   mission_control_id : opt principal;
   provider : opt Provider;
   owner : principal;
+  satellites : opt vec record { principal; Satellite };
   created_at : nat64;
 };
 type AssertMissionControlCenterArgs = record {
@@ -86,6 +87,7 @@ type CreateSatelliteArgs = record {
   block_index : opt nat64;
   subnet_id : opt principal;
   storage : opt InitStorageArgs;
+  name : opt text;
   user : principal;
 };
 type CustomDomain = record {
@@ -228,6 +230,7 @@ type Payment = record {
   mission_control_id : opt principal;
   created_at : nat64;
   block_index_refunded : opt nat64;
+  purchaser : opt principal;
 };
 type PaymentStatus = variant { Refunded; Acknowledged; Completed };
 type PrepareDelegationError = variant {
@@ -265,6 +268,12 @@ type Provider = variant { InternetIdentity; OpenId : OpenId };
 type RateConfig = record { max_tokens : nat64; time_per_token_ns : nat64 };
 type Result = variant { Ok : Authentication; Err : AuthenticationError };
 type Result_1 = variant { Ok : SignedDelegation; Err : GetDelegationError };
+type Satellite = record {
+  updated_at : nat64;
+  metadata : vec record { text; text };
+  created_at : nat64;
+  satellite_id : principal;
+};
 type SegmentKind = variant { Orbiter; MissionControl; Satellite };
 type SegmentsDeploymentOptions = record {
   orbiter : opt text;
@@ -351,6 +360,7 @@ service : () -> {
   commit_proposal_asset_upload : (CommitBatch) -> ();
   commit_proposal_many_assets_upload : (vec CommitBatch) -> ();
   count_proposals : () -> (nat64) query;
+  create_mission_control : () -> (principal);
   create_orbiter : (CreateCanisterArgs) -> (principal);
   create_satellite : (CreateSatelliteArgs) -> (principal);
   del_controllers : (DeleteControllersArgs) -> ();
@@ -363,6 +373,7 @@ service : () -> {
   get_create_satellite_fee : (GetCreateCanisterFeeArgs) -> (opt Tokens) query;
   get_credits : () -> (Tokens) query;
   get_delegation : (GetDelegationArgs) -> (Result_1) query;
+  get_or_init_account : () -> (Account);
   get_proposal : (nat) -> (opt Proposal) query;
   get_storage_config : () -> (StorageConfig) query;
   http_request : (HttpRequest) -> (HttpResponse) query;
@@ -374,7 +385,6 @@ service : () -> {
   init_proposal_many_assets_upload : (vec InitAssetKey, nat) -> (
       vec record { text; InitUploadResult },
     );
-  init_user_mission_control_center : () -> (Account);
   list_accounts : () -> (vec record { principal; Account }) query;
   list_assets : (text, ListParams) -> (ListResults) query;
   list_controllers : () -> (vec record { principal; Controller }) query;

@@ -40,7 +40,7 @@ pub fn has_mission_control_and_credits(
         .unwrap_or(false)
 }
 
-fn has_credits(account: &Account, fee: &Tokens) -> bool {
+pub fn has_credits(account: &Account, fee: &Tokens) -> bool {
     account.credits.e8s() * fee.e8s() >= fee.e8s() * E8S_PER_ICP.e8s()
 }
 

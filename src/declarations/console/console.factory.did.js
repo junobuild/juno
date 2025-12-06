@@ -41,12 +41,19 @@ export const idlFactory = ({ IDL }) => {
 		InternetIdentity: IDL.Null,
 		OpenId: OpenId
 	});
+	const Satellite = IDL.Record({
+		updated_at: IDL.Nat64,
+		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
+		created_at: IDL.Nat64,
+		satellite_id: IDL.Principal
+	});
 	const Account = IDL.Record({
 		updated_at: IDL.Nat64,
 		credits: Tokens,
 		mission_control_id: IDL.Opt(IDL.Principal),
 		provider: IDL.Opt(Provider),
 		owner: IDL.Principal,
+		satellites: IDL.Opt(IDL.Vec(IDL.Tuple(IDL.Principal, Satellite))),
 		created_at: IDL.Nat64
 	});
 	const Authentication = IDL.Record({
@@ -116,6 +123,7 @@ export const idlFactory = ({ IDL }) => {
 		block_index: IDL.Opt(IDL.Nat64),
 		subnet_id: IDL.Opt(IDL.Principal),
 		storage: IDL.Opt(InitStorageArgs),
+		name: IDL.Opt(IDL.Text),
 		user: IDL.Principal
 	});
 	const DeleteControllersArgs = IDL.Record({
@@ -369,7 +377,8 @@ export const idlFactory = ({ IDL }) => {
 		block_index_payment: IDL.Nat64,
 		mission_control_id: IDL.Opt(IDL.Principal),
 		created_at: IDL.Nat64,
-		block_index_refunded: IDL.Opt(IDL.Nat64)
+		block_index_refunded: IDL.Opt(IDL.Nat64),
+		purchaser: IDL.Opt(IDL.Principal)
 	});
 	const ListProposalsOrder = IDL.Record({ desc: IDL.Bool });
 	const ListProposalsPaginate = IDL.Record({
@@ -435,6 +444,7 @@ export const idlFactory = ({ IDL }) => {
 		commit_proposal_asset_upload: IDL.Func([CommitBatch], [], []),
 		commit_proposal_many_assets_upload: IDL.Func([IDL.Vec(CommitBatch)], [], []),
 		count_proposals: IDL.Func([], [IDL.Nat64], ['query']),
+		create_mission_control: IDL.Func([], [IDL.Principal], []),
 		create_orbiter: IDL.Func([CreateCanisterArgs], [IDL.Principal], []),
 		create_satellite: IDL.Func([CreateSatelliteArgs], [IDL.Principal], []),
 		del_controllers: IDL.Func([DeleteControllersArgs], [], []),
@@ -447,6 +457,7 @@ export const idlFactory = ({ IDL }) => {
 		get_create_satellite_fee: IDL.Func([GetCreateCanisterFeeArgs], [IDL.Opt(Tokens)], ['query']),
 		get_credits: IDL.Func([], [Tokens], ['query']),
 		get_delegation: IDL.Func([GetDelegationArgs], [Result_1], ['query']),
+		get_or_init_account: IDL.Func([], [Account], []),
 		get_proposal: IDL.Func([IDL.Nat], [IDL.Opt(Proposal)], ['query']),
 		get_storage_config: IDL.Func([], [StorageConfig], ['query']),
 		http_request: IDL.Func([HttpRequest], [HttpResponse], ['query']),
@@ -462,7 +473,6 @@ export const idlFactory = ({ IDL }) => {
 			[IDL.Vec(IDL.Tuple(IDL.Text, InitUploadResult))],
 			[]
 		),
-		init_user_mission_control_center: IDL.Func([], [Account], []),
 		list_accounts: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Principal, Account))], ['query']),
 		list_assets: IDL.Func([IDL.Text, ListParams], [ListResults], ['query']),
 		list_controllers: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Principal, Controller))], ['query']),

@@ -252,6 +252,7 @@ dependencies = [
  "ic-certification",
  "ic-ledger-types",
  "ic-stable-structures 0.7.2",
+ "icrc-ledger-types",
  "junobuild-auth",
  "junobuild-cdn",
  "junobuild-collections",

@@ -28,7 +28,6 @@ import {
 	MISSION_CONTROL_v0_0_5,
 	SATELLITE_v0_0_7
 } from '$lib/constants/version.constants';
-import { satellitesStore } from '$lib/derived/mission-control/satellites.derived';
 import {
 	SatelliteUiMetadataSchema,
 	SatelliteUiMetadataSerializer
@@ -60,6 +59,7 @@ import { missionControlVersion, satelliteVersion } from '@junobuild/admin';
 import { compare } from 'semver';
 import { get } from 'svelte/store';
 import * as z from 'zod';
+import { satellitesStore } from '$lib/derived/satellites.derived';
 
 export const setMissionControlControllerForVersion = async ({
 	missionControlId,

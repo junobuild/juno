@@ -19,6 +19,7 @@
 	import type { WizardCreateProgress } from '$lib/types/progress-wizard';
 	import { navigateToSatellite } from '$lib/utils/nav.utils';
 	import { testId } from '$lib/utils/test.utils';
+	import type { SatelliteId } from '$lib/types/satellite';
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -31,7 +32,7 @@
 	let insufficientFunds = $state(true);
 
 	let step: 'init' | 'in_progress' | 'ready' | 'error' = $state('init');
-	let satellite: MissionControlDid.Satellite | undefined = undefined;
+	let satelliteId: SatelliteId | undefined = undefined;
 
 	// Submit
 
@@ -65,13 +66,13 @@
 			return;
 		}
 
-		satellite = result.segment;
+		satelliteId = result.canisterId;
 
 		setTimeout(() => (step = 'ready'), 500);
 	};
 
 	const navigate = async () => {
-		await navigateToSatellite(satellite?.satellite_id);
+		await navigateToSatellite(satelliteId);
 		onclose();
 	};
 
@@ -166,7 +167,7 @@
 
 				<button
 					{...testId(testIds.createSatellite.create)}
-					disabled={$authSignedOut || isNullish($missionControlId) || insufficientFunds}
+					disabled={$authSignedOut || insufficientFunds}
 					type="submit"
 				>
 					{$i18n.satellites.create}

@@ -1,5 +1,5 @@
+use crate::accounts::get_account_with_existing_mission_control;
 use crate::constants::E8S_PER_ICP;
-use crate::store::stable::get_account_with_existing_mission_control;
 use crate::store::{with_accounts, with_accounts_mut};
 use crate::types::state::{Account, AccountsStable};
 use ic_cdk::api::time;

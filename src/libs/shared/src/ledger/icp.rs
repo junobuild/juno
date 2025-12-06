@@ -1,4 +1,4 @@
-use crate::env::LEDGER;
+use crate::env::ICP_LEDGER;
 use crate::ic::DecodeCandid;
 use crate::ledger::types::icp::{BlockIndexed, Blocks};
 use crate::ledger::utils::account_identifier_equal;
@@ -69,7 +69,7 @@ pub async fn transfer_payment(
 /// # Returns
 /// A `CallResult<TransferResult>` indicating either the success or failure of the ICP token transfer.
 pub async fn transfer_token(args: TransferArgs) -> CallResult<TransferResult> {
-    let ledger = Principal::from_text(LEDGER).unwrap();
+    let ledger = Principal::from_text(ICP_LEDGER).unwrap();
 
     transfer(ledger, &args).await
 }
@@ -90,7 +90,7 @@ pub async fn find_payment(
     amount: Tokens,
     block_index: BlockIndex,
 ) -> Option<BlockIndexed> {
-    let ledger = Principal::from_text(LEDGER).unwrap();
+    let ledger = Principal::from_text(ICP_LEDGER).unwrap();
 
     // We can use a length of block of 1 to find the block we are interested in
     // https://forum.dfinity.org/t/ledger-query-blocks-how-to/16996/4
@@ -137,7 +137,7 @@ pub async fn find_payment(
 /// # Returns
 /// A result containing the chain length or an error message.
 pub async fn chain_length(block_index: BlockIndex) -> CallResult<u64> {
-    let ledger = Principal::from_text(LEDGER).unwrap();
+    let ledger = Principal::from_text(ICP_LEDGER).unwrap();
     let response = query_blocks(
         ledger,
         &GetBlocksArgs {
@@ -163,7 +163,7 @@ pub async fn find_blocks_transfer(
     length: u64,
     account_identifiers: Vec<AccountIdentifier>,
 ) -> Blocks {
-    let ledger = Principal::from_text(LEDGER).unwrap();
+    let ledger = Principal::from_text(ICP_LEDGER).unwrap();
 
     // Source: OpenChat
     // https://github.com/open-ic/transaction-notifier/blob/cf8c2deaaa2e90aac9dc1e39ecc3e67e94451c08/canister/impl/src/lifecycle/heartbeat.rs#L73

@@ -12,8 +12,7 @@ import {
 } from '$lib/derived/mission-control/mission-control-settings.derived';
 import { missionControlUserData } from '$lib/derived/mission-control/mission-control-user.derived';
 import {
-	satellitesNotLoaded,
-	satellitesStore
+	satellitesNotLoaded
 } from '$lib/derived/mission-control/satellites.derived';
 import { orbiterNotLoaded, orbiterStore } from '$lib/derived/orbiter/orbiter.derived';
 import { execute } from '$lib/services/_progress.services';
@@ -44,6 +43,7 @@ import {
 } from '@dfinity/utils';
 import type { Principal } from '@icp-sdk/core/principal';
 import { get } from 'svelte/store';
+import { satellitesStore } from '$lib/derived/satellites.derived';
 
 type MonitoringStrategyOnProgress = (progress: MonitoringStrategyProgress | undefined) => void;
 

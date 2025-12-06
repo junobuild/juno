@@ -12,11 +12,11 @@
 		missionControlMonitoring,
 		missionControlSettingsNotLoaded
 	} from '$lib/derived/mission-control/mission-control-settings.derived';
-	import { sortedSatellites } from '$lib/derived/mission-control/satellites.derived';
 	import { orbitersStore } from '$lib/derived/orbiter/orbiter.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { MissionControlId } from '$lib/types/mission-control';
 	import { satelliteName } from '$lib/utils/satellite.utils';
+	import {sortedSatellites} from "$lib/derived/satellites.derived";
 
 	interface Props {
 		missionControlId: MissionControlId;

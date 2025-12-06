@@ -1,4 +1,4 @@
-import type { MissionControlDid } from '$declarations';
+import type { MissionControlDid, ConsoleDid } from '$declarations';
 import type {
 	SatelliteUiMetadataSchema,
 	SatelliteUiTagsSchema
@@ -6,6 +6,8 @@ import type {
 import type { CanisterSyncData } from '$lib/types/canister';
 import type { Principal } from '@icp-sdk/core/principal';
 import type * as z from 'zod';
+
+export type Satellite = Omit<MissionControlDid.Satellite, "settings"> | ConsoleDid.Satellite;
 
 export type SatelliteIdText = string;
 export type SatelliteId = Principal;
@@ -20,6 +22,6 @@ export interface SegmentWithSyncData<
 export type SatelliteUiTags = z.infer<typeof SatelliteUiTagsSchema>;
 export type SatelliteUiMetadata = z.infer<typeof SatelliteUiMetadataSchema>;
 
-export type SatelliteUi = Omit<MissionControlDid.Satellite, 'metadata'> & {
+export type SatelliteUi = Omit<Satellite, 'metadata'> & {
 	metadata: SatelliteUiMetadata;
 };

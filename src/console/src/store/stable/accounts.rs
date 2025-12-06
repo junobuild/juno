@@ -1,7 +1,5 @@
-use crate::constants::E8S_PER_ICP;
 use crate::store::{with_accounts, with_accounts_mut};
 use crate::types::state::{Account, Accounts, AccountsStable, Provider};
-use ic_cdk::api::time;
 use junobuild_shared::structures::collect_stable_map_from;
 use junobuild_shared::types::state::{MissionControlId, UserId};
 use junobuild_shared::utils::principal_equal;
@@ -22,7 +20,7 @@ fn get_account_impl(
         return Ok(Some(account.clone()));
     }
 
-    Err("User does not have the permission for the mission control.")
+    Err("User does not have the permission for the account.")
 }
 
 pub fn get_account_with_existing_mission_control(
@@ -63,63 +61,41 @@ fn init_account_with_empty_mission_control_impl(
     provider: &Option<Provider>,
     accounts: &mut AccountsStable,
 ) {
-    let now = time();
-
-    let account = Account {
-        mission_control_id: None,
-        provider: provider.clone(),
-        owner: *user,
-        credits: E8S_PER_ICP,
-        created_at: now,
-        updated_at: now,
-    };
-
+    let account = Account::init(user, provider);
     accounts.insert(*user, account);
 }
 
-pub fn update_account(
+pub fn update_mission_control(
     user: &UserId,
     mission_control_id: &MissionControlId,
-) -> Result<Account, &'static str> {
-    with_accounts_mut(|accounts| update_account_impl(user, mission_control_id, accounts))
-}
-
-fn update_account_impl(
-    user: &UserId,
-    mission_control_id: &MissionControlId,
-    accounts: &mut AccountsStable,
-) -> Result<Account, &'static str> {
-    let now = time();
-
-    let account = accounts.get(user).ok_or("User does not have an account.")?;
-
-    let finalized_account = Account {
-        mission_control_id: Some(*mission_control_id),
-        updated_at: now,
-        ..account
-    };
-
-    accounts.insert(*user, finalized_account.clone());
-
-    Ok(finalized_account)
+) -> Result<Account, String> {
+    update_account(user, |account| {
+        account.set_mission_control_id(mission_control_id)
+    })
 }
 
 pub fn update_provider(user: &UserId, provider: &Provider) -> Result<Account, String> {
-    with_accounts_mut(|accounts| update_provider_impl(user, provider, accounts))
+    update_account(user, |account| account.set_provider(provider))
 }
 
-fn update_provider_impl(
+fn update_account<F>(user: &UserId, update_fn: F) -> Result<Account, String>
+where
+    F: FnOnce(&Account) -> Account,
+{
+    with_accounts_mut(|accounts| update_account_impl(user, update_fn, accounts))
+}
+
+fn update_account_impl<F>(
     user: &UserId,
-    provider: &Provider,
+    update_fn: F,
     accounts: &mut AccountsStable,
-) -> Result<Account, String> {
+) -> Result<Account, String>
+where
+    F: FnOnce(&Account) -> Account,
+{
     let account = accounts.get(user).ok_or("User does not have an account.")?;
 
-    let update_account = Account {
-        updated_at: time(),
-        provider: Some(provider.clone()),
-        ..account
-    };
+    let update_account = update_fn(&account);
 
     accounts.insert(*user, update_account.clone());
 

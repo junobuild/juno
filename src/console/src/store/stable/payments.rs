@@ -97,7 +97,7 @@ fn update_payment_refunded_impl(
 }
 
 pub fn list_payments() -> Payments {
-    with_payments(|payments| list_payments_impl(&payments))
+    with_payments(list_payments_impl)
 }
 
 fn list_payments_impl(payments: &PaymentsStable) -> Payments {

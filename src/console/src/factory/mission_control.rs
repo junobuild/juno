@@ -1,7 +1,7 @@
 use crate::constants::FREEZING_THRESHOLD_ONE_YEAR;
 use crate::factory::utils::controllers::update_mission_control_controllers;
 use crate::factory::utils::wasm::mission_control_wasm_arg;
-use crate::store::stable::{delete_account, update_account};
+use crate::store::stable::{delete_account, update_mission_control};
 use candid::{Nat, Principal};
 use junobuild_shared::constants_shared::CREATE_MISSION_CONTROL_CYCLES;
 use junobuild_shared::ic::api::id;
@@ -38,7 +38,7 @@ pub async fn create_mission_control(user_id: &UserId) -> Result<Principal, Strin
         Ok(mission_control_id) => {
             // There error is unlikely to happen as the implementation ensures an
             // account was created before calling this factory function.
-            let _ = update_account(user_id, &mission_control_id)?;
+            let _ = update_mission_control(user_id, &mission_control_id)?;
 
             update_mission_control_controllers(&mission_control_id, user_id).await?;
 

@@ -1,4 +1,4 @@
-use crate::store::stable::{get_account, init_account, update_provider};
+use crate::accounts::{get_account, init_account, update_provider};
 use crate::types::state::OpenId;
 use crate::types::state::{Account, OpenIdData, Provider};
 use candid::Principal;

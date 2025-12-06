@@ -1,8 +1,11 @@
+use crate::accounts::{
+    credits::{has_credits, use_credits},
+    get_account,
+};
 use crate::constants::SATELLITE_CREATION_FEE_ICP;
 use crate::factory::types::CanisterCreator;
 use crate::store::stable::{
-    get_account, has_credits, insert_new_payment, is_known_payment, update_payment_completed,
-    update_payment_refunded, use_credits,
+    insert_new_payment, is_known_payment, update_payment_completed, update_payment_refunded,
 };
 use crate::types::ledger::Payment;
 use crate::types::state::Account;

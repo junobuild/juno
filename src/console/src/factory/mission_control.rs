@@ -1,7 +1,7 @@
+use crate::accounts::{delete_account, update_mission_control};
 use crate::constants::FREEZING_THRESHOLD_ONE_YEAR;
 use crate::factory::utils::controllers::update_mission_control_controllers;
 use crate::factory::utils::wasm::mission_control_wasm_arg;
-use crate::store::stable::{delete_account, update_mission_control};
 use candid::{Nat, Principal};
 use junobuild_shared::constants_shared::CREATE_MISSION_CONTROL_CYCLES;
 use junobuild_shared::ic::api::id;

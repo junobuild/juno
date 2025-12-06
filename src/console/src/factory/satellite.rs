@@ -1,10 +1,10 @@
+use crate::accounts::add_satellite;
 use crate::constants::FREEZING_THRESHOLD_ONE_YEAR;
 use crate::factory::canister::create_canister;
 use crate::factory::types::CanisterCreator;
 use crate::factory::utils::controllers::remove_console_controller;
 use crate::factory::utils::wasm::satellite_wasm_arg;
 use crate::store::heap::{get_satellite_fee, increment_satellites_rate};
-use crate::store::stable::add_satellite;
 use crate::types::state::Satellite;
 use candid::{Nat, Principal};
 use junobuild_shared::constants_shared::CREATE_SATELLITE_CYCLES;

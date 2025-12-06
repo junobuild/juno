@@ -1,5 +1,5 @@
+use crate::accounts::get_account_with_existing_mission_control;
 use crate::guards::caller_is_observatory;
-use crate::store::stable::get_account_with_existing_mission_control;
 use ic_cdk_macros::query;
 use junobuild_shared::ic::UnwrapOrTrap;
 use junobuild_shared::types::interface::AssertMissionControlCenterArgs;

@@ -2,7 +2,6 @@ use crate::accounts::{
     credits::{has_mission_control_and_credits, use_credits},
     get_account_with_existing_mission_control,
 };
-use crate::constants::SATELLITE_CREATION_FEE_ICP;
 use crate::store::stable::{
     insert_new_payment, is_known_payment, update_payment_completed, update_payment_refunded,
 };
@@ -130,7 +129,7 @@ where
             "No valid payment found to create satellite.",
             &format!(" Mission control: {mission_control_account_identifier}"),
             &format!(" Console: {console_account_identifier}"),
-            &format!(" Amount: {SATELLITE_CREATION_FEE_ICP}"),
+            &format!(" Amount: {fee}"),
             &format!(" Block index: {}", block_index.unwrap()),
         ]
         .join("")),
@@ -150,6 +149,7 @@ where
                     refund_satellite_creation(
                         &mission_control_id,
                         &mission_control_payment_block_index,
+                        fee,
                     )
                     .await?;
 
@@ -173,9 +173,10 @@ where
 async fn refund_satellite_creation(
     mission_control_id: &MissionControlId,
     mission_control_payment_block_index: &BlockIndex,
+    fee: Tokens,
 ) -> Result<Payment, String> {
     // We refund the satellite creation fee minus the ic fee - i.e. user pays the fee
-    let refund_amount = SATELLITE_CREATION_FEE_ICP - IC_TRANSACTION_FEE_ICP;
+    let refund_amount = fee - IC_TRANSACTION_FEE_ICP;
 
     // Refund on error
     let refund_block_index = transfer_payment(

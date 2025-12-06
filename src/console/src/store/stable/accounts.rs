@@ -111,7 +111,7 @@ fn delete_account_impl(user: &UserId, accounts: &mut AccountsStable) -> Option<A
 }
 
 pub fn list_accounts() -> Accounts {
-    with_accounts(|accounts| list_accounts_impl(accounts))
+    with_accounts(list_accounts_impl)
 }
 
 fn list_accounts_impl(accounts: &AccountsStable) -> Accounts {

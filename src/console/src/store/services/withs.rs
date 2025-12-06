@@ -38,7 +38,7 @@ pub fn with_auth_mut<R>(f: impl FnOnce(&mut Option<AuthenticationHeapState>) -> 
 pub fn with_accounts<R>(f: impl FnOnce(&AccountsStable) -> R) -> R {
     read_stable_state(|state| {
         let accounts = &state.accounts;
-        f(&accounts)
+        f(accounts)
     })
 }
 
@@ -49,7 +49,7 @@ pub fn with_accounts_mut<R>(f: impl FnOnce(&mut AccountsStable) -> R) -> R {
 pub fn with_payments<R>(f: impl FnOnce(&PaymentsStable) -> R) -> R {
     read_stable_state(|state| {
         let payments = &state.payments;
-        f(&payments)
+        f(payments)
     })
 }
 

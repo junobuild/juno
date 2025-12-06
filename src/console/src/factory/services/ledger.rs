@@ -14,6 +14,7 @@ pub async fn verify_payment(
     purchaser: &Principal,
     purchaser_payment_block_index: &BlockIndex,
     canister_fee: Tokens,
+
 ) -> Result<BlockIndex, String> {
     let purchaser_account_identifier = principal_to_account_identifier(purchaser, &SUB_ACCOUNT);
     let console_account_identifier = principal_to_account_identifier(&id(), &SUB_ACCOUNT);

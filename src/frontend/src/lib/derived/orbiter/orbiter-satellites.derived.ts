@@ -1,6 +1,6 @@
 import type { OrbiterDid } from '$declarations';
+import { satellitesStore } from '$lib/derived/mission-control/satellites.derived';
 import { orbiterConfigs } from '$lib/derived/orbiter/orbiter.derived';
-import { satellitesStore } from '$lib/derived/satellite/satellites.derived';
 import type { OrbiterSatelliteConfigEntry } from '$lib/types/orbiter';
 import type { SatelliteIdText } from '$lib/types/satellite';
 import { satelliteName } from '$lib/utils/satellite.utils';

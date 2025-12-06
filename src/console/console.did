@@ -4,6 +4,7 @@ type Account = record {
   mission_control_id : opt principal;
   provider : opt Provider;
   owner : principal;
+  satellites : opt vec record { principal; Satellite };
   created_at : nat64;
 };
 type AssertMissionControlCenterArgs = record {
@@ -86,6 +87,7 @@ type CreateSatelliteArgs = record {
   block_index : opt nat64;
   subnet_id : opt principal;
   storage : opt InitStorageArgs;
+  name : opt text;
   user : principal;
 };
 type CustomDomain = record {
@@ -266,6 +268,12 @@ type Provider = variant { InternetIdentity; OpenId : OpenId };
 type RateConfig = record { max_tokens : nat64; time_per_token_ns : nat64 };
 type Result = variant { Ok : Authentication; Err : AuthenticationError };
 type Result_1 = variant { Ok : SignedDelegation; Err : GetDelegationError };
+type Satellite = record {
+  updated_at : nat64;
+  metadata : vec record { text; text };
+  created_at : nat64;
+  satellite_id : principal;
+};
 type SegmentKind = variant { Orbiter; MissionControl; Satellite };
 type SegmentsDeploymentOptions = record {
   orbiter : opt text;

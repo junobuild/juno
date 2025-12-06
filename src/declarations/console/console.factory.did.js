@@ -41,12 +41,19 @@ export const idlFactory = ({ IDL }) => {
 		InternetIdentity: IDL.Null,
 		OpenId: OpenId
 	});
+	const Satellite = IDL.Record({
+		updated_at: IDL.Nat64,
+		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
+		created_at: IDL.Nat64,
+		satellite_id: IDL.Principal
+	});
 	const Account = IDL.Record({
 		updated_at: IDL.Nat64,
 		credits: Tokens,
 		mission_control_id: IDL.Opt(IDL.Principal),
 		provider: IDL.Opt(Provider),
 		owner: IDL.Principal,
+		satellites: IDL.Opt(IDL.Vec(IDL.Tuple(IDL.Principal, Satellite))),
 		created_at: IDL.Nat64
 	});
 	const Authentication = IDL.Record({
@@ -116,6 +123,7 @@ export const idlFactory = ({ IDL }) => {
 		block_index: IDL.Opt(IDL.Nat64),
 		subnet_id: IDL.Opt(IDL.Principal),
 		storage: IDL.Opt(InitStorageArgs),
+		name: IDL.Opt(IDL.Text),
 		user: IDL.Principal
 	});
 	const DeleteControllersArgs = IDL.Record({

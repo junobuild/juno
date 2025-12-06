@@ -16,6 +16,7 @@ export interface Account {
 	mission_control_id: [] | [Principal];
 	provider: [] | [Provider];
 	owner: Principal;
+	satellites: [] | [Array<[Principal, Satellite]>];
 	created_at: bigint;
 }
 export interface AssertMissionControlCenterArgs {
@@ -109,6 +110,7 @@ export interface CreateSatelliteArgs {
 	block_index: [] | [bigint];
 	subnet_id: [] | [Principal];
 	storage: [] | [InitStorageArgs];
+	name: [] | [string];
 	user: Principal;
 }
 export interface CustomDomain {
@@ -316,6 +318,12 @@ export interface RateConfig {
 }
 export type Result = { Ok: Authentication } | { Err: AuthenticationError };
 export type Result_1 = { Ok: SignedDelegation } | { Err: GetDelegationError };
+export interface Satellite {
+	updated_at: bigint;
+	metadata: Array<[string, string]>;
+	created_at: bigint;
+	satellite_id: Principal;
+}
 export type SegmentKind = { Orbiter: null } | { MissionControl: null } | { Satellite: null };
 export interface SegmentsDeploymentOptions {
 	orbiter: [] | [string];

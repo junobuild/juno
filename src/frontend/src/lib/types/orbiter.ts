@@ -52,3 +52,4 @@ export interface OrbiterSatelliteConfigEntry {
 }
 
 export type OrbiterIdText = PrincipalText;
+export type OrbiterId = Principal;

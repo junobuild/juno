@@ -1,4 +1,4 @@
-import type { MissionControlDid } from '$declarations';
+import { type MissionControlDid } from '$declarations';
 import { getOrbiterFee, getSatelliteFee } from '$lib/api/console.api';
 import { getAccountIdentifier } from '$lib/api/icp-index.api';
 import { updateAndStartMonitoring } from '$lib/api/mission-control.api';
@@ -6,11 +6,12 @@ import { missionControlMonitored } from '$lib/derived/mission-control/mission-co
 import { missionControlConfigMonitoring } from '$lib/derived/mission-control/mission-control-user.derived';
 import { isSkylab } from '$lib/env/app.env';
 import { execute } from '$lib/services/_progress.services';
+import { createSatelliteWithConfig as createSatelliteWithConsoleAndConfig } from '$lib/services/console/console.satellites.services';
 import { loadCredits } from '$lib/services/console/credits.services';
 import { unsafeSetEmulatorControllerForSatellite } from '$lib/services/emulator.services';
 import {
-	createSatellite,
-	createSatelliteWithConfig,
+	createSatellite as createSatelliteWithMissionControl,
+	createSatelliteWithConfig as createSatelliteWithWithMissionControlAndConfig,
 	loadSatellites
 } from '$lib/services/mission-control/mission-control.satellites.services';
 import { loadSettings, loadUserData } from '$lib/services/mission-control/mission-control.services';
@@ -26,7 +27,9 @@ import { toasts } from '$lib/stores/app/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { MissionControlId } from '$lib/types/mission-control';
 import type { JunoModal, JunoModalCreateSegmentDetail } from '$lib/types/modal';
+import type { OrbiterId } from '$lib/types/orbiter';
 import { type WizardCreateProgress, WizardCreateProgressStep } from '$lib/types/progress-wizard';
+import type { SatelliteId } from '$lib/types/satellite';
 import type { Option } from '$lib/types/utils';
 import { emit } from '$lib/utils/events.utils';
 import { waitAndRestartWallet } from '$lib/utils/wallet.utils';
@@ -236,7 +239,7 @@ export const createSatelliteWizard = async ({
 }): Promise<
 	| {
 			success: 'ok';
-			segment: MissionControlDid.Satellite;
+			canisterId: Principal;
 	  }
 	| { success: 'error'; err?: unknown }
 > => {
@@ -254,19 +257,14 @@ export const createSatelliteWizard = async ({
 		return { success: 'error' };
 	}
 
-	const createFn = async ({
+	const createWithConsoleFn = async ({
 		identity
 	}: {
 		identity: Identity;
-	}): Promise<MissionControlDid.Satellite> => {
-		const fn =
-			nonNullish(subnetId) || satelliteKind !== 'website'
-				? createSatelliteWithConfig
-				: createSatellite;
-
-		return await fn({
+	}): Promise<SatelliteId> => {
+		return await createSatelliteWithConsoleAndConfig({
 			identity,
-			missionControlId,
+			// TODO: duplicate payload
 			config: {
 				name: satelliteName,
 				...(nonNullish(subnetId) && { subnetId: Principal.fromText(subnetId) }),
@@ -275,17 +273,40 @@ export const createSatelliteWizard = async ({
 		});
 	};
 
-	const buildMonitoringFn = (): MonitoringFn<MissionControlDid.Satellite> | undefined => {
+	const createWithMissionControlFn = async ({
+		identity
+	}: {
+		identity: Identity;
+	}): Promise<SatelliteId> => {
+		const fn =
+			nonNullish(subnetId) || satelliteKind !== 'website'
+				? createSatelliteWithWithMissionControlAndConfig
+				: createSatelliteWithMissionControl;
+
+		const { satellite_id } = await fn({
+			identity,
+			missionControlId,
+			config: {
+				name: satelliteName,
+				...(nonNullish(subnetId) && { subnetId: Principal.fromText(subnetId) }),
+				kind: satelliteKind
+			}
+		});
+
+		return satellite_id;
+	};
+
+	const buildMonitoringFn = (): MonitoringFn | undefined => {
 		if (isNullish(monitoringStrategy)) {
 			return undefined;
 		}
 
 		return async ({
 			identity,
-			segment
+			canisterId
 		}: {
 			identity: Identity;
-			segment: MissionControlDid.Satellite;
+			canisterId: Principal;
 		}): Promise<void> => {
 			assertNonNullish(missionControlId);
 
@@ -297,7 +318,7 @@ export const createSatelliteWizard = async ({
 						mission_control_strategy: toNullable(),
 						satellites_strategy: toNullable({
 							strategy: monitoringStrategy,
-							ids: [segment.satellite_id]
+							ids: [canisterId]
 						}),
 						orbiters_strategy: toNullable()
 					})
@@ -310,16 +331,16 @@ export const createSatelliteWizard = async ({
 
 	const unsafeFinalizingFn = async ({
 		identity,
-		segment
+		canisterId
 	}: {
 		identity: Identity;
-		segment: MissionControlDid.Satellite;
+		canisterId: Principal;
 	}): Promise<void> => {
 		assertNonNullish(missionControlId);
 
 		await unsafeSetEmulatorControllerForSatellite({
 			missionControlId,
-			satelliteId: segment.satellite_id,
+			satelliteId: canisterId,
 			identity
 		});
 	};
@@ -328,7 +349,7 @@ export const createSatelliteWizard = async ({
 		...rest,
 		missionControlId,
 		onProgress,
-		createFn,
+		createFn: missionControlId === null ? createWithConsoleFn : createWithMissionControlFn,
 		reloadFn: loadSatellites,
 		monitoringFn,
 		errorLabel: 'satellite_unexpected_error',
@@ -345,37 +366,35 @@ export const createOrbiterWizard = async ({
 }: CreateWizardParams): Promise<
 	| {
 			success: 'ok';
-			segment: MissionControlDid.Orbiter;
+			canisterId: Principal;
 	  }
 	| { success: 'error'; err?: unknown }
 > => {
-	const createFn = async ({
-		identity
-	}: {
-		identity: Identity;
-	}): Promise<MissionControlDid.Orbiter> => {
+	const createFn = async ({ identity }: { identity: Identity }): Promise<OrbiterId> => {
 		const fn = nonNullish(subnetId) ? createOrbiterWithConfig : createOrbiter;
 
-		return await fn({
+		const { orbiter_id } = await fn({
 			identity,
 			missionControlId,
 			config: {
 				...(nonNullish(subnetId) && { subnetId: Principal.fromText(subnetId) })
 			}
 		});
+
+		return orbiter_id;
 	};
 
-	const buildMonitoringFn = (): MonitoringFn<MissionControlDid.Orbiter> | undefined => {
+	const buildMonitoringFn = (): MonitoringFn | undefined => {
 		if (isNullish(monitoringStrategy)) {
 			return undefined;
 		}
 
 		return async ({
 			identity,
-			segment
+			canisterId
 		}: {
 			identity: Identity;
-			segment: MissionControlDid.Orbiter;
+			canisterId: Principal;
 		}): Promise<void> => {
 			assertNonNullish(missionControlId);
 
@@ -388,7 +407,7 @@ export const createOrbiterWizard = async ({
 						satellites_strategy: toNullable(),
 						orbiters_strategy: toNullable({
 							strategy: monitoringStrategy,
-							ids: [segment.orbiter_id]
+							ids: [canisterId]
 						})
 					})
 				}
@@ -409,11 +428,11 @@ export const createOrbiterWizard = async ({
 	});
 };
 
-type MonitoringFn<T> = (params: { identity: Identity; segment: T }) => Promise<void>;
+type MonitoringFn = (params: { identity: Identity; canisterId: Principal }) => Promise<void>;
 
-type FinalizingFn<T> = (params: { identity: Identity; segment: T }) => Promise<void>;
+type FinalizingFn = (params: { identity: Identity; canisterId: Principal }) => Promise<void>;
 
-const createWizard = async <T>({
+const createWizard = async ({
 	missionControlId,
 	identity,
 	errorLabel,
@@ -425,29 +444,29 @@ const createWizard = async <T>({
 	withCredits
 }: Omit<CreateWizardParams, 'subnetId' | 'monitoringStrategy'> & {
 	errorLabel: keyof I18nErrors;
-	createFn: (params: { identity: Identity }) => Promise<T>;
-	finalizingFn?: FinalizingFn<T>;
+	createFn: (params: { identity: Identity }) => Promise<Principal>;
+	finalizingFn?: FinalizingFn;
 	reloadFn: (params: {
 		missionControlId: Option<Principal>;
 		reload: boolean;
 	}) => Promise<{ result: 'skip' | 'success' | 'error' }>;
-	monitoringFn: MonitoringFn<T> | undefined;
+	monitoringFn: MonitoringFn | undefined;
 }): Promise<
 	| {
 			success: 'ok';
-			segment: T;
+			canisterId: Principal;
 	  }
 	| { success: 'error'; err?: unknown }
 > => {
 	try {
 		assertNonNullish(identity, get(i18n).core.not_logged_in);
 
-		const fn = async (): Promise<T> =>
+		const fn = async (): Promise<Principal> =>
 			await createFn({
 				identity
 			});
 
-		const segment = await execute({
+		const canisterId = await execute({
 			fn,
 			onProgress,
 			step: WizardCreateProgressStep.Create
@@ -470,7 +489,7 @@ const createWizard = async <T>({
 		if (nonNullish(monitoringFn)) {
 			const executeMonitoringFn = async () => {
 				await waitAndRestartWallet();
-				await monitoringFn({ identity, segment });
+				await monitoringFn({ identity, canisterId });
 			};
 
 			await execute({
@@ -482,7 +501,7 @@ const createWizard = async <T>({
 
 		if (nonNullish(finalizingFn)) {
 			const executeFinalizingFn = async () => {
-				await finalizingFn({ identity, segment });
+				await finalizingFn({ identity, canisterId });
 			};
 
 			try {
@@ -503,7 +522,7 @@ const createWizard = async <T>({
 			step: WizardCreateProgressStep.Reload
 		});
 
-		return { success: 'ok', segment };
+		return { success: 'ok', canisterId };
 	} catch (err: unknown) {
 		toasts.error({
 			text: get(i18n).errors[errorLabel],

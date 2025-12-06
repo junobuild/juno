@@ -9,10 +9,5 @@ export const account = derived(
 
 export const accountSatellites = derived([accountCertifiedStore], ([$accountCertifiedStore]) => {
 	const satellites = fromNullable($accountCertifiedStore?.data.satellites ?? []);
-
-	if (isNullish(satellites)) {
-		return undefined;
-	}
-
-	return satellites.map(([_, satellite]) => satellite);
+	return (satellites ?? []).map(([_, satellite]) => satellite);
 });

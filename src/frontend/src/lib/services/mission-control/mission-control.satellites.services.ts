@@ -79,9 +79,8 @@ export const loadSatellites = async ({
 		return { result: 'skip' };
 	}
 
-	// TODO: load users satellites
 	if (missionControlId === null) {
-		satellitesUncertifiedStore.set([]);
+		satellitesUncertifiedStore.set(null);
 		return { result: 'success' };
 	}
 
@@ -98,7 +97,7 @@ export const loadSatellites = async ({
 
 	const { identity } = get(authStore);
 
-	return await loadDataStore<MissionControlDid.Satellite[]>({
+	return await loadDataStore<MissionControlDid.Satellite[] | null>({
 		identity,
 		store: satellitesUncertifiedStore,
 		errorLabel: 'satellites_loading',

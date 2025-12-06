@@ -2,24 +2,24 @@ import { accountSatellites } from '$lib/derived/console/account.derived';
 import { satellitesStore as mctrlSatellitesStore } from '$lib/derived/mission-control/satellites.derived';
 import type { SatelliteUi } from '$lib/types/satellite';
 import { satelliteMetadata, satelliteName } from '$lib/utils/satellite.utils';
-import { isNullish } from '@dfinity/utils';
 import { derived } from 'svelte/store';
 
 export const satellitesStore = derived(
 	[accountSatellites, mctrlSatellitesStore],
 	([$accountSatellites, $mctrlSatellitesStore]) => {
-		if (isNullish($accountSatellites) || isNullish($mctrlSatellitesStore)) {
+		// Not yet loaded
+		if ($mctrlSatellitesStore === undefined) {
 			return undefined;
 		}
 
 		return [
 			...$accountSatellites.filter(
 				({ satellite_id }) =>
-					$mctrlSatellitesStore.find(
+					($mctrlSatellitesStore ?? []).find(
 						({ satellite_id: id }) => id.toText() === satellite_id.toText()
 					) === undefined
 			),
-			...$mctrlSatellitesStore
+			...($mctrlSatellitesStore ?? [])
 		];
 	}
 );

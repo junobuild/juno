@@ -1,4 +1,4 @@
-import { satellitesStore } from '$lib/derived/satellite/satellites.derived';
+import { satellitesStore } from '$lib/derived/mission-control/satellites.derived';
 import { versionStore } from '$lib/stores/version.store';
 import type { SatelliteIdText } from '$lib/types/satellite';
 import type { Option } from '$lib/types/utils';

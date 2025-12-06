@@ -13,8 +13,8 @@
 	} from '$lib/derived/ic-mgmt/canisters.derived';
 	import { orbiterWithSyncData } from '$lib/derived/orbiter/orbiter-merged.derived';
 	import { orbiterStore } from '$lib/derived/orbiter/orbiter.derived';
-	import { satellitesWithSyncData } from '$lib/derived/satellite/satellites-merged.derived';
-	import { sortedSatellites } from '$lib/derived/satellite/satellites.derived';
+	import { satellitesWithSyncData } from '$lib/derived/satellites-merged.derived';
+	import { sortedSatellites } from '$lib/derived/mission-control/satellites.derived';
 	import { loadSatellites } from '$lib/services/mission-control/mission-control.satellites.services';
 	import { loadOrbiters } from '$lib/services/orbiter/orbiters.services';
 	import { i18n } from '$lib/stores/app/i18n.store';

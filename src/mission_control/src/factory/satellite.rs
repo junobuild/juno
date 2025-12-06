@@ -1,6 +1,6 @@
-use crate::segments::canister::{create_canister, delete_canister};
-use crate::segments::msg::SATELLITE_NOT_FOUND;
-use crate::segments::store::{
+use crate::factory::canister::{create_canister, delete_canister};
+use crate::factory::msg::SATELLITE_NOT_FOUND;
+use crate::factory::store::{
     add_satellite, delete_satellite as delete_satellite_store, get_satellite,
 };
 use crate::types::interface::{CreateCanisterConfig, CreateSatelliteConfig};

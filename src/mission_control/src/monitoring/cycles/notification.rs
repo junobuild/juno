@@ -1,8 +1,8 @@
 use crate::constants::DELAY_BETWEEN_FUNDING_FAILURE_NOTIFICATION_NS;
+use crate::factory::store::{get_orbiter, get_satellite};
 use crate::monitoring::cycles::utils::{get_deposited_cycles, get_funding_failure};
 use crate::monitoring::monitor::get_monitoring_history;
 use crate::monitoring::observatory::notify_observatory;
-use crate::segments::store::{get_orbiter, get_satellite};
 use crate::types::interface::GetMonitoringHistory;
 use crate::user::store::{get_config, get_metadata, get_user};
 use canfund::manager::record::CanisterRecord;

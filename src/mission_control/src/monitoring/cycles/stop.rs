@@ -1,9 +1,9 @@
+use crate::factory::store::{get_orbiters, get_satellites};
 use crate::monitoring::cycles::scheduler::{assert_scheduler_running, stop_scheduler};
 use crate::monitoring::cycles::unregister::{
     unregister_mission_control_monitoring, unregister_modules_monitoring,
 };
 use crate::monitoring::store::heap::{disable_orbiter_monitoring, disable_satellite_monitoring};
-use crate::segments::store::{get_orbiters, get_satellites};
 use crate::types::core::SettingsMonitoring;
 use junobuild_shared::types::state::SegmentId;
 

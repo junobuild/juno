@@ -13,7 +13,7 @@ use junobuild_shared::ledger::icrc::icrc_transfer_token_from;
 pub async fn verify_payment(
     purchaser: &Principal,
     purchaser_payment_block_index: &BlockIndex,
-    fee: Tokens,
+    canister_fee: Tokens,
 ) -> Result<BlockIndex, String> {
     let purchaser_account_identifier = principal_to_account_identifier(purchaser, &SUB_ACCOUNT);
     let console_account_identifier = principal_to_account_identifier(&id(), &SUB_ACCOUNT);
@@ -22,7 +22,7 @@ pub async fn verify_payment(
     let block_index = find_payment(
         purchaser_account_identifier,
         console_account_identifier,
-        fee,
+        canister_fee,
         purchaser_payment_block_index.clone(),
     )
     .await;

@@ -2,9 +2,8 @@ use crate::accounts::{
     credits::{has_credits, use_credits},
     get_account,
 };
-use crate::constants::SATELLITE_CREATION_FEE_ICP;
 use crate::factory::types::CanisterCreator;
-use crate::factory::utils::ledger::{transfer_from, verify_payment};
+use crate::factory::utils::ledger::{refund_payment, transfer_from, verify_payment};
 use crate::store::stable::{
     insert_new_payment, is_known_payment, update_payment_completed, update_payment_refunded,
 };
@@ -12,10 +11,6 @@ use crate::types::ledger::Payment;
 use crate::types::state::Account;
 use candid::Principal;
 use ic_ledger_types::{BlockIndex, Tokens};
-use junobuild_shared::constants_shared::{IC_TRANSACTION_FEE_ICP, MEMO_SATELLITE_CREATE_REFUND};
-use junobuild_shared::ledger::icp::{
-    transfer_payment, SUB_ACCOUNT,
-};
 use junobuild_shared::mgmt::types::cmc::SubnetId;
 use junobuild_shared::types::interface::CreateCanisterArgs;
 use junobuild_shared::types::state::UserId;
@@ -157,7 +152,7 @@ where
 
     match create_canister_result {
         Err(error) => {
-            refund_canister_creation(&purchaser, &purchaser_payment_block_index).await?;
+            refund_canister_creation(&purchaser, &purchaser_payment_block_index, fee).await?;
 
             Err(["Canister creation failed. Buyer has been refunded.", &error].join(" - "))
         }
@@ -173,21 +168,9 @@ where
 async fn refund_canister_creation(
     purchaser: &Principal,
     purchaser_payment_block_index: &BlockIndex,
+    fee: Tokens,
 ) -> Result<Payment, String> {
-    // We refund the satellite creation fee minus the ic fee - i.e. user pays the fee
-    let refund_amount = SATELLITE_CREATION_FEE_ICP - IC_TRANSACTION_FEE_ICP;
-
-    // Refund on error
-    let refund_block_index = transfer_payment(
-        purchaser,
-        &SUB_ACCOUNT,
-        MEMO_SATELLITE_CREATE_REFUND,
-        refund_amount,
-        IC_TRANSACTION_FEE_ICP,
-    )
-    .await
-    .map_err(|e| format!("failed to call ledger: {e:?}"))?
-    .map_err(|e| format!("ledger transfer error {e:?}"))?;
+    let refund_block_index = refund_payment(purchaser, fee).await?;
 
     // We record the refund in the payment list
     update_payment_refunded(purchaser_payment_block_index, &refund_block_index)

@@ -2,10 +2,12 @@ use candid::{Nat, Principal};
 use ic_ledger_types::{BlockIndex, Tokens};
 use icrc_ledger_types::icrc1::account::Account;
 use icrc_ledger_types::icrc2::transfer_from::TransferFromArgs;
-use junobuild_shared::constants_shared::IC_TRANSACTION_FEE_ICP;
+use junobuild_shared::constants_shared::{IC_TRANSACTION_FEE_ICP, MEMO_SATELLITE_CREATE_REFUND};
 use junobuild_shared::env::ICP_LEDGER;
 use junobuild_shared::ic::api::id;
-use junobuild_shared::ledger::icp::{find_payment, principal_to_account_identifier, SUB_ACCOUNT};
+use junobuild_shared::ledger::icp::{
+    find_payment, principal_to_account_identifier, transfer_payment, SUB_ACCOUNT,
+};
 use junobuild_shared::ledger::icrc::icrc_transfer_token_from;
 
 pub async fn verify_payment(
@@ -39,6 +41,28 @@ pub async fn verify_payment(
     Ok(purchaser_payment_block_index.clone())
 }
 
+pub async fn refund_payment(
+    purchaser: &Principal,
+    canister_fee: Tokens,
+) -> Result<BlockIndex, String> {
+    // We refund the satellite creation fee minus the ic fee - i.e. user pays the fee
+    let refund_amount = canister_fee - IC_TRANSACTION_FEE_ICP;
+
+    // Refund on error
+    let refund_block_index = transfer_payment(
+        purchaser,
+        &SUB_ACCOUNT,
+        MEMO_SATELLITE_CREATE_REFUND,
+        refund_amount,
+        IC_TRANSACTION_FEE_ICP,
+    )
+    .await
+    .map_err(|e| format!("failed to call ledger: {e:?}"))?
+    .map_err(|e| format!("ledger transfer error {e:?}"))?;
+
+    Ok(refund_block_index)
+}
+
 pub async fn transfer_from(
     purchaser: &Principal,
     canister_fee: &Tokens,
@@ -66,8 +90,7 @@ pub async fn transfer_from(
         .map_err(|e| format!("failed to call ICRC ledger: {e:?}"))?
         .map_err(|e| format!("ledger ICRC transfer from error {e:?}"))?;
 
-    let block_index: u64 = u64::try_from(result.0)
-        .map_err(|_| "Block index too large for u64")?;
+    let block_index: u64 = u64::try_from(result.0).map_err(|_| "Block index too large for u64")?;
 
     Ok(block_index)
 }

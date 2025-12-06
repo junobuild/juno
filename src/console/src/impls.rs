@@ -1,7 +1,9 @@
-use crate::constants::{ORBITER_CREATION_FEE_ICP, SATELLITE_CREATION_FEE_ICP};
+use crate::constants::{E8S_PER_ICP, ORBITER_CREATION_FEE_ICP, SATELLITE_CREATION_FEE_ICP};
 use crate::memory::manager::init_stable_state;
 use crate::types::ledger::Payment;
-use crate::types::state::{Account, Fee, Fees, HeapState, OpenIdData, Rate, Rates, State};
+use crate::types::state::{
+    Account, Fee, Fees, HeapState, OpenIdData, Provider, Rate, Rates, State,
+};
 use ic_cdk::api::time;
 use ic_stable_structures::storable::Bound;
 use ic_stable_structures::Storable;
@@ -12,6 +14,7 @@ use junobuild_shared::rate::types::RateTokens;
 use junobuild_shared::serializers::{
     deserialize_from_bytes, serialize_into_bytes, serialize_to_bytes,
 };
+use junobuild_shared::types::state::{MissionControlId, UserId};
 use std::borrow::Cow;
 
 impl Default for State {
@@ -147,6 +150,37 @@ impl From<&OpenIdCredential> for OpenIdData {
             family_name: credential.family_name.clone(),
             picture: credential.picture.clone(),
             locale: credential.locale.clone(),
+        }
+    }
+}
+
+impl Account {
+    pub fn init(user: &UserId, provider: &Option<Provider>) -> Self {
+        let now = time();
+
+        Account {
+            mission_control_id: None,
+            provider: provider.clone(),
+            owner: *user,
+            credits: E8S_PER_ICP,
+            created_at: now,
+            updated_at: now,
+        }
+    }
+
+    pub fn set_provider(&self, provider: &Provider) -> Self {
+        Self {
+            provider: Some(provider.clone()),
+            updated_at: time(),
+            ..*self
+        }
+    }
+
+    pub fn set_mission_control_id(&self, mission_control_id: &MissionControlId) -> Self {
+        Self {
+            mission_control_id: Some(*mission_control_id),
+            updated_at: time(),
+            ..*self
         }
     }
 }

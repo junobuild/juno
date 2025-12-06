@@ -3,7 +3,7 @@ use crate::factory::utils::controllers::update_mission_control_controllers;
 use crate::factory::utils::wasm::mission_control_wasm_arg;
 use crate::store::heap::increment_mission_controls_rate;
 use crate::store::stable::{
-    delete_account, get_account, init_account_with_empty_mission_control, update_account,
+    delete_account, get_account, init_account_with_empty_mission_control, update_mission_control,
 };
 use crate::types::state::{Account, Provider};
 use candid::Nat;
@@ -66,7 +66,7 @@ async fn create_mission_control(user_id: &UserId) -> Result<Account, String> {
         Ok(mission_control_id) => {
             // There error is unlikely to happen as the implementation ensures an
             // account was created before calling this factory function.
-            let account = update_account(user_id, &mission_control_id)?;
+            let account = update_mission_control(user_id, &mission_control_id)?;
 
             update_mission_control_controllers(&mission_control_id, user_id).await?;
 

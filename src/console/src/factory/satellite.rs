@@ -4,6 +4,8 @@ use crate::factory::types::CanisterCreator;
 use crate::factory::utils::controllers::remove_console_controller;
 use crate::factory::utils::wasm::satellite_wasm_arg;
 use crate::store::heap::{get_satellite_fee, increment_satellites_rate};
+use crate::store::stable::add_satellite;
+use crate::types::state::Satellite;
 use candid::{Nat, Principal};
 use junobuild_shared::constants_shared::CREATE_SATELLITE_CYCLES;
 use junobuild_shared::ic::api::id;
@@ -12,12 +14,14 @@ use junobuild_shared::mgmt::ic::create_canister_install_code;
 use junobuild_shared::mgmt::types::cmc::SubnetId;
 use junobuild_shared::mgmt::types::ic::CreateCanisterInitSettingsArg;
 use junobuild_shared::types::interface::{CreateSatelliteArgs, InitStorageArgs};
+use junobuild_shared::types::state::UserId;
 
 pub async fn create_satellite(
     caller: Principal,
     args: CreateSatelliteArgs,
 ) -> Result<Principal, String> {
     let storage = args.storage.clone();
+    let name = args.name.clone();
 
     create_canister(
         move |creator, subnet_id| async move {
@@ -25,6 +29,7 @@ pub async fn create_satellite(
         },
         &increment_satellites_rate,
         &get_satellite_fee,
+        &move |used_id, canister_id| update_account(&used_id, &canister_id, &name),
         caller,
         args.into(),
     )
@@ -68,4 +73,13 @@ async fn create_satellite_wasm(
             Ok(satellite_id)
         }
     }
+}
+
+fn update_account(
+    user: &UserId,
+    canister_id: &Principal,
+    name: &Option<String>,
+) -> Result<(), String> {
+    let satellite = Satellite::from(canister_id, name);
+    add_satellite(user, &satellite)
 }

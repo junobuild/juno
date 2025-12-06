@@ -15,6 +15,7 @@ use junobuild_shared::ledger::icp::{
 };
 use junobuild_shared::mgmt::types::cmc::SubnetId;
 use junobuild_shared::types::interface::CreateCanisterArgs;
+use junobuild_shared::types::state::UserId;
 use junobuild_shared::utils::principal_equal;
 use std::future::Future;
 
@@ -22,6 +23,7 @@ pub async fn create_canister<F, Fut>(
     create: F,
     increment_rate: &dyn Fn() -> Result<(), String>,
     get_fee: &dyn Fn() -> Tokens,
+    update_account: &dyn Fn(&UserId, &Principal) -> Result<(), String>,
     caller: Principal,
     args: CreateCanisterArgs,
 ) -> Result<Principal, String>
@@ -34,15 +36,14 @@ where
     if principal_equal(caller, account.owner) {
         // Caller is user
         let creator: CanisterCreator = CanisterCreator::User(account.owner);
-        return create_canister_with_account(
-            create,
-            increment_rate,
-            get_fee,
-            &account,
-            creator,
-            args,
-        )
-        .await;
+
+        let canister_id =
+            create_canister_with_account(create, increment_rate, get_fee, &account, creator, args)
+                .await?;
+
+        update_account(&account.owner, &canister_id)?;
+
+        return Ok(canister_id);
     }
 
     let mission_control_id = account

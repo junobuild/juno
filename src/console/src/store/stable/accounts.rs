@@ -1,5 +1,5 @@
 use crate::store::{with_accounts, with_accounts_mut};
-use crate::types::state::{Account, Accounts, AccountsStable, Provider};
+use crate::types::state::{Account, Accounts, AccountsStable, Provider, Satellite};
 use junobuild_shared::structures::collect_stable_map_from;
 use junobuild_shared::types::state::{MissionControlId, UserId};
 use junobuild_shared::utils::principal_equal;
@@ -100,6 +100,24 @@ where
     accounts.insert(*user, update_account.clone());
 
     Ok(update_account)
+}
+
+pub fn add_satellite(user: &UserId, satellite: &Satellite) -> Result<(), String> {
+    with_accounts_mut(|accounts| add_satellite_impl(user, satellite, accounts))
+}
+
+fn add_satellite_impl(
+    user: &UserId,
+    satellite: &Satellite,
+    accounts: &mut AccountsStable,
+) -> Result<(), String> {
+    let mut account = accounts.get(user).ok_or("User does not have an account.")?;
+
+    account.add_satellite(satellite);
+
+    accounts.insert(*user, account);
+
+    Ok(())
 }
 
 pub fn delete_account(user: &UserId) -> Option<Account> {

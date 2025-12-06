@@ -12,6 +12,7 @@ use junobuild_shared::mgmt::ic::create_canister_install_code;
 use junobuild_shared::mgmt::types::cmc::SubnetId;
 use junobuild_shared::mgmt::types::ic::CreateCanisterInitSettingsArg;
 use junobuild_shared::types::interface::CreateCanisterArgs;
+use junobuild_shared::types::state::UserId;
 
 pub async fn create_orbiter(
     caller: Principal,
@@ -21,6 +22,7 @@ pub async fn create_orbiter(
         create_orbiter_wasm,
         &increment_orbiters_rate,
         &get_orbiter_fee,
+        &update_account,
         caller,
         args,
     )
@@ -63,4 +65,9 @@ async fn create_orbiter_wasm(
             Ok(orbiter_id)
         }
     }
+}
+
+fn update_account(_user: &UserId, _canister_id: &Principal) -> Result<(), String> {
+    // TODO
+    Ok(())
 }

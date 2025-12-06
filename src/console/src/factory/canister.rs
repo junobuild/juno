@@ -139,22 +139,13 @@ where
 {
     let purchaser = creator.purchaser().clone();
 
-    let purchaser_account_identifier = principal_to_account_identifier(&purchaser, &SUB_ACCOUNT);
-    let console_account_identifier = principal_to_account_identifier(&id(), &SUB_ACCOUNT);
+
 
     if block_index.is_none() {
         return Err("No block index provided to verify payment.".to_string());
     }
 
-    // User should have processed a payment from the mission control center
-    let purchaser_payment_block_index: BlockIndex = block_index.unwrap();
-    let block = find_payment(
-        purchaser_account_identifier,
-        console_account_identifier,
-        fee,
-        purchaser_payment_block_index,
-    )
-    .await;
+
 
     match block {
         None => Err([

@@ -1,9 +1,19 @@
 import { accountCertifiedStore } from '$lib/stores/account.store';
-import { fromNullable } from '@dfinity/utils';
+import type { Option } from '$lib/types/utils';
+import { fromNullable, isNullish } from '@dfinity/utils';
+import type { Principal } from '@icp-sdk/core/principal';
 import { derived } from 'svelte/store';
 
-export const missionControlId = derived([accountCertifiedStore], ([$missionControlDataStore]) =>
-	fromNullable($missionControlDataStore?.data.mission_control_id ?? [])
+// TODO: undefined or null or other typing?
+export const missionControlId = derived(
+	[accountCertifiedStore],
+	([$missionControlDataStore]): Option<Principal> => {
+		if (isNullish($missionControlDataStore)) {
+			return undefined;
+		}
+
+		return fromNullable($missionControlDataStore?.data.mission_control_id ?? []) ?? null;
+	}
 );
 
 export const missionControlIdLoaded = derived(

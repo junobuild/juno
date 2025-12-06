@@ -4,7 +4,7 @@ import { loadDataStore } from '$lib/services/_loader.services';
 import { authStore } from '$lib/stores/auth.store';
 import { satellitesUncertifiedStore } from '$lib/stores/satellite/satellite.store';
 import type { Option } from '$lib/types/utils';
-import { assertNonNullish, isNullish, toNullable } from '@dfinity/utils';
+import { assertNonNullish, toNullable } from '@dfinity/utils';
 import type { Identity } from '@icp-sdk/core/agent';
 import type { Principal } from '@icp-sdk/core/principal';
 import { get } from 'svelte/store';
@@ -75,8 +75,14 @@ export const loadSatellites = async ({
 	missionControlId: Option<Principal>;
 	reload?: boolean;
 }): Promise<{ result: 'skip' | 'success' | 'error' }> => {
-	if (isNullish(missionControlId)) {
+	if (missionControlId === undefined) {
 		return { result: 'skip' };
+	}
+
+	// TODO: load users satellites
+	if (missionControlId === null) {
+		satellitesUncertifiedStore.set([]);
+		return { result: 'success' };
 	}
 
 	const load = async (identity: Identity): Promise<MissionControlDid.Satellite[]> => {

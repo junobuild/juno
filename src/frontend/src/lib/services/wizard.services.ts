@@ -84,19 +84,18 @@ const initCreateWizard = async ({
 	feeFn: GetFeeBalanceFn;
 	modalType: 'create_satellite' | 'create_orbiter';
 }) => {
-	if (isNullish(missionControlId)) {
+	if (missionControlId === undefined) {
 		toasts.warn(get(i18n).errors.mission_control_not_loaded);
 		return;
 	}
 
-	busy.start();
-
-	const { result } = await waitMissionControlVersionLoaded();
-
-	if (result === 'error') {
-		busy.stop();
+	// TODO: indentity check service
+	if (isNullish(identity) || isNullish(identity?.getPrincipal())) {
+		toasts.error({ text: get(i18n).core.not_logged_in });
 		return;
 	}
+
+	busy.start();
 
 	const resultFee = await feeFn({
 		identity
@@ -108,6 +107,34 @@ const initCreateWizard = async ({
 	}
 
 	const { fee } = resultFee;
+
+	// TODO: extract function
+	if (missionControlId === null) {
+		busy.stop();
+
+		const accountIdentifier = getAccountIdentifier(identity.getPrincipal());
+
+		emit<JunoModal<JunoModalCreateSegmentDetail>>({
+			message: 'junoModal',
+			detail: {
+				type: modalType,
+				detail: {
+					accountIdentifier,
+					fee,
+					monitoringEnabled: false,
+					monitoringConfig: undefined
+				}
+			}
+		});
+		return;
+	}
+
+	const { result } = await waitMissionControlVersionLoaded();
+
+	if (result === 'error') {
+		busy.stop();
+		return;
+	}
 
 	const params = {
 		identity,

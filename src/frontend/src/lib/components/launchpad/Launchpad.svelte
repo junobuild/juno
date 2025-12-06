@@ -8,7 +8,7 @@
 	import ContainerCentered from '$lib/components/ui/ContainerCentered.svelte';
 	import Message from '$lib/components/ui/Message.svelte';
 	import Spinner from '$lib/components/ui/Spinner.svelte';
-	import { satellitesStore } from '$lib/derived/satellite/satellites.derived';
+	import { satellitesStore } from '$lib/derived/mission-control/satellites.derived';
 	import { onIntersection } from '$lib/directives/intersection.directives';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { onLayoutTitleIntersection } from '$lib/stores/app/layout-intersecting.store';

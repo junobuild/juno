@@ -28,7 +28,7 @@ import {
 	MISSION_CONTROL_v0_0_5,
 	SATELLITE_v0_0_7
 } from '$lib/constants/version.constants';
-import { satellitesStore } from '$lib/derived/satellite/satellites.derived';
+import { satellitesStore } from '$lib/derived/mission-control/satellites.derived';
 import {
 	SatelliteUiMetadataSchema,
 	SatelliteUiMetadataSerializer
@@ -42,8 +42,8 @@ import {
 	missionControlSettingsUncertifiedStore,
 	missionControlUserUncertifiedStore
 } from '$lib/stores/mission-control/mission-control.store';
+import { satellitesUncertifiedStore } from '$lib/stores/mission-control/satellites.store';
 import { orbitersUncertifiedStore } from '$lib/stores/orbiter/orbiter.store';
-import { satellitesUncertifiedStore } from '$lib/stores/satellite/satellite.store';
 import { versionStore } from '$lib/stores/version.store';
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { OptionIdentity } from '$lib/types/itentity';

@@ -1,13 +1,13 @@
 use crate::controllers::satellite::{delete_satellite_controllers, set_satellite_controllers};
-use crate::guards::caller_is_user_or_admin_controller;
-use crate::segments::satellite::{
+use crate::factory::satellite::{
     attach_satellite, create_satellite as create_satellite_console,
     create_satellite_with_config as create_satellite_with_config_console, delete_satellite,
     detach_satellite,
 };
-use crate::segments::store::{
+use crate::factory::store::{
     get_satellites, set_satellite_metadata as set_satellite_metadata_store,
 };
+use crate::guards::caller_is_user_or_admin_controller;
 use crate::types::interface::CreateSatelliteConfig;
 use crate::types::state::{Satellite, Satellites};
 use ic_cdk_macros::{query, update};

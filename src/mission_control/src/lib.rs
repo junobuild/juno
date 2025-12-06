@@ -3,12 +3,12 @@
 mod api;
 mod constants;
 mod controllers;
+mod factory;
 mod guards;
 mod impls;
 mod memory;
 mod monitoring;
 mod random;
-mod segments;
 mod types;
 mod user;
 

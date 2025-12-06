@@ -1,6 +1,6 @@
-use crate::segments::canister::{create_canister, delete_canister};
-use crate::segments::msg::ORBITER_NOT_FOUND;
-use crate::segments::store::{add_orbiter, delete_orbiter as delete_orbiter_store, get_orbiter};
+use crate::factory::canister::{create_canister, delete_canister};
+use crate::factory::msg::ORBITER_NOT_FOUND;
+use crate::factory::store::{add_orbiter, delete_orbiter as delete_orbiter_store, get_orbiter};
 use crate::types::interface::CreateCanisterConfig;
 use crate::types::state::Orbiter;
 use candid::Principal;

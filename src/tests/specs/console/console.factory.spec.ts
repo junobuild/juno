@@ -29,7 +29,7 @@ import { canisterStatus } from '../../utils/ic-management-tests.utils';
 import { tick } from '../../utils/pic-tests.utils';
 import { CONSOLE_WASM_PATH } from '../../utils/setup-tests.utils';
 
-describe('Console', () => {
+describe('Console > Factory', () => {
 	let pic: PocketIc;
 	let actor: Actor<ConsoleActor>;
 

@@ -13,6 +13,8 @@ use junobuild_shared::mgmt::types::cmc::SubnetId;
 use junobuild_shared::mgmt::types::ic::CreateCanisterInitSettingsArg;
 use junobuild_shared::types::interface::CreateCanisterArgs;
 use junobuild_shared::types::state::UserId;
+use crate::accounts::{add_orbiter};
+use crate::types::state::Orbiter;
 
 pub async fn create_orbiter(
     caller: Principal,
@@ -67,7 +69,10 @@ async fn create_orbiter_wasm(
     }
 }
 
-fn update_account(_user: &UserId, _canister_id: &Principal) -> Result<(), String> {
-    // TODO
-    Ok(())
+fn update_account(
+    user: &UserId,
+    canister_id: &Principal,
+) -> Result<(), String> {
+    let orbiter = Orbiter::from(canister_id, &None);
+    add_orbiter(user, &orbiter)
 }

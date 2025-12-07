@@ -1,5 +1,5 @@
 use crate::store::{with_accounts, with_accounts_mut};
-use crate::types::state::{Account, Accounts, AccountsStable, Provider, Satellite};
+use crate::types::state::{Account, Accounts, AccountsStable, Orbiter, Provider, Satellite};
 use junobuild_shared::structures::collect_stable_map_from;
 use junobuild_shared::types::state::{MissionControlId, UserId};
 use junobuild_shared::utils::principal_equal;
@@ -103,17 +103,30 @@ where
 }
 
 pub fn add_satellite(user: &UserId, satellite: &Satellite) -> Result<(), String> {
-    with_accounts_mut(|accounts| add_satellite_impl(user, satellite, accounts))
+    add_segment(user, satellite, |account, segment| account.add_satellite(segment))
 }
 
-fn add_satellite_impl(
+pub fn add_orbiter(user: &UserId, orbiter: &Orbiter) -> Result<(), String> {
+    add_segment(user, orbiter, |account, segment| account.add_orbiter(segment))
+}
+
+fn add_segment<T>(
     user: &UserId,
-    satellite: &Satellite,
+    segment: &T,
+    add_fn: impl FnOnce(&mut Account, &T),
+) -> Result<(), String> {
+    with_accounts_mut(|accounts| add_segment_impl(user, segment, add_fn, accounts))
+}
+
+fn add_segment_impl<T>(
+    user: &UserId,
+    segment: &T,
+    add_fn: impl FnOnce(&mut Account, &T),
     accounts: &mut AccountsStable,
 ) -> Result<(), String> {
     let mut account = accounts.get(user).ok_or("User does not have an account.")?;
 
-    account.add_satellite(satellite);
+    add_fn(&mut account, segment);
 
     accounts.insert(*user, account);
 

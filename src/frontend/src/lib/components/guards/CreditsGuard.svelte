@@ -1,20 +1,23 @@
 <script lang="ts">
-	import type { AccountIdentifier } from '@icp-sdk/canisters/ledger/icp';
+	import { isNullish } from '@dfinity/utils';
 	import type { Snippet } from 'svelte';
 	import MissionControlICPInfo from '$lib/components/mission-control/MissionControlICPInfo.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import { E8S_PER_ICP } from '$lib/constants/app.constants';
+	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import { creditsOrZero } from '$lib/derived/console/credits.derived';
 	import { balanceOrZero } from '$lib/derived/wallet/balance.derived';
 	import { icpToUsd } from '$lib/derived/wallet/exchange.derived';
 	import type { JunoModalCreateSegmentDetail, JunoModalDetail } from '$lib/types/modal';
+	import type { Option } from '$lib/types/utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { formatICPToHTML } from '$lib/utils/icp.utils';
 
 	interface Props {
 		detail: JunoModalDetail;
 		priceLabel: string;
-		withCredits: boolean;
+		withDevIcpApprove: boolean;
+		withFee: Option<bigint>;
 		insufficientFunds?: boolean;
 		children: Snippet;
 		onclose: () => void;
@@ -24,14 +27,13 @@
 		detail,
 		priceLabel,
 		insufficientFunds = $bindable(true),
-		withCredits = $bindable(false),
+		withDevIcpApprove = $bindable(false),
+		withFee = $bindable(undefined),
 		children,
 		onclose
 	}: Props = $props();
 
-	let accountIdentifier: AccountIdentifier | undefined = $derived(
-		(detail as JunoModalCreateSegmentDetail).accountIdentifier
-	);
+	let accountIdentifier = $derived((detail as JunoModalCreateSegmentDetail).accountIdentifier);
 
 	let { fee } = $derived(detail as JunoModalCreateSegmentDetail);
 
@@ -42,7 +44,8 @@
 	});
 
 	$effect(() => {
-		withCredits = !notEnoughCredits;
+		withDevIcpApprove = !notEnoughCredits && isNullish($missionControlId);
+		withFee = notEnoughCredits ? fee : null;
 	});
 </script>
 

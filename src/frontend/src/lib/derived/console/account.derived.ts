@@ -1,5 +1,5 @@
 import { accountCertifiedStore } from '$lib/stores/account.store';
-import { fromNullable, isNullish } from '@dfinity/utils';
+import { fromNullable } from '@dfinity/utils';
 import { derived } from 'svelte/store';
 
 export const account = derived(

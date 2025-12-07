@@ -4,8 +4,7 @@
 	import OrbitersLoader from '$lib/components/loaders/OrbitersLoader.svelte';
 	import SatellitesLoader from '$lib/components/loaders/SatellitesLoader.svelte';
 	import WalletLoader from '$lib/components/loaders/WalletLoader.svelte';
-
-	import {sortedSatellites} from "$lib/derived/satellites.derived";
+	import { sortedSatellites } from '$lib/derived/satellites.derived';
 
 	interface Props {
 		children: Snippet;

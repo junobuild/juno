@@ -7,10 +7,10 @@
 	} from '$lib/components/satellites/SatellitesPicker.svelte';
 	import PopoverApply from '$lib/components/ui/PopoverApply.svelte';
 	import { satelliteStore } from '$lib/derived/satellite/satellite.derived';
+	import { satellitesStore } from '$lib/derived/satellites.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { navigateToChangesDock } from '$lib/utils/nav.utils';
 	import { satelliteName } from '$lib/utils/satellite.utils';
-    import {satellitesStore} from "$lib/derived/satellites.derived";
 
 	let visible = $state(false);
 

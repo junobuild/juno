@@ -361,7 +361,8 @@
 		"wallet_missing_account": "没有可用账户来请求交易。您是否已连接钱包？",
 		"balance_not_loaded": "请稍候，您的余额尚未加载完成。",
 		"balance_zero": "您的余额为零。获取一些代币以开始发送。",
-		"wallet_upgrade": "请升级您的钱包以启用发送功能。"
+		"wallet_upgrade": "请升级您的钱包以启用发送功能。",
+		"approving_canister_fee": "授权费用中..."
 	},
 	"authentication": {
 		"title": "身份认证",

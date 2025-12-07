@@ -32,7 +32,7 @@ pub async fn verify_payment(
             "No valid payment found to create satellite.",
             &format!(" Purchaser: {purchaser_account_identifier}"),
             &format!(" Console: {console_account_identifier}"),
-            &format!(" Amount: {fee}"),
+            &format!(" Amount: {canister_fee}"),
             &format!(" Block index: {:?}", block_index),
         ]
         .join(""));

@@ -1,8 +1,8 @@
 <script lang="ts">
 	import SatelliteArticle from '$lib/components/satellites/SatelliteArticle.svelte';
 	import SatellitesToolbar from '$lib/components/satellites/SatellitesToolbar.svelte';
+	import { sortedSatelliteUis } from '$lib/derived/satellites.derived';
 	import { satelliteMatchesFilter } from '$lib/utils/satellite.utils';
-    import {sortedSatelliteUis} from "$lib/derived/satellites.derived";
 
 	let filter = $state('');
 

@@ -1,4 +1,4 @@
-import { type MissionControlDid } from '$declarations';
+import type { MissionControlDid } from '$declarations';
 import { getOrbiterFee, getSatelliteFee } from '$lib/api/console.api';
 import { getAccountIdentifier } from '$lib/api/icp-index.api';
 import { updateAndStartMonitoring } from '$lib/api/mission-control.api';
@@ -21,6 +21,7 @@ import {
 	loadOrbiters
 } from '$lib/services/orbiter/orbiters.services';
 import { waitMissionControlVersionLoaded } from '$lib/services/version/version.mission-control.services';
+import { approveCreateCanisterWithIcp } from '$lib/services/wallet/wallet.transfer.services';
 import { busy } from '$lib/stores/app/busy.store';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
@@ -221,7 +222,7 @@ interface CreateWizardParams {
 	identity: OptionIdentity;
 	subnetId: PrincipalText | undefined;
 	monitoringStrategy: MissionControlDid.CyclesMonitoringStrategy | undefined;
-	withCredits: boolean;
+	withFee: Option<bigint>;
 	onProgress: (progress: WizardCreateProgress | undefined) => void;
 }
 
@@ -261,8 +262,7 @@ export const createSatelliteWizard = async ({
 		identity
 	}: {
 		identity: Identity;
-	}): Promise<SatelliteId> => {
-		return await createSatelliteWithConsoleAndConfig({
+	}): Promise<SatelliteId> => await createSatelliteWithConsoleAndConfig({
 			identity,
 			// TODO: duplicate payload
 			config: {
@@ -271,7 +271,6 @@ export const createSatelliteWizard = async ({
 				kind: satelliteKind
 			}
 		});
-	};
 
 	const createWithMissionControlFn = async ({
 		identity
@@ -441,7 +440,7 @@ const createWizard = async ({
 	reloadFn,
 	monitoringFn,
 	onProgress,
-	withCredits
+	withFee
 }: Omit<CreateWizardParams, 'subnetId' | 'monitoringStrategy'> & {
 	errorLabel: keyof I18nErrors;
 	createFn: (params: { identity: Identity }) => Promise<Principal>;
@@ -461,6 +460,22 @@ const createWizard = async ({
 	try {
 		assertNonNullish(identity, get(i18n).core.not_logged_in);
 
+		// If there are fees and the dev has no mission control, then the amount is to be paid
+		// by the dev wallet (the wallet derived by the identity of the login, the dev ID)
+		if (nonNullish(withFee) && withFee > 0n && isNullish(missionControlId)) {
+			const prepareFn = async (): Promise<void> =>
+				await approveCreateCanisterWithIcp({
+					identity,
+					amount: withFee
+				});
+
+			await execute({
+				fn: prepareFn,
+				onProgress,
+				step: WizardCreateProgressStep.Approve
+			});
+		}
+
 		const fn = async (): Promise<Principal> =>
 			await createFn({
 				identity
@@ -473,6 +488,8 @@ const createWizard = async ({
 		});
 
 		const reload = async () => {
+			const withCredits = isNullish(withFee) || withFee === 0n;
+
 			await Promise.allSettled([
 				...(withCredits
 					? [

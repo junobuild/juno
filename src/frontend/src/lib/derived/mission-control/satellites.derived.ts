@@ -15,5 +15,3 @@ export const satellitesNotLoaded = derived(
 	[satellitesLoaded],
 	([$satellitesLoaded]) => !$satellitesLoaded
 );
-
-

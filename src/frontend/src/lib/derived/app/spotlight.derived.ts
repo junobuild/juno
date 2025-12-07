@@ -18,6 +18,7 @@ import IconWallet from '$lib/components/icons/IconWallet.svelte';
 import { authNotSignedIn } from '$lib/derived/auth.derived';
 import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 import { satelliteStore } from '$lib/derived/satellite/satellite.derived';
+import { sortedSatelliteUis } from '$lib/derived/satellites.derived';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { theme } from '$lib/stores/app/theme.store';
 import type { SatelliteUi } from '$lib/types/satellite';
@@ -34,7 +35,6 @@ import { analyticsLink, upgradeDockLink } from '$lib/utils/nav.utils';
 import { satelliteMatchesFilter } from '$lib/utils/satellite.utils';
 import { isNullish, nonNullish, notEmptyString } from '@dfinity/utils';
 import { derived, type Readable } from 'svelte/store';
-import {sortedSatelliteUis} from '$lib/derived/satellites.derived';
 
 const withMissionControlItems: Readable<SpotlightItems> = derived(
 	[i18n, missionControlId],

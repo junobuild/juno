@@ -1,3 +1,4 @@
+import { satellitesStore } from '$lib/derived/satellites.derived';
 import { versionStore } from '$lib/stores/version.store';
 import type { SatelliteIdText } from '$lib/types/satellite';
 import type { Option } from '$lib/types/utils';
@@ -5,7 +6,6 @@ import type { SatelliteVersionMetadataUi, VersionMetadataUi } from '$lib/types/v
 import { isNullish, nonNullish } from '@dfinity/utils';
 import { compare } from 'semver';
 import { derived, type Readable } from 'svelte/store';
-import { satellitesStore } from '$lib/derived/satellites.derived';
 
 export const missionControlVersion: Readable<Option<VersionMetadataUi>> = derived(
 	[versionStore],

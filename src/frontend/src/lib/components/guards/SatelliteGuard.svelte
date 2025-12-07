@@ -4,8 +4,8 @@
 	import NotFound from '$lib/components/ui/NotFound.svelte';
 	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
 	import { satelliteStore } from '$lib/derived/satellite/satellite.derived';
+	import { satellitesStore } from '$lib/derived/satellites.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import {satellitesStore} from "$lib/derived/satellites.derived";
 
 	interface Props {
 		children: Snippet;

@@ -1,5 +1,6 @@
 import type { OrbiterDid } from '$declarations';
 import { orbiterConfigs } from '$lib/derived/orbiter/orbiter.derived';
+import { satellitesStore } from '$lib/derived/satellites.derived';
 import type { OrbiterSatelliteConfigEntry } from '$lib/types/orbiter';
 import type { SatelliteIdText } from '$lib/types/satellite';
 import { satelliteName } from '$lib/utils/satellite.utils';
@@ -7,7 +8,6 @@ import { first } from '$lib/utils/utils';
 import { fromNullable, fromNullishNullable, nonNullish } from '@dfinity/utils';
 import type { Principal } from '@icp-sdk/core/principal';
 import { derived, type Readable } from 'svelte/store';
-import { satellitesStore } from '$lib/derived/satellites.derived';
 
 export const orbiterSatellitesConfig: Readable<
 	Record<SatelliteIdText, OrbiterSatelliteConfigEntry>

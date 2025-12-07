@@ -1,7 +1,5 @@
-import { accountCertifiedStore } from '$lib/stores/account.store';
+import { account } from '$lib/derived/console/account.derived';
 import { fromNullable } from '@dfinity/utils';
 import { derived } from 'svelte/store';
 
-export const provider = derived([accountCertifiedStore], ([$missionControlDataStore]) =>
-	fromNullable($missionControlDataStore?.data.provider ?? [])
-);
+export const provider = derived([account], ([$account]) => fromNullable($account?.provider ?? []));

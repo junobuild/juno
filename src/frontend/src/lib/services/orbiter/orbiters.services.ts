@@ -1,5 +1,4 @@
-import type { MissionControlDid, OrbiterDid } from '$declarations';
-import { getMissionControlActor } from '$lib/api/actors/actor.juno.api';
+import type { OrbiterDid } from '$declarations';
 import {
 	listOrbiterSatelliteConfigs as listOrbiterSatelliteConfigsApi,
 	setOrbiterSatelliteConfigs as setOrbiterSatelliteConfigsApi
@@ -11,100 +10,17 @@ import {
 import { DEFAULT_FEATURES } from '$lib/constants/analytics.constants';
 import { ORBITER_v0_0_8 } from '$lib/constants/version.constants';
 import { orbiterConfigs } from '$lib/derived/orbiter/orbiter.derived';
-import { loadDataStore } from '$lib/services/_loader.services';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
 import { authStore } from '$lib/stores/auth.store';
 import { orbitersConfigsStore } from '$lib/stores/orbiter/orbiter-configs.store';
-import { orbitersUncertifiedStore } from '$lib/stores/orbiter/orbiter.store';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { OrbiterSatelliteConfigEntry } from '$lib/types/orbiter';
 import type { SatelliteIdText } from '$lib/types/satellite';
-import type { Option } from '$lib/types/utils';
-import { assertNonNullish, isNullish, nonNullish, toNullable } from '@dfinity/utils';
-import type { Identity } from '@icp-sdk/core/agent';
+import { nonNullish, toNullable } from '@dfinity/utils';
 import { Principal } from '@icp-sdk/core/principal';
 import { compare } from 'semver';
 import { get } from 'svelte/store';
-
-interface CreateOrbiterConfig {
-	name?: string;
-	subnetId?: Principal;
-}
-
-export const createOrbiter = async ({
-	identity,
-	missionControlId,
-	config: { name }
-}: {
-	identity: Option<Identity>;
-	missionControlId: Option<Principal>;
-	config: CreateOrbiterConfig;
-}): Promise<MissionControlDid.Orbiter> => {
-	assertNonNullish(missionControlId);
-
-	const { create_orbiter } = await getMissionControlActor({
-		missionControlId,
-		identity
-	});
-
-	return create_orbiter(toNullable(name));
-};
-
-export const createOrbiterWithConfig = async ({
-	identity,
-	missionControlId,
-	config: { name, subnetId }
-}: {
-	identity: Option<Identity>;
-	missionControlId: Option<Principal>;
-	config: CreateOrbiterConfig;
-}): Promise<MissionControlDid.Orbiter> => {
-	assertNonNullish(missionControlId);
-
-	const { create_orbiter_with_config } = await getMissionControlActor({
-		missionControlId,
-		identity
-	});
-
-	return create_orbiter_with_config({
-		name: toNullable(name),
-		subnet_id: toNullable(subnetId)
-	});
-};
-
-export const loadOrbiters = async ({
-	missionControlId,
-	reload = false
-}: {
-	missionControlId: Option<Principal>;
-	reload?: boolean;
-}): Promise<{ result: 'skip' | 'success' | 'error' }> => {
-	if (isNullish(missionControlId)) {
-		return { result: 'skip' };
-	}
-
-	const load = async (identity: Identity): Promise<MissionControlDid.Orbiter[]> => {
-		const { list_orbiters } = await getMissionControlActor({
-			missionControlId,
-			identity
-		});
-
-		const orbiters = await list_orbiters();
-
-		return orbiters.map(([_, orbiter]) => orbiter);
-	};
-
-	const { identity } = get(authStore);
-
-	return await loadDataStore<MissionControlDid.Orbiter[]>({
-		identity,
-		store: orbitersUncertifiedStore,
-		errorLabel: 'orbiters_loading',
-		load,
-		reload
-	});
-};
 
 export const loadOrbiterConfigs = async ({
 	orbiterId,

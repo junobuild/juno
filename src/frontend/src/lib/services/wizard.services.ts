@@ -11,16 +11,16 @@ import { createSatelliteWithConfig as createSatelliteWithConsoleAndConfig } from
 import { loadCredits } from '$lib/services/console/credits.services';
 import { unsafeSetEmulatorControllerForSatellite } from '$lib/services/emulator.services';
 import {
+	createOrbiter,
+	createOrbiterWithConfig,
+	loadOrbiters
+} from '$lib/services/mission-control/mission-control.orbiters.services';
+import {
 	createSatellite as createSatelliteWithMissionControl,
 	createSatelliteWithConfig as createSatelliteWithWithMissionControlAndConfig,
 	loadSatellites
 } from '$lib/services/mission-control/mission-control.satellites.services';
 import { loadSettings, loadUserData } from '$lib/services/mission-control/mission-control.services';
-import {
-	createOrbiter,
-	createOrbiterWithConfig,
-	loadOrbiters
-} from '$lib/services/orbiter/orbiters.services';
 import { waitMissionControlVersionLoaded } from '$lib/services/version/version.mission-control.services';
 import { approveCreateCanisterWithIcp } from '$lib/services/wallet/wallet.transfer.services';
 import { busy } from '$lib/stores/app/busy.store';

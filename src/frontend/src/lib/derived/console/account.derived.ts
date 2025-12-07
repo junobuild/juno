@@ -7,7 +7,7 @@ export const account = derived(
 	([$accountCertifiedStore]) => $accountCertifiedStore?.data
 );
 
-export const accountSatellites = derived([accountCertifiedStore], ([$accountCertifiedStore]) => {
-	const satellites = fromNullable($accountCertifiedStore?.data.satellites ?? []);
+export const accountSatellites = derived([account], ([$account]) => {
+	const satellites = fromNullable($account?.satellites ?? []);
 	return (satellites ?? []).map(([_, satellite]) => satellite);
 });

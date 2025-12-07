@@ -7,12 +7,12 @@ import { derived } from 'svelte/store';
 // TODO: undefined or null or other typing?
 export const missionControlId = derived(
 	[accountCertifiedStore],
-	([$missionControlDataStore]): Option<Principal> => {
-		if (isNullish($missionControlDataStore)) {
+	([$accountCertifiedStore]): Option<Principal> => {
+		if (isNullish($accountCertifiedStore)) {
 			return undefined;
 		}
 
-		return fromNullable($missionControlDataStore?.data.mission_control_id ?? []) ?? null;
+		return fromNullable($accountCertifiedStore?.data?.mission_control_id ?? []) ?? null;
 	}
 );
 

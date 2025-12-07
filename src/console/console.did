@@ -4,6 +4,7 @@ type Account = record {
   mission_control_id : opt principal;
   provider : opt Provider;
   owner : principal;
+  orbiters : opt vec record { principal; Orbiter };
   satellites : opt vec record { principal; Satellite };
   created_at : nat64;
 };
@@ -222,6 +223,12 @@ type OpenIdProviderConfig = record {
 type OpenIdProviderDelegationConfig = record {
   targets : opt vec principal;
   max_time_to_live : opt nat64;
+};
+type Orbiter = record {
+  updated_at : nat64;
+  orbiter_id : principal;
+  metadata : vec record { text; text };
+  created_at : nat64;
 };
 type Payment = record {
   status : PaymentStatus;

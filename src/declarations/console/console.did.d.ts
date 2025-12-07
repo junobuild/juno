@@ -16,6 +16,7 @@ export interface Account {
 	mission_control_id: [] | [Principal];
 	provider: [] | [Provider];
 	owner: Principal;
+	orbiters: [] | [Array<[Principal, Orbiter]>];
 	satellites: [] | [Array<[Principal, Satellite]>];
 	created_at: bigint;
 }
@@ -265,6 +266,12 @@ export interface OpenIdProviderConfig {
 export interface OpenIdProviderDelegationConfig {
 	targets: [] | [Array<Principal>];
 	max_time_to_live: [] | [bigint];
+}
+export interface Orbiter {
+	updated_at: bigint;
+	orbiter_id: Principal;
+	metadata: Array<[string, string]>;
+	created_at: bigint;
 }
 export interface Payment {
 	status: PaymentStatus;

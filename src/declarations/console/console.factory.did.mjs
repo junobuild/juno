@@ -41,6 +41,12 @@ export const idlFactory = ({ IDL }) => {
 		InternetIdentity: IDL.Null,
 		OpenId: OpenId
 	});
+	const Orbiter = IDL.Record({
+		updated_at: IDL.Nat64,
+		orbiter_id: IDL.Principal,
+		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
+		created_at: IDL.Nat64
+	});
 	const Satellite = IDL.Record({
 		updated_at: IDL.Nat64,
 		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
@@ -53,6 +59,7 @@ export const idlFactory = ({ IDL }) => {
 		mission_control_id: IDL.Opt(IDL.Principal),
 		provider: IDL.Opt(Provider),
 		owner: IDL.Principal,
+		orbiters: IDL.Opt(IDL.Vec(IDL.Tuple(IDL.Principal, Orbiter))),
 		satellites: IDL.Opt(IDL.Vec(IDL.Tuple(IDL.Principal, Satellite))),
 		created_at: IDL.Nat64
 	});

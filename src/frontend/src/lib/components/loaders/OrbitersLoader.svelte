@@ -2,7 +2,7 @@
 	import type { Principal } from '@icp-sdk/core/principal';
 	import type { Snippet } from 'svelte';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
-	import { loadOrbiters } from '$lib/services/orbiter/orbiters.services';
+	import { loadOrbiters } from '$lib/services/mission-control/mission-control.orbiters.services';
 	import type { Option } from '$lib/types/utils';
 
 	interface Props {

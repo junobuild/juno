@@ -7,9 +7,10 @@
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import { orbiterStore } from '$lib/derived/orbiter/orbiter.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
+	import type { Satellite } from '$lib/types/satellite';
 
 	interface Props {
-		satellite?: MissionControlDid.Satellite | undefined;
+		satellite?: Satellite | undefined;
 	}
 
 	let { satellite = undefined }: Props = $props();

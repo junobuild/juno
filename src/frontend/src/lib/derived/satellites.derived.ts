@@ -1,12 +1,12 @@
 import { accountSatellites } from '$lib/derived/console/account.derived';
 import { satellitesStore as mctrlSatellitesStore } from '$lib/derived/mission-control/satellites.derived';
-import type { SatelliteUi } from '$lib/types/satellite';
+import type { Satellite, SatelliteUi } from '$lib/types/satellite';
 import { satelliteMetadata, satelliteName } from '$lib/utils/satellite.utils';
 import { derived } from 'svelte/store';
 
 export const satellitesStore = derived(
 	[accountSatellites, mctrlSatellitesStore],
-	([$accountSatellites, $mctrlSatellitesStore]) => {
+	([$accountSatellites, $mctrlSatellitesStore]): Satellite[] | undefined => {
 		// Not yet loaded
 		if ($mctrlSatellitesStore === undefined) {
 			return undefined;

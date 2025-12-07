@@ -6,12 +6,13 @@
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { ProposalRecord } from '$lib/types/proposals';
+	import type { Satellite } from '$lib/types/satellite';
 	import { formatToDate } from '$lib/utils/date.utils';
 	import { emit } from '$lib/utils/events.utils';
 
 	interface Props {
 		proposal: ProposalRecord;
-		satellite: MissionControlDid.Satellite;
+		satellite: Satellite;
 	}
 
 	let { proposal: proposalRecord, satellite }: Props = $props();

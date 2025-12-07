@@ -12,6 +12,7 @@
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { CustomDomain, CustomDomainState } from '$lib/types/custom-domain';
 	import type { PostMessageDataResponseHosting } from '$lib/types/post-message';
+	import type { Satellite } from '$lib/types/satellite';
 	import type { Option } from '$lib/types/utils';
 	import { emit } from '$lib/utils/events.utils';
 	import { keyOf } from '$lib/utils/utils';
@@ -21,7 +22,7 @@
 		ariaLabel?: string;
 		type?: 'default' | 'custom';
 		customDomain?: CustomDomain | undefined;
-		satellite?: MissionControlDid.Satellite | undefined;
+		satellite?: Satellite | undefined;
 		config?: SatelliteDid.AuthenticationConfig | undefined;
 	}
 

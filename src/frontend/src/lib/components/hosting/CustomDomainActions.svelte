@@ -15,13 +15,14 @@
 	import { authStore } from '$lib/stores/auth.store';
 	import type { CustomDomain } from '$lib/types/custom-domain';
 	import type { JunoModalCustomDomainDetail } from '$lib/types/modal';
+	import type { Satellite } from '$lib/types/satellite';
 	import type { Option } from '$lib/types/utils';
 	import { buildDeleteAuthenticationConfig } from '$lib/utils/auth.config.utils';
 	import { emit } from '$lib/utils/events.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 
 	interface Props {
-		satellite: MissionControlDid.Satellite;
+		satellite: Satellite;
 		customDomain: CustomDomain | undefined;
 		displayState: Option<string>;
 		config: SatelliteDid.AuthenticationConfig | undefined;

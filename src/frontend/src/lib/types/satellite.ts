@@ -7,14 +7,12 @@ import type { CanisterSyncData } from '$lib/types/canister';
 import type { Principal } from '@icp-sdk/core/principal';
 import type * as z from 'zod';
 
-export type Satellite = Omit<MissionControlDid.Satellite, 'settings'> | ConsoleDid.Satellite;
+export type Satellite = MissionControlDid.Satellite | ConsoleDid.Satellite;
 
 export type SatelliteIdText = string;
 export type SatelliteId = Principal;
 
-export interface SegmentWithSyncData<
-	T extends MissionControlDid.Satellite | MissionControlDid.Orbiter
-> {
+export interface SegmentWithSyncData<T extends Satellite | MissionControlDid.Orbiter> {
 	segment: T;
 	canister: CanisterSyncData;
 }

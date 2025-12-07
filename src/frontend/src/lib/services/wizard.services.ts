@@ -258,11 +258,8 @@ export const createSatelliteWizard = async ({
 		return { success: 'error' };
 	}
 
-	const createWithConsoleFn = async ({
-		identity
-	}: {
-		identity: Identity;
-	}): Promise<SatelliteId> => await createSatelliteWithConsoleAndConfig({
+	const createWithConsoleFn = async ({ identity }: { identity: Identity }): Promise<SatelliteId> =>
+		await createSatelliteWithConsoleAndConfig({
 			identity,
 			// TODO: duplicate payload
 			config: {

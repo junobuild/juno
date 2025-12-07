@@ -11,10 +11,11 @@
 	import { initAuthConfigContext } from '$lib/stores/satellite/auth.context.store';
 	import { AUTH_CONFIG_CONTEXT_KEY, type AuthConfigContext } from '$lib/types/auth.context';
 	import type { JunoModalEditAuthConfigDetailType } from '$lib/types/modal';
+	import type { Satellite } from '$lib/types/satellite';
 	import { emit } from '$lib/utils/events.utils';
 
 	interface Props {
-		satellite: MissionControlDid.Satellite;
+		satellite: Satellite;
 	}
 
 	let { satellite }: Props = $props();

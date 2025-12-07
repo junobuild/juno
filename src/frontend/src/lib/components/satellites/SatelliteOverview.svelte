@@ -18,16 +18,18 @@
 	import { listCustomDomains } from '$lib/services/satellite/custom-domain.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { CanisterSyncData as CanisterSyncDataType } from '$lib/types/canister';
-	import type { SatelliteIdText } from '$lib/types/satellite';
+	import type { Satellite, SatelliteIdText } from '$lib/types/satellite';
 
 	interface Props {
-		satellite: MissionControlDid.Satellite;
+		satellite: Satellite;
 	}
 
 	let { satellite }: Props = $props();
 
 	let monitoring = $derived(
-		fromNullishNullable(fromNullishNullable(satellite.settings)?.monitoring)
+		'settings' in satellite
+			? fromNullishNullable(fromNullishNullable(satellite.settings)?.monitoring)
+			: undefined
 	);
 
 	let monitoringEnabled = $derived(fromNullishNullable(monitoring?.cycles)?.enabled === true);

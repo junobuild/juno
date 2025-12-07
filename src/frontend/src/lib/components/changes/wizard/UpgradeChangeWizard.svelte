@@ -6,9 +6,10 @@
 	import { findWasmAssetForProposal } from '$lib/services/satellite/proposals/proposals.cdn.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import type { ProposalRecord } from '$lib/types/proposals';
+	import type { Satellite } from '$lib/types/satellite';
 
 	interface Props {
-		satellite: MissionControlDid.Satellite;
+		satellite: Satellite;
 		proposal: ProposalRecord;
 		onclose: () => void;
 	}

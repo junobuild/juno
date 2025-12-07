@@ -77,3 +77,33 @@ const assertAccount = async ({ identity }: { identity: Identity }) => {
 		await accountErrorSignOut();
 	}
 };
+
+export const reloadAccount = async ({
+	identity
+}: {
+	identity: Identity;
+}): Promise<{ result: 'success' | 'error' }> => {
+	try {
+		const certified = true;
+
+		const account = await getAccountApi({
+			identity,
+			certified
+		});
+
+		accountCertifiedStore.set({
+			data: account,
+			certified
+		});
+
+		return { result: 'success' };
+	} catch (err: unknown) {
+		// TODO: label
+		toasts.error({
+			text: get(i18n).errors.initializing_mission_control,
+			detail: err
+		});
+
+		return { result: 'error' };
+	}
+};

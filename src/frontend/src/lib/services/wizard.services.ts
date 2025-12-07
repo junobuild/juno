@@ -6,6 +6,7 @@ import { missionControlMonitored } from '$lib/derived/mission-control/mission-co
 import { missionControlConfigMonitoring } from '$lib/derived/mission-control/mission-control-user.derived';
 import { isSkylab } from '$lib/env/app.env';
 import { execute } from '$lib/services/_progress.services';
+import { reloadAccount } from '$lib/services/console/account.services';
 import { createSatelliteWithConfig as createSatelliteWithConsoleAndConfig } from '$lib/services/console/console.satellites.services';
 import { loadCredits } from '$lib/services/console/credits.services';
 import { unsafeSetEmulatorControllerForSatellite } from '$lib/services/emulator.services';
@@ -341,12 +342,21 @@ export const createSatelliteWizard = async ({
 		});
 	};
 
+	const reloadFn = async ({ identity }: { identity: Identity }) => {
+		if (isNullish(missionControlId)) {
+			await reloadAccount({ identity });
+			return;
+		}
+
+		await loadSatellites({ missionControlId, reload: true });
+	};
+
 	return await createWizard({
 		...rest,
 		missionControlId,
 		onProgress,
 		createFn: missionControlId === null ? createWithConsoleFn : createWithMissionControlFn,
-		reloadFn: loadSatellites,
+		reloadFn,
 		monitoringFn,
 		errorLabel: 'satellite_unexpected_error',
 		...(isSkylab() && { finalizingFn: unsafeFinalizingFn })
@@ -413,12 +423,16 @@ export const createOrbiterWizard = async ({
 
 	const monitoringFn = buildMonitoringFn();
 
+	const reloadFn = async () => {
+		await loadOrbiters({ missionControlId, reload: true });
+	};
+
 	return await createWizard({
 		...rest,
 		missionControlId,
 		onProgress,
 		createFn,
-		reloadFn: loadOrbiters,
+		reloadFn,
 		monitoringFn,
 		errorLabel: 'orbiter_unexpected_error'
 	});
@@ -427,6 +441,8 @@ export const createOrbiterWizard = async ({
 type MonitoringFn = (params: { identity: Identity; canisterId: Principal }) => Promise<void>;
 
 type FinalizingFn = (params: { identity: Identity; canisterId: Principal }) => Promise<void>;
+
+type ReloadFn = (params: { identity: Identity }) => Promise<void>;
 
 const createWizard = async ({
 	missionControlId,
@@ -442,10 +458,7 @@ const createWizard = async ({
 	errorLabel: keyof I18nErrors;
 	createFn: (params: { identity: Identity }) => Promise<Principal>;
 	finalizingFn?: FinalizingFn;
-	reloadFn: (params: {
-		missionControlId: Option<Principal>;
-		reload: boolean;
-	}) => Promise<{ result: 'skip' | 'success' | 'error' }>;
+	reloadFn: ReloadFn;
 	monitoringFn: MonitoringFn | undefined;
 }): Promise<
 	| {
@@ -496,7 +509,7 @@ const createWizard = async ({
 							})
 						]
 					: [waitAndRestartWallet()]),
-				reloadFn({ missionControlId, reload: true })
+				reloadFn({ identity })
 			]);
 		};
 

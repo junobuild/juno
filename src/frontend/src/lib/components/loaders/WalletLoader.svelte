@@ -4,7 +4,7 @@
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import { WalletWorker } from '$lib/services/workers/worker.wallet.services';
 	import { devId } from '$lib/derived/dev.derived';
-    import {encodeIcrcAccount} from "@icp-sdk/canisters/ledger/icrc";
+	import { encodeIcrcAccount } from '@icp-sdk/canisters/ledger/icrc';
 
 	interface Props {
 		children?: Snippet;

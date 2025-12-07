@@ -114,8 +114,8 @@ export class WalletStore {
 		await set(this.#idbKey, this.#store, walletIdbStore);
 	}
 
-	static async init({account, ledgerId}: WalletTokenAccount): Promise<WalletStore> {
-		const idbKey = WalletStore.toIdbKey({account, ledgerId});
+	static async init({ account, ledgerId }: WalletTokenAccount): Promise<WalletStore> {
+		const idbKey = WalletStore.toIdbKey({ account, ledgerId });
 		const state = await get(idbKey, walletIdbStore);
 		return new WalletStore({ state, idbKey, account });
 	}

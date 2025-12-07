@@ -1,7 +1,7 @@
 import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 import { devId } from '$lib/derived/dev.derived';
 import { balanceCertifiedStore } from '$lib/stores/wallet/balance.store';
-import { isNullish, nonNullish } from '@dfinity/utils';
+import { nonNullish } from '@dfinity/utils';
 import { derived } from 'svelte/store';
 
 export const balance = derived(

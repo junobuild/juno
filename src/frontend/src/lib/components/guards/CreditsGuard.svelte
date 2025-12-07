@@ -41,10 +41,10 @@
 
 	$effect(() => {
 		insufficientFunds = $balanceOrZero < fee && notEnoughCredits;
+		withDevIcpApprove = insufficientFunds && isNullish($missionControlId);
 	});
 
 	$effect(() => {
-		withDevIcpApprove = !notEnoughCredits && isNullish($missionControlId);
 		withFee = notEnoughCredits ? fee : null;
 	});
 </script>

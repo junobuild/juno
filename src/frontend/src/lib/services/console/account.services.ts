@@ -45,7 +45,7 @@ export const initAccountAndMissionControl = async ({
 			return { result: 'success' };
 		}
 
-		// We deliberately do not await the promise to avoid blocking the main UX. However, if necessary, we take the required measures if Mission Control cannot be certified.
+		// We deliberately do not await the promise to avoid blocking the main UX. However, if necessary, we take the required measures if the account cannot be certified.
 		assertAccount({ identity });
 
 		return { result: 'success' };

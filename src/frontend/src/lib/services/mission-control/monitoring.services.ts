@@ -17,9 +17,9 @@ import {
 } from '$lib/derived/mission-control/satellites.derived';
 import { orbiterNotLoaded, orbiterStore } from '$lib/derived/orbiter/orbiter.derived';
 import { execute } from '$lib/services/_progress.services';
+import { loadOrbiters } from '$lib/services/mission-control/mission-control.orbiters.services';
 import { loadSatellites } from '$lib/services/mission-control/mission-control.satellites.services';
 import { loadSettings, loadUserData } from '$lib/services/mission-control/mission-control.services';
-import { loadOrbiters } from '$lib/services/orbiter/orbiters.services';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';

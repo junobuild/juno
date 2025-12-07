@@ -9,16 +9,16 @@ import { execute } from '$lib/services/_progress.services';
 import { loadCredits } from '$lib/services/console/credits.services';
 import { unsafeSetEmulatorControllerForSatellite } from '$lib/services/emulator.services';
 import {
+	createOrbiter,
+	createOrbiterWithConfig,
+	loadOrbiters
+} from '$lib/services/mission-control/mission-control.orbiters.services';
+import {
 	createSatellite,
 	createSatelliteWithConfig,
 	loadSatellites
 } from '$lib/services/mission-control/mission-control.satellites.services';
 import { loadSettings, loadUserData } from '$lib/services/mission-control/mission-control.services';
-import {
-	createOrbiter,
-	createOrbiterWithConfig,
-	loadOrbiters
-} from '$lib/services/orbiter/orbiters.services';
 import { waitMissionControlVersionLoaded } from '$lib/services/version/version.mission-control.services';
 import { busy } from '$lib/stores/app/busy.store';
 import { i18n } from '$lib/stores/app/i18n.store';

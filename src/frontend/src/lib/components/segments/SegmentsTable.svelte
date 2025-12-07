@@ -15,8 +15,8 @@
 	import { orbiterWithSyncData } from '$lib/derived/orbiter/orbiter-merged.derived';
 	import { orbiterStore } from '$lib/derived/orbiter/orbiter.derived';
 	import { satellitesWithSyncData } from '$lib/derived/satellites-merged.derived';
+	import { loadOrbiters } from '$lib/services/mission-control/mission-control.orbiters.services';
 	import { loadSatellites } from '$lib/services/mission-control/mission-control.satellites.services';
-	import { loadOrbiters } from '$lib/services/orbiter/orbiters.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
 	import type { MissionControlId } from '$lib/types/mission-control';

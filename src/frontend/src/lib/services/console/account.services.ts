@@ -16,10 +16,6 @@ interface Certified {
 	certified: boolean;
 }
 
-type PollAndInitResult = {
-	account: ConsoleDid.Account;
-} & Certified;
-
 export const initAccount = async ({
 	identity
 }: {

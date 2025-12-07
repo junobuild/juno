@@ -15,7 +15,10 @@ export const onSyncWallet = (data: PostMessageDataResponseWallet) => {
 		return;
 	}
 
-	balanceCertifiedStore.set(data.wallet.balance);
+	balanceCertifiedStore.set({
+		canisterId: data.wallet.account,
+		data: data.wallet.balance
+	});
 
 	const newTransactions = JSON.parse(data.wallet.newTransactions, jsonReviver);
 
@@ -26,7 +29,7 @@ export const onWalletError = ({ error: err }: { error: unknown }) => {
 	transactionsCertifiedStore.reset();
 
 	// We get transactions and balance for the same end point therefore if getting certified transactions fails, it also means the balance is incorrect.
-	balanceCertifiedStore.reset();
+	balanceCertifiedStore.resetAll();
 
 	toasts.error({
 		text: get(i18n).errors.wallet_error,

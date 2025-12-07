@@ -1,3 +1,4 @@
-import { initCertifiedStore } from '$lib/stores/_certified.store';
+import { initCanisterStore } from '$lib/stores/_canister.store';
+import type { CertifiedData } from '$lib/types/store';
 
-export const balanceCertifiedStore = initCertifiedStore<bigint>();
+export const balanceCertifiedStore = initCanisterStore<CertifiedData<bigint>>();

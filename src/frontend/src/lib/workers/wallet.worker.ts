@@ -23,8 +23,12 @@ import { loadIdentity } from '$lib/utils/worker.utils';
 import { type IndexedTransactions, WalletStore } from '$lib/workers/_stores/wallet-worker.store';
 import { isNullish, jsonReplacer } from '@dfinity/utils';
 import type { GetAccountIdentifierTransactionsResponse } from '@icp-sdk/canisters/ledger/icp';
+import {
+	decodeIcrcAccount,
+	encodeIcrcAccount,
+	type IcrcAccount
+} from '@icp-sdk/canisters/ledger/icrc';
 import type { Identity } from '@icp-sdk/core/agent';
-import { Principal } from '@icp-sdk/core/principal';
 
 export const onWalletMessage = async ({ data: dataMsg }: MessageEvent<PostMessageRequest>) => {
 	const { msg, data } = dataMsg;
@@ -53,9 +57,9 @@ const stopTimer = () => {
 	timer = undefined;
 };
 
-const startTimer = async ({ data: { missionControlId } }: { data: PostMessageDataRequest }) => {
-	if (isNullish(missionControlId)) {
-		// No mission control ID provided
+const startTimer = async ({ data: { accounts } }: { data: PostMessageDataRequest }) => {
+	if (isNullish(accounts)) {
+		// No accounts provided
 		return;
 	}
 
@@ -66,14 +70,28 @@ const startTimer = async ({ data: { missionControlId } }: { data: PostMessageDat
 		return;
 	}
 
+	await Promise.all(
+		accounts.map(async (account) => {
+			await startTimerWithAccount({ identity, account: decodeIcrcAccount(account) });
+		})
+	);
+};
+
+const startTimerWithAccount = async ({
+	account,
+	identity
+}: {
+	account: IcrcAccount;
+	identity: Identity;
+}) => {
 	const store = await WalletStore.init({
-		account: { owner: Principal.fromText(missionControlId) },
+		account,
 		ledgerId: ICP_LEDGER_CANISTER_ID
 	});
 
 	emitSavedWallet({ store, identity });
 
-	const sync = async () => await syncWallet({ missionControlId, identity, store });
+	const sync = async () => await syncWallet({ account, identity, store });
 
 	// We sync the cycles now but also schedule the update afterwards
 	await sync();
@@ -81,33 +99,24 @@ const startTimer = async ({ data: { missionControlId } }: { data: PostMessageDat
 	timer = setInterval(sync, SYNC_WALLET_TIMER_INTERVAL);
 };
 
-let syncing = false;
-
 let initialized = false;
 
 const syncWallet = async ({
-	missionControlId,
+	account,
 	identity,
 	store
 }: {
-	missionControlId: string;
+	account: IcrcAccount;
 	identity: Identity;
 	store: WalletStore;
 }) => {
-	// We avoid to relaunch a sync while previous sync is not finished
-	if (syncing) {
-		return;
-	}
-
-	syncing = true;
-
 	const request = ({
 		identity: _,
 		certified
 	}: QueryAndUpdateRequestParams): Promise<GetAccountIdentifierTransactionsResponse> =>
 		getTransactions({
 			identity,
-			owner: Principal.fromText(missionControlId),
+			owner: account.owner,
 			// We query tip to discover the new transactions
 			start: undefined,
 			maxResults: PAGINATION,
@@ -139,23 +148,24 @@ const syncWallet = async ({
 	});
 
 	await store.save();
-
-	syncing = false;
 };
 
 const postMessageWallet = ({
 	certified,
+	account,
 	balance,
 	transactions: newTransactions
 }: Pick<GetAccountIdentifierTransactionsResponse, 'balance'> & {
 	transactions: IcTransactionUi[];
 } & {
+	account: IcrcAccount;
 	certified: boolean;
 }) => {
 	const certifiedTransactions = newTransactions.map((data) => ({ data, certified }));
 
 	const data: PostMessageDataResponseWallet = {
 		wallet: {
+			account: encodeIcrcAccount(account),
 			balance: {
 				data: balance,
 				certified
@@ -196,6 +206,7 @@ const syncTransactions = ({
 		// We execute postMessage at least once because developer may have no transaction at all so, we want to display the balance zero
 		if (!initialized) {
 			postMessageWallet({
+				account: store.account,
 				transactions: [],
 				balance,
 				certified,
@@ -215,6 +226,7 @@ const syncTransactions = ({
 	);
 
 	postMessageWallet({
+		account: store.account,
 		transactions: newUiTransactions,
 		balance,
 		certified,
@@ -296,6 +308,7 @@ const emitSavedWallet = ({ store, identity }: { store: WalletStore; identity: Id
 
 	const data: PostMessageDataResponseWallet = {
 		wallet: {
+			account: encodeIcrcAccount(store.account),
 			balance: store.balance,
 			newTransactions: JSON.stringify(uiTransactions, jsonReplacer)
 		}

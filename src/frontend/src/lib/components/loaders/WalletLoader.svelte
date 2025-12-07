@@ -1,8 +1,10 @@
 <script lang="ts">
-	import { isNullish } from '@dfinity/utils';
+	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { onDestroy, onMount, type Snippet } from 'svelte';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import { WalletWorker } from '$lib/services/workers/worker.wallet.services';
+	import { devId } from '$lib/derived/dev.derived';
+    import {encodeIcrcAccount} from "@icp-sdk/canisters/ledger/icrc";
 
 	interface Props {
 		children?: Snippet;
@@ -16,23 +18,33 @@
 		worker = await WalletWorker.init();
 	};
 
+	let accounts = $derived([
+		...(nonNullish($devId) ? [encodeIcrcAccount({ owner: $devId })] : []),
+		...(nonNullish($missionControlId) ? [encodeIcrcAccount({ owner: $missionControlId })] : [])
+	]);
+
 	$effect(() => {
-		if (isNullish($missionControlId)) {
+		if (isNullish($devId)) {
+			worker?.stop();
+			return;
+		}
+
+		if ($missionControlId === undefined) {
 			worker?.stop();
 			return;
 		}
 
 		worker?.start({
-			missionControlId: $missionControlId
+			accounts
 		});
 	});
 
 	const onRestartWallet = () => {
-		if (isNullish($missionControlId)) {
+		if (accounts.length === 0) {
 			return;
 		}
 
-		worker?.restart({ missionControlId: $missionControlId });
+		worker?.restart({ accounts });
 	};
 
 	onMount(async () => await initWorker());

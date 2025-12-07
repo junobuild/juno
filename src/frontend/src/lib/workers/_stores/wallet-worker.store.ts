@@ -28,16 +28,24 @@ export class WalletStore {
 
 	#store: WalletState;
 	#idbKey: WalletIdbKey;
+	#account: IcrcAccount;
 
 	private constructor({
 		state,
-		idbKey: key
+		idbKey: key,
+		account
 	}: {
 		state: WalletState | undefined;
 		idbKey: WalletIdbKey;
+		account: IcrcAccount;
 	}) {
 		this.#store = state ?? WalletStore.EMPTY_STORE;
 		this.#idbKey = key;
+		this.#account = account;
+	}
+
+	get account(): IcrcAccount {
+		return this.#account;
 	}
 
 	get balance(): CertifiedData<bigint> | undefined {
@@ -106,9 +114,9 @@ export class WalletStore {
 		await set(this.#idbKey, this.#store, walletIdbStore);
 	}
 
-	static async init(params: WalletTokenAccount): Promise<WalletStore> {
-		const idbKey = WalletStore.toIdbKey(params);
+	static async init({account, ledgerId}: WalletTokenAccount): Promise<WalletStore> {
+		const idbKey = WalletStore.toIdbKey({account, ledgerId});
 		const state = await get(idbKey, walletIdbStore);
-		return new WalletStore({ state, idbKey });
+		return new WalletStore({ state, idbKey, account });
 	}
 }

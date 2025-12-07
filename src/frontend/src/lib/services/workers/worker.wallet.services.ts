@@ -1,3 +1,4 @@
+import type { IcrcAccountText } from '$lib/schemas/wallet.schema';
 import {
 	onSyncExchange,
 	onSyncWallet,
@@ -5,7 +6,6 @@ import {
 	onWalletError
 } from '$lib/services/wallet/wallet.loader.services';
 import { AppWorker } from '$lib/services/workers/_worker.services';
-import type { MissionControlId } from '$lib/types/mission-control';
 import type {
 	PostMessageDataResponseError,
 	PostMessageDataResponseExchange,
@@ -46,17 +46,17 @@ export class WalletWorker extends AppWorker {
 		return new WalletWorker(worker);
 	}
 
-	start = ({ missionControlId }: { missionControlId: MissionControlId }) => {
+	start = ({ accounts }: { accounts: IcrcAccountText[] }) => {
 		this._worker.postMessage({
 			msg: 'startWalletTimer',
-			data: { missionControlId: missionControlId.toText() }
+			data: { accounts }
 		});
 	};
 
-	restart = ({ missionControlId }: { missionControlId: MissionControlId }) => {
+	restart = ({ accounts }: { accounts: IcrcAccountText[] }) => {
 		this._worker.postMessage({
 			msg: 'restartWalletTimer',
-			data: { missionControlId: missionControlId.toText() }
+			data: { accounts }
 		});
 	};
 

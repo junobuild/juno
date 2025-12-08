@@ -105,6 +105,6 @@ Have questions, comments, or feedback? Join our [Discord](https://discord.gg/wHZ
 
 ## 💬 Contact
 
-Find us on X/Twitter at [@junobuild](https://twitter.com/junobuild) or email us at [hello@junobuild.ch](mailto://hello@junobuild.ch).
+Find us on X/Twitter at [@junobuild](https://twitter.com/junobuild) or email us at [hi@juno.build](mailto://hi@juno.build).
 
 [juno]: https://juno.build

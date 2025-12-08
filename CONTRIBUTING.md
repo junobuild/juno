@@ -72,4 +72,4 @@ npm run check:all
 
 - **Discord**: [Join chat](https://discord.com/invite/wHZ57Z2RAG)
 - **Twitter/X**: [@junobuild](https://x.com/junobuild)
-- **Email**: [hello@junobuild.ch](hello@junobuild.ch)
+- **Email**: [hi@juno.build](hi@juno.build)

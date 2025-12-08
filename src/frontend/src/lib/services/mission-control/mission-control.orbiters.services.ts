@@ -4,7 +4,7 @@ import { loadDataStore } from '$lib/services/_loader.services';
 import { authStore } from '$lib/stores/auth.store';
 import { orbitersUncertifiedStore } from '$lib/stores/mission-control/orbiter.store';
 import type { Option } from '$lib/types/utils';
-import { assertNonNullish, isNullish, toNullable } from '@dfinity/utils';
+import { assertNonNullish, toNullable } from '@dfinity/utils';
 import type { Identity } from '@icp-sdk/core/agent';
 import type { Principal } from '@icp-sdk/core/principal';
 import { get } from 'svelte/store';
@@ -68,7 +68,7 @@ export const loadOrbiters = async ({
 
 	if (missionControlId === null) {
 		orbitersUncertifiedStore.set(null);
-		return {result: 'success'};
+		return { result: 'success' };
 	}
 
 	const load = async (identity: Identity): Promise<MissionControlDid.Orbiter[]> => {

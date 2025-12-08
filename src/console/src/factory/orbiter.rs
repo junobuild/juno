@@ -1,9 +1,11 @@
+use crate::accounts::add_orbiter;
 use crate::constants::FREEZING_THRESHOLD_THREE_MONTHS;
 use crate::factory::canister::create_canister;
 use crate::factory::types::CanisterCreator;
 use crate::factory::utils::controllers::remove_console_controller;
 use crate::factory::utils::wasm::orbiter_wasm_arg;
 use crate::store::heap::{get_orbiter_fee, increment_orbiters_rate};
+use crate::types::state::Orbiter;
 use candid::{Nat, Principal};
 use junobuild_shared::constants_shared::CREATE_ORBITER_CYCLES;
 use junobuild_shared::ic::api::id;
@@ -11,14 +13,12 @@ use junobuild_shared::mgmt::cmc::cmc_create_canister_install_code;
 use junobuild_shared::mgmt::ic::create_canister_install_code;
 use junobuild_shared::mgmt::types::cmc::SubnetId;
 use junobuild_shared::mgmt::types::ic::CreateCanisterInitSettingsArg;
-use junobuild_shared::types::interface::CreateCanisterArgs;
+use junobuild_shared::types::interface::CreateOrbiterArgs;
 use junobuild_shared::types::state::UserId;
-use crate::accounts::{add_orbiter};
-use crate::types::state::Orbiter;
 
 pub async fn create_orbiter(
     caller: Principal,
-    args: CreateCanisterArgs,
+    args: CreateOrbiterArgs,
 ) -> Result<Principal, String> {
     create_canister(
         create_orbiter_wasm,
@@ -26,7 +26,7 @@ pub async fn create_orbiter(
         &get_orbiter_fee,
         &update_account,
         caller,
-        args,
+        args.into(),
     )
     .await
 }
@@ -69,10 +69,7 @@ async fn create_orbiter_wasm(
     }
 }
 
-fn update_account(
-    user: &UserId,
-    canister_id: &Principal,
-) -> Result<(), String> {
+fn update_account(user: &UserId, canister_id: &Principal) -> Result<(), String> {
     let orbiter = Orbiter::from(canister_id, &None);
     add_orbiter(user, &orbiter)
 }

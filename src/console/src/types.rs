@@ -10,7 +10,9 @@ pub mod state {
     use junobuild_cdn::storage::{ProposalAssetsStable, ProposalContentChunksStable};
     use junobuild_shared::rate::types::{RateConfig, RateTokens};
     use junobuild_shared::types::memory::Memory;
-    use junobuild_shared::types::state::{Controllers, Metadata, OrbiterId, SatelliteId, Timestamp};
+    use junobuild_shared::types::state::{
+        Controllers, Metadata, OrbiterId, SatelliteId, Timestamp,
+    };
     use junobuild_shared::types::state::{MissionControlId, UserId};
     use junobuild_storage::types::state::StorageHeapState;
     use serde::{Deserialize, Serialize};

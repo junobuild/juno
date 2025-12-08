@@ -103,11 +103,15 @@ where
 }
 
 pub fn add_satellite(user: &UserId, satellite: &Satellite) -> Result<(), String> {
-    add_segment(user, satellite, |account, segment| account.add_satellite(segment))
+    add_segment(user, satellite, |account, segment| {
+        account.add_satellite(segment)
+    })
 }
 
 pub fn add_orbiter(user: &UserId, orbiter: &Orbiter) -> Result<(), String> {
-    add_segment(user, orbiter, |account, segment| account.add_orbiter(segment))
+    add_segment(user, orbiter, |account, segment| {
+        account.add_orbiter(segment)
+    })
 }
 
 fn add_segment<T>(

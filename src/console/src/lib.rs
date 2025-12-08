@@ -41,10 +41,11 @@ use junobuild_shared::ic::response::ManualReply;
 use junobuild_shared::rate::types::RateConfig;
 use junobuild_shared::types::core::DomainName;
 use junobuild_shared::types::domain::CustomDomains;
+use junobuild_shared::types::interface::CreateOrbiterArgs;
 use junobuild_shared::types::interface::CreateSatelliteArgs;
 use junobuild_shared::types::interface::{
-    AssertMissionControlCenterArgs, CreateCanisterArgs, DeleteControllersArgs,
-    GetCreateCanisterFeeArgs, SetControllersArgs,
+    AssertMissionControlCenterArgs, DeleteControllersArgs, GetCreateCanisterFeeArgs,
+    SetControllersArgs,
 };
 use junobuild_shared::types::list::{ListParams, ListResults};
 use junobuild_shared::types::state::Controllers;

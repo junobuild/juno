@@ -114,7 +114,7 @@ export const idlFactory = ({ IDL }) => {
 		headers: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
 		chunk_ids: IDL.Vec(IDL.Nat)
 	});
-	const CreateCanisterArgs = IDL.Record({
+	const CreateOrbiterArgs = IDL.Record({
 		block_index: IDL.Opt(IDL.Nat64),
 		subnet_id: IDL.Opt(IDL.Principal),
 		user: IDL.Principal
@@ -452,7 +452,7 @@ export const idlFactory = ({ IDL }) => {
 		commit_proposal_many_assets_upload: IDL.Func([IDL.Vec(CommitBatch)], [], []),
 		count_proposals: IDL.Func([], [IDL.Nat64], []),
 		create_mission_control: IDL.Func([], [IDL.Principal], []),
-		create_orbiter: IDL.Func([CreateCanisterArgs], [IDL.Principal], []),
+		create_orbiter: IDL.Func([CreateOrbiterArgs], [IDL.Principal], []),
 		create_satellite: IDL.Func([CreateSatelliteArgs], [IDL.Principal], []),
 		del_controllers: IDL.Func([DeleteControllersArgs], [], []),
 		del_custom_domain: IDL.Func([IDL.Text], [], []),

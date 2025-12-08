@@ -7,8 +7,8 @@ import { missionControlConfigMonitoring } from '$lib/derived/mission-control/mis
 import { isSkylab } from '$lib/env/app.env';
 import { execute } from '$lib/services/_progress.services';
 import { reloadAccount } from '$lib/services/console/account.services';
-import { createSatelliteWithConfig as createSatelliteWithConsoleAndConfig } from '$lib/services/console/console.satellites.services';
 import { createOrbiterWithConfig as createOrbiterWithConsoleAndConfig } from '$lib/services/console/console.orbiters.services';
+import { createSatelliteWithConfig as createSatelliteWithConsoleAndConfig } from '$lib/services/console/console.satellites.services';
 import { loadCredits } from '$lib/services/console/credits.services';
 import { unsafeSetEmulatorControllerForSatellite } from '$lib/services/emulator.services';
 import {
@@ -386,7 +386,11 @@ export const createOrbiterWizard = async ({
 			}
 		});
 
-	const createWithMissionControlFn = async ({ identity }: { identity: Identity }): Promise<OrbiterId> => {
+	const createWithMissionControlFn = async ({
+		identity
+	}: {
+		identity: Identity;
+	}): Promise<OrbiterId> => {
 		const fn = nonNullish(subnetId) ? createOrbiterWithConfig : createOrbiter;
 
 		const { orbiter_id } = await fn({

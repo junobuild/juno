@@ -100,7 +100,7 @@ export interface Controller {
 	expires_at: [] | [bigint];
 }
 export type ControllerScope = { Write: null } | { Admin: null } | { Submit: null };
-export interface CreateCanisterArgs {
+export interface CreateOrbiterArgs {
 	block_index: [] | [bigint];
 	subnet_id: [] | [Principal];
 	user: Principal;
@@ -410,7 +410,7 @@ export interface _SERVICE {
 	commit_proposal_asset_upload: ActorMethod<[CommitBatch], undefined>;
 	commit_proposal_many_assets_upload: ActorMethod<[Array<CommitBatch>], undefined>;
 	count_proposals: ActorMethod<[], bigint>;
-	create_orbiter: ActorMethod<[CreateCanisterArgs], Principal>;
+	create_orbiter: ActorMethod<[CreateOrbiterArgs], Principal>;
 	create_satellite: ActorMethod<[CreateSatelliteArgs], Principal>;
 	del_controllers: ActorMethod<[DeleteControllersArgs], undefined>;
 	del_custom_domain: ActorMethod<[string], undefined>;

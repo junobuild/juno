@@ -105,6 +105,7 @@ export type ControllerScope = { Write: null } | { Admin: null } | { Submit: null
 export interface CreateOrbiterArgs {
 	block_index: [] | [bigint];
 	subnet_id: [] | [Principal];
+	name: [] | [string];
 	user: Principal;
 }
 export interface CreateSatelliteArgs {

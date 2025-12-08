@@ -99,16 +99,16 @@
 			{detail}
 			{onclose}
 			priceLabel={$i18n.analytics.create_orbiter_price}
-			bind:insufficientFunds
 			bind:withDevIcpApprove
 			bind:withFee
+			bind:insufficientFunds
 		>
 			<form onsubmit={onSubmit}>
 				<CanisterAdvancedOptions {detail} bind:subnetId bind:monitoringStrategy />
 
 				<button
 					{...testId(testIds.createAnalytics.create)}
-					disabled={$authSignedOut || isNullish($missionControlId) || insufficientFunds}
+					disabled={$authSignedOut || insufficientFunds}
 					type="submit"
 				>
 					{$i18n.analytics.create}

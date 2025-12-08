@@ -8,6 +8,7 @@ import { isSkylab } from '$lib/env/app.env';
 import { execute } from '$lib/services/_progress.services';
 import { reloadAccount } from '$lib/services/console/account.services';
 import { createSatelliteWithConfig as createSatelliteWithConsoleAndConfig } from '$lib/services/console/console.satellites.services';
+import { createOrbiterWithConfig as createOrbiterWithConsoleAndConfig } from '$lib/services/console/console.orbiters.services';
 import { loadCredits } from '$lib/services/console/credits.services';
 import { unsafeSetEmulatorControllerForSatellite } from '$lib/services/emulator.services';
 import {
@@ -376,7 +377,16 @@ export const createOrbiterWizard = async ({
 	  }
 	| { success: 'error'; err?: unknown }
 > => {
-	const createFn = async ({ identity }: { identity: Identity }): Promise<OrbiterId> => {
+	const createWithConsoleFn = async ({ identity }: { identity: Identity }): Promise<OrbiterId> =>
+		await createOrbiterWithConsoleAndConfig({
+			identity,
+			// TODO: duplicate payload
+			config: {
+				...(nonNullish(subnetId) && { subnetId: Principal.fromText(subnetId) })
+			}
+		});
+
+	const createWithMissionControlFn = async ({ identity }: { identity: Identity }): Promise<OrbiterId> => {
 		const fn = nonNullish(subnetId) ? createOrbiterWithConfig : createOrbiter;
 
 		const { orbiter_id } = await fn({
@@ -431,7 +441,7 @@ export const createOrbiterWizard = async ({
 		...rest,
 		missionControlId,
 		onProgress,
-		createFn,
+		createFn: missionControlId === null ? createWithConsoleFn : createWithMissionControlFn,
 		reloadFn,
 		monitoringFn,
 		errorLabel: 'orbiter_unexpected_error'

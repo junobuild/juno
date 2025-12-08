@@ -2,7 +2,7 @@ import type { MissionControlDid } from '$declarations';
 import { getMissionControlActor } from '$lib/api/actors/actor.juno.api';
 import { loadDataStore } from '$lib/services/_loader.services';
 import { authStore } from '$lib/stores/auth.store';
-import { orbitersUncertifiedStore } from '$lib/stores/orbiter/orbiter.store';
+import { orbitersUncertifiedStore } from '$lib/stores/mission-control/orbiter.store';
 import type { Option } from '$lib/types/utils';
 import { assertNonNullish, isNullish, toNullable } from '@dfinity/utils';
 import type { Identity } from '@icp-sdk/core/agent';

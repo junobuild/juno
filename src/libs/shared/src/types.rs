@@ -132,7 +132,7 @@ pub mod interface {
     use serde::{Deserialize, Serialize};
 
     #[derive(CandidType, Deserialize)]
-    pub struct CreateCanisterArgs {
+    pub struct CreateOrbiterArgs {
         pub user: UserId,
         pub block_index: Option<BlockIndex>,
         pub subnet_id: Option<SubnetId>,

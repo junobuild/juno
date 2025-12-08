@@ -10,19 +10,19 @@ use junobuild_shared::mgmt::cmc::cmc_create_canister_install_code;
 use junobuild_shared::mgmt::ic::create_canister_install_code;
 use junobuild_shared::mgmt::types::cmc::SubnetId;
 use junobuild_shared::mgmt::types::ic::CreateCanisterInitSettingsArg;
-use junobuild_shared::types::interface::CreateCanisterArgs;
+use junobuild_shared::types::interface::CreateOrbiterArgs;
 use junobuild_shared::types::state::{MissionControlId, UserId};
 
 pub async fn create_orbiter(
     caller: Principal,
-    args: CreateCanisterArgs,
+    args: CreateOrbiterArgs,
 ) -> Result<Principal, String> {
     create_canister(
         create_orbiter_wasm,
         &increment_orbiters_rate,
         &get_orbiter_fee,
         caller,
-        args,
+        args.into(),
     )
     .await
 }

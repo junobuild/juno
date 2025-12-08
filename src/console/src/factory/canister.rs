@@ -3,6 +3,7 @@ use crate::accounts::{
     get_account_with_existing_mission_control,
 };
 use crate::factory::services::ledger::{refund_payment, verify_payment};
+use crate::factory::types::CreateCanisterArgs;
 use crate::store::stable::{
     insert_new_payment, is_known_payment, update_payment_completed, update_payment_refunded,
 };
@@ -10,7 +11,6 @@ use crate::types::ledger::Payment;
 use candid::Principal;
 use ic_ledger_types::{BlockIndex, Tokens};
 use junobuild_shared::mgmt::types::cmc::SubnetId;
-use junobuild_shared::types::interface::CreateCanisterArgs;
 use junobuild_shared::types::state::{MissionControlId, UserId};
 use std::future::Future;
 

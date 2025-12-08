@@ -8,7 +8,7 @@ use ic_cdk::call::Call;
 use ic_ledger_types::BlockIndex;
 use junobuild_shared::env::CONSOLE;
 use junobuild_shared::ic::DecodeCandid;
-use junobuild_shared::types::interface::CreateCanisterArgs;
+use junobuild_shared::types::interface::CreateOrbiterArgs;
 use junobuild_shared::types::state::{OrbiterId, OrbiterSatelliteConfig, SatelliteId, UserId};
 use std::collections::HashMap;
 
@@ -78,7 +78,7 @@ async fn create_and_save_orbiter(
 ) -> Result<Orbiter, String> {
     let console = Principal::from_text(CONSOLE).unwrap();
 
-    let args = CreateCanisterArgs {
+    let args = CreateOrbiterArgs {
         user,
         block_index,
         subnet_id,

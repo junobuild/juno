@@ -62,8 +62,13 @@ export const loadOrbiters = async ({
 	missionControlId: Option<Principal>;
 	reload?: boolean;
 }): Promise<{ result: 'skip' | 'success' | 'error' }> => {
-	if (isNullish(missionControlId)) {
+	if (missionControlId === undefined) {
 		return { result: 'skip' };
+	}
+
+	if (missionControlId === null) {
+		orbitersUncertifiedStore.set(null);
+		return {result: 'success'};
 	}
 
 	const load = async (identity: Identity): Promise<MissionControlDid.Orbiter[]> => {
@@ -79,7 +84,7 @@ export const loadOrbiters = async ({
 
 	const { identity } = get(authStore);
 
-	return await loadDataStore<MissionControlDid.Orbiter[]>({
+	return await loadDataStore<MissionControlDid.Orbiter[] | null>({
 		identity,
 		store: orbitersUncertifiedStore,
 		errorLabel: 'orbiters_loading',

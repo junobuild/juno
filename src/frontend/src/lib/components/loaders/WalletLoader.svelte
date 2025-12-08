@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { isNullish, nonNullish } from '@dfinity/utils';
+	import { encodeIcrcAccount } from '@icp-sdk/canisters/ledger/icrc';
 	import { onDestroy, onMount, type Snippet } from 'svelte';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
-	import { WalletWorker } from '$lib/services/workers/worker.wallet.services';
 	import { devId } from '$lib/derived/dev.derived';
-	import { encodeIcrcAccount } from '@icp-sdk/canisters/ledger/icrc';
+	import { WalletWorker } from '$lib/services/workers/worker.wallet.services';
 
 	interface Props {
 		children?: Snippet;

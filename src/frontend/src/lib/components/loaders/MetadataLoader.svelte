@@ -6,7 +6,7 @@
 	import NoMonitoringLoader from '$lib/components/loaders/NoMonitoringLoader.svelte';
 	import RegistryLoader from '$lib/components/loaders/RegistryLoader.svelte';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
-	import { orbiterStore } from '$lib/derived/orbiter/orbiter.derived';
+	import { orbiterStore } from '$lib/derived/orbiter.derived';
 	import type { CanisterSegment } from '$lib/types/canister';
 	import type { Satellite } from '$lib/types/satellite';
 

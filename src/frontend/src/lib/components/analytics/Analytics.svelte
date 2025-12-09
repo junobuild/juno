@@ -15,7 +15,7 @@
 	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
 	import Warning from '$lib/components/ui/Warning.svelte';
 	import { orbiterFeatures } from '$lib/derived/orbiter/orbiter-satellites.derived';
-	import { orbitersStore, orbiterStore } from '$lib/derived/orbiter/orbiter.derived';
+	import { orbitersStore, orbiterStore } from '$lib/derived/orbiter.derived';
 	import { satelliteStore } from '$lib/derived/satellite/satellite.derived';
 	import { getAnalyticsPageViewsForPeriods } from '$lib/services/orbiter/orbiter.pagination.page-views.services';
 	import { getAnalyticsPerformanceMetricsForPeriods } from '$lib/services/orbiter/orbiter.pagination.performance-metrics.services';

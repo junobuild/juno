@@ -17,7 +17,7 @@
 		missionControlNotMonitored,
 		missionControlSettingsLoaded
 	} from '$lib/derived/mission-control/mission-control-settings.derived';
-	import { orbiterStore } from '$lib/derived/orbiter/orbiter.derived';
+	import { orbiterStore } from '$lib/derived/orbiter.derived';
 	import { missionControlVersion } from '$lib/derived/version.derived';
 	import { balance } from '$lib/derived/wallet/balance.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';

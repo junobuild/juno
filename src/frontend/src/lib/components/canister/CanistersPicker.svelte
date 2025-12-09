@@ -3,7 +3,7 @@
 	import type { Principal } from '@icp-sdk/core/principal';
 	import { onMount } from 'svelte';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
-	import { orbiterStore } from '$lib/derived/orbiter/orbiter.derived';
+	import { orbiterStore } from '$lib/derived/orbiter.derived';
 	import { sortedSatellites } from '$lib/derived/satellites.derived';
 	import { loadOrbiters } from '$lib/services/mission-control/mission-control.orbiters.services';
 	import { loadSatellites } from '$lib/services/mission-control/mission-control.satellites.services';

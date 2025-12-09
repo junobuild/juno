@@ -13,7 +13,7 @@
 	} from '$lib/derived/ic-mgmt/canisters.derived';
 	import { satellitesWithSyncData } from '$lib/derived/mission-control/satellites-merged.derived';
 	import { orbiterWithSyncData } from '$lib/derived/orbiter/orbiter-merged.derived';
-	import { orbiterStore } from '$lib/derived/orbiter/orbiter.derived';
+	import { orbiterStore } from '$lib/derived/orbiter.derived';
 	import { sortedSatellites } from '$lib/derived/satellites.derived';
 	import { loadOrbiters } from '$lib/services/mission-control/mission-control.orbiters.services';
 	import { loadSatellites } from '$lib/services/mission-control/mission-control.satellites.services';

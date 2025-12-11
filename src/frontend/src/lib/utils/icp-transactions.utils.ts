@@ -2,13 +2,13 @@ import { getAccountIdentifier } from '$lib/api/icp-index.api';
 import type { IcTransactionUi } from '$lib/types/ic-transaction';
 import type { OptionIdentity } from '$lib/types/itentity';
 import { fromNullable, jsonReplacer, nonNullish } from '@dfinity/utils';
-import type { Tokens, TransactionWithId } from '@icp-sdk/canisters/ledger/icp';
+import type { IcpIndexDid } from '@icp-sdk/canisters/ledger/icp';
 
 export const mapIcpTransaction = ({
 	transaction: { transaction, id },
 	identity
 }: {
-	transaction: TransactionWithId;
+	transaction: IcpIndexDid.TransactionWithId;
 	identity: OptionIdentity;
 }): IcTransactionUi => {
 	const { operation, timestamp, memo } = transaction;
@@ -46,8 +46,8 @@ export const mapIcpTransaction = ({
 		incoming
 	}: {
 		incoming: boolean | undefined;
-		fee: Tokens;
-		amount: Tokens;
+		fee: IcpIndexDid.Tokens;
+		amount: IcpIndexDid.Tokens;
 	}): bigint => amount.e8s + (incoming === false ? fee.e8s : 0n);
 
 	if ('Approve' in operation) {

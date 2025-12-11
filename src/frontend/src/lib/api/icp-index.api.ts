@@ -3,8 +3,8 @@ import type { OptionIdentity } from '$lib/types/itentity';
 import { assertNonNullish } from '@dfinity/utils';
 import {
 	AccountIdentifier,
-	IndexCanister,
-	type GetAccountIdentifierTransactionsResponse
+	IcpIndexCanister,
+	type IcpIndexDid
 } from '@icp-sdk/canisters/ledger/icp';
 import type { Principal } from '@icp-sdk/core/principal';
 
@@ -22,7 +22,7 @@ export const getBalance = async ({
 
 	const agent = await getAgent({ identity });
 
-	const { accountBalance } = IndexCanister.create({
+	const { accountBalance } = IcpIndexCanister.create({
 		agent
 	});
 
@@ -44,12 +44,12 @@ export const getTransactions = async ({
 	start?: bigint;
 	maxResults?: bigint;
 	certified: boolean;
-}): Promise<GetAccountIdentifierTransactionsResponse> => {
+}): Promise<IcpIndexDid.GetAccountIdentifierTransactionsResponse> => {
 	assertNonNullish(identity, 'No internet identity to initialize the Index actor.');
 
 	const agent = await getAgent({ identity });
 
-	const { getTransactions } = IndexCanister.create({
+	const { getTransactions } = IcpIndexCanister.create({
 		agent
 	});
 

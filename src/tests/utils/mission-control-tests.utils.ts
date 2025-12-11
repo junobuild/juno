@@ -10,7 +10,7 @@ import { IDL } from '@icp-sdk/core/candid';
 import type { Principal } from '@icp-sdk/core/principal';
 import { controllersInitArgs, ORBITER_WASM_PATH, SATELLITE_WASM_PATH } from './setup-tests.utils';
 
-export const missionControlUserInitArgs = (owner: Principal): ArrayBuffer =>
+export const missionControlUserInitArgs = (owner: Principal): Uint8Array =>
 	IDL.encode(
 		[
 			IDL.Record({
@@ -18,7 +18,7 @@ export const missionControlUserInitArgs = (owner: Principal): ArrayBuffer =>
 			})
 		],
 		[{ user: owner }]
-	).buffer as ArrayBuffer;
+	);
 
 export const setupMissionControlModules = async ({
 	pic,

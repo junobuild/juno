@@ -10,7 +10,7 @@ const NS_PER_MS = 1e6;
 const MS_PER_S = 1e3;
 const S_PER_MIN = 60;
 
-const getRootKey = async (pic: PocketIc): Promise<ArrayBufferLike> => {
+const getRootKey = async (pic: PocketIc): Promise<Uint8Array> => {
 	const subnets = await pic.getApplicationSubnets();
 	return pic.getPubKey(subnets[0].id);
 };
@@ -44,7 +44,7 @@ export const assertCertification = async ({
 		canisterId.toUint8Array(),
 		currentTimeNs,
 		maxCertTimeOffsetNs,
-		new Uint8Array(rootKey),
+		rootKey,
 		CERTIFICATE_VERSION
 	);
 

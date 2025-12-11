@@ -1,11 +1,5 @@
 import type { ActorInterface, CanisterFixture, PocketIc } from '@dfinity/pic';
-import {
-	arrayBufferToUint8Array,
-	fromNullable,
-	hexStringToUint8Array,
-	nonNullish,
-	toNullable
-} from '@dfinity/utils';
+import { fromNullable, hexStringToUint8Array, nonNullish, toNullable } from '@dfinity/utils';
 import type { canister_status_result } from '@icp-sdk/canisters/ic-management';
 import { type Identity, MANAGEMENT_CANISTER_ID } from '@icp-sdk/core/agent';
 import { IDL } from '@icp-sdk/core/candid';
@@ -154,7 +148,7 @@ interface PicParams {
 
 interface SetupChunkedCanisterParams extends PicParams {
 	wasmPath: string;
-	arg?: ArrayBuffer;
+	arg?: Uint8Array;
 	idlFactory: IDL.InterfaceFactory;
 }
 
@@ -245,7 +239,7 @@ const clearChunkStoreApi = async ({
 
 	await pic.updateCall({
 		method: 'clear_chunk_store',
-		arg: arg.buffer,
+		arg,
 		canisterId: Principal.fromText(MANAGEMENT_CANISTER_ID),
 		sender: sender.getPrincipal()
 	});
@@ -342,15 +336,12 @@ const uploadChunkApi = async ({
 
 	const response = await pic.updateCall({
 		method: 'upload_chunk',
-		arg: arg.buffer,
+		arg,
 		canisterId: Principal.fromText(MANAGEMENT_CANISTER_ID),
 		sender: sender.getPrincipal()
 	});
 
-	const result = IDL.decode(
-		toNullable(upload_chunk_result),
-		arrayBufferToUint8Array(response as ArrayBuffer)
-	);
+	const result = IDL.decode(toNullable(upload_chunk_result), response);
 
 	const [hash] = result as unknown as [upload_chunk_result];
 
@@ -372,7 +363,7 @@ const installChunkedCodeApi = async ({
 	mode: canister_install_mode;
 }) => {
 	const payload: install_chunked_code_args = {
-		arg: nonNullish(initArg) ? arrayBufferToUint8Array(initArg) : new Uint8Array(),
+		arg: nonNullish(initArg) ? initArg : new Uint8Array(),
 		wasm_module_hash: hexStringToUint8Array(wasmModuleHash),
 		mode,
 		chunk_hashes_list: chunkHashesList,
@@ -387,7 +378,7 @@ const installChunkedCodeApi = async ({
 
 	await pic.updateCall({
 		method: 'install_chunked_code',
-		arg: arg.buffer,
+		arg,
 		canisterId: Principal.fromText(MANAGEMENT_CANISTER_ID),
 		sender: sender.getPrincipal(),
 		targetSubnetId: subnetId ?? undefined
@@ -405,13 +396,12 @@ export const canisterStatus = async ({
 		canisterId: Principal.fromText(MANAGEMENT_CANISTER_ID),
 		sender: sender.getPrincipal(),
 		method: 'canister_status',
-		arg: arg.buffer
+		arg
 	});
 
-	const result = IDL.decode(
-		toNullable(canister_status_result),
-		arrayBufferToUint8Array(response as ArrayBuffer)
-	) as unknown as [canister_status_result];
+	const result = IDL.decode(toNullable(canister_status_result), response) as unknown as [
+		canister_status_result
+	];
 
 	return fromNullable(result);
 };
@@ -427,6 +417,6 @@ export const stopCanister = async ({
 		canisterId: Principal.fromText(MANAGEMENT_CANISTER_ID),
 		sender: sender.getPrincipal(),
 		method: 'stop_canister',
-		arg: arg.buffer
+		arg
 	});
 };

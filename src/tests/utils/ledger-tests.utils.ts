@@ -62,7 +62,7 @@ export const setupLedger = async ({
 		idlFactory,
 		wasm: destination,
 		sender: controller.getPrincipal(),
-		arg: arg.buffer,
+		arg,
 		targetCanisterId: LEDGER_ID,
 		targetSubnetId: subnet.id
 	});

@@ -1,4 +1,4 @@
-import type { ConsoleDid, MissionControlDid } from '$declarations';
+import type { MissionControlDid } from '$declarations';
 import type {
 	SatelliteUiMetadataSchema,
 	SatelliteUiTagsSchema
@@ -7,7 +7,7 @@ import type { CanisterSyncData } from '$lib/types/canister';
 import type { Principal } from '@icp-sdk/core/principal';
 import type * as z from 'zod';
 
-export type Satellite = MissionControlDid.Satellite | ConsoleDid.Satellite;
+export type Satellite = MissionControlDid.Satellite;
 
 export type SatelliteIdText = string;
 export type SatelliteId = Principal;

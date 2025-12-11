@@ -1,11 +1,11 @@
-use crate::accounts::add_satellite;
 use crate::constants::FREEZING_THRESHOLD_ONE_YEAR;
 use crate::factory::canister::create_canister;
 use crate::factory::types::CanisterCreator;
 use crate::factory::utils::controllers::remove_console_controller;
 use crate::factory::utils::wasm::satellite_wasm_arg;
 use crate::store::heap::{get_satellite_fee, increment_satellites_rate};
-use crate::types::state::Satellite;
+use crate::store::stable::add_segment as add_segment_store;
+use crate::types::state::{Segment, SegmentKey, SegmentType};
 use candid::{Nat, Principal};
 use junobuild_shared::constants_shared::CREATE_SATELLITE_CYCLES;
 use junobuild_shared::ic::api::id;
@@ -29,7 +29,7 @@ pub async fn create_satellite(
         },
         &increment_satellites_rate,
         &get_satellite_fee,
-        &move |used_id, canister_id| update_account(&used_id, &canister_id, &name),
+        &move |used_id, canister_id| add_segment(&used_id, &canister_id, &name),
         caller,
         args.into(),
     )
@@ -75,11 +75,8 @@ async fn create_satellite_wasm(
     }
 }
 
-fn update_account(
-    user: &UserId,
-    canister_id: &Principal,
-    name: &Option<String>,
-) -> Result<(), String> {
-    let satellite = Satellite::from(canister_id, name);
-    add_satellite(user, &satellite)
+fn add_segment(user: &UserId, canister_id: &Principal, name: &Option<String>) {
+    let satellite = Segment::from(canister_id, name);
+    let key = SegmentKey::from(user, canister_id, SegmentType::Satellite);
+    add_segment_store(&key, &satellite)
 }

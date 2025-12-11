@@ -4,8 +4,6 @@ type Account = record {
   mission_control_id : opt principal;
   provider : opt Provider;
   owner : principal;
-  orbiters : opt vec record { principal; Orbiter };
-  satellites : opt vec record { principal; Satellite };
   created_at : nat64;
 };
 type AssertMissionControlCenterArgs = record {
@@ -195,6 +193,10 @@ type ListResults = record {
   items : vec record { text; AssetNoContent };
   items_length : nat64;
 };
+type ListSegmentsArgs = record {
+  segment_id : opt principal;
+  segment_type : opt SegmentType;
+};
 type Memory = variant { Heap; Stable };
 type OpenId = record { provider : OpenIdProvider; data : OpenIdData };
 type OpenIdData = record {
@@ -224,12 +226,6 @@ type OpenIdProviderConfig = record {
 type OpenIdProviderDelegationConfig = record {
   targets : opt vec principal;
   max_time_to_live : opt nat64;
-};
-type Orbiter = record {
-  updated_at : nat64;
-  orbiter_id : principal;
-  metadata : vec record { text; text };
-  created_at : nat64;
 };
 type Payment = record {
   status : PaymentStatus;
@@ -276,13 +272,19 @@ type Provider = variant { InternetIdentity; OpenId : OpenId };
 type RateConfig = record { max_tokens : nat64; time_per_token_ns : nat64 };
 type Result = variant { Ok : Authentication; Err : AuthenticationError };
 type Result_1 = variant { Ok : SignedDelegation; Err : GetDelegationError };
-type Satellite = record {
+type Segment = record {
   updated_at : nat64;
   metadata : vec record { text; text };
+  segment_id : principal;
   created_at : nat64;
-  satellite_id : principal;
+};
+type SegmentKey = record {
+  user : principal;
+  segment_id : principal;
+  segment_type : SegmentType;
 };
 type SegmentKind = variant { Orbiter; MissionControl; Satellite };
+type SegmentType = variant { Orbiter; Satellite };
 type SegmentsDeploymentOptions = record {
   orbiter : opt text;
   mission_control_version : opt text;
@@ -399,6 +401,9 @@ service : () -> {
   list_custom_domains : () -> (vec record { text; CustomDomain }) query;
   list_payments : () -> (vec record { nat64; Payment }) query;
   list_proposals : (ListProposalsParams) -> (ListProposalResults) query;
+  list_segments : (ListSegmentsArgs) -> (
+      vec record { SegmentKey; Segment },
+    ) query;
   reject_proposal : (CommitProposal) -> (null);
   set_auth_config : (SetAuthenticationConfig) -> (AuthenticationConfig);
   set_controllers : (SetControllersArgs) -> ();

@@ -20,7 +20,7 @@ pub async fn create_canister<F, Fut>(
     create: F,
     increment_rate: &dyn Fn() -> Result<(), String>,
     get_fee: &dyn Fn() -> Tokens,
-    update_account: &dyn Fn(&UserId, &Principal) -> Result<(), String>,
+    add_segment: &dyn Fn(&UserId, &Principal),
     caller: Principal,
     args: CreateCanisterArgs,
 ) -> Result<Principal, String>
@@ -38,7 +38,7 @@ where
             create_canister_with_account(create, increment_rate, get_fee, &account, creator, args)
                 .await?;
 
-        update_account(&account.owner, &canister_id)?;
+        add_segment(&account.owner, &canister_id);
 
         return Ok(canister_id);
     }

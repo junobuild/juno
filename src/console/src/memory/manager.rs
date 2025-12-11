@@ -11,6 +11,7 @@ const PAYMENTS: MemoryId = MemoryId::new(2);
 const PROPOSAL_ASSETS: MemoryId = MemoryId::new(3);
 const PROPOSAL_CONTENT_CHUNKS: MemoryId = MemoryId::new(4);
 const PROPOSALS: MemoryId = MemoryId::new(5);
+const SEGMENTS: MemoryId = MemoryId::new(6);
 
 thread_local! {
     pub static STATE: RefCell<State> = RefCell::default();
@@ -43,6 +44,10 @@ fn get_memory_proposals() -> Memory {
     MEMORY_MANAGER.with(|m| m.borrow().get(PROPOSALS))
 }
 
+fn get_memory_segments() -> Memory {
+    MEMORY_MANAGER.with(|m| m.borrow().get(SEGMENTS))
+}
+
 pub fn init_stable_state() -> StableState {
     StableState {
         accounts: StableBTreeMap::init(get_memory_accounts()),
@@ -50,5 +55,6 @@ pub fn init_stable_state() -> StableState {
         proposals_assets: StableBTreeMap::init(get_memory_assets()),
         proposals_content_chunks: StableBTreeMap::init(get_memory_content_chunks()),
         proposals: StableBTreeMap::init(get_memory_proposals()),
+        segments: StableBTreeMap::init(get_memory_segments()),
     }
 }

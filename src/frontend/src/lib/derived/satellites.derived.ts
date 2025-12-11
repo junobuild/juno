@@ -1,19 +1,19 @@
-import { accountSatellites } from '$lib/derived/console/account.derived';
+import { consoleSatellites } from '$lib/derived/console/segments.derived';
 import { satellitesStore as mctrlSatellitesStore } from '$lib/derived/mission-control/satellites.derived';
 import type { Satellite, SatelliteUi } from '$lib/types/satellite';
 import { satelliteMetadata, satelliteName } from '$lib/utils/satellite.utils';
 import { derived } from 'svelte/store';
 
 export const satellitesStore = derived(
-	[accountSatellites, mctrlSatellitesStore],
-	([$accountSatellites, $mctrlSatellitesStore]): Satellite[] | undefined => {
-		// Not yet loaded
-		if ($mctrlSatellitesStore === undefined) {
+	[consoleSatellites, mctrlSatellitesStore],
+	([$consoleSatellites, $mctrlSatellitesStore]): Satellite[] | undefined => {
+		// Not yet fully loaded
+		if ($consoleSatellites === undefined || $mctrlSatellitesStore === undefined) {
 			return undefined;
 		}
 
 		return [
-			...$accountSatellites.filter(
+			...$consoleSatellites.filter(
 				({ satellite_id }) =>
 					($mctrlSatellitesStore ?? []).find(
 						({ satellite_id: id }) => id.toText() === satellite_id.toText()

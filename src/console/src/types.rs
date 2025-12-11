@@ -10,9 +10,7 @@ pub mod state {
     use junobuild_cdn::storage::{ProposalAssetsStable, ProposalContentChunksStable};
     use junobuild_shared::rate::types::{RateConfig, RateTokens};
     use junobuild_shared::types::memory::Memory;
-    use junobuild_shared::types::state::{
-        Controllers, Metadata, OrbiterId, SatelliteId, Timestamp,
-    };
+    use junobuild_shared::types::state::{Controllers, Metadata, SegmentId, Timestamp};
     use junobuild_shared::types::state::{MissionControlId, UserId};
     use junobuild_storage::types::state::StorageHeapState;
     use serde::{Deserialize, Serialize};
@@ -24,6 +22,7 @@ pub mod state {
 
     pub type AccountsStable = StableBTreeMap<UserId, Account, Memory>;
     pub type PaymentsStable = StableBTreeMap<BlockIndex, Payment, Memory>;
+    pub type SegmentsStable = StableBTreeMap<SegmentKey, Segment, Memory>;
 
     #[derive(Serialize, Deserialize)]
     pub struct State {
@@ -40,6 +39,7 @@ pub mod state {
         pub proposals_assets: ProposalAssetsStable,
         pub proposals_content_chunks: ProposalContentChunksStable,
         pub proposals: ProposalsStable,
+        pub segments: SegmentsStable,
     }
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
@@ -60,8 +60,6 @@ pub mod state {
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct Account {
         pub mission_control_id: Option<MissionControlId>,
-        pub satellites: Option<HashMap<SatelliteId, Satellite>>,
-        pub orbiters: Option<HashMap<OrbiterId, Orbiter>>,
         pub owner: UserId,
         pub provider: Option<Provider>,
         pub credits: Tokens,
@@ -136,24 +134,29 @@ pub mod state {
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub struct Satellite {
-        pub satellite_id: SatelliteId,
+    pub struct Segment {
+        pub segment_id: SegmentId,
         pub metadata: Metadata,
         pub created_at: Timestamp,
         pub updated_at: Timestamp,
     }
 
-    #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub struct Orbiter {
-        pub orbiter_id: OrbiterId,
-        pub metadata: Metadata,
-        pub created_at: Timestamp,
-        pub updated_at: Timestamp,
+    #[derive(CandidType, Serialize, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+    pub struct SegmentKey {
+        pub user: UserId,
+        pub segment_type: SegmentType,
+        pub segment_id: SegmentId,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+    pub enum SegmentType {
+        Satellite,
+        Orbiter,
     }
 }
 
 pub mod interface {
-    use crate::types::state::Account;
+    use crate::types::state::{Account, SegmentType};
     use candid::CandidType;
     use junobuild_auth::delegation::types::{
         OpenIdGetDelegationArgs, OpenIdPrepareDelegationArgs, PrepareDelegationError,
@@ -161,6 +164,7 @@ pub mod interface {
     };
     use junobuild_auth::state::types::config::AuthenticationConfig;
     use junobuild_cdn::proposals::ProposalId;
+    use junobuild_shared::types::state::SegmentId;
     use junobuild_storage::types::config::StorageConfig;
     use serde::{Deserialize, Serialize};
 
@@ -197,6 +201,12 @@ pub mod interface {
     #[derive(CandidType, Serialize, Deserialize)]
     pub enum GetDelegationArgs {
         OpenId(OpenIdGetDelegationArgs),
+    }
+
+    #[derive(CandidType, Deserialize, Clone)]
+    pub struct ListSegmentsArgs {
+        pub segment_type: Option<SegmentType>,
+        pub segment_id: Option<SegmentId>,
     }
 }
 

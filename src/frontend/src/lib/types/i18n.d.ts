@@ -621,6 +621,7 @@ interface I18nErrors {
 	analytics_page_views_export: string;
 	satellites_loading: string;
 	orbiters_loading: string;
+	segments_loading: string;
 	orbiter_configuration_missing: string;
 	orbiter_configuration_unexpected: string;
 	orbiter_configuration_listing: string;

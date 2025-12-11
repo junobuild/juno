@@ -5,6 +5,7 @@
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import { orbiterStore } from '$lib/derived/orbiter.derived';
 	import { sortedSatellites } from '$lib/derived/satellites.derived';
+	import { loadSegments } from '$lib/services/console/segments.services';
 	import { loadOrbiters } from '$lib/services/mission-control/mission-control.orbiters.services';
 	import { loadSatellites } from '$lib/services/mission-control/mission-control.satellites.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
@@ -27,7 +28,8 @@
 		async () =>
 			await Promise.all([
 				loadOrbiters({ missionControlId: $missionControlId }),
-				loadSatellites({ missionControlId: $missionControlId })
+				loadSatellites({ missionControlId: $missionControlId }),
+				loadSegments({ missionControlId: $missionControlId })
 			])
 	);
 </script>

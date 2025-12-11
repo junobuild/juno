@@ -1,5 +1,4 @@
-import type { MissionControlDid } from '$declarations';
-import { accountOrbiters } from '$lib/derived/console/account.derived';
+import { consoleOrbiters } from '$lib/derived/console/segments.derived';
 import { mctrlOrbiters } from '$lib/derived/mission-control/orbiters.derived';
 import { orbitersUncertifiedStore } from '$lib/stores/mission-control/orbiter.store';
 import {
@@ -11,20 +10,20 @@ import { nonNullish } from '@dfinity/utils';
 import { derived, type Readable } from 'svelte/store';
 
 export const orbitersStore = derived(
-	[accountOrbiters, mctrlOrbiters],
-	([$accountOrbiters, $mctrlOrbiters]): Orbiter[] | undefined | null => {
-		// Not yet loaded
-		if ($mctrlOrbiters === undefined || $accountOrbiters === undefined) {
+	[consoleOrbiters, mctrlOrbiters],
+	([$consoleOrbiters, $mctrlOrbiters]): Orbiter[] | undefined | null => {
+		// Not yet fully loaded
+		if ($consoleOrbiters === undefined || $mctrlOrbiters === undefined) {
 			return undefined;
 		}
 
 		// No orbiter
-		if ($mctrlOrbiters === null && $accountOrbiters == null) {
+		if ($consoleOrbiters.length === 0 && $mctrlOrbiters === null) {
 			return null;
 		}
 
 		return [
-			...($accountOrbiters ?? []).filter(
+			...($consoleOrbiters ?? []).filter(
 				({ orbiter_id }) =>
 					($mctrlOrbiters ?? []).find(
 						({ orbiter_id: id }) => id.toText() === orbiter_id.toText()

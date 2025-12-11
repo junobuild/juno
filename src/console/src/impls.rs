@@ -1,7 +1,9 @@
 use crate::constants::{ORBITER_CREATION_FEE_ICP, SATELLITE_CREATION_FEE_ICP};
 use crate::memory::manager::init_stable_state;
 use crate::types::ledger::Payment;
-use crate::types::state::{Account, Fee, Fees, HeapState, Rate, Rates, State};
+use crate::types::state::{
+    Account, Fee, Fees, HeapState, Rate, Rates, Segment, SegmentKey, SegmentType, State,
+};
 use ic_cdk::api::time;
 use ic_stable_structures::storable::Bound;
 use ic_stable_structures::Storable;
@@ -10,7 +12,9 @@ use junobuild_shared::rate::types::RateTokens;
 use junobuild_shared::serializers::{
     deserialize_from_bytes, serialize_into_bytes, serialize_to_bytes,
 };
+use junobuild_shared::types::state::{Metadata, SegmentId, UserId};
 use std::borrow::Cow;
+use std::collections::HashMap;
 
 impl Default for State {
     fn default() -> Self {
@@ -94,4 +98,66 @@ impl Storable for Payment {
     }
 
     const BOUND: Bound = Bound::Unbounded;
+}
+
+impl Storable for Segment {
+    fn to_bytes(&self) -> Cow<'_, [u8]> {
+        serialize_to_bytes(self)
+    }
+
+    fn into_bytes(self) -> Vec<u8> {
+        serialize_into_bytes(&self)
+    }
+
+    fn from_bytes(bytes: Cow<[u8]>) -> Self {
+        deserialize_from_bytes(bytes)
+    }
+
+    const BOUND: Bound = Bound::Unbounded;
+}
+
+impl Storable for SegmentKey {
+    fn to_bytes(&self) -> Cow<'_, [u8]> {
+        serialize_to_bytes(self)
+    }
+
+    fn into_bytes(self) -> Vec<u8> {
+        serialize_into_bytes(&self)
+    }
+
+    fn from_bytes(bytes: Cow<[u8]>) -> Self {
+        deserialize_from_bytes(bytes)
+    }
+
+    const BOUND: Bound = Bound::Unbounded;
+}
+
+fn init_metadata(name: &Option<String>) -> Metadata {
+    match name {
+        Some(name) => HashMap::from([("name".to_string(), name.to_owned())]),
+        None => HashMap::new(),
+    }
+}
+
+impl Segment {
+    pub fn from(segment_id: &SegmentId, name: &Option<String>) -> Self {
+        let now = time();
+
+        Self {
+            segment_id: *segment_id,
+            metadata: init_metadata(name),
+            created_at: now,
+            updated_at: now,
+        }
+    }
+}
+
+impl SegmentKey {
+    pub fn from(user: &UserId, segment_id: &SegmentId, segment_type: SegmentType) -> Self {
+        Self {
+            user: *user,
+            segment_type,
+            segment_id: *segment_id,
+        }
+    }
 }

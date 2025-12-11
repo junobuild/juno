@@ -41,26 +41,12 @@ export const idlFactory = ({ IDL }) => {
 		InternetIdentity: IDL.Null,
 		OpenId: OpenId
 	});
-	const Orbiter = IDL.Record({
-		updated_at: IDL.Nat64,
-		orbiter_id: IDL.Principal,
-		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
-		created_at: IDL.Nat64
-	});
-	const Satellite = IDL.Record({
-		updated_at: IDL.Nat64,
-		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
-		created_at: IDL.Nat64,
-		satellite_id: IDL.Principal
-	});
 	const Account = IDL.Record({
 		updated_at: IDL.Nat64,
 		credits: Tokens,
 		mission_control_id: IDL.Opt(IDL.Principal),
 		provider: IDL.Opt(Provider),
 		owner: IDL.Principal,
-		orbiters: IDL.Opt(IDL.Vec(IDL.Tuple(IDL.Principal, Orbiter))),
-		satellites: IDL.Opt(IDL.Vec(IDL.Tuple(IDL.Principal, Satellite))),
 		created_at: IDL.Nat64
 	});
 	const Authentication = IDL.Record({
@@ -403,6 +389,25 @@ export const idlFactory = ({ IDL }) => {
 		items: IDL.Vec(IDL.Tuple(ProposalKey, Proposal)),
 		items_length: IDL.Nat64
 	});
+	const SegmentType = IDL.Variant({
+		Orbiter: IDL.Null,
+		Satellite: IDL.Null
+	});
+	const ListSegmentsArgs = IDL.Record({
+		segment_id: IDL.Opt(IDL.Principal),
+		segment_type: IDL.Opt(SegmentType)
+	});
+	const SegmentKey = IDL.Record({
+		user: IDL.Principal,
+		segment_id: IDL.Principal,
+		segment_type: SegmentType
+	});
+	const Segment = IDL.Record({
+		updated_at: IDL.Nat64,
+		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
+		segment_id: IDL.Principal,
+		created_at: IDL.Nat64
+	});
 	const SetAuthenticationConfig = IDL.Record({
 		openid: IDL.Opt(AuthenticationConfigOpenId),
 		version: IDL.Opt(IDL.Nat64),
@@ -487,6 +492,7 @@ export const idlFactory = ({ IDL }) => {
 		list_custom_domains: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Text, CustomDomain))], []),
 		list_payments: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Nat64, Payment))], []),
 		list_proposals: IDL.Func([ListProposalsParams], [ListProposalResults], []),
+		list_segments: IDL.Func([ListSegmentsArgs], [IDL.Vec(IDL.Tuple(SegmentKey, Segment))], []),
 		reject_proposal: IDL.Func([CommitProposal], [IDL.Null], []),
 		set_auth_config: IDL.Func([SetAuthenticationConfig], [AuthenticationConfig], []),
 		set_controllers: IDL.Func([SetControllersArgs], [], []),

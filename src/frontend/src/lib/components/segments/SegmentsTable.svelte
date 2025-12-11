@@ -15,6 +15,7 @@
 	import { orbiterWithSyncData } from '$lib/derived/orbiter/orbiter-merged.derived';
 	import { orbiterStore } from '$lib/derived/orbiter.derived';
 	import { sortedSatellites } from '$lib/derived/satellites.derived';
+	import { loadSegments as loadSegmentsServices } from '$lib/services/console/segments.services';
 	import { loadOrbiters } from '$lib/services/mission-control/mission-control.orbiters.services';
 	import { loadSatellites } from '$lib/services/mission-control/mission-control.satellites.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
@@ -60,12 +61,15 @@
 	let orbiters = $state<[Principal, MissionControlDid.Orbiter][]>([]);
 
 	const loadSegments = async () => {
-		const [{ result: resultSatellites }, { result: resultOrbiters }] = await Promise.all([
-			loadSatellites({ missionControlId, reload: reloadSegments }),
-			loadOrbiters({ missionControlId, reload: reloadSegments })
-		]);
+		const [{ result: resultSegments }, { result: resultSatellites }, { result: resultOrbiters }] =
+			await Promise.all([
+				loadSegmentsServices({ missionControlId, reload: reloadSegments }),
+				loadSatellites({ missionControlId, reload: reloadSegments }),
+				loadOrbiters({ missionControlId, reload: reloadSegments })
+			]);
 
 		if (
+			!['success', 'skip'].includes(resultSegments) ||
 			!['success', 'skip'].includes(resultSatellites) ||
 			!['success', 'skip'].includes(resultOrbiters)
 		) {

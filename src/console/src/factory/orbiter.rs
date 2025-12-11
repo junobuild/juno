@@ -1,11 +1,11 @@
-use crate::accounts::add_orbiter;
 use crate::constants::FREEZING_THRESHOLD_THREE_MONTHS;
 use crate::factory::canister::create_canister;
 use crate::factory::types::CanisterCreator;
 use crate::factory::utils::controllers::remove_console_controller;
 use crate::factory::utils::wasm::orbiter_wasm_arg;
 use crate::store::heap::{get_orbiter_fee, increment_orbiters_rate};
-use crate::types::state::Orbiter;
+use crate::store::stable::add_segment as add_segment_store;
+use crate::types::state::{Segment, SegmentKey, SegmentType};
 use candid::{Nat, Principal};
 use junobuild_shared::constants_shared::CREATE_ORBITER_CYCLES;
 use junobuild_shared::ic::api::id;
@@ -24,7 +24,7 @@ pub async fn create_orbiter(
         create_orbiter_wasm,
         &increment_orbiters_rate,
         &get_orbiter_fee,
-        &update_account,
+        &add_segment,
         caller,
         args.into(),
     )
@@ -69,7 +69,8 @@ async fn create_orbiter_wasm(
     }
 }
 
-fn update_account(user: &UserId, canister_id: &Principal) -> Result<(), String> {
-    let orbiter = Orbiter::from(canister_id, &None);
-    add_orbiter(user, &orbiter)
+fn add_segment(user: &UserId, canister_id: &Principal) {
+    let orbiter = Segment::from(canister_id, &None);
+    let key = SegmentKey::from(user, canister_id, SegmentType::Orbiter);
+    add_segment_store(&key, &orbiter)
 }

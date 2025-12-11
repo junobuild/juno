@@ -6,10 +6,10 @@ import { missionControlMonitored } from '$lib/derived/mission-control/mission-co
 import { missionControlConfigMonitoring } from '$lib/derived/mission-control/mission-control-user.derived';
 import { isSkylab } from '$lib/env/app.env';
 import { execute } from '$lib/services/_progress.services';
-import { reloadAccount } from '$lib/services/console/account.services';
 import { createOrbiterWithConfig as createOrbiterWithConsoleAndConfig } from '$lib/services/console/console.orbiters.services';
 import { createSatelliteWithConfig as createSatelliteWithConsoleAndConfig } from '$lib/services/console/console.satellites.services';
 import { loadCredits } from '$lib/services/console/credits.services';
+import { loadSegments } from '$lib/services/console/segments.services';
 import { unsafeSetEmulatorControllerForSatellite } from '$lib/services/emulator.services';
 import {
 	createOrbiter,
@@ -345,7 +345,7 @@ export const createSatelliteWizard = async ({
 
 	const reloadFn = async ({ identity }: { identity: Identity }) => {
 		if (isNullish(missionControlId)) {
-			await reloadAccount({ identity });
+			await loadSegments({ missionControlId, reload: true });
 			return;
 		}
 

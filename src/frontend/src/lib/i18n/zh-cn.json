@@ -605,6 +605,7 @@
 		"analytics_page_views_export": "导出页面浏览数据时发生意外错误。",
 		"satellites_loading": "加载卫星列表时发生错误。",
 		"orbiters_loading": "加载轨道器列表时发生错误。",
+		"segments_loading": "加载片段列表时发生错误。",
 		"orbiter_configuration_missing": "必须提供卫星和配置。",
 		"orbiter_configuration_unexpected": "编辑配置时发生意外错误。",
 		"orbiter_configuration_listing": "获取配置时发生错误。",

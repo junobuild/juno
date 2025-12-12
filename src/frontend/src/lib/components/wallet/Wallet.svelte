@@ -47,7 +47,7 @@
 		}
 
 		await loadNextTransactions({
-			owner: walletId,
+			account: { owner: walletId },
 			identity: $authStore.identity,
 			maxResults: PAGINATION,
 			start: lastId,
@@ -75,7 +75,12 @@
 
 	<WalletActions missionControlId={walletId} onreceive={() => (receiveVisible = true)} />
 
-	<Transactions {disableInfiniteScroll} missionControlId={walletId} {onintersect} transactions={walletTransactions} />
+	<Transactions
+		{disableInfiniteScroll}
+		missionControlId={walletId}
+		{onintersect}
+		transactions={walletTransactions}
+	/>
 
 	<TransactionsExport missionControlId={walletId} transactions={walletTransactions} />
 {/if}

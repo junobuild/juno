@@ -294,7 +294,7 @@ const postMessageWalletCleanUp = ({
 	store: WalletStore;
 }) => {
 	const data: PostMessageDataResponseWalletCleanUp = {
-		account: store.icrcAccountText,
+		walletId: store.icrcAccountText,
 		transactionIds: Object.keys(transactions)
 	};
 

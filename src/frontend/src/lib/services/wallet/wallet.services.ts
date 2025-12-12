@@ -11,7 +11,7 @@ import { mapIcpTransaction } from '$lib/utils/icp-transactions.utils';
 import { CSV_PICKER_OPTIONS, filenameTimestamp, saveToFileSystem } from '$lib/utils/save.utils';
 import { transactionAmount, transactionMemo } from '$lib/utils/wallet.utils';
 import { nonNullish } from '@dfinity/utils';
-import type { GetAccountIdentifierTransactionsResponse } from '@icp-sdk/canisters/ledger/icp';
+import type { IcpIndexDid } from '@icp-sdk/canisters/ledger/icp';
 import type { Principal } from '@icp-sdk/core/principal';
 import { get } from 'svelte/store';
 
@@ -75,7 +75,7 @@ export const loadNextTransactions = ({
 	maxResults?: bigint;
 	signalEnd: () => void;
 }): Promise<void> =>
-	queryAndUpdate<GetAccountIdentifierTransactionsResponse>({
+	queryAndUpdate<IcpIndexDid.GetAccountIdentifierTransactionsResponse>({
 		request: (params) =>
 			getTransactions({
 				...rest,

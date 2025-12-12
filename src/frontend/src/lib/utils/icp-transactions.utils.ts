@@ -1,6 +1,6 @@
-import { getAccountIdentifier } from '$lib/api/icp-index.api';
 import type { IcTransactionUi } from '$lib/types/ic-transaction';
 import type { OptionIdentity } from '$lib/types/itentity';
+import { toAccountIdentifier } from '$lib/utils/account.utils';
 import { fromNullable, jsonReplacer, nonNullish } from '@dfinity/utils';
 import type { IcpIndexDid } from '@icp-sdk/canisters/ledger/icp';
 
@@ -24,7 +24,7 @@ export const mapIcpTransaction = ({
 	};
 
 	const accountIdentifier = nonNullish(identity)
-		? getAccountIdentifier(identity.getPrincipal())
+		? toAccountIdentifier({ owner: identity.getPrincipal() })
 		: undefined;
 
 	const mapFrom = (

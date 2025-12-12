@@ -12,7 +12,7 @@ import { CSV_PICKER_OPTIONS, filenameTimestamp, saveToFileSystem } from '$lib/ut
 import { transactionAmount, transactionMemo } from '$lib/utils/wallet.utils';
 import { nonNullish } from '@dfinity/utils';
 import type { IcpIndexDid } from '@icp-sdk/canisters/ledger/icp';
-import type { Principal } from '@icp-sdk/core/principal';
+import type { IcrcAccount } from '@icp-sdk/canisters/ledger/icrc';
 import { get } from 'svelte/store';
 
 type TransactionId = string;
@@ -69,7 +69,7 @@ export const loadNextTransactions = ({
 	signalEnd,
 	...rest
 }: {
-	owner: Principal;
+	account: IcrcAccount;
 	identity: OptionIdentity;
 	start?: bigint;
 	maxResults?: bigint;

@@ -107,7 +107,7 @@ const syncWallet = async ({
 	}: QueryAndUpdateRequestParams): Promise<IcpIndexDid.GetAccountIdentifierTransactionsResponse> =>
 		getTransactions({
 			identity,
-			owner: Principal.fromText(missionControlId),
+			account: { owner: Principal.fromText(missionControlId) },
 			// We query tip to discover the new transactions
 			start: undefined,
 			maxResults: PAGINATION,

@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { isNullish, nonNullish } from '@dfinity/utils';
-	import { getAccountIdentifier } from '$lib/api/icp-index.api';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
 	import type { JunoModalWithSatellite } from '$lib/types/modal';
+	import { toAccountIdentifier } from '$lib/utils/account.utils';
 	import { emit } from '$lib/utils/events.utils';
 
 	interface Props {
@@ -25,7 +25,7 @@
 			return;
 		}
 
-		const accountIdentifier = getAccountIdentifier($missionControlId);
+		const accountIdentifier = toAccountIdentifier({ owner: $missionControlId });
 
 		emit({
 			message: 'junoModal',

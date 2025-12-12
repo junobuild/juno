@@ -1,12 +1,11 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
-	import type { AccountIdentifier } from '@icp-sdk/canisters/ledger/icp';
-	import { getAccountIdentifier } from '$lib/api/icp-index.api';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { icpToUsd, icpToUsdDefined } from '$lib/derived/wallet/exchange.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { MissionControlId } from '$lib/types/mission-control';
+	import { toAccountIdentifier } from '$lib/utils/account.utils';
 	import { formatICP, formatICPToUsd } from '$lib/utils/icp.utils';
 
 	interface Props {
@@ -16,9 +15,7 @@
 
 	let { missionControlId, balance }: Props = $props();
 
-	let accountIdentifier: AccountIdentifier | undefined = $derived(
-		getAccountIdentifier(missionControlId)
-	);
+	let accountIdentifier = $derived(toAccountIdentifier({ owner: missionControlId }));
 </script>
 
 <div class="card-container with-title from">

@@ -5,7 +5,8 @@ import { exchangePricesCanisterDataStore } from '$lib/stores/wallet/exchange.sto
 import { transactionsCertifiedStore } from '$lib/stores/wallet/transactions.store';
 import type {
 	PostMessageDataResponseExchange,
-	PostMessageDataResponseWallet
+	PostMessageDataResponseWallet,
+	PostMessageDataResponseWalletCleanUp
 } from '$lib/types/post-message';
 import { isNullish, jsonReviver } from '@dfinity/utils';
 import { get } from 'svelte/store';
@@ -15,18 +16,28 @@ export const onSyncWallet = (data: PostMessageDataResponseWallet) => {
 		return;
 	}
 
-	balanceCertifiedStore.set(data.wallet.balance);
+	const {
+		wallet: { account, newTransactions, balance }
+	} = data;
 
-	const newTransactions = JSON.parse(data.wallet.newTransactions, jsonReviver);
+	balanceCertifiedStore.set({
+		account,
+		data: balance
+	});
 
-	transactionsCertifiedStore.prepend(newTransactions);
+	const transactions = JSON.parse(newTransactions, jsonReviver);
+
+	transactionsCertifiedStore.prepend({
+		account,
+		transactions
+	});
 };
 
 export const onWalletError = ({ error: err }: { error: unknown }) => {
 	transactionsCertifiedStore.reset();
 
 	// We get transactions and balance for the same end point therefore if getting certified transactions fails, it also means the balance is incorrect.
-	balanceCertifiedStore.reset();
+	balanceCertifiedStore.resetAll();
 
 	toasts.error({
 		text: get(i18n).errors.wallet_error,
@@ -34,8 +45,11 @@ export const onWalletError = ({ error: err }: { error: unknown }) => {
 	});
 };
 
-export const onWalletCleanUp = ({ transactionIds }: { transactionIds: string[] }) => {
-	transactionsCertifiedStore.cleanUp(transactionIds);
+export const onWalletCleanUp = ({
+	transactionIds,
+	account
+}: PostMessageDataResponseWalletCleanUp) => {
+	transactionsCertifiedStore.cleanUp({ account, transactionIds });
 
 	toasts.error({
 		text: get(i18n).errors.wallet_uncertified_transactions_removed

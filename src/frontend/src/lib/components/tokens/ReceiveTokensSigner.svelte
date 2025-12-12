@@ -7,19 +7,19 @@
 	import Confetti from '$lib/components/ui/Confetti.svelte';
 	import Spinner from '$lib/components/ui/Spinner.svelte';
 	import { OISY_WALLET_OPTIONS } from '$lib/constants/wallet.constants';
+	import type { WalletId } from '$lib/schemas/wallet.schema';
 	import { wizardBusy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
-	import type { MissionControlId } from '$lib/types/mission-control';
 	import { assertAndConvertAmountToICPToken } from '$lib/utils/token.utils';
 
 	interface Props {
-		missionControlId: MissionControlId;
+		walletId: WalletId;
 		back: () => void;
 		visible?: boolean;
 	}
 
-	let { back, missionControlId, visible = $bindable() }: Props = $props();
+	let { back, walletId, visible = $bindable() }: Props = $props();
 
 	let step: 'connecting' | 'receiving' | 'form' | 'success' = $state('connecting');
 	let account: IcrcAccount | undefined = $state(undefined);
@@ -91,10 +91,12 @@
 		try {
 			wallet = await IcpWallet.connect(OISY_WALLET_OPTIONS);
 
+			const { owner, subaccount } = walletId;
+
 			const request: Icrc1TransferRequest = {
 				to: {
-					owner: missionControlId,
-					subaccount: toNullable()
+					owner,
+					subaccount: toNullable(subaccount)
 				},
 				amount: tokenAmount.toE8s()
 			};

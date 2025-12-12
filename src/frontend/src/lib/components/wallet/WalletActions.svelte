@@ -2,19 +2,19 @@
 	import WalletGetICP from '$lib/components/wallet/WalletGetICP.svelte';
 	import WalletReceive from '$lib/components/wallet/WalletReceive.svelte';
 	import WalletSend from '$lib/components/wallet/WalletSend.svelte';
-	import type { MissionControlId } from '$lib/types/mission-control';
+	import type { WalletId } from '$lib/schemas/wallet.schema';
 
 	interface Props {
-		missionControlId: MissionControlId;
+		walletId: WalletId;
 		onsend?: () => void;
 		onreceive: () => void;
 	}
 
-	let { missionControlId, onreceive, onsend }: Props = $props();
+	let { walletId, onreceive, onsend }: Props = $props();
 </script>
 
 <div class="toolbar">
-	<WalletGetICP {missionControlId} />
+	<WalletGetICP {walletId} />
 
 	<WalletReceive {onreceive} />
 

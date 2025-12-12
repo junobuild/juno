@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { isNullish } from '@dfinity/utils';
+	import { encodeIcrcAccount } from '@icp-sdk/canisters/ledger/icrc';
 	import ReceiveTokens from '$lib/components/tokens/ReceiveTokens.svelte';
 	import Transactions from '$lib/components/transactions/Transactions.svelte';
 	import TransactionsExport from '$lib/components/transactions/TransactionsExport.svelte';
@@ -10,20 +11,22 @@
 	import { authSignedIn, authSignedOut } from '$lib/derived/auth.derived';
 	import { balance } from '$lib/derived/wallet/balance.derived';
 	import { transactions } from '$lib/derived/wallet/transactions.derived';
+	import type { WalletId } from '$lib/schemas/wallet.schema';
 	import { loadNextTransactions } from '$lib/services/wallet/wallet.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
 	import { authStore } from '$lib/stores/auth.store';
 	import { last } from '$lib/utils/utils';
-	import type { Principal } from '@icp-sdk/core/principal';
 
 	interface Props {
-		walletId: Principal;
+		walletId: WalletId;
 	}
 
 	let { walletId }: Props = $props();
 
-	let walletTransactions = $derived($transactions[walletId.toText()] ?? []);
+	const walletIdText = encodeIcrcAccount(walletId);
+
+	let walletTransactions = $derived($transactions[walletIdText] ?? []);
 
 	/**
 	 * Scroll
@@ -47,7 +50,7 @@
 		}
 
 		await loadNextTransactions({
-			account: { owner: walletId },
+			account: walletId,
 			identity: $authStore.identity,
 			maxResults: PAGINATION,
 			start: lastId,
@@ -64,7 +67,7 @@
 
 		<div class="columns-3 fit-column-1">
 			<div>
-				<WalletIds missionControlId={walletId} />
+				<WalletIds {walletId} />
 			</div>
 
 			<div>
@@ -73,16 +76,16 @@
 		</div>
 	</div>
 
-	<WalletActions missionControlId={walletId} onreceive={() => (receiveVisible = true)} />
+	<WalletActions onreceive={() => (receiveVisible = true)} {walletId} />
 
 	<Transactions
 		{disableInfiniteScroll}
-		missionControlId={walletId}
 		{onintersect}
 		transactions={walletTransactions}
+		{walletId}
 	/>
 
-	<TransactionsExport missionControlId={walletId} transactions={walletTransactions} />
+	<TransactionsExport transactions={walletTransactions} {walletId} />
 {/if}
 
-<ReceiveTokens missionControlId={walletId} bind:visible={receiveVisible} />
+<ReceiveTokens {walletId} bind:visible={receiveVisible} />

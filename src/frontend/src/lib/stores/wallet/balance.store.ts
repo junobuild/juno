@@ -1,4 +1,4 @@
-import type { WalletId } from '$lib/schemas/wallet.schema';
+import type { WalletIdText } from '$lib/schemas/wallet.schema';
 import type { CertifiedWalletStoreData } from '$lib/stores/wallet/_wallet.store';
 import type { CertifiedData } from '$lib/types/store';
 import { nonNullish } from '@dfinity/utils';
@@ -9,9 +9,9 @@ type CertifiedBalanceData = CertifiedData<bigint> | null;
 type BalanceStoreData = CertifiedWalletStoreData<CertifiedBalanceData>;
 
 interface BalanceStore extends Readable<BalanceStoreData> {
-	set: (params: { walletId: WalletId; data: CertifiedBalanceData }) => void;
+	set: (params: { walletId: WalletIdText; data: CertifiedBalanceData }) => void;
 	setAll: (state: BalanceStoreData) => void;
-	reset: (walletId: WalletId) => void;
+	reset: (walletId: WalletIdText) => void;
 	resetAll: () => void;
 }
 

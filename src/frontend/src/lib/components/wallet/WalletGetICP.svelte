@@ -3,23 +3,23 @@
 	import { testIds } from '$lib/constants/test-ids.constants';
 	import { isDev } from '$lib/env/app.env';
 	import { emulatorLedgerTransfer } from '$lib/rest/emulator.rest';
+	import type { WalletId } from '$lib/schemas/wallet.schema';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
-	import type { MissionControlId } from '$lib/types/mission-control';
 	import { emit } from '$lib/utils/events.utils';
 	import { testId } from '$lib/utils/test.utils';
 
 	interface Props {
-		missionControlId: MissionControlId;
+		walletId: WalletId;
 	}
 
-	let { missionControlId }: Props = $props();
+	let { walletId }: Props = $props();
 
 	let confetti = $state(false);
 
 	const onClick = async () => {
 		try {
-			await emulatorLedgerTransfer({ missionControlId });
+			await emulatorLedgerTransfer({ walletId });
 
 			emit({ message: 'junoRestartWallet' });
 

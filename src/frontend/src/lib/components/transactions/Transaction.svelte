@@ -2,17 +2,18 @@
 	import { nonNullish } from '@dfinity/utils';
 	import { blur } from 'svelte/transition';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
+	import type { WalletId } from '$lib/schemas/wallet.schema';
 	import type { IcTransactionUi } from '$lib/types/ic-transaction';
 	import type { MissionControlId } from '$lib/types/mission-control';
 	import { formatToDate } from '$lib/utils/date.utils';
 	import { transactionAmount, transactionMemo } from '$lib/utils/wallet.utils';
 
 	interface Props {
-		missionControlId: MissionControlId;
+		walletId: WalletId;
 		transaction: IcTransactionUi;
 	}
 
-	let { missionControlId, transaction }: Props = $props();
+	let { walletId, transaction }: Props = $props();
 
 	let id = $derived(transaction.id);
 
@@ -22,7 +23,7 @@
 
 	let timestamp = $derived(transaction.timestamp);
 
-	let memo = $derived(transactionMemo({ transaction, missionControlId }));
+	let memo = $derived(transactionMemo({ transaction, walletId }));
 
 	let amount = $derived(transactionAmount(transaction));
 </script>

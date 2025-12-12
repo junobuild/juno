@@ -1,7 +1,7 @@
 import { CanisterIdTextSchema } from '$lib/schemas/canister.schema';
 import { CustomDomainStateSchema } from '$lib/schemas/custom-domain.schema';
 import { ExchangePriceSchema } from '$lib/schemas/exchange.schema';
-import { IcrcAccountTextSchema, WalletIdSchema } from '$lib/schemas/wallet.schema';
+import { IcrcAccountTextSchema, WalletIdTextSchema } from '$lib/schemas/wallet.schema';
 import type {
 	CanisterSegment,
 	CanisterSyncData,
@@ -16,14 +16,14 @@ export const PostMessageDataRequestDataSchema = z.object({
 	segments: z.array(z.custom<CanisterSegment>()).optional(),
 	customDomain: z.custom<CustomDomain>().optional(),
 	missionControlId: z.string().optional(),
-	walletIds: z.array(WalletIdSchema).optional(),
+	walletIds: z.array(WalletIdTextSchema).optional(),
 	withMonitoringHistory: z.boolean().optional()
 });
 
 const JsonCertifiedIcTransactionUiTextSchema = z.string();
 
 const PostMessageWalletDataSchema = z.object({
-	walletId: WalletIdSchema,
+	walletId: WalletIdTextSchema,
 	balance: z.custom<CertifiedData<bigint>>(),
 	newTransactions: JsonCertifiedIcTransactionUiTextSchema
 });

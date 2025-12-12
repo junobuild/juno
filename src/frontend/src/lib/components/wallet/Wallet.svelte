@@ -14,14 +14,16 @@
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
 	import { authStore } from '$lib/stores/auth.store';
-	import type { MissionControlId } from '$lib/types/mission-control';
 	import { last } from '$lib/utils/utils';
+	import type { Principal } from '@icp-sdk/core/principal';
 
 	interface Props {
-		missionControlId: MissionControlId;
+		walletId: Principal;
 	}
 
-	let { missionControlId }: Props = $props();
+	let { walletId }: Props = $props();
+
+	let walletTransactions = $derived($transactions[walletId.toText()] ?? []);
 
 	/**
 	 * Scroll
@@ -37,7 +39,7 @@
 			return;
 		}
 
-		const lastId = last($transactions)?.data.id;
+		const lastId = last(walletTransactions)?.data.id;
 
 		if (isNullish(lastId)) {
 			// No transactions, we do nothing here and wait for the worker to post the first transactions
@@ -45,7 +47,7 @@
 		}
 
 		await loadNextTransactions({
-			owner: missionControlId,
+			owner: walletId,
 			identity: $authStore.identity,
 			maxResults: PAGINATION,
 			start: lastId,
@@ -62,7 +64,7 @@
 
 		<div class="columns-3 fit-column-1">
 			<div>
-				<WalletIds {missionControlId} />
+				<WalletIds missionControlId={walletId} />
 			</div>
 
 			<div>
@@ -71,16 +73,11 @@
 		</div>
 	</div>
 
-	<WalletActions {missionControlId} onreceive={() => (receiveVisible = true)} />
+	<WalletActions missionControlId={walletId} onreceive={() => (receiveVisible = true)} />
 
-	<Transactions
-		{disableInfiniteScroll}
-		{missionControlId}
-		{onintersect}
-		transactions={$transactions}
-	/>
+	<Transactions {disableInfiniteScroll} missionControlId={walletId} {onintersect} transactions={walletTransactions} />
 
-	<TransactionsExport {missionControlId} transactions={$transactions} />
+	<TransactionsExport missionControlId={walletId} transactions={walletTransactions} />
 {/if}
 
-<ReceiveTokens {missionControlId} bind:visible={receiveVisible} />
+<ReceiveTokens missionControlId={walletId} bind:visible={receiveVisible} />

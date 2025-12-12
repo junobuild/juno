@@ -17,6 +17,7 @@
 		type TabsData
 	} from '$lib/types/tabs.context';
 	import { initTabId } from '$lib/utils/tabs.utils';
+	import { devId } from '$lib/derived/dev.derived';
 
 	const tabs: Tab[] = [
 		{
@@ -33,6 +34,8 @@
 	setContext<TabsContext>(TABS_CONTEXT_KEY, {
 		store
 	});
+
+	let walletId = $derived($missionControlId ?? $devId);
 </script>
 
 <IdentityGuard>
@@ -44,13 +47,11 @@
 		{/snippet}
 
 		<Loaders>
-			<MissionControlGuard>
-				{#if nonNullish($missionControlId)}
-					{#if $store.tabId === $store.tabs[0].id}
-						<Wallet missionControlId={$missionControlId} />
-					{/if}
+			{#if nonNullish(walletId)}
+				{#if $store.tabId === $store.tabs[0].id}
+					<Wallet {walletId} />
 				{/if}
-			</MissionControlGuard>
+			{/if}
 		</Loaders>
 	</NoTabs>
 </IdentityGuard>

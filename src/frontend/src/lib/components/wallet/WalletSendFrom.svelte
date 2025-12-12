@@ -5,8 +5,8 @@
 	import { icpToUsd, icpToUsdDefined } from '$lib/derived/wallet/exchange.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { MissionControlId } from '$lib/types/mission-control';
-	import { formatICP, formatICPToUsd } from '$lib/utils/icp.utils';
 	import { toAccountIdentifier } from '$lib/utils/account.utils';
+	import { formatICP, formatICPToUsd } from '$lib/utils/icp.utils';
 
 	interface Props {
 		missionControlId: MissionControlId;

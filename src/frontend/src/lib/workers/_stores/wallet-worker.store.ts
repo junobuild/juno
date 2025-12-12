@@ -1,3 +1,4 @@
+import type { IcrcAccountText } from '$lib/schemas/wallet.schema';
 import { walletIdbStore } from '$lib/stores/app/idb.store';
 import type { CertifiedData } from '$lib/types/store';
 import type { PrincipalText } from '@dfinity/zod-schemas';
@@ -44,8 +45,8 @@ export class WalletStore {
 		this.#account = account;
 	}
 
-	get account(): IcrcAccount {
-		return this.#account;
+	get accountText(): IcrcAccountText {
+		return encodeIcrcAccount(this.#account);
 	}
 
 	get balance(): CertifiedData<bigint> | undefined {

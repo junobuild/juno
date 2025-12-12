@@ -100,7 +100,7 @@ const startTimerWithAccount = async ({
 	timer = setInterval(sync, SYNC_WALLET_TIMER_INTERVAL);
 };
 
-let syncing: Record<IcrcAccountText, boolean> = {};
+const syncing: Record<IcrcAccountText, boolean> = {};
 
 let initialized = false;
 
@@ -172,14 +172,14 @@ const postMessageWallet = ({
 }: Pick<IcpIndexDid.GetAccountIdentifierTransactionsResponse, 'balance'> & {
 	transactions: IcTransactionUi[];
 } & {
-	account: IcrcAccount;
+	account: IcrcAccountText;
 	certified: boolean;
 }) => {
 	const certifiedTransactions = newTransactions.map((data) => ({ data, certified }));
 
 	const data: PostMessageDataResponseWallet = {
 		wallet: {
-			account: encodeIcrcAccount(account),
+			account,
 			balance: {
 				data: balance,
 				certified
@@ -220,7 +220,7 @@ const syncTransactions = ({
 		// We execute postMessage at least once because developer may have no transaction at all so, we want to display the balance zero
 		if (!initialized) {
 			postMessageWallet({
-				account: store.account,
+				account: store.accountText,
 				transactions: [],
 				balance,
 				certified,
@@ -240,7 +240,7 @@ const syncTransactions = ({
 	);
 
 	postMessageWallet({
-		account: store.account,
+		account: store.accountText,
 		transactions: newUiTransactions,
 		balance,
 		certified,
@@ -294,7 +294,7 @@ const postMessageWalletCleanUp = ({
 	store: WalletStore;
 }) => {
 	const data: PostMessageDataResponseWalletCleanUp = {
-		account: encodeIcrcAccount(store.account),
+		account: store.accountText,
 		transactionIds: Object.keys(transactions)
 	};
 
@@ -329,7 +329,7 @@ const emitSavedWallet = ({ store, identity }: { store: WalletStore; identity: Id
 
 	const data: PostMessageDataResponseWallet = {
 		wallet: {
-			account: encodeIcrcAccount(store.account),
+			account: store.accountText,
 			balance: store.balance,
 			newTransactions: JSON.stringify(uiTransactions, jsonReplacer)
 		}

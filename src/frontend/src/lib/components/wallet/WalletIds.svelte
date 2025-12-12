@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { getAccountIdentifier } from '$lib/api/icp-index.api';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { MissionControlId } from '$lib/types/mission-control';
+	import { toAccountIdentifier } from '$lib/utils/account.utils';
 
 	interface Props {
 		missionControlId: MissionControlId;
@@ -11,7 +11,7 @@
 
 	let { missionControlId }: Props = $props();
 
-	const accountIdentifier = getAccountIdentifier(missionControlId);
+	const accountIdentifier = toAccountIdentifier({ owner: missionControlId });
 </script>
 
 <div>

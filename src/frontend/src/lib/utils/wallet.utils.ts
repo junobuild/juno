@@ -1,4 +1,3 @@
-import { getAccountIdentifier } from '$lib/api/icp-index.api';
 import {
 	INDEX_RELOAD_DELAY,
 	MEMO_CANISTER_CREATE,
@@ -9,6 +8,7 @@ import {
 import { i18n } from '$lib/stores/app/i18n.store';
 import type { IcTransactionUi } from '$lib/types/ic-transaction';
 import type { MissionControlId } from '$lib/types/mission-control';
+import { toAccountIdentifier } from '$lib/utils/account.utils';
 import { emit } from '$lib/utils/events.utils';
 import { formatICP } from '$lib/utils/icp.utils';
 import { waitForMilliseconds } from '$lib/utils/timeout.utils';
@@ -49,7 +49,7 @@ export const transactionMemo = ({
 		case MEMO_CANISTER_TOP_UP:
 			return labels.wallet.memo_refund_top_up;
 		default: {
-			const accountIdentifier = getAccountIdentifier(missionControlId);
+			const accountIdentifier = toAccountIdentifier({ owner: missionControlId });
 
 			if (from === missionControlId.toText() || from === accountIdentifier.toHex()) {
 				return labels.wallet.memo_sent;

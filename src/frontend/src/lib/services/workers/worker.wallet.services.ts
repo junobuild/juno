@@ -1,4 +1,4 @@
-import type { IcrcAccountText } from '$lib/schemas/wallet.schema';
+import type { WalletId } from '$lib/schemas/wallet.schema';
 import {
 	onSyncExchange,
 	onSyncWallet,
@@ -44,17 +44,17 @@ export class WalletWorker extends AppWorker {
 		return new WalletWorker(worker);
 	}
 
-	start = ({ accounts }: { accounts: IcrcAccountText[] }) => {
+	start = ({ walletIds }: { walletIds: WalletId[] }) => {
 		this._worker.postMessage({
 			msg: 'startWalletTimer',
-			data: { accounts }
+			data: { walletIds }
 		});
 	};
 
-	restart = ({ accounts }: { accounts: IcrcAccountText[] }) => {
+	restart = ({ walletIds }: { walletIds: WalletId[] }) => {
 		this._worker.postMessage({
 			msg: 'restartWalletTimer',
-			data: { accounts }
+			data: { walletIds }
 		});
 	};
 

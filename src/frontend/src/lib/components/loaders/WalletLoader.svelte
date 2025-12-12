@@ -18,7 +18,7 @@
 		worker = await WalletWorker.init();
 	};
 
-	let accounts = $derived([
+	let walletIds = $derived([
 		...(nonNullish($devId) ? [encodeIcrcAccount({ owner: $devId })] : []),
 		...(nonNullish($missionControlId) ? [encodeIcrcAccount({ owner: $missionControlId })] : [])
 	]);
@@ -35,16 +35,16 @@
 		}
 
 		worker?.start({
-			accounts
+			walletIds
 		});
 	});
 
 	const onRestartWallet = () => {
-		if (accounts.length === 0) {
+		if (walletIds.length === 0) {
 			return;
 		}
 
-		worker?.restart({ accounts });
+		worker?.restart({ walletIds });
 	};
 
 	onMount(async () => await initWorker());

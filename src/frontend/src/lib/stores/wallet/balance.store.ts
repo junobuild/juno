@@ -1,28 +1,29 @@
-import type { IcrcAccountText } from '$lib/schemas/wallet.schema';
+import type { WalletId } from '$lib/schemas/wallet.schema';
+import type { CertifiedWalletStoreData } from '$lib/stores/wallet/_wallet.store';
 import type { CertifiedData } from '$lib/types/store';
-import type { Option } from '$lib/types/utils';
 import { nonNullish } from '@dfinity/utils';
 import { type Readable, writable } from 'svelte/store';
 
-// TODO: store is similar to initCanisterStore except the type IcrcAccountText vs CanisterIdText and params account vs canisterId
-export type BalanceStoreData<T> = Option<Record<IcrcAccountText, T | null>>;
+type CertifiedBalanceData = CertifiedData<bigint> | null;
 
-export interface BalanceStore<T> extends Readable<BalanceStoreData<T>> {
-	set: (params: { account: IcrcAccountText; data: T }) => void;
-	setAll: (state: BalanceStoreData<T>) => void;
-	reset: (account: IcrcAccountText) => void;
+type BalanceStoreData = CertifiedWalletStoreData<CertifiedBalanceData>;
+
+interface BalanceStore extends Readable<BalanceStoreData> {
+	set: (params: { walletId: WalletId; data: CertifiedBalanceData }) => void;
+	setAll: (state: BalanceStoreData) => void;
+	reset: (walletId: WalletId) => void;
 	resetAll: () => void;
 }
 
-export const initBalanceStore = <T>(): BalanceStore<T> => {
-	const { update, subscribe, set } = writable<BalanceStoreData<T>>(undefined);
+const initBalanceStore = (): BalanceStore => {
+	const { update, subscribe, set } = writable<BalanceStoreData>(undefined);
 
 	return {
 		subscribe,
-		set({ account, data }) {
+		set({ walletId, data }) {
 			update((state) => ({
 				...state,
-				[account]: data
+				[walletId]: data
 			}));
 		},
 		setAll: (state) => {
@@ -38,4 +39,4 @@ export const initBalanceStore = <T>(): BalanceStore<T> => {
 	};
 };
 
-export const balanceCertifiedStore = initBalanceStore<CertifiedData<bigint>>();
+export const balanceCertifiedStore = initBalanceStore();

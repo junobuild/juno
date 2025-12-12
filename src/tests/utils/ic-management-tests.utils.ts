@@ -6,7 +6,7 @@ import {
 	nonNullish,
 	toNullable
 } from '@dfinity/utils';
-import type { canister_status_result } from '@icp-sdk/canisters/ic-management';
+import type { IcManagementDid } from '@icp-sdk/canisters/ic-management';
 import { type Identity, MANAGEMENT_CANISTER_ID } from '@icp-sdk/core/agent';
 import { IDL } from '@icp-sdk/core/candid';
 import { Principal } from '@icp-sdk/core/principal';
@@ -398,7 +398,9 @@ export const canisterStatus = async ({
 	canisterId,
 	pic,
 	sender
-}: PicParams & { canisterId: Principal }): Promise<canister_status_result | undefined> => {
+}: PicParams & { canisterId: Principal }): Promise<
+	IcManagementDid.canister_status_result | undefined
+> => {
 	const arg = IDL.encode([canister_status_args], [{ canister_id: canisterId }]);
 
 	const response = await pic.updateCall({
@@ -411,7 +413,7 @@ export const canisterStatus = async ({
 	const result = IDL.decode(
 		toNullable(canister_status_result),
 		arrayBufferToUint8Array(response as ArrayBuffer)
-	) as unknown as [canister_status_result];
+	) as unknown as [IcManagementDid.canister_status_result];
 
 	return fromNullable(result);
 };

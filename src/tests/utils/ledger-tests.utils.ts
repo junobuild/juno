@@ -1,14 +1,14 @@
 import { idlFactory, init } from '$declarations/ledger/icp/ledger.factory.did.js';
 import type { CanisterFixture, PocketIc } from '@dfinity/pic';
 import { assertNonNullish } from '@dfinity/utils';
-import { AccountIdentifier, type LedgerCanisterOptions } from '@icp-sdk/canisters/ledger/icp';
+import { AccountIdentifier, type IcpLedgerCanisterOptions } from '@icp-sdk/canisters/ledger/icp';
 import type { Identity } from '@icp-sdk/core/agent';
 import { IDL } from '@icp-sdk/core/candid';
 import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import { LEDGER_ID } from '../constants/ledger-tests.contants';
 import { download } from './setup-tests.utils';
 
-type LedgerActor = LedgerCanisterOptions['serviceOverride'];
+type LedgerActor = IcpLedgerCanisterOptions['serviceOverride'];
 
 const IC_VERSION = 'b0ade55f7e8999e2842fe3f49df163ba224b71a2';
 const url = `https://download.dfinity.systems/ic/${IC_VERSION}/canisters/ledger-canister.wasm.gz`;

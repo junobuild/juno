@@ -1,3 +1,4 @@
+import type { IcrcAccountText } from '$lib/schemas/wallet.schema';
 import { walletIdbStore } from '$lib/stores/app/idb.store';
 import type { CertifiedData } from '$lib/types/store';
 import type { PrincipalText } from '@dfinity/zod-schemas';
@@ -28,16 +29,24 @@ export class WalletStore {
 
 	#store: WalletState;
 	#idbKey: WalletIdbKey;
+	#account: IcrcAccount;
 
 	private constructor({
 		state,
-		idbKey: key
+		idbKey: key,
+		account
 	}: {
 		state: WalletState | undefined;
 		idbKey: WalletIdbKey;
+		account: IcrcAccount;
 	}) {
 		this.#store = state ?? WalletStore.EMPTY_STORE;
 		this.#idbKey = key;
+		this.#account = account;
+	}
+
+	get icrcAccountText(): IcrcAccountText {
+		return encodeIcrcAccount(this.#account);
 	}
 
 	get balance(): CertifiedData<bigint> | undefined {
@@ -109,9 +118,9 @@ export class WalletStore {
 		await set(this.#idbKey, this.#store, walletIdbStore);
 	}
 
-	static async init(params: WalletTokenAccount): Promise<WalletStore> {
-		const idbKey = WalletStore.toIdbKey(params);
+	static async init({ account, ledgerId }: WalletTokenAccount): Promise<WalletStore> {
+		const idbKey = WalletStore.toIdbKey({ account, ledgerId });
 		const state = await get(idbKey, walletIdbStore);
-		return new WalletStore({ state, idbKey });
+		return new WalletStore({ state, idbKey, account });
 	}
 }

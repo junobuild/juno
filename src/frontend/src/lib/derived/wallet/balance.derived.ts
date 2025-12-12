@@ -1,12 +1,20 @@
+import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 import { balanceCertifiedStore } from '$lib/stores/wallet/balance.store';
+import { nonNullish } from '@dfinity/utils';
 import { derived } from 'svelte/store';
 
-export const balance = derived([balanceCertifiedStore], ([$balanceStore]) => $balanceStore?.data);
+export const balance = derived(
+	[balanceCertifiedStore, missionControlId],
+	([$balanceStore, $missionControlId]) => {
+		const missionControlBalance = nonNullish($missionControlId)
+			? $balanceStore?.[$missionControlId.toText()]?.data
+			: undefined;
 
-export const balanceOrZero = derived(
-	[balanceCertifiedStore],
-	([$balanceStore]) => $balanceStore?.data ?? 0n
+		return missionControlBalance ?? 0n;
+	}
 );
+
+export const balanceOrZero = derived([balance], ([$balance]) => $balance ?? 0n);
 
 export const balanceLoaded = derived(
 	[balanceCertifiedStore],

@@ -12,7 +12,7 @@ import { CSV_PICKER_OPTIONS, filenameTimestamp, saveToFileSystem } from '$lib/ut
 import { transactionAmount, transactionMemo } from '$lib/utils/wallet.utils';
 import { nonNullish } from '@dfinity/utils';
 import type { IcpIndexDid } from '@icp-sdk/canisters/ledger/icp';
-import type { IcrcAccount } from '@icp-sdk/canisters/ledger/icrc';
+import { encodeIcrcAccount, type IcrcAccount } from '@icp-sdk/canisters/ledger/icrc';
 import { get } from 'svelte/store';
 
 type TransactionId = string;
@@ -65,6 +65,7 @@ export const exportTransactions = async ({
 };
 
 export const loadNextTransactions = ({
+	account,
 	identity,
 	signalEnd,
 	...rest
@@ -78,6 +79,7 @@ export const loadNextTransactions = ({
 	queryAndUpdate<IcpIndexDid.GetAccountIdentifierTransactionsResponse>({
 		request: (params) =>
 			getTransactions({
+				account,
 				...rest,
 				...params
 			}),
@@ -87,15 +89,16 @@ export const loadNextTransactions = ({
 				return;
 			}
 
-			transactionsCertifiedStore.append(
-				transactions.map((transaction) => ({
+			transactionsCertifiedStore.append({
+				walletId: encodeIcrcAccount(account),
+				transactions: transactions.map((transaction) => ({
 					data: mapIcpTransaction({
 						transaction,
 						identity
 					}),
 					certified
 				}))
-			);
+			});
 		},
 		onCertifiedError: ({ error }) => {
 			toasts.error({

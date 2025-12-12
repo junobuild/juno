@@ -23,6 +23,8 @@
 
 	let { missionControlId }: Props = $props();
 
+	let walletTransactions = $derived($transactions[missionControlId.toText()] ?? []);
+
 	/**
 	 * Scroll
 	 */
@@ -37,7 +39,7 @@
 			return;
 		}
 
-		const lastId = last($transactions)?.data.id;
+		const lastId = last(walletTransactions)?.data.id;
 
 		if (isNullish(lastId)) {
 			// No transactions, we do nothing here and wait for the worker to post the first transactions
@@ -77,10 +79,10 @@
 		{disableInfiniteScroll}
 		{missionControlId}
 		{onintersect}
-		transactions={$transactions}
+		transactions={walletTransactions}
 	/>
 
-	<TransactionsExport {missionControlId} transactions={$transactions} />
+	<TransactionsExport {missionControlId} transactions={walletTransactions} />
 {/if}
 
 <ReceiveTokens {missionControlId} bind:visible={receiveVisible} />

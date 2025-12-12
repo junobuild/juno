@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { isNullish } from '@dfinity/utils';
+	import { encodeIcrcAccount } from '@icp-sdk/canisters/ledger/icrc';
 	import { onDestroy, onMount, type Snippet } from 'svelte';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import { WalletWorker } from '$lib/services/workers/worker.wallet.services';
@@ -23,7 +24,7 @@
 		}
 
 		worker?.start({
-			missionControlId: $missionControlId
+			walletIds: [encodeIcrcAccount({ owner: $missionControlId })]
 		});
 	});
 
@@ -32,7 +33,7 @@
 			return;
 		}
 
-		worker?.restart({ missionControlId: $missionControlId });
+		worker?.restart({ walletIds: [encodeIcrcAccount({ owner: $missionControlId })] });
 	};
 
 	onMount(async () => await initWorker());

@@ -10,6 +10,7 @@ import {
 	PAGINATION,
 	SYNC_WALLET_TIMER_INTERVAL
 } from '$lib/constants/app.constants';
+import type { IcrcAccountText } from '$lib/schemas/wallet.schema';
 import type { IcTransactionUi } from '$lib/types/ic-transaction';
 import type {
 	PostMessageDataRequest,
@@ -23,8 +24,12 @@ import { loadIdentity } from '$lib/utils/worker.utils';
 import { type IndexedTransactions, WalletStore } from '$lib/workers/_stores/wallet-worker.store';
 import { isNullish, jsonReplacer } from '@dfinity/utils';
 import type { IcpIndexDid } from '@icp-sdk/canisters/ledger/icp';
+import {
+	decodeIcrcAccount,
+	encodeIcrcAccount,
+	type IcrcAccount
+} from '@icp-sdk/canisters/ledger/icrc';
 import type { Identity } from '@icp-sdk/core/agent';
-import { Principal } from '@icp-sdk/core/principal';
 
 export const onWalletMessage = async ({ data: dataMsg }: MessageEvent<PostMessageRequest>) => {
 	const { msg, data } = dataMsg;
@@ -53,9 +58,9 @@ const stopTimer = () => {
 	timer = undefined;
 };
 
-const startTimer = async ({ data: { missionControlId } }: { data: PostMessageDataRequest }) => {
-	if (isNullish(missionControlId)) {
-		// No mission control ID provided
+const startTimer = async ({ data: { walletIds } }: { data: PostMessageDataRequest }) => {
+	if (isNullish(walletIds)) {
+		// No accounts provided
 		return;
 	}
 
@@ -66,14 +71,28 @@ const startTimer = async ({ data: { missionControlId } }: { data: PostMessageDat
 		return;
 	}
 
+	await Promise.all(
+		walletIds.map(async (walletId) => {
+			await startTimerWithAccount({ identity, account: decodeIcrcAccount(walletId) });
+		})
+	);
+};
+
+const startTimerWithAccount = async ({
+	account,
+	identity
+}: {
+	account: IcrcAccount;
+	identity: Identity;
+}) => {
 	const store = await WalletStore.init({
-		account: { owner: Principal.fromText(missionControlId) },
+		account,
 		ledgerId: ICP_LEDGER_CANISTER_ID
 	});
 
 	emitSavedWallet({ store, identity });
 
-	const sync = async () => await syncWallet({ missionControlId, identity, store });
+	const sync = async () => await syncWallet({ account, identity, store });
 
 	// We sync the cycles now but also schedule the update afterwards
 	await sync();
@@ -81,25 +100,27 @@ const startTimer = async ({ data: { missionControlId } }: { data: PostMessageDat
 	timer = setInterval(sync, SYNC_WALLET_TIMER_INTERVAL);
 };
 
-let syncing = false;
+const syncing: Record<IcrcAccountText, boolean> = {};
 
 let initialized = false;
 
 const syncWallet = async ({
-	missionControlId,
+	account: icrcAccount,
 	identity,
 	store
 }: {
-	missionControlId: string;
+	account: IcrcAccount;
 	identity: Identity;
 	store: WalletStore;
 }) => {
+	const account = encodeIcrcAccount(icrcAccount);
+
 	// We avoid to relaunch a sync while previous sync is not finished
-	if (syncing) {
+	if (syncing[account] === true) {
 		return;
 	}
 
-	syncing = true;
+	syncing[account] = true;
 
 	const request = ({
 		identity: _,
@@ -107,7 +128,7 @@ const syncWallet = async ({
 	}: QueryAndUpdateRequestParams): Promise<IcpIndexDid.GetAccountIdentifierTransactionsResponse> =>
 		getTransactions({
 			identity,
-			account: { owner: Principal.fromText(missionControlId) },
+			account: icrcAccount,
 			// We query tip to discover the new transactions
 			start: undefined,
 			maxResults: PAGINATION,
@@ -140,22 +161,25 @@ const syncWallet = async ({
 
 	await store.save();
 
-	syncing = false;
+	syncing[account] = false;
 };
 
 const postMessageWallet = ({
 	certified,
+	icrcAccountText,
 	balance,
 	transactions: newTransactions
 }: Pick<IcpIndexDid.GetAccountIdentifierTransactionsResponse, 'balance'> & {
 	transactions: IcTransactionUi[];
 } & {
+	icrcAccountText: IcrcAccountText;
 	certified: boolean;
 }) => {
 	const certifiedTransactions = newTransactions.map((data) => ({ data, certified }));
 
 	const data: PostMessageDataResponseWallet = {
 		wallet: {
+			walletId: icrcAccountText,
 			balance: {
 				data: balance,
 				certified
@@ -196,6 +220,7 @@ const syncTransactions = ({
 		// We execute postMessage at least once because developer may have no transaction at all so, we want to display the balance zero
 		if (!initialized) {
 			postMessageWallet({
+				icrcAccountText: store.icrcAccountText,
 				transactions: [],
 				balance,
 				certified,
@@ -215,6 +240,7 @@ const syncTransactions = ({
 	);
 
 	postMessageWallet({
+		icrcAccountText: store.icrcAccountText,
 		transactions: newUiTransactions,
 		balance,
 		certified,
@@ -255,13 +281,20 @@ const cleanTransactions = ({ certified, store }: { certified: boolean; store: Wa
 		return;
 	}
 
-	postMessageWalletCleanUp(notCertifiedTransactions);
+	postMessageWalletCleanUp({ transactions: notCertifiedTransactions, store });
 
 	store.clean(certifiedTransactions);
 };
 
-const postMessageWalletCleanUp = (transactions: IndexedTransactions) => {
+const postMessageWalletCleanUp = ({
+	transactions,
+	store
+}: {
+	transactions: IndexedTransactions;
+	store: WalletStore;
+}) => {
 	const data: PostMessageDataResponseWalletCleanUp = {
+		walletId: store.icrcAccountText,
 		transactionIds: Object.keys(transactions)
 	};
 
@@ -296,6 +329,7 @@ const emitSavedWallet = ({ store, identity }: { store: WalletStore; identity: Id
 
 	const data: PostMessageDataResponseWallet = {
 		wallet: {
+			walletId: store.icrcAccountText,
 			balance: store.balance,
 			newTransactions: JSON.stringify(uiTransactions, jsonReplacer)
 		}

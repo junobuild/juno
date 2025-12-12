@@ -9,14 +9,14 @@
 	import WalletInlineBalance from '$lib/components/wallet/WalletInlineBalance.svelte';
 	import { testIds } from '$lib/constants/test-ids.constants';
 	import { balance } from '$lib/derived/wallet/balance.derived';
+	import type { WalletId } from '$lib/schemas/wallet.schema';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import type { MissionControlId } from '$lib/types/mission-control';
 
 	interface Props {
-		missionControlId: MissionControlId;
+		walletId: WalletId;
 	}
 
-	let { missionControlId }: Props = $props();
+	let { walletId }: Props = $props();
 
 	let button: HTMLButtonElement | undefined = $state();
 	let visible: boolean = $state(false);
@@ -51,15 +51,15 @@
 			</Value>
 		</div>
 
-		<WalletIds {missionControlId} />
+		<WalletIds {walletId} />
 
 		<div class="actions">
-			<WalletActions {missionControlId} onreceive={openReceive} onsend={() => (visible = false)} />
+			<WalletActions onreceive={openReceive} onsend={() => (visible = false)} {walletId} />
 		</div>
 	</div>
 </Popover>
 
-<ReceiveTokens {missionControlId} bind:visible={receiveVisible} />
+<ReceiveTokens {walletId} bind:visible={receiveVisible} />
 
 <style lang="scss">
 	@use '../../styles/mixins/overlay';

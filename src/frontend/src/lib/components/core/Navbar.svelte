@@ -37,6 +37,8 @@
 
 		debounceHideHeader();
 	});
+
+	let walletId = $derived(nonNullish($missionControlId) ? { owner: $missionControlId } : undefined);
 </script>
 
 {#snippet banner()}
@@ -58,13 +60,13 @@
 
 	<div>
 		{#if $authSignedIn && $missionControlIdLoaded}
-			{#if nonNullish($missionControlId)}
+			{#if nonNullish(walletId)}
 				<div in:fade>
 					<Notifications />
 
 					<NavbarSpotlight />
 
-					<NavbarWallet missionControlId={$missionControlId} />
+					<NavbarWallet {walletId} />
 				</div>
 			{/if}
 

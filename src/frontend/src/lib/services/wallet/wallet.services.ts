@@ -1,10 +1,10 @@
 import { queryAndUpdate } from '$lib/api/call/query.api';
 import { getTransactions } from '$lib/api/icp-index.api';
+import type { WalletId } from '$lib/schemas/wallet.schema';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
 import { transactionsCertifiedStore } from '$lib/stores/wallet/transactions.store';
 import type { OptionIdentity } from '$lib/types/itentity';
-import type { MissionControlId } from '$lib/types/mission-control';
 import type { CertifiedTransactions } from '$lib/types/transaction';
 import { formatToDateNumeric } from '$lib/utils/date.utils';
 import { mapIcpTransaction } from '$lib/utils/icp-transactions.utils';
@@ -32,15 +32,15 @@ type TransactionCsv = [
 ];
 
 export const exportTransactions = async ({
-	missionControlId,
+	walletId,
 	transactions
 }: {
-	missionControlId: MissionControlId;
+	walletId: WalletId;
 	transactions: CertifiedTransactions;
 }) => {
 	const transactionsCsv: TransactionCsv[] = transactions.map(({ data: transaction }) => {
 		const { id, timestamp, from, to } = transaction;
-		const memo = transactionMemo({ transaction, missionControlId });
+		const memo = transactionMemo({ transaction, walletId });
 		const amount = transactionAmount(transaction);
 
 		return [

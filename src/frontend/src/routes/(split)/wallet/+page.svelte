@@ -33,6 +33,8 @@
 	setContext<TabsContext>(TABS_CONTEXT_KEY, {
 		store
 	});
+
+	let walletId = $derived(nonNullish($missionControlId) ? { owner: $missionControlId } : undefined);
 </script>
 
 <IdentityGuard>
@@ -45,9 +47,9 @@
 
 		<Loaders>
 			<MissionControlGuard>
-				{#if nonNullish($missionControlId)}
+				{#if nonNullish(walletId)}
 					{#if $store.tabId === $store.tabs[0].id}
-						<Wallet missionControlId={$missionControlId} />
+						<Wallet {walletId} />
 					{/if}
 				{/if}
 			</MissionControlGuard>

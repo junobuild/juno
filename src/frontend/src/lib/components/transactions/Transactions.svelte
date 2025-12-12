@@ -1,23 +1,19 @@
 <script lang="ts">
 	import Transaction from '$lib/components/transactions/Transaction.svelte';
 	import InfiniteScroll from '$lib/components/ui/InfiniteScroll.svelte';
+	import type { WalletId } from '$lib/schemas/wallet.schema';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { MissionControlId } from '$lib/types/mission-control';
 	import type { CertifiedTransactions } from '$lib/types/transaction';
 
 	interface Props {
-		missionControlId: MissionControlId;
+		walletId: WalletId;
 		transactions: CertifiedTransactions;
 		disableInfiniteScroll?: boolean;
 		onintersect: () => void;
 	}
 
-	let {
-		missionControlId,
-		transactions,
-		onintersect,
-		disableInfiniteScroll = false
-	}: Props = $props();
+	let { walletId, transactions, onintersect, disableInfiniteScroll = false }: Props = $props();
 </script>
 
 {#if transactions.length > 0}
@@ -37,7 +33,7 @@
 
 				<tbody>
 					{#each transactions as transaction, index (`${transaction.data.id}-${index}`)}
-						<Transaction {missionControlId} transaction={transaction.data} />
+						<Transaction transaction={transaction.data} {walletId} />
 					{/each}
 				</tbody>
 			</table>

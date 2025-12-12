@@ -1,4 +1,4 @@
-import type { WalletId } from '$lib/schemas/wallet.schema';
+import type { WalletIdText } from '$lib/schemas/wallet.schema';
 import type { CertifiedWalletStoreData } from '$lib/stores/wallet/_wallet.store';
 import type { CertifiedTransactions } from '$lib/types/transaction';
 import { type Readable, writable } from 'svelte/store';
@@ -6,9 +6,9 @@ import { type Readable, writable } from 'svelte/store';
 type CertifiedTransactionsStoreData = CertifiedWalletStoreData<CertifiedTransactions>;
 
 interface CertifiedTransactionsStore extends Readable<CertifiedTransactionsStoreData> {
-	prepend: (params: { walletId: WalletId; transactions: CertifiedTransactions }) => void;
-	append: (params: { walletId: WalletId; transactions: CertifiedTransactions }) => void;
-	cleanUp: (params: { walletId: WalletId; transactionIds: string[] }) => void;
+	prepend: (params: { walletId: WalletIdText; transactions: CertifiedTransactions }) => void;
+	append: (params: { walletId: WalletIdText; transactions: CertifiedTransactions }) => void;
+	cleanUp: (params: { walletId: WalletIdText; transactionIds: string[] }) => void;
 	reset: () => void;
 }
 

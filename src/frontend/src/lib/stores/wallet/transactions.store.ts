@@ -1,13 +1,14 @@
+import type { IcrcAccountText } from '$lib/schemas/wallet.schema';
 import type { CertifiedTransactions } from '$lib/types/transaction';
 import type { Option } from '$lib/types/utils';
 import { type Readable, writable } from 'svelte/store';
 
-type CertifiedTransactionsStoreData = Option<CertifiedTransactions>;
+type CertifiedTransactionsStoreData = Option<Record<IcrcAccountText, CertifiedTransactions>>;
 
 interface CertifiedTransactionsStore extends Readable<CertifiedTransactionsStoreData> {
-	prepend: (transactions: CertifiedTransactions) => void;
-	append: (transactions: CertifiedTransactions) => void;
-	cleanUp: (transactionIds: string[]) => void;
+	prepend: (params: { account: IcrcAccountText; transactions: CertifiedTransactions }) => void;
+	append: (params: { account: IcrcAccountText; transactions: CertifiedTransactions }) => void;
+	cleanUp: (params: { account: IcrcAccountText; transactionIds: string[] }) => void;
 	reset: () => void;
 }
 
@@ -15,20 +16,30 @@ const initCertifiedTransactionsStore = (): CertifiedTransactionsStore => {
 	const { subscribe, update, set } = writable<CertifiedTransactionsStoreData>(undefined);
 
 	return {
-		prepend: (transactions) =>
-			update((state) => [
-				...transactions,
-				...(state ?? []).filter(
-					({ data: { id } }) => !transactions.some(({ data: { id: txId } }) => txId === id)
+		prepend: ({ account, transactions }) =>
+			update((state) => ({
+				...(state ?? {}),
+				[account]: [
+					...transactions,
+					...((state ?? {})[account] ?? []).filter(
+						({ data: { id } }) => !transactions.some(({ data: { id: txId } }) => txId === id)
+					)
+				]
+			})),
+
+		append: ({ account, transactions }) =>
+			update((state) => ({
+				...(state ?? {}),
+				[account]: [...((state ?? {})[account] ?? []), ...transactions]
+			})),
+
+		cleanUp: ({ account, transactionIds }) =>
+			update((state) => ({
+				...(state ?? {}),
+				[account]: ((state ?? {})[account] ?? []).filter(
+					({ data: { id } }) => !transactionIds.includes(`${id}`)
 				)
-			]),
-
-		append: (transactions) => update((state) => [...(state ?? []), ...transactions]),
-
-		cleanUp: (transactionIds) =>
-			update((state) =>
-				(state ?? []).filter(({ data: { id } }) => !transactionIds.includes(`${id}`))
-			),
+			})),
 
 		reset: () => {
 			set(null);

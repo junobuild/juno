@@ -2,8 +2,8 @@ import { getAgent } from '$lib/api/_agent/_agent.api';
 import type { OptionIdentity } from '$lib/types/itentity';
 import { assertNonNullish, nowInBigIntNanoSeconds } from '@dfinity/utils';
 import {
-	LedgerCanister,
-	type Icrc1BlockIndex,
+	IcpLedgerCanister,
+	type IcpLedgerDid,
 	type Icrc2ApproveRequest
 } from '@icp-sdk/canisters/ledger/icp';
 
@@ -18,12 +18,15 @@ export const approveIcpTransfer = async ({
 }: {
 	identity: OptionIdentity;
 	validity?: bigint;
-} & Pick<Icrc2ApproveRequest, 'amount' | 'spender' | 'icrc1Memo'>): Promise<Icrc1BlockIndex> => {
+} & Pick<
+	Icrc2ApproveRequest,
+	'amount' | 'spender' | 'icrc1Memo'
+>): Promise<IcpLedgerDid.BlockIndex> => {
 	assertNonNullish(identity, 'No internet identity to initialize the Index actor.');
 
 	const agent = await getAgent({ identity });
 
-	const { icrc2Approve } = LedgerCanister.create({
+	const { icrc2Approve } = IcpLedgerCanister.create({
 		agent
 	});
 

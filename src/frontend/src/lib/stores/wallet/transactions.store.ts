@@ -1,9 +1,9 @@
 import type { IcrcAccountText } from '$lib/schemas/wallet.schema';
+import type { CertifiedWalletStoreData } from '$lib/stores/wallet/_wallet.store';
 import type { CertifiedTransactions } from '$lib/types/transaction';
-import type { Option } from '$lib/types/utils';
 import { type Readable, writable } from 'svelte/store';
 
-type CertifiedTransactionsStoreData = Option<Record<IcrcAccountText, CertifiedTransactions>>;
+type CertifiedTransactionsStoreData = CertifiedWalletStoreData<CertifiedTransactions>;
 
 interface CertifiedTransactionsStore extends Readable<CertifiedTransactionsStoreData> {
 	prepend: (params: { account: IcrcAccountText; transactions: CertifiedTransactions }) => void;

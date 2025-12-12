@@ -47,7 +47,7 @@
 		}
 
 		await loadNextTransactions({
-			owner: missionControlId,
+			account: { owner: missionControlId },
 			identity: $authStore.identity,
 			maxResults: PAGINATION,
 			start: lastId,

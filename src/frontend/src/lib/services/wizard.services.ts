@@ -1,6 +1,5 @@
 import type { MissionControlDid } from '$declarations';
 import { getOrbiterFee, getSatelliteFee } from '$lib/api/console.api';
-import { getAccountIdentifier } from '$lib/api/icp-index.api';
 import { updateAndStartMonitoring } from '$lib/api/mission-control.api';
 import { missionControlMonitored } from '$lib/derived/mission-control/mission-control-settings.derived';
 import { missionControlConfigMonitoring } from '$lib/derived/mission-control/mission-control-user.derived';
@@ -28,6 +27,7 @@ import type { MissionControlId } from '$lib/types/mission-control';
 import type { JunoModal, JunoModalCreateSegmentDetail } from '$lib/types/modal';
 import { type WizardCreateProgress, WizardCreateProgressStep } from '$lib/types/progress-wizard';
 import type { Option } from '$lib/types/utils';
+import { toAccountIdentifier } from '$lib/utils/account.utils';
 import { emit } from '$lib/utils/events.utils';
 import { waitAndRestartWallet } from '$lib/utils/wallet.utils';
 import { assertNonNullish, isNullish, nonNullish, toNullable } from '@dfinity/utils';
@@ -128,7 +128,7 @@ const initCreateWizard = async ({
 	const monitoringEnabled = get(missionControlMonitored);
 	const monitoringConfig = get(missionControlConfigMonitoring);
 
-	const accountIdentifier = getAccountIdentifier(missionControlId);
+	const accountIdentifier = toAccountIdentifier({ owner: missionControlId });
 
 	emit<JunoModal<JunoModalCreateSegmentDetail>>({
 		message: 'junoModal',

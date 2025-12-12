@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { fade } from 'svelte/transition';
-	import { getAccountIdentifier } from '$lib/api/icp-index.api';
 	import IconOisy from '$lib/components/icons/IconOisy.svelte';
 	import IconQRCode from '$lib/components/icons/IconQRCode.svelte';
 	import ReceiveTokensQRCode from '$lib/components/tokens/ReceiveTokensQRCode.svelte';
@@ -8,6 +7,7 @@
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { MissionControlId } from '$lib/types/mission-control';
+	import { toAccountIdentifier } from '$lib/utils/account.utils';
 
 	interface Props {
 		missionControlId: MissionControlId;
@@ -16,7 +16,7 @@
 
 	let { missionControlId, visible = $bindable(false) }: Props = $props();
 
-	const accountIdentifier = getAccountIdentifier(missionControlId);
+	const accountIdentifier = toAccountIdentifier({ owner: missionControlId });
 
 	let step: 'options' | 'wallet_id' | 'account_identifier' | 'signer' = $state('options');
 

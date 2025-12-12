@@ -90,7 +90,7 @@ export const loadNextTransactions = ({
 			}
 
 			transactionsCertifiedStore.append({
-				account: encodeIcrcAccount(account),
+				walletId: encodeIcrcAccount(account),
 				transactions: transactions.map((transaction) => ({
 					data: mapIcpTransaction({
 						transaction,

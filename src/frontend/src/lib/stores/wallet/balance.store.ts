@@ -1,4 +1,4 @@
-import type { IcrcAccountText } from '$lib/schemas/wallet.schema';
+import type { WalletId } from '$lib/schemas/wallet.schema';
 import type { CertifiedWalletStoreData } from '$lib/stores/wallet/_wallet.store';
 import type { CertifiedData } from '$lib/types/store';
 import { nonNullish } from '@dfinity/utils';
@@ -9,9 +9,9 @@ type CertifiedBalanceData = CertifiedData<bigint> | null;
 type BalanceStoreData = CertifiedWalletStoreData<CertifiedBalanceData>;
 
 interface BalanceStore extends Readable<BalanceStoreData> {
-	set: (params: { account: IcrcAccountText; data: CertifiedBalanceData }) => void;
+	set: (params: { walletId: WalletId; data: CertifiedBalanceData }) => void;
 	setAll: (state: BalanceStoreData) => void;
-	reset: (account: IcrcAccountText) => void;
+	reset: (walletId: WalletId) => void;
 	resetAll: () => void;
 }
 
@@ -20,10 +20,10 @@ const initBalanceStore = (): BalanceStore => {
 
 	return {
 		subscribe,
-		set({ account, data }) {
+		set({ walletId, data }) {
 			update((state) => ({
 				...state,
-				[account]: data
+				[walletId]: data
 			}));
 		},
 		setAll: (state) => {

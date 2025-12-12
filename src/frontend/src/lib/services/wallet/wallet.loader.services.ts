@@ -21,14 +21,14 @@ export const onSyncWallet = (data: PostMessageDataResponseWallet) => {
 	} = data;
 
 	balanceCertifiedStore.set({
-		account,
+		walletId: account,
 		data: balance
 	});
 
 	const transactions = JSON.parse(newTransactions, jsonReviver);
 
 	transactionsCertifiedStore.prepend({
-		account,
+		walletId: account,
 		transactions
 	});
 };
@@ -49,7 +49,7 @@ export const onWalletCleanUp = ({
 	transactionIds,
 	account
 }: PostMessageDataResponseWalletCleanUp) => {
-	transactionsCertifiedStore.cleanUp({ account, transactionIds });
+	transactionsCertifiedStore.cleanUp({ walletId: account, transactionIds });
 
 	toasts.error({
 		text: get(i18n).errors.wallet_uncertified_transactions_removed

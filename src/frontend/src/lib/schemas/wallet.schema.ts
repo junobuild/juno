@@ -1,4 +1,4 @@
-import { PrincipalObjSchema } from '$lib/schemas/principal.schema';
+import { PrincipalSchema } from '$lib/schemas/principal.schema';
 import * as z from 'zod';
 
 export const IcrcAccountTextSchema = z.string();
@@ -8,7 +8,7 @@ export const WalletIdTextSchema = IcrcAccountTextSchema;
 export type WalletIdText = IcrcAccountText;
 
 export const WalletIdSchema = z.strictObject({
-	owner: PrincipalObjSchema,
+	owner: PrincipalSchema,
 	subaccount: z.instanceof(Uint8Array).optional()
 });
 export type WalletId = z.infer<typeof WalletIdSchema>;

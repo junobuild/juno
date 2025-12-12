@@ -31,9 +31,7 @@ export class WalletWorker extends AppWorker {
 					});
 					return;
 				case 'syncWalletCleanUp':
-					onWalletCleanUp({
-						transactionIds: (data.data as PostMessageDataResponseWalletCleanUp).transactionIds
-					});
+					onWalletCleanUp(data.data as PostMessageDataResponseWalletCleanUp);
 					return;
 				case 'syncExchange':
 					onSyncExchange(data.data as PostMessageDataResponseExchange);

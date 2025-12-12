@@ -32,6 +32,7 @@ export const PostMessageDataResponseWalletSchema = z.object({
 });
 
 export const PostMessageDataResponseWalletCleanUpSchema = z.object({
+	account: IcrcAccountTextSchema,
 	transactionIds: z.array(z.string())
 });
 

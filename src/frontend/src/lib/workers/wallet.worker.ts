@@ -267,13 +267,20 @@ const cleanTransactions = ({ certified, store }: { certified: boolean; store: Wa
 		return;
 	}
 
-	postMessageWalletCleanUp(notCertifiedTransactions);
+	postMessageWalletCleanUp({ transactions: notCertifiedTransactions, store });
 
 	store.clean(certifiedTransactions);
 };
 
-const postMessageWalletCleanUp = (transactions: IndexedTransactions) => {
+const postMessageWalletCleanUp = ({
+	transactions,
+	store
+}: {
+	transactions: IndexedTransactions;
+	store: WalletStore;
+}) => {
 	const data: PostMessageDataResponseWalletCleanUp = {
+		account: encodeIcrcAccount(store.account),
 		transactionIds: Object.keys(transactions)
 	};
 

@@ -5,7 +5,8 @@ import { exchangePricesCanisterDataStore } from '$lib/stores/wallet/exchange.sto
 import { transactionsCertifiedStore } from '$lib/stores/wallet/transactions.store';
 import type {
 	PostMessageDataResponseExchange,
-	PostMessageDataResponseWallet
+	PostMessageDataResponseWallet,
+	PostMessageDataResponseWalletCleanUp
 } from '$lib/types/post-message';
 import { isNullish, jsonReviver } from '@dfinity/utils';
 import { get } from 'svelte/store';
@@ -15,14 +16,21 @@ export const onSyncWallet = (data: PostMessageDataResponseWallet) => {
 		return;
 	}
 
+	const {
+		wallet: { account, newTransactions, balance }
+	} = data;
+
 	balanceCertifiedStore.set({
-		canisterId: data.wallet.account,
-		data: data.wallet.balance
+		account,
+		data: balance
 	});
 
-	const newTransactions = JSON.parse(data.wallet.newTransactions, jsonReviver);
+	const transactions = JSON.parse(newTransactions, jsonReviver);
 
-	transactionsCertifiedStore.prepend(newTransactions);
+	transactionsCertifiedStore.prepend({
+		account,
+		transactions
+	});
 };
 
 export const onWalletError = ({ error: err }: { error: unknown }) => {
@@ -37,8 +45,11 @@ export const onWalletError = ({ error: err }: { error: unknown }) => {
 	});
 };
 
-export const onWalletCleanUp = ({ transactionIds }: { transactionIds: string[] }) => {
-	transactionsCertifiedStore.cleanUp(transactionIds);
+export const onWalletCleanUp = ({
+	transactionIds,
+	account
+}: PostMessageDataResponseWalletCleanUp) => {
+	transactionsCertifiedStore.cleanUp({ account, transactionIds });
 
 	toasts.error({
 		text: get(i18n).errors.wallet_uncertified_transactions_removed

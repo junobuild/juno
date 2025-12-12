@@ -58,8 +58,8 @@ const stopTimer = () => {
 	timer = undefined;
 };
 
-const startTimer = async ({ data: { accounts } }: { data: PostMessageDataRequest }) => {
-	if (isNullish(accounts)) {
+const startTimer = async ({ data: { walletIds } }: { data: PostMessageDataRequest }) => {
+	if (isNullish(walletIds)) {
 		// No accounts provided
 		return;
 	}
@@ -72,8 +72,8 @@ const startTimer = async ({ data: { accounts } }: { data: PostMessageDataRequest
 	}
 
 	await Promise.all(
-		accounts.map(async (account) => {
-			await startTimerWithAccount({ identity, account: decodeIcrcAccount(account) });
+		walletIds.map(async (walletId) => {
+			await startTimerWithAccount({ identity, account: decodeIcrcAccount(walletId) });
 		})
 	);
 };
@@ -166,20 +166,20 @@ const syncWallet = async ({
 
 const postMessageWallet = ({
 	certified,
-	account,
+	icrcAccountText,
 	balance,
 	transactions: newTransactions
 }: Pick<IcpIndexDid.GetAccountIdentifierTransactionsResponse, 'balance'> & {
 	transactions: IcTransactionUi[];
 } & {
-	account: IcrcAccountText;
+	icrcAccountText: IcrcAccountText;
 	certified: boolean;
 }) => {
 	const certifiedTransactions = newTransactions.map((data) => ({ data, certified }));
 
 	const data: PostMessageDataResponseWallet = {
 		wallet: {
-			account,
+			walletId: icrcAccountText,
 			balance: {
 				data: balance,
 				certified
@@ -220,7 +220,7 @@ const syncTransactions = ({
 		// We execute postMessage at least once because developer may have no transaction at all so, we want to display the balance zero
 		if (!initialized) {
 			postMessageWallet({
-				account: store.accountText,
+				icrcAccountText: store.icrcAccountText,
 				transactions: [],
 				balance,
 				certified,
@@ -240,7 +240,7 @@ const syncTransactions = ({
 	);
 
 	postMessageWallet({
-		account: store.accountText,
+		icrcAccountText: store.icrcAccountText,
 		transactions: newUiTransactions,
 		balance,
 		certified,
@@ -294,7 +294,7 @@ const postMessageWalletCleanUp = ({
 	store: WalletStore;
 }) => {
 	const data: PostMessageDataResponseWalletCleanUp = {
-		account: store.accountText,
+		account: store.icrcAccountText,
 		transactionIds: Object.keys(transactions)
 	};
 
@@ -329,7 +329,7 @@ const emitSavedWallet = ({ store, identity }: { store: WalletStore; identity: Id
 
 	const data: PostMessageDataResponseWallet = {
 		wallet: {
-			account: store.accountText,
+			walletId: store.icrcAccountText,
 			balance: store.balance,
 			newTransactions: JSON.stringify(uiTransactions, jsonReplacer)
 		}

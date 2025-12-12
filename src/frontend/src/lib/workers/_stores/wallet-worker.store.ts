@@ -45,7 +45,7 @@ export class WalletStore {
 		this.#account = account;
 	}
 
-	get accountText(): IcrcAccountText {
+	get icrcAccountText(): IcrcAccountText {
 		return encodeIcrcAccount(this.#account);
 	}
 

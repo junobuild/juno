@@ -1,3 +1,4 @@
+import type { WalletId } from '$lib/schemas/wallet.schema';
 import {
 	onSyncExchange,
 	onSyncWallet,
@@ -5,7 +6,6 @@ import {
 	onWalletError
 } from '$lib/services/wallet/wallet.loader.services';
 import { AppWorker } from '$lib/services/workers/_worker.services';
-import type { MissionControlId } from '$lib/types/mission-control';
 import type {
 	PostMessageDataResponseError,
 	PostMessageDataResponseExchange,
@@ -44,17 +44,17 @@ export class WalletWorker extends AppWorker {
 		return new WalletWorker(worker);
 	}
 
-	start = ({ missionControlId }: { missionControlId: MissionControlId }) => {
+	start = ({ walletIds }: { walletIds: WalletId[] }) => {
 		this._worker.postMessage({
 			msg: 'startWalletTimer',
-			data: { missionControlId: missionControlId.toText() }
+			data: { walletIds }
 		});
 	};
 
-	restart = ({ missionControlId }: { missionControlId: MissionControlId }) => {
+	restart = ({ walletIds }: { walletIds: WalletId[] }) => {
 		this._worker.postMessage({
 			msg: 'restartWalletTimer',
-			data: { missionControlId: missionControlId.toText() }
+			data: { walletIds }
 		});
 	};
 

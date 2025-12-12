@@ -57,16 +57,16 @@
 	</div>
 
 	<div>
-		{#if $authSignedIn && $missionControlIdLoaded}
-			{#if nonNullish($missionControlId)}
-				<div in:fade>
-					<Notifications />
+		{#if $authSignedIn}
+			<div in:fade>
+				<Notifications />
 
-					<NavbarSpotlight />
+				<NavbarSpotlight />
 
+				{#if $missionControlIdLoaded && nonNullish($missionControlId)}
 					<NavbarWallet missionControlId={$missionControlId} />
-				</div>
-			{/if}
+				{/if}
+			</div>
 
 			<User provider={$provider} />
 		{/if}

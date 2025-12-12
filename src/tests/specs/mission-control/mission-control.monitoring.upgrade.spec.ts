@@ -35,7 +35,7 @@ describe.skip('Mission control > Upgrade > Monitoring', () => {
 	beforeEach(async () => {
 		pic = await PocketIc.create(inject('PIC_URL'));
 
-		const userInitArgs = (): ArrayBuffer => missionControlUserInitArgs(controller.getPrincipal());
+		const userInitArgs = (): Uint8Array => missionControlUserInitArgs(controller.getPrincipal());
 
 		const { actor: c, canisterId: mId } = await pic.setupCanister<MissionControlActor>({
 			idlFactory: idlFactoryMissionControl,

@@ -23,7 +23,7 @@ describe('Mission Control > Set / Unset', () => {
 	beforeAll(async () => {
 		pic = await PocketIc.create(inject('PIC_URL'));
 
-		const userInitArgs = (): ArrayBuffer => missionControlUserInitArgs(controller.getPrincipal());
+		const userInitArgs = (): Uint8Array => missionControlUserInitArgs(controller.getPrincipal());
 
 		const { actor: c, canisterId: missionControlId } = await pic.setupCanister<MissionControlActor>(
 			{

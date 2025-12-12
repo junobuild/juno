@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { IcrcAccount } from '@dfinity/oisy-wallet-signer';
-	import { nonNullish } from '@dfinity/utils';
+	import { base64ToUint8Array, nonNullish } from '@dfinity/utils';
 	import { Principal } from '@icp-sdk/core/principal';
 	import { getBalance } from '$lib/api/icp-index.api';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
@@ -20,14 +20,17 @@
 
 	let { account, back, receive }: Props = $props();
 
-	let owner: Principal = $derived(Principal.fromText(account.owner));
-
 	let balance: bigint | undefined = $state(undefined);
 	let amount = $state('');
 
-	const loadBalance = async (owner: Principal) => {
+	const loadBalance = async (account: IcrcAccount) => {
 		try {
-			balance = await getBalance({ owner, identity: $authStore.identity });
+			const owner = Principal.fromText(account.owner);
+			const subaccount = nonNullish(account.subaccount)
+				? base64ToUint8Array(account.subaccount)
+				: undefined;
+
+			balance = await getBalance({ account: { owner, subaccount }, identity: $authStore.identity });
 		} catch (err: unknown) {
 			toasts.error({
 				text: $i18n.errors.wallet_load_balance,
@@ -39,7 +42,7 @@
 	};
 
 	$effect(() => {
-		loadBalance(owner);
+		loadBalance(account);
 	});
 
 	const onsubmit = async ($event: SubmitEvent) => {

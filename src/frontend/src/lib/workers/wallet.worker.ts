@@ -10,6 +10,7 @@ import {
 	PAGINATION,
 	SYNC_WALLET_TIMER_INTERVAL
 } from '$lib/constants/app.constants';
+import type { IcrcAccountText } from '$lib/schemas/wallet.schema';
 import type { IcTransactionUi } from '$lib/types/ic-transaction';
 import type {
 	PostMessageDataRequest,
@@ -29,7 +30,6 @@ import {
 	type IcrcAccount
 } from '@icp-sdk/canisters/ledger/icrc';
 import type { Identity } from '@icp-sdk/core/agent';
-import type { IcrcAccountText } from '$lib/schemas/wallet.schema';
 
 export const onWalletMessage = async ({ data: dataMsg }: MessageEvent<PostMessageRequest>) => {
 	const { msg, data } = dataMsg;
@@ -128,7 +128,7 @@ const syncWallet = async ({
 	}: QueryAndUpdateRequestParams): Promise<IcpIndexDid.GetAccountIdentifierTransactionsResponse> =>
 		getTransactions({
 			identity,
-			owner: account.owner,
+			account: icrcAccount,
 			// We query tip to discover the new transactions
 			start: undefined,
 			maxResults: PAGINATION,

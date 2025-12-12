@@ -1,22 +1,24 @@
 <script lang="ts">
+	import { encodeIcrcAccount } from '@icp-sdk/canisters/ledger/icrc';
 	import { fade } from 'svelte/transition';
 	import IconOisy from '$lib/components/icons/IconOisy.svelte';
 	import IconQRCode from '$lib/components/icons/IconQRCode.svelte';
 	import ReceiveTokensQRCode from '$lib/components/tokens/ReceiveTokensQRCode.svelte';
 	import ReceiveTokensSigner from '$lib/components/tokens/ReceiveTokensSigner.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
+	import type { WalletId } from '$lib/schemas/wallet.schema';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import type { MissionControlId } from '$lib/types/mission-control';
 	import { toAccountIdentifier } from '$lib/utils/account.utils';
 
 	interface Props {
-		missionControlId: MissionControlId;
+		walletId: WalletId;
 		visible?: boolean;
 	}
 
-	let { missionControlId, visible = $bindable(false) }: Props = $props();
+	let { walletId, visible = $bindable(false) }: Props = $props();
 
-	const accountIdentifier = toAccountIdentifier({ owner: missionControlId });
+	let walletIdText = $derived(encodeIcrcAccount(walletId));
+	let accountIdentifier = $derived(toAccountIdentifier(walletId));
 
 	let step: 'options' | 'wallet_id' | 'account_identifier' | 'signer' = $state('options');
 
@@ -35,7 +37,7 @@
 				<ReceiveTokensQRCode
 					ariaLabel={$i18n.wallet.wallet_id}
 					back={() => (step = 'options')}
-					value={missionControlId.toText()}
+					value={walletIdText}
 				/>
 			</div>
 		{:else if step === 'account_identifier'}
@@ -48,7 +50,7 @@
 			</div>
 		{:else if step === 'signer'}
 			<div in:fade>
-				<ReceiveTokensSigner back={() => (step = 'options')} {missionControlId} bind:visible />
+				<ReceiveTokensSigner back={() => (step = 'options')} {walletId} bind:visible />
 			</div>
 		{:else}
 			<div class="options">

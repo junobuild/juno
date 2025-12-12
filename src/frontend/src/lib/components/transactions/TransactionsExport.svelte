@@ -1,18 +1,18 @@
 <script lang="ts">
 	import Confirmation from '$lib/components/core/Confirmation.svelte';
+	import type { WalletId } from '$lib/schemas/wallet.schema';
 	import { exportTransactions as exportTransactionsServices } from '$lib/services/wallet/wallet.services';
 	import { busy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
-	import type { MissionControlId } from '$lib/types/mission-control';
 	import type { CertifiedTransactions } from '$lib/types/transaction';
 
 	interface Props {
-		missionControlId: MissionControlId;
+		walletId: WalletId;
 		transactions: CertifiedTransactions;
 	}
 
-	let { missionControlId, transactions }: Props = $props();
+	let { walletId, transactions }: Props = $props();
 
 	let visible = $state(false);
 
@@ -22,7 +22,7 @@
 		busy.start();
 
 		try {
-			await exportTransactionsServices({ transactions, missionControlId });
+			await exportTransactionsServices({ transactions, walletId });
 		} catch (err: unknown) {
 			toasts.error({
 				text: $i18n.errors.transactions_export,

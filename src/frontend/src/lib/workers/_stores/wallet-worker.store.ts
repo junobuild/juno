@@ -1,11 +1,11 @@
 import { walletIdbStore } from '$lib/stores/app/idb.store';
 import type { CertifiedData } from '$lib/types/store';
 import type { PrincipalText } from '@dfinity/zod-schemas';
-import type { TransactionWithId } from '@icp-sdk/canisters/ledger/icp';
+import type { IcpIndexDid } from '@icp-sdk/canisters/ledger/icp';
 import { encodeIcrcAccount, type IcrcAccount } from '@icp-sdk/canisters/ledger/icrc';
 import { get, set } from 'idb-keyval';
 
-export type IndexedTransactions = Record<string, CertifiedData<TransactionWithId>>;
+export type IndexedTransactions = Record<string, CertifiedData<IcpIndexDid.TransactionWithId>>;
 
 // Not reactive, only used to hold values imperatively.
 interface WalletState {
@@ -62,7 +62,7 @@ export class WalletStore {
 		certified
 	}: {
 		balance: bigint;
-		newTransactions: TransactionWithId[];
+		newTransactions: IcpIndexDid.TransactionWithId[];
 		certified: boolean;
 	}): void {
 		this.#store = {
@@ -70,7 +70,10 @@ export class WalletStore {
 			transactions: {
 				...this.#store.transactions,
 				...newTransactions.reduce(
-					(acc: Record<string, CertifiedData<TransactionWithId>>, { id, transaction }) => ({
+					(
+						acc: Record<string, CertifiedData<IcpIndexDid.TransactionWithId>>,
+						{ id, transaction }
+					) => ({
 						...acc,
 						[`${id}`]: {
 							data: {

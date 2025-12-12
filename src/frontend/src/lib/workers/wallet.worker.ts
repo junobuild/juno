@@ -22,7 +22,7 @@ import { mapIcpTransaction } from '$lib/utils/icp-transactions.utils';
 import { loadIdentity } from '$lib/utils/worker.utils';
 import { type IndexedTransactions, WalletStore } from '$lib/workers/_stores/wallet-worker.store';
 import { isNullish, jsonReplacer } from '@dfinity/utils';
-import type { GetAccountIdentifierTransactionsResponse } from '@icp-sdk/canisters/ledger/icp';
+import type { IcpIndexDid } from '@icp-sdk/canisters/ledger/icp';
 import {
 	decodeIcrcAccount,
 	encodeIcrcAccount,
@@ -113,7 +113,7 @@ const syncWallet = async ({
 	const request = ({
 		identity: _,
 		certified
-	}: QueryAndUpdateRequestParams): Promise<GetAccountIdentifierTransactionsResponse> =>
+	}: QueryAndUpdateRequestParams): Promise<IcpIndexDid.GetAccountIdentifierTransactionsResponse> =>
 		getTransactions({
 			identity,
 			owner: account.owner,
@@ -123,7 +123,7 @@ const syncWallet = async ({
 			certified
 		});
 
-	const onLoad: QueryAndUpdateOnResponse<GetAccountIdentifierTransactionsResponse> = ({
+	const onLoad: QueryAndUpdateOnResponse<IcpIndexDid.GetAccountIdentifierTransactionsResponse> = ({
 		certified,
 		...rest
 	}) => {
@@ -139,7 +139,7 @@ const syncWallet = async ({
 		stopTimer();
 	};
 
-	await queryAndUpdate<GetAccountIdentifierTransactionsResponse>({
+	await queryAndUpdate<IcpIndexDid.GetAccountIdentifierTransactionsResponse>({
 		request,
 		onLoad,
 		onCertifiedError,
@@ -155,7 +155,7 @@ const postMessageWallet = ({
 	account,
 	balance,
 	transactions: newTransactions
-}: Pick<GetAccountIdentifierTransactionsResponse, 'balance'> & {
+}: Pick<IcpIndexDid.GetAccountIdentifierTransactionsResponse, 'balance'> & {
 	transactions: IcTransactionUi[];
 } & {
 	account: IcrcAccount;
@@ -186,7 +186,7 @@ const syncTransactions = ({
 	identity,
 	store
 }: {
-	response: GetAccountIdentifierTransactionsResponse;
+	response: IcpIndexDid.GetAccountIdentifierTransactionsResponse;
 	certified: boolean;
 	identity: Identity;
 	store: WalletStore;

@@ -183,7 +183,9 @@ describe('Mission Control > Notifications', () => {
 			const missionControlStrategy: MissionControlDid.CyclesMonitoringStrategy = {
 				BelowThreshold: {
 					// This way the mission control can consume some of its cycles already requires cycles
-					min_cycles: BigInt(Math.min(missionControlCurrentCycles - 100_000_000_000, 100_000)),
+					min_cycles: BigInt(
+						Math.min(Number(missionControlCurrentCycles) - 100_000_000_000, 100_000)
+					),
 					fund_cycles: 100_000n
 				}
 			};

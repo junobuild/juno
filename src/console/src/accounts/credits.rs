@@ -1,4 +1,4 @@
-use crate::accounts::get_account_with_existing_mission_control;
+use crate::accounts::{get_account_with_existing_mission_control, get_existing_account};
 use crate::constants::E8S_PER_ICP;
 use crate::store::{with_accounts, with_accounts_mut};
 use crate::types::state::{Account, AccountsStable};
@@ -29,6 +29,11 @@ fn get_credits_impl(user: &UserId, accounts: &AccountsStable) -> Result<Tokens, 
 //
 // More like a percent. 1 credit equals 1 creation.
 // ---------------------------------------------------------
+
+pub fn caller_has_credits(user: &UserId, fee: &Tokens) -> Result<bool, String> {
+    let account = get_existing_account(user)?;
+    Ok(has_credits(&account, fee))
+}
 
 pub fn caller_is_mission_control_and_user_has_credits(
     user: &UserId,

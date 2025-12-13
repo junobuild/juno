@@ -418,6 +418,7 @@ export interface _SERVICE {
 	get_account: ActorMethod<[], [] | [Account]>;
 	get_auth_config: ActorMethod<[], [] | [AuthenticationConfig]>;
 	get_config: ActorMethod<[], Config>;
+	get_create_fee: ActorMethod<[SegmentKind], [] | [Tokens]>;
 	get_create_orbiter_fee: ActorMethod<[GetCreateCanisterFeeArgs], [] | [Tokens]>;
 	get_create_satellite_fee: ActorMethod<[GetCreateCanisterFeeArgs], [] | [Tokens]>;
 	get_credits: ActorMethod<[], Tokens>;

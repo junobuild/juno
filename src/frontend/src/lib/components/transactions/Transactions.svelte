@@ -3,7 +3,6 @@
 	import InfiniteScroll from '$lib/components/ui/InfiniteScroll.svelte';
 	import type { WalletId } from '$lib/schemas/wallet.schema';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import type { MissionControlId } from '$lib/types/mission-control';
 	import type { CertifiedTransactions } from '$lib/types/transaction';
 
 	interface Props {

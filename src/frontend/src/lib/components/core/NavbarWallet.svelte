@@ -6,10 +6,9 @@
 	import Value from '$lib/components/ui/Value.svelte';
 	import WalletActions from '$lib/components/wallet/WalletActions.svelte';
 	import WalletIds from '$lib/components/wallet/WalletIds.svelte';
-	import WalletInlineBalance from '$lib/components/wallet/WalletInlineBalance.svelte';
+	import WalletBalanceById from '$lib/components/wallet/WalletBalanceById.svelte';
 	import { testIds } from '$lib/constants/test-ids.constants';
-	import { balance } from '$lib/derived/wallet/balance.derived';
-	import type { WalletId, WalletIds as WalletIdsType } from '$lib/schemas/wallet.schema';
+	import type { WalletId } from '$lib/schemas/wallet.schema';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import WalletPicker from '$lib/components/wallet/WalletPicker.svelte';
 	import { nonNullish } from '@dfinity/utils';
@@ -47,7 +46,7 @@
 					{$i18n.wallet.balance}
 				{/snippet}
 
-				<WalletInlineBalance balance={$balance} />
+				<WalletBalanceById {walletId} display="inline" />
 			</Value>
 		</div>
 

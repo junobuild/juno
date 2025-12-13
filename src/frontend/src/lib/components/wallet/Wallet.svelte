@@ -5,11 +5,10 @@
 	import Transactions from '$lib/components/transactions/Transactions.svelte';
 	import TransactionsExport from '$lib/components/transactions/TransactionsExport.svelte';
 	import WalletActions from '$lib/components/wallet/WalletActions.svelte';
-	import WalletBalance from '$lib/components/wallet/WalletBalance.svelte';
+	import WalletBalanceById from '$lib/components/wallet/WalletBalanceById.svelte';
 	import WalletIds from '$lib/components/wallet/WalletIds.svelte';
 	import { PAGINATION } from '$lib/constants/app.constants';
 	import { authSignedIn, authSignedOut } from '$lib/derived/auth.derived';
-	import { balance } from '$lib/derived/wallet/balance.derived';
 	import { transactions } from '$lib/derived/wallet/transactions.derived';
 	import { loadNextTransactions } from '$lib/services/wallet/wallet.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
@@ -75,7 +74,7 @@
 			</div>
 
 			<div>
-				<WalletBalance balance={$balance} />
+				<WalletBalanceById {walletId} />
 			</div>
 		</div>
 	</div>

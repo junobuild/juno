@@ -1,10 +1,10 @@
-use crate::accounts::{get_account, init_account as init_account_store};
+use crate::accounts::{get_optional_account, init_account as init_account_store};
 use crate::store::heap::increment_mission_controls_rate;
 use crate::types::state::Account;
 use junobuild_shared::types::state::UserId;
 
 pub fn get_or_init_account(user: &UserId) -> Result<Account, String> {
-    if let Some(account) = get_account(user)? {
+    if let Some(account) = get_optional_account(user)? {
         return Ok(account);
     }
 

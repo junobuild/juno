@@ -3,12 +3,9 @@ use crate::accounts::credits::{
     caller_is_mission_control_and_user_has_credits, get_credits as get_credits_store,
 };
 use crate::guards::caller_is_admin_controller;
-use crate::store::heap::{
-    get_orbiter_fee, get_satellite_fee, set_create_orbiter_fee, set_create_satellite_fee,
-};
+use crate::store::heap::{get_mission_control_fee, get_orbiter_fee, get_satellite_fee, set_create_mission_control_fee, set_create_orbiter_fee, set_create_satellite_fee};
 use crate::store::stable::list_payments as list_payments_state;
 use crate::types::state::Payments;
-use ic_cdk::trap;
 use ic_cdk_macros::{query, update};
 use ic_ledger_types::Tokens;
 use junobuild_shared::ic::api::caller;
@@ -39,7 +36,8 @@ fn get_create_fee(segment: SegmentKind) -> Option<Tokens> {
 
     let fee = match segment {
         SegmentKind::Orbiter => get_orbiter_fee(),
-        _ => get_satellite_fee(),
+        SegmentKind::Satellite => get_satellite_fee(),
+        SegmentKind::MissionControl => get_mission_control_fee().unwrap_or_trap(),
     };
 
     let has_enough_credits = caller_has_credits(&caller, &fee).unwrap_or_trap();
@@ -89,7 +87,7 @@ fn get_create_orbiter_fee(
 fn set_fee(segment: SegmentKind, fee: Tokens) {
     match segment {
         SegmentKind::Satellite => set_create_satellite_fee(&fee),
-        SegmentKind::MissionControl => trap("Fee for mission control not supported."),
+        SegmentKind::MissionControl => set_create_mission_control_fee(&fee),
         SegmentKind::Orbiter => set_create_orbiter_fee(&fee),
     }
 }

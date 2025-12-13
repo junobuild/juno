@@ -2,8 +2,8 @@
 	import type { Principal } from '@icp-sdk/core/principal';
 	import type { Snippet } from 'svelte';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
-	import type { Option } from '$lib/types/utils';
 	import { loadSegments } from '$lib/services/console/segments.services';
+	import type { Option } from '$lib/types/utils';
 
 	interface Props {
 		children: Snippet;

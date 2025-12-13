@@ -7,6 +7,7 @@
 	import Loaders from '$lib/components/loaders/Loaders.svelte';
 	import MissionControl from '$lib/components/mission-control/MissionControl.svelte';
 	import MissionControlSettings from '$lib/components/mission-control/MissionControlSettings.svelte';
+	import NoTabs from '$lib/components/ui/NoTabs.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
 	import Warnings from '$lib/components/warning/Warnings.svelte';
 	import { authSignedIn } from '$lib/derived/auth.derived';
@@ -18,7 +19,6 @@
 		type TabsData
 	} from '$lib/types/tabs.context';
 	import { initTabId } from '$lib/utils/tabs.utils';
-	import NoTabs from '$lib/components/ui/NoTabs.svelte';
 
 	const tabs: Tab[] = [
 		{

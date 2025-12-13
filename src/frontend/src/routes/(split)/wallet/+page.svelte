@@ -9,6 +9,7 @@
 	import Warnings from '$lib/components/warning/Warnings.svelte';
 	import { authSignedIn } from '$lib/derived/auth.derived';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
+	import { devId } from '$lib/derived/dev.derived';
 	import {
 		type Tab,
 		TABS_CONTEXT_KEY,
@@ -16,7 +17,6 @@
 		type TabsData
 	} from '$lib/types/tabs.context';
 	import { initTabId } from '$lib/utils/tabs.utils';
-	import { devId } from '$lib/derived/dev.derived';
 
 	const tabs: Tab[] = [
 		{

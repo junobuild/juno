@@ -1,10 +1,10 @@
 <script lang="ts">
-	import type { WalletId } from '$lib/schemas/wallet.schema';
-	import { balanceCertifiedStore } from '$lib/stores/wallet/balance.store';
 	import { nonNullish } from '@dfinity/utils';
 	import { encodeIcrcAccount } from '@icp-sdk/canisters/ledger/icrc';
 	import WalletBalance from '$lib/components/wallet/WalletBalance.svelte';
 	import WalletInlineBalance from '$lib/components/wallet/WalletInlineBalance.svelte';
+	import type { WalletId } from '$lib/schemas/wallet.schema';
+	import { balanceCertifiedStore } from '$lib/stores/wallet/balance.store';
 
 	interface Props {
 		walletId: WalletId | undefined;

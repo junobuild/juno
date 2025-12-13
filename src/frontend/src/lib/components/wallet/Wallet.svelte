@@ -7,16 +7,16 @@
 	import WalletActions from '$lib/components/wallet/WalletActions.svelte';
 	import WalletBalanceById from '$lib/components/wallet/WalletBalanceById.svelte';
 	import WalletIds from '$lib/components/wallet/WalletIds.svelte';
+	import WalletPicker from '$lib/components/wallet/WalletPicker.svelte';
 	import { PAGINATION } from '$lib/constants/app.constants';
 	import { authSignedIn, authSignedOut } from '$lib/derived/auth.derived';
 	import { transactions } from '$lib/derived/wallet/transactions.derived';
+	import type { WalletId } from '$lib/schemas/wallet.schema';
 	import { loadNextTransactions } from '$lib/services/wallet/wallet.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
 	import { authStore } from '$lib/stores/auth.store';
 	import { last } from '$lib/utils/utils';
-	import type { WalletId } from '$lib/schemas/wallet.schema';
-	import WalletPicker from '$lib/components/wallet/WalletPicker.svelte';
 
 	let walletId = $state<WalletId | undefined>(undefined);
 

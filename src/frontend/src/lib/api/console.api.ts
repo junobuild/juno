@@ -31,17 +31,10 @@ export const getSatelliteFee = async ({
 	identity
 }: {
 	identity: OptionIdentity;
-}): Promise<bigint> => {
-	return await getFee({ identity, segmentKind: { Satellite: null } });
-};
+}): Promise<bigint> => await getFee({ identity, segmentKind: { Satellite: null } });
 
-export const getOrbiterFee = async ({
-	identity
-}: {
-	identity: OptionIdentity;
-}): Promise<bigint> => {
-	return await getFee({ identity, segmentKind: { Orbiter: null } });
-};
+export const getOrbiterFee = async ({ identity }: { identity: OptionIdentity }): Promise<bigint> =>
+	await getFee({ identity, segmentKind: { Orbiter: null } });
 
 const getFee = async ({
 	identity,

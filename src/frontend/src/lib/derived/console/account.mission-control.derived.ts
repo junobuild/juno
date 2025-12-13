@@ -25,3 +25,8 @@ export const missionControlIdNotLoaded = derived(
 	[missionControlIdLoaded],
 	([$missionControlIdLoaded]) => !$missionControlIdLoaded
 );
+
+export const missionControlEnabled = derived(
+	[accountCertifiedStore],
+	([$missionControlIdCertifiedStore]) => $missionControlIdCertifiedStore !== undefined
+);

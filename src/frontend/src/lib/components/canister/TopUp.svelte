@@ -4,7 +4,7 @@
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
 	import type { JunoModalWithSatellite } from '$lib/types/modal';
-	import { toAccountIdentifier } from '$lib/utils/account.utils';
+	import { toAccountIdentifier } from '$lib/utils/icp-icrc-account.utils';
 	import { emit } from '$lib/utils/events.utils';
 
 	interface Props {

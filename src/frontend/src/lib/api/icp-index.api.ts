@@ -1,6 +1,6 @@
 import { getAgent } from '$lib/api/_agent/_agent.api';
 import type { OptionIdentity } from '$lib/types/itentity';
-import { toAccountIdentifier } from '$lib/utils/account.utils';
+import { toAccountIdentifier } from '$lib/utils/icp-icrc-account.utils';
 import { assertNonNullish } from '@dfinity/utils';
 import { IcpIndexCanister, type IcpIndexDid } from '@icp-sdk/canisters/ledger/icp';
 import type { IcrcAccount } from '@icp-sdk/canisters/ledger/icrc';

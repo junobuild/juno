@@ -33,7 +33,7 @@ import type { OrbiterId } from '$lib/types/orbiter';
 import { type WizardCreateProgress, WizardCreateProgressStep } from '$lib/types/progress-wizard';
 import type { SatelliteId } from '$lib/types/satellite';
 import type { Option } from '$lib/types/utils';
-import { toAccountIdentifier } from '$lib/utils/account.utils';
+import { toAccountIdentifier } from '$lib/utils/icp-icrc-account.utils';
 import { emit } from '$lib/utils/events.utils';
 import { waitAndRestartWallet } from '$lib/utils/wallet.utils';
 import { assertNonNullish, isNullish, nonNullish, toNullable } from '@dfinity/utils';
@@ -114,7 +114,6 @@ const initCreateWizard = async ({
 
 	const { fee } = resultFee;
 
-	// TODO: extract function
 	if (missionControlId === null) {
 		busy.stop();
 

@@ -34,13 +34,12 @@ pub fn caller_is_mission_control_and_user_has_credits(
     user: &UserId,
     caller: &MissionControlId,
     fee: &Tokens,
-) -> bool {
-    get_account_with_existing_mission_control(user, caller)
-        .map(|account| has_credits(&account, fee))
-        .unwrap_or(false)
+) -> Result<bool, String> {
+    let account = get_account_with_existing_mission_control(user, caller)?;
+    Ok(has_credits(&account, fee))
 }
 
-fn has_credits(account: &Account, fee: &Tokens) -> bool {
+pub fn has_credits(account: &Account, fee: &Tokens) -> bool {
     account.credits.e8s() * fee.e8s() >= fee.e8s() * E8S_PER_ICP.e8s()
 }
 

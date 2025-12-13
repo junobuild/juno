@@ -328,6 +328,7 @@ interface I18nMission_control {
 	not_found: string;
 	loading: string;
 	edit_email: string;
+	empty: string;
 }
 
 interface I18nWallet {

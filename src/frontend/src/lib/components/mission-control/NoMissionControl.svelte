@@ -6,7 +6,7 @@
 	<span class="title">{$i18n.core.getting_started}</span>
 
 	<div class="content">
-		<p>{$i18n.analytics.empty}</p>
+		<p>{$i18n.mission_control.empty}</p>
 	</div>
 </div>
 

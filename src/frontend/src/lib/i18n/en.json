@@ -319,7 +319,8 @@
 		"id": "Mission Control ID",
 		"not_found": "Mission control not found.",
 		"loading": "Loading your mission control...",
-		"edit_email": "Edit your email address"
+		"edit_email": "Edit your email address",
+		"empty": "The Mission Control is your central hub for managing modules. It is required to activate monitoring. Additional advanced features will be added in the future."
 	},
 	"wallet": {
 		"title": "Wallet",

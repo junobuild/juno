@@ -319,7 +319,8 @@
 		"id": "任务控制中心ID",
 		"not_found": "未找到任务控制中心",
 		"loading": "正在加载您的任务控制中心...",
-		"edit_email": "编辑您的电子邮件地址"
+		"edit_email": "编辑您的电子邮件地址",
+		"empty": "Mission Control 是管理模块的中心枢纽。激活监控功能需要 Mission Control。未来将添加更多高级功能。"
 	},
 	"wallet": {
 		"title": "钱包",

@@ -18,6 +18,7 @@
 		type TabsData
 	} from '$lib/types/tabs.context';
 	import { initTabId } from '$lib/utils/tabs.utils';
+	import NoTabs from '$lib/components/ui/NoTabs.svelte';
 
 	const tabs: Tab[] = [
 		{
@@ -38,18 +39,20 @@
 	setContext<TabsContext>(TABS_CONTEXT_KEY, {
 		store
 	});
+
+	let TabsCmp = $derived($missionControlId === null ? NoTabs : Tabs);
 </script>
 
 <IdentityGuard>
 	<Loaders>
-		<MissionControlGuard>
-			<Tabs>
-				{#snippet info()}
-					{#if $authSignedIn}
-						<Warnings />
-					{/if}
-				{/snippet}
+		<TabsCmp>
+			{#snippet info()}
+				{#if $authSignedIn}
+					<Warnings />
+				{/if}
+			{/snippet}
 
+			<MissionControlGuard>
 				{#if nonNullish($missionControlId)}
 					{#if $store.tabId === $store.tabs[0].id}
 						<MissionControl missionControlId={$missionControlId} />
@@ -57,7 +60,7 @@
 						<MissionControlSettings missionControlId={$missionControlId} />
 					{/if}
 				{/if}
-			</Tabs>
-		</MissionControlGuard>
+			</MissionControlGuard>
+		</TabsCmp>
 	</Loaders>
 </IdentityGuard>

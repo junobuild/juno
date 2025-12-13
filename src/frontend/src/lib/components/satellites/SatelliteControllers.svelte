@@ -11,9 +11,10 @@
 	import { authStore } from '$lib/stores/auth.store';
 	import type { SetControllerParams } from '$lib/types/controllers';
 	import type { MissionControlId } from '$lib/types/mission-control';
+	import type { Satellite } from '$lib/types/satellite';
 
 	interface Props {
-		satellite: MissionControlDid.Satellite;
+		satellite: Satellite;
 	}
 
 	let { satellite }: Props = $props();

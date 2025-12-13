@@ -10,9 +10,10 @@
 	import { authStore } from '$lib/stores/auth.store';
 	import { versionStore } from '$lib/stores/version.store';
 	import { AUTH_CONFIG_CONTEXT_KEY, type AuthConfigContext } from '$lib/types/auth.context';
+	import type { Satellite } from '$lib/types/satellite';
 
 	interface Props {
-		satellite: MissionControlDid.Satellite;
+		satellite: Satellite;
 		children: Snippet;
 	}
 

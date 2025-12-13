@@ -18,6 +18,7 @@
 	import { toasts } from '$lib/stores/app/toasts.store';
 	import { authStore } from '$lib/stores/auth.store';
 	import type { MissionControlId } from '$lib/types/mission-control';
+	import type { Satellite } from '$lib/types/satellite';
 	import type { Option } from '$lib/types/utils';
 	import { bigintStringify } from '$lib/utils/number.utils';
 	import { orbiterName } from '$lib/utils/orbiter.utils';
@@ -33,7 +34,7 @@
 	let { principal, redirect_uri, missionControlId, profile }: Props = $props();
 
 	let selectedMissionControl = $state(false);
-	let selectedSatellites = $state<[Principal, MissionControlDid.Satellite][]>([]);
+	let selectedSatellites = $state<[Principal, Satellite][]>([]);
 	let selectedOrbiters = $state<[Principal, MissionControlDid.Orbiter][]>([]);
 
 	const onSubmit = async ($event: SubmitEvent) => {

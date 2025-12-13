@@ -328,6 +328,7 @@ interface I18nMission_control {
 	not_found: string;
 	loading: string;
 	edit_email: string;
+	empty: string;
 }
 
 interface I18nWallet {
@@ -371,6 +372,8 @@ interface I18nWallet {
 	balance_not_loaded: string;
 	balance_zero: string;
 	wallet_upgrade: string;
+	approving_canister_fee: string;
+	dev: string;
 }
 
 interface I18nAuthentication {
@@ -579,6 +582,7 @@ interface I18nErrors {
 	canister_update_error: string;
 	canister_status: string;
 	segment_detach: string;
+	load_fees: string;
 	load_credits: string;
 	load_documents: string;
 	load_users: string;
@@ -620,6 +624,7 @@ interface I18nErrors {
 	analytics_page_views_export: string;
 	satellites_loading: string;
 	orbiters_loading: string;
+	segments_loading: string;
 	orbiter_configuration_missing: string;
 	orbiter_configuration_unexpected: string;
 	orbiter_configuration_listing: string;

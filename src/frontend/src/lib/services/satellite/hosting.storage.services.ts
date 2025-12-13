@@ -1,4 +1,3 @@
-import type { MissionControlDid } from '$declarations';
 import { countCollectionAssets, switchStorageSystemMemory } from '$lib/api/satellites.api';
 import { COLLECTION_DAPP } from '$lib/constants/storage.constants';
 import { SATELLITE_v0_0_20 } from '$lib/constants/version.constants';
@@ -7,6 +6,7 @@ import { busy } from '$lib/stores/app/busy.store';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
+import type { Satellite } from '$lib/types/satellite';
 import { nonNullish } from '@dfinity/utils';
 import { compare } from 'semver';
 import { get } from 'svelte/store';
@@ -15,7 +15,7 @@ export const countHostingAssets = async ({
 	satellite,
 	identity
 }: {
-	satellite: MissionControlDid.Satellite;
+	satellite: Satellite;
 	identity: OptionIdentity;
 }): Promise<
 	| {
@@ -58,7 +58,7 @@ export const switchHostingMemory = async ({
 	satellite,
 	identity
 }: {
-	satellite: MissionControlDid.Satellite;
+	satellite: Satellite;
 	identity: OptionIdentity;
 }): Promise<
 	| {

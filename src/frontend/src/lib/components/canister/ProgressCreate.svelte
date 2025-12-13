@@ -11,13 +11,15 @@
 	interface Props {
 		progress: WizardCreateProgress | undefined;
 		segment: 'satellite' | 'orbiter';
+		withApprove: boolean;
 		withMonitoring?: boolean;
 	}
 
-	let { progress, segment, withMonitoring = false }: Props = $props();
+	let { progress, segment, withApprove, withMonitoring = false }: Props = $props();
 
 	interface Steps {
 		preparing: ProgressStep;
+		approve?: ProgressStep;
 		create: ProgressStep;
 		monitoring?: ProgressStep;
 		finalizing?: ProgressStep;
@@ -30,6 +32,13 @@
 			step: 'preparing',
 			text: $i18n.core.preparing
 		},
+		...(withApprove && {
+			approve: {
+				state: 'next',
+				step: 'approve',
+				text: $i18n.wallet.approving_canister_fee
+			}
+		}),
 		create: {
 			state: 'next',
 			step: 'create',
@@ -62,13 +71,22 @@
 		progress;
 
 		untrack(() => {
-			const { preparing, create, monitoring, finalizing, reload } = steps;
+			const { preparing, approve, create, monitoring, finalizing, reload } = steps;
 
 			steps = {
 				preparing: {
 					...preparing,
 					state: isNullish(progress) ? 'in_progress' : 'completed'
 				},
+				...(nonNullish(approve) && {
+					approve: {
+						...approve,
+						state:
+							progress?.step === WizardCreateProgressStep.Approve
+								? mapProgressState(progress?.state)
+								: approve.state
+					}
+				}),
 				create: {
 					...create,
 					state:

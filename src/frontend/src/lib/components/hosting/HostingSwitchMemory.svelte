@@ -5,10 +5,11 @@
 	import { switchHostingMemory } from '$lib/services/satellite/hosting.storage.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { authStore } from '$lib/stores/auth.store';
+	import type { Satellite } from '$lib/types/satellite';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 
 	interface Props {
-		satellite: MissionControlDid.Satellite;
+		satellite: Satellite;
 		memory: SatelliteDid.Memory | undefined;
 		reload: () => Promise<void>;
 	}

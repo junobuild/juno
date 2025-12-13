@@ -12,11 +12,8 @@
 	import ButtonMenu from '$lib/components/ui/ButtonMenu.svelte';
 	import Header from '$lib/components/ui/Header.svelte';
 	import { authSignedIn } from '$lib/derived/auth.derived';
-	import {
-		missionControlId,
-		missionControlIdLoaded
-	} from '$lib/derived/console/account.mission-control.derived';
 	import { provider } from '$lib/derived/console/account.provider.derived';
+	import { walletIds } from '$lib/derived/wallet/wallet.derived';
 	import { isSkylab } from '$lib/env/app.env';
 	import { layoutTitleIntersecting } from '$lib/stores/app/layout-intersecting.store';
 
@@ -37,8 +34,6 @@
 
 		debounceHideHeader();
 	});
-
-	let walletId = $derived(nonNullish($missionControlId) ? { owner: $missionControlId } : undefined);
 </script>
 
 {#snippet banner()}
@@ -59,16 +54,16 @@
 	</div>
 
 	<div>
-		{#if $authSignedIn && $missionControlIdLoaded}
-			{#if nonNullish(walletId)}
-				<div in:fade>
-					<Notifications />
+		{#if $authSignedIn}
+			<div in:fade>
+				<Notifications />
 
-					<NavbarSpotlight />
+				<NavbarSpotlight />
 
-					<NavbarWallet {walletId} />
-				</div>
-			{/if}
+				{#if nonNullish($walletIds)}
+					<NavbarWallet />
+				{/if}
+			</div>
 
 			<User provider={$provider} />
 		{/if}

@@ -8,13 +8,14 @@
 	import { sortedSatelliteCustomDomains } from '$lib/derived/satellite/satellite-custom-domains.derived';
 	import { isBusy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
+	import type { Satellite } from '$lib/types/satellite';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { satelliteUrl as satelliteUrlUtils } from '$lib/utils/satellite.utils';
 
 	interface Props {
 		config: SatelliteDid.AuthenticationConfig | undefined;
 		selectedDerivationOrigin: URL | undefined;
-		satellite: MissionControlDid.Satellite;
+		satellite: Satellite;
 		externalAlternativeOrigins: string;
 		onsubmit: ($event: SubmitEvent) => Promise<void>;
 	}

@@ -4,12 +4,13 @@
 	import IconArrowUpward from '$lib/components/icons/IconArrowUpward.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import { i18n } from '$lib/stores/app/i18n.store';
+	import type { Satellite } from '$lib/types/satellite';
 	import { formatToDate } from '$lib/utils/date.utils';
 	import { emit } from '$lib/utils/events.utils';
 
 	interface Props {
 		asset: SatelliteDid.AssetNoContent;
-		satellite: MissionControlDid.Satellite;
+		satellite: Satellite;
 	}
 
 	let { asset, satellite }: Props = $props();

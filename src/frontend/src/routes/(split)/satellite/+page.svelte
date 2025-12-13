@@ -3,14 +3,12 @@
 	import { setContext } from 'svelte';
 	import { writable } from 'svelte/store';
 	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
-	import MissionControlGuard from '$lib/components/guards/MissionControlGuard.svelte';
 	import SatelliteGuard from '$lib/components/guards/SatelliteGuard.svelte';
 	import Loaders from '$lib/components/loaders/Loaders.svelte';
 	import SatelliteOverview from '$lib/components/satellites/SatelliteOverview.svelte';
 	import SatelliteSettings from '$lib/components/satellites/SatelliteSettings.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
 	import Warnings from '$lib/components/warning/Warnings.svelte';
-	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import { satelliteStore } from '$lib/derived/satellite/satellite.derived';
 	import {
 		type Tab,
@@ -51,15 +49,13 @@
 					{/if}
 				{/snippet}
 
-				<MissionControlGuard>
-					{#if nonNullish($satelliteStore) && nonNullish($missionControlId)}
-						{#if $store.tabId === $store.tabs[0].id}
-							<SatelliteOverview satellite={$satelliteStore} />
-						{:else if $store.tabId === $store.tabs[1].id}
-							<SatelliteSettings satellite={$satelliteStore} />
-						{/if}
+				{#if nonNullish($satelliteStore)}
+					{#if $store.tabId === $store.tabs[0].id}
+						<SatelliteOverview satellite={$satelliteStore} />
+					{:else if $store.tabId === $store.tabs[1].id}
+						<SatelliteSettings satellite={$satelliteStore} />
 					{/if}
-				</MissionControlGuard>
+				{/if}
 			</Tabs>
 		</SatelliteGuard>
 	</Loaders>

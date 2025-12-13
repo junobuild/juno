@@ -103,12 +103,14 @@ export type ControllerScope = { Write: null } | { Admin: null } | { Submit: null
 export interface CreateOrbiterArgs {
 	block_index: [] | [bigint];
 	subnet_id: [] | [Principal];
+	name: [] | [string];
 	user: Principal;
 }
 export interface CreateSatelliteArgs {
 	block_index: [] | [bigint];
 	subnet_id: [] | [Principal];
 	storage: [] | [InitStorageArgs];
+	name: [] | [string];
 	user: Principal;
 }
 export interface CustomDomain {
@@ -231,6 +233,10 @@ export interface ListResults {
 	items: Array<[string, AssetNoContent]>;
 	items_length: bigint;
 }
+export interface ListSegmentsArgs {
+	segment_id: [] | [Principal];
+	segment_type: [] | [SegmentType];
+}
 export type Memory = { Heap: null } | { Stable: null };
 export interface OpenId {
 	provider: OpenIdProvider;
@@ -271,6 +277,7 @@ export interface Payment {
 	mission_control_id: [] | [Principal];
 	created_at: bigint;
 	block_index_refunded: [] | [bigint];
+	purchaser: [] | [Principal];
 }
 export type PaymentStatus = { Refunded: null } | { Acknowledged: null } | { Completed: null };
 export type PrepareDelegationError =
@@ -315,7 +322,19 @@ export interface RateConfig {
 }
 export type Result = { Ok: Authentication } | { Err: AuthenticationError };
 export type Result_1 = { Ok: SignedDelegation } | { Err: GetDelegationError };
+export interface Segment {
+	updated_at: bigint;
+	metadata: Array<[string, string]>;
+	segment_id: Principal;
+	created_at: bigint;
+}
+export interface SegmentKey {
+	user: Principal;
+	segment_id: Principal;
+	segment_type: SegmentType;
+}
 export type SegmentKind = { Orbiter: null } | { MissionControl: null } | { Satellite: null };
+export type SegmentType = { Orbiter: null } | { Satellite: null };
 export interface SegmentsDeploymentOptions {
 	orbiter: [] | [string];
 	mission_control_version: [] | [string];
@@ -410,6 +429,7 @@ export interface _SERVICE {
 	commit_proposal_asset_upload: ActorMethod<[CommitBatch], undefined>;
 	commit_proposal_many_assets_upload: ActorMethod<[Array<CommitBatch>], undefined>;
 	count_proposals: ActorMethod<[], bigint>;
+	create_mission_control: ActorMethod<[], Principal>;
 	create_orbiter: ActorMethod<[CreateOrbiterArgs], Principal>;
 	create_satellite: ActorMethod<[CreateSatelliteArgs], Principal>;
 	del_controllers: ActorMethod<[DeleteControllersArgs], undefined>;
@@ -423,6 +443,7 @@ export interface _SERVICE {
 	get_create_satellite_fee: ActorMethod<[GetCreateCanisterFeeArgs], [] | [Tokens]>;
 	get_credits: ActorMethod<[], Tokens>;
 	get_delegation: ActorMethod<[GetDelegationArgs], Result_1>;
+	get_or_init_account: ActorMethod<[], Account>;
 	get_proposal: ActorMethod<[bigint], [] | [Proposal]>;
 	get_storage_config: ActorMethod<[], StorageConfig>;
 	http_request: ActorMethod<[HttpRequest], HttpResponse>;
@@ -436,13 +457,13 @@ export interface _SERVICE {
 		[Array<InitAssetKey>, bigint],
 		Array<[string, InitUploadResult]>
 	>;
-	init_user_mission_control_center: ActorMethod<[], Account>;
 	list_accounts: ActorMethod<[], Array<[Principal, Account]>>;
 	list_assets: ActorMethod<[string, ListParams], ListResults>;
 	list_controllers: ActorMethod<[], Array<[Principal, Controller]>>;
 	list_custom_domains: ActorMethod<[], Array<[string, CustomDomain]>>;
 	list_payments: ActorMethod<[], Array<[bigint, Payment]>>;
 	list_proposals: ActorMethod<[ListProposalsParams], ListProposalResults>;
+	list_segments: ActorMethod<[ListSegmentsArgs], Array<[SegmentKey, Segment]>>;
 	reject_proposal: ActorMethod<[CommitProposal], null>;
 	set_auth_config: ActorMethod<[SetAuthenticationConfig], AuthenticationConfig>;
 	set_controllers: ActorMethod<[SetControllersArgs], undefined>;

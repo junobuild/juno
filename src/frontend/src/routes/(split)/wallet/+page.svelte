@@ -3,13 +3,13 @@
 	import { setContext } from 'svelte';
 	import { writable } from 'svelte/store';
 	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
-	import MissionControlGuard from '$lib/components/guards/MissionControlGuard.svelte';
 	import Loaders from '$lib/components/loaders/Loaders.svelte';
 	import NoTabs from '$lib/components/ui/NoTabs.svelte';
 	import Wallet from '$lib/components/wallet/Wallet.svelte';
 	import Warnings from '$lib/components/warning/Warnings.svelte';
 	import { authSignedIn } from '$lib/derived/auth.derived';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
+	import { devId } from '$lib/derived/dev.derived';
 	import {
 		type Tab,
 		TABS_CONTEXT_KEY,
@@ -34,7 +34,7 @@
 		store
 	});
 
-	let walletId = $derived(nonNullish($missionControlId) ? { owner: $missionControlId } : undefined);
+	let walletId = $derived($missionControlId ?? $devId);
 </script>
 
 <IdentityGuard>
@@ -46,13 +46,11 @@
 		{/snippet}
 
 		<Loaders>
-			<MissionControlGuard>
-				{#if nonNullish(walletId)}
-					{#if $store.tabId === $store.tabs[0].id}
-						<Wallet {walletId} />
-					{/if}
+			{#if nonNullish(walletId)}
+				{#if $store.tabId === $store.tabs[0].id}
+					<Wallet {walletId} />
 				{/if}
-			</MissionControlGuard>
+			{/if}
 		</Loaders>
 	</NoTabs>
 </IdentityGuard>

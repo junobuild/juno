@@ -6,7 +6,7 @@
 	import { MISSION_CONTROL_v0_0_14 } from '$lib/constants/version.constants';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import { satellitesNotLoaded } from '$lib/derived/mission-control/satellites.derived';
-	import { orbiterNotLoaded } from '$lib/derived/orbiter/orbiter.derived';
+	import { orbiterNotLoaded } from '$lib/derived/orbiter.derived';
 	import { missionControlVersion } from '$lib/derived/version.derived';
 	import { MonitoringWorker } from '$lib/services/workers/worker.monitoring.services';
 	import { i18n } from '$lib/stores/app/i18n.store';

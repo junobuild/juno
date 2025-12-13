@@ -88,6 +88,7 @@ async fn create_and_save_satellite(
         block_index,
         subnet_id,
         storage,
+        name: name.clone(),
     };
 
     let satellite_id = Call::unbounded_wait(console, "create_satellite")

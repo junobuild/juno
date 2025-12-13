@@ -1,4 +1,4 @@
-import type { OrbiterDid } from '$declarations';
+import type { MissionControlDid, OrbiterDid } from '$declarations';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { PrincipalText } from '@dfinity/zod-schemas';
 import type { Principal } from '@icp-sdk/core/principal';
@@ -51,4 +51,7 @@ export interface OrbiterSatelliteConfigEntry {
 	config?: OrbiterDid.OrbiterSatelliteConfig;
 }
 
+export type Orbiter = MissionControlDid.Orbiter;
+
 export type OrbiterIdText = PrincipalText;
+export type OrbiterId = Principal;

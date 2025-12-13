@@ -15,7 +15,7 @@ import {
 	satellitesNotLoaded,
 	satellitesStore
 } from '$lib/derived/mission-control/satellites.derived';
-import { orbiterNotLoaded, orbiterStore } from '$lib/derived/orbiter/orbiter.derived';
+import { orbiterNotLoaded, orbiterStore } from '$lib/derived/orbiter.derived';
 import { execute } from '$lib/services/_progress.services';
 import { loadOrbiters } from '$lib/services/mission-control/mission-control.orbiters.services';
 import { loadSatellites } from '$lib/services/mission-control/mission-control.satellites.services';

@@ -6,7 +6,7 @@
 	import Overlays from '$lib/components/core/Overlays.svelte';
 	import AuthBroadcastGuard from '$lib/components/guards/AuthBroadcastGuard.svelte';
 	import { layoutNavigationTitle } from '$lib/derived/app/layout-navigation.derived';
-	import { initAccountAndMissionControl } from '$lib/services/console/account.services';
+	import { initAccount } from '$lib/services/console/account.services';
 	import { displayAndCleanLogoutMsg } from '$lib/services/console/auth/auth.services';
 	import { syncSnapshots } from '$lib/services/ic-mgmt/snapshots.services';
 	import { syncSubnets } from '$lib/services/ic-mgmt/subnets.services';
@@ -52,7 +52,7 @@
 	};
 
 	$effect(() => {
-		initAccountAndMissionControl($authStore);
+		initAccount($authStore);
 	});
 
 	/**

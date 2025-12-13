@@ -319,7 +319,8 @@
 		"id": "任务控制中心ID",
 		"not_found": "未找到任务控制中心",
 		"loading": "正在加载您的任务控制中心...",
-		"edit_email": "编辑您的电子邮件地址"
+		"edit_email": "编辑您的电子邮件地址",
+		"empty": "Mission Control 是管理模块的中心枢纽。激活监控功能需要 Mission Control。未来将添加更多高级功能。"
 	},
 	"wallet": {
 		"title": "钱包",
@@ -361,7 +362,9 @@
 		"wallet_missing_account": "没有可用账户来请求交易。您是否已连接钱包？",
 		"balance_not_loaded": "请稍候，您的余额尚未加载完成。",
 		"balance_zero": "您的余额为零。获取一些代币以开始发送。",
-		"wallet_upgrade": "请升级您的钱包以启用发送功能。"
+		"wallet_upgrade": "请升级您的钱包以启用发送功能。",
+		"approving_canister_fee": "授权费用中...",
+		"dev": "开发版"
 	},
 	"authentication": {
 		"title": "身份认证",
@@ -562,6 +565,7 @@
 		"canister_update_error": "更新设置时发生意外错误。",
 		"canister_status": "加载模块状态时发生意外错误。",
 		"segment_detach": "分离模块时发生意外错误。",
+		"load_fees": "加载创建费用失败。",
 		"load_credits": "无法加载当前积分状态。",
 		"load_documents": "文档加载时发生意外错误。",
 		"load_users": "用户加载时发生意外错误。",
@@ -604,6 +608,7 @@
 		"analytics_page_views_export": "导出页面浏览数据时发生意外错误。",
 		"satellites_loading": "加载卫星列表时发生错误。",
 		"orbiters_loading": "加载轨道器列表时发生错误。",
+		"segments_loading": "加载片段列表时发生错误。",
 		"orbiter_configuration_missing": "必须提供卫星和配置。",
 		"orbiter_configuration_unexpected": "编辑配置时发生意外错误。",
 		"orbiter_configuration_listing": "获取配置时发生错误。",

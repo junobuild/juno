@@ -5,9 +5,10 @@
 	import SatelliteReloadVersion from '$lib/components/satellites/SatelliteReloadVersion.svelte';
 	import SatelliteVisit from '$lib/components/satellites/SatelliteVisit.svelte';
 	import SegmentActions from '$lib/components/segments/SegmentActions.svelte';
+	import type { Satellite } from '$lib/types/satellite';
 
 	interface Props {
-		satellite: MissionControlDid.Satellite;
+		satellite: Satellite;
 		monitoringEnabled: boolean;
 	}
 

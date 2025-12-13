@@ -5,7 +5,7 @@ import type { CustomDomains } from '$lib/types/custom-domain';
 import type { MissionControlId } from '$lib/types/mission-control';
 import type { OrbiterSatelliteConfigEntry } from '$lib/types/orbiter';
 import type { ProposalRecord } from '$lib/types/proposals';
-import type { SatelliteIdText } from '$lib/types/satellite';
+import type { Satellite, SatelliteIdText } from '$lib/types/satellite';
 import type { User as UserListed } from '$lib/types/user';
 import type { UserUsageCollection } from '$lib/types/user-usage';
 import type { Option } from '$lib/types/utils';
@@ -18,7 +18,7 @@ export interface JunoModalWithAccountIdentifier {
 }
 
 export interface JunoModalWithSatellite {
-	satellite: MissionControlDid.Satellite;
+	satellite: Satellite;
 }
 
 export type JunoModalTopUpSatelliteDetail = JunoModalWithAccountIdentifier & JunoModalWithSatellite;
@@ -43,7 +43,7 @@ export interface JunoModalCreateSegmentDetail extends JunoModalWithAccountIdenti
 
 export interface JunoModalCustomDomainDetail {
 	editDomainName?: string;
-	satellite: MissionControlDid.Satellite;
+	satellite: Satellite;
 	config: SatelliteDid.AuthenticationConfig | undefined;
 }
 
@@ -159,6 +159,7 @@ export interface JunoModal<T extends JunoModalDetail> {
 	type:
 		| 'create_satellite'
 		| 'create_orbiter'
+		| 'create_mission_control'
 		| 'delete_satellite'
 		| 'delete_orbiter'
 		| 'transfer_cycles_satellite'

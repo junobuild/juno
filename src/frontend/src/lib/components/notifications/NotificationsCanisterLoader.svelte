@@ -3,11 +3,12 @@
 	import type { Principal } from '@icp-sdk/core/principal';
 	import Canister from '$lib/components/canister/Canister.svelte';
 	import type { CanisterData, CanisterWarning } from '$lib/types/canister';
+	import type { Option } from '$lib/types/utils';
 
 	interface Props {
 		warnings: CanisterWarning | undefined;
 		data: CanisterData | undefined;
-		canisterId: Principal | undefined;
+		canisterId: Option<Principal>;
 	}
 
 	let {

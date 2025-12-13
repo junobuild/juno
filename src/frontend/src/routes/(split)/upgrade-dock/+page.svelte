@@ -3,7 +3,6 @@
 	import { writable } from 'svelte/store';
 	import ChangesDock from '$lib/components/changes/list/ChangesDock.svelte';
 	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
-	import MissionControlGuard from '$lib/components/guards/MissionControlGuard.svelte';
 	import Loaders from '$lib/components/loaders/Loaders.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
 	import UpgradeDock from '$lib/components/upgrade/list/UpgradeDock.svelte';
@@ -39,13 +38,11 @@
 <IdentityGuard>
 	<Tabs>
 		<Loaders>
-			<MissionControlGuard>
-				{#if $store.tabId === $store.tabs[0].id}
-					<UpgradeDock />
-				{:else if $store.tabId === $store.tabs[1].id}
-					<ChangesDock />
-				{/if}
-			</MissionControlGuard>
+			{#if $store.tabId === $store.tabs[0].id}
+				<UpgradeDock />
+			{:else if $store.tabId === $store.tabs[1].id}
+				<ChangesDock />
+			{/if}
 		</Loaders>
 	</Tabs>
 </IdentityGuard>

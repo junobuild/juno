@@ -9,4 +9,5 @@ mod http;
 mod invitation_code;
 mod mission_control;
 mod rates;
+mod segments;
 mod storage;

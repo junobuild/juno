@@ -1,5 +1,5 @@
 import type { MissionControlDid } from '$declarations';
-import { orbiterStore } from '$lib/derived/orbiter/orbiter.derived';
+import { orbiterStore } from '$lib/derived/orbiter.derived';
 import { canistersSyncDataUncertifiedStore } from '$lib/stores/ic-mgmt/canister-sync-data.store';
 import type { SegmentWithSyncData } from '$lib/types/satellite';
 import { isNullish } from '@dfinity/utils';

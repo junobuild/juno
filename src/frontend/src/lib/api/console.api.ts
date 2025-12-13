@@ -5,12 +5,12 @@ import { getConsoleActor } from '$lib/api/actors/actor.juno.api';
 import type { OptionIdentity } from '$lib/types/itentity';
 import { fromNullable, isNullish } from '@dfinity/utils';
 
-export const initAccountAndMissionControl = async (
-	identity: OptionIdentity
+export const getOrInitAccount = async (
+	actorParams: GetActorParams
 ): Promise<ConsoleDid.Account> => {
-	const { init_user_mission_control_center } = await getConsoleActor({ identity });
+	const { get_or_init_account } = await getConsoleActor(actorParams);
 
-	return await init_user_mission_control_center();
+	return await get_or_init_account();
 };
 
 export const getAccount = async (
@@ -35,6 +35,12 @@ export const getSatelliteFee = async ({
 
 export const getOrbiterFee = async ({ identity }: { identity: OptionIdentity }): Promise<bigint> =>
 	await getFee({ identity, segmentKind: { Orbiter: null } });
+
+export const getMissionControlFee = async ({
+	identity
+}: {
+	identity: OptionIdentity;
+}): Promise<bigint> => await getFee({ identity, segmentKind: { MissionControl: null } });
 
 const getFee = async ({
 	identity,

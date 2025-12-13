@@ -4,11 +4,11 @@
 	import { run } from 'svelte/legacy';
 	import { fade } from 'svelte/transition';
 	import Value from '$lib/components/ui/Value.svelte';
-	import { sortedSatellites } from '$lib/derived/mission-control/satellites.derived';
 	import {
 		orbiterFeatures,
 		orbiterSatellitesConfig
 	} from '$lib/derived/orbiter/orbiter-satellites.derived';
+	import { sortedSatellites } from '$lib/derived/satellites.derived';
 	import { loadOrbiterConfigs } from '$lib/services/orbiter/orbiters.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { versionStore } from '$lib/stores/version.store';

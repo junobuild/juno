@@ -1,13 +1,13 @@
 <script lang="ts">
 	import { assertNonNullish, nonNullish } from '@dfinity/utils';
-	import type { MissionControlDid } from '$declarations';
 	import UpgradeSegment from '$lib/components/upgrade/list/UpgradeSegment.svelte';
 	import { satellitesVersion } from '$lib/derived/version.derived';
 	import { openUpgradeModal } from '$lib/services/upgrade/upgrade.init.services';
+	import type { Satellite } from '$lib/types/satellite';
 	import { satelliteName } from '$lib/utils/satellite.utils';
 
 	interface Props {
-		satellite: MissionControlDid.Satellite;
+		satellite: Satellite;
 	}
 
 	let { satellite }: Props = $props();

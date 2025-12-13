@@ -319,7 +319,8 @@
 		"id": "Mission Control ID",
 		"not_found": "Mission control not found.",
 		"loading": "Loading your mission control...",
-		"edit_email": "Edit your email address"
+		"edit_email": "Edit your email address",
+		"empty": "The Mission Control is your central hub for managing modules. It is required to activate monitoring. Additional advanced features will be added in the future."
 	},
 	"wallet": {
 		"title": "Wallet",
@@ -361,7 +362,9 @@
 		"wallet_missing_account": "No account available to request the transaction. Have you connected your wallet?",
 		"balance_not_loaded": "Please wait, your balance is not yet loaded.",
 		"balance_zero": "Your balance is zero. Get some tokens to start sending.",
-		"wallet_upgrade": "Please upgrade your wallet to enable the sending feature."
+		"wallet_upgrade": "Please upgrade your wallet to enable the sending feature.",
+		"approving_canister_fee": "Authorizing fee...",
+		"dev": "Developer"
 	},
 	"authentication": {
 		"title": "Authentication",
@@ -562,6 +565,7 @@
 		"canister_update_error": "Unexpected error(s) while updating the settings.",
 		"canister_status": "Unexpected error(s) while loading the status of your modules.",
 		"segment_detach": "Unexpected error(s) while trying to detach the module.",
+		"load_fees": "Failed to load creation fees.",
 		"load_credits": "Cannot load your current credits status.",
 		"load_documents": "Unexpected error(s) while loading the documents.",
 		"load_users": "Unexpected error(s) while loading the users.",
@@ -603,6 +607,7 @@
 		"analytics_page_views_export": "Unexpected error(s) while exporting the page views.",
 		"satellites_loading": "Error while loading the list of satellites.",
 		"orbiters_loading": "Error while loading the list of orbiters.",
+		"segments_loading": "Error while loading the list of segments.",
 		"orbiter_configuration_missing": "Satellites and configuration must be provided.",
 		"orbiter_configuration_unexpected": "Unexpected error(s) while trying to edit your configuration.",
 		"orbiter_configuration_listing": "Error while fetching the configuration.",

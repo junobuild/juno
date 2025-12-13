@@ -4,14 +4,14 @@
 	import { nonNullish } from '@dfinity/utils';
 	import { encodeIcrcAccount } from '@icp-sdk/canisters/ledger/icrc';
 	import WalletBalance from '$lib/components/wallet/WalletBalance.svelte';
-    import WalletInlineBalance from "$lib/components/wallet/WalletInlineBalance.svelte";
+	import WalletInlineBalance from '$lib/components/wallet/WalletInlineBalance.svelte';
 
 	interface Props {
 		walletId: WalletId | undefined;
-        display: "block" | "inline";
+		display: 'block' | 'inline';
 	}
 
-	let { walletId, display = "block" }: Props = $props();
+	let { walletId, display = 'block' }: Props = $props();
 
 	let walletIdText = $derived(nonNullish(walletId) ? encodeIcrcAccount(walletId) : undefined);
 
@@ -19,7 +19,7 @@
 		nonNullish(walletIdText) ? $balanceCertifiedStore?.[walletIdText]?.data : undefined
 	);
 
-    let Balance = $derived(display === "inline" ? WalletInlineBalance : WalletBalance);
+	let Balance = $derived(display === 'inline' ? WalletInlineBalance : WalletBalance);
 </script>
 
 <Balance {balance} />

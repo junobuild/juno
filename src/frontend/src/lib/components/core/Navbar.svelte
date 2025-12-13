@@ -15,7 +15,7 @@
 	import { provider } from '$lib/derived/console/account.provider.derived';
 	import { isSkylab } from '$lib/env/app.env';
 	import { layoutTitleIntersecting } from '$lib/stores/app/layout-intersecting.store';
-	import {walletIds} from "$lib/derived/wallet/wallet.derived";
+	import { walletIds } from '$lib/derived/wallet/wallet.derived';
 
 	interface Props {
 		start?: 'logo' | 'back' | 'menu';

@@ -70,7 +70,8 @@
 <div class="monitoring">
 	<LaunchpadLink
 		ariaLabel={`${$i18n.core.open}: ${$i18n.monitoring.title}`}
-		highlight={($missionControlSettingsLoaded && $missionControlNotMonitored) || $missionControlId === null}
+		highlight={($missionControlSettingsLoaded && $missionControlNotMonitored) ||
+			$missionControlId === null}
 		href="/monitoring"
 		size="small"
 	>

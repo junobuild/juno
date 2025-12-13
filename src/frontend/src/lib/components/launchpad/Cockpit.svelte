@@ -87,6 +87,7 @@
 <div class="mission-control">
 	<LaunchpadLink
 		ariaLabel={`${$i18n.core.open}: ${$i18n.mission_control.title}`}
+		highlight={$missionControlId === null}
 		href="/mission-control"
 		size="small"
 	>
@@ -95,15 +96,17 @@
 			<span class="link">
 				<span class="link-title"
 					><span class="link-title-text">{$i18n.mission_control.title}</span>
-					<CanisterIndicator data={missionControlData} /></span
-				>
-				<span class="link-details">
-					{#if isNullish(missionControlData)}
-						<SkeletonText />
-					{:else}
-						<span in:fade><CanisterTCycles data={missionControlData} /></span>
-					{/if}
+					{#if nonNullish($missionControlId)}<CanisterIndicator data={missionControlData} />{/if}
 				</span>
+				{#if nonNullish($missionControlId)}
+					<span class="link-details">
+						{#if isNullish(missionControlData)}
+							<SkeletonText />
+						{:else}
+							<span in:fade><CanisterTCycles data={missionControlData} /></span>
+						{/if}
+					</span>
+				{/if}
 			</span>
 		</p>
 	</LaunchpadLink>

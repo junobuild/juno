@@ -565,6 +565,7 @@
 		"canister_update_error": "更新设置时发生意外错误。",
 		"canister_status": "加载模块状态时发生意外错误。",
 		"segment_detach": "分离模块时发生意外错误。",
+		"load_fees": "加载创建费用失败。",
 		"load_credits": "无法加载当前积分状态。",
 		"load_documents": "文档加载时发生意外错误。",
 		"load_users": "用户加载时发生意外错误。",

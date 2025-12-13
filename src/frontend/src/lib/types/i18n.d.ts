@@ -582,6 +582,7 @@ interface I18nErrors {
 	canister_update_error: string;
 	canister_status: string;
 	segment_detach: string;
+	load_fees: string;
 	load_credits: string;
 	load_documents: string;
 	load_users: string;

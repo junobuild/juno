@@ -1,5 +1,5 @@
 import type { MissionControlDid } from '$declarations';
-import { getOrbiterFee, getSatelliteFee } from '$lib/api/console.api';
+import { getMissionControlFee, getOrbiterFee, getSatelliteFee } from '$lib/api/console.api';
 import { updateAndStartMonitoring } from '$lib/api/mission-control.api';
 import { missionControlMonitored } from '$lib/derived/mission-control/mission-control-settings.derived';
 import { missionControlConfigMonitoring } from '$lib/derived/mission-control/mission-control-user.derived';
@@ -79,6 +79,18 @@ export const initOrbiterWizard = ({
 		modalType: 'create_orbiter'
 	});
 
+export const initMissionControlWizard = ({
+	identity
+}: {
+	identity: Option<Identity>;
+}): Promise<void> =>
+	initCreateWizard({
+		missionControlId: null,
+		identity,
+		feeFn: getCreateMissionControlFeeBalance,
+		modalType: 'create_mission_control'
+	});
+
 const initCreateWizard = async ({
 	missionControlId,
 	identity,
@@ -88,7 +100,7 @@ const initCreateWizard = async ({
 	missionControlId: Option<MissionControlId>;
 	identity: Option<Identity>;
 	feeFn: GetFeeBalanceFn;
-	modalType: 'create_satellite' | 'create_orbiter';
+	modalType: 'create_satellite' | 'create_orbiter' | 'create_mission_control';
 }) => {
 	if (missionControlId === undefined) {
 		toasts.warn(get(i18n).errors.mission_control_not_loaded);
@@ -170,7 +182,7 @@ const initCreateWizardWithoutMissionControl = ({
 }: {
 	identity: Identity;
 	fee: bigint;
-	modalType: 'create_satellite' | 'create_orbiter';
+	modalType: 'create_satellite' | 'create_orbiter' | 'create_mission_control';
 }) => {
 	const accountIdentifier = toAccountIdentifier({ owner: identity.getPrincipal() });
 
@@ -194,6 +206,9 @@ const getCreateSatelliteFeeBalance: GetFeeBalanceFn = async (params): Promise<Ge
 const getCreateOrbiterFeeBalance: GetFeeBalanceFn = async (params): Promise<GetFeeBalance> =>
 	await getCreateFeeBalance({ ...params, getFee: getOrbiterFee });
 
+const getCreateMissionControlFeeBalance: GetFeeBalanceFn = async (params): Promise<GetFeeBalance> =>
+	await getCreateFeeBalance({ ...params, getFee: getMissionControlFee });
+
 const getCreateFeeBalance = async ({
 	identity,
 	getFee
@@ -208,7 +223,27 @@ const getCreateFeeBalance = async ({
 		return { error: 'No identity provided' };
 	}
 
-	const fee = await getFee({ user: identity.getPrincipal(), identity });
+	const loadFee = async (): Promise<{ fee: bigint } | { error: null }> => {
+		try {
+			const fee = await getFee({ user: identity.getPrincipal(), identity });
+			return { fee };
+		} catch (err: unknown) {
+			toasts.error({
+				text: get(i18n).errors.load_fees,
+				detail: err
+			});
+
+			return { error: null };
+		}
+	};
+
+	const resultFee = await loadFee();
+
+	if ('error' in resultFee) {
+		return { error: null };
+	}
+
+	const { fee } = resultFee;
 
 	if (fee === 0n) {
 		return {

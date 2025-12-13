@@ -565,6 +565,7 @@
 		"canister_update_error": "Unexpected error(s) while updating the settings.",
 		"canister_status": "Unexpected error(s) while loading the status of your modules.",
 		"segment_detach": "Unexpected error(s) while trying to detach the module.",
+		"load_fees": "Failed to load creation fees.",
 		"load_credits": "Cannot load your current credits status.",
 		"load_documents": "Unexpected error(s) while loading the documents.",
 		"load_users": "Unexpected error(s) while loading the users.",

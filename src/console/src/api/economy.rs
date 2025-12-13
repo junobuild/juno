@@ -41,7 +41,10 @@ fn get_create_satellite_fee(
 
     let fee = get_satellite_fee();
 
-    match caller_is_mission_control_and_user_has_credits(&user, &caller, &fee) {
+    let has_credits =
+        caller_is_mission_control_and_user_has_credits(&user, &caller, &fee).unwrap_or_trap();
+
+    match has_credits {
         false => Some(fee),
         true => None,
     }
@@ -55,7 +58,10 @@ fn get_create_orbiter_fee(
 
     let fee = get_orbiter_fee();
 
-    match caller_is_mission_control_and_user_has_credits(&user, &caller, &fee) {
+    let has_credits =
+        caller_is_mission_control_and_user_has_credits(&user, &caller, &fee).unwrap_or_trap();
+
+    match has_credits {
         false => Some(fee),
         true => None,
     }

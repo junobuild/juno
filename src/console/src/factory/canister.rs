@@ -1,7 +1,5 @@
-use crate::accounts::{
-    credits::{caller_is_mission_control_and_user_has_credits, use_credits},
-    get_account_with_existing_mission_control,
-};
+use crate::accounts::credits::{has_credits, use_credits};
+use crate::accounts::get_account_with_existing_mission_control;
 use crate::factory::services::ledger::{refund_payment, verify_payment};
 use crate::factory::types::CreateCanisterArgs;
 use crate::store::stable::{
@@ -30,14 +28,14 @@ where
     Fut: Future<Output = Result<Principal, String>>,
 {
     // User should have a mission control center
-    let mission_control = get_account_with_existing_mission_control(&user, &caller)?;
+    let account = get_account_with_existing_mission_control(&user, &caller)?;
 
-    match mission_control.mission_control_id {
+    match account.mission_control_id {
         None => Err("No mission control center found.".to_string()),
         Some(mission_control_id) => {
             let fee = get_fee();
 
-            if caller_is_mission_control_and_user_has_credits(&user, &mission_control_id, &fee) {
+            if has_credits(&account, &fee) {
                 // Guard too many requests
                 increment_rate()?;
 

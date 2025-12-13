@@ -1,5 +1,5 @@
 use crate::accounts::init::get_or_init_account as get_or_init_account_with_caller;
-use crate::accounts::{get_account as get_account_store, list_accounts as list_accounts_store};
+use crate::accounts::{get_optional_account, list_accounts as list_accounts_store};
 use crate::guards::caller_is_admin_controller;
 use crate::types::state::{Account, Accounts};
 use ic_cdk_macros::{query, update};
@@ -15,7 +15,7 @@ fn get_or_init_account() -> Account {
 #[query]
 fn get_account() -> Option<Account> {
     let caller = caller();
-    get_account_store(&caller).unwrap_or_trap()
+    get_optional_account(&caller).unwrap_or_trap()
 }
 
 #[query(guard = "caller_is_admin_controller")]

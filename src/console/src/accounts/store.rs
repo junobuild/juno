@@ -4,11 +4,11 @@ use junobuild_shared::structures::collect_stable_map_from;
 use junobuild_shared::types::state::{MissionControlId, UserId};
 use junobuild_shared::utils::principal_equal;
 
-pub fn get_account(user: &UserId) -> Result<Option<Account>, &'static str> {
-    with_accounts(|accounts| get_account_impl(user, accounts))
+pub fn get_optional_account(user: &UserId) -> Result<Option<Account>, &'static str> {
+    with_accounts(|accounts| get_optional_account_impl(user, accounts))
 }
 
-fn get_account_impl(
+fn get_optional_account_impl(
     user: &UserId,
     accounts: &AccountsStable,
 ) -> Result<Option<Account>, &'static str> {
@@ -21,6 +21,17 @@ fn get_account_impl(
     }
 
     Err("User does not have the permission for the account.")
+}
+
+pub fn get_existing_account(user: &UserId) -> Result<Account, &'static str> {
+    with_accounts(|accounts| get_existing_account_impl(user, accounts))
+}
+
+fn get_existing_account_impl(
+    user: &UserId,
+    accounts: &AccountsStable,
+) -> Result<Account, &'static str> {
+    accounts.get(user).ok_or("User does not have an account.")
 }
 
 pub fn get_account_with_existing_mission_control(

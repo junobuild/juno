@@ -1,6 +1,6 @@
 use crate::accounts::{
     credits::{has_credits, use_credits},
-    get_account,
+    get_existing_account,
 };
 use crate::factory::services::ledger::{refund_payment, transfer_from, verify_payment};
 use crate::factory::types::{CanisterCreator, CreateCanisterArgs};
@@ -28,7 +28,7 @@ where
     F: FnOnce(CanisterCreator, Option<SubnetId>) -> Fut,
     Fut: Future<Output = Result<Principal, String>>,
 {
-    let account = get_account(&args.user)?.ok_or("No account found.")?;
+    let account = get_existing_account(&args.user)?;
 
     if principal_equal(caller, account.owner) {
         // Caller is user

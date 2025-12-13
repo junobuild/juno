@@ -379,6 +379,7 @@ service : () -> {
   get_account : () -> (opt Account) query;
   get_auth_config : () -> (opt AuthenticationConfig) query;
   get_config : () -> (Config) query;
+  get_create_fee : (SegmentKind) -> (opt Tokens) query;
   get_create_orbiter_fee : (GetCreateCanisterFeeArgs) -> (opt Tokens) query;
   get_create_satellite_fee : (GetCreateCanisterFeeArgs) -> (opt Tokens) query;
   get_credits : () -> (Tokens) query;

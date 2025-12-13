@@ -4,7 +4,7 @@ import {
 	idlFactoryMissionControl,
 	type MissionControlActor
 } from '$declarations';
-import { type Actor, PocketIc } from '@dfinity/pic';
+import { type Actor, PocketIc, SubnetStateType } from '@dfinity/pic';
 import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
 import type { Identity } from '@icp-sdk/core/agent';
 import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
@@ -12,20 +12,29 @@ import type { Principal } from '@icp-sdk/core/principal';
 import { inject } from 'vitest';
 import { CONSOLE_ID } from '../../constants/console-tests.constants';
 import { deploySegments } from '../../utils/console-tests.utils';
+import { setupLedger } from '../../utils/ledger-tests.utils';
 import { CONSOLE_WASM_PATH } from '../../utils/setup-tests.utils';
 
-describe('Console > Factory > Credits', () => {
+describe('Console > Credits', () => {
 	let pic: PocketIc;
 	let actor: Actor<ConsoleActor>;
 
-	let consoleId: Principal;
-
 	const controller = Ed25519KeyIdentity.generate();
 
-	beforeAll(async () => {
-		pic = await PocketIc.create(inject('PIC_URL'));
+	const currentDate = new Date(2021, 6, 10, 0, 0, 0, 0);
 
-		const { actor: c, canisterId: cId } = await pic.setupCanister<ConsoleActor>({
+	beforeAll(async () => {
+		pic = await PocketIc.create(inject('PIC_URL'), {
+			nns: {
+				enableBenchmarkingInstructionLimits: false,
+				enableDeterministicTimeSlicing: false,
+				state: { type: SubnetStateType.New }
+			}
+		});
+
+		await pic.setTime(currentDate.getTime());
+
+		const { actor: c } = await pic.setupCanister<ConsoleActor>({
 			idlFactory: idlFactoryConsole,
 			wasm: CONSOLE_WASM_PATH,
 			sender: controller.getPrincipal(),
@@ -33,10 +42,11 @@ describe('Console > Factory > Credits', () => {
 		});
 
 		actor = c;
-		consoleId = cId;
 		actor.setIdentity(controller);
 
 		await deploySegments({ actor });
+
+		await setupLedger({ pic, controller });
 	});
 
 	afterAll(async () => {
@@ -47,13 +57,6 @@ describe('Console > Factory > Credits', () => {
 		let user: Identity;
 		let missionControlId: Principal;
 		let micActor: Actor<MissionControlActor>;
-
-		const addCredits = async () => {
-			actor.setIdentity(controller);
-
-			const { add_credits } = actor;
-			await add_credits(user.getPrincipal(), { e8s: 100_000_000n });
-		};
 
 		beforeAll(async () => {
 			user = Ed25519KeyIdentity.generate();
@@ -76,7 +79,7 @@ describe('Console > Factory > Credits', () => {
 			const { get_credits } = actor;
 
 			const credits = await get_credits();
-			expect(credits).toEqual({e8s: 100_000_000n});
+			expect(credits).toEqual({ e8s: 100_000_000n });
 		});
 
 		it('should have zero fee if remaining credits', async () => {
@@ -95,7 +98,7 @@ describe('Console > Factory > Credits', () => {
 			const { get_credits } = actor;
 
 			const credits = await get_credits();
-			expect(credits).toEqual({e8s: 0n});
+			expect(credits).toEqual({ e8s: 0n });
 		});
 
 		it('should get fees with no more credits', async () => {
@@ -106,6 +109,42 @@ describe('Console > Factory > Credits', () => {
 
 			const orbFee = await get_create_fee({ Satellite: null });
 			expect(orbFee).toEqual(toNullable({ e8s: 50_000_000n }));
+		});
+
+		it('should not create a satellite without credits', async () => {
+			const { create_satellite } = micActor;
+
+			// No credits -> with payments -> no ICP
+			await expect(create_satellite('test')).rejects.toThrow('InsufficientFunds');
+		});
+
+		it('should receive credits', async () => {
+			actor.setIdentity(controller);
+
+			const { add_credits } = actor;
+			await add_credits(user.getPrincipal(), { e8s: 200_000_000n });
+
+			actor.setIdentity(user);
+
+			const { get_credits } = actor;
+
+			const credits = await get_credits();
+			expect(credits).toEqual({ e8s: 200_000_000n });
+		});
+
+		it('should create a satellite and used some credits', async () => {
+			// Advance time to skip: Rate limit reached, try again later.
+			await pic.advanceTime(1_000 * 60 * 10);
+
+			const { create_satellite } = micActor;
+			const { satellite_id } = await create_satellite('test');
+
+			expect(satellite_id).not.toBeUndefined();
+
+			const { get_credits } = actor;
+
+			const credits = await get_credits();
+			expect(credits).toEqual({ e8s: 100_000_000n });
 		});
 	});
 });

@@ -118,20 +118,7 @@ const initCreateWizard = async ({
 	if (missionControlId === null) {
 		busy.stop();
 
-		const accountIdentifier = getAccountIdentifier(identity.getPrincipal());
-
-		emit<JunoModal<JunoModalCreateSegmentDetail>>({
-			message: 'junoModal',
-			detail: {
-				type: modalType,
-				detail: {
-					accountIdentifier,
-					fee,
-					monitoringEnabled: false,
-					monitoringConfig: undefined
-				}
-			}
-		});
+		initCreateWizardWithoutMissionControl({ identity, fee, modalType });
 		return;
 	}
 
@@ -172,6 +159,31 @@ const initCreateWizard = async ({
 				fee,
 				monitoringEnabled,
 				monitoringConfig
+			}
+		}
+	});
+};
+
+const initCreateWizardWithoutMissionControl = ({
+	identity,
+	fee,
+	modalType
+}: {
+	identity: Identity;
+	fee: bigint;
+	modalType: 'create_satellite' | 'create_orbiter';
+}) => {
+	const accountIdentifier = toAccountIdentifier({ owner: identity.getPrincipal() });
+
+	emit<JunoModal<JunoModalCreateSegmentDetail>>({
+		message: 'junoModal',
+		detail: {
+			type: modalType,
+			detail: {
+				accountIdentifier,
+				fee,
+				monitoringEnabled: false,
+				monitoringConfig: undefined
 			}
 		}
 	});

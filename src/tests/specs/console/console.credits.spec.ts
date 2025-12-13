@@ -79,6 +79,7 @@ describe('Console > Credits', () => {
 			const { get_credits } = actor;
 
 			const credits = await get_credits();
+
 			expect(credits).toEqual({ e8s: 100_000_000n });
 		});
 
@@ -86,6 +87,7 @@ describe('Console > Credits', () => {
 			const { get_create_fee } = actor;
 
 			const fee = await get_create_fee({ Satellite: null });
+
 			expect(fee).toEqual(toNullable());
 		});
 
@@ -98,6 +100,7 @@ describe('Console > Credits', () => {
 			const { get_credits } = actor;
 
 			const credits = await get_credits();
+
 			expect(credits).toEqual({ e8s: 0n });
 		});
 
@@ -105,9 +108,11 @@ describe('Console > Credits', () => {
 			const { get_create_fee } = actor;
 
 			const satFee = await get_create_fee({ Satellite: null });
+
 			expect(satFee).toEqual(toNullable({ e8s: 50_000_000n }));
 
 			const orbFee = await get_create_fee({ Satellite: null });
+
 			expect(orbFee).toEqual(toNullable({ e8s: 50_000_000n }));
 		});
 
@@ -129,6 +134,7 @@ describe('Console > Credits', () => {
 			const { get_credits } = actor;
 
 			const credits = await get_credits();
+
 			expect(credits).toEqual({ e8s: 200_000_000n });
 		});
 
@@ -144,6 +150,7 @@ describe('Console > Credits', () => {
 			const { get_credits } = actor;
 
 			const credits = await get_credits();
+
 			expect(credits).toEqual({ e8s: 100_000_000n });
 		});
 	});

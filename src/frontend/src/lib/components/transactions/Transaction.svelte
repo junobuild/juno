@@ -4,7 +4,6 @@
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import type { WalletId } from '$lib/schemas/wallet.schema';
 	import type { IcTransactionUi } from '$lib/types/ic-transaction';
-	import type { MissionControlId } from '$lib/types/mission-control';
 	import { formatToDate } from '$lib/utils/date.utils';
 	import { transactionAmount, transactionMemo } from '$lib/utils/wallet.utils';
 

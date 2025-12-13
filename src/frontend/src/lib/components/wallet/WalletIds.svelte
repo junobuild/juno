@@ -2,9 +2,8 @@
 	import { encodeIcrcAccount } from '@icp-sdk/canisters/ledger/icrc';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
-	import type { WalletId, WalletIdText } from '$lib/schemas/wallet.schema';
+	import type { WalletId } from '$lib/schemas/wallet.schema';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import type { MissionControlId } from '$lib/types/mission-control';
 	import { toAccountIdentifier } from '$lib/utils/account.utils';
 
 	interface Props {

@@ -30,12 +30,12 @@ fn get_credits_impl(user: &UserId, accounts: &AccountsStable) -> Result<Tokens, 
 // More like a percent. 1 credit equals 1 creation.
 // ---------------------------------------------------------
 
-pub fn has_mission_control_and_credits(
+pub fn caller_is_mission_control_and_has_credits(
     user: &UserId,
-    mission_control_id: &MissionControlId,
+    caller: &MissionControlId,
     fee: &Tokens,
 ) -> bool {
-    get_account_with_existing_mission_control(user, mission_control_id)
+    get_account_with_existing_mission_control(user, caller)
         .map(|account| has_credits(&account, fee))
         .unwrap_or(false)
 }

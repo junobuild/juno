@@ -1,6 +1,6 @@
 use crate::accounts::credits::{
-    add_credits as add_credits_store, get_credits as get_credits_store,
-    has_mission_control_and_credits,
+    add_credits as add_credits_store, caller_is_mission_control_and_has_credits,
+    get_credits as get_credits_store,
 };
 use crate::guards::caller_is_admin_controller;
 use crate::store::heap::{
@@ -41,7 +41,7 @@ fn get_create_satellite_fee(
 
     let fee = get_satellite_fee();
 
-    match has_mission_control_and_credits(&user, &caller, &fee) {
+    match caller_is_mission_control_and_has_credits(&user, &caller, &fee) {
         false => Some(fee),
         true => None,
     }
@@ -55,7 +55,7 @@ fn get_create_orbiter_fee(
 
     let fee = get_orbiter_fee();
 
-    match has_mission_control_and_credits(&user, &caller, &fee) {
+    match caller_is_mission_control_and_has_credits(&user, &caller, &fee) {
         false => Some(fee),
         true => None,
     }

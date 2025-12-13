@@ -1,5 +1,5 @@
 use crate::accounts::{
-    credits::{has_mission_control_and_credits, use_credits},
+    credits::{caller_is_mission_control_and_has_credits, use_credits},
     get_account_with_existing_mission_control,
 };
 use crate::factory::services::ledger::{refund_payment, verify_payment};
@@ -37,7 +37,7 @@ where
         Some(mission_control_id) => {
             let fee = get_fee();
 
-            if has_mission_control_and_credits(&user, &mission_control_id, &fee) {
+            if caller_is_mission_control_and_has_credits(&user, &mission_control_id, &fee) {
                 // Guard too many requests
                 increment_rate()?;
 

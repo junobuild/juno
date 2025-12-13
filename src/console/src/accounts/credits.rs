@@ -30,7 +30,7 @@ fn get_credits_impl(user: &UserId, accounts: &AccountsStable) -> Result<Tokens, 
 // More like a percent. 1 credit equals 1 creation.
 // ---------------------------------------------------------
 
-pub fn caller_is_mission_control_and_has_credits(
+pub fn caller_is_mission_control_and_user_has_credits(
     user: &UserId,
     caller: &MissionControlId,
     fee: &Tokens,

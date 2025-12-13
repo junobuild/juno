@@ -183,6 +183,11 @@ export const idlFactory = ({ IDL }) => {
 		authentication: IDL.Opt(AuthenticationConfig),
 		storage: StorageConfig
 	});
+	const SegmentKind = IDL.Variant({
+		Orbiter: IDL.Null,
+		MissionControl: IDL.Null,
+		Satellite: IDL.Null
+	});
 	const GetCreateCanisterFeeArgs = IDL.Record({ user: IDL.Principal });
 	const OpenIdGetDelegationArgs = IDL.Record({
 		jwt: IDL.Text,
@@ -401,11 +406,6 @@ export const idlFactory = ({ IDL }) => {
 		controller: SetController,
 		controllers: IDL.Vec(IDL.Principal)
 	});
-	const SegmentKind = IDL.Variant({
-		Orbiter: IDL.Null,
-		MissionControl: IDL.Null,
-		Satellite: IDL.Null
-	});
 	const SetStorageConfig = IDL.Record({
 		iframe: IDL.Opt(StorageConfigIFrame),
 		rewrites: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
@@ -443,6 +443,7 @@ export const idlFactory = ({ IDL }) => {
 		get_account: IDL.Func([], [IDL.Opt(Account)], []),
 		get_auth_config: IDL.Func([], [IDL.Opt(AuthenticationConfig)], []),
 		get_config: IDL.Func([], [Config], []),
+		get_create_fee: IDL.Func([SegmentKind], [IDL.Opt(Tokens)], []),
 		get_create_orbiter_fee: IDL.Func([GetCreateCanisterFeeArgs], [IDL.Opt(Tokens)], []),
 		get_create_satellite_fee: IDL.Func([GetCreateCanisterFeeArgs], [IDL.Opt(Tokens)], []),
 		get_credits: IDL.Func([], [Tokens], []),

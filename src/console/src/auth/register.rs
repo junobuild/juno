@@ -1,4 +1,4 @@
-use crate::accounts::{get_account, update_provider};
+use crate::accounts::{get_optional_account, update_provider};
 use crate::factory::mission_control::init_user_mission_control_with_provider;
 use crate::types::state::OpenId;
 use crate::types::state::{Account, OpenIdData, Provider};
@@ -13,7 +13,7 @@ pub async fn register_account_with_mission_control(
 ) -> Result<Account, String> {
     let user_id = Principal::self_authenticating(public_key);
 
-    let current_account = get_account(&user_id)?;
+    let current_account = get_optional_account(&user_id)?;
 
     let existing_provider_data: Option<&OpenIdData> = match &current_account {
         None => None, // A new user

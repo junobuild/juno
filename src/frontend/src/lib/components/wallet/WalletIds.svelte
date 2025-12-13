@@ -13,9 +13,9 @@
 
 	let { walletId }: Props = $props();
 
-	const walletIdText = encodeIcrcAccount(walletId);
+	let walletIdText = $derived(encodeIcrcAccount(walletId));
 
-	const accountIdentifier = toAccountIdentifier(walletId);
+	let accountIdentifier = $derived(toAccountIdentifier(walletId));
 </script>
 
 <div>

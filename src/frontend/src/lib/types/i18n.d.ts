@@ -372,6 +372,7 @@ interface I18nWallet {
 	balance_zero: string;
 	wallet_upgrade: string;
 	approving_canister_fee: string;
+	dev: string;
 }
 
 interface I18nAuthentication {

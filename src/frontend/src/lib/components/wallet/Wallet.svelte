@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { isNullish } from '@dfinity/utils';
+	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { encodeIcrcAccount } from '@icp-sdk/canisters/ledger/icrc';
 	import ReceiveTokens from '$lib/components/tokens/ReceiveTokens.svelte';
 	import Transactions from '$lib/components/transactions/Transactions.svelte';
@@ -11,22 +11,21 @@
 	import { authSignedIn, authSignedOut } from '$lib/derived/auth.derived';
 	import { balance } from '$lib/derived/wallet/balance.derived';
 	import { transactions } from '$lib/derived/wallet/transactions.derived';
-	import type { WalletId } from '$lib/schemas/wallet.schema';
 	import { loadNextTransactions } from '$lib/services/wallet/wallet.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
 	import { authStore } from '$lib/stores/auth.store';
 	import { last } from '$lib/utils/utils';
+	import type { WalletId } from '$lib/schemas/wallet.schema';
+	import WalletPicker from '$lib/components/wallet/WalletPicker.svelte';
 
-	interface Props {
-		walletId: WalletId;
-	}
+	let walletId = $state<WalletId | undefined>(undefined);
 
-	let { walletId }: Props = $props();
+	let walletIdText = $derived(nonNullish(walletId) ? encodeIcrcAccount(walletId) : undefined);
 
-	const walletIdText = encodeIcrcAccount(walletId);
-
-	let walletTransactions = $derived($transactions[walletIdText] ?? []);
+	let walletTransactions = $derived(
+		nonNullish(walletIdText) ? ($transactions[walletIdText] ?? []) : []
+	);
 
 	/**
 	 * Scroll
@@ -50,7 +49,8 @@
 		}
 
 		await loadNextTransactions({
-			account: walletId,
+			// TODO: assertion
+			account: walletId!,
 			identity: $authStore.identity,
 			maxResults: PAGINATION,
 			start: lastId,
@@ -67,7 +67,11 @@
 
 		<div class="columns-3 fit-column-1">
 			<div>
-				<WalletIds {walletId} />
+				<WalletPicker bind:walletId />
+
+				{#if nonNullish(walletId)}
+					<WalletIds {walletId} />
+				{/if}
 			</div>
 
 			<div>
@@ -76,16 +80,20 @@
 		</div>
 	</div>
 
-	<WalletActions onreceive={() => (receiveVisible = true)} {walletId} />
+	{#if nonNullish(walletId)}
+		<WalletActions onreceive={() => (receiveVisible = true)} {walletId} />
 
-	<Transactions
-		{disableInfiniteScroll}
-		{onintersect}
-		transactions={walletTransactions}
-		{walletId}
-	/>
+		<Transactions
+			{disableInfiniteScroll}
+			{onintersect}
+			transactions={walletTransactions}
+			{walletId}
+		/>
 
-	<TransactionsExport transactions={walletTransactions} {walletId} />
+		<TransactionsExport transactions={walletTransactions} {walletId} />
+	{/if}
 {/if}
 
-<ReceiveTokens {walletId} bind:visible={receiveVisible} />
+{#if nonNullish(walletId)}
+	<ReceiveTokens {walletId} bind:visible={receiveVisible} />
+{/if}

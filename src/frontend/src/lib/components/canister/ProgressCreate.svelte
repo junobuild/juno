@@ -10,7 +10,7 @@
 
 	interface Props {
 		progress: WizardCreateProgress | undefined;
-		segment: 'satellite' | 'orbiter';
+		segment: 'satellite' | 'mission_control' | 'orbiter';
 		withApprove: boolean;
 		withMonitoring?: boolean;
 	}
@@ -42,7 +42,12 @@
 		create: {
 			state: 'next',
 			step: 'create',
-			text: segment === 'orbiter' ? $i18n.analytics.initializing : $i18n.satellites.initializing
+			text:
+				segment === 'mission_control'
+					? $i18n.mission_control.initializing
+					: segment === 'orbiter'
+						? $i18n.analytics.initializing
+						: $i18n.satellites.initializing
 		},
 		...(withMonitoring === true && {
 			monitoring: {

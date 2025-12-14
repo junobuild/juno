@@ -80,7 +80,6 @@ type ControllerScope = variant { Write; Admin; Submit };
 type CreateMissionControlArgs = record {
   block_index : opt nat64;
   subnet_id : opt principal;
-  name : opt text;
 };
 type CreateOrbiterArgs = record {
   block_index : opt nat64;

@@ -102,8 +102,7 @@ export const idlFactory = ({ IDL }) => {
 	});
 	const CreateMissionControlArgs = IDL.Record({
 		block_index: IDL.Opt(IDL.Nat64),
-		subnet_id: IDL.Opt(IDL.Principal),
-		name: IDL.Opt(IDL.Text)
+		subnet_id: IDL.Opt(IDL.Principal)
 	});
 	const CreateOrbiterArgs = IDL.Record({
 		block_index: IDL.Opt(IDL.Nat64),

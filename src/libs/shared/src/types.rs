@@ -143,7 +143,6 @@ pub mod interface {
     pub struct CreateMissionControlArgs {
         pub block_index: Option<BlockIndex>,
         pub subnet_id: Option<SubnetId>,
-        pub name: Option<String>,
     }
 
     #[derive(CandidType, Deserialize)]

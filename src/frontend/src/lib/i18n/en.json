@@ -322,7 +322,8 @@
 		"edit_email": "Edit your email address",
 		"empty": "The Mission Control is your central hub for managing modules. It is required to activate monitoring. Additional advanced features will be added in the future.",
 		"description": "Get Mission Control to unlock advanced features such as monitoring.",
-		"create_price": "Starting Mission Control requires {0}. Your current wallet balance is {1}."
+		"create_price": "Starting Mission Control requires {0}. Your current wallet balance is {1}.",
+		"initializing": "Initializing Mission Control..."
 	},
 	"wallet": {
 		"title": "Wallet",
@@ -662,6 +663,7 @@
 		"mission_control_not_loaded": "Your mission control is not yet loaded.",
 		"mission_control_settings_not_loaded": "The settings for the mission control are not yet loaded.",
 		"mission_control_user_data_not_loaded": "Your data (metadata, config, etc) for the mission control are not yet loaded.",
+		"mission_control_unexpected_error": "Unexpected error(s) while creating the Mission Control.",
 		"monitoring_apply_strategy_error": "Unexpected error(s) while applying the strategy.",
 		"monitoring_stop_error": "Unexpected error(s) while stopping the monitoring.",
 		"monitoring_no_modules": "Monitoring requires at least one satellite or orbiter to be set up. Add a module to get started.",

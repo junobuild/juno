@@ -322,7 +322,8 @@
 		"edit_email": "编辑您的电子邮件地址",
 		"empty": "Mission Control 是管理模块的中心枢纽。激活监控功能需要 Mission Control。未来将添加更多高级功能。",
 		"description": "获取 Mission Control 以解锁监控等高级功能。",
-		"create_price": "创建 Mission Control 需要 {0}。您当前的钱包余额为 {1}。"
+		"create_price": "创建 Mission Control 需要 {0}。您当前的钱包余额为 {1}。",
+		"initializing": "正在初始化 Mission Control..."
 	},
 	"wallet": {
 		"title": "钱包",
@@ -663,6 +664,7 @@
 		"mission_control_not_loaded": "任务控制中心未加载。",
 		"mission_control_settings_not_loaded": "任务控制中心设置未加载。",
 		"mission_control_user_data_not_loaded": "您的任务控制中心数据（元数据、配置等）未加载。",
+		"mission_control_unexpected_error": "创建 Mission Control 时发生意外错误。",
 		"monitoring_apply_strategy_error": "应用策略时发生意外错误。",
 		"monitoring_stop_error": "停止监控时发生意外错误。",
 		"monitoring_no_modules": "监控功能需要设置至少一个卫星或轨道器，请先添加模块。",

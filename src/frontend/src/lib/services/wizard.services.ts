@@ -5,8 +5,12 @@ import { missionControlMonitored } from '$lib/derived/mission-control/mission-co
 import { missionControlConfigMonitoring } from '$lib/derived/mission-control/mission-control-user.derived';
 import { isSkylab } from '$lib/env/app.env';
 import { execute } from '$lib/services/_progress.services';
-import { createOrbiterWithConfig as createOrbiterWithConsoleAndConfig } from '$lib/services/console/console.orbiters.services';
-import { createSatelliteWithConfig as createSatelliteWithConsoleAndConfig } from '$lib/services/console/console.satellites.services';
+import { reloadAccount } from '$lib/services/console/account.services';
+import {
+	createMissionControlWithConfig as createMissionControlWithConsoleAndConfig,
+	createOrbiterWithConfig as createOrbiterWithConsoleAndConfig,
+	createSatelliteWithConfig as createSatelliteWithConsoleAndConfig
+} from '$lib/services/console/console.factory.services';
 import { loadCredits } from '$lib/services/console/credits.services';
 import { loadSegments } from '$lib/services/console/segments.services';
 import { unsafeSetEmulatorControllerForSatellite } from '$lib/services/emulator.services';
@@ -495,6 +499,41 @@ export const createOrbiterWizard = async ({
 		reloadFn,
 		monitoringFn,
 		errorLabel: 'orbiter_unexpected_error'
+	});
+};
+
+export const createMissionControlWizard = async ({
+	onProgress,
+	subnetId,
+	...rest
+}: Omit<CreateWizardParams, 'missionControlId' | 'monitoringStrategy'>): Promise<
+	| {
+			success: 'ok';
+			canisterId: Principal;
+	  }
+	| { success: 'error'; err?: unknown }
+> => {
+	const createWithConsoleFn = async ({ identity }: { identity: Identity }): Promise<OrbiterId> =>
+		await createMissionControlWithConsoleAndConfig({
+			identity,
+			// TODO: duplicate payload
+			config: {
+				...(nonNullish(subnetId) && { subnetId: Principal.fromText(subnetId) })
+			}
+		});
+
+	const reloadFn: ReloadFn = async (params) => {
+		await reloadAccount(params);
+	};
+
+	return await createWizard({
+		...rest,
+		missionControlId: null,
+		onProgress,
+		createFn: createWithConsoleFn,
+		reloadFn,
+		monitoringFn: undefined,
+		errorLabel: 'mission_control_unexpected_error'
 	});
 };
 

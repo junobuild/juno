@@ -331,7 +331,7 @@ interface I18nMission_control {
 	empty: string;
 	description: string;
 	create_price: string;
-	create: string;
+	initializing: string;
 }
 
 interface I18nWallet {
@@ -680,6 +680,7 @@ interface I18nErrors {
 	mission_control_not_loaded: string;
 	mission_control_settings_not_loaded: string;
 	mission_control_user_data_not_loaded: string;
+	mission_control_unexpected_error: string;
 	monitoring_apply_strategy_error: string;
 	monitoring_stop_error: string;
 	monitoring_no_modules: string;

@@ -10,7 +10,7 @@
 	import { testIds } from '$lib/constants/test-ids.constants';
 	import { authSignedOut } from '$lib/derived/auth.derived';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
-	import { createOrbiterWizard } from '$lib/services/wizard.services';
+	import { createMissionControlWizard, createOrbiterWizard } from '$lib/services/wizard.services';
 	import { wizardBusy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { authStore } from '$lib/stores/auth.store';
@@ -46,11 +46,9 @@
 		wizardBusy.start();
 		step = 'in_progress';
 
-		const { success } = await createOrbiterWizard({
+		const { success } = await createMissionControlWizard({
 			identity: $authStore.identity,
-			missionControlId: $missionControlId,
 			subnetId,
-			monitoringStrategy,
 			withFee,
 			onProgress
 		});
@@ -66,9 +64,6 @@
 	};
 
 	let subnetId = $state<PrincipalText | undefined>(undefined);
-	let monitoringStrategy = $state<MissionControlDid.CyclesMonitoringStrategy | undefined>(
-		undefined
-	);
 </script>
 
 <Modal {onclose}>
@@ -84,9 +79,9 @@
 	{:else if step === 'in_progress'}
 		<ProgressCreate
 			{progress}
-			segment="orbiter"
+			segment="mission_control"
 			withApprove={withDevIcpApprove}
-			withMonitoring={nonNullish(monitoringStrategy)}
+			withMonitoring={false}
 		/>
 	{:else}
 		<h2>{$i18n.core.getting_started}</h2>
@@ -104,7 +99,7 @@
 			bind:insufficientFunds
 		>
 			<form onsubmit={onSubmit}>
-				<CanisterAdvancedOptions {detail} bind:subnetId bind:monitoringStrategy />
+				<CanisterAdvancedOptions {detail} bind:subnetId withMonitoring={false} />
 
 				<button disabled={$authSignedOut || insufficientFunds} type="submit">
 					{$i18n.core.create}

@@ -103,7 +103,6 @@ export type ControllerScope = { Write: null } | { Admin: null } | { Submit: null
 export interface CreateMissionControlArgs {
 	block_index: [] | [bigint];
 	subnet_id: [] | [Principal];
-	name: [] | [string];
 }
 export interface CreateOrbiterArgs {
 	block_index: [] | [bigint];

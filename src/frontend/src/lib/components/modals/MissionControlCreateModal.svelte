@@ -106,10 +106,7 @@
 			<form onsubmit={onSubmit}>
 				<CanisterAdvancedOptions {detail} bind:subnetId bind:monitoringStrategy />
 
-				<button
-					disabled={$authSignedOut || insufficientFunds}
-					type="submit"
-				>
+				<button disabled={$authSignedOut || insufficientFunds} type="submit">
 					{$i18n.core.create}
 				</button>
 			</form>

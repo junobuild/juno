@@ -29,7 +29,7 @@
 	import StopMonitoringStrategyModal from '$lib/components/modals/StopMonitoringStrategyModal.svelte';
 	import UserDetailsModal from '$lib/components/modals/UserDetailsModal.svelte';
 	import type { JunoModal, JunoModalDetail } from '$lib/types/modal';
-	import MissionControlCreateModal from "$lib/components/modals/MissionControlCreateModal.svelte";
+	import MissionControlCreateModal from '$lib/components/modals/MissionControlCreateModal.svelte';
 
 	let modal: JunoModal<JunoModalDetail> | undefined = $state(undefined);
 

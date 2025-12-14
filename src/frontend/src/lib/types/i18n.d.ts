@@ -329,6 +329,9 @@ interface I18nMission_control {
 	loading: string;
 	edit_email: string;
 	empty: string;
+	description: string;
+	create_price: string;
+	create: string;
 }
 
 interface I18nWallet {
@@ -933,6 +936,7 @@ interface I18nMonitoring {
 	default_description: string;
 	warn_monitoring_enabled: string;
 	runtime: string;
+	requires_mission_control: string;
 }
 
 interface I18nPreferences {

@@ -320,7 +320,9 @@
 		"not_found": "Mission control not found.",
 		"loading": "Loading your mission control...",
 		"edit_email": "Edit your email address",
-		"empty": "The Mission Control is your central hub for managing modules. It is required to activate monitoring. Additional advanced features will be added in the future."
+		"empty": "The Mission Control is your central hub for managing modules. It is required to activate monitoring. Additional advanced features will be added in the future.",
+		"description": "Get Mission Control to unlock advanced features such as monitoring.",
+		"create_price": "Starting Mission Control requires {0}. Your current wallet balance is {1}."
 	},
 	"wallet": {
 		"title": "Wallet",
@@ -906,7 +908,8 @@
 		"default": "Your strategy",
 		"default_description": "Use your previously saved default strategy.",
 		"warn_monitoring_enabled": "Please disable monitoring before proceeding.",
-		"runtime": "Runtime"
+		"runtime": "Runtime",
+		"requires_mission_control": "Monitoring ensures your modules always have enough cycles by automatically tracking their levels and topping them up when needed. It requires Mission Control to operate."
 	},
 	"preferences": {
 		"title": "Preferences",

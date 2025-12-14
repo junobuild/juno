@@ -29,6 +29,7 @@
 	import StopMonitoringStrategyModal from '$lib/components/modals/StopMonitoringStrategyModal.svelte';
 	import UserDetailsModal from '$lib/components/modals/UserDetailsModal.svelte';
 	import type { JunoModal, JunoModalDetail } from '$lib/types/modal';
+	import MissionControlCreateModal from "$lib/components/modals/MissionControlCreateModal.svelte";
 
 	let modal: JunoModal<JunoModalDetail> | undefined = $state(undefined);
 
@@ -43,6 +44,10 @@
 
 {#if modal?.type === 'create_orbiter' && nonNullish(modal.detail)}
 	<OrbiterCreateModal detail={modal.detail} onclose={close} />
+{/if}
+
+{#if modal?.type === 'create_mission_control' && nonNullish(modal.detail)}
+	<MissionControlCreateModal detail={modal.detail} onclose={close} />
 {/if}
 
 {#if modal?.type === 'topup_satellite' && nonNullish(modal.detail)}

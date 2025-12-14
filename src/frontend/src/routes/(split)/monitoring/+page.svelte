@@ -21,6 +21,7 @@
 		type TabsData
 	} from '$lib/types/tabs.context';
 	import { initTabId } from '$lib/utils/tabs.utils';
+	import { i18n } from '$lib/stores/app/i18n.store';
 
 	const tabDashboard = {
 		id: Symbol('1'),
@@ -67,7 +68,7 @@
 		{/snippet}
 
 		<Loaders monitoring>
-			<MissionControlGuard>
+			<MissionControlGuard notFoundDescription={$i18n.monitoring.requires_mission_control}>
 				{#if nonNullish($missionControlId)}
 					<MissionControlDataLoader missionControlId={$missionControlId} reload>
 						{#if $store.tabId === $store.tabs[0].id}

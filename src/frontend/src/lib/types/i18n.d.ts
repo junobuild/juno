@@ -332,6 +332,7 @@ interface I18nMission_control {
 	description: string;
 	create_price: string;
 	initializing: string;
+	ready: string;
 }
 
 interface I18nWallet {

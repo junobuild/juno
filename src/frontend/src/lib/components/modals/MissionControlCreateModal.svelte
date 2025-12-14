@@ -1,23 +1,18 @@
 <script lang="ts">
-	import { isNullish, nonNullish } from '@dfinity/utils';
 	import type { PrincipalText } from '@dfinity/zod-schemas';
-	import type { MissionControlDid } from '$declarations';
 	import CanisterAdvancedOptions from '$lib/components/canister/CanisterAdvancedOptions.svelte';
 	import ProgressCreate from '$lib/components/canister/ProgressCreate.svelte';
 	import CreditsGuard from '$lib/components/guards/CreditsGuard.svelte';
 	import Confetti from '$lib/components/ui/Confetti.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
-	import { testIds } from '$lib/constants/test-ids.constants';
 	import { authSignedOut } from '$lib/derived/auth.derived';
-	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
-	import { createMissionControlWizard, createOrbiterWizard } from '$lib/services/wizard.services';
+	import { createMissionControlWizard } from '$lib/services/wizard.services';
 	import { wizardBusy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { authStore } from '$lib/stores/auth.store';
 	import type { JunoModalDetail } from '$lib/types/modal';
 	import type { WizardCreateProgress } from '$lib/types/progress-wizard';
 	import type { Option } from '$lib/types/utils';
-	import { testId } from '$lib/utils/test.utils';
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -71,10 +66,8 @@
 		<Confetti />
 
 		<div class="msg">
-			<p>{$i18n.analytics.ready}</p>
-			<button onclick={onclose} {...testId(testIds.createAnalytics.close)}
-				>{$i18n.core.close}</button
-			>
+			<p>{$i18n.mission_control.ready}</p>
+			<button onclick={onclose}>{$i18n.core.close}</button>
 		</div>
 	{:else if step === 'in_progress'}
 		<ProgressCreate

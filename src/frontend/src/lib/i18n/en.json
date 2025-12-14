@@ -323,7 +323,8 @@
 		"empty": "The Mission Control is your central hub for managing modules. It is required to activate monitoring. Additional advanced features will be added in the future.",
 		"description": "Get Mission Control to unlock advanced features such as monitoring.",
 		"create_price": "Starting Mission Control requires {0}. Your current wallet balance is {1}.",
-		"initializing": "Initializing Mission Control..."
+		"initializing": "Initializing Mission Control...",
+		"ready": "Your Mission Control is ready!"
 	},
 	"wallet": {
 		"title": "Wallet",

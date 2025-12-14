@@ -113,14 +113,6 @@ where
     Ok(update_account)
 }
 
-pub fn delete_account(user: &UserId) -> Option<Account> {
-    with_accounts_mut(|accounts| delete_account_impl(user, accounts))
-}
-
-fn delete_account_impl(user: &UserId, accounts: &mut AccountsStable) -> Option<Account> {
-    accounts.remove(user)
-}
-
 pub fn list_accounts() -> Accounts {
     with_accounts(list_accounts_impl)
 }

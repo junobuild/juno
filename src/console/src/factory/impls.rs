@@ -1,7 +1,9 @@
 use crate::factory::types::CanisterCreator;
 use crate::factory::types::CreateCanisterArgs;
 use candid::Principal;
-use junobuild_shared::types::interface::{CreateOrbiterArgs, CreateSatelliteArgs};
+use junobuild_shared::types::interface::{
+    CreateMissionControlArgs, CreateOrbiterArgs, CreateSatelliteArgs,
+};
 use junobuild_shared::types::state::{ControllerId, UserId};
 
 impl CanisterCreator {
@@ -31,7 +33,6 @@ impl CanisterCreator {
 impl From<CreateOrbiterArgs> for CreateCanisterArgs {
     fn from(args: CreateOrbiterArgs) -> Self {
         Self {
-            user: args.user,
             block_index: args.block_index,
             subnet_id: args.subnet_id,
         }
@@ -41,7 +42,15 @@ impl From<CreateOrbiterArgs> for CreateCanisterArgs {
 impl From<CreateSatelliteArgs> for CreateCanisterArgs {
     fn from(args: CreateSatelliteArgs) -> Self {
         Self {
-            user: args.user,
+            block_index: args.block_index,
+            subnet_id: args.subnet_id,
+        }
+    }
+}
+
+impl From<CreateMissionControlArgs> for CreateCanisterArgs {
+    fn from(args: CreateMissionControlArgs) -> Self {
+        Self {
             block_index: args.block_index,
             subnet_id: args.subnet_id,
         }

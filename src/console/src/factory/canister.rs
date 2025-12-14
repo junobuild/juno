@@ -22,13 +22,14 @@ pub async fn create_canister<F, Fut>(
     get_fee: &dyn Fn() -> Result<Tokens, String>,
     add_segment: &dyn Fn(&UserId, &Principal),
     caller: Principal,
+    user: UserId,
     args: CreateCanisterArgs,
 ) -> Result<Principal, String>
 where
     F: FnOnce(CanisterCreator, Option<SubnetId>) -> Fut,
     Fut: Future<Output = Result<Principal, String>>,
 {
-    let account = get_existing_account(&args.user)?;
+    let account = get_existing_account(&user)?;
 
     if principal_equal(caller, account.owner) {
         // Caller is user
@@ -123,7 +124,6 @@ async fn create_canister_with_payment<F, Fut>(
     CreateCanisterArgs {
         block_index,
         subnet_id,
-        ..
     }: CreateCanisterArgs,
     fee: Tokens,
 ) -> Result<Principal, String>

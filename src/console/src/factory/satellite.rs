@@ -32,6 +32,7 @@ pub async fn create_satellite(
         &get_fee,
         &move |used_id, canister_id| add_segment(&used_id, &canister_id, &name),
         caller,
+        args.user,
         args.into(),
     )
     .await

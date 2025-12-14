@@ -9,7 +9,6 @@ pub enum CanisterCreator {
 }
 
 pub struct CreateCanisterArgs {
-    pub user: UserId,
     pub block_index: Option<BlockIndex>,
     pub subnet_id: Option<SubnetId>,
 }

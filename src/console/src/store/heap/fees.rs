@@ -17,11 +17,11 @@ pub fn get_mission_control_fee() -> Result<Tokens, String> {
 
 fn get_mission_control_fee_impl(fees: &Fees) -> Result<Tokens, String> {
     let fee = &fees.mission_control;
-    
+
     if let Some(fee) = fee {
         return Ok(fee.fee);
     }
-    
+
     Err("No fees defined for Mission Control".to_string())
 }
 

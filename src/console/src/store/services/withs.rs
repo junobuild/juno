@@ -1,7 +1,7 @@
 use crate::store::services::raw::{mutate_heap_state, read_heap_state};
 use crate::store::{mutate_stable_state, read_stable_state};
-use crate::types::state::{Fees, PaymentsStable};
 use crate::types::state::{AccountsStable, SegmentsStable};
+use crate::types::state::{Fees, PaymentsStable};
 use junobuild_auth::state::types::state::AuthenticationHeapState;
 use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::state::AssetsHeap;

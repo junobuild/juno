@@ -1,4 +1,6 @@
-use crate::constants::{MISSION_CONTROL_CREATION_FEE_ICP, ORBITER_CREATION_FEE_ICP, SATELLITE_CREATION_FEE_ICP};
+use crate::constants::{
+    MISSION_CONTROL_CREATION_FEE_ICP, ORBITER_CREATION_FEE_ICP, SATELLITE_CREATION_FEE_ICP,
+};
 use crate::memory::manager::init_stable_state;
 use crate::types::ledger::Payment;
 use crate::types::state::{

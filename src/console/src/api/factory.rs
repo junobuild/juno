@@ -5,13 +5,15 @@ use candid::Principal;
 use ic_cdk_macros::update;
 use junobuild_shared::ic::api::caller;
 use junobuild_shared::ic::UnwrapOrTrap;
-use junobuild_shared::types::interface::{CreateOrbiterArgs, CreateSatelliteArgs};
+use junobuild_shared::types::interface::{
+    CreateMissionControlArgs, CreateOrbiterArgs, CreateSatelliteArgs,
+};
 
 #[update]
-async fn create_mission_control() -> Principal {
+async fn create_mission_control(args: CreateMissionControlArgs) -> Principal {
     let caller = caller();
 
-    create_mission_control_console(&caller)
+    create_mission_control_console(caller, args)
         .await
         .unwrap_or_trap()
 }

@@ -7,6 +7,7 @@ use crate::store::heap::{get_orbiter_fee, increment_orbiters_rate};
 use crate::store::stable::add_segment as add_segment_store;
 use crate::types::state::{Segment, SegmentKey, SegmentType};
 use candid::{Nat, Principal};
+use ic_ledger_types::Tokens;
 use junobuild_shared::constants_shared::CREATE_ORBITER_CYCLES;
 use junobuild_shared::ic::api::id;
 use junobuild_shared::mgmt::cmc::cmc_create_canister_install_code;
@@ -23,12 +24,16 @@ pub async fn create_orbiter(
     create_canister(
         create_orbiter_wasm,
         &increment_orbiters_rate,
-        &get_orbiter_fee,
+        &get_fee,
         &add_segment,
         caller,
         args.into(),
     )
     .await
+}
+
+fn get_fee() -> Result<Tokens, String> {
+    Ok(get_orbiter_fee())
 }
 
 async fn create_orbiter_wasm(

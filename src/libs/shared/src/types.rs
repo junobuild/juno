@@ -140,6 +140,13 @@ pub mod interface {
     }
 
     #[derive(CandidType, Deserialize)]
+    pub struct CreateMissionControlArgs {
+        pub block_index: Option<BlockIndex>,
+        pub subnet_id: Option<SubnetId>,
+        pub name: Option<String>,
+    }
+
+    #[derive(CandidType, Deserialize)]
     pub struct CreateSatelliteArgs {
         pub user: UserId,
         pub block_index: Option<BlockIndex>,

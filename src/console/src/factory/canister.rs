@@ -19,7 +19,7 @@ use std::future::Future;
 pub async fn create_canister<F, Fut>(
     create: F,
     increment_rate: &dyn Fn() -> Result<(), String>,
-    get_fee: &dyn Fn() -> Tokens,
+    get_fee: &dyn Fn() -> Result<Tokens, String>,
     add_segment: &dyn Fn(&UserId, &Principal),
     caller: Principal,
     args: CreateCanisterArgs,
@@ -65,10 +65,10 @@ where
     Err("Unknown caller".to_string())
 }
 
-async fn create_canister_with_account<F, Fut>(
+pub async fn create_canister_with_account<F, Fut>(
     create: F,
     increment_rate: &dyn Fn() -> Result<(), String>,
-    get_fee: &dyn Fn() -> Tokens,
+    get_fee: &dyn Fn() -> Result<Tokens, String>,
     account: &Account,
     creator: CanisterCreator,
     args: CreateCanisterArgs,
@@ -77,7 +77,7 @@ where
     F: FnOnce(CanisterCreator, Option<SubnetId>) -> Fut,
     Fut: Future<Output = Result<Principal, String>>,
 {
-    let fee = get_fee();
+    let fee = get_fee()?;
 
     if has_credits(account, &fee) {
         // Guard too many requests

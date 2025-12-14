@@ -3,7 +3,10 @@ use crate::accounts::credits::{
     caller_is_mission_control_and_user_has_credits, get_credits as get_credits_store,
 };
 use crate::guards::caller_is_admin_controller;
-use crate::store::heap::{get_mission_control_fee, get_orbiter_fee, get_satellite_fee, set_create_mission_control_fee, set_create_orbiter_fee, set_create_satellite_fee};
+use crate::store::heap::{
+    get_mission_control_fee, get_orbiter_fee, get_satellite_fee, set_create_mission_control_fee,
+    set_create_orbiter_fee, set_create_satellite_fee,
+};
 use crate::store::stable::list_payments as list_payments_state;
 use crate::types::state::Payments;
 use ic_cdk_macros::{query, update};

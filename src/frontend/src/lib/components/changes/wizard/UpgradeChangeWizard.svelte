@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { isNullish } from '@dfinity/utils';
 	import { onMount } from 'svelte';
-	import type { SatelliteDid, MissionControlDid } from '$declarations';
+	import type { SatelliteDid } from '$declarations';
 	import UpgradeCdnWizard from '$lib/components/cdn/wizard/UpgradeCdnWizard.svelte';
 	import { findWasmAssetForProposal } from '$lib/services/satellite/proposals/proposals.cdn.services';
 	import { authStore } from '$lib/stores/auth.store';

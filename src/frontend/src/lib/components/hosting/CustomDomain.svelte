@@ -2,7 +2,7 @@
 	import { isNullish, nonNullish, fromNullishNullable } from '@dfinity/utils';
 	import { createEventDispatcher, onDestroy, onMount } from 'svelte';
 	import { run } from 'svelte/legacy';
-	import type { SatelliteDid, MissionControlDid } from '$declarations';
+	import type { SatelliteDid } from '$declarations';
 	import CustomDomainActions from '$lib/components/hosting/CustomDomainActions.svelte';
 	import IconCheckCircle from '$lib/components/icons/IconCheckCircle.svelte';
 	import IconSync from '$lib/components/icons/IconSync.svelte';

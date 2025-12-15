@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
-	import type { MissionControlDid } from '$declarations';
 	import CanisterWarnings from '$lib/components/canister/CanisterWarnings.svelte';
 	import LoaderWarnings from '$lib/components/warning/LoaderWarnings.svelte';
 	import VersionWarnings from '$lib/components/warning/VersionWarnings.svelte';

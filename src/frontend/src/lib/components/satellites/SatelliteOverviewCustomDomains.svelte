@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { fade } from 'svelte/transition';
-	import type { MissionControlDid } from '$declarations';
 	import ExternalLink from '$lib/components/ui/ExternalLink.svelte';
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import Value from '$lib/components/ui/Value.svelte';

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
-	import type { SatelliteDid, MissionControlDid } from '$declarations';
+	import type { SatelliteDid } from '$declarations';
 	import Confirmation from '$lib/components/core/Confirmation.svelte';
 	import { switchHostingMemory } from '$lib/services/satellite/hosting.storage.services';
 	import { i18n } from '$lib/stores/app/i18n.store';

@@ -1,5 +1,4 @@
 <script lang="ts">
-	import type { MissionControlDid } from '$declarations';
 	import SegmentDetach from '$lib/components/canister/SegmentDetach.svelte';
 	import SatelliteEditDetails from '$lib/components/satellites/SatelliteEditDetails.svelte';
 	import SatelliteReloadVersion from '$lib/components/satellites/SatelliteReloadVersion.svelte';

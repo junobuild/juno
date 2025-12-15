@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { isNullish, nonNullish } from '@dfinity/utils';
+	import { nonNullish } from '@dfinity/utils';
 	import type { PrincipalText } from '@dfinity/zod-schemas';
 	import type { MissionControlDid } from '$declarations';
 	import CanisterAdvancedOptions from '$lib/components/canister/CanisterAdvancedOptions.svelte';

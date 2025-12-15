@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
-	import type { MissionControlDid } from '$declarations';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { Satellite } from '$lib/types/satellite';

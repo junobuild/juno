@@ -3,7 +3,7 @@
 	import type { PrincipalText } from '@dfinity/zod-schemas';
 	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
-	import type { MissionControlDid, SatelliteDid } from '$declarations';
+	import type { SatelliteDid } from '$declarations';
 	import AuthConfigFormGoogleOptions from '$lib/components/auth/AuthConfigFormGoogleOptions.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
 	import Value from '$lib/components/ui/Value.svelte';

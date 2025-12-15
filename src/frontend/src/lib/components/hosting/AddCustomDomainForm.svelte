@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { isEmptyString, isNullish } from '@dfinity/utils';
-	import type { MissionControlDid } from '$declarations';
 	import AddCustomDomainAuth, {
 		type AddCustomDomainAuthProps
 	} from '$lib/components/hosting/AddCustomDomainAuth.svelte';

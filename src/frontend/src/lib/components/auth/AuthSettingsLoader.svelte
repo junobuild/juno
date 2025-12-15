@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { getContext, type Snippet, untrack } from 'svelte';
 	import { fade } from 'svelte/transition';
-	import type { MissionControlDid } from '$declarations';
 	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
 	import Warning from '$lib/components/ui/Warning.svelte';
 	import { getAuthConfig } from '$lib/services/console/auth/auth.config.services';

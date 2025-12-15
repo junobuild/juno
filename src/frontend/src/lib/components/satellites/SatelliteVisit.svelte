@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
-	import type { MissionControlDid } from '$declarations';
 	import {
 		satelliteCustomDomain,
 		satelliteCustomDomainsLoaded

@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { fromNullable, nonNullish, uint8ArrayToHexString } from '@dfinity/utils';
-	import type { MissionControlDid } from '$declarations';
 	import IconCheck from '$lib/components/icons/IconCheck.svelte';
 	import IconClose from '$lib/components/icons/IconClose.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';

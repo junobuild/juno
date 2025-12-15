@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
 	import { getContext } from 'svelte';
-	import type { MissionControlDid } from '$declarations';
 	import Value from '$lib/components/ui/Value.svelte';
 	import {
 		A_MONTH_NS,

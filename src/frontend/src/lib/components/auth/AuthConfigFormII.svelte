@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { fromNullable, fromNullishNullable, isNullish, nonNullish } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
-	import type { SatelliteDid, MissionControlDid } from '$declarations';
+	import type { SatelliteDid } from '$declarations';
 	import AuthConfigFormIIOptions from '$lib/components/auth/AuthConfigFormIIOptions.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import Warning from '$lib/components/ui/Warning.svelte';

@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { untrack } from 'svelte';
 	import { fade } from 'svelte/transition';
-	import type { MissionControlDid } from '$declarations';
 	import { countHostingAssets } from '$lib/services/satellite/hosting.storage.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { authStore } from '$lib/stores/auth.store';

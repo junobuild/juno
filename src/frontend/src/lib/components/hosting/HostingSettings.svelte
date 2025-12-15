@@ -2,7 +2,7 @@
 	import { fromNullable, nonNullish } from '@dfinity/utils';
 	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
-	import type { SatelliteDid, MissionControlDid } from '$declarations';
+	import type { SatelliteDid } from '$declarations';
 	import HostingSwitchMemory from '$lib/components/hosting/HostingSwitchMemory.svelte';
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import Value from '$lib/components/ui/Value.svelte';

@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { setContext } from 'svelte';
-	import type { MissionControlDid } from '$declarations';
 	import AuthConfigCore from '$lib/components/auth/AuthConfigCore.svelte';
 	import AuthConfigGoogle from '$lib/components/auth/AuthConfigGoogle.svelte';
 	import AuthConfigII from '$lib/components/auth/AuthConfigII.svelte';

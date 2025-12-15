@@ -3,7 +3,7 @@
 	import { AnonymousIdentity } from '@icp-sdk/core/agent';
 	import { Principal } from '@icp-sdk/core/principal';
 	import { type UpgradeCodeParams, upgradeSatellite } from '@junobuild/admin';
-	import type { SatelliteDid, MissionControlDid } from '$declarations';
+	import type { SatelliteDid } from '$declarations';
 	import CanisterUpgradeWizard, {
 		type CanisterUpgradeWizardProps,
 		type CanisterUpgradeWizardStep

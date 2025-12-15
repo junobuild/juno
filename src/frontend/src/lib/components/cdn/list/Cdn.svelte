@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { getContext, setContext, untrack } from 'svelte';
-	import type { SatelliteDid, MissionControlDid } from '$declarations';
+	import type { SatelliteDid } from '$declarations';
 	import CdnAsset from '$lib/components/cdn/list/CdnAsset.svelte';
 	import DataCount from '$lib/components/data/DataCount.svelte';
 	import DataPaginator from '$lib/components/data/DataPaginator.svelte';

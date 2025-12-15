@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
 	import { onMount } from 'svelte';
-	import type { SatelliteDid, MissionControlDid } from '$declarations';
+	import type { SatelliteDid } from '$declarations';
 	import AddCustomDomain from '$lib/components/hosting/AddCustomDomain.svelte';
 	import CustomDomain from '$lib/components/hosting/CustomDomain.svelte';
 	import CustomDomainInfo, {

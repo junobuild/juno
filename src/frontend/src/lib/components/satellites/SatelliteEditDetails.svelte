@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { isNullish, nonNullish, notEmptyString } from '@dfinity/utils';
-	import type { MissionControlDid } from '$declarations';
 	import IconEdit from '$lib/components/icons/IconEdit.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import Value from '$lib/components/ui/Value.svelte';

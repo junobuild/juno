@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { isNullish, nonNullish, fromNullishNullable } from '@dfinity/utils';
 	import { run, stopPropagation } from 'svelte/legacy';
-	import type { SatelliteDid, MissionControlDid } from '$declarations';
+	import type { SatelliteDid } from '$declarations';
 	import { setAuthConfig } from '$lib/api/satellites.api';
 	import IconWarning from '$lib/components/icons/IconWarning.svelte';
 	import ButtonTableAction from '$lib/components/ui/ButtonTableAction.svelte';

@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { fromNullishNullable } from '@dfinity/utils';
 	import { onMount } from 'svelte';
-	import type { MissionControlDid } from '$declarations';
 	import CanisterOverview from '$lib/components/canister/CanisterOverview.svelte';
 	import CanisterSubnet from '$lib/components/canister/CanisterSubnet.svelte';
 	import CanisterSyncData from '$lib/components/canister/CanisterSyncData.svelte';

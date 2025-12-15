@@ -92,7 +92,7 @@
 			bind:insufficientFunds
 		>
 			<form onsubmit={onSubmit}>
-				<CanisterAdvancedOptions {detail} bind:subnetId withMonitoring={false} />
+				<CanisterAdvancedOptions {detail} withMonitoring={false} bind:subnetId />
 
 				<button disabled={$authSignedOut || insufficientFunds} type="submit">
 					{$i18n.core.create}

@@ -9,6 +9,7 @@
 	import CreateMonitoringStrategyModal from '$lib/components/modals/CreateMonitoringStrategyModal.svelte';
 	import CreateSnapshotModal from '$lib/components/modals/CreateSnapshotModal.svelte';
 	import CustomDomainModal from '$lib/components/modals/CustomDomainModal.svelte';
+	import MissionControlCreateModal from '$lib/components/modals/MissionControlCreateModal.svelte';
 	import MissionControlTopUpModal from '$lib/components/modals/MissionControlTopUpModal.svelte';
 	import MissionControlTransferCyclesModal from '$lib/components/modals/MissionControlTransferCyclesModal.svelte';
 	import MissionControlUpgradeModal from '$lib/components/modals/MissionControlUpgradeModal.svelte';
@@ -29,7 +30,6 @@
 	import StopMonitoringStrategyModal from '$lib/components/modals/StopMonitoringStrategyModal.svelte';
 	import UserDetailsModal from '$lib/components/modals/UserDetailsModal.svelte';
 	import type { JunoModal, JunoModalDetail } from '$lib/types/modal';
-	import MissionControlCreateModal from '$lib/components/modals/MissionControlCreateModal.svelte';
 
 	let modal: JunoModal<JunoModalDetail> | undefined = $state(undefined);
 

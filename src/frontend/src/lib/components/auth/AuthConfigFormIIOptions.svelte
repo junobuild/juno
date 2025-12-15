@@ -14,6 +14,7 @@
 
 	let { config, externalAlternativeOrigins = $bindable('') }: Props = $props();
 
+	// svelte-ignore state_referenced_locally
 	let externalAlternativeOriginsInput = $state(
 		(
 			fromNullable(

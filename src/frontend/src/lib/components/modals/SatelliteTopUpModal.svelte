@@ -1,5 +1,4 @@
 <script lang="ts">
-	import type { AccountIdentifier } from '@icp-sdk/canisters/ledger/icp';
 	import IconSatellite from '$lib/components/icons/IconSatellite.svelte';
 	import CanisterTopUpModal from '$lib/components/modals/CanisterTopUpModal.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
@@ -18,9 +17,7 @@
 
 	let { satellite } = $derived(detail as JunoModalTopUpSatelliteDetail);
 
-	let accountIdentifier: AccountIdentifier | undefined = $derived(
-		(detail as JunoModalTopUpSatelliteDetail).accountIdentifier
-	);
+	let accountIdentifier = $derived((detail as JunoModalTopUpSatelliteDetail).accountIdentifier);
 </script>
 
 <CanisterTopUpModal

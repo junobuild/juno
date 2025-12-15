@@ -22,6 +22,7 @@
 		allowedTargets = $bindable<PrincipalText[] | null | undefined>(undefined)
 	}: Props = $props();
 
+	// svelte-ignore state_referenced_locally
 	let targets = $state(
 		// delegation.targets===[] (exactly equals because delegation is undefined by default)
 		nonNullish(delegation) && nonNullish(delegation.targets) && delegation.targets.length === 0

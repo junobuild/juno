@@ -24,6 +24,7 @@
 		allowedCallers = $bindable([])
 	}: Props = $props();
 
+	// svelte-ignore state_referenced_locally
 	let maxTokensInput = $state<number | undefined>(
 		nonNullish(fromNullishNullable(rule?.rate_config)?.max_tokens)
 			? Number(fromNullishNullable(rule?.rate_config)?.max_tokens ?? 0)
@@ -34,6 +35,7 @@
 		maxTokens = maxTokensInput;
 	});
 
+	// svelte-ignore state_referenced_locally
 	let allowedCallersInput = $state<string>(
 		(fromNullishNullable(config?.rules)?.allowed_callers ?? [])
 			.map((caller) => caller.toText())

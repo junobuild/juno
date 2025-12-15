@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { isNullish, nonNullish } from '@dfinity/utils';
-	import type { Principal } from '@icp-sdk/core/principal';
 	import { compare } from 'semver';
 	import type { OrbiterDid } from '$declarations';
 	import Checkbox from '$lib/components/ui/Checkbox.svelte';
@@ -19,8 +18,6 @@
 	import { orbitersConfigsStore } from '$lib/stores/orbiter/orbiter-configs.store';
 	import { versionStore } from '$lib/stores/version.store';
 	import type { JunoModalDetail, JunoModalEditOrbiterConfigDetail } from '$lib/types/modal';
-	import type { OrbiterSatelliteConfigEntry } from '$lib/types/orbiter';
-	import type { SatelliteIdText } from '$lib/types/satellite';
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -29,15 +26,11 @@
 
 	let { detail, onclose }: Props = $props();
 
-	let orbiterId: Principal = $state((detail as JunoModalEditOrbiterConfigDetail).orbiterId);
+	let orbiterId = $derived((detail as JunoModalEditOrbiterConfigDetail).orbiterId);
 
-	let config: Record<SatelliteIdText, OrbiterSatelliteConfigEntry> = $state(
-		(detail as JunoModalEditOrbiterConfigDetail).config
-	);
+	let config = $derived((detail as JunoModalEditOrbiterConfigDetail).config);
 
-	let features: OrbiterDid.OrbiterSatelliteFeatures | undefined = $state(
-		(detail as JunoModalEditOrbiterConfigDetail).features
-	);
+	let features = $derived((detail as JunoModalEditOrbiterConfigDetail).features);
 
 	let step: 'init' | 'in_progress' | 'ready' | 'error' = $state('init');
 

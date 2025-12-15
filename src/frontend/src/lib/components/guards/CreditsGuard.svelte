@@ -1,5 +1,4 @@
 <script lang="ts">
-	import type { AccountIdentifier } from '@icp-sdk/canisters/ledger/icp';
 	import type { Snippet } from 'svelte';
 	import MissionControlICPInfo from '$lib/components/mission-control/MissionControlICPInfo.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
@@ -29,9 +28,7 @@
 		onclose
 	}: Props = $props();
 
-	let accountIdentifier: AccountIdentifier | undefined = $derived(
-		(detail as JunoModalCreateSegmentDetail).accountIdentifier
-	);
+	let accountIdentifier = $derived((detail as JunoModalCreateSegmentDetail).accountIdentifier);
 
 	let { fee } = $derived(detail as JunoModalCreateSegmentDetail);
 

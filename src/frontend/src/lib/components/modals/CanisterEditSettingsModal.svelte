@@ -38,6 +38,7 @@
 		canister: canisterInfo
 	} = $derived(detail as JunoModalEditCanisterSettingsDetail);
 
+	// svelte-ignore state_referenced_locally
 	let freezingThreshold = $state(
 		Number((detail as JunoModalEditCanisterSettingsDetail).settings.freezingThreshold)
 	);
@@ -55,24 +56,29 @@
 			freezingThreshold !== FIVE_YEARS;
 	});
 
+	// svelte-ignore state_referenced_locally
 	let reservedTCyclesLimit = $state(
 		Number(
 			formatTCycles((detail as JunoModalEditCanisterSettingsDetail).settings.reservedCyclesLimit)
 		)
 	);
 
+	// svelte-ignore state_referenced_locally
 	let logVisibility: CanisterLogVisibility = $state(
 		(detail as JunoModalEditCanisterSettingsDetail).settings.logVisibility
 	);
 
+	// svelte-ignore state_referenced_locally
 	let wasmMemoryLimit = $state(
 		Number((detail as JunoModalEditCanisterSettingsDetail).settings.wasmMemoryLimit)
 	);
 
+	// svelte-ignore state_referenced_locally
 	let memoryAllocation = $state(
 		Number((detail as JunoModalEditCanisterSettingsDetail).settings.memoryAllocation)
 	);
 
+	// svelte-ignore state_referenced_locally
 	let computeAllocation = $state(
 		Number((detail as JunoModalEditCanisterSettingsDetail).settings.computeAllocation)
 	);

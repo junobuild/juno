@@ -21,6 +21,7 @@
 
 	let { asset, onsettokensuccess }: Props = $props();
 
+	// svelte-ignore state_referenced_locally
 	let token = $state<string | undefined>(fromNullable(asset.key.token));
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);

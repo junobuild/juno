@@ -24,7 +24,7 @@
 
 	let { walletId }: Props = $props();
 
-	const walletIdText = encodeIcrcAccount(walletId);
+	const walletIdText = $derived(encodeIcrcAccount(walletId));
 
 	let walletTransactions = $derived($transactions[walletIdText] ?? []);
 

@@ -12,9 +12,9 @@
 
 	let { walletId }: Props = $props();
 
-	const walletIdText = encodeIcrcAccount(walletId);
+	const walletIdText = $derived(encodeIcrcAccount(walletId));
 
-	const accountIdentifier = toAccountIdentifier(walletId);
+	const accountIdentifier = $derived(toAccountIdentifier(walletId));
 </script>
 
 <div>

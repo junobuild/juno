@@ -35,6 +35,7 @@
 		onintersect();
 	};
 
+	// svelte-ignore state_referenced_locally
 	const observer: IntersectionObserver = new IntersectionObserver(onIntersection, options);
 
 	// Svelte workaround: beforeUpdate is called twice when bindings are used -> https://github.com/sveltejs/svelte/issues/6016

@@ -18,9 +18,12 @@
 
 	let { satellite }: Props = $props();
 
+	// svelte-ignore state_referenced_locally
 	let satName = $state(satelliteName(satellite));
+	// svelte-ignore state_referenced_locally
 	let satEnv = $state<string | undefined>(satelliteEnvironment(satellite));
 
+	// svelte-ignore state_referenced_locally
 	let satTagsInput = $state(satelliteTags(satellite)?.join(',') ?? '');
 	let satTags = $derived<SatelliteUiTags>(
 		satTagsInput

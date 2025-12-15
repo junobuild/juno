@@ -13,9 +13,18 @@
 		segment: 'satellite' | 'mission_control' | 'orbiter';
 		withApprove: boolean;
 		withMonitoring?: boolean;
+		withFinalize?: boolean;
+		finalizeProgressText?: string;
 	}
 
-	let { progress, segment, withApprove, withMonitoring = false }: Props = $props();
+	let {
+		progress,
+		segment,
+		withApprove,
+		withMonitoring = false,
+		withFinalize = isSkylab(),
+		finalizeProgressText
+	}: Props = $props();
 
 	interface Steps {
 		preparing: ProgressStep;
@@ -57,11 +66,11 @@
 				text: $i18n.monitoring.starting_auto_refill
 			}
 		}),
-		...(isSkylab() && {
+		...(withFinalize === true && {
 			finalizing: {
 				state: 'next',
 				step: 'finalizing',
-				text: $i18n.emulator.setting_emulator_controller
+				text: finalizeProgressText ?? $i18n.emulator.setting_emulator_controller
 			}
 		}),
 		reload: {
@@ -125,6 +134,25 @@
 							? mapProgressState(progress?.state)
 							: reload.state
 				}
+			};
+		});
+	});
+
+	$effect(() => {
+		finalizeProgressText;
+
+		untrack(() => {
+			const { finalizing, reload, ...rest } = steps;
+
+			steps = {
+				...rest,
+				...(nonNullish(finalizing) && {
+					finalizing: {
+						...finalizing,
+						text: finalizeProgressText ?? $i18n.emulator.setting_emulator_controller
+					}
+				}),
+				reload
 			};
 		});
 	});

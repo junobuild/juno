@@ -13,6 +13,7 @@
 	import type { JunoModalDetail } from '$lib/types/modal';
 	import type { WizardCreateProgress } from '$lib/types/progress-wizard';
 	import type { Option } from '$lib/types/utils';
+	import type { SetMissionControlAsControllerOnProgress } from '$lib/services/wizard.mission-control.services';
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -33,6 +34,11 @@
 	const onProgress = (applyProgress: WizardCreateProgress | undefined) =>
 		(progress = applyProgress);
 
+	let finalizeProgressText = $state('Setting Mission Control as an administrator...');
+	const onFinalizeProgress: SetMissionControlAsControllerOnProgress = ({ index, total }) => {
+		finalizeProgressText = `Setting Mission Control as an administrator (${index} / ${total})...`;
+	};
+
 	const onSubmit = async ($event: SubmitEvent) => {
 		$event.preventDefault();
 
@@ -45,7 +51,8 @@
 			identity: $authStore.identity,
 			subnetId,
 			withFee,
-			onProgress
+			onProgress,
+			onFinalizeProgress
 		});
 
 		wizardBusy.stop();
@@ -75,6 +82,8 @@
 			segment="mission_control"
 			withApprove={withDevIcpApprove}
 			withMonitoring={false}
+			withFinalize={true}
+			{finalizeProgressText}
 		/>
 	{:else}
 		<h2>{$i18n.core.getting_started}</h2>

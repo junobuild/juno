@@ -27,6 +27,10 @@ import {
 import { loadSettings, loadUserData } from '$lib/services/mission-control/mission-control.services';
 import { waitMissionControlVersionLoaded } from '$lib/services/version/version.mission-control.services';
 import { approveCreateCanisterWithIcp } from '$lib/services/wallet/wallet.transfer.services';
+import {
+	setMissionControlAsController,
+	type SetMissionControlAsControllerOnProgress
+} from '$lib/services/wizard.mission-control.services';
 import { busy } from '$lib/stores/app/busy.store';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
@@ -504,9 +508,12 @@ export const createOrbiterWizard = async ({
 
 export const createMissionControlWizard = async ({
 	onProgress,
+	onFinalizeProgress,
 	subnetId,
 	...rest
-}: Omit<CreateWizardParams, 'missionControlId' | 'monitoringStrategy'>): Promise<
+}: Omit<CreateWizardParams, 'missionControlId' | 'monitoringStrategy'> & {
+	onFinalizeProgress: SetMissionControlAsControllerOnProgress;
+}): Promise<
 	| {
 			success: 'ok';
 			canisterId: Principal;
@@ -526,8 +533,12 @@ export const createMissionControlWizard = async ({
 		await reloadAccount(params);
 	};
 
-	const finalizingFn = async () => {
-		// TODO
+	const finalizingFn: FinalizingFn = async ({ canisterId, identity }) => {
+		await setMissionControlAsController({
+			onProgress: onFinalizeProgress,
+			identity,
+			missionControlId: canisterId
+		});
 	};
 
 	return await createWizard({

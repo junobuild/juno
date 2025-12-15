@@ -26,7 +26,7 @@ export const execute = async <Step, Result>({
 
 		onProgress({
 			step,
-			state: 'warning'
+			state: 'success'
 		});
 
 		return result;

@@ -526,12 +526,17 @@ export const createMissionControlWizard = async ({
 		await reloadAccount(params);
 	};
 
+	const finalizingFn = async () => {
+		// TODO
+	}
+
 	return await createWizard({
 		...rest,
 		missionControlId: null,
 		onProgress,
 		createFn: createWithConsoleFn,
 		reloadFn,
+		finalizingFn,
 		monitoringFn: undefined,
 		errorLabel: 'mission_control_unexpected_error'
 	});

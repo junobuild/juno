@@ -528,8 +528,7 @@ export const createMissionControlWizard = async ({
 
 	const finalizingFn = async () => {
 		// TODO
-
-	}
+	};
 
 	return await createWizard({
 		...rest,

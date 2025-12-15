@@ -8,7 +8,7 @@ export enum WizardCreateProgressStep {
 	Reload = 4
 }
 
-export type WizardCreateProgressState = UpgradeCodeProgressState;
+export type WizardCreateProgressState = UpgradeCodeProgressState | 'warning';
 
 export interface WizardCreateProgress {
 	step: WizardCreateProgressStep;

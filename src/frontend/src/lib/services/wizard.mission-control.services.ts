@@ -133,7 +133,7 @@ const setOrbiterController = async ({
 	return { result: 'ok' };
 };
 
-type SetControllersFnParams = { args: SatelliteDid.SetControllersArgs };
+interface SetControllersFnParams { args: SatelliteDid.SetControllersArgs }
 type SetControllersFn = (params: SetControllersFnParams) => Promise<void>;
 
 type SetMissionControlControllerResult =

@@ -6,6 +6,7 @@
 	import Confetti from '$lib/components/ui/Confetti.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import { authSignedOut } from '$lib/derived/auth.derived';
+	import type { SetMissionControlAsControllerOnProgress } from '$lib/services/wizard.mission-control.services';
 	import { createMissionControlWizard } from '$lib/services/wizard.services';
 	import { wizardBusy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
@@ -13,7 +14,6 @@
 	import type { JunoModalDetail } from '$lib/types/modal';
 	import type { WizardCreateProgress } from '$lib/types/progress-wizard';
 	import type { Option } from '$lib/types/utils';
-	import type { SetMissionControlAsControllerOnProgress } from '$lib/services/wizard.mission-control.services';
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -78,12 +78,12 @@
 		</div>
 	{:else if step === 'in_progress'}
 		<ProgressCreate
+			{finalizeProgressText}
 			{progress}
 			segment="mission_control"
 			withApprove={withDevIcpApprove}
-			withMonitoring={false}
 			withFinalize={true}
-			{finalizeProgressText}
+			withMonitoring={false}
 		/>
 	{:else}
 		<h2>{$i18n.core.getting_started}</h2>

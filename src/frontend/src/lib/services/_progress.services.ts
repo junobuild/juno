@@ -1,6 +1,6 @@
 import type { UpgradeCodeProgressState } from '@junobuild/admin';
 
-export type ProgressState = UpgradeCodeProgressState;
+export type ProgressState = UpgradeCodeProgressState | 'warning';
 
 export interface Progress<Step> {
 	step: Step;
@@ -26,7 +26,7 @@ export const execute = async <Step, Result>({
 
 		onProgress({
 			step,
-			state: 'success'
+			state: 'warning'
 		});
 
 		return result;

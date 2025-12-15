@@ -64,6 +64,7 @@
 		"completed": "Completed",
 		"in_progress": "In progress",
 		"error": "Error",
+		"warning": "Warning",
 		"hold_tight": "Hold tight!",
 		"create": "Create",
 		"replace": "Replace",

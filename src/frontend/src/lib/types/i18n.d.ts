@@ -67,6 +67,7 @@ interface I18nCore {
 	completed: string;
 	in_progress: string;
 	error: string;
+	warning: string;
 	hold_tight: string;
 	create: string;
 	replace: string;

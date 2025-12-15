@@ -119,7 +119,7 @@
 		"@icp-sdk/auth": "^4.2.0",
 		"@icp-sdk/canisters": "^3.0.0",
 		"@icp-sdk/core": "^4.2.3",
-		"@junobuild/admin": "^3.1.0",
+		"@junobuild/admin": "^3.2.0",
 		"@junobuild/auth": "^2.0.0",
 		"@junobuild/cdn": "^2.1.0",
 		"@junobuild/core": "^3.3.1",

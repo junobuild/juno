@@ -26,7 +26,7 @@
 		reload: ProgressStep;
 	}
 
-	let steps: Steps = $state({
+	let steps = $state<Steps>({
 		preparing: {
 			state: 'in_progress',
 			step: 'preparing',

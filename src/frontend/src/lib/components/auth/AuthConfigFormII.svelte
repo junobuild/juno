@@ -38,10 +38,12 @@
 			.filter(nonNullish)
 	);
 
+	// svelte-ignore state_referenced_locally
 	let currentDerivationOrigin = $state<string | undefined>(
 		fromNullable(fromNullishNullable(config?.internet_identity)?.derivation_origin ?? [])
 	);
 
+	// svelte-ignore state_referenced_locally
 	let derivationOrigin = $state<string | undefined>(
 		fromNullable(fromNullishNullable(config?.internet_identity)?.derivation_origin ?? [])
 	);

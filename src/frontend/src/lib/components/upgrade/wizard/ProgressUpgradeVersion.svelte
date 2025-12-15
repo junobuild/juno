@@ -31,7 +31,8 @@
 		text: $i18n.core.creating_snapshot
 	};
 
-	let steps: Steps = $state({
+	// svelte-ignore state_referenced_locally
+	let steps = $state<Steps>({
 		preparing: {
 			state: 'in_progress',
 			step: 'preparing',

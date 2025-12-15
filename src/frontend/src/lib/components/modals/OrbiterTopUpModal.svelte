@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
-	import type { AccountIdentifier } from '@icp-sdk/canisters/ledger/icp';
 	import CanisterTopUpModal from '$lib/components/modals/CanisterTopUpModal.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import { orbiterStore } from '$lib/derived/orbiter.derived';
@@ -16,9 +15,7 @@
 
 	let { detail, onclose }: Props = $props();
 
-	let accountIdentifier: AccountIdentifier | undefined = $derived(
-		(detail as JunoModalTopUpOrbiterDetail).accountIdentifier
-	);
+	let accountIdentifier = $derived((detail as JunoModalTopUpOrbiterDetail).accountIdentifier);
 </script>
 
 {#if nonNullish($orbiterStore)}

@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
-	import type { AccountIdentifier } from '@icp-sdk/canisters/ledger/icp';
 	import CanisterTopUpModal from '$lib/components/modals/CanisterTopUpModal.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
@@ -16,7 +15,7 @@
 
 	let { detail, onclose }: Props = $props();
 
-	let accountIdentifier: AccountIdentifier | undefined = $derived(
+	let accountIdentifier = $derived(
 		(detail as JunoModalTopUpMissionControlDetail).accountIdentifier
 	);
 </script>

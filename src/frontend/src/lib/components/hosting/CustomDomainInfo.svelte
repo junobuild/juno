@@ -30,6 +30,7 @@
 
 	let { customDomain, mainDomain } = $derived(info);
 
+	// svelte-ignore state_referenced_locally
 	let registrationState = $state<Option<CustomDomainState>>(info.registrationState);
 
 	let visible = $state(true);

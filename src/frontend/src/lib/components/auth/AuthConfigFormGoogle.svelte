@@ -43,6 +43,7 @@
 		allowedTargets = $bindable(undefined)
 	}: Props = $props();
 
+	// svelte-ignore state_referenced_locally
 	let openid = $state(fromNullable(config?.openid ?? []));
 	let google = $state(openid?.providers.find(([key]) => 'Google' in key));
 	let providerData = $state(google?.[1]);

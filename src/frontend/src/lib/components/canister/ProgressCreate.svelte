@@ -26,6 +26,7 @@
 		reload: ProgressStep;
 	}
 
+	// svelte-ignore state_referenced_locally
 	let steps = $state<Steps>({
 		preparing: {
 			state: 'in_progress',

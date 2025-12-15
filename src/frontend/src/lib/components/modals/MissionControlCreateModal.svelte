@@ -34,10 +34,8 @@
 	const onProgress = (applyProgress: WizardCreateProgress | undefined) =>
 		(progress = applyProgress);
 
-	let finalizeProgressText = $state('Setting Mission Control as an administrator...');
-	const onFinalizeProgress: SetMissionControlAsControllerOnProgress = ({ index, total }) => {
-		finalizeProgressText = `Setting Mission Control as an administrator (${index} / ${total})...`;
-	};
+	let finalizeProgressText = $state(`${$i18n.mission_control.connecting}...`);
+	const onFinalizeTextProgress = (text: string) => (finalizeProgressText = text);
 
 	const onSubmit = async ($event: SubmitEvent) => {
 		$event.preventDefault();
@@ -52,7 +50,7 @@
 			subnetId,
 			withFee,
 			onProgress,
-			onFinalizeProgress
+			onFinalizeTextProgress
 		});
 
 		wizardBusy.stop();

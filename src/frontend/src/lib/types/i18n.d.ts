@@ -334,6 +334,7 @@ interface I18nMission_control {
 	create_price: string;
 	initializing: string;
 	ready: string;
+	connecting: string;
 }
 
 interface I18nWallet {
@@ -586,6 +587,7 @@ interface I18nErrors {
 	canister_settings_not_loaded: string;
 	canister_update_error: string;
 	canister_status: string;
+	canister_controllers: string;
 	segment_detach: string;
 	load_fees: string;
 	load_credits: string;

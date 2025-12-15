@@ -325,7 +325,8 @@
 		"description": "Get Mission Control to unlock advanced features such as monitoring.",
 		"create_price": "Starting Mission Control requires {0}. Your current wallet balance is {1}.",
 		"initializing": "Initializing Mission Control...",
-		"ready": "Your Mission Control is ready!"
+		"ready": "Your Mission Control is ready!",
+		"connecting": "Connecting Mission Control to your existing modules"
 	},
 	"wallet": {
 		"title": "Wallet",
@@ -569,6 +570,7 @@
 		"canister_settings_not_loaded": "The settings of the module are not yet loaded.",
 		"canister_update_error": "Unexpected error(s) while updating the settings.",
 		"canister_status": "Unexpected error(s) while loading the status of your modules.",
+		"canister_controllers": "Maximum of 10 controllers allowed per module.",
 		"segment_detach": "Unexpected error(s) while trying to detach the module.",
 		"load_fees": "Failed to load creation fees.",
 		"load_credits": "Cannot load your current credits status.",

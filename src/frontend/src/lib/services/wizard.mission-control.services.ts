@@ -2,59 +2,106 @@ import type { ICDid } from '$declarations';
 import { canisterStatus, canisterUpdateSettings } from '$lib/api/ic.api';
 import { MAX_NUMBER_OF_SATELLITE_CONTROLLERS } from '$lib/constants/canister.constants';
 import { consoleOrbiters, consoleSatellites } from '$lib/derived/console/segments.derived';
+import { i18n } from '$lib/stores/app/i18n.store';
 import type { MissionControlId } from '$lib/types/mission-control';
 import type { Orbiter } from '$lib/types/orbiter';
+import { type WizardCreateProgress, WizardCreateProgressStep } from '$lib/types/progress-wizard';
 import type { Satellite } from '$lib/types/satellite';
+import type { Option } from '$lib/types/utils';
 import { toSetController } from '$lib/utils/controllers.utils';
 import { container } from '$lib/utils/juno.utils';
-import { toNullable } from '@dfinity/utils';
+import { assertNonNullish, toNullable } from '@dfinity/utils';
 import type { Identity } from '@icp-sdk/core/agent';
 import type { Principal } from '@icp-sdk/core/principal';
 import { setOrbiterControllers, setSatelliteControllers } from '@junobuild/admin';
 import type { SatelliteDid } from '@junobuild/ic-client/actor';
 import { get } from 'svelte/store';
 
-export type SetMissionControlAsControllerOnProgress = (
-	params: SetMissionControlAsControllerProgressStats
-) => void;
+type FinalizeMissionControlWizardResult = Promise<
+	| {
+			success: 'ok';
+	  }
+	| { success: 'warning'; canisterIds: Principal[] }
+>;
 
-export interface SetMissionControlAsControllerProgressStats {
-	index: number;
-	total: number;
-	successes: number;
-	errors: number;
-	results: SetMissionControlControllerResult[];
-}
-
-export const setMissionControlAsController = async ({
+export const finalizeMissionControlWizard = async ({
 	onProgress,
+	onTextProgress,
 	missionControlId,
 	identity
 }: {
-	onProgress: SetMissionControlAsControllerOnProgress;
+	onProgress: (progress: WizardCreateProgress | undefined) => void;
+	onTextProgress: (text: string) => void;
+	missionControlId: MissionControlId;
+	identity: Option<Identity>;
+}): Promise<FinalizeMissionControlWizardResult> => {
+	assertNonNullish(identity, get(i18n).core.not_logged_in);
+
+	const step = WizardCreateProgressStep.Finalizing;
+
+	onProgress({
+		step,
+		state: 'in_progress'
+	});
+
+	const result = await setMissionControlAsController({
+		onTextProgress,
+		identity,
+		missionControlId
+	});
+
+	if (result.success === 'warning') {
+		onProgress({
+			step,
+			state: 'warning'
+		});
+
+		return result;
+	}
+
+	// TODO: clean Console
+
+	onProgress({
+		step,
+		state: 'success'
+	});
+
+	return result;
+};
+
+interface SetMissionControlAsControllerProgressStats {
+	index: number;
+	total: number;
+}
+
+const setMissionControlAsController = async ({
+	onTextProgress,
+	missionControlId,
+	identity
+}: {
+	onTextProgress: (text: string) => void;
 	missionControlId: MissionControlId;
 	identity: Identity;
-}) => {
+}): FinalizeMissionControlWizardResult => {
 	const satellites = get(consoleSatellites) ?? [];
 	const orbiters = get(consoleOrbiters) ?? [];
 
 	let progress: SetMissionControlAsControllerProgressStats = {
 		index: 1,
-		successes: 0,
-		errors: 0,
-		total: satellites.length + orbiters.length,
-		results: []
+		total: satellites.length + orbiters.length
 	};
+
+	const onProgress = ({ index, total }: SetMissionControlAsControllerProgressStats) =>
+		onTextProgress(`${get(i18n).mission_control.connecting} (${index} / ${total})...`);
 
 	const updateProgress = ({ result }: { result: SetMissionControlControllerResult }) => {
 		progress = {
 			...progress,
-			index: progress.index + 1,
-			successes: progress.successes + (result.result === 'ok' ? 1 : 0),
-			errors: progress.errors + (result.result !== 'ok' ? 1 : 0),
-			results: [...progress.results, result]
+			index: progress.index + 1
 		};
 	};
+
+	const errorCanisterIds: Principal[] = [];
 
 	for (const satellite of satellites) {
 		onProgress(progress);
@@ -66,6 +113,10 @@ export const setMissionControlAsController = async ({
 		});
 
 		updateProgress({ result });
+
+		if (result.result !== 'ok') {
+			errorCanisterIds.push(satellite.satellite_id);
+		}
 	}
 
 	for (const orbiter of orbiters) {
@@ -78,7 +129,15 @@ export const setMissionControlAsController = async ({
 		});
 
 		updateProgress({ result });
+
+		if (result.result !== 'ok') {
+			errorCanisterIds.push(orbiter.orbiter_id);
+		}
 	}
+
+	return errorCanisterIds.length === 0
+		? { success: 'ok' }
+		: { success: 'warning', canisterIds: errorCanisterIds };
 };
 
 const setSatelliteController = async ({
@@ -97,14 +156,12 @@ const setSatelliteController = async ({
 		});
 	};
 
-	await setController({
+	return await setController({
 		setControllersFn,
 		canisterId: satelliteId,
 		missionControlId,
 		identity
 	});
-
-	return { result: 'ok' };
 };
 
 const setOrbiterController = async ({
@@ -133,7 +190,9 @@ const setOrbiterController = async ({
 	return { result: 'ok' };
 };
 
-interface SetControllersFnParams { args: SatelliteDid.SetControllersArgs }
+interface SetControllersFnParams {
+	args: SatelliteDid.SetControllersArgs;
+}
 type SetControllersFn = (params: SetControllersFnParams) => Promise<void>;
 
 type SetMissionControlControllerResult =
@@ -195,9 +254,8 @@ const setIcMgmtController = async ({
 		canisterId: canisterId.toText()
 	});
 
-	// TODO: label
 	if (currentControllers.length >= MAX_NUMBER_OF_SATELLITE_CONTROLLERS - 1) {
-		return { result: 'reject', reason: 'Max 10 controllers' };
+		return { result: 'reject', reason: get(i18n).errors.canister_controllers };
 	}
 
 	const alreadySet =

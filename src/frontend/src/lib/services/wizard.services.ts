@@ -27,10 +27,7 @@ import {
 import { loadSettings, loadUserData } from '$lib/services/mission-control/mission-control.services';
 import { waitMissionControlVersionLoaded } from '$lib/services/version/version.mission-control.services';
 import { approveCreateCanisterWithIcp } from '$lib/services/wallet/wallet.transfer.services';
-import {
-	setMissionControlAsController,
-	type SetMissionControlAsControllerOnProgress
-} from '$lib/services/wizard.mission-control.services';
+import { finalizeMissionControlWizard } from '$lib/services/wizard.mission-control.services';
 import { busy } from '$lib/stores/app/busy.store';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
@@ -41,6 +38,7 @@ import type { OrbiterId } from '$lib/types/orbiter';
 import { type WizardCreateProgress, WizardCreateProgressStep } from '$lib/types/progress-wizard';
 import type { SatelliteId } from '$lib/types/satellite';
 import type { Option } from '$lib/types/utils';
+import type { CreateWizardResult } from '$lib/types/wizard';
 import { emit } from '$lib/utils/events.utils';
 import { toAccountIdentifier } from '$lib/utils/icp-icrc-account.utils';
 import { waitAndRestartWallet } from '$lib/utils/wallet.utils';
@@ -293,13 +291,7 @@ export const createSatelliteWizard = async ({
 }: CreateWizardParams & {
 	satelliteName: string | undefined;
 	satelliteKind: 'website' | 'application' | undefined;
-}): Promise<
-	| {
-			success: 'ok';
-			canisterId: Principal;
-	  }
-	| { success: 'error'; err?: unknown }
-> => {
+}): Promise<CreateWizardResult> => {
 	if (isNullish(satelliteName)) {
 		toasts.error({
 			text: get(i18n).errors.satellite_name_missing
@@ -424,13 +416,7 @@ export const createOrbiterWizard = async ({
 	subnetId,
 	monitoringStrategy,
 	...rest
-}: CreateWizardParams): Promise<
-	| {
-			success: 'ok';
-			canisterId: Principal;
-	  }
-	| { success: 'error'; err?: unknown }
-> => {
+}: CreateWizardParams): Promise<CreateWizardResult> => {
 	const createWithConsoleFn = async ({ identity }: { identity: Identity }): Promise<OrbiterId> =>
 		await createOrbiterWithConsoleAndConfig({
 			identity,
@@ -508,17 +494,19 @@ export const createOrbiterWizard = async ({
 
 export const createMissionControlWizard = async ({
 	onProgress,
-	onFinalizeProgress,
+	onFinalizeTextProgress,
 	subnetId,
+	identity,
 	...rest
 }: Omit<CreateWizardParams, 'missionControlId' | 'monitoringStrategy'> & {
-	onFinalizeProgress: SetMissionControlAsControllerOnProgress;
+	onFinalizeTextProgress: (text: string) => void;
 }): Promise<
 	| {
 			success: 'ok';
 			canisterId: Principal;
 	  }
 	| { success: 'error'; err?: unknown }
+	| { success: 'warning'; canisterIds: Principal[] }
 > => {
 	const createWithConsoleFn = async ({ identity }: { identity: Identity }): Promise<OrbiterId> =>
 		await createMissionControlWithConsoleAndConfig({
@@ -533,21 +521,32 @@ export const createMissionControlWizard = async ({
 		await reloadAccount(params);
 	};
 
-	const finalizingFn: FinalizingFn = async ({ canisterId, identity }) => {
-		await setMissionControlAsController({
-			onProgress: onFinalizeProgress,
+	const postProcessingFn: PostProcessingFn = async ({
+		identity,
+		canisterId
+	}): Promise<CreateWizardResult> => {
+		const result = await finalizeMissionControlWizard({
+			onProgress,
+			onTextProgress: onFinalizeTextProgress,
 			identity,
 			missionControlId: canisterId
 		});
+
+		if (result.success === 'warning') {
+			return result;
+		}
+
+		return { success: 'ok', canisterId };
 	};
 
 	return await createWizard({
 		...rest,
+		identity,
 		missionControlId: null,
 		onProgress,
 		createFn: createWithConsoleFn,
 		reloadFn,
-		finalizingFn,
+		postProcessingFn,
 		monitoringFn: undefined,
 		errorLabel: 'mission_control_unexpected_error'
 	});
@@ -557,6 +556,11 @@ type MonitoringFn = (params: { identity: Identity; canisterId: Principal }) => P
 
 type FinalizingFn = (params: { identity: Identity; canisterId: Principal }) => Promise<void>;
 
+type PostProcessingFn = (params: {
+	identity: Identity;
+	canisterId: Principal;
+}) => Promise<CreateWizardResult>;
+
 type ReloadFn = (params: { identity: Identity }) => Promise<void>;
 
 const createWizard = async ({
@@ -565,6 +569,7 @@ const createWizard = async ({
 	errorLabel,
 	createFn,
 	finalizingFn,
+	postProcessingFn,
 	reloadFn,
 	monitoringFn,
 	onProgress,
@@ -573,15 +578,10 @@ const createWizard = async ({
 	errorLabel: keyof I18nErrors;
 	createFn: (params: { identity: Identity }) => Promise<Principal>;
 	finalizingFn?: FinalizingFn;
+	postProcessingFn?: PostProcessingFn;
 	reloadFn: ReloadFn;
 	monitoringFn: MonitoringFn | undefined;
-}): Promise<
-	| {
-			success: 'ok';
-			canisterId: Principal;
-	  }
-	| { success: 'error'; err?: unknown }
-> => {
+}): Promise<CreateWizardResult> => {
 	try {
 		assertNonNullish(identity, get(i18n).core.not_logged_in);
 
@@ -657,12 +657,24 @@ const createWizard = async ({
 			}
 		}
 
-		// Reload list of segments and wallet or credits before navigation
-		await execute({
-			fn: reload,
-			onProgress,
-			step: WizardCreateProgressStep.Reload
-		});
+		const reloadBeforeNavigate = async () => {
+			// Reload list of segments and wallet or credits before navigation
+			await execute({
+				fn: reload,
+				onProgress,
+				step: WizardCreateProgressStep.Reload
+			});
+		};
+
+		if (nonNullish(postProcessingFn)) {
+			const result = await postProcessingFn({ identity, canisterId });
+
+			await reloadBeforeNavigate();
+
+			return result;
+		}
+
+		await reloadBeforeNavigate();
 
 		return { success: 'ok', canisterId };
 	} catch (err: unknown) {

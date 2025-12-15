@@ -325,7 +325,8 @@
 		"description": "获取 Mission Control 以解锁监控等高级功能。",
 		"create_price": "创建 Mission Control 需要 {0}。您当前的钱包余额为 {1}。",
 		"initializing": "正在初始化 Mission Control...",
-		"ready": "您的 Mission Control 已就绪！"
+		"ready": "您的 Mission Control 已就绪！",
+		"connecting_mission_control": "正在将 Mission Control 连接到您现有的模块"
 	},
 	"wallet": {
 		"title": "钱包",
@@ -569,6 +570,7 @@
 		"canister_settings_not_loaded": "模块设置未加载。",
 		"canister_update_error": "更新设置时发生意外错误。",
 		"canister_status": "加载模块状态时发生意外错误。",
+		"canister_controllers": "每个模块最多允许 10 个控制器。",
 		"segment_detach": "分离模块时发生意外错误。",
 		"load_fees": "加载创建费用失败。",
 		"load_credits": "无法加载当前积分状态。",

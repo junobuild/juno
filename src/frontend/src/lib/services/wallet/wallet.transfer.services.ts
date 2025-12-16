@@ -2,7 +2,7 @@ import { approveIcpTransfer } from '$lib/api/icp-ledger.api';
 import { CONSOLE_CANISTER_ID, IC_TRANSACTION_FEE_ICP } from '$lib/constants/app.constants';
 import { MEMO_CANISTER_CREATE } from '$lib/constants/wallet.constants';
 import type { OptionIdentity } from '$lib/types/itentity';
-import type { Account } from '@icp-sdk/canisters/ledger/icp';
+import type { IcpLedgerDid } from '@icp-sdk/canisters/ledger/icp';
 import { Principal } from '@icp-sdk/core/principal';
 
 export const approveCreateCanisterWithIcp = async ({
@@ -12,7 +12,7 @@ export const approveCreateCanisterWithIcp = async ({
 	identity: OptionIdentity;
 	amount: bigint;
 }): Promise<void> => {
-	const spender: Account = {
+	const spender: IcpLedgerDid.Account = {
 		owner: Principal.fromText(CONSOLE_CANISTER_ID),
 		subaccount: []
 	};

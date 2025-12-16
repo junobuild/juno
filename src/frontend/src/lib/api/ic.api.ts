@@ -1,5 +1,6 @@
 import type { ICDid } from '$declarations';
 import { getAgent } from '$lib/api/_agent/_agent.api';
+import type { GetActorParams } from '$lib/api/actors/actor.api';
 import { getICActor } from '$lib/api/actors/actor.ic.api';
 import type { CanisterInfo, CanisterLogVisibility, CanisterStatus } from '$lib/types/canister';
 import type { Snapshots } from '$lib/types/progress-snapshot';
@@ -25,12 +26,12 @@ const toLogVisibility = (log_visibility: ICDid.log_visibility): CanisterLogVisib
 
 export const canisterStatus = async ({
 	canisterId,
-	identity
+	...rest
 }: {
 	canisterId: string;
 	identity: Identity;
-}): Promise<CanisterInfo> => {
-	const { canister_status } = await getICActor({ identity });
+} & Pick<GetActorParams, 'certified'>): Promise<CanisterInfo> => {
+	const { canister_status } = await getICActor(rest);
 
 	const {
 		cycles,

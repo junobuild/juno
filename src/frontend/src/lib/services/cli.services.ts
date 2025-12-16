@@ -1,40 +1,86 @@
 import type { MissionControlDid } from '$declarations';
-import { setOrbitersController } from '$lib/api/mission-control.api';
+import { setOrbitersController as setOrbitersControllerWithMctrl } from '$lib/api/mission-control.api';
 import {
 	setMissionControlControllerForVersion,
-	setSatellitesControllerForVersion
+	setSatellitesControllerForVersion as setSatellitesControllerForVersionWithMctrl
 } from '$lib/services/mission-control/mission-control.services';
+import { setOrbitersController } from '$lib/services/orbiter/orbiter.controller.services';
+import { setSatellitesControllerForVersion } from '$lib/services/satellite/satellite.controller.services';
+import type { MissionControlId } from '$lib/types/mission-control';
 import type { Option } from '$lib/types/utils';
 import { bigintStringify } from '$lib/utils/number.utils';
 import { orbiterName } from '$lib/utils/orbiter.utils';
 import { satelliteName } from '$lib/utils/satellite.utils';
-import { notEmptyString } from '@dfinity/utils';
+import { nonNullish, notEmptyString } from '@dfinity/utils';
 import type { PrincipalText } from '@dfinity/zod-schemas';
 import type { Identity } from '@icp-sdk/core/agent';
 import type { Principal } from '@icp-sdk/core/principal';
 
 interface SetCliControllersParams {
-	selectedMissionControl: boolean;
-	missionControlId: Principal;
+	// If set, then controllers are set with the Mission Control
+	// else, they are set directly
+	missionControlId: Option<MissionControlId>;
 	controllerId: PrincipalText;
 	profile: Option<string>;
 	identity: Identity;
+	selectedMissionControl: boolean;
 	selectedSatellites: [Principal, MissionControlDid.Satellite][];
 	selectedOrbiters: [Principal, MissionControlDid.Orbiter][];
 }
 
-export const setCliControllers = async (
-	params: SetCliControllersParams
-): Promise<
+export const setCliControllers = async ({
+	missionControlId,
+	...params
+}: SetCliControllersParams): Promise<
 	{ success: 'ok'; redirectQueryParams: string[] } | { success: 'error'; err: unknown }
 > => {
 	try {
-		await setCliControllersWithMissionControl(params);
+		if (nonNullish(missionControlId)) {
+			await setCliControllersWithMissionControl({ missionControlId, ...params });
+		} else {
+			await setCliControllersWithoutMissionControl(params);
+		}
 
-		return { success: 'ok', redirectQueryParams: buildRedirectParameters(params) };
+		return {
+			success: 'ok',
+			redirectQueryParams: buildRedirectParameters({ missionControlId, ...params })
+		};
 	} catch (err: unknown) {
 		return { success: 'error', err };
 	}
+};
+
+const setCliControllersWithoutMissionControl = async ({
+	controllerId,
+	profile,
+	identity,
+	selectedSatellites,
+	selectedOrbiters
+}: Omit<SetCliControllersParams, 'missionControlId' | 'selectedMissionControl'>) => {
+	await Promise.all([
+		...(selectedSatellites.length > 0
+			? [
+					setSatellitesControllerForVersion({
+						controllerId,
+						satelliteIds: selectedSatellites.map((s) => s[0]),
+						profile,
+						scope: 'admin',
+						identity
+					})
+				]
+			: []),
+		...(selectedOrbiters.length > 0
+			? [
+					setOrbitersController({
+						controllerId,
+						orbiterIds: selectedOrbiters.map((s) => s[0]),
+						profile,
+						scope: 'admin',
+						identity
+					})
+				]
+			: [])
+	]);
 };
 
 const setCliControllersWithMissionControl = async ({
@@ -45,7 +91,7 @@ const setCliControllersWithMissionControl = async ({
 	identity,
 	selectedSatellites,
 	selectedOrbiters
-}: SetCliControllersParams) => {
+}: Omit<SetCliControllersParams, 'missionControlId'> & { missionControlId: MissionControlId }) => {
 	await Promise.all([
 		...(selectedMissionControl
 			? [
@@ -60,7 +106,7 @@ const setCliControllersWithMissionControl = async ({
 			: []),
 		...(selectedSatellites.length > 0
 			? [
-					setSatellitesControllerForVersion({
+					setSatellitesControllerForVersionWithMctrl({
 						missionControlId,
 						controllerId,
 						satelliteIds: selectedSatellites.map((s) => s[0]),
@@ -72,7 +118,7 @@ const setCliControllersWithMissionControl = async ({
 			: []),
 		...(selectedOrbiters.length > 0
 			? [
-					setOrbitersController({
+					setOrbitersControllerWithMctrl({
 						missionControlId,
 						controllerId,
 						orbiterIds: selectedOrbiters.map((s) => s[0]),
@@ -122,6 +168,8 @@ const buildRedirectParameters = ({
 					)
 				)}`
 			: undefined,
-		selectedMissionControl ? `mission_control=${missionControlId.toText()}` : undefined,
+		selectedMissionControl && nonNullish(missionControlId)
+			? `mission_control=${missionControlId.toText()}`
+			: undefined,
 		profile !== '' ? `profile=${profile}` : undefined
 	].filter((param) => notEmptyString(param));

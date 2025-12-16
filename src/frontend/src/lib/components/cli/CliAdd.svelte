@@ -7,7 +7,6 @@
 	import Html from '$lib/components/ui/Html.svelte';
 	import Warning from '$lib/components/ui/Warning.svelte';
 	import { REVOKED_CONTROLLERS } from '$lib/constants/app.constants';
-	import { missionControlId as missionControlIdDerived } from '$lib/derived/console/account.mission-control.derived';
 	import { setCliControllers } from '$lib/services/cli.services';
 	import { busy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
@@ -18,13 +17,13 @@
 	import type { Option } from '$lib/types/utils';
 
 	interface Props {
+		missionControlId: Option<MissionControlId>;
 		principal: string;
 		redirect_uri: string;
 		profile: Option<string>;
-		missionControlId: MissionControlId;
 	}
 
-	let { principal, redirect_uri, missionControlId, profile }: Props = $props();
+	let { missionControlId, principal, redirect_uri, profile }: Props = $props();
 
 	let selectedMissionControl = $state(false);
 	let selectedSatellites = $state<[Principal, Satellite][]>([]);
@@ -36,13 +35,6 @@
 		if (isNullish(redirect_uri) || isNullish(principal)) {
 			toasts.error({
 				text: $i18n.errors.cli_missing_params
-			});
-			return;
-		}
-
-		if (isNullish($missionControlIdDerived)) {
-			toasts.error({
-				text: $i18n.errors.no_mission_control
 			});
 			return;
 		}
@@ -72,7 +64,7 @@
 
 		const result = await setCliControllers({
 			selectedMissionControl,
-			missionControlId: $missionControlIdDerived,
+			missionControlId,
 			controllerId: principal,
 			profile,
 			identity: $authStore.identity,

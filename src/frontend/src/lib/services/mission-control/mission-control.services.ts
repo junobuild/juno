@@ -25,8 +25,7 @@ import {
 import {
 	MISSION_CONTROL_v0_0_14,
 	MISSION_CONTROL_v0_0_3,
-	MISSION_CONTROL_v0_0_5,
-	SATELLITE_v0_0_7
+	MISSION_CONTROL_v0_0_5
 } from '$lib/constants/version.constants';
 import { satellitesStore } from '$lib/derived/mission-control/satellites.derived';
 import {
@@ -35,6 +34,7 @@ import {
 } from '$lib/schemas/satellite.schema';
 import { loadDataStore } from '$lib/services/_loader.services';
 import { loadSatellites } from '$lib/services/mission-control/mission-control.satellites.services';
+import { mapSatellitesForControllersFn } from '$lib/services/satellite/satellite.controller.services';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
 import { authStore } from '$lib/stores/auth.store';
@@ -56,7 +56,7 @@ import { container } from '$lib/utils/juno.utils';
 import { fromNullable, isEmptyString, isNullish, notEmptyString } from '@dfinity/utils';
 import type { Identity } from '@icp-sdk/core/agent';
 import type { Principal } from '@icp-sdk/core/principal';
-import { missionControlVersion, satelliteVersion } from '@junobuild/admin';
+import { missionControlVersion } from '@junobuild/admin';
 import { compare } from 'semver';
 import { get } from 'svelte/store';
 import * as z from 'zod';
@@ -108,52 +108,10 @@ export const setSatellitesControllerForVersion = async ({
 	satelliteIds: Principal[];
 	identity: Identity;
 } & SetControllerParams) => {
-	const mapVersions = async (
-		satelliteId: Principal
-	): Promise<{ satelliteId: Principal; version: string }> => {
-		let version: string;
-		try {
-			version = await satelliteVersion({
-				satellite: { satelliteId: satelliteId.toText(), identity, ...container() }
-			});
-		} catch (_err: unknown) {
-			// For simplicity, this method assumes compatibility with very old Satellite instances, like instance that would have
-			// never been upgraded since the Beta phrase in 2023.
-			// We set the version to trigger the use of the latest API, since Satellite versions >= v0.0.24
-			// no longer implement the /version endpoint.
-			version = SATELLITE_v0_0_7;
-		}
-
-		return {
-			version,
-			satelliteId
-		};
-	};
-
-	const versions = await Promise.all(satelliteIds.map(mapVersions));
-
-	const { setSatelliteIds, addSatellitesIds } = versions.reduce(
-		(
-			{
-				setSatelliteIds,
-				addSatellitesIds
-			}: { setSatelliteIds: Principal[]; addSatellitesIds: Principal[] },
-			{ satelliteId, version }
-		) => {
-			if (compare(version, SATELLITE_v0_0_7) >= 0) {
-				return {
-					setSatelliteIds: [...setSatelliteIds, satelliteId],
-					addSatellitesIds
-				};
-			}
-
-			return {
-				setSatelliteIds,
-				addSatellitesIds: [...addSatellitesIds, satelliteId]
-			};
-		},
-		{ setSatelliteIds: [], addSatellitesIds: [] }
-	);
+	const { setSatelliteIds, addSatellitesIds } = await mapSatellitesForControllersFn({
+		satelliteIds,
+		identity
+	});
 
 	await Promise.all([
 		...(setSatelliteIds.length > 0

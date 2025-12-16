@@ -24,7 +24,7 @@ export const setSatellitesController = async ({
 		const actor = await getMissionControlActor({ missionControlId, identity });
 		await actor.set_satellites_controllers(
 			satelliteIds,
-			[Principal.fromText(controllerId)],
+			[Principal.from(controllerId)],
 			toSetController(rest)
 		);
 	} catch (err: unknown) {
@@ -64,7 +64,7 @@ export const setMissionControlController = async ({
 	try {
 		const actor = await getMissionControlActor({ missionControlId, identity });
 		await actor.set_mission_control_controllers(
-			[Principal.fromText(controllerId)],
+			[Principal.from(controllerId)],
 			toSetController(rest)
 		);
 	} catch (err: unknown) {
@@ -142,7 +142,7 @@ export const setOrbitersController = async ({
 		const actor = await getMissionControlActor({ missionControlId, identity });
 		await actor.set_orbiters_controllers(
 			orbiterIds,
-			[Principal.fromText(controllerId)],
+			[Principal.from(controllerId)],
 			toSetController(rest)
 		);
 	} catch (err: unknown) {

@@ -1,29 +1,34 @@
-import type { ICDid } from '$declarations';
 import { unsetManySegments } from '$lib/api/console.api';
-import { canisterStatus, canisterUpdateSettings } from '$lib/api/ic.api';
 import { setOrbiter, setSatellite } from '$lib/api/mission-control.api';
-import { MAX_NUMBER_OF_SATELLITE_CONTROLLERS } from '$lib/constants/canister.constants';
+import { setControllers as setOrbiterControllers } from '$lib/api/orbiter.api';
+import { setControllers as setSatelliteControllers } from '$lib/api/satellites.api';
 import { consoleOrbiters, consoleSatellites } from '$lib/derived/console/segments.derived';
+import {
+	type SetControllersFn,
+	setControllerWithIcMgmt
+} from '$lib/services/_controllers.services';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
+import type { SetControllerParams } from '$lib/types/controllers';
 import type { MissionControlId } from '$lib/types/mission-control';
 import type { Orbiter } from '$lib/types/orbiter';
 import { type WizardCreateProgress, WizardCreateProgressStep } from '$lib/types/progress-wizard';
 import type { Satellite } from '$lib/types/satellite';
 import type { Option } from '$lib/types/utils';
-import { toSetController } from '$lib/utils/controllers.utils';
-import { container } from '$lib/utils/juno.utils';
 import { orbiterName } from '$lib/utils/orbiter.utils';
 import { satelliteName } from '$lib/utils/satellite.utils';
 import { waitForMilliseconds } from '$lib/utils/timeout.utils';
-import { assertNonNullish, toNullable } from '@dfinity/utils';
+import { assertNonNullish } from '@dfinity/utils';
 import type { Identity } from '@icp-sdk/core/agent';
 import type { Principal } from '@icp-sdk/core/principal';
-import { setOrbiterControllers, setSatelliteControllers } from '@junobuild/admin';
-import type { SatelliteDid } from '@junobuild/ic-client/actor';
 import { get } from 'svelte/store';
 
 type FinalizeMissionControlWizardResult = Promise<{ success: 'ok' } | { success: 'warning' }>;
+
+const CONTROLLER_PARAMS: Omit<SetControllerParams, 'controllerId'> = {
+	profile: undefined,
+	scope: 'admin'
+};
 
 export const finalizeMissionControlWizard = async ({
 	onProgress,
@@ -208,10 +213,10 @@ const attachSatellites = async ({
 			identity
 		});
 
-		if (result.result !== 'ok') {
-			canisterIds.errors.push(satellite.satellite_id);
-		} else {
+		if (['ok', 'skip'].includes(result.result)) {
 			canisterIds.successes.push(satellite.satellite_id);
+		} else {
+			canisterIds.errors.push(satellite.satellite_id);
 		}
 	}
 
@@ -240,10 +245,10 @@ const attachOrbiters = async ({
 			identity
 		});
 
-		if (result.result !== 'ok') {
-			canisterIds.errors.push(orbiter.orbiter_id);
-		} else {
+		if (['ok', 'skip'].includes(result.result)) {
 			canisterIds.successes.push(orbiter.orbiter_id);
+		} else {
+			canisterIds.errors.push(orbiter.orbiter_id);
 		}
 	}
 
@@ -264,7 +269,8 @@ const attachSatellite = async ({
 	const setControllersFn: SetControllersFn = async ({ args }) => {
 		await setSatelliteControllers({
 			args,
-			satellite: { satelliteId: satelliteId.toText(), identity, ...container() }
+			satelliteId,
+			identity
 		});
 	};
 
@@ -277,11 +283,12 @@ const attachSatellite = async ({
 		});
 	};
 
-	return await setControllerAndAttach({
+	return await setControllerWithIcMgmt({
 		setControllersFn,
 		attachFn,
+		...CONTROLLER_PARAMS,
 		canisterId: satelliteId,
-		missionControlId,
+		controllerId: missionControlId,
 		identity
 	});
 };
@@ -300,7 +307,8 @@ const attachOrbiter = async ({
 	const setControllersFn: SetControllersFn = async ({ args }) => {
 		await setOrbiterControllers({
 			args,
-			orbiter: { orbiterId: orbiterId.toText(), identity, ...container() }
+			orbiterId,
+			identity
 		});
 	};
 
@@ -308,112 +316,19 @@ const attachOrbiter = async ({
 		await setOrbiter({ missionControlId, orbiterId, identity, orbiterName: orbiterName(orbiter) });
 	};
 
-	await setControllerAndAttach({
+	await setControllerWithIcMgmt({
 		setControllersFn,
 		attachFn,
+		...CONTROLLER_PARAMS,
 		canisterId: orbiterId,
-		missionControlId,
+		controllerId: missionControlId,
 		identity
 	});
 
 	return { result: 'ok' };
 };
 
-interface SetControllersFnParams {
-	args: SatelliteDid.SetControllersArgs;
-}
-type SetControllersFn = (params: SetControllersFnParams) => Promise<void>;
-
 type AttachSegmentResult =
-	| { result: 'ok' }
+	| { result: 'ok' | 'skip' }
 	| { result: 'reject'; reason: string }
 	| { result: 'error'; err: unknown };
-
-const setControllerAndAttach = async ({
-	setControllersFn,
-	attachFn,
-	canisterId,
-	missionControlId,
-	identity
-}: {
-	setControllersFn: SetControllersFn;
-	attachFn: () => Promise<void>;
-	canisterId: Principal;
-	missionControlId: MissionControlId;
-	identity: Identity;
-}): Promise<AttachSegmentResult> => {
-	try {
-		const result = await setIcMgmtController({
-			missionControlId,
-			identity,
-			canisterId
-		});
-
-		if (result.result === 'reject') {
-			return result;
-		}
-
-		await setControllersFn({
-			args: {
-				controller: toSetController({
-					profile: undefined,
-					scope: 'admin'
-				}),
-				controllers: [missionControlId]
-			}
-		});
-
-		await attachFn();
-
-		return { result: 'ok' };
-	} catch (err: unknown) {
-		return { result: 'error', err };
-	}
-};
-
-const setIcMgmtController = async ({
-	canisterId,
-	missionControlId,
-	identity
-}: {
-	canisterId: Principal;
-	missionControlId: MissionControlId;
-	identity: Identity;
-}): Promise<{ result: 'ok' | 'skip' } | { result: 'reject'; reason: string }> => {
-	const {
-		settings: { controllers: currentControllers }
-	} = await canisterStatus({
-		identity,
-		canisterId: canisterId.toText()
-	});
-
-	if (currentControllers.length >= MAX_NUMBER_OF_SATELLITE_CONTROLLERS - 1) {
-		return { result: 'reject', reason: get(i18n).errors.canister_controllers };
-	}
-
-	const alreadySet =
-		currentControllers.find((id) => id.toText() === canisterId.toText()) !== undefined;
-	if (alreadySet) {
-		return { result: 'skip' };
-	}
-
-	const updateSettings: ICDid.canister_settings = {
-		environment_variables: toNullable(),
-		compute_allocation: toNullable(),
-		freezing_threshold: toNullable(),
-		log_visibility: toNullable(),
-		memory_allocation: toNullable(),
-		reserved_cycles_limit: toNullable(),
-		wasm_memory_limit: toNullable(),
-		wasm_memory_threshold: toNullable(),
-		controllers: toNullable([...currentControllers, missionControlId])
-	};
-
-	await canisterUpdateSettings({
-		canisterId,
-		identity,
-		settings: updateSettings
-	});
-
-	return { result: 'ok' };
-};

@@ -2,7 +2,7 @@
 	import { nonNullish, notEmptyString } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
 	import CliAdd from '$lib/components/cli/CliAdd.svelte';
-	import MissionControlGuard from '$lib/components/guards/MissionControlGuard.svelte';
+	import MissionControlLoadingGuard from '$lib/components/guards/MissionControlLoadingGuard.svelte';
 	import MetadataLoader from '$lib/components/loaders/MetadataLoader.svelte';
 	import SignInActions from '$lib/components/sign-in/SignInActions.svelte';
 	import ContainerCentered from '$lib/components/ui/ContainerCentered.svelte';
@@ -33,15 +33,13 @@
 <div onjunoIntersecting={onLayoutTitleIntersection} use:onIntersection>
 	{#if nonNullish(redirect_uri) && nonNullish(principal) && notEmptyString(redirect_uri) && notEmptyString(principal)}
 		{#if $authSignedIn}
-			<MissionControlGuard>
+			<MissionControlLoadingGuard>
 				<MetadataLoader satellites={$sortedSatellites}>
-					{#if nonNullish($missionControlId)}
-						<div in:fade>
-							<CliAdd missionControlId={$missionControlId} {principal} {profile} {redirect_uri} />
-						</div>
-					{/if}
+					<div in:fade>
+						<CliAdd missionControlId={$missionControlId} {principal} {profile} {redirect_uri} />
+					</div>
 				</MetadataLoader>
-			</MissionControlGuard>
+			</MissionControlLoadingGuard>
 		{:else}
 			<ContainerCentered>
 				<p>

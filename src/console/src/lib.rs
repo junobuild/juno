@@ -26,6 +26,7 @@ use crate::types::state::InvitationCode;
 use crate::types::state::Payments;
 use crate::types::state::Segment;
 use crate::types::state::SegmentKey;
+use crate::types::state::SegmentType;
 use candid::Principal;
 use ic_cdk_macros::export_candid;
 use ic_ledger_types::Tokens;
@@ -53,6 +54,7 @@ use junobuild_shared::types::interface::{
 };
 use junobuild_shared::types::list::{ListParams, ListResults};
 use junobuild_shared::types::state::Controllers;
+use junobuild_shared::types::state::SegmentId;
 use junobuild_shared::types::state::{SegmentKind, UserId};
 use junobuild_storage::http::types::StreamingCallbackHttpResponse;
 use junobuild_storage::http::types::StreamingCallbackToken;

@@ -505,6 +505,7 @@ export const idlFactory = ({ IDL }) => {
 		set_fee: IDL.Func([SegmentKind, Tokens], [], []),
 		set_storage_config: IDL.Func([SetStorageConfig], [StorageConfig], []),
 		submit_proposal: IDL.Func([IDL.Nat], [IDL.Nat, Proposal], []),
+		unset_many_segments: IDL.Func([IDL.Vec(IDL.Tuple(IDL.Principal, SegmentType))], [], []),
 		update_rate_config: IDL.Func([SegmentKind, RateConfig], [], []),
 		upload_proposal_asset_chunk: IDL.Func([UploadChunk], [UploadChunkResult], [])
 	});

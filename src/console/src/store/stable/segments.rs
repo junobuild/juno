@@ -16,12 +16,28 @@ pub fn list_segments(user: &UserId, filter: &ListSegmentsArgs) -> Vec<(SegmentKe
     with_segments(|segments| list_segments_impl(user, filter, segments))
 }
 
+pub fn detach_segment(key: &SegmentKey) -> Result<(), String> {
+    with_segments_mut(|segments| detach_segment_impl(key, segments))
+}
+
 fn list_segments_impl(
     user: &UserId,
     filter: &ListSegmentsArgs,
     segments: &SegmentsStable,
 ) -> Vec<(SegmentKey, Segment)> {
     collect_stable_vec(segments.range(filter_segments_range(user, filter)))
+}
+
+fn detach_segment_impl(key: &SegmentKey, segments: &mut SegmentsStable) -> Result<(), String> {
+    let segment = segments.contains_key(&key);
+
+    if !segment {
+        return Err("Segment not found".to_string());
+    }
+
+    segments.remove(&key);
+
+    Ok(())
 }
 
 // TODO: extract constant to shared

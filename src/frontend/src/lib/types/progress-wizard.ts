@@ -4,8 +4,9 @@ export enum WizardCreateProgressStep {
 	Approve = 0,
 	Create = 1,
 	Monitoring = 2,
-	Finalizing = 3,
-	Reload = 4
+	Attaching = 3,
+	Finalizing = 4,
+	Reload = 5
 }
 
 export type WizardCreateProgressState = UpgradeCodeProgressState | 'warning';

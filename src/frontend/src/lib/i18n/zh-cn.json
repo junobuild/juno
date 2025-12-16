@@ -326,7 +326,10 @@
 		"create_price": "创建 Mission Control 需要 {0}。您当前的钱包余额为 {1}。",
 		"initializing": "正在初始化 Mission Control...",
 		"ready": "您的 Mission Control 已就绪！",
-		"connecting_mission_control": "正在将 Mission Control 连接到您现有的模块"
+		"attaching": "正在将现有模块转移到 Mission Control...",
+		"finalizing": "正在更新控制台记录...",
+		"warn_attaching": "以下模块无法转移到 Mission Control",
+		"warn_finalizing": "无法更新控制台记录"
 	},
 	"wallet": {
 		"title": "钱包",

@@ -494,19 +494,19 @@ export const createOrbiterWizard = async ({
 
 export const createMissionControlWizard = async ({
 	onProgress,
-	onFinalizeTextProgress,
+	onAttachTextProgress,
 	subnetId,
 	identity,
 	...rest
 }: Omit<CreateWizardParams, 'missionControlId' | 'monitoringStrategy'> & {
-	onFinalizeTextProgress: (text: string) => void;
+	onAttachTextProgress: (text: string) => void;
 }): Promise<
 	| {
 			success: 'ok';
 			canisterId: Principal;
 	  }
 	| { success: 'error'; err?: unknown }
-	| { success: 'warning'; canisterIds: Principal[] }
+	| { success: 'warning' }
 > => {
 	const createWithConsoleFn = async ({ identity }: { identity: Identity }): Promise<OrbiterId> =>
 		await createMissionControlWithConsoleAndConfig({
@@ -527,7 +527,7 @@ export const createMissionControlWizard = async ({
 	}): Promise<CreateWizardResult> => {
 		const result = await finalizeMissionControlWizard({
 			onProgress,
-			onTextProgress: onFinalizeTextProgress,
+			onTextProgress: onAttachTextProgress,
 			identity,
 			missionControlId: canisterId
 		});

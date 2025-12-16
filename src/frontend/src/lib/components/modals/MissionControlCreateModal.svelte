@@ -6,7 +6,6 @@
 	import Confetti from '$lib/components/ui/Confetti.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import { authSignedOut } from '$lib/derived/auth.derived';
-	import type { SetMissionControlAsControllerOnProgress } from '$lib/services/wizard.mission-control.services';
 	import { createMissionControlWizard } from '$lib/services/wizard.services';
 	import { wizardBusy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
@@ -34,8 +33,8 @@
 	const onProgress = (applyProgress: WizardCreateProgress | undefined) =>
 		(progress = applyProgress);
 
-	let finalizeProgressText = $state(`${$i18n.mission_control.connecting}...`);
-	const onFinalizeTextProgress = (text: string) => (finalizeProgressText = text);
+	let attachProgressText = $state(`${$i18n.mission_control.attaching}...`);
+	const onAttachTextProgress = (text: string) => (attachProgressText = text);
 
 	const onSubmit = async ($event: SubmitEvent) => {
 		$event.preventDefault();
@@ -50,12 +49,12 @@
 			subnetId,
 			withFee,
 			onProgress,
-			onFinalizeTextProgress
+			onAttachTextProgress
 		});
 
 		wizardBusy.stop();
 
-		if (success !== 'ok') {
+		if (success === 'error') {
 			step = 'error';
 			return;
 		}
@@ -76,11 +75,12 @@
 		</div>
 	{:else if step === 'in_progress'}
 		<ProgressCreate
-			{finalizeProgressText}
+			{attachProgressText}
 			{progress}
 			segment="mission_control"
 			withApprove={withDevIcpApprove}
 			withFinalize={true}
+			withAttach={true}
 			withMonitoring={false}
 		/>
 	{:else}

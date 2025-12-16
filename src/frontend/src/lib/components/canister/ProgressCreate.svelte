@@ -13,8 +13,9 @@
 		segment: 'satellite' | 'mission_control' | 'orbiter';
 		withApprove: boolean;
 		withMonitoring?: boolean;
+		withAttach?: boolean;
+		attachProgressText?: string;
 		withFinalize?: boolean;
-		finalizeProgressText?: string;
 	}
 
 	let {
@@ -22,8 +23,9 @@
 		segment,
 		withApprove,
 		withMonitoring = false,
-		withFinalize = isSkylab(),
-		finalizeProgressText
+		withAttach = false,
+		attachProgressText,
+		withFinalize = isSkylab()
 	}: Props = $props();
 
 	interface Steps {
@@ -31,6 +33,7 @@
 		approve?: ProgressStep;
 		create: ProgressStep;
 		monitoring?: ProgressStep;
+		attaching?: ProgressStep;
 		finalizing?: ProgressStep;
 		reload: ProgressStep;
 	}
@@ -66,11 +69,21 @@
 				text: $i18n.monitoring.starting_auto_refill
 			}
 		}),
+		...(withAttach === true && {
+			attaching: {
+				state: 'next',
+				step: 'attaching',
+				text: attachProgressText ?? $i18n.mission_control.attaching
+			}
+		}),
 		...(withFinalize === true && {
 			finalizing: {
 				state: 'next',
 				step: 'finalizing',
-				text: finalizeProgressText ?? $i18n.emulator.setting_emulator_controller
+				text:
+					segment === 'mission_control'
+						? $i18n.mission_control.finalizing
+						: $i18n.emulator.setting_emulator_controller
 			}
 		}),
 		reload: {
@@ -86,7 +99,7 @@
 		progress;
 
 		untrack(() => {
-			const { preparing, approve, create, monitoring, finalizing, reload } = steps;
+			const { preparing, approve, create, monitoring, attaching, finalizing, reload } = steps;
 
 			steps = {
 				preparing: {
@@ -118,6 +131,15 @@
 								: monitoring.state
 					}
 				}),
+				...(nonNullish(attaching) && {
+					attaching: {
+						...attaching,
+						state:
+							progress?.step === WizardCreateProgressStep.Attaching
+								? mapProgressState(progress?.state)
+								: attaching.state
+					}
+				}),
 				...(nonNullish(finalizing) && {
 					finalizing: {
 						...finalizing,
@@ -139,18 +161,21 @@
 	});
 
 	$effect(() => {
-		finalizeProgressText;
+		attachProgressText;
 
 		untrack(() => {
-			const { finalizing, reload, ...rest } = steps;
+			const { attaching, finalizing, reload, ...rest } = steps;
 
 			steps = {
 				...rest,
-				...(nonNullish(finalizing) && {
-					finalizing: {
-						...finalizing,
-						text: finalizeProgressText ?? $i18n.emulator.setting_emulator_controller
+				...(nonNullish(attaching) && {
+					attaching: {
+						...attaching,
+						text: attachProgressText ?? $i18n.mission_control.attaching
 					}
+				}),
+				...(nonNullish(finalizing) && {
+					finalizing
 				}),
 				reload
 			};

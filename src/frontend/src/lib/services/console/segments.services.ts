@@ -20,6 +20,8 @@ export const loadSegments = async ({
 		return { result: 'skip' };
 	}
 
+	//TODO reset if misionControl not null
+
 	const load = async (
 		identity: Identity
 	): Promise<[ConsoleDid.SegmentKey, ConsoleDid.Segment][]> => {

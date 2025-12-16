@@ -6,5 +6,5 @@ export type CreateWizardResult = Promise<
 			canisterId: Principal;
 	  }
 	| { success: 'error'; err?: unknown }
-	| { success: 'warning'; canisterIds: Principal[] }
+	| { success: 'warning' }
 >;

@@ -9,7 +9,15 @@ const initToastsStore = () => {
 	return {
 		subscribe,
 
-		error({ text, detail }: { text: string; detail?: unknown }) {
+		error({
+			text,
+			detail,
+			level = 'error'
+		}: {
+			text: string;
+			detail?: unknown;
+			level?: 'warn' | 'error';
+		}) {
 			console.error(text, detail);
 
 			if (nonNullish(detail) && detail instanceof Error && !(detail.cause instanceof Error)) {
@@ -18,7 +26,7 @@ const initToastsStore = () => {
 
 			update((messages: ToastMsg[]) => [
 				...messages,
-				{ text, level: 'error', detail: errorDetailToString(detail) }
+				{ text, level, detail: errorDetailToString(detail) }
 			]);
 		},
 

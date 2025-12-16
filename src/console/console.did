@@ -416,6 +416,7 @@ service : () -> {
   set_fee : (SegmentKind, Tokens) -> ();
   set_storage_config : (SetStorageConfig) -> (StorageConfig);
   submit_proposal : (nat) -> (nat, Proposal);
+  unset_many_segments : (vec record { principal; SegmentType }) -> ();
   update_rate_config : (SegmentKind, RateConfig) -> ();
   upload_proposal_asset_chunk : (UploadChunk) -> (UploadChunkResult);
 }

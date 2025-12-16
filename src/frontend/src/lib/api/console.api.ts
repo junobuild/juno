@@ -1,9 +1,10 @@
 import type { ConsoleDid } from '$declarations';
-import type { SegmentKind } from '$declarations/console/console.did';
+import type { SegmentKind, SegmentType } from '$declarations/console/console.did';
 import type { GetActorParams } from '$lib/api/actors/actor.api';
 import { getConsoleActor } from '$lib/api/actors/actor.juno.api';
 import type { OptionIdentity } from '$lib/types/itentity';
 import { fromNullable, isNullish } from '@dfinity/utils';
+import type { Principal } from '@icp-sdk/core/principal';
 
 export const getOrInitAccount = async (
 	actorParams: GetActorParams
@@ -56,4 +57,16 @@ const getFee = async ({
 
 	// If user has enough credits, it returns no fee
 	return isNullish(fee) ? 0n : fee.e8s;
+};
+
+export const unsetManySegments = async ({
+	identity,
+	segments
+}: {
+	identity: OptionIdentity;
+	segments: [Principal, SegmentType][];
+}): Promise<void> => {
+	const { unset_many_segments } = await getConsoleActor({ identity });
+
+	await unset_many_segments(segments);
 };

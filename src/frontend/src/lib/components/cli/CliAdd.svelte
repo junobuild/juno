@@ -1,28 +1,20 @@
 <script lang="ts">
-	import { isNullish, nonNullish, notEmptyString } from '@dfinity/utils';
+	import { isNullish, notEmptyString } from '@dfinity/utils';
 	import type { Principal } from '@icp-sdk/core/principal';
 	import { fade } from 'svelte/transition';
 	import type { MissionControlDid } from '$declarations';
-	import { setOrbitersController } from '$lib/api/mission-control.api';
 	import SegmentsTable from '$lib/components/segments/SegmentsTable.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import Warning from '$lib/components/ui/Warning.svelte';
 	import { REVOKED_CONTROLLERS } from '$lib/constants/app.constants';
 	import { missionControlId as missionControlIdDerived } from '$lib/derived/console/account.mission-control.derived';
-	import {
-		setMissionControlControllerForVersion,
-		setSatellitesControllerForVersion
-	} from '$lib/services/mission-control/mission-control.services';
+	import { setCliControllers } from '$lib/services/cli.services';
 	import { busy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
 	import { authStore } from '$lib/stores/auth.store';
 	import type { MissionControlId } from '$lib/types/mission-control';
 	import type { Option } from '$lib/types/utils';
-	import { bigintStringify } from '$lib/utils/number.utils';
-	import { orbiterName } from '$lib/utils/orbiter.utils';
-	import { satelliteName } from '$lib/utils/satellite.utils';
-	import { setCliControllers } from '$lib/services/cli.services';
 
 	interface Props {
 		principal: string;

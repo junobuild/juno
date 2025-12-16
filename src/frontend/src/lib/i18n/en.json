@@ -327,9 +327,7 @@
 		"initializing": "Initializing Mission Control...",
 		"ready": "Your Mission Control is ready!",
 		"attaching": "Transferring existing modules to Mission Control...",
-		"finalizing": "Updating console records...",
-		"warn_attaching": "Failed to transfer the following modules to Mission Control:",
-		"warn_finalizing": "Failed to update console records"
+		"warn_attaching": "Failed to transfer the following modules to Mission Control:"
 	},
 	"wallet": {
 		"title": "Wallet",

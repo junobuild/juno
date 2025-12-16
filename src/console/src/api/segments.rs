@@ -11,12 +11,3 @@ fn list_segments(filter: ListSegmentsArgs) -> Vec<(SegmentKey, Segment)> {
     let caller = caller();
     list_segments_store(&caller, &filter)
 }
-
-#[update]
-fn unset_many_segments(segment_ids: Vec<(SegmentId, SegmentType)>) {
-    let caller = caller();
-
-    for (segment_id, segment_type) in segment_ids {
-        detach_segment(&SegmentKey::from(&caller, &segment_id, segment_type)).unwrap_or_trap();
-    }
-}

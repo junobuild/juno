@@ -327,9 +327,7 @@
 		"initializing": "正在初始化 Mission Control...",
 		"ready": "您的 Mission Control 已就绪！",
 		"attaching": "正在将现有模块转移到 Mission Control...",
-		"finalizing": "正在更新控制台记录...",
-		"warn_attaching": "以下模块无法转移到 Mission Control",
-		"warn_finalizing": "无法更新控制台记录"
+		"warn_attaching": "以下模块无法转移到 Mission Control"
 	},
 	"wallet": {
 		"title": "钱包",

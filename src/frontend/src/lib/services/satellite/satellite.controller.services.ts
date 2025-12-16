@@ -54,7 +54,10 @@ export const setSatellitesControllerForVersion = async ({
 	await Promise.all(setSatelliteIds.map(setSatelliteControllerWithIcMgmt));
 };
 
-interface SatellitesForControllersFn { setSatelliteIds: Principal[]; addSatellitesIds: Principal[] }
+interface SatellitesForControllersFn {
+	setSatelliteIds: Principal[];
+	addSatellitesIds: Principal[];
+}
 
 export const mapSatellitesForControllersFn = async ({
 	satelliteIds,

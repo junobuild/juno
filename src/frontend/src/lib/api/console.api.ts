@@ -58,15 +58,3 @@ const getFee = async ({
 	// If user has enough credits, it returns no fee
 	return isNullish(fee) ? 0n : fee.e8s;
 };
-
-export const unsetManySegments = async ({
-	identity,
-	segments
-}: {
-	identity: OptionIdentity;
-	segments: [Principal, SegmentType][];
-}): Promise<void> => {
-	const { unset_many_segments } = await getConsoleActor({ identity });
-
-	await unset_many_segments(segments);
-};

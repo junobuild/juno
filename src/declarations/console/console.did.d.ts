@@ -475,7 +475,6 @@ export interface _SERVICE {
 	set_fee: ActorMethod<[SegmentKind, Tokens], undefined>;
 	set_storage_config: ActorMethod<[SetStorageConfig], StorageConfig>;
 	submit_proposal: ActorMethod<[bigint], [bigint, Proposal]>;
-	unset_many_segments: ActorMethod<[Array<[Principal, SegmentType]>], undefined>;
 	update_rate_config: ActorMethod<[SegmentKind, RateConfig], undefined>;
 	upload_proposal_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;
 }

@@ -1,4 +1,3 @@
-import { unsetManySegments } from '$lib/api/console.api';
 import { setOrbiter, setSatellite } from '$lib/api/mission-control.api';
 import { setControllers as setOrbiterControllers } from '$lib/api/orbiter.api';
 import { setControllers as setSatelliteControllers } from '$lib/api/satellites.api';
@@ -56,7 +55,9 @@ export const finalizeMissionControlWizard = async ({
 
 	const errors = [...satellites.errors, ...orbiters.errors];
 
-	if (errors.length > 0) {
+	const withErrors = errors.length > 0;
+
+	if (withErrors) {
 		toasts.error({
 			text: `${get(i18n).mission_control.warn_attaching} ${errors.map((id) => id.toText()).join(',')}`,
 			level: 'warn'
@@ -65,37 +66,9 @@ export const finalizeMissionControlWizard = async ({
 
 	onProgress({
 		step: WizardCreateProgressStep.Attaching,
-		state: errors.length > 0 ? 'warning' : 'success'
+		state: withErrors ? 'warning' : 'success'
 	});
 
-	// Small delay to rerender the UI
-	await waitForMilliseconds(500);
-
-	onProgress({
-		step: WizardCreateProgressStep.Finalizing,
-		state: 'in_progress'
-	});
-
-	const unsetResults = await unsetSegments({
-		identity,
-		satelliteIds: satellites.successes,
-		orbiterIds: orbiters.successes
-	});
-
-	if (unsetResults.success === 'error') {
-		toasts.error({
-			text: get(i18n).mission_control.warn_finalizing,
-			level: 'warn',
-			detail: unsetResults.err
-		});
-	}
-
-	onProgress({
-		step: WizardCreateProgressStep.Finalizing,
-		state: unsetResults.success === 'error' ? 'warning' : 'success'
-	});
-
-	const withErrors = errors.length > 0 || unsetResults.success === 'error';
 	return { success: withErrors ? 'warning' : 'ok' };
 };
 
@@ -149,41 +122,6 @@ const setMissionControlAsControllerAndAttach = async ({
 		satellites: attachedSatellites,
 		orbiters: attachedOrbiters
 	};
-};
-
-const unsetSegments = async ({
-	satelliteIds,
-	orbiterIds,
-	identity
-}: {
-	satelliteIds: Principal[];
-	orbiterIds: Principal[];
-	identity: Identity;
-}): Promise<{ success: 'ok' } | { success: 'error'; err: unknown }> => {
-	try {
-		const unsetSatellites = async () =>
-			await unsetManySegments({
-				segments: satelliteIds.map((satelliteId) => [satelliteId, { Satellite: null }]),
-				identity
-			});
-
-		const unsetOrbiters = async () =>
-			await unsetManySegments({
-				segments: orbiterIds.map((orbiterId) => [orbiterId, { Orbiter: null }]),
-				identity
-			});
-
-		const promises = [
-			...(satelliteIds.length > 0 ? [unsetSatellites()] : []),
-			...(orbiterIds.length > 0 ? [unsetOrbiters()] : [])
-		];
-
-		await Promise.all(promises);
-
-		return { success: 'ok' };
-	} catch (err: unknown) {
-		return { success: 'error', err };
-	}
 };
 
 interface AttachCanistersResult {

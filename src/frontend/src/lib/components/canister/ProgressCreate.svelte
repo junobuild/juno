@@ -15,7 +15,6 @@
 		withMonitoring?: boolean;
 		withAttach?: boolean;
 		attachProgressText?: string;
-		withFinalize?: boolean;
 	}
 
 	let {
@@ -24,8 +23,7 @@
 		withApprove,
 		withMonitoring = false,
 		withAttach = false,
-		attachProgressText,
-		withFinalize = isSkylab()
+		attachProgressText
 	}: Props = $props();
 
 	interface Steps {
@@ -76,14 +74,11 @@
 				text: attachProgressText ?? $i18n.mission_control.attaching
 			}
 		}),
-		...(withFinalize === true && {
+		...(isSkylab() && segment === "satellite" && {
 			finalizing: {
 				state: 'next',
 				step: 'finalizing',
-				text:
-					segment === 'mission_control'
-						? $i18n.mission_control.finalizing
-						: $i18n.emulator.setting_emulator_controller
+				text: $i18n.emulator.setting_emulator_controller
 			}
 		}),
 		reload: {

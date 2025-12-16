@@ -335,9 +335,7 @@ interface I18nMission_control {
 	initializing: string;
 	ready: string;
 	attaching: string;
-	finalizing: string;
 	warn_attaching: string;
-	warn_finalizing: string;
 }
 
 interface I18nWallet {

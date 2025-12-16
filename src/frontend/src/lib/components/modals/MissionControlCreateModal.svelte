@@ -80,7 +80,6 @@
 			segment="mission_control"
 			withApprove={withDevIcpApprove}
 			withAttach={true}
-			withFinalize={true}
 			withMonitoring={false}
 		/>
 	{:else}

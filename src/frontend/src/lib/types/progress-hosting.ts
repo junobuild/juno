@@ -1,4 +1,4 @@
-import type { UpgradeCodeProgressState } from '@junobuild/admin';
+import type { ProgressState } from '$lib/types/progress-state';
 
 export enum HostingProgressStep {
 	Setup = 0,
@@ -7,7 +7,7 @@ export enum HostingProgressStep {
 	AuthConfig = 3
 }
 
-export type HostingProgressState = UpgradeCodeProgressState;
+export type HostingProgressState = ProgressState;
 
 export interface HostingProgress {
 	step: HostingProgressStep;

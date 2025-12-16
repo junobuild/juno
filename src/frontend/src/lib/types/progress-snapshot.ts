@@ -1,5 +1,5 @@
 import type { ICDid } from '$declarations';
-import type { UpgradeCodeProgressState } from '@junobuild/admin';
+import type { ProgressState } from '$lib/types/progress-state';
 
 export type Snapshots = ICDid.snapshot[];
 
@@ -9,7 +9,7 @@ export enum SnapshotProgressStep {
 	RestartingCanister = 3
 }
 
-export type SnapshotProgressState = UpgradeCodeProgressState;
+export type SnapshotProgressState = ProgressState;
 
 export interface SnapshotProgress {
 	step: SnapshotProgressStep;

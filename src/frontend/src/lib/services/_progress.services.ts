@@ -1,6 +1,4 @@
-import type { UpgradeCodeProgressState } from '@junobuild/admin';
-
-export type ProgressState = UpgradeCodeProgressState | 'warning';
+import type { ProgressState } from '$lib/types/progress-state';
 
 export interface Progress<Step> {
 	step: Step;

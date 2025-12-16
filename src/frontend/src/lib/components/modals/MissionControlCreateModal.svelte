@@ -79,8 +79,8 @@
 			{progress}
 			segment="mission_control"
 			withApprove={withDevIcpApprove}
-			withFinalize={true}
 			withAttach={true}
+			withFinalize={true}
 			withMonitoring={false}
 		/>
 	{:else}

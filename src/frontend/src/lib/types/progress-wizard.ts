@@ -1,4 +1,4 @@
-import type { UpgradeCodeProgressState } from '@junobuild/admin';
+import type { ProgressState } from '$lib/types/progress-state';
 
 export enum WizardCreateProgressStep {
 	Approve = 0,
@@ -9,7 +9,7 @@ export enum WizardCreateProgressStep {
 	Reload = 5
 }
 
-export type WizardCreateProgressState = UpgradeCodeProgressState | 'warning';
+export type WizardCreateProgressState = ProgressState;
 
 export interface WizardCreateProgress {
 	step: WizardCreateProgressStep;

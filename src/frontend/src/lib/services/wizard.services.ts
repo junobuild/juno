@@ -389,7 +389,7 @@ export const createSatelliteWizard = async ({
 		});
 	};
 
-	const reloadFn = async ({ identity }: { identity: Identity }) => {
+	const reloadFn = async () => {
 		if (isNullish(missionControlId)) {
 			await loadSegments({ missionControlId, reload: true });
 			return;
@@ -478,6 +478,11 @@ export const createOrbiterWizard = async ({
 	const monitoringFn = buildMonitoringFn();
 
 	const reloadFn = async () => {
+		if (isNullish(missionControlId)) {
+			await loadSegments({ missionControlId, reload: true });
+			return;
+		}
+
 		await loadOrbiters({ missionControlId, reload: true });
 	};
 
@@ -517,8 +522,11 @@ export const createMissionControlWizard = async ({
 			}
 		});
 
-	const reloadFn: ReloadFn = async (params) => {
-		await reloadAccount(params);
+	const reloadFn: ReloadFn = async ({ identity, canisterId }) => {
+		await Promise.all([
+			reloadAccount({ identity }),
+			loadSegments({ missionControlId: canisterId })
+		]);
 	};
 
 	const postProcessingFn: PostProcessingFn = async ({
@@ -561,7 +569,7 @@ type PostProcessingFn = (params: {
 	canisterId: Principal;
 }) => Promise<CreateWizardResult>;
 
-type ReloadFn = (params: { identity: Identity }) => Promise<void>;
+type ReloadFn = (params: { identity: Identity; canisterId: Principal }) => Promise<void>;
 
 const createWizard = async ({
 	missionControlId,
@@ -624,7 +632,7 @@ const createWizard = async ({
 							})
 						]
 					: [waitAndRestartWallet()]),
-				reloadFn({ identity })
+				reloadFn({ identity, canisterId })
 			]);
 		};
 

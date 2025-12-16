@@ -13,6 +13,8 @@ import type { Satellite } from '$lib/types/satellite';
 import type { Option } from '$lib/types/utils';
 import { toSetController } from '$lib/utils/controllers.utils';
 import { container } from '$lib/utils/juno.utils';
+import { orbiterName } from '$lib/utils/orbiter.utils';
+import { satelliteName } from '$lib/utils/satellite.utils';
 import { waitForMilliseconds } from '$lib/utils/timeout.utils';
 import { assertNonNullish, toNullable } from '@dfinity/utils';
 import type { Identity } from '@icp-sdk/core/agent';
@@ -184,9 +186,6 @@ interface AttachCanistersResult {
 	successes: Principal[];
 }
 
-// TODO: missing names
-// TODO: reload segments
-
 const attachSatellites = async ({
 	satellites,
 	incrementProgress,
@@ -252,7 +251,7 @@ const attachOrbiters = async ({
 };
 
 const attachSatellite = async ({
-	satellite: { satellite_id: satelliteId },
+	satellite,
 	missionControlId,
 	identity
 }: {
@@ -260,6 +259,8 @@ const attachSatellite = async ({
 	missionControlId: MissionControlId;
 	identity: Identity;
 }): Promise<AttachSegmentResult> => {
+	const { satellite_id: satelliteId } = satellite;
+
 	const setControllersFn: SetControllersFn = async ({ args }) => {
 		await setSatelliteControllers({
 			args,
@@ -268,7 +269,12 @@ const attachSatellite = async ({
 	};
 
 	const attachFn = async () => {
-		await setSatellite({ missionControlId, satelliteId, identity });
+		await setSatellite({
+			missionControlId,
+			satelliteId,
+			identity,
+			satelliteName: satelliteName(satellite)
+		});
 	};
 
 	return await setControllerAndAttach({
@@ -281,7 +287,7 @@ const attachSatellite = async ({
 };
 
 const attachOrbiter = async ({
-	orbiter: { orbiter_id: orbiterId },
+	orbiter,
 	missionControlId,
 	identity
 }: {
@@ -289,6 +295,8 @@ const attachOrbiter = async ({
 	missionControlId: MissionControlId;
 	identity: Identity;
 }): Promise<AttachSegmentResult> => {
+	const { orbiter_id: orbiterId } = orbiter;
+
 	const setControllersFn: SetControllersFn = async ({ args }) => {
 		await setOrbiterControllers({
 			args,
@@ -297,7 +305,7 @@ const attachOrbiter = async ({
 	};
 
 	const attachFn = async () => {
-		await setOrbiter({ missionControlId, orbiterId, identity });
+		await setOrbiter({ missionControlId, orbiterId, identity, orbiterName: orbiterName(orbiter) });
 	};
 
 	await setControllerAndAttach({

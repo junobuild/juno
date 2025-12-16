@@ -20,7 +20,10 @@ export const loadSegments = async ({
 		return { result: 'skip' };
 	}
 
-	//TODO reset if misionControl not null
+	// We load the modules from the Console even if the Mission Control
+	// is available because some might not have been transferred when
+	// the Mission Control was created. e.g. because too many controllers were already
+	// used or unexpected errors. The stores filter duplicates.
 
 	const load = async (
 		identity: Identity

@@ -22,6 +22,7 @@
 	import { bigintStringify } from '$lib/utils/number.utils';
 	import { orbiterName } from '$lib/utils/orbiter.utils';
 	import { satelliteName } from '$lib/utils/satellite.utils';
+	import { setCliControllers } from '$lib/services/cli.services';
 
 	interface Props {
 		principal: string;
@@ -76,84 +77,32 @@
 
 		busy.start();
 
-		try {
-			await Promise.all([
-				...(selectedMissionControl
-					? [
-							setMissionControlControllerForVersion({
-								missionControlId: $missionControlIdDerived,
-								controllerId: principal,
-								profile,
-								scope: 'admin',
-								identity: $authStore.identity
-							})
-						]
-					: []),
-				...(selectedSatellites.length > 0
-					? [
-							setSatellitesControllerForVersion({
-								missionControlId: $missionControlIdDerived,
-								controllerId: principal,
-								satelliteIds: selectedSatellites.map((s) => s[0]),
-								profile,
-								scope: 'admin',
-								identity: $authStore.identity
-							})
-						]
-					: []),
-				...(selectedOrbiters.length > 0
-					? [
-							setOrbitersController({
-								missionControlId: $missionControlIdDerived,
-								controllerId: principal,
-								orbiterIds: selectedOrbiters.map((s) => s[0]),
-								profile,
-								scope: 'admin',
-								identity: $authStore.identity
-							})
-						]
-					: [])
-			]);
-
-			const parameters = [
-				selectedSatellites.length > 0
-					? `satellites=${encodeURIComponent(
-							JSON.stringify(
-								selectedSatellites.map(([p, n]) => ({
-									p: p.toText(),
-									n: satelliteName(n)
-								})),
-								bigintStringify
-							)
-						)}`
-					: undefined,
-				selectedOrbiters.length > 0
-					? `orbiters=${encodeURIComponent(
-							JSON.stringify(
-								selectedOrbiters.map(([p, n]) => ({
-									p: p.toText(),
-									n: orbiterName(n)
-								})),
-								bigintStringify
-							)
-						)}`
-					: undefined,
-				selectedMissionControl ? `mission_control=${$missionControlIdDerived.toText()}` : undefined,
-				profile !== '' ? `profile=${profile}` : undefined
-			].filter((param) => nonNullish(param));
-
-			// Redirect when everything is set.
-			window.location.href = `${redirect_uri}${parameters.length > 0 ? '&' : ''}${parameters.join(
-				'&'
-			)}`;
-		} catch (err: unknown) {
-			toasts.error({
-				text: $i18n.errors.cli_unexpected_error,
-				detail: err
-			});
-		}
+		const result = await setCliControllers({
+			selectedMissionControl,
+			missionControlId: $missionControlIdDerived,
+			controllerId: principal,
+			profile,
+			identity: $authStore.identity,
+			selectedSatellites,
+			selectedOrbiters
+		});
 
 		busy.stop();
+
+		if (result.success === 'error') {
+			toasts.error({
+				text: $i18n.errors.cli_unexpected_error,
+				detail: result.err
+			});
+			return;
+		}
+
+		const { redirectQueryParams } = result;
+
+		// Redirect when everything is set.
+		window.location.href = `${redirect_uri}${redirectQueryParams.length > 0 ? '&' : ''}${redirectQueryParams.join(
+			'&'
+		)}`;
 	};
 
 	let disabled = $state(true);

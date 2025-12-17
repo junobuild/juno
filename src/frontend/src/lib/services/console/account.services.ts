@@ -68,8 +68,8 @@ export const initAccount = async ({
 export const getAccount = async ({
 	identity,
 	certified
-}: Required<GetActorParams>): Promise<{ account: ConsoleDid.Account }> => {
-	const existingAccount = await getOrInitAccountApi({ identity, certified });
+}: Required<GetActorParams>): Promise<{ account: ConsoleDid.Account | undefined }> => {
+	const existingAccount = await getAccountApi({ identity, certified });
 
 	return {
 		account: existingAccount
@@ -90,7 +90,7 @@ export const getOrInitAccount = async ({
 
 const assertAccount = async ({ identity }: { identity: Identity }) => {
 	try {
-		const account = await getAccountApi({ identity, certified: true });
+		const { account } = await getAccount({ identity, certified: true });
 
 		// Unlikely as assertAccount is supposed to be called only to validate the existence of existing account
 		if (isNullish(account)) {

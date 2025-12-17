@@ -1,15 +1,15 @@
 import type { ConsoleDid } from '$declarations';
-import type { SegmentKind, SegmentType } from '$declarations/console/console.did';
+import type { SegmentKind } from '$declarations/console/console.did';
 import type { GetActorParams } from '$lib/api/actors/actor.api';
 import { getConsoleActor } from '$lib/api/actors/actor.juno.api';
 import type { OptionIdentity } from '$lib/types/itentity';
 import { fromNullable, isNullish } from '@dfinity/utils';
-import type { Principal } from '@icp-sdk/core/principal';
 
 export const getOrInitAccount = async (
-	actorParams: GetActorParams
+	actorParams: Omit<GetActorParams, 'certified'>
 ): Promise<ConsoleDid.Account> => {
-	const { get_or_init_account } = await getConsoleActor(actorParams);
+	// update only endpoint
+	const { get_or_init_account } = await getConsoleActor({ ...actorParams, certified: true });
 
 	return await get_or_init_account();
 };

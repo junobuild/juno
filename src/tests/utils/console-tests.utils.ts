@@ -3,6 +3,8 @@ import {
 	type ConsoleActor0014,
 	type ConsoleActor008,
 	type ConsoleActor015,
+	type ConsoleActor020,
+	type ConsoleDid,
 	type MissionControlActor,
 	idlFactoryConsole,
 	idlFactoryMissionControl
@@ -77,7 +79,7 @@ const uploadSegment = async ({
 }: {
 	segment: 'satellite' | 'mission_control' | 'orbiter';
 	version: string;
-	actor: Actor<ConsoleActor | ConsoleActor0014 | ConsoleActor015>;
+	actor: Actor<ConsoleActor | ConsoleActor0014 | ConsoleActor015 | ConsoleActor020>;
 	proposalId: bigint;
 }) => {
 	const init_proposal_asset_upload =
@@ -196,7 +198,7 @@ export const deploySegments = async ({
 	withMissionControl = true,
 	withSatellite = true
 }: {
-	actor: Actor<ConsoleActor | ConsoleActor0014 | ConsoleActor015>;
+	actor: Actor<ConsoleActor | ConsoleActor0014 | ConsoleActor015 | ConsoleActor020>;
 	withOrbiter?: boolean;
 	withMissionControl?: boolean;
 	withSatellite?: boolean;
@@ -292,7 +294,9 @@ export const initMissionControls = async ({
 	pic,
 	length
 }: {
-	actor: Actor<ConsoleActor | ConsoleActor008 | ConsoleActor0014 | ConsoleActor015>;
+	actor: Actor<
+		ConsoleActor | ConsoleActor008 | ConsoleActor0014 | ConsoleActor015 | ConsoleActor020
+	>;
 	pic: PocketIc;
 	length: number;
 }): Promise<Identity[]> => {
@@ -308,6 +312,36 @@ export const initMissionControls = async ({
 	}
 
 	return users;
+};
+
+export const initAccounts = async ({
+	actor,
+	pic,
+	length
+}: {
+	actor: Actor<ConsoleActor>;
+	pic: PocketIc;
+	length: number;
+}): Promise<{ identity: Identity; account: ConsoleDid.Account }[]> => {
+	const users = await Promise.all(Array.from({ length }).map(() => Ed25519KeyIdentity.generate()));
+
+	const results = [];
+
+	for (const user of users) {
+		actor.setIdentity(user);
+
+		const { get_or_init_account } = actor;
+		const account = await get_or_init_account();
+
+		results.push({
+			identity: user,
+			account
+		});
+
+		await tick(pic);
+	}
+
+	return results;
 };
 
 export const testSatelliteExists = async ({
@@ -489,7 +523,9 @@ export const assertAssetServed = async ({
 export const updateRateConfig = async ({
 	actor
 }: {
-	actor: Actor<ConsoleActor008 | ConsoleActor0014 | ConsoleActor015 | ConsoleActor>;
+	actor: Actor<
+		ConsoleActor008 | ConsoleActor0014 | ConsoleActor015 | ConsoleActor020 | ConsoleActor
+	>;
 }) => {
 	const { update_rate_config } = actor;
 

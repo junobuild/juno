@@ -2,9 +2,12 @@ use candid::{Nat, Principal};
 use ic_ledger_types::{BlockIndex, Tokens};
 use icrc_ledger_types::icrc1::account::Account;
 use icrc_ledger_types::icrc2::transfer_from::TransferFromArgs;
-use junobuild_shared::constants_shared::{IC_TRANSACTION_FEE_ICP, MEMO_SATELLITE_CREATE_REFUND};
+use junobuild_shared::constants_shared::{
+    IC_TRANSACTION_FEE_ICP, MEMO_CANISTER_CREATE, MEMO_SATELLITE_CREATE_REFUND,
+};
 use junobuild_shared::env::ICP_LEDGER;
 use junobuild_shared::ic::api::id;
+use junobuild_shared::ledger::convert_memo_to_icrc;
 use junobuild_shared::ledger::icp::{
     find_payment, principal_to_account_identifier, transfer_payment, SUB_ACCOUNT,
 };
@@ -79,7 +82,7 @@ pub async fn transfer_from(
         to: console_account,
         created_at_time: None,
         fee: Some(transaction_fee),
-        memo: None,
+        memo: Some(convert_memo_to_icrc(&MEMO_CANISTER_CREATE)),
         spender_subaccount: None,
     };
 

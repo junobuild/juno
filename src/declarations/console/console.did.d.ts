@@ -423,6 +423,7 @@ export interface _SERVICE {
 	get_create_satellite_fee: ActorMethod<[GetCreateCanisterFeeArgs], [] | [Tokens]>;
 	get_credits: ActorMethod<[], Tokens>;
 	get_delegation: ActorMethod<[GetDelegationArgs], Result_1>;
+	get_or_init_account: ActorMethod<[], Account>;
 	get_proposal: ActorMethod<[bigint], [] | [Proposal]>;
 	get_storage_config: ActorMethod<[], StorageConfig>;
 	http_request: ActorMethod<[HttpRequest], HttpResponse>;

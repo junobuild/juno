@@ -4,6 +4,7 @@ import {
 	type ConsoleActor008,
 	type ConsoleActor015,
 	type ConsoleActor020,
+	type ConsoleDid,
 	type MissionControlActor,
 	idlFactoryConsole,
 	idlFactoryMissionControl
@@ -311,6 +312,36 @@ export const initMissionControls = async ({
 	}
 
 	return users;
+};
+
+export const initAccounts = async ({
+	actor,
+	pic,
+	length
+}: {
+	actor: Actor<ConsoleActor>;
+	pic: PocketIc;
+	length: number;
+}): Promise<{ identity: Identity; account: ConsoleDid.Account }[]> => {
+	const users = await Promise.all(Array.from({ length }).map(() => Ed25519KeyIdentity.generate()));
+
+	const results = [];
+
+	for (const user of users) {
+		actor.setIdentity(user);
+
+		const { get_or_init_account } = actor;
+		const account = await get_or_init_account();
+
+		results.push({
+			identity: user,
+			account
+		});
+
+		await tick(pic);
+	}
+
+	return results;
 };
 
 export const testSatelliteExists = async ({

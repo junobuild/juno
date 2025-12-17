@@ -1,5 +1,5 @@
 use crate::accounts::{
-    delete_account, get_optional_account, init_account_with_empty_mission_control,
+    delete_account, get_optional_account, init_account,
     update_mission_control,
 };
 use crate::constants::FREEZING_THRESHOLD_ONE_YEAR;
@@ -25,7 +25,7 @@ pub async fn init_user_mission_control_with_caller() -> Result<Account, String> 
             // Guard too many requests
             increment_mission_controls_rate()?;
 
-            init_account_with_empty_mission_control(&caller, &None);
+            init_account(&caller, &None);
 
             create_mission_control(&caller).await
         }
@@ -36,7 +36,7 @@ pub async fn init_user_mission_control_with_provider(
     user: &UserId,
     provider: &Provider,
 ) -> Result<Account, String> {
-    init_account_with_empty_mission_control(user, &Some(provider.clone()));
+    init_account(user, &Some(provider.clone()));
 
     create_mission_control(user).await
 }

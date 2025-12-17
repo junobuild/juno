@@ -448,6 +448,7 @@ export const idlFactory = ({ IDL }) => {
 		get_create_satellite_fee: IDL.Func([GetCreateCanisterFeeArgs], [IDL.Opt(Tokens)], ['query']),
 		get_credits: IDL.Func([], [Tokens], ['query']),
 		get_delegation: IDL.Func([GetDelegationArgs], [Result_1], ['query']),
+		get_or_init_account: IDL.Func([], [Account], []),
 		get_proposal: IDL.Func([IDL.Nat], [IDL.Opt(Proposal)], ['query']),
 		get_storage_config: IDL.Func([], [StorageConfig], ['query']),
 		http_request: IDL.Func([HttpRequest], [HttpResponse], ['query']),

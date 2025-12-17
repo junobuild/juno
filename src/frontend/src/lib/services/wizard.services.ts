@@ -380,10 +380,7 @@ export const createSatelliteWizard = async ({
 		identity: Identity;
 		canisterId: Principal;
 	}): Promise<void> => {
-		assertNonNullish(missionControlId);
-
 		await unsafeSetEmulatorControllerForSatellite({
-			missionControlId,
 			satelliteId: canisterId,
 			identity
 		});

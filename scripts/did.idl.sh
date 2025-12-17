@@ -31,9 +31,9 @@ function generate_did_idl() {
 
 # Assert @icp-sdk/bindgen is installed
 
-if [[ ! "$(command -v npx)" || "$(npx icp-bindgen --version)" != "0.2.0" ]]
+if [[ ! "$(command -v npx)" || "$(npx icp-bindgen --version)" != "0.2.1" ]]
 then
-    echo "could not find @icp-sdk/binden 0.2.0"
+    echo "could not find @icp-sdk/bindgen 0.2.1"
     echo "please run the following command:"
     echo "  npm ci"
     exit 1

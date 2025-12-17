@@ -3,6 +3,7 @@ import {
 	type ConsoleActor0014,
 	type ConsoleActor008,
 	type ConsoleActor015,
+	type ConsoleActor020,
 	type MissionControlActor,
 	idlFactoryConsole,
 	idlFactoryMissionControl
@@ -77,7 +78,7 @@ const uploadSegment = async ({
 }: {
 	segment: 'satellite' | 'mission_control' | 'orbiter';
 	version: string;
-	actor: Actor<ConsoleActor | ConsoleActor0014 | ConsoleActor015>;
+	actor: Actor<ConsoleActor | ConsoleActor0014 | ConsoleActor015 | ConsoleActor020>;
 	proposalId: bigint;
 }) => {
 	const init_proposal_asset_upload =
@@ -196,7 +197,7 @@ export const deploySegments = async ({
 	withMissionControl = true,
 	withSatellite = true
 }: {
-	actor: Actor<ConsoleActor | ConsoleActor0014 | ConsoleActor015>;
+	actor: Actor<ConsoleActor | ConsoleActor0014 | ConsoleActor015 | ConsoleActor020>;
 	withOrbiter?: boolean;
 	withMissionControl?: boolean;
 	withSatellite?: boolean;
@@ -292,7 +293,9 @@ export const initMissionControls = async ({
 	pic,
 	length
 }: {
-	actor: Actor<ConsoleActor | ConsoleActor008 | ConsoleActor0014 | ConsoleActor015>;
+	actor: Actor<
+		ConsoleActor | ConsoleActor008 | ConsoleActor0014 | ConsoleActor015 | ConsoleActor020
+	>;
 	pic: PocketIc;
 	length: number;
 }): Promise<Identity[]> => {
@@ -489,7 +492,9 @@ export const assertAssetServed = async ({
 export const updateRateConfig = async ({
 	actor
 }: {
-	actor: Actor<ConsoleActor008 | ConsoleActor0014 | ConsoleActor015 | ConsoleActor>;
+	actor: Actor<
+		ConsoleActor008 | ConsoleActor0014 | ConsoleActor015 | ConsoleActor020 | ConsoleActor
+	>;
 }) => {
 	const { update_rate_config } = actor;
 

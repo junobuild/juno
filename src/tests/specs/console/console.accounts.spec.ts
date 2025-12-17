@@ -59,6 +59,7 @@ describe('Console > Accounts', () => {
 			const { get_account } = actor;
 
 			account = fromNullable(await get_account());
+
 			expect(account).toBeUndefined();
 		});
 
@@ -66,6 +67,7 @@ describe('Console > Accounts', () => {
 			const { get_or_init_account } = actor;
 
 			account = await get_or_init_account();
+
 			expect(account).not.toBeUndefined();
 		});
 

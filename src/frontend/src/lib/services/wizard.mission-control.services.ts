@@ -16,7 +16,6 @@ import type { Satellite } from '$lib/types/satellite';
 import type { Option } from '$lib/types/utils';
 import { orbiterName } from '$lib/utils/orbiter.utils';
 import { satelliteName } from '$lib/utils/satellite.utils';
-import { waitForMilliseconds } from '$lib/utils/timeout.utils';
 import { assertNonNullish } from '@dfinity/utils';
 import type { Identity } from '@icp-sdk/core/agent';
 import type { Principal } from '@icp-sdk/core/principal';

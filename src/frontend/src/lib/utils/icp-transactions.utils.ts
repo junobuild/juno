@@ -1,7 +1,7 @@
 import type { IcTransactionUi } from '$lib/types/ic-transaction';
 import type { OptionIdentity } from '$lib/types/itentity';
 import { toAccountIdentifier } from '$lib/utils/icp-icrc-account.utils';
-import { fromNullable, jsonReplacer, nonNullish } from '@dfinity/utils';
+import { fromNullable, jsonReplacer, nonNullish, uint8ArrayToBigInt } from '@dfinity/utils';
 import type { IcpIndexDid } from '@icp-sdk/canisters/ledger/icp';
 
 export const mapIcpTransaction = ({
@@ -11,16 +11,28 @@ export const mapIcpTransaction = ({
 	transaction: IcpIndexDid.TransactionWithId;
 	identity: OptionIdentity;
 }): IcTransactionUi => {
-	const { operation, timestamp, memo } = transaction;
+	const { operation, timestamp, memo, icrc1_memo } = transaction;
 
 	const ICP_EXPLORER_URL = import.meta.env.VITE_ICP_EXPLORER_URL;
+
+	const mapMemo = (): Pick<IcTransactionUi, 'memo'> => {
+		if (memo === 0n) {
+			const icrc1Memo = fromNullable(icrc1_memo);
+
+			if (nonNullish(icrc1Memo)) {
+				return { memo: uint8ArrayToBigInt(icrc1Memo) };
+			}
+		}
+
+		return { memo };
+	};
 
 	const tx: Pick<IcTransactionUi, 'timestamp' | 'id' | 'status' | 'txExplorerUrl' | 'memo'> = {
 		id,
 		timestamp: fromNullable(timestamp)?.timestamp_nanos,
 		status: 'executed',
 		txExplorerUrl: `${ICP_EXPLORER_URL}/transaction/${id}`,
-		memo
+		...mapMemo()
 	};
 
 	const accountIdentifier = nonNullish(identity)

@@ -1,6 +1,6 @@
 import { approveIcpTransfer } from '$lib/api/icp-ledger.api';
 import { CONSOLE_CANISTER_ID, IC_TRANSACTION_FEE_ICP } from '$lib/constants/app.constants';
-import { MEMO_CANISTER_CREATE } from '$lib/constants/wallet.constants';
+import { MEMO_CANISTER_APPROVE } from '$lib/constants/wallet.constants';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { IcpLedgerDid } from '@icp-sdk/canisters/ledger/icp';
 import { Principal } from '@icp-sdk/core/principal';
@@ -30,6 +30,6 @@ export const approveCreateCanisterWithIcp = async ({
 		identity,
 		spender,
 		amount,
-		icrc1Memo: icpMemoToIcrc(MEMO_CANISTER_CREATE)
+		icrc1Memo: icpMemoToIcrc(MEMO_CANISTER_APPROVE)
 	});
 };

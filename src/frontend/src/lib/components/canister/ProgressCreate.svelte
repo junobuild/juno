@@ -74,13 +74,14 @@
 				text: attachProgressText ?? $i18n.mission_control.attaching
 			}
 		}),
-		...(isSkylab() && segment === "satellite" && {
-			finalizing: {
-				state: 'next',
-				step: 'finalizing',
-				text: $i18n.emulator.setting_emulator_controller
-			}
-		}),
+		...(isSkylab() &&
+			segment === 'satellite' && {
+				finalizing: {
+					state: 'next',
+					step: 'finalizing',
+					text: $i18n.emulator.setting_emulator_controller
+				}
+			}),
 		reload: {
 			state: 'next',
 			step: 'reload',

@@ -344,6 +344,7 @@
 		"tx_memo": "Memo",
 		"tx_amount": "Amount",
 		"memo_create": "Module created",
+		"memo_approve": "Module approved",
 		"memo_refund_satellite": "Satellite refund",
 		"memo_refund_orbiter": "Orbiter refund",
 		"memo_refund_top_up": "Top-up module",

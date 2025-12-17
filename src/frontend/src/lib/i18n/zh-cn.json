@@ -344,6 +344,7 @@
 		"tx_memo": "备注",
 		"tx_amount": "金额",
 		"memo_create": "模块创建",
+		"memo_approve": "模块批准",
 		"memo_refund_satellite": "卫星退款",
 		"memo_refund_orbiter": "轨道器退款",
 		"memo_refund_top_up": "模块充值",

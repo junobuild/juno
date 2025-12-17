@@ -353,6 +353,7 @@ interface I18nWallet {
 	tx_memo: string;
 	tx_amount: string;
 	memo_create: string;
+	memo_approve: string;
 	memo_refund_satellite: string;
 	memo_refund_orbiter: string;
 	memo_refund_top_up: string;

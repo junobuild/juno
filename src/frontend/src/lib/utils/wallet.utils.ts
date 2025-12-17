@@ -1,5 +1,6 @@
 import {
 	INDEX_RELOAD_DELAY,
+	MEMO_CANISTER_APPROVE,
 	MEMO_CANISTER_CREATE,
 	MEMO_CANISTER_TOP_UP,
 	MEMO_ORBITER_CREATE_REFUND,
@@ -43,6 +44,8 @@ export const transactionMemo = ({
 	switch (memo) {
 		case MEMO_CANISTER_CREATE:
 			return labels.wallet.memo_create;
+		case MEMO_CANISTER_APPROVE:
+			return labels.wallet.memo_approve;
 		case MEMO_SATELLITE_CREATE_REFUND:
 			return labels.wallet.memo_refund_satellite;
 		case MEMO_ORBITER_CREATE_REFUND:

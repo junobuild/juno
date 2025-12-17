@@ -105,7 +105,11 @@ describe('Console > Upgrade > v0.2.0 -> v0.3.0', () => {
 
 		const { get_create_fee } = newActor;
 
-		await expect(get_create_fee({ Satellite: null })).resolves.toEqual(toNullable({ e8s: 40_000_000n }));
-		await expect(get_create_fee({ Orbiter: null })).resolves.toEqual(toNullable({ e8s: 77_000_000n }));
+		await expect(get_create_fee({ Satellite: null })).resolves.toEqual(
+			toNullable({ e8s: 40_000_000n })
+		);
+		await expect(get_create_fee({ Orbiter: null })).resolves.toEqual(
+			toNullable({ e8s: 77_000_000n })
+		);
 	});
 });

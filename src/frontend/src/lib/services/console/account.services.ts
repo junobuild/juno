@@ -90,16 +90,16 @@ export const getOrInitAccount = async ({
 
 const assertAccount = async ({ identity }: { identity: Identity }) => {
 	try {
-		const { account } = await getAccount({ identity, certified: true });
+		const { account: certifiedAccount } = await getAccount({ identity, certified: true });
 
 		// Unlikely as assertAccount is supposed to be called only to validate the existence of existing account
-		if (isNullish(account)) {
+		if (isNullish(certifiedAccount)) {
 			await accountErrorSignOut();
 			return;
 		}
 
 		accountCertifiedStore.set({
-			data: account,
+			data: certifiedAccount,
 			certified: true
 		});
 	} catch (_err: unknown) {

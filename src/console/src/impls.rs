@@ -1,4 +1,6 @@
-use crate::constants::{ORBITER_CREATION_FEE_ICP, SATELLITE_CREATION_FEE_ICP};
+use crate::constants::{
+    MISSION_CONTROL_CREATION_FEE_ICP, ORBITER_CREATION_FEE_ICP, SATELLITE_CREATION_FEE_ICP,
+};
 use crate::memory::manager::init_stable_state;
 use crate::types::ledger::Payment;
 use crate::types::state::{Account, Fee, Fees, HeapState, Rate, Rates, State};
@@ -60,6 +62,10 @@ impl Default for Fees {
                 fee: ORBITER_CREATION_FEE_ICP,
                 updated_at: now,
             },
+            mission_control: Some(Fee {
+                fee: MISSION_CONTROL_CREATION_FEE_ICP,
+                updated_at: now,
+            }),
         }
     }
 }

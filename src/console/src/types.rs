@@ -129,6 +129,7 @@ pub mod state {
     pub struct Fees {
         pub satellite: Fee,
         pub orbiter: Fee,
+        pub mission_control: Option<Fee>,
     }
 }
 

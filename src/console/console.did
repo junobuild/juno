@@ -364,6 +364,7 @@ service : () -> {
   get_create_satellite_fee : (GetCreateCanisterFeeArgs) -> (opt Tokens) query;
   get_credits : () -> (Tokens) query;
   get_delegation : (GetDelegationArgs) -> (Result_1) query;
+  get_or_init_account : () -> (Account);
   get_proposal : (nat) -> (opt Proposal) query;
   get_storage_config : () -> (StorageConfig) query;
   http_request : (HttpRequest) -> (HttpResponse) query;

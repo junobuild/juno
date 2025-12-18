@@ -1,10 +1,11 @@
 import { idlFactory, init } from '$declarations/ledger/icp/ledger.factory.did.js';
-import type { CanisterFixture, PocketIc } from '@dfinity/pic';
+import type { Actor, CanisterFixture, PocketIc } from '@dfinity/pic';
 import { assertNonNullish } from '@dfinity/utils';
 import { AccountIdentifier, type IcpLedgerCanisterOptions } from '@icp-sdk/canisters/ledger/icp';
 import type { Identity } from '@icp-sdk/core/agent';
 import { IDL } from '@icp-sdk/core/candid';
 import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
+import type { Principal } from '@icp-sdk/core/principal';
 import { LEDGER_ID } from '../constants/ledger-tests.contants';
 import { download } from './setup-tests.utils';
 
@@ -73,4 +74,23 @@ export const setupLedger = async ({
 		actor,
 		...rest
 	};
+};
+
+export const transferIcp = async ({
+	ledgerActor,
+	owner
+}: {
+	ledgerActor: Actor<LedgerActor>;
+	owner: Principal;
+}) => {
+	const { icrc1_transfer } = ledgerActor;
+
+	await icrc1_transfer({
+		amount: 5_500_010_000n,
+		to: { owner, subaccount: [] },
+		fee: [],
+		memo: [],
+		from_subaccount: [],
+		created_at_time: []
+	});
 };

@@ -1,10 +1,37 @@
+use crate::factory::types::CanisterCreator;
 use crate::factory::types::CreateCanisterArgs;
+use candid::Principal;
 use junobuild_shared::types::interface::{CreateOrbiterArgs, CreateSatelliteArgs};
+use junobuild_shared::types::state::{ControllerId, UserId};
+
+impl CanisterCreator {
+    pub fn purchaser(&self) -> &Principal {
+        match self {
+            CanisterCreator::User(user) => user,
+            CanisterCreator::MissionControl((mission_control, _)) => mission_control,
+        }
+    }
+
+    pub fn account_owner(&self) -> &UserId {
+        match self {
+            CanisterCreator::User(user) => user,
+            CanisterCreator::MissionControl((_, user)) => user,
+        }
+    }
+
+    pub fn controllers(&self) -> Vec<ControllerId> {
+        match self {
+            CanisterCreator::User(user) => Vec::from([*user]),
+            CanisterCreator::MissionControl((mission_control, user)) => {
+                Vec::from([*user, *mission_control])
+            }
+        }
+    }
+}
 
 impl From<CreateOrbiterArgs> for CreateCanisterArgs {
     fn from(args: CreateOrbiterArgs) -> Self {
         Self {
-            user: args.user,
             block_index: args.block_index,
             subnet_id: args.subnet_id,
         }
@@ -14,7 +41,6 @@ impl From<CreateOrbiterArgs> for CreateCanisterArgs {
 impl From<CreateSatelliteArgs> for CreateCanisterArgs {
     fn from(args: CreateSatelliteArgs) -> Self {
         Self {
-            user: args.user,
             block_index: args.block_index,
             subnet_id: args.subnet_id,
         }

@@ -103,12 +103,14 @@ export type ControllerScope = { Write: null } | { Admin: null } | { Submit: null
 export interface CreateOrbiterArgs {
 	block_index: [] | [bigint];
 	subnet_id: [] | [Principal];
+	name: [] | [string];
 	user: Principal;
 }
 export interface CreateSatelliteArgs {
 	block_index: [] | [bigint];
 	subnet_id: [] | [Principal];
 	storage: [] | [InitStorageArgs];
+	name: [] | [string];
 	user: Principal;
 }
 export interface CustomDomain {

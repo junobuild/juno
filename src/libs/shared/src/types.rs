@@ -136,6 +136,7 @@ pub mod interface {
         pub user: UserId,
         pub block_index: Option<BlockIndex>,
         pub subnet_id: Option<SubnetId>,
+        pub name: Option<String>,
     }
 
     #[derive(CandidType, Deserialize)]
@@ -144,6 +145,7 @@ pub mod interface {
         pub block_index: Option<BlockIndex>,
         pub subnet_id: Option<SubnetId>,
         pub storage: Option<InitStorageArgs>,
+        pub name: Option<String>,
     }
 
     #[derive(CandidType, Deserialize)]

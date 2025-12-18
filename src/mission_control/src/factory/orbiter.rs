@@ -82,6 +82,7 @@ async fn create_and_save_orbiter(
         user,
         block_index,
         subnet_id,
+        name: name.clone(),
     };
 
     let orbiter_id = Call::unbounded_wait(console, "create_orbiter")

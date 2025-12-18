@@ -193,6 +193,10 @@ type ListResults = record {
   items : vec record { text; AssetNoContent };
   items_length : nat64;
 };
+type ListSegmentsArgs = record {
+  segment_id : opt principal;
+  segment_type : opt SegmentType;
+};
 type Memory = variant { Heap; Stable };
 type OpenId = record { provider : OpenIdProvider; data : OpenIdData };
 type OpenIdData = record {
@@ -230,6 +234,7 @@ type Payment = record {
   mission_control_id : opt principal;
   created_at : nat64;
   block_index_refunded : opt nat64;
+  purchaser : opt principal;
 };
 type PaymentStatus = variant { Refunded; Acknowledged; Completed };
 type PrepareDelegationError = variant {
@@ -267,7 +272,19 @@ type Provider = variant { InternetIdentity; OpenId : OpenId };
 type RateConfig = record { max_tokens : nat64; time_per_token_ns : nat64 };
 type Result = variant { Ok : Authentication; Err : AuthenticationError };
 type Result_1 = variant { Ok : SignedDelegation; Err : GetDelegationError };
+type Segment = record {
+  updated_at : nat64;
+  metadata : vec record { text; text };
+  segment_id : principal;
+  created_at : nat64;
+};
+type SegmentKey = record {
+  user : principal;
+  segment_id : principal;
+  segment_type : SegmentType;
+};
 type SegmentKind = variant { Orbiter; MissionControl; Satellite };
+type SegmentType = variant { Orbiter; Satellite };
 type SegmentsDeploymentOptions = record {
   orbiter : opt text;
   mission_control_version : opt text;
@@ -385,6 +402,9 @@ service : () -> {
   list_custom_domains : () -> (vec record { text; CustomDomain }) query;
   list_payments : () -> (vec record { nat64; Payment }) query;
   list_proposals : (ListProposalsParams) -> (ListProposalResults) query;
+  list_segments : (ListSegmentsArgs) -> (
+      vec record { SegmentKey; Segment },
+    ) query;
   reject_proposal : (CommitProposal) -> (null);
   set_auth_config : (SetAuthenticationConfig) -> (AuthenticationConfig);
   set_controllers : (SetControllersArgs) -> ();

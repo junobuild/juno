@@ -233,6 +233,10 @@ export interface ListResults {
 	items: Array<[string, AssetNoContent]>;
 	items_length: bigint;
 }
+export interface ListSegmentsArgs {
+	segment_id: [] | [Principal];
+	segment_type: [] | [SegmentType];
+}
 export type Memory = { Heap: null } | { Stable: null };
 export interface OpenId {
 	provider: OpenIdProvider;
@@ -273,6 +277,7 @@ export interface Payment {
 	mission_control_id: [] | [Principal];
 	created_at: bigint;
 	block_index_refunded: [] | [bigint];
+	purchaser: [] | [Principal];
 }
 export type PaymentStatus = { Refunded: null } | { Acknowledged: null } | { Completed: null };
 export type PrepareDelegationError =
@@ -317,7 +322,19 @@ export interface RateConfig {
 }
 export type Result = { Ok: Authentication } | { Err: AuthenticationError };
 export type Result_1 = { Ok: SignedDelegation } | { Err: GetDelegationError };
+export interface Segment {
+	updated_at: bigint;
+	metadata: Array<[string, string]>;
+	segment_id: Principal;
+	created_at: bigint;
+}
+export interface SegmentKey {
+	user: Principal;
+	segment_id: Principal;
+	segment_type: SegmentType;
+}
 export type SegmentKind = { Orbiter: null } | { MissionControl: null } | { Satellite: null };
+export type SegmentType = { Orbiter: null } | { Satellite: null };
 export interface SegmentsDeploymentOptions {
 	orbiter: [] | [string];
 	mission_control_version: [] | [string];
@@ -446,6 +463,7 @@ export interface _SERVICE {
 	list_custom_domains: ActorMethod<[], Array<[string, CustomDomain]>>;
 	list_payments: ActorMethod<[], Array<[bigint, Payment]>>;
 	list_proposals: ActorMethod<[ListProposalsParams], ListProposalResults>;
+	list_segments: ActorMethod<[ListSegmentsArgs], Array<[SegmentKey, Segment]>>;
 	reject_proposal: ActorMethod<[CommitProposal], null>;
 	set_auth_config: ActorMethod<[SetAuthenticationConfig], AuthenticationConfig>;
 	set_controllers: ActorMethod<[SetControllersArgs], undefined>;

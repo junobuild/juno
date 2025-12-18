@@ -376,7 +376,8 @@ export const idlFactory = ({ IDL }) => {
 		block_index_payment: IDL.Nat64,
 		mission_control_id: IDL.Opt(IDL.Principal),
 		created_at: IDL.Nat64,
-		block_index_refunded: IDL.Opt(IDL.Nat64)
+		block_index_refunded: IDL.Opt(IDL.Nat64),
+		purchaser: IDL.Opt(IDL.Principal)
 	});
 	const ListProposalsOrder = IDL.Record({ desc: IDL.Bool });
 	const ListProposalsPaginate = IDL.Record({
@@ -392,6 +393,25 @@ export const idlFactory = ({ IDL }) => {
 		matches_length: IDL.Nat64,
 		items: IDL.Vec(IDL.Tuple(ProposalKey, Proposal)),
 		items_length: IDL.Nat64
+	});
+	const SegmentType = IDL.Variant({
+		Orbiter: IDL.Null,
+		Satellite: IDL.Null
+	});
+	const ListSegmentsArgs = IDL.Record({
+		segment_id: IDL.Opt(IDL.Principal),
+		segment_type: IDL.Opt(SegmentType)
+	});
+	const SegmentKey = IDL.Record({
+		user: IDL.Principal,
+		segment_id: IDL.Principal,
+		segment_type: SegmentType
+	});
+	const Segment = IDL.Record({
+		updated_at: IDL.Nat64,
+		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
+		segment_id: IDL.Principal,
+		created_at: IDL.Nat64
 	});
 	const SetAuthenticationConfig = IDL.Record({
 		openid: IDL.Opt(AuthenticationConfigOpenId),
@@ -473,6 +493,11 @@ export const idlFactory = ({ IDL }) => {
 		list_custom_domains: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Text, CustomDomain))], ['query']),
 		list_payments: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Nat64, Payment))], ['query']),
 		list_proposals: IDL.Func([ListProposalsParams], [ListProposalResults], ['query']),
+		list_segments: IDL.Func(
+			[ListSegmentsArgs],
+			[IDL.Vec(IDL.Tuple(SegmentKey, Segment))],
+			['query']
+		),
 		reject_proposal: IDL.Func([CommitProposal], [IDL.Null], []),
 		set_auth_config: IDL.Func([SetAuthenticationConfig], [AuthenticationConfig], []),
 		set_controllers: IDL.Func([SetControllersArgs], [], []),

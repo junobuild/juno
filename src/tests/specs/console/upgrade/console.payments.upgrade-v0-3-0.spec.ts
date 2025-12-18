@@ -36,6 +36,8 @@ describe('Console > Upgrade > Payments > v0.2.0 -> v0.3.0', () => {
 
 	const user = Ed25519KeyIdentity.generate();
 
+	let missionControlId: MissionControlId;
+
 	const upgradeCurrent = async () => {
 		await tick(pic);
 
@@ -82,7 +84,7 @@ describe('Console > Upgrade > Payments > v0.2.0 -> v0.3.0', () => {
 		await create_satellite('test');
 	};
 
-	beforeEach(async () => {
+	beforeAll(async () => {
 		pic = await PocketIc.create(inject('PIC_URL'), {
 			nns: {
 				enableBenchmarkingInstructionLimits: false,
@@ -117,12 +119,14 @@ describe('Console > Upgrade > Payments > v0.2.0 -> v0.3.0', () => {
 		actor.setIdentity(controller);
 	});
 
-	afterEach(async () => {
+	afterAll(async () => {
 		await pic?.tearDown();
 	});
 
 	it('should still list payments', async () => {
-		const { missionControlId } = await createMissionControlAndSatellite({ user });
+		const { missionControlId: mId } = await createMissionControlAndSatellite({ user });
+
+		missionControlId = mId;
 
 		await transferIcp({
 			ledgerActor,
@@ -159,5 +163,31 @@ describe('Console > Upgrade > Payments > v0.2.0 -> v0.3.0', () => {
 		newActor.setIdentity(controller);
 
 		await assertPayments(newActor);
+	});
+
+	it('should set payments as completed with new interface', async () => {
+		assertNonNullish(missionControlId);
+
+		await createSatellite({ missionControlId, user });
+
+		const newActor = pic.createActor<ConsoleActor>(idlFactoryConsole, canisterId);
+		newActor.setIdentity(controller);
+
+		const { list_payments } = newActor;
+		const payments = await list_payments();
+
+		expect(payments).toHaveLength(2);
+
+		const payment = payments.find(([index]) => index === 3n);
+
+		assertNonNullish(payment);
+
+		expect(fromNullable(payment[1].purchaser)?.toText()).toEqual(missionControlId.toText());
+		expect(payment[1].block_index_payment).toEqual(3n);
+		expect(payment[1].block_index_refunded).toEqual([]);
+		expect(payment[1].created_at > 0n).toBeTruthy();
+		expect(payment[1].updated_at > 0n).toBeTruthy();
+		expect(fromNullable(payment[1].mission_control_id)).toBeUndefined();
+		expect(payment[1].status).toEqual({ Completed: null });
 	});
 });

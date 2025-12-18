@@ -1,6 +1,8 @@
 import {
+	idlFactoryConsole,
 	idlFactoryConsole020,
 	idlFactoryMissionControl,
+	type ConsoleActor,
 	type ConsoleActor020,
 	type MissionControlActor
 } from '$declarations';
@@ -45,8 +47,8 @@ describe('Console > Upgrade > Payments > v0.2.0 -> v0.3.0', () => {
 	};
 
 	const createMissionControlAndSatellite = async ({
-														user
-													}: {
+		user
+	}: {
 		user: Identity;
 	}): Promise<{ missionControlId: MissionControlId }> => {
 		actor.setIdentity(user);
@@ -64,9 +66,9 @@ describe('Console > Upgrade > Payments > v0.2.0 -> v0.3.0', () => {
 	};
 
 	const createSatellite = async ({
-									   missionControlId,
-									   user
-								   }: {
+		missionControlId,
+		user
+	}: {
 		missionControlId: MissionControlId;
 		user: Identity;
 	}) => {
@@ -93,7 +95,7 @@ describe('Console > Upgrade > Payments > v0.2.0 -> v0.3.0', () => {
 
 		const { actor: c, canisterId: cId } = await pic.setupCanister<ConsoleActor020>({
 			idlFactory: idlFactoryConsole020,
-			wasm: CONSOLE_WASM_PATH,
+			wasm: destination,
 			arg: controllersInitArgs(controller),
 			sender: controller.getPrincipal(),
 			targetCanisterId: CONSOLE_ID
@@ -129,22 +131,33 @@ describe('Console > Upgrade > Payments > v0.2.0 -> v0.3.0', () => {
 
 		await createSatellite({ missionControlId, user });
 
-		actor.setIdentity(controller);
+		const assertPayments = async (actor: Actor<ConsoleActor | ConsoleActor020>) => {
+			actor.setIdentity(controller);
 
-		const { list_payments } = actor;
-		const payments = await list_payments();
+			const { list_payments } = actor;
+			const payments = await list_payments();
 
-		console.log(payments);
+			expect(payments).toHaveLength(1);
+			expect(payments[0][0]).toEqual(2n);
+			expect(payments[0][1].block_index_payment).toEqual(2n);
+			// There was likely a trivial issue since genesis where the block index was saved as refunded
+			// when we marked the payment as completed. This is fixed with new version.
+			expect(payments[0][1].block_index_refunded).toEqual([2n]);
+			expect(payments[0][1].created_at > 0n).toBeTruthy();
+			expect(payments[0][1].updated_at > 0n).toBeTruthy();
+			expect(fromNullable(payments[0][1].mission_control_id)?.toText()).toEqual(
+				missionControlId.toText()
+			);
+			expect(payments[0][1].status).toEqual({ Completed: null });
+		};
 
-		expect(payments).toHaveLength(1);
-		expect(payments[0][0]).toEqual(2n);
-		expect(payments[0][1].block_index_payment).toEqual(2n);
-		expect(payments[0][1].block_index_refunded).toEqual([]);
-		expect(payments[0][1].created_at > 0n).toBeTruthy();
-		expect(payments[0][1].updated_at > 0n).toBeTruthy();
-		expect(fromNullable(payments[0][1].mission_control_id)?.toText()).toEqual(
-			missionControlId.toText()
-		);
-		expect(payments[0][1].status).toEqual({ Completed: null });
+		await assertPayments(actor);
+
+		await upgradeCurrent();
+
+		const newActor = pic.createActor<ConsoleActor>(idlFactoryConsole, canisterId);
+		newActor.setIdentity(controller);
+
+		await assertPayments(newActor);
 	});
 });

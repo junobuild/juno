@@ -45,8 +45,8 @@ describe('Console > Upgrade > Payments > v0.2.0 -> v0.3.0', () => {
 	};
 
 	const createMissionControlAndSatellite = async ({
-		user
-	}: {
+														user
+													}: {
 		user: Identity;
 	}): Promise<{ missionControlId: MissionControlId }> => {
 		actor.setIdentity(user);
@@ -58,12 +58,18 @@ describe('Console > Upgrade > Payments > v0.2.0 -> v0.3.0', () => {
 
 		assertNonNullish(missionControlId);
 
-		await createSatellite({ missionControlId });
+		await createSatellite({ missionControlId, user });
 
 		return { missionControlId };
 	};
 
-	const createSatellite = async ({ missionControlId }: { missionControlId: MissionControlId }) => {
+	const createSatellite = async ({
+									   missionControlId,
+									   user
+								   }: {
+		missionControlId: MissionControlId;
+		user: Identity;
+	}) => {
 		const micActor = pic.createActor<MissionControlActor>(
 			idlFactoryMissionControl,
 			missionControlId
@@ -87,7 +93,7 @@ describe('Console > Upgrade > Payments > v0.2.0 -> v0.3.0', () => {
 
 		const { actor: c, canisterId: cId } = await pic.setupCanister<ConsoleActor020>({
 			idlFactory: idlFactoryConsole020,
-			wasm: destination,
+			wasm: CONSOLE_WASM_PATH,
 			arg: controllersInitArgs(controller),
 			sender: controller.getPrincipal(),
 			targetCanisterId: CONSOLE_ID
@@ -121,12 +127,14 @@ describe('Console > Upgrade > Payments > v0.2.0 -> v0.3.0', () => {
 			owner: missionControlId
 		});
 
-		await createSatellite({ missionControlId });
+		await createSatellite({ missionControlId, user });
 
 		actor.setIdentity(controller);
 
 		const { list_payments } = actor;
 		const payments = await list_payments();
+
+		console.log(payments);
 
 		expect(payments).toHaveLength(1);
 		expect(payments[0][0]).toEqual(2n);

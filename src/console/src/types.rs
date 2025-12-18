@@ -219,7 +219,6 @@ pub mod ledger {
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct Payment {
-        // Optional for backwards compatibility.
         pub purchaser: Option<Principal>,
         #[deprecated(note = "Deprecated. Use purchaser instead.")]
         pub mission_control_id: Option<MissionControlId>,

@@ -11,7 +11,7 @@ import type { Principal } from '@icp-sdk/core/principal';
 import { inject } from 'vitest';
 import { LEDGER_ID } from '../../constants/ledger-tests.contants';
 import { MISSION_CONTROL_ADMIN_CONTROLLER_ERROR_MSG } from '../../constants/mission-control-tests.constants';
-import { setupLedger } from '../../utils/ledger-tests.utils';
+import { setupLedger, transferIcp } from '../../utils/ledger-tests.utils';
 import { missionControlUserInitArgs } from '../../utils/mission-control-tests.utils';
 import { MISSION_CONTROL_WASM_PATH } from '../../utils/setup-tests.utils';
 
@@ -164,15 +164,9 @@ describe('Mission Control > Wallet', () => {
 
 		describe('Transfer success', () => {
 			beforeAll(async () => {
-				const { icrc1_transfer } = ledgerActor;
-
-				await icrc1_transfer({
-					amount: 5_500_010_000n,
-					to: { owner: missionControlId, subaccount: [] },
-					fee: [],
-					memo: [],
-					from_subaccount: [],
-					created_at_time: []
+				await transferIcp({
+					ledgerActor,
+					owner: missionControlId
 				});
 			});
 

@@ -21,7 +21,7 @@ import {
 	downloadConsole
 } from '../../../utils/setup-tests.utils';
 
-describe('Console > Upgrade > v0.2.0 -> v0.3.0', () => {
+describe('Console > Upgrade > Fees > v0.2.0 -> v0.3.0', () => {
 	let pic: PocketIc;
 	let actor: Actor<ConsoleActor020>;
 	let canisterId: Principal;

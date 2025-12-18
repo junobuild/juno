@@ -1,7 +1,4 @@
-use crate::accounts::{
-    delete_account, get_optional_account, init_account,
-    update_mission_control,
-};
+use crate::accounts::{delete_account, get_optional_account, init_account, update_mission_control};
 use crate::constants::FREEZING_THRESHOLD_ONE_YEAR;
 use crate::factory::utils::controllers::update_mission_control_controllers;
 use crate::factory::utils::wasm::mission_control_wasm_arg;

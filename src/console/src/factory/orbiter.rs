@@ -1,5 +1,6 @@
 use crate::constants::FREEZING_THRESHOLD_THREE_MONTHS;
 use crate::factory::canister::create_canister;
+use crate::factory::types::CanisterCreator;
 use crate::factory::utils::controllers::remove_console_controller;
 use crate::factory::utils::wasm::orbiter_wasm_arg;
 use crate::store::heap::{get_orbiter_fee, increment_orbiters_rate};
@@ -11,7 +12,6 @@ use junobuild_shared::mgmt::ic::create_canister_install_code;
 use junobuild_shared::mgmt::types::cmc::SubnetId;
 use junobuild_shared::mgmt::types::ic::CreateCanisterInitSettingsArg;
 use junobuild_shared::types::interface::CreateOrbiterArgs;
-use junobuild_shared::types::state::{MissionControlId, UserId};
 
 pub async fn create_orbiter(
     caller: Principal,
@@ -22,21 +22,23 @@ pub async fn create_orbiter(
         &increment_orbiters_rate,
         &get_orbiter_fee,
         caller,
+        args.user,
         args.into(),
     )
     .await
 }
 
 async fn create_orbiter_wasm(
-    mission_control_id: MissionControlId,
-    user: UserId,
+    creator: CanisterCreator,
     subnet_id: Option<SubnetId>,
 ) -> Result<Principal, String> {
-    let wasm_arg = orbiter_wasm_arg(&user, &mission_control_id)?;
+    let controllers = creator.controllers();
+
+    let wasm_arg = orbiter_wasm_arg(&controllers)?;
 
     // We temporarily use the Console as a controller to create the canister but
     // remove it as soon as it is spin.
-    let temporary_init_controllers = Vec::from([id(), mission_control_id, user]);
+    let temporary_init_controllers = [id()].into_iter().chain(controllers.clone()).collect();
 
     let create_settings_arg = CreateCanisterInitSettingsArg {
         controllers: temporary_init_controllers,
@@ -58,7 +60,7 @@ async fn create_orbiter_wasm(
     match result {
         Err(error) => Err(error),
         Ok(orbiter_id) => {
-            remove_console_controller(&orbiter_id, &user, &mission_control_id).await?;
+            remove_console_controller(&orbiter_id, &controllers).await?;
             Ok(orbiter_id)
         }
     }

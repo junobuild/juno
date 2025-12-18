@@ -1,5 +1,6 @@
 use crate::constants::FREEZING_THRESHOLD_ONE_YEAR;
 use crate::factory::canister::create_canister;
+use crate::factory::types::CanisterCreator;
 use crate::factory::utils::controllers::remove_console_controller;
 use crate::factory::utils::wasm::satellite_wasm_arg;
 use crate::store::heap::{get_satellite_fee, increment_satellites_rate};
@@ -11,7 +12,6 @@ use junobuild_shared::mgmt::ic::create_canister_install_code;
 use junobuild_shared::mgmt::types::cmc::SubnetId;
 use junobuild_shared::mgmt::types::ic::CreateCanisterInitSettingsArg;
 use junobuild_shared::types::interface::{CreateSatelliteArgs, InitStorageArgs};
-use junobuild_shared::types::state::{MissionControlId, UserId};
 
 pub async fn create_satellite(
     caller: Principal,
@@ -20,28 +20,30 @@ pub async fn create_satellite(
     let storage = args.storage.clone();
 
     create_canister(
-        move |mission_control_id, user, subnet_id| async move {
-            create_satellite_wasm(mission_control_id, user, subnet_id, storage).await
+        move |creator, subnet_id| async move {
+            create_satellite_wasm(creator, subnet_id, storage).await
         },
         &increment_satellites_rate,
         &get_satellite_fee,
         caller,
+        args.user,
         args.into(),
     )
     .await
 }
 
 async fn create_satellite_wasm(
-    mission_control_id: MissionControlId,
-    user: UserId,
+    creator: CanisterCreator,
     subnet_id: Option<SubnetId>,
     storage: Option<InitStorageArgs>,
 ) -> Result<Principal, String> {
-    let wasm_arg = satellite_wasm_arg(&user, &mission_control_id, storage)?;
+    let controllers = creator.controllers();
+
+    let wasm_arg = satellite_wasm_arg(&controllers, storage)?;
 
     // We temporarily use the Console as a controller to create the canister but
     // remove it as soon as it is spin.
-    let temporary_init_controllers = Vec::from([id(), mission_control_id, user]);
+    let temporary_init_controllers = [id()].into_iter().chain(controllers.clone()).collect();
 
     let create_settings_arg = CreateCanisterInitSettingsArg {
         controllers: temporary_init_controllers,
@@ -63,7 +65,7 @@ async fn create_satellite_wasm(
     match result {
         Err(error) => Err(error),
         Ok(satellite_id) => {
-            remove_console_controller(&satellite_id, &user, &mission_control_id).await?;
+            remove_console_controller(&satellite_id, &controllers).await?;
             Ok(satellite_id)
         }
     }

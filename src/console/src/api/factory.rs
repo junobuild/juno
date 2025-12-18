@@ -18,6 +18,7 @@ async fn create_mission_control(args: CreateMissionControlArgs) -> Principal {
         .unwrap_or_trap()
 }
 
+
 #[update]
 async fn create_satellite(args: CreateSatelliteArgs) -> Principal {
     let caller = caller();

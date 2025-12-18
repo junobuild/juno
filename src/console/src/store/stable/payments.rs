@@ -2,6 +2,7 @@ use crate::store::services::mutate_stable_state;
 use crate::store::{with_payments, with_payments_mut};
 use crate::types::ledger::{Payment, PaymentStatus};
 use crate::types::state::{Payments, PaymentsStable, StableState};
+use candid::Principal;
 use ic_cdk::api::time;
 use ic_ledger_types::BlockIndex;
 use junobuild_shared::structures::collect_stable_map_from;
@@ -19,19 +20,14 @@ pub fn insert_new_payment(
 }
 
 fn insert_new_payment_impl(
-    user: &UserId,
+    purchaser: &Principal,
     block_index: &BlockIndex,
     state: &mut StableState,
 ) -> Result<Payment, &'static str> {
-    let mission_control = state
-        .accounts
-        .get(user)
-        .ok_or("User does not have a mission control center")?;
-
     let now = time();
 
     let new_payment = Payment {
-        mission_control_id: mission_control.mission_control_id,
+        mission_control_id: Some(purchaser.clone()),
         block_index_payment: *block_index,
         block_index_refunded: None,
         status: PaymentStatus::Acknowledged,

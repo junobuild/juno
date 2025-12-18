@@ -55,7 +55,7 @@ fn update_payment_completed_impl(
     let updated_payment = Payment {
         mission_control_id: payment.mission_control_id,
         block_index_payment: payment.block_index_payment,
-        block_index_refunded: Some(payment.block_index_payment),
+        block_index_refunded: None,
         status: PaymentStatus::Completed,
         created_at: payment.created_at,
         updated_at: now,

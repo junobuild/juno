@@ -1,10 +1,8 @@
-use crate::store::stable::{detach_segment, list_segments as list_segments_store};
+use crate::store::stable::{list_segments as list_segments_store};
 use crate::types::interface::ListSegmentsArgs;
-use crate::types::state::{Segment, SegmentKey, SegmentType};
-use ic_cdk_macros::{query, update};
+use crate::types::state::{Segment, SegmentKey};
+use ic_cdk_macros::{query};
 use junobuild_shared::ic::api::caller;
-use junobuild_shared::ic::UnwrapOrTrap;
-use junobuild_shared::types::state::SegmentId;
 
 #[query]
 fn list_segments(filter: ListSegmentsArgs) -> Vec<(SegmentKey, Segment)> {

@@ -1,19 +1,20 @@
 import {
-	idlFactoryConsole,
 	idlFactoryConsole020,
 	idlFactoryMissionControl,
-	type ConsoleActor,
 	type ConsoleActor020,
 	type MissionControlActor
 } from '$declarations';
-import { PocketIc, type Actor } from '@dfinity/pic';
-import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
+import type { MissionControlId } from '$lib/types/mission-control';
+import { PocketIc, SubnetStateType, type Actor } from '@dfinity/pic';
+import { assertNonNullish, fromNullable } from '@dfinity/utils';
+import type { IcpLedgerCanisterOptions } from '@icp-sdk/canisters/ledger/icp';
 import type { Identity } from '@icp-sdk/core/agent';
 import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import type { Principal } from '@icp-sdk/core/principal';
 import { inject } from 'vitest';
 import { CONSOLE_ID } from '../../../constants/console-tests.constants';
 import { deploySegments, updateRateConfig } from '../../../utils/console-tests.utils';
+import { setupLedger, transferIcp } from '../../../utils/ledger-tests.utils';
 import { tick } from '../../../utils/pic-tests.utils';
 import {
 	CONSOLE_WASM_PATH,
@@ -21,10 +22,13 @@ import {
 	downloadConsole
 } from '../../../utils/setup-tests.utils';
 
-describe('Console > Upgrade > v0.2.0 -> v0.3.0', () => {
+type LedgerActor = IcpLedgerCanisterOptions['serviceOverride'];
+
+describe('Console > Upgrade > Payments > v0.2.0 -> v0.3.0', () => {
 	let pic: PocketIc;
 	let actor: Actor<ConsoleActor020>;
 	let canisterId: Principal;
+	let ledgerActor: Actor<LedgerActor>;
 
 	const controller = Ed25519KeyIdentity.generate();
 
@@ -40,7 +44,11 @@ describe('Console > Upgrade > v0.2.0 -> v0.3.0', () => {
 		});
 	};
 
-	const createMissionControlAndSatellite = async ({ user }: { user: Identity }) => {
+	const createMissionControlAndSatellite = async ({
+		user
+	}: {
+		user: Identity;
+	}): Promise<{ missionControlId: MissionControlId }> => {
 		actor.setIdentity(user);
 
 		const { init_user_mission_control_center } = actor;
@@ -50,6 +58,12 @@ describe('Console > Upgrade > v0.2.0 -> v0.3.0', () => {
 
 		assertNonNullish(missionControlId);
 
+		await createSatellite({ missionControlId });
+
+		return { missionControlId };
+	};
+
+	const createSatellite = async ({ missionControlId }: { missionControlId: MissionControlId }) => {
 		const micActor = pic.createActor<MissionControlActor>(
 			idlFactoryMissionControl,
 			missionControlId
@@ -61,7 +75,13 @@ describe('Console > Upgrade > v0.2.0 -> v0.3.0', () => {
 	};
 
 	beforeEach(async () => {
-		pic = await PocketIc.create(inject('PIC_URL'));
+		pic = await PocketIc.create(inject('PIC_URL'), {
+			nns: {
+				enableBenchmarkingInstructionLimits: false,
+				enableDeterministicTimeSlicing: false,
+				state: { type: SubnetStateType.New }
+			}
+		});
 
 		const destination = await downloadConsole({ junoVersion: '0.0.62', version: '0.2.0' });
 
@@ -81,8 +101,9 @@ describe('Console > Upgrade > v0.2.0 -> v0.3.0', () => {
 
 		await deploySegments({ actor });
 
-		// Consumes starting credits otherwise get_create_fee will return None
-		await createMissionControlAndSatellite({ user });
+		const { actor: lA } = await setupLedger({ pic, controller });
+
+		ledgerActor = lA;
 
 		// Create mission control requires the user to be a caller of the Console
 		actor.setIdentity(controller);
@@ -92,24 +113,30 @@ describe('Console > Upgrade > v0.2.0 -> v0.3.0', () => {
 		await pic?.tearDown();
 	});
 
-	it('should still provide fees', async () => {
-		const { set_fee } = actor;
+	it('should still list payments', async () => {
+		const { missionControlId } = await createMissionControlAndSatellite({ user });
 
-		await set_fee({ Satellite: null }, { e8s: 40_000_000n });
-		await set_fee({ Orbiter: null }, { e8s: 77_000_000n });
+		await transferIcp({
+			ledgerActor,
+			owner: missionControlId
+		});
 
-		await upgradeCurrent();
+		await createSatellite({ missionControlId });
 
-		const newActor = pic.createActor<ConsoleActor>(idlFactoryConsole, canisterId);
-		newActor.setIdentity(user);
+		actor.setIdentity(controller);
 
-		const { get_create_fee } = newActor;
+		const { list_payments } = actor;
+		const payments = await list_payments();
 
-		await expect(get_create_fee({ Satellite: null })).resolves.toEqual(
-			toNullable({ e8s: 40_000_000n })
+		expect(payments).toHaveLength(1);
+		expect(payments[0][0]).toEqual(2n);
+		expect(payments[0][1].block_index_payment).toEqual(2n);
+		expect(payments[0][1].block_index_refunded).toEqual([]);
+		expect(payments[0][1].created_at > 0n).toBeTruthy();
+		expect(payments[0][1].updated_at > 0n).toBeTruthy();
+		expect(fromNullable(payments[0][1].mission_control_id)?.toText()).toEqual(
+			missionControlId.toText()
 		);
-		await expect(get_create_fee({ Orbiter: null })).resolves.toEqual(
-			toNullable({ e8s: 77_000_000n })
-		);
+		expect(payments[0][1].status).toEqual({ Completed: null });
 	});
 });

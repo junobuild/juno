@@ -212,13 +212,15 @@ pub mod interface {
 }
 
 pub mod ledger {
-    use candid::CandidType;
+    use candid::{CandidType, Principal};
     use ic_ledger_types::BlockIndex;
     use junobuild_shared::types::state::{MissionControlId, Timestamp};
     use serde::{Deserialize, Serialize};
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct Payment {
+        pub purchaser: Option<Principal>,
+        #[deprecated(note = "Deprecated. Use purchaser instead.")]
         pub mission_control_id: Option<MissionControlId>,
         pub block_index_payment: BlockIndex,
         pub block_index_refunded: Option<BlockIndex>,

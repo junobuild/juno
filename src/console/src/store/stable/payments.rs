@@ -2,36 +2,32 @@ use crate::store::services::mutate_stable_state;
 use crate::store::{with_payments, with_payments_mut};
 use crate::types::ledger::{Payment, PaymentStatus};
 use crate::types::state::{Payments, PaymentsStable, StableState};
+use candid::Principal;
 use ic_cdk::api::time;
 use ic_ledger_types::BlockIndex;
 use junobuild_shared::structures::collect_stable_map_from;
-use junobuild_shared::types::state::UserId;
 
 pub fn is_known_payment(block_index: &BlockIndex) -> bool {
     with_payments(|payments| payments.contains_key(block_index))
 }
 
 pub fn insert_new_payment(
-    user: &UserId,
+    purchaser: &Principal,
     block_index: &BlockIndex,
 ) -> Result<Payment, &'static str> {
-    mutate_stable_state(|stable| insert_new_payment_impl(user, block_index, stable))
+    mutate_stable_state(|stable| insert_new_payment_impl(purchaser, block_index, stable))
 }
 
 fn insert_new_payment_impl(
-    user: &UserId,
+    purchaser: &Principal,
     block_index: &BlockIndex,
     state: &mut StableState,
 ) -> Result<Payment, &'static str> {
-    let mission_control = state
-        .accounts
-        .get(user)
-        .ok_or("User does not have a mission control center")?;
-
     let now = time();
 
     let new_payment = Payment {
-        mission_control_id: mission_control.mission_control_id,
+        purchaser: Some(purchaser.clone()),
+        mission_control_id: None,
         block_index_payment: *block_index,
         block_index_refunded: None,
         status: PaymentStatus::Acknowledged,
@@ -57,12 +53,9 @@ fn update_payment_completed_impl(
     let now = time();
 
     let updated_payment = Payment {
-        mission_control_id: payment.mission_control_id,
-        block_index_payment: payment.block_index_payment,
-        block_index_refunded: Some(payment.block_index_payment),
         status: PaymentStatus::Completed,
-        created_at: payment.created_at,
         updated_at: now,
+        ..payment
     };
 
     payments.insert(*block_index, updated_payment.clone());
@@ -91,12 +84,11 @@ fn update_payment_refunded_impl(
     let now = time();
 
     let updated_payment = Payment {
-        mission_control_id: payment.mission_control_id,
-        block_index_payment: payment.block_index_payment,
         block_index_refunded: Some(*block_index_refunded),
         status: PaymentStatus::Refunded,
         created_at: payment.created_at,
         updated_at: now,
+        ..payment
     };
 
     payments.insert(*block_index_payment, updated_payment.clone());

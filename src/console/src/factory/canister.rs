@@ -1,21 +1,26 @@
-use crate::accounts::credits::{has_credits, use_credits};
-use crate::accounts::get_account_with_existing_mission_control;
-use crate::factory::services::ledger::{refund_payment, verify_payment};
+use crate::accounts::{
+    credits::{has_credits, use_credits},
+    get_existing_account,
+};
+use crate::factory::services::ledger::{refund_payment, transfer_from, verify_payment};
 use crate::factory::types::{CanisterCreator, CreateCanisterArgs};
 use crate::store::stable::{
     insert_new_payment, is_known_payment, update_payment_completed, update_payment_refunded,
 };
 use crate::types::ledger::Payment;
+use crate::types::state::Account;
 use candid::Principal;
 use ic_ledger_types::{BlockIndex, Tokens};
 use junobuild_shared::mgmt::types::cmc::SubnetId;
 use junobuild_shared::types::state::UserId;
+use junobuild_shared::utils::principal_equal;
 use std::future::Future;
 
 pub async fn create_canister<F, Fut>(
     create: F,
     increment_rate: &dyn Fn() -> Result<(), String>,
-    get_fee: &dyn Fn() -> Tokens,
+    get_fee: &dyn Fn() -> Result<Tokens, String>,
+    add_segment: &dyn Fn(&UserId, &Principal),
     caller: Principal,
     user: UserId,
     args: CreateCanisterArgs,
@@ -24,27 +29,65 @@ where
     F: FnOnce(CanisterCreator, Option<SubnetId>) -> Fut,
     Fut: Future<Output = Result<Principal, String>>,
 {
-    // User should have a mission control center
-    let account = get_account_with_existing_mission_control(&user, &caller)?;
+    let account = get_existing_account(&user)?;
 
-    match account.mission_control_id {
-        None => Err("No mission control center found.".to_string()),
-        Some(mission_control_id) => {
-            let creator: CanisterCreator =
-                CanisterCreator::MissionControl((mission_control_id, account.owner));
+    if principal_equal(caller, account.owner) {
+        // Caller is user
+        let creator: CanisterCreator = CanisterCreator::User(account.owner);
 
-            let fee = get_fee();
+        let canister_id =
+            create_canister_with_account(create, increment_rate, get_fee, &account, creator, args)
+                .await?;
 
-            if has_credits(&account, &fee) {
-                // Guard too many requests
-                increment_rate()?;
+        add_segment(&account.owner, &canister_id);
 
-                return create_canister_with_credits(create, creator, args).await;
-            }
-
-            create_canister_with_payment(create, creator, args, fee).await
-        }
+        return Ok(canister_id);
     }
+
+    let mission_control_id = account
+        .mission_control_id
+        .ok_or("No mission control center found.".to_string())?;
+
+    if principal_equal(caller, mission_control_id) {
+        // Caller is mission control
+        let creator: CanisterCreator =
+            CanisterCreator::MissionControl((mission_control_id, account.owner));
+        return create_canister_with_account(
+            create,
+            increment_rate,
+            get_fee,
+            &account,
+            creator,
+            args,
+        )
+        .await;
+    }
+
+    Err("Unknown caller".to_string())
+}
+
+pub async fn create_canister_with_account<F, Fut>(
+    create: F,
+    increment_rate: &dyn Fn() -> Result<(), String>,
+    get_fee: &dyn Fn() -> Result<Tokens, String>,
+    account: &Account,
+    creator: CanisterCreator,
+    args: CreateCanisterArgs,
+) -> Result<Principal, String>
+where
+    F: FnOnce(CanisterCreator, Option<SubnetId>) -> Fut,
+    Fut: Future<Output = Result<Principal, String>>,
+{
+    let fee = get_fee()?;
+
+    if has_credits(account, &fee) {
+        // Guard too many requests
+        increment_rate()?;
+
+        return create_canister_with_credits(create, creator, args).await;
+    }
+
+    create_canister_with_payment(create, creator, args, fee).await
 }
 
 async fn create_canister_with_credits<F, Fut>(
@@ -90,17 +133,15 @@ where
 {
     let purchaser = creator.purchaser().clone();
 
-    if block_index.is_none() {
-        return Err("No block index provided to verify payment.".to_string());
-    }
+    let purchaser_payment_block_index = if let Some(block_index) = block_index {
+        if is_known_payment(&block_index) {
+            return Err("Payment has been or is being processed.".to_string());
+        }
 
-    // User should have processed a payment from the mission control center
-    let purchaser_payment_block_index: BlockIndex = block_index.unwrap();
-    let _ = verify_payment(&purchaser, &purchaser_payment_block_index, fee).await?;
-
-    if is_known_payment(&purchaser_payment_block_index) {
-        return Err("Payment has been or is being processed.".to_string());
-    }
+        verify_payment(&purchaser, &block_index, fee).await?
+    } else {
+        transfer_from(&purchaser, &fee).await?
+    };
 
     // We acknowledge the new payment
     insert_new_payment(&purchaser, &purchaser_payment_block_index)?;

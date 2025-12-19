@@ -52,6 +52,7 @@ where
         // Caller is mission control
         let creator: CanisterCreator =
             CanisterCreator::MissionControl((mission_control_id, account.owner));
+
         return create_canister_with_account(
             create,
             increment_rate,

@@ -61,7 +61,7 @@ describe('Console > Factory > Caller', () => {
 	describe.each([
 		{ title: 'Satellite', createFn: createSatelliteWithConsole },
 		{ title: 'Orbiter', createFn: createOrbiterWithConsole }
-	])('$title', ({ createFn }) => {
+	])('$title', ({ title, createFn }) => {
 		let user: Ed25519KeyIdentity;
 
 		beforeEach(() => {
@@ -69,45 +69,69 @@ describe('Console > Factory > Caller', () => {
 			actor.setIdentity(user);
 		});
 
-		it('should fail with unknown account', async () => {
-			await expect(
-				createFn({
-					user
-				})
-			).rejects.toThrow(NO_ACCOUNT_ERROR_MSG);
+		describe('Error', () => {
+			it('should fail with unknown account', async () => {
+				await expect(
+					createFn({
+						user
+					})
+				).rejects.toThrow(NO_ACCOUNT_ERROR_MSG);
+			});
+
+			it('should fail with no mission control', async () => {
+				const { get_or_init_account } = actor;
+				await get_or_init_account();
+
+				const anotherCaller = Ed25519KeyIdentity.generate();
+				actor.setIdentity(anotherCaller);
+
+				await expect(
+					createFn({
+						user
+					})
+				).rejects.toThrow("'No mission control center found");
+
+				actor.setIdentity(user);
+			});
+
+			it('should fail with unknown caller', async () => {
+				const { init_user_mission_control_center } = actor;
+
+				await init_user_mission_control_center();
+
+				const anotherCaller = Ed25519KeyIdentity.generate();
+				actor.setIdentity(anotherCaller);
+
+				await expect(
+					createFn({
+						user
+					})
+				).rejects.toThrow("'Unknown caller");
+
+				actor.setIdentity(user);
+			});
 		});
 
-		it('should fail with no mission control', async () => {
-			const { get_or_init_account } = actor;
-			await get_or_init_account();
+		describe('Success', () => {
+			it('should create with user', async () => {
+				const { get_or_init_account, list_segments } = actor;
+				await get_or_init_account();
 
-			const anotherCaller = Ed25519KeyIdentity.generate();
-			actor.setIdentity(anotherCaller);
-
-			await expect(
-				createFn({
+				const id = await createFn({
 					user
-				})
-			).rejects.toThrow("'No mission control center found");
+				});
 
-			actor.setIdentity(user);
-		});
+				expect(id).not.toBeUndefined();
 
-		it('should fail with unknown caller', async () => {
-			const { init_user_mission_control_center } = actor;
+				const segments = await list_segments({
+					segment_type: [title === 'Orbiter' ? { Orbiter: null } : { Satellite: null }],
+					segment_id: [id]
+				});
 
-			await init_user_mission_control_center();
+				expect(segments).toHaveLength(1);
 
-			const anotherCaller = Ed25519KeyIdentity.generate();
-			actor.setIdentity(anotherCaller);
-
-			await expect(
-				createFn({
-					user
-				})
-			).rejects.toThrow("'Unknown caller");
-
-			actor.setIdentity(user);
+				expect(segments[0][1].segment_id.toText()).toEqual(id.toText());
+			});
 		});
 	});
 });

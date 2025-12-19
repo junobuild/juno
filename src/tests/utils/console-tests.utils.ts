@@ -9,7 +9,7 @@ import {
 	idlFactoryConsole,
 	idlFactoryMissionControl
 } from '$declarations';
-import { type Actor, PocketIc } from '@dfinity/pic';
+import { type Actor, PocketIc, SubnetStateType } from '@dfinity/pic';
 import {
 	arrayBufferToUint8Array,
 	arrayOfNumberToUint8Array,
@@ -22,7 +22,9 @@ import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import type { Principal } from '@icp-sdk/core/principal';
 import { readFile } from 'node:fs/promises';
 import { inject } from 'vitest';
+import { CONSOLE_ID } from '../constants/console-tests.constants';
 import { mockScript } from '../mocks/storage.mocks';
+import { setupLedger } from './ledger-tests.utils';
 import { tick } from './pic-tests.utils';
 import {
 	CONSOLE_WASM_PATH,
@@ -541,17 +543,27 @@ export const updateRateConfig = async ({
 
 export const setupConsole = async ({
 	dateTime,
-	withApplyRateTokens = true
+	withApplyRateTokens = true,
+	withLedger = false,
+	withSegments = false
 }: {
 	dateTime?: Date;
 	withApplyRateTokens?: boolean;
+	withLedger?: boolean;
+	withSegments?: boolean;
 }): Promise<{
 	pic: PocketIc;
 	controller: Ed25519KeyIdentity;
 	canisterId: Principal;
 	actor: Actor<ConsoleActor>;
 }> => {
-	const pic = await PocketIc.create(inject('PIC_URL'));
+	const pic = await PocketIc.create(inject('PIC_URL'), {
+		nns: {
+			enableBenchmarkingInstructionLimits: false,
+			enableDeterministicTimeSlicing: false,
+			state: { type: SubnetStateType.New }
+		}
+	});
 
 	const currentDate = dateTime ?? new Date(2021, 6, 10, 0, 0, 0, 0);
 	await pic.setTime(currentDate.getTime());
@@ -561,8 +573,17 @@ export const setupConsole = async ({
 	const { actor, canisterId } = await pic.setupCanister<ConsoleActor>({
 		idlFactory: idlFactoryConsole,
 		wasm: CONSOLE_WASM_PATH,
-		sender: controller.getPrincipal()
+		sender: controller.getPrincipal(),
+		targetCanisterId: CONSOLE_ID
 	});
+
+	if (withSegments) {
+		await deploySegments({ actor });
+	}
+
+	if (withLedger) {
+		await setupLedger({ pic, controller });
+	}
 
 	if (withApplyRateTokens) {
 		await configMissionControlRateTokens({

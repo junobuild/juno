@@ -26,7 +26,7 @@ unsafe extern "Rust" fn __getrandom_v03_custom(dest: *mut u8, len: usize) -> Res
         let rng = &mut state.borrow_mut().rng;
 
         match rng {
-            None => Err(Error::new_custom(0)),
+            None => Err(Error::UNEXPECTED),
             Some(rng) => {
                 let buf: &mut [u8] = unsafe {
                     // fill the buffer with zeros

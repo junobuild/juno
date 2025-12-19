@@ -64,7 +64,7 @@ describe('Console > Factory > Caller', () => {
 	])('$title', ({ createFn }) => {
 		let user: Ed25519KeyIdentity;
 
-		beforeAll(() => {
+		beforeEach(() => {
 			user = Ed25519KeyIdentity.generate();
 			actor.setIdentity(user);
 		});
@@ -89,6 +89,23 @@ describe('Console > Factory > Caller', () => {
 					user
 				})
 			).rejects.toThrow("'No mission control center found");
+
+			actor.setIdentity(user);
+		});
+
+		it('should fail with unknown caller', async () => {
+			const { init_user_mission_control_center } = actor;
+
+			await init_user_mission_control_center();
+
+			const anotherCaller = Ed25519KeyIdentity.generate();
+			actor.setIdentity(anotherCaller);
+
+			await expect(
+				createFn({
+					user
+				})
+			).rejects.toThrow("'Unknown caller");
 
 			actor.setIdentity(user);
 		});

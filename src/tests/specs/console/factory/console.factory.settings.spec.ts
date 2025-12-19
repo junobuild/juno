@@ -22,14 +22,14 @@ import type { Identity } from '@icp-sdk/core/agent';
 import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import type { Principal } from '@icp-sdk/core/principal';
 import { inject } from 'vitest';
-import { CONSOLE_ID } from '../../constants/console-tests.constants';
-import { MEMORIES } from '../../constants/satellite-tests.constants';
-import { deploySegments, updateRateConfig } from '../../utils/console-tests.utils';
-import { canisterStatus } from '../../utils/ic-management-tests.utils';
-import { tick } from '../../utils/pic-tests.utils';
-import { CONSOLE_WASM_PATH } from '../../utils/setup-tests.utils';
+import { CONSOLE_ID } from '../../../constants/console-tests.constants';
+import { MEMORIES } from '../../../constants/satellite-tests.constants';
+import { deploySegments, updateRateConfig } from '../../../utils/console-tests.utils';
+import { canisterStatus } from '../../../utils/ic-management-tests.utils';
+import { tick } from '../../../utils/pic-tests.utils';
+import { CONSOLE_WASM_PATH } from '../../../utils/setup-tests.utils';
 
-describe('Console > Factory', () => {
+describe('Console > Factory > Settings', () => {
 	let pic: PocketIc;
 	let actor: Actor<ConsoleActor>;
 

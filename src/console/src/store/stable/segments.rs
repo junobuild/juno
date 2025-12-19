@@ -65,5 +65,7 @@ fn filter_segments_range(
         segment_id: segment_id.unwrap_or(PRINCIPAL_MAX),
     };
 
-    start_key..end_key
+    // Inclusive range to ensure filtering by segment_type works correctly.
+    // Exclusive range (start_key..end_key) would be too narrow when start and end have the same segment_type.
+    start_key..=end_key
 }

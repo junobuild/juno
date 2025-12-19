@@ -69,12 +69,14 @@ describe('Console > Factory > Caller', () => {
 			actor.setIdentity(user);
 		});
 
-		it('should fail with unknown caller if no user and no mission control', async () => {
+		it('should fail with unknown account', async () => {
 			await expect(
 				createFn({
 					user
 				})
 			).rejects.toThrow(NO_ACCOUNT_ERROR_MSG);
 		});
+
+
 	});
 });

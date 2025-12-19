@@ -577,6 +577,8 @@ export const setupConsole = async ({
 		targetCanisterId: CONSOLE_ID
 	});
 
+	actor.setIdentity(controller);
+
 	if (withSegments) {
 		await deploySegments({ actor });
 	}

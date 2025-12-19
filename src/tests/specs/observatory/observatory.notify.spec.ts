@@ -10,7 +10,7 @@ import { AnonymousIdentity } from '@icp-sdk/core/agent';
 import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import { inject } from 'vitest';
 import { mockMissionControlId } from '../../../frontend/tests/mocks/modules.mock';
-import { CONSOLE_ID } from '../../constants/console-tests.constants';
+import { CONSOLE_ID, NO_ACCOUNT_ERROR_MSG } from '../../constants/console-tests.constants';
 import {
 	CALLER_NOT_ANONYMOUS_MSG,
 	OBSERVATORY_ID
@@ -98,7 +98,7 @@ describe('Observatory > Notify', () => {
 		it('should throw errors if caller is not a mission control', async () => {
 			const { notify } = observatoryActor;
 
-			await expect(notify(mockNotifyArgs)).rejects.toThrow('User does not have an account.');
+			await expect(notify(mockNotifyArgs)).rejects.toThrow(NO_ACCOUNT_ERROR_MSG);
 		});
 
 		it('should throw errors if caller is not observatory', async () => {

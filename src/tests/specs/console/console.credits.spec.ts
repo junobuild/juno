@@ -28,10 +28,10 @@ describe('Console > Credits', () => {
 
 		pic = p;
 
+		controller = cO;
+
 		actor = c;
 		actor.setIdentity(controller);
-
-		controller = cO;
 	});
 
 	afterAll(async () => {

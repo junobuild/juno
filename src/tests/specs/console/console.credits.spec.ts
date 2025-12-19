@@ -3,7 +3,7 @@ import {
 	idlFactoryMissionControl,
 	type MissionControlActor
 } from '$declarations';
-import type { PocketIc , Actor } from '@dfinity/pic';
+import type { Actor, PocketIc } from '@dfinity/pic';
 import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
 import type { Identity } from '@icp-sdk/core/agent';
 import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';

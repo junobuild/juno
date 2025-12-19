@@ -18,7 +18,7 @@ describe('Console > Factory > Caller', () => {
 			actor: c,
 			controller: cO
 		} = await setupConsole({
-			withApplyRateTokens: false,
+			withApplyRateTokens: true,
 			withLedger: true,
 			withSegments: true
 		});
@@ -77,6 +77,20 @@ describe('Console > Factory > Caller', () => {
 			).rejects.toThrow(NO_ACCOUNT_ERROR_MSG);
 		});
 
+		it('should fail with no mission control', async () => {
+			const { get_or_init_account } = actor;
+			await get_or_init_account();
 
+			const anotherCaller = Ed25519KeyIdentity.generate();
+			actor.setIdentity(anotherCaller);
+
+			await expect(
+				createFn({
+					user
+				})
+			).rejects.toThrow("'No mission control center found");
+
+			actor.setIdentity(user);
+		});
 	});
 });

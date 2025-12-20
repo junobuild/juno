@@ -4,7 +4,10 @@ use crate::factory::types::CanisterCreator;
 use crate::factory::utils::controllers::remove_console_controller;
 use crate::factory::utils::wasm::orbiter_wasm_arg;
 use crate::store::heap::{get_orbiter_fee, increment_orbiters_rate};
+use crate::store::stable::add_segment as add_segment_store;
+use crate::types::state::{Segment, SegmentKey, SegmentType};
 use candid::{Nat, Principal};
+use ic_ledger_types::Tokens;
 use junobuild_shared::constants_shared::CREATE_ORBITER_CYCLES;
 use junobuild_shared::ic::api::id;
 use junobuild_shared::mgmt::cmc::cmc_create_canister_install_code;
@@ -12,6 +15,7 @@ use junobuild_shared::mgmt::ic::create_canister_install_code;
 use junobuild_shared::mgmt::types::cmc::SubnetId;
 use junobuild_shared::mgmt::types::ic::CreateCanisterInitSettingsArg;
 use junobuild_shared::types::interface::CreateOrbiterArgs;
+use junobuild_shared::types::state::UserId;
 
 pub async fn create_orbiter(
     caller: Principal,
@@ -20,12 +24,17 @@ pub async fn create_orbiter(
     create_canister(
         create_orbiter_wasm,
         &increment_orbiters_rate,
-        &get_orbiter_fee,
+        &get_fee,
+        &add_segment,
         caller,
         args.user,
         args.into(),
     )
     .await
+}
+
+fn get_fee() -> Result<Tokens, String> {
+    Ok(get_orbiter_fee())
 }
 
 async fn create_orbiter_wasm(
@@ -64,4 +73,10 @@ async fn create_orbiter_wasm(
             Ok(orbiter_id)
         }
     }
+}
+
+fn add_segment(user: &UserId, canister_id: &Principal) {
+    let orbiter = Segment::from(canister_id, &None);
+    let key = SegmentKey::from(user, canister_id, SegmentType::Orbiter);
+    add_segment_store(&key, &orbiter)
 }

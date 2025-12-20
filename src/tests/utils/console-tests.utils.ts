@@ -22,7 +22,7 @@ import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import type { Principal } from '@icp-sdk/core/principal';
 import { readFile } from 'node:fs/promises';
 import { inject } from 'vitest';
-import { CONSOLE_ID } from '../constants/console-tests.constants';
+import { CONSOLE_ID, TEST_FEE } from '../constants/console-tests.constants';
 import { mockScript } from '../mocks/storage.mocks';
 import { tick } from './pic-tests.utils';
 import {
@@ -544,12 +544,14 @@ export const setupConsole = async ({
 	dateTime,
 	withApplyRateTokens = true,
 	withLedger = false,
-	withSegments = false
+	withSegments = false,
+	withFee = false
 }: {
 	dateTime?: Date;
 	withApplyRateTokens?: boolean;
 	withLedger?: boolean;
 	withSegments?: boolean;
+	withFee?: boolean;
 }): Promise<{
 	pic: PocketIc;
 	controller: Ed25519KeyIdentity;
@@ -597,6 +599,14 @@ export const setupConsole = async ({
 
 		await pic.advanceTime(120_000);
 		await tick(pic);
+	}
+
+	if (withFee) {
+		const { set_fee } = actor;
+
+		await set_fee({ Satellite: null }, { e8s: TEST_FEE });
+		await set_fee({ Orbiter: null }, { e8s: TEST_FEE });
+		await set_fee({ MissionControl: null }, { e8s: TEST_FEE });
 	}
 
 	return { pic, controller, actor, canisterId };

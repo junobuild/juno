@@ -1,3 +1,4 @@
+use candid::Principal;
 use ic_ledger_types::{Memo, Tokens};
 
 // Specifies the transaction fee for ICP transactions.
@@ -40,3 +41,7 @@ pub const MAX_NUMBER_OF_MISSION_CONTROL_CONTROLLERS: usize = 8;
 
 // 10 controllers max on the IC. User and mission control principals are copied in satellite state controllers
 pub const MAX_NUMBER_OF_SATELLITE_CONTROLLERS: usize = 10;
+
+// Useful for filtering stable tree map ranges that use Principal in keys
+pub const PRINCIPAL_MIN: Principal = Principal::from_slice(&[]);
+pub const PRINCIPAL_MAX: Principal = Principal::from_slice(&[255; 29]);

@@ -22,7 +22,7 @@ async fn set_random_seed() {
 unsafe extern "Rust" fn __getrandom_v03_custom(dest: *mut u8, len: usize) -> Result<(), Error> {
     with_runtime_rng_mut(|rng| {
         match rng {
-            None => Err(Error::new_custom(0)),
+            None => Err(Error::UNEXPECTED),
             Some(rng) => {
                 let buf: &mut [u8] = unsafe {
                     // fill the buffer with zeros

@@ -1,52 +1,37 @@
 import {
 	type ConsoleActor,
-	idlFactoryConsole,
 	idlFactoryMissionControl,
 	type MissionControlActor
 } from '$declarations';
-import { type Actor, PocketIc, SubnetStateType } from '@dfinity/pic';
+import type { Actor, PocketIc } from '@dfinity/pic';
 import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
 import type { Identity } from '@icp-sdk/core/agent';
 import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import type { Principal } from '@icp-sdk/core/principal';
-import { inject } from 'vitest';
-import { CONSOLE_ID } from '../../constants/console-tests.constants';
-import { deploySegments } from '../../utils/console-tests.utils';
-import { setupLedger } from '../../utils/ledger-tests.utils';
-import { CONSOLE_WASM_PATH } from '../../utils/setup-tests.utils';
+import { setupConsole } from '../../utils/console-tests.utils';
 
 describe('Console > Credits', () => {
 	let pic: PocketIc;
 	let actor: Actor<ConsoleActor>;
-
-	const controller = Ed25519KeyIdentity.generate();
-
-	const currentDate = new Date(2021, 6, 10, 0, 0, 0, 0);
+	let controller: Ed25519KeyIdentity;
 
 	beforeAll(async () => {
-		pic = await PocketIc.create(inject('PIC_URL'), {
-			nns: {
-				enableBenchmarkingInstructionLimits: false,
-				enableDeterministicTimeSlicing: false,
-				state: { type: SubnetStateType.New }
-			}
+		const {
+			pic: p,
+			actor: c,
+			controller: cO
+		} = await setupConsole({
+			withApplyRateTokens: false,
+			withLedger: true,
+			withSegments: true
 		});
 
-		await pic.setTime(currentDate.getTime());
+		pic = p;
 
-		const { actor: c } = await pic.setupCanister<ConsoleActor>({
-			idlFactory: idlFactoryConsole,
-			wasm: CONSOLE_WASM_PATH,
-			sender: controller.getPrincipal(),
-			targetCanisterId: CONSOLE_ID
-		});
+		controller = cO;
 
 		actor = c;
 		actor.setIdentity(controller);
-
-		await deploySegments({ actor });
-
-		await setupLedger({ pic, controller });
 	});
 
 	afterAll(async () => {

@@ -9,7 +9,7 @@ import {
 	idlFactoryConsole,
 	idlFactoryMissionControl
 } from '$declarations';
-import { type Actor, PocketIc } from '@dfinity/pic';
+import { type Actor, IcpFeaturesConfig, PocketIc, SubnetStateType } from '@dfinity/pic';
 import {
 	arrayBufferToUint8Array,
 	arrayOfNumberToUint8Array,
@@ -22,6 +22,7 @@ import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import type { Principal } from '@icp-sdk/core/principal';
 import { readFile } from 'node:fs/promises';
 import { inject } from 'vitest';
+import { CONSOLE_ID, TEST_FEE } from '../constants/console-tests.constants';
 import { mockScript } from '../mocks/storage.mocks';
 import { tick } from './pic-tests.utils';
 import {
@@ -541,17 +542,34 @@ export const updateRateConfig = async ({
 
 export const setupConsole = async ({
 	dateTime,
-	withApplyRateTokens = true
+	withApplyRateTokens = true,
+	withLedger = false,
+	withSegments = false,
+	withFee = false
 }: {
 	dateTime?: Date;
 	withApplyRateTokens?: boolean;
+	withLedger?: boolean;
+	withSegments?: boolean;
+	withFee?: boolean;
 }): Promise<{
 	pic: PocketIc;
 	controller: Ed25519KeyIdentity;
 	canisterId: Principal;
 	actor: Actor<ConsoleActor>;
 }> => {
-	const pic = await PocketIc.create(inject('PIC_URL'));
+	const pic = await PocketIc.create(inject('PIC_URL'), {
+		nns: {
+			enableBenchmarkingInstructionLimits: false,
+			enableDeterministicTimeSlicing: false,
+			state: { type: SubnetStateType.New }
+		},
+		...(withLedger && {
+			icpFeatures: {
+				icpToken: IcpFeaturesConfig.DefaultConfig
+			}
+		})
+	});
 
 	const currentDate = dateTime ?? new Date(2021, 6, 10, 0, 0, 0, 0);
 	await pic.setTime(currentDate.getTime());
@@ -561,8 +579,15 @@ export const setupConsole = async ({
 	const { actor, canisterId } = await pic.setupCanister<ConsoleActor>({
 		idlFactory: idlFactoryConsole,
 		wasm: CONSOLE_WASM_PATH,
-		sender: controller.getPrincipal()
+		sender: controller.getPrincipal(),
+		targetCanisterId: CONSOLE_ID
 	});
+
+	actor.setIdentity(controller);
+
+	if (withSegments) {
+		await deploySegments({ actor });
+	}
 
 	if (withApplyRateTokens) {
 		await configMissionControlRateTokens({
@@ -574,6 +599,14 @@ export const setupConsole = async ({
 
 		await pic.advanceTime(120_000);
 		await tick(pic);
+	}
+
+	if (withFee) {
+		const { set_fee } = actor;
+
+		await set_fee({ Satellite: null }, { e8s: TEST_FEE });
+		await set_fee({ Orbiter: null }, { e8s: TEST_FEE });
+		await set_fee({ MissionControl: null }, { e8s: TEST_FEE });
 	}
 
 	return { pic, controller, actor, canisterId };

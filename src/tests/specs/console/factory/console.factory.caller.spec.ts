@@ -144,11 +144,11 @@ describe('Console > Factory > Caller', () => {
 			await tick(pic);
 
 			// Second requires payment
-			const id = await createFn({
-				user
-			});
-
-			expect(id).not.toBeUndefined();
+			await expect(
+				createFn({
+					user
+				})
+			).rejects.toThrow('InsufficientAllowance');
 		});
 	});
 });

@@ -3,7 +3,7 @@ import {
 	type MissionControlActor,
 	type MissionControlDid
 } from '$declarations';
-import { PocketIc, SubnetStateType, type Actor } from '@dfinity/pic';
+import { IcpFeaturesConfig, PocketIc, SubnetStateType, type Actor } from '@dfinity/pic';
 import { AccountIdentifier, type IcpLedgerCanisterOptions } from '@icp-sdk/canisters/ledger/icp';
 import { AnonymousIdentity } from '@icp-sdk/core/agent';
 import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
@@ -11,7 +11,7 @@ import type { Principal } from '@icp-sdk/core/principal';
 import { inject } from 'vitest';
 import { LEDGER_ID } from '../../constants/ledger-tests.contants';
 import { MISSION_CONTROL_ADMIN_CONTROLLER_ERROR_MSG } from '../../constants/mission-control-tests.constants';
-import { setupLedger, transferIcp } from '../../utils/ledger-tests.utils';
+import { transferIcp } from '../../utils/ledger-tests.utils';
 import { missionControlUserInitArgs } from '../../utils/mission-control-tests.utils';
 import { MISSION_CONTROL_WASM_PATH } from '../../utils/setup-tests.utils';
 
@@ -54,6 +54,9 @@ describe('Mission Control > Wallet', () => {
 				enableBenchmarkingInstructionLimits: false,
 				enableDeterministicTimeSlicing: false,
 				state: { type: SubnetStateType.New }
+			},
+			icpFeatures: {
+				icpToken: IcpFeaturesConfig.DefaultConfig
 			}
 		});
 	});
@@ -121,9 +124,6 @@ describe('Mission Control > Wallet', () => {
 			await initMissionControl(controller.getPrincipal());
 
 			actor.setIdentity(controller);
-
-			const { actor: c } = await setupLedger({ pic, controller });
-			ledgerActor = c;
 		});
 
 		describe('InsufficientFunds', () => {
@@ -165,7 +165,7 @@ describe('Mission Control > Wallet', () => {
 		describe('Transfer success', () => {
 			beforeAll(async () => {
 				await transferIcp({
-					ledgerActor,
+					pic,
 					owner: missionControlId
 				});
 			});
@@ -179,7 +179,7 @@ describe('Mission Control > Wallet', () => {
 					throw new Error('Unexpected result. Icrc transfer should have succeeded.');
 				}
 
-				expect(result.Ok).toEqual(2n);
+				expect(result.Ok).toEqual(4n);
 			});
 
 			it('should execute icrc transfer', async () => {
@@ -191,7 +191,7 @@ describe('Mission Control > Wallet', () => {
 					throw new Error('Unexpected result. Icrc transfer should have succeeded.');
 				}
 
-				expect(result.Ok).toEqual(3n);
+				expect(result.Ok).toEqual(5n);
 			});
 		});
 	});

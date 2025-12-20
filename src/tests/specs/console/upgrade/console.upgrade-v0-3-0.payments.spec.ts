@@ -7,7 +7,7 @@ import {
 	type MissionControlActor
 } from '$declarations';
 import type { MissionControlId } from '$lib/types/mission-control';
-import { PocketIc, SubnetStateType, type Actor } from '@dfinity/pic';
+import { IcpFeaturesConfig, PocketIc, SubnetStateType, type Actor } from '@dfinity/pic';
 import { assertNonNullish, fromNullable } from '@dfinity/utils';
 import type { IcpLedgerCanisterOptions } from '@icp-sdk/canisters/ledger/icp';
 import type { Identity } from '@icp-sdk/core/agent';
@@ -16,7 +16,7 @@ import type { Principal } from '@icp-sdk/core/principal';
 import { inject } from 'vitest';
 import { CONSOLE_ID } from '../../../constants/console-tests.constants';
 import { deploySegments, updateRateConfig } from '../../../utils/console-tests.utils';
-import { setupLedger, transferIcp } from '../../../utils/ledger-tests.utils';
+import { transferIcp } from '../../../utils/ledger-tests.utils';
 import { tick } from '../../../utils/pic-tests.utils';
 import {
 	CONSOLE_WASM_PATH,
@@ -30,7 +30,6 @@ describe('Console > Upgrade > Payments > v0.2.0 -> v0.3.0', () => {
 	let pic: PocketIc;
 	let actor: Actor<ConsoleActor020>;
 	let canisterId: Principal;
-	let ledgerActor: Actor<LedgerActor>;
 
 	const controller = Ed25519KeyIdentity.generate();
 
@@ -90,6 +89,9 @@ describe('Console > Upgrade > Payments > v0.2.0 -> v0.3.0', () => {
 				enableBenchmarkingInstructionLimits: false,
 				enableDeterministicTimeSlicing: false,
 				state: { type: SubnetStateType.New }
+			},
+			icpFeatures: {
+				icpToken: IcpFeaturesConfig.DefaultConfig
 			}
 		});
 
@@ -111,10 +113,6 @@ describe('Console > Upgrade > Payments > v0.2.0 -> v0.3.0', () => {
 
 		await deploySegments({ actor });
 
-		const { actor: lA } = await setupLedger({ pic, controller });
-
-		ledgerActor = lA;
-
 		// Create mission control requires the user to be a caller of the Console
 		actor.setIdentity(controller);
 	});
@@ -129,7 +127,7 @@ describe('Console > Upgrade > Payments > v0.2.0 -> v0.3.0', () => {
 		missionControlId = mId;
 
 		await transferIcp({
-			ledgerActor,
+			pic,
 			owner: missionControlId
 		});
 
@@ -142,11 +140,11 @@ describe('Console > Upgrade > Payments > v0.2.0 -> v0.3.0', () => {
 			const payments = await list_payments();
 
 			expect(payments).toHaveLength(1);
-			expect(payments[0][0]).toEqual(2n);
-			expect(payments[0][1].block_index_payment).toEqual(2n);
+			expect(payments[0][0]).toEqual(4n);
+			expect(payments[0][1].block_index_payment).toEqual(4n);
 			// There was likely a trivial issue since genesis where the block index was saved as refunded
 			// when we marked the payment as completed. This is fixed with new version.
-			expect(payments[0][1].block_index_refunded).toEqual([2n]);
+			expect(payments[0][1].block_index_refunded).toEqual([4n]);
 			expect(payments[0][1].created_at > 0n).toBeTruthy();
 			expect(payments[0][1].updated_at > 0n).toBeTruthy();
 			expect(fromNullable(payments[0][1].mission_control_id)?.toText()).toEqual(
@@ -178,12 +176,12 @@ describe('Console > Upgrade > Payments > v0.2.0 -> v0.3.0', () => {
 
 		expect(payments).toHaveLength(2);
 
-		const payment = payments.find(([index]) => index === 3n);
+		const payment = payments.find(([index]) => index === 5n);
 
 		assertNonNullish(payment);
 
 		expect(fromNullable(payment[1].purchaser)?.toText()).toEqual(missionControlId.toText());
-		expect(payment[1].block_index_payment).toEqual(3n);
+		expect(payment[1].block_index_payment).toEqual(5n);
 		expect(payment[1].block_index_refunded).toEqual([]);
 		expect(payment[1].created_at > 0n).toBeTruthy();
 		expect(payment[1].updated_at > 0n).toBeTruthy();

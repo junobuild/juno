@@ -2,6 +2,7 @@ use crate::store::{with_segments, with_segments_mut};
 use crate::types::interface::ListSegmentsArgs;
 use crate::types::state::{Segment, SegmentKey, SegmentType, SegmentsStable};
 use candid::Principal;
+use junobuild_shared::constants_shared::{PRINCIPAL_MAX, PRINCIPAL_MIN};
 use junobuild_shared::structures::collect_stable_vec;
 use junobuild_shared::types::state::UserId;
 use std::ops::RangeBounds;
@@ -39,10 +40,6 @@ fn detach_segment_impl(key: &SegmentKey, segments: &mut SegmentsStable) -> Resul
 
     Ok(())
 }
-
-// TODO: extract constant to shared
-const PRINCIPAL_MIN: Principal = Principal::from_slice(&[]);
-const PRINCIPAL_MAX: Principal = Principal::from_slice(&[255; 29]);
 
 fn filter_segments_range(
     user: &UserId,

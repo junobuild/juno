@@ -9,7 +9,7 @@ import {
 	idlFactoryConsole,
 	idlFactoryMissionControl
 } from '$declarations';
-import { type Actor, PocketIc, SubnetStateType } from '@dfinity/pic';
+import { type Actor, IcpFeaturesConfig, PocketIc, SubnetStateType } from '@dfinity/pic';
 import {
 	arrayBufferToUint8Array,
 	arrayOfNumberToUint8Array,
@@ -24,7 +24,6 @@ import { readFile } from 'node:fs/promises';
 import { inject } from 'vitest';
 import { CONSOLE_ID } from '../constants/console-tests.constants';
 import { mockScript } from '../mocks/storage.mocks';
-import { setupLedger } from './ledger-tests.utils';
 import { tick } from './pic-tests.utils';
 import {
 	CONSOLE_WASM_PATH,
@@ -562,7 +561,12 @@ export const setupConsole = async ({
 			enableBenchmarkingInstructionLimits: false,
 			enableDeterministicTimeSlicing: false,
 			state: { type: SubnetStateType.New }
-		}
+		},
+		...(withLedger && {
+			icpFeatures: {
+				icpToken: IcpFeaturesConfig.DefaultConfig
+			}
+		})
 	});
 
 	const currentDate = dateTime ?? new Date(2021, 6, 10, 0, 0, 0, 0);
@@ -581,10 +585,6 @@ export const setupConsole = async ({
 
 	if (withSegments) {
 		await deploySegments({ actor });
-	}
-
-	if (withLedger) {
-		await setupLedger({ pic, controller });
 	}
 
 	if (withApplyRateTokens) {

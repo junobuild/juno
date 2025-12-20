@@ -77,6 +77,10 @@ type Controller = record {
   expires_at : opt nat64;
 };
 type ControllerScope = variant { Write; Admin; Submit };
+type CreateMissionControlArgs = record {
+  block_index : opt nat64;
+  subnet_id : opt principal;
+};
 type CreateOrbiterArgs = record {
   block_index : opt nat64;
   subnet_id : opt principal;
@@ -370,6 +374,7 @@ service : () -> {
   commit_proposal_asset_upload : (CommitBatch) -> ();
   commit_proposal_many_assets_upload : (vec CommitBatch) -> ();
   count_proposals : () -> (nat64) query;
+  create_mission_control : (CreateMissionControlArgs) -> (principal);
   create_orbiter : (CreateOrbiterArgs) -> (principal);
   create_satellite : (CreateSatelliteArgs) -> (principal);
   del_controllers : (DeleteControllersArgs) -> ();

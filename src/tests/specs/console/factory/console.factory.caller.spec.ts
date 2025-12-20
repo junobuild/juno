@@ -4,8 +4,13 @@ import { toNullable } from '@dfinity/utils';
 import type { Identity } from '@icp-sdk/core/agent';
 import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import type { Principal } from '@icp-sdk/core/principal';
-import { NO_ACCOUNT_ERROR_MSG } from '../../../constants/console-tests.constants';
+import {
+	CONSOLE_ID,
+	NO_ACCOUNT_ERROR_MSG,
+	TEST_FEE
+} from '../../../constants/console-tests.constants';
 import { setupConsole } from '../../../utils/console-tests.utils';
+import { approveIcp, transferIcp } from '../../../utils/ledger-tests.utils';
 import { tick } from '../../../utils/pic-tests.utils';
 
 describe('Console > Factory > Caller', () => {
@@ -21,7 +26,8 @@ describe('Console > Factory > Caller', () => {
 		} = await setupConsole({
 			withApplyRateTokens: true,
 			withLedger: true,
-			withSegments: true
+			withSegments: true,
+			withFee: true
 		});
 
 		pic = p;
@@ -149,6 +155,56 @@ describe('Console > Factory > Caller', () => {
 					user
 				})
 			).rejects.toThrow('InsufficientAllowance');
+		});
+
+		it('should succeed with user payment', async () => {
+			const { get_or_init_account } = actor;
+			await get_or_init_account();
+
+			// First module works out
+			const firstId = await createFn({
+				user
+			});
+
+			await pic.advanceTime(60_000);
+			await tick(pic);
+
+			await transferIcp({
+				pic,
+				owner: user.getPrincipal()
+			});
+
+			await approveIcp({
+				pic,
+				owner: user,
+				spender: CONSOLE_ID,
+				amount: TEST_FEE + 10_000n
+			});
+
+			await tick(pic);
+
+			// Second uses payment
+			const secondId = await createFn({
+				user
+			});
+
+			expect(secondId).not.toBeUndefined();
+
+			const { list_segments } = actor;
+
+			const segments = await list_segments({
+				segment_type: [title === 'Orbiter' ? { Orbiter: null } : { Satellite: null }],
+				segment_id: []
+			});
+
+			expect(segments).toHaveLength(2);
+
+			expect(
+				segments.find(([_, { segment_id }]) => segment_id.toText() === firstId.toText())
+			).not.toBeUndefined();
+			expect(
+				segments.find(([_, { segment_id }]) => segment_id.toText() === secondId.toText())
+			).not.toBeUndefined();
 		});
 	});
 });

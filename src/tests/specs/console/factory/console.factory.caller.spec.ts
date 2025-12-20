@@ -1,6 +1,11 @@
-import type { ConsoleActor } from '$declarations';
+import {
+	type ConsoleActor,
+	idlFactoryMissionControl,
+	type MissionControlActor
+} from '$declarations';
+import type { MissionControlId } from '$lib/types/mission-control';
 import type { Actor, PocketIc } from '@dfinity/pic';
-import { toNullable } from '@dfinity/utils';
+import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
 import type { Identity } from '@icp-sdk/core/agent';
 import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import type { Principal } from '@icp-sdk/core/principal';
@@ -65,10 +70,65 @@ describe('Console > Factory > Caller', () => {
 		});
 	};
 
+	const createSatelliteWithMissionControl = async ({
+		missionControlId,
+		user
+	}: {
+		missionControlId: MissionControlId;
+		user: Identity;
+	}): Promise<Principal> => {
+		const micActor = pic.createActor<MissionControlActor>(
+			idlFactoryMissionControl,
+			missionControlId
+		);
+		micActor.setIdentity(user);
+
+		const { create_satellite_with_config } = micActor;
+
+		const { satellite_id } = await create_satellite_with_config({
+			name: toNullable(),
+			storage: toNullable(),
+			subnet_id: toNullable()
+		});
+
+		return satellite_id;
+	};
+
+	const createOrbiterWithMissionControl = async ({
+		missionControlId,
+		user
+	}: {
+		missionControlId: MissionControlId;
+		user: Identity;
+	}): Promise<Principal> => {
+		const micActor = pic.createActor<MissionControlActor>(
+			idlFactoryMissionControl,
+			missionControlId
+		);
+		micActor.setIdentity(user);
+
+		const { create_orbiter_with_config } = micActor;
+
+		const { orbiter_id } = await create_orbiter_with_config({
+			name: toNullable(),
+			subnet_id: toNullable()
+		});
+
+		return orbiter_id;
+	};
+
 	describe.each([
-		{ title: 'Satellite', createFn: createSatelliteWithConsole },
-		{ title: 'Orbiter', createFn: createOrbiterWithConsole }
-	])('$title', ({ title, createFn }) => {
+		{
+			title: 'Satellite',
+			createFn: createSatelliteWithConsole,
+			createFnWithMctrl: createSatelliteWithMissionControl
+		},
+		{
+			title: 'Orbiter',
+			createFn: createOrbiterWithConsole,
+			createFnWithMctrl: createOrbiterWithMissionControl
+		}
+	])('$title', ({ title, createFn, createFnWithMctrl }) => {
 		let user: Ed25519KeyIdentity;
 
 		beforeEach(() => {
@@ -76,135 +136,300 @@ describe('Console > Factory > Caller', () => {
 			actor.setIdentity(user);
 		});
 
-		it('should fail with unknown account', async () => {
-			await expect(
-				createFn({
+		describe('Assertions', () => {
+			it('should fail with unknown account', async () => {
+				await expect(
+					createFn({
+						user
+					})
+				).rejects.toThrow(NO_ACCOUNT_ERROR_MSG);
+			});
+
+			it('should fail with no mission control', async () => {
+				const { get_or_init_account } = actor;
+				await get_or_init_account();
+
+				const anotherCaller = Ed25519KeyIdentity.generate();
+				actor.setIdentity(anotherCaller);
+
+				await expect(
+					createFn({
+						user
+					})
+				).rejects.toThrow("'No mission control center found");
+
+				actor.setIdentity(user);
+			});
+
+			it('should fail with unknown caller', async () => {
+				const { init_user_mission_control_center } = actor;
+
+				await init_user_mission_control_center();
+
+				const anotherCaller = Ed25519KeyIdentity.generate();
+				actor.setIdentity(anotherCaller);
+
+				await expect(
+					createFn({
+						user
+					})
+				).rejects.toThrow("'Unknown caller");
+
+				actor.setIdentity(user);
+			});
+		});
+
+		describe('User', () => {
+			it('should create with user', async () => {
+				const { get_or_init_account, list_segments } = actor;
+				await get_or_init_account();
+
+				const id = await createFn({
 					user
-				})
-			).rejects.toThrow(NO_ACCOUNT_ERROR_MSG);
-		});
+				});
 
-		it('should fail with no mission control', async () => {
-			const { get_or_init_account } = actor;
-			await get_or_init_account();
+				expect(id).not.toBeUndefined();
 
-			const anotherCaller = Ed25519KeyIdentity.generate();
-			actor.setIdentity(anotherCaller);
+				const segments = await list_segments({
+					segment_type: [title === 'Orbiter' ? { Orbiter: null } : { Satellite: null }],
+					segment_id: [id]
+				});
 
-			await expect(
-				createFn({
+				expect(segments).toHaveLength(1);
+
+				expect(segments[0][1].segment_id.toText()).toEqual(id.toText());
+			});
+
+			it('should fail with without credits and payment', async () => {
+				const { get_or_init_account } = actor;
+				await get_or_init_account();
+
+				// First module works out
+				await createFn({
 					user
-				})
-			).rejects.toThrow("'No mission control center found");
+				});
 
-			actor.setIdentity(user);
-		});
+				await pic.advanceTime(60_000);
+				await tick(pic);
 
-		it('should fail with unknown caller', async () => {
-			const { init_user_mission_control_center } = actor;
+				// Second requires payment
+				await expect(
+					createFn({
+						user
+					})
+				).rejects.toThrow('InsufficientAllowance');
+			});
 
-			await init_user_mission_control_center();
+			it('should fail without enough payment', async () => {
+				const { get_or_init_account } = actor;
+				await get_or_init_account();
 
-			const anotherCaller = Ed25519KeyIdentity.generate();
-			actor.setIdentity(anotherCaller);
-
-			await expect(
-				createFn({
+				// First module works out
+				await createFn({
 					user
-				})
-			).rejects.toThrow("'Unknown caller");
+				});
 
-			actor.setIdentity(user);
-		});
+				await pic.advanceTime(60_000);
+				await tick(pic);
 
-		it('should create with user', async () => {
-			const { get_or_init_account, list_segments } = actor;
-			await get_or_init_account();
+				await transferIcp({
+					pic,
+					owner: user.getPrincipal()
+				});
 
-			const id = await createFn({
-				user
+				await approveIcp({
+					pic,
+					owner: user,
+					spender: CONSOLE_ID,
+					amount: TEST_FEE // Fees 10_000n are missing
+				});
+
+				await tick(pic);
+
+				// Second requires full payment
+				await expect(
+					createFn({
+						user
+					})
+				).rejects.toThrow('InsufficientAllowance');
 			});
 
-			expect(id).not.toBeUndefined();
+			it('should succeed with payment', async () => {
+				const { get_or_init_account } = actor;
+				await get_or_init_account();
 
-			const segments = await list_segments({
-				segment_type: [title === 'Orbiter' ? { Orbiter: null } : { Satellite: null }],
-				segment_id: [id]
-			});
-
-			expect(segments).toHaveLength(1);
-
-			expect(segments[0][1].segment_id.toText()).toEqual(id.toText());
-		});
-
-		it('should fail with user without credits and payment', async () => {
-			const { get_or_init_account } = actor;
-			await get_or_init_account();
-
-			// First module works out
-			await createFn({
-				user
-			});
-
-			await pic.advanceTime(60_000);
-			await tick(pic);
-
-			// Second requires payment
-			await expect(
-				createFn({
+				// First module works out
+				const firstId = await createFn({
 					user
-				})
-			).rejects.toThrow('InsufficientAllowance');
+				});
+
+				await pic.advanceTime(60_000);
+				await tick(pic);
+
+				await transferIcp({
+					pic,
+					owner: user.getPrincipal()
+				});
+
+				await approveIcp({
+					pic,
+					owner: user,
+					spender: CONSOLE_ID,
+					amount: TEST_FEE + 10_000n
+				});
+
+				await tick(pic);
+
+				// Second uses payment
+				const secondId = await createFn({
+					user
+				});
+
+				expect(secondId).not.toBeUndefined();
+
+				const { list_segments } = actor;
+
+				const segments = await list_segments({
+					segment_type: [title === 'Orbiter' ? { Orbiter: null } : { Satellite: null }],
+					segment_id: []
+				});
+
+				expect(segments).toHaveLength(2);
+
+				expect(
+					segments.find(([_, { segment_id }]) => segment_id.toText() === firstId.toText())
+				).not.toBeUndefined();
+				expect(
+					segments.find(([_, { segment_id }]) => segment_id.toText() === secondId.toText())
+				).not.toBeUndefined();
+			});
 		});
 
-		it('should succeed with user payment', async () => {
-			const { get_or_init_account } = actor;
-			await get_or_init_account();
+		describe('Mission Control', () => {
+			it('should create with mission control', async () => {
+				const { init_user_mission_control_center, list_segments } = actor;
 
-			// First module works out
-			const firstId = await createFn({
-				user
+				const { mission_control_id } = await init_user_mission_control_center();
+
+				const missionControlId = fromNullable(mission_control_id);
+				assertNonNullish(missionControlId);
+
+				const id = await createFnWithMctrl({
+					user,
+					missionControlId
+				});
+
+				expect(id).not.toBeUndefined();
+
+				const segments = await list_segments({
+					segment_type: [],
+					segment_id: []
+				});
+
+				expect(segments).toHaveLength(0);
 			});
 
-			await pic.advanceTime(60_000);
-			await tick(pic);
+			it('should fail with without credits and payment', async () => {
+				const { init_user_mission_control_center } = actor;
 
-			await transferIcp({
-				pic,
-				owner: user.getPrincipal()
+				const { mission_control_id } = await init_user_mission_control_center();
+
+				const missionControlId = fromNullable(mission_control_id);
+				assertNonNullish(missionControlId);
+
+				// First module works out
+				await createFnWithMctrl({
+					user,
+					missionControlId
+				});
+
+				await pic.advanceTime(60_000);
+				await tick(pic);
+
+				// Second requires payment
+				await expect(
+					createFnWithMctrl({
+						user,
+						missionControlId
+					})
+				).rejects.toThrow('InsufficientFunds');
 			});
 
-			await approveIcp({
-				pic,
-				owner: user,
-				spender: CONSOLE_ID,
-				amount: TEST_FEE + 10_000n
+			it('should fail without enough payment', async () => {
+				const { init_user_mission_control_center } = actor;
+
+				const { mission_control_id } = await init_user_mission_control_center();
+
+				const missionControlId = fromNullable(mission_control_id);
+				assertNonNullish(missionControlId);
+
+				// First module works out
+				await createFnWithMctrl({
+					user,
+					missionControlId
+				});
+
+				await pic.advanceTime(60_000);
+				await tick(pic);
+
+				await transferIcp({
+					pic,
+					owner: missionControlId,
+					amount: TEST_FEE
+				});
+
+				await tick(pic);
+
+				// Second requires full payment
+				await expect(
+					createFnWithMctrl({
+						user,
+						missionControlId
+					})
+				).rejects.toThrow('InsufficientFunds');
 			});
 
-			await tick(pic);
+			it('should succeed with payment', async () => {
+				const { init_user_mission_control_center } = actor;
 
-			// Second uses payment
-			const secondId = await createFn({
-				user
+				const { mission_control_id } = await init_user_mission_control_center();
+
+				const missionControlId = fromNullable(mission_control_id);
+				assertNonNullish(missionControlId);
+
+				// First module works out
+				await createFnWithMctrl({
+					user,
+					missionControlId
+				});
+
+				await pic.advanceTime(60_000);
+				await tick(pic);
+
+				await transferIcp({
+					pic,
+					owner: missionControlId
+				});
+
+				await tick(pic);
+
+				// Second uses payment
+				const secondId = await createFnWithMctrl({
+					user,
+					missionControlId
+				});
+
+				expect(secondId).not.toBeUndefined();
+
+				const { list_segments } = actor;
+
+				const segments = await list_segments({
+					segment_type: [],
+					segment_id: []
+				});
+
+				expect(segments).toHaveLength(0);
 			});
-
-			expect(secondId).not.toBeUndefined();
-
-			const { list_segments } = actor;
-
-			const segments = await list_segments({
-				segment_type: [title === 'Orbiter' ? { Orbiter: null } : { Satellite: null }],
-				segment_id: []
-			});
-
-			expect(segments).toHaveLength(2);
-
-			expect(
-				segments.find(([_, { segment_id }]) => segment_id.toText() === firstId.toText())
-			).not.toBeUndefined();
-			expect(
-				segments.find(([_, { segment_id }]) => segment_id.toText() === secondId.toText())
-			).not.toBeUndefined();
 		});
 	});
 });

@@ -8,7 +8,15 @@ import { LEDGER_ID } from '../constants/ledger-tests.contants';
 
 type LedgerActor = IcpLedgerCanisterOptions['serviceOverride'];
 
-export const transferIcp = async ({ pic, owner }: { pic: PocketIc; owner: Principal }) => {
+export const transferIcp = async ({
+	pic,
+	owner,
+	amount = 5_500_010_000n
+}: {
+	pic: PocketIc;
+	owner: Principal;
+	amount?: bigint;
+}) => {
 	const ledgerActor = pic.createActor<LedgerActor>(idlFactoryLedger, LEDGER_ID);
 
 	// Pocket IC sets 1B ICP as the initial balance for the anonymous principal
@@ -17,7 +25,7 @@ export const transferIcp = async ({ pic, owner }: { pic: PocketIc; owner: Princi
 	const { icrc1_transfer } = ledgerActor;
 
 	await icrc1_transfer({
-		amount: 5_500_010_000n,
+		amount,
 		to: { owner, subaccount: [] },
 		fee: [],
 		memo: [],

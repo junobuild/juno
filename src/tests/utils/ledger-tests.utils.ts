@@ -1,6 +1,6 @@
 import { idlFactory as idlFactoryLedger } from '$declarations/ledger/icp/ledger.factory.did.js';
 import type { PocketIc } from '@dfinity/pic';
-import { type IcpLedgerCanisterOptions } from '@icp-sdk/canisters/ledger/icp';
+import type { IcpLedgerCanisterOptions } from '@icp-sdk/canisters/ledger/icp';
 import { AnonymousIdentity } from '@icp-sdk/core/agent';
 import type { Principal } from '@icp-sdk/core/principal';
 import { LEDGER_ID } from '../constants/ledger-tests.contants';

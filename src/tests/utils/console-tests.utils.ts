@@ -601,7 +601,7 @@ export const setupConsole = async ({
 		await tick(pic);
 	}
 
-	if (withLedger) {
+	if (withFee) {
 		const { set_fee } = actor;
 
 		await set_fee({ Satellite: null }, { e8s: TEST_FEE });

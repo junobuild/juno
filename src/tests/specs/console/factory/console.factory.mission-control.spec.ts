@@ -20,11 +20,6 @@ describe('Console > Factory > Mission Control', () => {
 
 	let user: Ed25519KeyIdentity;
 
-	beforeEach(() => {
-		user = Ed25519KeyIdentity.generate();
-		actor.setIdentity(user);
-	});
-
 	beforeAll(async () => {
 		const {
 			pic: p,
@@ -43,6 +38,11 @@ describe('Console > Factory > Mission Control', () => {
 
 		actor = c;
 		actor.setIdentity(controller);
+	});
+
+	beforeEach(() => {
+		user = Ed25519KeyIdentity.generate();
+		actor.setIdentity(user);
 	});
 
 	afterAll(async () => {

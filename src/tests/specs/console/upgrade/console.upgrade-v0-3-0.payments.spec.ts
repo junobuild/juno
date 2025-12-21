@@ -9,7 +9,6 @@ import {
 import type { MissionControlId } from '$lib/types/mission-control';
 import { IcpFeaturesConfig, PocketIc, SubnetStateType, type Actor } from '@dfinity/pic';
 import { assertNonNullish, fromNullable } from '@dfinity/utils';
-import type { IcpLedgerCanisterOptions } from '@icp-sdk/canisters/ledger/icp';
 import type { Identity } from '@icp-sdk/core/agent';
 import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import type { Principal } from '@icp-sdk/core/principal';
@@ -23,8 +22,6 @@ import {
 	controllersInitArgs,
 	downloadConsole
 } from '../../../utils/setup-tests.utils';
-
-type LedgerActor = IcpLedgerCanisterOptions['serviceOverride'];
 
 describe('Console > Upgrade > Payments > v0.2.0 -> v0.3.0', () => {
 	let pic: PocketIc;

@@ -101,7 +101,6 @@ export const idlFactory = ({ IDL }) => {
 		chunk_ids: IDL.Vec(IDL.Nat)
 	});
 	const CreateMissionControlArgs = IDL.Record({
-		block_index: IDL.Opt(IDL.Nat64),
 		subnet_id: IDL.Opt(IDL.Principal)
 	});
 	const CreateOrbiterArgs = IDL.Record({

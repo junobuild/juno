@@ -33,8 +33,6 @@ export const createMissionControlWithConfig = async ({
 
 	// TODO: duplicate payload
 	return create_mission_control({
-		// Unused
-		block_index: toNullable(),
 		subnet_id: toNullable(subnetId)
 	});
 };

@@ -1,5 +1,5 @@
 use crate::auth::delegation;
-use crate::auth::register::register_account_with_mission_control;
+use crate::auth::register::register_account;
 use crate::auth::strategy_impls::AuthHeap;
 use crate::store::heap::increment_mission_controls_rate;
 use crate::types::interface::{Authentication, AuthenticationError, AuthenticationResult};
@@ -22,7 +22,7 @@ pub async fn openid_authenticate(
         Ok((delegation, credential)) => {
             let key = &delegation.user_key;
 
-            register_account_with_mission_control(key, &credential)
+            register_account(key, &credential)
                 .await
                 .map(|account| Authentication {
                     delegation,

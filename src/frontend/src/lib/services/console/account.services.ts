@@ -1,7 +1,7 @@
 import type { ConsoleDid } from '$declarations';
 import {
 	getAccount as getAccountApi,
-	initAccountAndMissionControl as initAccountAndMissionControlApi
+	getOrInitAccount as getOrInitAccountApi
 } from '$lib/api/console.api';
 import { accountErrorSignOut } from '$lib/services/console/auth/auth.services';
 import { accountCertifiedStore } from '$lib/stores/account.store';
@@ -104,7 +104,8 @@ export const getOrInitMissionControl = async ({
 	const existingAccount = await getAccountApi({ identity, certified: false });
 
 	if (isNullish(existingAccount)) {
-		const newAccount = await initAccountAndMissionControlApi(identity);
+		// TODO: to implement correctly separatly
+		const newAccount = await getOrInitAccountApi(identity);
 
 		return {
 			account: newAccount,

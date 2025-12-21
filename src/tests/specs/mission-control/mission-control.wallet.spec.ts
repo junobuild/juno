@@ -4,7 +4,7 @@ import {
 	type MissionControlDid
 } from '$declarations';
 import { IcpFeaturesConfig, PocketIc, SubnetStateType, type Actor } from '@dfinity/pic';
-import { AccountIdentifier, type IcpLedgerCanisterOptions } from '@icp-sdk/canisters/ledger/icp';
+import { AccountIdentifier } from '@icp-sdk/canisters/ledger/icp';
 import { AnonymousIdentity } from '@icp-sdk/core/agent';
 import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import type { Principal } from '@icp-sdk/core/principal';
@@ -14,8 +14,6 @@ import { MISSION_CONTROL_ADMIN_CONTROLLER_ERROR_MSG } from '../../constants/miss
 import { transferIcp } from '../../utils/ledger-tests.utils';
 import { missionControlUserInitArgs } from '../../utils/mission-control-tests.utils';
 import { MISSION_CONTROL_WASM_PATH } from '../../utils/setup-tests.utils';
-
-type LedgerActor = IcpLedgerCanisterOptions['serviceOverride'];
 
 describe('Mission Control > Wallet', () => {
 	let pic: PocketIc;
@@ -118,8 +116,6 @@ describe('Mission Control > Wallet', () => {
 	});
 
 	describe('owner', () => {
-		let ledgerActor: Actor<LedgerActor>;
-
 		beforeAll(async () => {
 			await initMissionControl(controller.getPrincipal());
 

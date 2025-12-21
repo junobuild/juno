@@ -173,7 +173,7 @@ describe('Console > Factory > Canister', () => {
 					createFn({
 						user
 					})
-				).rejects.toThrow("'Unknown caller");
+				).rejects.toThrow('Unknown caller');
 
 				actor.setIdentity(user);
 			});

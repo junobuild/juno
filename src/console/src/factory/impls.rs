@@ -52,7 +52,9 @@ impl From<CreateSatelliteArgs> for CreateCanisterArgs {
 impl From<CreateMissionControlArgs> for CreateCanisterArgs {
     fn from(args: CreateMissionControlArgs) -> Self {
         Self {
-            block_index: args.block_index,
+            // Unlike Satellite and Orbiter, Mission Control can only be
+            // spin using credits or ICRC-2 transfer from.
+            block_index: None,
             subnet_id: args.subnet_id,
         }
     }

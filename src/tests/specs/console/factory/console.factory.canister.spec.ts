@@ -18,7 +18,7 @@ import { setupConsole } from '../../../utils/console-tests.utils';
 import { approveIcp, transferIcp } from '../../../utils/ledger-tests.utils';
 import { tick } from '../../../utils/pic-tests.utils';
 
-describe('Console > Factory > Caller', () => {
+describe('Console > Factory > Canister', () => {
 	let pic: PocketIc;
 	let actor: Actor<ConsoleActor>;
 	let controller: Ed25519KeyIdentity;
@@ -173,7 +173,7 @@ describe('Console > Factory > Caller', () => {
 					createFn({
 						user
 					})
-				).rejects.toThrow("'Unknown caller");
+				).rejects.toThrow('Unknown caller');
 
 				actor.setIdentity(user);
 			});

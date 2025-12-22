@@ -1,4 +1,4 @@
-use crate::factory::mission_control_new::create_mission_control as create_mission_control_console;
+use crate::factory::mission_control::create_mission_control as create_mission_control_console;
 use crate::factory::orbiter::create_orbiter as create_orbiter_console;
 use crate::factory::satellite::create_satellite as create_satellite_console;
 use candid::Principal;

@@ -14,7 +14,6 @@ import {
 	NO_ACCOUNT_ERROR_MSG,
 	TEST_FEE
 } from '../../../constants/console-tests.constants';
-import { createSatelliteWithConsole as createSatelliteWithConsoleUtils } from '../../../utils/console-factory-tests.utils';
 import { initUserAccountAndMissionControl, setupConsole } from '../../../utils/console-tests.utils';
 import { approveIcp, transferIcp } from '../../../utils/ledger-tests.utils';
 import { tick } from '../../../utils/pic-tests.utils';
@@ -48,8 +47,17 @@ describe('Console > Factory > Canister', () => {
 		await pic?.tearDown();
 	});
 
-	const createSatelliteWithConsole = async ({ user }: { user: Identity }): Promise<Principal> =>
-		await createSatelliteWithConsoleUtils({ actor, user });
+	const createSatelliteWithConsole = async ({ user }: { user: Identity }): Promise<Principal> => {
+		const { create_satellite } = actor;
+
+		return await create_satellite({
+			user: user.getPrincipal(),
+			block_index: toNullable(),
+			name: toNullable(),
+			storage: toNullable(),
+			subnet_id: toNullable()
+		});
+	};
 
 	const createOrbiterWithConsole = async ({ user }: { user: Identity }): Promise<Principal> => {
 		const { create_orbiter } = actor;

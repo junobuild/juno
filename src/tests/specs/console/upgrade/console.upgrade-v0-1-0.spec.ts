@@ -16,7 +16,7 @@ import { mockScript } from '../../../mocks/storage.mocks';
 import {
 	assertAssetServed,
 	deploySegments,
-	initMissionControls,
+	deprecatedInitMissionControls,
 	testSatelliteExists,
 	updateRateConfig,
 	uploadFileWithProposal
@@ -189,7 +189,7 @@ describe('Console > Upgrade > v0.0.14 -> v0.1.0', () => {
 				// We need to advance time for the rate limiter
 				await pic.advanceTime(1000);
 
-				const originalUsers = await initMissionControls({ actor, pic, length: 3 });
+				const originalUsers = await deprecatedInitMissionControls({ actor, pic, length: 3 });
 
 				actor.setIdentity(controller);
 

@@ -11,6 +11,8 @@ export const createSatelliteWithConsole = async ({
 	user: Identity;
 	actor: Actor<ConsoleActor>;
 }): Promise<Principal> => {
+	actor.setIdentity(user);
+
 	const { create_satellite } = actor;
 
 	return await create_satellite({

@@ -10,7 +10,7 @@ import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import type { Principal } from '@icp-sdk/core/principal';
 import { inject } from 'vitest';
 import {
-	initMissionControls,
+	deprecatedInitMissionControls,
 	installReleasesWithDeprecatedFlow,
 	testSatelliteExists,
 	updateRateConfig
@@ -91,7 +91,7 @@ describe('Console > Upgrade > v0.0.8 -> v0.0.9', () => {
 				// We need to advance time for the rate limiter
 				await pic.advanceTime(1000);
 
-				const originalUsers = await initMissionControls({ actor, pic, length: 3 });
+				const originalUsers = await deprecatedInitMissionControls({ actor, pic, length: 3 });
 
 				actor.setIdentity(controller);
 

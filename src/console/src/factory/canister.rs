@@ -54,15 +54,13 @@ where
         let creator: CanisterCreator =
             CanisterCreator::MissionControl((mission_control_id, account.owner));
 
-        return create_canister_with_account(
-            create,
-            increment_rate,
-            get_fee,
-            &account,
-            creator,
-            args,
-        )
-        .await;
+        let canister_id =
+            create_canister_with_account(create, increment_rate, get_fee, &account, creator, args)
+                .await?;
+
+        add_segment(&account.owner, &canister_id);
+
+        return Ok(canister_id);
     }
 
     Err("Unknown caller".to_string())

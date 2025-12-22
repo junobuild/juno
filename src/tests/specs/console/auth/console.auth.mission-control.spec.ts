@@ -1,4 +1,4 @@
-import { type ConsoleActor, type ConsoleDid } from '$declarations';
+import type { ConsoleActor, ConsoleDid } from '$declarations';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
 import type { DelegationIdentity } from '@icp-sdk/core/identity';
@@ -77,6 +77,7 @@ describe('Satellite > Auth > Mission Control', () => {
 		expect(data).toEqual(mockUserData);
 
 		const missionControlId = fromNullable(account.mission_control_id);
+
 		expect(missionControlId).toBeUndefined();
 	});
 

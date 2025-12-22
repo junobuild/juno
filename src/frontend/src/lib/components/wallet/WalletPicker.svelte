@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
 	import { decodeIcrcAccount } from '@icp-sdk/canisters/ledger/icrc';
+	import { untrack } from 'svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import { devId } from '$lib/derived/dev.derived';
@@ -16,13 +17,17 @@
 	let walletIdText = $state<WalletIdText | undefined>(undefined);
 
 	$effect(() => {
-		selectedWallet = nonNullish(walletIdText)
-			? walletIdText === $devId?.toText()
-				? { type: 'dev', walletId: decodeIcrcAccount(walletIdText) as WalletId }
-				: walletIdText === $missionControlId?.toText()
-					? { type: 'mission_control', walletId: decodeIcrcAccount(walletIdText) as WalletId }
-					: undefined
-			: undefined;
+		walletIdText;
+
+		untrack(() => {
+			selectedWallet = nonNullish(walletIdText)
+				? walletIdText === $devId?.toText()
+					? { type: 'dev', walletId: decodeIcrcAccount(walletIdText) as WalletId }
+					: walletIdText === $missionControlId?.toText()
+						? { type: 'mission_control', walletId: decodeIcrcAccount(walletIdText) as WalletId }
+						: undefined
+				: undefined;
+		});
 	});
 </script>
 

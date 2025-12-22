@@ -7,12 +7,15 @@
 	import { devId } from '$lib/derived/dev.derived';
 	import type { SelectedWallet, WalletId, WalletIdText } from '$lib/schemas/wallet.schema';
 	import { i18n } from '$lib/stores/app/i18n.store';
+	import { missionControlBalanceOrZero } from '$lib/derived/wallet/balance.derived';
 
 	interface Props {
 		selectedWallet: SelectedWallet | undefined;
+		filterMissionControlZeroBalance?: boolean;
 	}
 
-	let { selectedWallet = $bindable(undefined) }: Props = $props();
+	let { selectedWallet = $bindable(undefined), filterMissionControlZeroBalance = false }: Props =
+		$props();
 
 	let walletIdText = $state<WalletIdText | undefined>(undefined);
 
@@ -39,8 +42,8 @@
 
 		<select id="wallet-id" name="wallet-id" bind:value={walletIdText}>
 			{#if nonNullish($devId)}<option value={$devId.toText()}>{$i18n.wallet.dev}</option>{/if}
-			{#if nonNullish($missionControlId)}<option value={$missionControlId.toText()}
-					>{$i18n.mission_control.title}</option
+			{#if nonNullish($missionControlId) && (!filterMissionControlZeroBalance || $missionControlBalanceOrZero > 0n)}<option
+					value={$missionControlId.toText()}>{$i18n.mission_control.title}</option
 				>{/if}
 		</select>
 	</Value>

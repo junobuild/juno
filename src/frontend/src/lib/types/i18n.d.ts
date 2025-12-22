@@ -662,6 +662,7 @@ interface I18nErrors {
 	empty_amount: string;
 	invalid_amount: string;
 	empty_balance: string;
+	wallet_not_selected: string;
 	sending_error: string;
 	subnet_loading_errors: string;
 	snapshot_loading_errors: string;

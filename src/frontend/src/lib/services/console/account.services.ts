@@ -54,7 +54,7 @@ export const initAccount = async ({
 		return { result: 'success' };
 	} catch (err: unknown) {
 		toasts.error({
-			text: get(i18n).errors.initializing_mission_control,
+			text: get(i18n).errors.initializing_account,
 			detail: err
 		});
 
@@ -65,7 +65,7 @@ export const initAccount = async ({
 	}
 };
 
-export const getAccount = async ({
+const getAccount = async ({
 	identity,
 	certified
 }: Required<GetActorParams>): Promise<{ account: ConsoleDid.Account | undefined }> => {
@@ -76,7 +76,7 @@ export const getAccount = async ({
 	};
 };
 
-export const getOrInitAccount = async ({
+const getOrInitAccount = async ({
 	identity
 }: {
 	identity: Identity;
@@ -127,9 +127,8 @@ export const reloadAccount = async ({
 
 		return { result: 'success' };
 	} catch (err: unknown) {
-		// TODO: label
 		toasts.error({
-			text: get(i18n).errors.initializing_mission_control,
+			text: get(i18n).errors.initializing_account,
 			detail: err
 		});
 

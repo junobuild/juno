@@ -104,7 +104,7 @@ describe('Console > Factory > Controllers', () => {
 			title: 'Orbiter',
 			createFn: createOrbiterWithConsole
 		}
-	])('$title', ({ title, createFn }) => {
+	])('$title', ({ createFn }) => {
 		let user: Ed25519KeyIdentity;
 
 		beforeEach(() => {

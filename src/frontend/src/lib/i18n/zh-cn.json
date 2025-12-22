@@ -551,7 +551,7 @@
 	"errors": {
 		"no_identity": "意外错误，未提供身份信息。",
 		"stack_trace": "错误堆栈追踪",
-		"initializing_mission_control": "控制中心初始化失败。",
+		"initializing_account": "账户初始化失败。",
 		"sign_in": "登录异常，请检查详细错误信息并重试。",
 		"sign_in_openid": "哎呀，对接失败。请重试或联系我们！",
 		"account_sign_out": "您的账户无法通过验证，因此已被登出。",

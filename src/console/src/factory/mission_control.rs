@@ -24,7 +24,7 @@ pub async fn create_mission_control(
         return Err("Mission control center already exist.".to_string());
     }
 
-    let creator: CanisterCreator = CanisterCreator::User(account.owner);
+    let creator: CanisterCreator = CanisterCreator::User((account.owner, None));
 
     let mission_control_id = create_canister_with_account(
         create_mission_control_wasm,
@@ -45,7 +45,7 @@ async fn create_mission_control_wasm(
     creator: CanisterCreator,
     subnet_id: Option<SubnetId>,
 ) -> Result<Principal, String> {
-    let CanisterCreator::User(user_id) = creator else {
+    let CanisterCreator::User((user_id, _)) = creator else {
         return Err("Mission Control cannot create another Mission Control".to_string());
     };
 

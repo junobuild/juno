@@ -1,5 +1,4 @@
 <script lang="ts">
-	import type { MissionControlDid } from '$declarations';
 	import CanisterBuyCycleExpress from '$lib/components/canister/CanisterBuyCycleExpress.svelte';
 	import CanisterDelete from '$lib/components/canister/CanisterDelete.svelte';
 	import CanisterStopStart from '$lib/components/canister/CanisterStopStart.svelte';
@@ -11,10 +10,11 @@
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
 	import type { CanisterSyncData as CanisterSyncDataType } from '$lib/types/canister';
+	import type { Satellite } from '$lib/types/satellite';
 	import { emit } from '$lib/utils/events.utils';
 
 	interface Props {
-		satellite: MissionControlDid.Satellite;
+		satellite: Satellite;
 		canister: CanisterSyncDataType | undefined;
 		monitoringEnabled: boolean;
 	}

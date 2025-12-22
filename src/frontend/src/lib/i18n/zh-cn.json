@@ -64,6 +64,7 @@
 		"completed": "完成",
 		"in_progress": "执行中",
 		"error": "错误",
+		"warning": "警告",
 		"hold_tight": "稍等!",
 		"create": "创建",
 		"replace": "替换",
@@ -319,7 +320,14 @@
 		"id": "任务控制中心ID",
 		"not_found": "未找到任务控制中心",
 		"loading": "正在加载您的任务控制中心...",
-		"edit_email": "编辑您的电子邮件地址"
+		"edit_email": "编辑您的电子邮件地址",
+		"empty": "Mission Control 是管理模块的中心枢纽。激活监控功能需要 Mission Control。未来将添加更多高级功能。",
+		"description": "获取 Mission Control 以解锁监控等高级功能。",
+		"create_price": "创建 Mission Control 需要 {0}。您当前的钱包余额为 {1}。",
+		"initializing": "正在初始化 Mission Control...",
+		"ready": "您的 Mission Control 已就绪！",
+		"attaching": "正在将现有模块转移到 Mission Control...",
+		"warn_attaching": "以下模块无法转移到 Mission Control"
 	},
 	"wallet": {
 		"title": "钱包",
@@ -336,6 +344,7 @@
 		"tx_memo": "备注",
 		"tx_amount": "金额",
 		"memo_create": "模块创建",
+		"memo_approve": "模块批准",
 		"memo_refund_satellite": "卫星退款",
 		"memo_refund_orbiter": "轨道器退款",
 		"memo_refund_top_up": "模块充值",
@@ -361,7 +370,9 @@
 		"wallet_missing_account": "没有可用账户来请求交易。您是否已连接钱包？",
 		"balance_not_loaded": "请稍候，您的余额尚未加载完成。",
 		"balance_zero": "您的余额为零。获取一些代币以开始发送。",
-		"wallet_upgrade": "请升级您的钱包以启用发送功能。"
+		"wallet_upgrade": "请升级您的钱包以启用发送功能。",
+		"approving_canister_fee": "授权费用中...",
+		"dev": "开发版"
 	},
 	"authentication": {
 		"title": "身份认证",
@@ -561,7 +572,9 @@
 		"canister_settings_not_loaded": "模块设置未加载。",
 		"canister_update_error": "更新设置时发生意外错误。",
 		"canister_status": "加载模块状态时发生意外错误。",
+		"canister_controllers": "每个模块最多允许 10 个控制器。",
 		"segment_detach": "分离模块时发生意外错误。",
+		"load_fees": "加载创建费用失败。",
 		"load_credits": "无法加载当前积分状态。",
 		"load_documents": "文档加载时发生意外错误。",
 		"load_users": "用户加载时发生意外错误。",
@@ -604,6 +617,7 @@
 		"analytics_page_views_export": "导出页面浏览数据时发生意外错误。",
 		"satellites_loading": "加载卫星列表时发生错误。",
 		"orbiters_loading": "加载轨道器列表时发生错误。",
+		"segments_loading": "加载片段列表时发生错误。",
 		"orbiter_configuration_missing": "必须提供卫星和配置。",
 		"orbiter_configuration_unexpected": "编辑配置时发生意外错误。",
 		"orbiter_configuration_listing": "获取配置时发生错误。",
@@ -656,6 +670,7 @@
 		"mission_control_not_loaded": "任务控制中心未加载。",
 		"mission_control_settings_not_loaded": "任务控制中心设置未加载。",
 		"mission_control_user_data_not_loaded": "您的任务控制中心数据（元数据、配置等）未加载。",
+		"mission_control_unexpected_error": "创建 Mission Control 时发生意外错误。",
 		"monitoring_apply_strategy_error": "应用策略时发生意外错误。",
 		"monitoring_stop_error": "停止监控时发生意外错误。",
 		"monitoring_no_modules": "监控功能需要设置至少一个卫星或轨道器，请先添加模块。",
@@ -902,7 +917,8 @@
 		"default": "当前策略",
 		"default_description": "使用您之前保存的默认策略。",
 		"warn_monitoring_enabled": "请先禁用监控再继续操作。",
-		"runtime": "运行时"
+		"runtime": "运行时",
+		"requires_mission_control": "监控功能通过自动跟踪和补充 Cycles，确保您的模块始终有足够的资源运行。它需要 Mission Control 才能运行。"
 	},
 	"preferences": {
 		"title": "偏好设置",

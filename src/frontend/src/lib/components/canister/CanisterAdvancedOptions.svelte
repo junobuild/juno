@@ -9,11 +9,17 @@
 
 	interface Props {
 		subnetId: PrincipalText | undefined;
-		monitoringStrategy: MissionControlDid.CyclesMonitoringStrategy | undefined;
+		monitoringStrategy?: MissionControlDid.CyclesMonitoringStrategy | undefined;
 		detail: JunoModalDetail;
+		withMonitoring?: boolean;
 	}
 
-	let { subnetId = $bindable(), monitoringStrategy = $bindable(), detail }: Props = $props();
+	let {
+		subnetId = $bindable(),
+		monitoringStrategy = $bindable(),
+		detail,
+		withMonitoring = true
+	}: Props = $props();
 </script>
 
 <Collapsible>
@@ -23,5 +29,7 @@
 
 	<CanisterSubnets bind:subnetId />
 
-	<CanisterMonitoringDefaultStrategy {detail} bind:monitoringStrategy />
+	{#if withMonitoring}
+		<CanisterMonitoringDefaultStrategy {detail} bind:monitoringStrategy />
+	{/if}
 </Collapsible>

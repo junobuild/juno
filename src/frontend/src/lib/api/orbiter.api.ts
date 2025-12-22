@@ -189,3 +189,15 @@ export const depositCycles = async ({
 		destination_id
 	});
 };
+
+export const setControllers = async ({
+	args,
+	...rest
+}: {
+	args: OrbiterDid.SetControllersArgs;
+	orbiterId: Principal;
+	identity: OptionIdentity;
+}): Promise<[Principal, OrbiterDid.Controller][]> => {
+	const { set_controllers } = await getOrbiterActor(rest);
+	return set_controllers(args);
+};

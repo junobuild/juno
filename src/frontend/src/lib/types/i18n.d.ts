@@ -67,6 +67,7 @@ interface I18nCore {
 	completed: string;
 	in_progress: string;
 	error: string;
+	warning: string;
 	hold_tight: string;
 	create: string;
 	replace: string;
@@ -328,6 +329,13 @@ interface I18nMission_control {
 	not_found: string;
 	loading: string;
 	edit_email: string;
+	empty: string;
+	description: string;
+	create_price: string;
+	initializing: string;
+	ready: string;
+	attaching: string;
+	warn_attaching: string;
 }
 
 interface I18nWallet {
@@ -345,6 +353,7 @@ interface I18nWallet {
 	tx_memo: string;
 	tx_amount: string;
 	memo_create: string;
+	memo_approve: string;
 	memo_refund_satellite: string;
 	memo_refund_orbiter: string;
 	memo_refund_top_up: string;
@@ -371,6 +380,8 @@ interface I18nWallet {
 	balance_not_loaded: string;
 	balance_zero: string;
 	wallet_upgrade: string;
+	approving_canister_fee: string;
+	dev: string;
 }
 
 interface I18nAuthentication {
@@ -578,7 +589,9 @@ interface I18nErrors {
 	canister_settings_not_loaded: string;
 	canister_update_error: string;
 	canister_status: string;
+	canister_controllers: string;
 	segment_detach: string;
+	load_fees: string;
 	load_credits: string;
 	load_documents: string;
 	load_users: string;
@@ -620,6 +633,7 @@ interface I18nErrors {
 	analytics_page_views_export: string;
 	satellites_loading: string;
 	orbiters_loading: string;
+	segments_loading: string;
 	orbiter_configuration_missing: string;
 	orbiter_configuration_unexpected: string;
 	orbiter_configuration_listing: string;
@@ -672,6 +686,7 @@ interface I18nErrors {
 	mission_control_not_loaded: string;
 	mission_control_settings_not_loaded: string;
 	mission_control_user_data_not_loaded: string;
+	mission_control_unexpected_error: string;
 	monitoring_apply_strategy_error: string;
 	monitoring_stop_error: string;
 	monitoring_no_modules: string;
@@ -928,6 +943,7 @@ interface I18nMonitoring {
 	default_description: string;
 	warn_monitoring_enabled: string;
 	runtime: string;
+	requires_mission_control: string;
 }
 
 interface I18nPreferences {

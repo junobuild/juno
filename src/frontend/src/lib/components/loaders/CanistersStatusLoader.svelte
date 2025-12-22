@@ -2,15 +2,15 @@
 	import { debounce } from '@dfinity/utils';
 	import type { Principal } from '@icp-sdk/core/principal';
 	import { onDestroy, onMount, type Snippet } from 'svelte';
-	import type { MissionControlDid } from '$declarations';
 	import { satellitesNotLoaded } from '$lib/derived/mission-control/satellites.derived';
-	import { orbiterNotLoaded } from '$lib/derived/orbiter/orbiter.derived';
+	import { orbiterNotLoaded } from '$lib/derived/orbiter.derived';
 	import { CyclesWorker } from '$lib/services/workers/worker.cycles.services';
 	import type { CanisterSegment } from '$lib/types/canister';
+	import type { Satellite } from '$lib/types/satellite';
 
 	interface Props {
 		children: Snippet;
-		satellites?: MissionControlDid.Satellite[];
+		satellites?: Satellite[];
 		segments: CanisterSegment[];
 	}
 

@@ -3,7 +3,7 @@
 	import { AnonymousIdentity } from '@icp-sdk/core/agent';
 	import { Principal } from '@icp-sdk/core/principal';
 	import { type UpgradeCodeParams, upgradeSatellite } from '@junobuild/admin';
-	import type { SatelliteDid, MissionControlDid } from '$declarations';
+	import type { SatelliteDid } from '$declarations';
 	import CanisterUpgradeWizard, {
 		type CanisterUpgradeWizardProps,
 		type CanisterUpgradeWizardStep
@@ -18,13 +18,14 @@
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
 	import { authStore } from '$lib/stores/auth.store';
+	import type { Satellite } from '$lib/types/satellite';
 	import type { Wasm } from '$lib/types/upgrade';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { container } from '$lib/utils/juno.utils';
 	import { satelliteName } from '$lib/utils/satellite.utils';
 
 	interface Props {
-		satellite: MissionControlDid.Satellite;
+		satellite: Satellite;
 		asset: SatelliteDid.AssetNoContent | undefined;
 		onclose: () => void;
 	}

@@ -3,7 +3,7 @@
 	import type { PrincipalText } from '@dfinity/zod-schemas';
 	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
-	import type { MissionControlDid, SatelliteDid } from '$declarations';
+	import type { SatelliteDid } from '$declarations';
 	import AuthConfigFormGoogleOptions from '$lib/components/auth/AuthConfigFormGoogleOptions.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
@@ -22,10 +22,11 @@
 	} from '$lib/constants/auth.constants';
 	import { isBusy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
+	import type { Satellite } from '$lib/types/satellite';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 
 	interface Props {
-		satellite: MissionControlDid.Satellite;
+		satellite: Satellite;
 		config: SatelliteDid.AuthenticationConfig | undefined;
 		onsubmit: ($event: SubmitEvent) => Promise<void>;
 		clientId: string | undefined;

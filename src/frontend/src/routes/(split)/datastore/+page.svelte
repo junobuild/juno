@@ -7,7 +7,6 @@
 	import SatelliteGuard from '$lib/components/guards/SatelliteGuard.svelte';
 	import Loaders from '$lib/components/loaders/Loaders.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
-	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import { satelliteStore } from '$lib/derived/satellite/satellite.derived';
 	import {
 		type Tab,
@@ -42,7 +41,7 @@
 	<Loaders>
 		<SatelliteGuard>
 			<Tabs>
-				{#if nonNullish($satelliteStore) && nonNullish($missionControlId)}
+				{#if nonNullish($satelliteStore)}
 					<Db satelliteId={$satelliteStore.satellite_id} />
 				{/if}
 			</Tabs>

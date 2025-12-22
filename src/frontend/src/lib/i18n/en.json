@@ -64,6 +64,7 @@
 		"completed": "Completed",
 		"in_progress": "In progress",
 		"error": "Error",
+		"warning": "Warning",
 		"hold_tight": "Hold tight!",
 		"create": "Create",
 		"replace": "Replace",
@@ -319,7 +320,14 @@
 		"id": "Mission Control ID",
 		"not_found": "Mission control not found.",
 		"loading": "Loading your mission control...",
-		"edit_email": "Edit your email address"
+		"edit_email": "Edit your email address",
+		"empty": "The Mission Control is your central hub for managing modules. It is required to activate monitoring. Additional advanced features will be added in the future.",
+		"description": "Get Mission Control to unlock advanced features such as monitoring.",
+		"create_price": "Starting Mission Control requires {0}. Your current wallet balance is {1}.",
+		"initializing": "Initializing Mission Control...",
+		"ready": "Your Mission Control is ready!",
+		"attaching": "Transferring existing modules to Mission Control...",
+		"warn_attaching": "Failed to transfer the following modules to Mission Control:"
 	},
 	"wallet": {
 		"title": "Wallet",
@@ -336,6 +344,7 @@
 		"tx_memo": "Memo",
 		"tx_amount": "Amount",
 		"memo_create": "Module created",
+		"memo_approve": "Module approved",
 		"memo_refund_satellite": "Satellite refund",
 		"memo_refund_orbiter": "Orbiter refund",
 		"memo_refund_top_up": "Top-up module",
@@ -361,7 +370,9 @@
 		"wallet_missing_account": "No account available to request the transaction. Have you connected your wallet?",
 		"balance_not_loaded": "Please wait, your balance is not yet loaded.",
 		"balance_zero": "Your balance is zero. Get some tokens to start sending.",
-		"wallet_upgrade": "Please upgrade your wallet to enable the sending feature."
+		"wallet_upgrade": "Please upgrade your wallet to enable the sending feature.",
+		"approving_canister_fee": "Authorizing fee...",
+		"dev": "Developer"
 	},
 	"authentication": {
 		"title": "Authentication",
@@ -561,7 +572,9 @@
 		"canister_settings_not_loaded": "The settings of the module are not yet loaded.",
 		"canister_update_error": "Unexpected error(s) while updating the settings.",
 		"canister_status": "Unexpected error(s) while loading the status of your modules.",
+		"canister_controllers": "Maximum of 10 controllers allowed per module.",
 		"segment_detach": "Unexpected error(s) while trying to detach the module.",
+		"load_fees": "Failed to load creation fees.",
 		"load_credits": "Cannot load your current credits status.",
 		"load_documents": "Unexpected error(s) while loading the documents.",
 		"load_users": "Unexpected error(s) while loading the users.",
@@ -603,6 +616,7 @@
 		"analytics_page_views_export": "Unexpected error(s) while exporting the page views.",
 		"satellites_loading": "Error while loading the list of satellites.",
 		"orbiters_loading": "Error while loading the list of orbiters.",
+		"segments_loading": "Error while loading the list of segments.",
 		"orbiter_configuration_missing": "Satellites and configuration must be provided.",
 		"orbiter_configuration_unexpected": "Unexpected error(s) while trying to edit your configuration.",
 		"orbiter_configuration_listing": "Error while fetching the configuration.",
@@ -655,6 +669,7 @@
 		"mission_control_not_loaded": "Your mission control is not yet loaded.",
 		"mission_control_settings_not_loaded": "The settings for the mission control are not yet loaded.",
 		"mission_control_user_data_not_loaded": "Your data (metadata, config, etc) for the mission control are not yet loaded.",
+		"mission_control_unexpected_error": "Unexpected error(s) while creating the Mission Control.",
 		"monitoring_apply_strategy_error": "Unexpected error(s) while applying the strategy.",
 		"monitoring_stop_error": "Unexpected error(s) while stopping the monitoring.",
 		"monitoring_no_modules": "Monitoring requires at least one satellite or orbiter to be set up. Add a module to get started.",
@@ -901,7 +916,8 @@
 		"default": "Your strategy",
 		"default_description": "Use your previously saved default strategy.",
 		"warn_monitoring_enabled": "Please disable monitoring before proceeding.",
-		"runtime": "Runtime"
+		"runtime": "Runtime",
+		"requires_mission_control": "Monitoring ensures your modules always have enough cycles by automatically tracking their levels and topping them up when needed. It requires Mission Control to operate."
 	},
 	"preferences": {
 		"title": "Preferences",

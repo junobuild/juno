@@ -12,3 +12,6 @@ export const WalletIdSchema = z.strictObject({
 	subaccount: z.instanceof(Uint8Array).optional()
 });
 export type WalletId = z.infer<typeof WalletIdSchema>;
+
+export const WalletIdsSchema = z.array(WalletIdSchema);
+export type WalletIds = z.infer<typeof WalletIdsSchema>;

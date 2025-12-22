@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { getContext, type Snippet, untrack } from 'svelte';
 	import { fade } from 'svelte/transition';
-	import type { MissionControlDid } from '$declarations';
 	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
 	import Warning from '$lib/components/ui/Warning.svelte';
 	import { getAuthConfig } from '$lib/services/console/auth/auth.config.services';
@@ -10,9 +9,10 @@
 	import { authStore } from '$lib/stores/auth.store';
 	import { versionStore } from '$lib/stores/version.store';
 	import { AUTH_CONFIG_CONTEXT_KEY, type AuthConfigContext } from '$lib/types/auth.context';
+	import type { Satellite } from '$lib/types/satellite';
 
 	interface Props {
-		satellite: MissionControlDid.Satellite;
+		satellite: Satellite;
 		children: Snippet;
 	}
 

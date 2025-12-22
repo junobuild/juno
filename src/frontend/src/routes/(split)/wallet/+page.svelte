@@ -1,15 +1,12 @@
 <script lang="ts">
-	import { nonNullish } from '@dfinity/utils';
 	import { setContext } from 'svelte';
 	import { writable } from 'svelte/store';
 	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
-	import MissionControlGuard from '$lib/components/guards/MissionControlGuard.svelte';
 	import Loaders from '$lib/components/loaders/Loaders.svelte';
 	import NoTabs from '$lib/components/ui/NoTabs.svelte';
 	import Wallet from '$lib/components/wallet/Wallet.svelte';
 	import Warnings from '$lib/components/warning/Warnings.svelte';
 	import { authSignedIn } from '$lib/derived/auth.derived';
-	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import {
 		type Tab,
 		TABS_CONTEXT_KEY,
@@ -33,8 +30,6 @@
 	setContext<TabsContext>(TABS_CONTEXT_KEY, {
 		store
 	});
-
-	let walletId = $derived(nonNullish($missionControlId) ? { owner: $missionControlId } : undefined);
 </script>
 
 <IdentityGuard>
@@ -46,13 +41,9 @@
 		{/snippet}
 
 		<Loaders>
-			<MissionControlGuard>
-				{#if nonNullish(walletId)}
-					{#if $store.tabId === $store.tabs[0].id}
-						<Wallet {walletId} />
-					{/if}
-				{/if}
-			</MissionControlGuard>
+			{#if $store.tabId === $store.tabs[0].id}
+				<Wallet />
+			{/if}
 		</Loaders>
 	</NoTabs>
 </IdentityGuard>

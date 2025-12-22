@@ -1,13 +1,13 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
-	import type { MissionControlDid } from '$declarations';
 	import Badge from '$lib/components/ui/Badge.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/app/i18n.store';
+	import type { Satellite } from '$lib/types/satellite';
 	import { satelliteTags } from '$lib/utils/satellite.utils';
 
 	interface Props {
-		satellite: MissionControlDid.Satellite;
+		satellite: Satellite;
 	}
 
 	let { satellite }: Props = $props();

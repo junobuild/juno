@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { isNullish, nonNullish } from '@dfinity/utils';
+	import { nonNullish } from '@dfinity/utils';
 	import type { PrincipalText } from '@dfinity/zod-schemas';
 	import type { MissionControlDid } from '$declarations';
 	import CanisterAdvancedOptions from '$lib/components/canister/CanisterAdvancedOptions.svelte';
@@ -16,6 +16,7 @@
 	import { authStore } from '$lib/stores/auth.store';
 	import type { JunoModalDetail } from '$lib/types/modal';
 	import type { WizardCreateProgress } from '$lib/types/progress-wizard';
+	import type { Option } from '$lib/types/utils';
 	import { testId } from '$lib/utils/test.utils';
 
 	interface Props {
@@ -25,7 +26,8 @@
 
 	let { detail, onclose }: Props = $props();
 
-	let withCredits = $state(false);
+	let withDevIcpApprove = $state(false);
+	let withFee = $state<Option<bigint>>(undefined);
 	let insufficientFunds = $state(true);
 
 	let step: 'init' | 'in_progress' | 'ready' | 'error' = $state('init');
@@ -49,7 +51,7 @@
 			missionControlId: $missionControlId,
 			subnetId,
 			monitoringStrategy,
-			withCredits,
+			withFee,
 			onProgress
 		});
 
@@ -80,7 +82,12 @@
 			>
 		</div>
 	{:else if step === 'in_progress'}
-		<ProgressCreate {progress} segment="orbiter" withMonitoring={nonNullish(monitoringStrategy)} />
+		<ProgressCreate
+			{progress}
+			segment="orbiter"
+			withApprove={withDevIcpApprove}
+			withMonitoring={nonNullish(monitoringStrategy)}
+		/>
 	{:else}
 		<h2>{$i18n.core.getting_started}</h2>
 
@@ -92,15 +99,16 @@
 			{detail}
 			{onclose}
 			priceLabel={$i18n.analytics.create_orbiter_price}
+			bind:withDevIcpApprove
+			bind:withFee
 			bind:insufficientFunds
-			bind:withCredits
 		>
 			<form onsubmit={onSubmit}>
 				<CanisterAdvancedOptions {detail} bind:subnetId bind:monitoringStrategy />
 
 				<button
 					{...testId(testIds.createAnalytics.create)}
-					disabled={$authSignedOut || isNullish($missionControlId) || insufficientFunds}
+					disabled={$authSignedOut || insufficientFunds}
 					type="submit"
 				>
 					{$i18n.analytics.create}

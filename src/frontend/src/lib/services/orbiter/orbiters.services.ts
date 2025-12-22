@@ -9,7 +9,7 @@ import {
 } from '$lib/api/orbiter.deprecated.api';
 import { DEFAULT_FEATURES } from '$lib/constants/analytics.constants';
 import { ORBITER_v0_0_8 } from '$lib/constants/version.constants';
-import { orbiterConfigs } from '$lib/derived/orbiter/orbiter.derived';
+import { orbiterConfigs } from '$lib/derived/orbiter.derived';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
 import { authStore } from '$lib/stores/auth.store';

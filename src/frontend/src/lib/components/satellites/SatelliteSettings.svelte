@@ -1,12 +1,12 @@
 <script lang="ts">
-	import type { MissionControlDid } from '$declarations';
 	import CanisterSettings from '$lib/components/canister/CanisterSettings.svelte';
 	import SatelliteControllers from '$lib/components/satellites/SatelliteControllers.svelte';
 	import Snapshots from '$lib/components/snapshot/Snapshots.svelte';
 	import { i18n } from '$lib/stores/app/i18n.store';
+	import type { Satellite } from '$lib/types/satellite';
 
 	interface Props {
-		satellite: MissionControlDid.Satellite;
+		satellite: Satellite;
 	}
 
 	let { satellite }: Props = $props();

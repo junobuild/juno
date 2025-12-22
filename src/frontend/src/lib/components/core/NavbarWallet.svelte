@@ -1,22 +1,17 @@
 <script lang="ts">
+	import { nonNullish } from '@dfinity/utils';
 	import IconWallet from '$lib/components/icons/IconWallet.svelte';
 	import ReceiveTokens from '$lib/components/tokens/ReceiveTokens.svelte';
 	import ButtonIcon from '$lib/components/ui/ButtonIcon.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import WalletActions from '$lib/components/wallet/WalletActions.svelte';
+	import WalletBalanceById from '$lib/components/wallet/WalletBalanceById.svelte';
 	import WalletIds from '$lib/components/wallet/WalletIds.svelte';
-	import WalletInlineBalance from '$lib/components/wallet/WalletInlineBalance.svelte';
+	import WalletPicker from '$lib/components/wallet/WalletPicker.svelte';
 	import { testIds } from '$lib/constants/test-ids.constants';
-	import { balance } from '$lib/derived/wallet/balance.derived';
 	import type { WalletId } from '$lib/schemas/wallet.schema';
 	import { i18n } from '$lib/stores/app/i18n.store';
-
-	interface Props {
-		walletId: WalletId;
-	}
-
-	let { walletId }: Props = $props();
 
 	let button: HTMLButtonElement | undefined = $state();
 	let visible: boolean = $state(false);
@@ -29,6 +24,8 @@
 		visible = false;
 		receiveVisible = true;
 	};
+
+	let walletId = $state<WalletId | undefined>(undefined);
 </script>
 
 <ButtonIcon {onclick} testId={testIds.navbar.openWallet} bind:button>
@@ -41,25 +38,31 @@
 
 <Popover anchor={button} direction="rtl" bind:visible>
 	<div class="container">
+		<WalletPicker bind:walletId />
+
 		<div>
 			<Value>
 				{#snippet label()}
 					{$i18n.wallet.balance}
 				{/snippet}
 
-				<WalletInlineBalance balance={$balance} />
+				<WalletBalanceById display="inline" {walletId} />
 			</Value>
 		</div>
 
-		<WalletIds {walletId} />
+		{#if nonNullish(walletId)}
+			<WalletIds {walletId} />
 
-		<div class="actions">
-			<WalletActions onreceive={openReceive} onsend={() => (visible = false)} {walletId} />
-		</div>
+			<div class="actions">
+				<WalletActions onreceive={openReceive} onsend={() => (visible = false)} {walletId} />
+			</div>
+		{/if}
 	</div>
 </Popover>
 
-<ReceiveTokens {walletId} bind:visible={receiveVisible} />
+{#if nonNullish(walletId)}
+	<ReceiveTokens {walletId} bind:visible={receiveVisible} />
+{/if}
 
 <style lang="scss">
 	@use '../../styles/mixins/overlay';

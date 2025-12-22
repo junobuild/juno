@@ -4,7 +4,7 @@ import { loadDataStore } from '$lib/services/_loader.services';
 import { authStore } from '$lib/stores/auth.store';
 import { orbitersUncertifiedStore } from '$lib/stores/mission-control/orbiter.store';
 import type { Option } from '$lib/types/utils';
-import { assertNonNullish, isNullish, toNullable } from '@dfinity/utils';
+import { assertNonNullish, toNullable } from '@dfinity/utils';
 import type { Identity } from '@icp-sdk/core/agent';
 import type { Principal } from '@icp-sdk/core/principal';
 import { get } from 'svelte/store';
@@ -62,8 +62,13 @@ export const loadOrbiters = async ({
 	missionControlId: Option<Principal>;
 	reload?: boolean;
 }): Promise<{ result: 'skip' | 'success' | 'error' }> => {
-	if (isNullish(missionControlId)) {
+	if (missionControlId === undefined) {
 		return { result: 'skip' };
+	}
+
+	if (missionControlId === null) {
+		orbitersUncertifiedStore.set(null);
+		return { result: 'success' };
 	}
 
 	const load = async (identity: Identity): Promise<MissionControlDid.Orbiter[]> => {
@@ -79,7 +84,7 @@ export const loadOrbiters = async ({
 
 	const { identity } = get(authStore);
 
-	return await loadDataStore<MissionControlDid.Orbiter[]>({
+	return await loadDataStore<MissionControlDid.Orbiter[] | null>({
 		identity,
 		store: orbitersUncertifiedStore,
 		errorLabel: 'orbiters_loading',

@@ -1,16 +1,16 @@
 <script lang="ts">
 	import { isEmptyString, isNullish } from '@dfinity/utils';
-	import type { MissionControlDid } from '$declarations';
 	import AddCustomDomainAuth, {
 		type AddCustomDomainAuthProps
 	} from '$lib/components/hosting/AddCustomDomainAuth.svelte';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
 	import type { CustomDomainDns } from '$lib/types/custom-domain';
+	import type { Satellite } from '$lib/types/satellite';
 	import { toCustomDomainDns } from '$lib/utils/custom-domain.utils';
 
 	interface Props extends AddCustomDomainAuthProps {
-		satellite: MissionControlDid.Satellite;
+		satellite: Satellite;
 		domainNameInput: string;
 		dns?: CustomDomainDns | undefined;
 		onnext: () => void;

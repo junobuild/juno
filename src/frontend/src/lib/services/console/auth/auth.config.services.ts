@@ -1,4 +1,4 @@
-import type { MissionControlDid, SatelliteDid } from '$declarations';
+import type { SatelliteDid } from '$declarations';
 import type { OpenIdProviderDelegationConfig } from '$declarations/satellite/satellite.did';
 import { getAuthConfig as getAuthConfigApi, setAuthConfig, setRule } from '$lib/api/satellites.api';
 import {
@@ -12,6 +12,7 @@ import { isSatelliteFeatureSupported } from '$lib/services/_feature.services';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
+import type { Satellite } from '$lib/types/satellite';
 import type { Option } from '$lib/types/utils';
 import {
 	assertExternalAlternativeOrigins,
@@ -31,7 +32,7 @@ import { Principal } from '@icp-sdk/core/principal';
 import { get } from 'svelte/store';
 
 interface UpdateAuthConfigParams {
-	satellite: MissionControlDid.Satellite;
+	satellite: Satellite;
 	config: SatelliteDid.AuthenticationConfig | undefined;
 	identity: OptionIdentity;
 }

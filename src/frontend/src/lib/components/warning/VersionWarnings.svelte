@@ -2,15 +2,15 @@
 	import { nonNullish } from '@dfinity/utils';
 	import type { BuildType } from '@junobuild/admin';
 	import { compare } from 'semver';
-	import type { MissionControlDid } from '$declarations';
 	import VersionWarning from '$lib/components/warning/VersionWarning.svelte';
 	import { missionControlVersion } from '$lib/derived/version.derived';
 	import { openUpgradeModal } from '$lib/services/upgrade/upgrade.init.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { versionStore } from '$lib/stores/version.store';
+	import type { Satellite } from '$lib/types/satellite';
 
 	interface Props {
-		satellite?: MissionControlDid.Satellite | undefined;
+		satellite?: Satellite | undefined;
 	}
 
 	let { satellite = undefined }: Props = $props();

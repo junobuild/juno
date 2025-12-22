@@ -9,6 +9,7 @@
 	import CreateMonitoringStrategyModal from '$lib/components/modals/CreateMonitoringStrategyModal.svelte';
 	import CreateSnapshotModal from '$lib/components/modals/CreateSnapshotModal.svelte';
 	import CustomDomainModal from '$lib/components/modals/CustomDomainModal.svelte';
+	import MissionControlCreateModal from '$lib/components/modals/MissionControlCreateModal.svelte';
 	import MissionControlTopUpModal from '$lib/components/modals/MissionControlTopUpModal.svelte';
 	import MissionControlTransferCyclesModal from '$lib/components/modals/MissionControlTransferCyclesModal.svelte';
 	import MissionControlUpgradeModal from '$lib/components/modals/MissionControlUpgradeModal.svelte';
@@ -43,6 +44,10 @@
 
 {#if modal?.type === 'create_orbiter' && nonNullish(modal.detail)}
 	<OrbiterCreateModal detail={modal.detail} onclose={close} />
+{/if}
+
+{#if modal?.type === 'create_mission_control' && nonNullish(modal.detail)}
+	<MissionControlCreateModal detail={modal.detail} onclose={close} />
 {/if}
 
 {#if modal?.type === 'topup_satellite' && nonNullish(modal.detail)}

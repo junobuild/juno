@@ -7,7 +7,7 @@
 	import Html from '$lib/components/ui/Html.svelte';
 	import type { IgnoreCanUpgradeErrorFn } from '$lib/components/upgrade/wizard/SelectUpgradeVersion.svelte';
 	import { ORBITER_v0_0_8, ORBITER_v0_2_0 } from '$lib/constants/version.constants';
-	import { orbiterStore } from '$lib/derived/orbiter/orbiter.derived';
+	import { orbiterStore } from '$lib/derived/orbiter.derived';
 	import { reloadOrbiterVersion } from '$lib/services/version/version.orbiter.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { authStore } from '$lib/stores/auth.store';

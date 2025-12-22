@@ -4,7 +4,7 @@
 	import Value from '$lib/components/ui/Value.svelte';
 	import type { WalletId } from '$lib/schemas/wallet.schema';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import { toAccountIdentifier } from '$lib/utils/account.utils';
+	import { toAccountIdentifier } from '$lib/utils/icp-icrc-account.utils';
 
 	interface Props {
 		walletId: WalletId;
@@ -12,9 +12,9 @@
 
 	let { walletId }: Props = $props();
 
-	const walletIdText = $derived(encodeIcrcAccount(walletId));
+	let walletIdText = $derived(encodeIcrcAccount(walletId));
 
-	const accountIdentifier = $derived(toAccountIdentifier(walletId));
+	let accountIdentifier = $derived(toAccountIdentifier(walletId));
 </script>
 
 <div>

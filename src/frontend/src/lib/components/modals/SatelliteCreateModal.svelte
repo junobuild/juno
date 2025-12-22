@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { isNullish, nonNullish } from '@dfinity/utils';
+	import { nonNullish } from '@dfinity/utils';
 	import type { PrincipalText } from '@dfinity/zod-schemas';
 	import type { MissionControlDid } from '$declarations';
 	import CanisterAdvancedOptions from '$lib/components/canister/CanisterAdvancedOptions.svelte';
@@ -17,6 +17,8 @@
 	import { authStore } from '$lib/stores/auth.store';
 	import type { JunoModalDetail } from '$lib/types/modal';
 	import type { WizardCreateProgress } from '$lib/types/progress-wizard';
+	import type { SatelliteId } from '$lib/types/satellite';
+	import type { Option } from '$lib/types/utils';
 	import { navigateToSatellite } from '$lib/utils/nav.utils';
 	import { testId } from '$lib/utils/test.utils';
 
@@ -27,11 +29,12 @@
 
 	let { detail, onclose }: Props = $props();
 
-	let withCredits = $state(false);
+	let withDevIcpApprove = $state(false);
+	let withFee = $state<Option<bigint>>(undefined);
 	let insufficientFunds = $state(true);
 
 	let step: 'init' | 'in_progress' | 'ready' | 'error' = $state('init');
-	let satellite: MissionControlDid.Satellite | undefined = undefined;
+	let satelliteId: SatelliteId | undefined = undefined;
 
 	// Submit
 
@@ -54,7 +57,7 @@
 			monitoringStrategy,
 			satelliteName,
 			satelliteKind,
-			withCredits,
+			withFee,
 			onProgress
 		});
 
@@ -65,13 +68,13 @@
 			return;
 		}
 
-		satellite = result.segment;
+		satelliteId = result.canisterId;
 
 		setTimeout(() => (step = 'ready'), 500);
 	};
 
 	const navigate = async () => {
-		await navigateToSatellite(satellite?.satellite_id);
+		await navigateToSatellite(satelliteId);
 		onclose();
 	};
 
@@ -97,6 +100,7 @@
 		<ProgressCreate
 			{progress}
 			segment="satellite"
+			withApprove={withDevIcpApprove}
 			withMonitoring={nonNullish(monitoringStrategy)}
 		/>
 	{:else}
@@ -110,7 +114,8 @@
 			{detail}
 			{onclose}
 			priceLabel={$i18n.satellites.create_satellite_price}
-			bind:withCredits
+			bind:withDevIcpApprove
+			bind:withFee
 			bind:insufficientFunds
 		>
 			<form onsubmit={onSubmit}>
@@ -166,7 +171,7 @@
 
 				<button
 					{...testId(testIds.createSatellite.create)}
-					disabled={$authSignedOut || isNullish($missionControlId) || insufficientFunds}
+					disabled={$authSignedOut || insufficientFunds}
 					type="submit"
 				>
 					{$i18n.satellites.create}

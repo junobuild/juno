@@ -1,4 +1,5 @@
-import { setSatellitesController } from '$lib/api/mission-control.api';
+import { canisterStatus, canisterUpdateSettings } from '$lib/api/ic.api';
+import { setControllers } from '$lib/api/satellites.api';
 import {
 	emulatorObservatoryMonitoringOpenId,
 	getEmulatorMainIdentity
@@ -7,15 +8,17 @@ import {
 	emulatorToggleOpenIdMonitoring,
 	unsafeSetEmulatorControllerForSatellite
 } from '$lib/services/emulator.services';
-import { Principal } from '@icp-sdk/core/principal';
-
 import { toasts } from '$lib/stores/app/toasts.store';
+import type { CanisterInfo } from '$lib/types/canister';
+import { Principal } from '@icp-sdk/core/principal';
+import { satelliteVersion } from '@junobuild/admin';
 import i18Mock from '../../mocks/i18n.mock';
 import { mockIdentity } from '../../mocks/identity.mock';
-import { mockMissionControlId } from '../../mocks/modules.mock';
 
-vi.mock('$lib/api/mission-control.api');
+vi.mock('$lib/api/satellites.api');
 vi.mock('$lib/rest/emulator.rest');
+vi.mock('@junobuild/admin');
+vi.mock('$lib/api/ic.api');
 
 describe('emulator.services', () => {
 	const mockSatelliteId = Principal.fromText('jx5yt-yyaaa-aaaal-abzbq-cai');
@@ -27,6 +30,14 @@ describe('emulator.services', () => {
 
 		vi.mocked(getEmulatorMainIdentity).mockResolvedValue(mockPrincipalText);
 		vi.mocked(emulatorObservatoryMonitoringOpenId);
+		vi.mocked(satelliteVersion).mockResolvedValue('0.1.0');
+
+		vi.mocked(canisterStatus).mockResolvedValue({
+			settings: {
+				controllers: [Principal.fromText(mockPrincipalText)]
+			}
+		} as CanisterInfo);
+		vi.mocked(canisterUpdateSettings).mockResolvedValue(undefined);
 	});
 
 	describe('unsafeSetEmulatorControllerForSatellite', () => {
@@ -35,13 +46,12 @@ describe('emulator.services', () => {
 
 			await expect(
 				unsafeSetEmulatorControllerForSatellite({
-					missionControlId: mockMissionControlId,
 					satelliteId: mockSatelliteId,
 					identity: mockIdentity
 				})
 			).rejects.toThrow(i18Mock.emulator.error_never_execute_set_controller);
 
-			expect(setSatellitesController).not.toHaveBeenCalled();
+			expect(setControllers).not.toHaveBeenCalled();
 			expect(getEmulatorMainIdentity).not.toHaveBeenCalled();
 		});
 
@@ -49,19 +59,24 @@ describe('emulator.services', () => {
 			vi.stubEnv('MODE', 'skylab');
 
 			await unsafeSetEmulatorControllerForSatellite({
-				missionControlId: mockMissionControlId,
 				satelliteId: mockSatelliteId,
 				identity: mockIdentity
 			});
 
 			expect(getEmulatorMainIdentity).toHaveBeenCalled();
-			expect(setSatellitesController).toHaveBeenCalledWith({
-				missionControlId: mockMissionControlId,
-				satelliteIds: [mockSatelliteId],
-				identity: mockIdentity,
-				controllerId: mockPrincipalText,
-				profile: '👾 Emulator',
-				scope: 'admin'
+			expect(setControllers).toHaveBeenCalledWith({
+				args: {
+					controller: {
+						expires_at: [],
+						metadata: [['profile', '👾 Emulator']],
+						scope: {
+							Admin: null
+						}
+					},
+					controllers: [Principal.fromText(mockPrincipalText)]
+				},
+				satelliteId: mockSatelliteId,
+				identity: mockIdentity
 			});
 		});
 	});

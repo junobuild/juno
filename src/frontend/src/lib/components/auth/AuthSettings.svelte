@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { setContext } from 'svelte';
-	import type { MissionControlDid } from '$declarations';
 	import AuthConfigCore from '$lib/components/auth/AuthConfigCore.svelte';
 	import AuthConfigGoogle from '$lib/components/auth/AuthConfigGoogle.svelte';
 	import AuthConfigII from '$lib/components/auth/AuthConfigII.svelte';
@@ -11,10 +10,11 @@
 	import { initAuthConfigContext } from '$lib/stores/satellite/auth.context.store';
 	import { AUTH_CONFIG_CONTEXT_KEY, type AuthConfigContext } from '$lib/types/auth.context';
 	import type { JunoModalEditAuthConfigDetailType } from '$lib/types/modal';
+	import type { Satellite } from '$lib/types/satellite';
 	import { emit } from '$lib/utils/events.utils';
 
 	interface Props {
-		satellite: MissionControlDid.Satellite;
+		satellite: Satellite;
 	}
 
 	let { satellite }: Props = $props();

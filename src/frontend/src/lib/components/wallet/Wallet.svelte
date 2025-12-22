@@ -1,15 +1,15 @@
 <script lang="ts">
-	import { isNullish } from '@dfinity/utils';
+	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { encodeIcrcAccount } from '@icp-sdk/canisters/ledger/icrc';
 	import ReceiveTokens from '$lib/components/tokens/ReceiveTokens.svelte';
 	import Transactions from '$lib/components/transactions/Transactions.svelte';
 	import TransactionsExport from '$lib/components/transactions/TransactionsExport.svelte';
 	import WalletActions from '$lib/components/wallet/WalletActions.svelte';
-	import WalletBalance from '$lib/components/wallet/WalletBalance.svelte';
+	import WalletBalanceById from '$lib/components/wallet/WalletBalanceById.svelte';
 	import WalletIds from '$lib/components/wallet/WalletIds.svelte';
+	import WalletPicker from '$lib/components/wallet/WalletPicker.svelte';
 	import { PAGINATION } from '$lib/constants/app.constants';
 	import { authSignedIn, authSignedOut } from '$lib/derived/auth.derived';
-	import { balance } from '$lib/derived/wallet/balance.derived';
 	import { transactions } from '$lib/derived/wallet/transactions.derived';
 	import type { WalletId } from '$lib/schemas/wallet.schema';
 	import { loadNextTransactions } from '$lib/services/wallet/wallet.services';
@@ -18,15 +18,13 @@
 	import { authStore } from '$lib/stores/auth.store';
 	import { last } from '$lib/utils/utils';
 
-	interface Props {
-		walletId: WalletId;
-	}
+	let walletId = $state<WalletId | undefined>(undefined);
 
-	let { walletId }: Props = $props();
+	let walletIdText = $derived(nonNullish(walletId) ? encodeIcrcAccount(walletId) : undefined);
 
-	const walletIdText = $derived(encodeIcrcAccount(walletId));
-
-	let walletTransactions = $derived($transactions[walletIdText] ?? []);
+	let walletTransactions = $derived(
+		nonNullish(walletIdText) ? ($transactions[walletIdText] ?? []) : []
+	);
 
 	/**
 	 * Scroll
@@ -49,6 +47,12 @@
 			return;
 		}
 
+		if (isNullish(walletId)) {
+			// For simplicity reasons. If walletId is undefined then transactions is an empty array then intersection
+			// likely cannot happen.
+			return;
+		}
+
 		await loadNextTransactions({
 			account: walletId,
 			identity: $authStore.identity,
@@ -67,25 +71,33 @@
 
 		<div class="columns-3 fit-column-1">
 			<div>
-				<WalletIds {walletId} />
+				<WalletPicker bind:walletId />
+
+				{#if nonNullish(walletId)}
+					<WalletIds {walletId} />
+				{/if}
 			</div>
 
 			<div>
-				<WalletBalance balance={$balance} />
+				<WalletBalanceById {walletId} />
 			</div>
 		</div>
 	</div>
 
-	<WalletActions onreceive={() => (receiveVisible = true)} {walletId} />
+	{#if nonNullish(walletId)}
+		<WalletActions onreceive={() => (receiveVisible = true)} {walletId} />
 
-	<Transactions
-		{disableInfiniteScroll}
-		{onintersect}
-		transactions={walletTransactions}
-		{walletId}
-	/>
+		<Transactions
+			{disableInfiniteScroll}
+			{onintersect}
+			transactions={walletTransactions}
+			{walletId}
+		/>
 
-	<TransactionsExport transactions={walletTransactions} {walletId} />
+		<TransactionsExport transactions={walletTransactions} {walletId} />
+	{/if}
 {/if}
 
-<ReceiveTokens {walletId} bind:visible={receiveVisible} />
+{#if nonNullish(walletId)}
+	<ReceiveTokens {walletId} bind:visible={receiveVisible} />
+{/if}

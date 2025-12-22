@@ -1,5 +1,4 @@
 import {
-	idlFactoryConsole,
 	idlFactoryMissionControl,
 	idlFactoryOrbiter,
 	idlFactorySatellite,
@@ -21,37 +20,43 @@ import {
 import type { Identity } from '@icp-sdk/core/agent';
 import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import type { Principal } from '@icp-sdk/core/principal';
-import { inject } from 'vitest';
-import { CONSOLE_ID } from '../../../constants/console-tests.constants';
 import { MEMORIES } from '../../../constants/satellite-tests.constants';
-import { deploySegments, updateRateConfig } from '../../../utils/console-tests.utils';
+import {
+	initUserAccountAndMissionControl,
+	setupConsole,
+	updateRateConfig
+} from '../../../utils/console-tests.utils';
 import { canisterStatus } from '../../../utils/ic-management-tests.utils';
 import { tick } from '../../../utils/pic-tests.utils';
-import { CONSOLE_WASM_PATH } from '../../../utils/setup-tests.utils';
 
 describe('Console > Factory > Settings', () => {
 	let pic: PocketIc;
 	let actor: Actor<ConsoleActor>;
+	let controller: Ed25519KeyIdentity;
 
 	let consoleId: Principal;
 
-	const controller = Ed25519KeyIdentity.generate();
-
 	beforeAll(async () => {
-		pic = await PocketIc.create(inject('PIC_URL'));
-
-		const { actor: c, canisterId: cId } = await pic.setupCanister<ConsoleActor>({
-			idlFactory: idlFactoryConsole,
-			wasm: CONSOLE_WASM_PATH,
-			sender: controller.getPrincipal(),
-			targetCanisterId: CONSOLE_ID
+		const {
+			pic: p,
+			actor: c,
+			controller: cO,
+			canisterId
+		} = await setupConsole({
+			withApplyRateTokens: true,
+			withLedger: true,
+			withSegments: true,
+			withFee: true
 		});
 
+		pic = p;
+
+		controller = cO;
+
 		actor = c;
-		consoleId = cId;
 		actor.setIdentity(controller);
 
-		await deploySegments({ actor });
+		consoleId = canisterId;
 	});
 
 	afterAll(async () => {
@@ -171,20 +176,17 @@ describe('Console > Factory > Settings', () => {
 			await add_credits(user.getPrincipal(), { e8s: 100_000_000n });
 		};
 
-		beforeAll(() => {
-			user = Ed25519KeyIdentity.generate();
-			actor.setIdentity(user);
+		beforeAll(async () => {
+			const { user: u, missionControlId: mId } = await initUserAccountAndMissionControl({
+				pic,
+				actor
+			});
+
+			user = u;
+			missionControlId = mId;
 		});
 
 		describe('mission control', () => {
-			beforeAll(async () => {
-				const { init_user_mission_control_center } = actor;
-
-				const missionControl = await init_user_mission_control_center();
-
-				missionControlId = fromNullable(missionControl.mission_control_id);
-			});
-
 			it('should create a mission control with expected default settings', async () => {
 				assertNonNullish(missionControlId);
 
@@ -238,6 +240,9 @@ describe('Console > Factory > Settings', () => {
 
 			describe('Settings', () => {
 				beforeAll(async () => {
+					// We need credits or ICP to spin a satellite as we already spinned a mission control.
+					await addCredits();
+
 					assertNonNullish(missionControlId);
 
 					const micActor = pic.createActor<MissionControlActor>(

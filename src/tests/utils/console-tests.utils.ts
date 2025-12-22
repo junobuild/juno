@@ -9,6 +9,7 @@ import {
 	idlFactoryConsole,
 	idlFactoryMissionControl
 } from '$declarations';
+import type { MissionControlId } from '$lib/types/mission-control';
 import { type Actor, IcpFeaturesConfig, PocketIc, SubnetStateType } from '@dfinity/pic';
 import {
 	arrayBufferToUint8Array,
@@ -290,14 +291,12 @@ export const testReleases = async (actor: Actor<ConsoleActor008>) => {
 	expect(fromNullable(mission_control)).toEqual(versionMissionControl);
 };
 
-export const initMissionControls = async ({
+export const deprecatedInitMissionControls = async ({
 	actor,
 	pic,
 	length
 }: {
-	actor: Actor<
-		ConsoleActor | ConsoleActor008 | ConsoleActor0014 | ConsoleActor015 | ConsoleActor020
-	>;
+	actor: Actor<ConsoleActor008 | ConsoleActor0014 | ConsoleActor015 | ConsoleActor020>;
 	pic: PocketIc;
 	length: number;
 }): Promise<Identity[]> => {
@@ -308,6 +307,81 @@ export const initMissionControls = async ({
 
 		const { init_user_mission_control_center } = actor;
 		await init_user_mission_control_center();
+
+		await tick(pic);
+	}
+
+	return users;
+};
+
+export const initUserAccounts = async ({
+	actor,
+	pic,
+	length
+}: {
+	actor: Actor<ConsoleActor>;
+	pic: PocketIc;
+	length: number;
+}): Promise<Identity[]> => {
+	const users = await Promise.all(Array.from({ length }).map(() => Ed25519KeyIdentity.generate()));
+
+	for (const user of users) {
+		actor.setIdentity(user);
+
+		const { get_or_init_account } = actor;
+		await get_or_init_account();
+
+		await tick(pic);
+	}
+
+	return users;
+};
+
+export const initUserAccountAndMissionControl = async ({
+	actor,
+	pic,
+	user: customUser
+}: {
+	actor: Actor<ConsoleActor>;
+	pic: PocketIc;
+	user?: Ed25519KeyIdentity;
+}): Promise<{ user: Ed25519KeyIdentity; missionControlId: MissionControlId }> => {
+	const user = customUser ?? Ed25519KeyIdentity.generate();
+
+	actor.setIdentity(user);
+
+	const { get_or_init_account, create_mission_control } = actor;
+	await get_or_init_account();
+
+	const missionControlId = await create_mission_control({
+		subnet_id: []
+	});
+
+	await tick(pic);
+
+	return { user, missionControlId };
+};
+
+export const initMissionControls = async ({
+	actor,
+	pic,
+	length
+}: {
+	actor: Actor<ConsoleActor>;
+	pic: PocketIc;
+	length: number;
+}): Promise<Identity[]> => {
+	const users = await Promise.all(Array.from({ length }).map(() => Ed25519KeyIdentity.generate()));
+
+	for (const user of users) {
+		actor.setIdentity(user);
+
+		const { get_or_init_account, create_mission_control } = actor;
+		await get_or_init_account();
+
+		await create_mission_control({
+			subnet_id: []
+		});
 
 		await tick(pic);
 	}
@@ -593,7 +667,7 @@ export const setupConsole = async ({
 		await configMissionControlRateTokens({
 			actor,
 			controller,
-			max_tokens: 10n,
+			max_tokens: 100n,
 			time_per_token_ns: 1_000_000_000n // 1s per token
 		});
 

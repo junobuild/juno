@@ -3,17 +3,19 @@
 	import { testIds } from '$lib/constants/test-ids.constants';
 	import { isDev } from '$lib/env/app.env';
 	import { emulatorLedgerTransfer } from '$lib/rest/emulator.rest';
-	import type { WalletId } from '$lib/schemas/wallet.schema';
+	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
 	import { emit } from '$lib/utils/events.utils';
 	import { testId } from '$lib/utils/test.utils';
 
 	interface Props {
-		walletId: WalletId;
+		selectedWallet: SelectedWallet;
 	}
 
-	let { walletId }: Props = $props();
+	let { selectedWallet }: Props = $props();
+
+	let { walletId } = $derived(selectedWallet);
 
 	let confetti = $state(false);
 

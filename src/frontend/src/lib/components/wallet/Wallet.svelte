@@ -11,16 +11,18 @@
 	import { PAGINATION } from '$lib/constants/app.constants';
 	import { authSignedIn, authSignedOut } from '$lib/derived/auth.derived';
 	import { transactions } from '$lib/derived/wallet/transactions.derived';
-	import type { WalletId } from '$lib/schemas/wallet.schema';
+	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { loadNextTransactions } from '$lib/services/wallet/wallet.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
 	import { authStore } from '$lib/stores/auth.store';
 	import { last } from '$lib/utils/utils';
 
-	let walletId = $state<WalletId | undefined>(undefined);
+	let selectedWallet = $state<SelectedWallet | undefined>(undefined);
 
-	let walletIdText = $derived(nonNullish(walletId) ? encodeIcrcAccount(walletId) : undefined);
+	let walletIdText = $derived(
+		nonNullish(selectedWallet) ? encodeIcrcAccount(selectedWallet.walletId) : undefined
+	);
 
 	let walletTransactions = $derived(
 		nonNullish(walletIdText) ? ($transactions[walletIdText] ?? []) : []
@@ -47,14 +49,14 @@
 			return;
 		}
 
-		if (isNullish(walletId)) {
+		if (isNullish(selectedWallet)) {
 			// For simplicity reasons. If walletId is undefined then transactions is an empty array then intersection
 			// likely cannot happen.
 			return;
 		}
 
 		await loadNextTransactions({
-			account: walletId,
+			account: selectedWallet.walletId,
 			identity: $authStore.identity,
 			maxResults: PAGINATION,
 			start: lastId,
@@ -71,33 +73,33 @@
 
 		<div class="columns-3 fit-column-1">
 			<div>
-				<WalletPicker bind:walletId />
+				<WalletPicker bind:selectedWallet />
 
-				{#if nonNullish(walletId)}
-					<WalletIds {walletId} />
+				{#if nonNullish(selectedWallet)}
+					<WalletIds {selectedWallet} />
 				{/if}
 			</div>
 
 			<div>
-				<WalletBalanceById {walletId} />
+				<WalletBalanceById {selectedWallet} />
 			</div>
 		</div>
 	</div>
 
-	{#if nonNullish(walletId)}
-		<WalletActions onreceive={() => (receiveVisible = true)} {walletId} />
+	{#if nonNullish(selectedWallet)}
+		<WalletActions onreceive={() => (receiveVisible = true)} {selectedWallet} />
 
 		<Transactions
 			{disableInfiniteScroll}
 			{onintersect}
+			{selectedWallet}
 			transactions={walletTransactions}
-			{walletId}
 		/>
 
-		<TransactionsExport transactions={walletTransactions} {walletId} />
+		<TransactionsExport {selectedWallet} transactions={walletTransactions} />
 	{/if}
 {/if}
 
-{#if nonNullish(walletId)}
-	<ReceiveTokens {walletId} bind:visible={receiveVisible} />
+{#if nonNullish(selectedWallet)}
+	<ReceiveTokens {selectedWallet} bind:visible={receiveVisible} />
 {/if}

@@ -2,19 +2,19 @@
 	import WalletGetICP from '$lib/components/wallet/WalletGetICP.svelte';
 	import WalletReceive from '$lib/components/wallet/WalletReceive.svelte';
 	import WalletSend from '$lib/components/wallet/WalletSend.svelte';
-	import type { WalletId } from '$lib/schemas/wallet.schema';
+	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
 
 	interface Props {
-		walletId: WalletId;
+		selectedWallet: SelectedWallet;
 		onsend?: () => void;
 		onreceive: () => void;
 	}
 
-	let { walletId, onreceive, onsend }: Props = $props();
+	let { selectedWallet, onreceive, onsend }: Props = $props();
 </script>
 
 <div class="toolbar">
-	<WalletGetICP {walletId} />
+	<WalletGetICP {selectedWallet} />
 
 	<WalletReceive {onreceive} />
 

@@ -6,16 +6,18 @@
 	import ReceiveTokensQRCode from '$lib/components/tokens/ReceiveTokensQRCode.svelte';
 	import ReceiveTokensSigner from '$lib/components/tokens/ReceiveTokensSigner.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
-	import type { WalletId } from '$lib/schemas/wallet.schema';
+	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toAccountIdentifier } from '$lib/utils/icp-icrc-account.utils';
 
 	interface Props {
-		walletId: WalletId;
+		selectedWallet: SelectedWallet;
 		visible?: boolean;
 	}
 
-	let { walletId, visible = $bindable(false) }: Props = $props();
+	let { selectedWallet, visible = $bindable(false) }: Props = $props();
+
+	let { walletId } = $derived(selectedWallet);
 
 	let walletIdText = $derived(encodeIcrcAccount(walletId));
 	let accountIdentifier = $derived(toAccountIdentifier(walletId));

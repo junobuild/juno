@@ -69,9 +69,7 @@ describe('initAccount', () => {
 		});
 
 		it('should trigger background certified account assertion', async () => {
-			vi.mocked(consoleApi.getAccount).mockImplementation(async () => {
-				return mockAccount;
-			});
+			vi.mocked(consoleApi.getAccount).mockImplementation(() => Promise.resolve(mockAccount));
 
 			await initAccount({ identity: mockIdentity });
 
@@ -157,9 +155,7 @@ describe('initAccount', () => {
 
 	describe('assertAccount background validation', () => {
 		it('should update store with certified account on successful assertion', async () => {
-			vi.mocked(consoleApi.getAccount).mockImplementation(async ({ certified }) => {
-				return mockAccount;
-			});
+			vi.mocked(consoleApi.getAccount).mockImplementation(() => Promise.resolve(mockAccount));
 
 			await initAccount({ identity: mockIdentity });
 
@@ -174,6 +170,7 @@ describe('initAccount', () => {
 		});
 
 		it('should sign out if certified account is null', async () => {
+			// eslint-disable-next-line require-await
 			vi.mocked(consoleApi.getAccount).mockImplementation(async ({ certified }) => {
 				if (certified) {
 					return undefined;
@@ -189,6 +186,7 @@ describe('initAccount', () => {
 		});
 
 		it('should sign out on assertion error', async () => {
+			// eslint-disable-next-line require-await
 			vi.mocked(consoleApi.getAccount).mockImplementation(async ({ certified }) => {
 				if (certified) {
 					throw new Error('Certification failed');

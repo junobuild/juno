@@ -1,7 +1,6 @@
 use crate::store::{with_segments, with_segments_mut};
 use crate::types::interface::ListSegmentsArgs;
 use crate::types::state::{Segment, SegmentKey, SegmentType, SegmentsStable};
-use candid::Principal;
 use junobuild_shared::constants_shared::{PRINCIPAL_MAX, PRINCIPAL_MIN};
 use junobuild_shared::structures::collect_stable_vec;
 use junobuild_shared::types::state::UserId;
@@ -30,13 +29,13 @@ fn list_segments_impl(
 }
 
 fn detach_segment_impl(key: &SegmentKey, segments: &mut SegmentsStable) -> Result<(), String> {
-    let segment = segments.contains_key(&key);
+    let segment = segments.contains_key(key);
 
     if !segment {
         return Err("Segment not found".to_string());
     }
 
-    segments.remove(&key);
+    segments.remove(key);
 
     Ok(())
 }
@@ -49,14 +48,14 @@ fn filter_segments_range(
     }: &ListSegmentsArgs,
 ) -> impl RangeBounds<SegmentKey> {
     let start_key = SegmentKey {
-        user: user.clone(),
+        user: *user,
         // Fallback to first enum
         segment_type: segment_type.clone().unwrap_or(SegmentType::Satellite),
         segment_id: segment_id.unwrap_or(PRINCIPAL_MIN),
     };
 
     let end_key = SegmentKey {
-        user: user.clone(),
+        user: *user,
         // Fallback to last enum
         segment_type: segment_type.clone().unwrap_or(SegmentType::Orbiter),
         segment_id: segment_id.unwrap_or(PRINCIPAL_MAX),

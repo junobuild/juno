@@ -12,7 +12,7 @@ pub fn get_orbiter_fee() -> Tokens {
 }
 
 pub fn get_mission_control_fee() -> Result<Tokens, String> {
-    with_fees(|fees| get_mission_control_fee_impl(fees))
+    with_fees(get_mission_control_fee_impl)
 }
 
 fn get_mission_control_fee_impl(fees: &Fees) -> Result<Tokens, String> {

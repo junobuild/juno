@@ -1,6 +1,6 @@
 import { type ConsoleActor, idlFactoryObservatory, type ObservatoryActor } from '$declarations';
 import type { NotifyArgs } from '$declarations/observatory/observatory.did';
-import type { PocketIc , Actor } from '@dfinity/pic';
+import type { Actor, PocketIc } from '@dfinity/pic';
 import { AnonymousIdentity } from '@icp-sdk/core/agent';
 import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import { mockMissionControlId } from '../../../frontend/tests/mocks/modules.mock';

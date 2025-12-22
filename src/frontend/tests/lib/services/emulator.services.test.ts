@@ -35,7 +35,6 @@ describe('emulator.services', () => {
 
 			await expect(
 				unsafeSetEmulatorControllerForSatellite({
-					missionControlId: mockMissionControlId,
 					satelliteId: mockSatelliteId,
 					identity: mockIdentity
 				})
@@ -49,7 +48,6 @@ describe('emulator.services', () => {
 			vi.stubEnv('MODE', 'skylab');
 
 			await unsafeSetEmulatorControllerForSatellite({
-				missionControlId: mockMissionControlId,
 				satelliteId: mockSatelliteId,
 				identity: mockIdentity
 			});

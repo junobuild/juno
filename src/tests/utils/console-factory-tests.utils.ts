@@ -1,4 +1,4 @@
-import { type ConsoleActor } from '$declarations';
+import type { ConsoleActor } from '$declarations';
 import type { Actor } from '@dfinity/pic';
 import { toNullable } from '@dfinity/utils';
 import type { Identity } from '@icp-sdk/core/agent';

@@ -9,7 +9,7 @@ import {
 	type SatelliteActor
 } from '$declarations';
 import { ONE_YEAR, THREE_MONTHS } from '$lib/constants/canister.constants';
-import { PocketIc, type Actor } from '@dfinity/pic';
+import type { PocketIc, Actor } from '@dfinity/pic';
 import {
 	assertNonNullish,
 	fromNullable,
@@ -18,7 +18,7 @@ import {
 	toNullable
 } from '@dfinity/utils';
 import type { Identity } from '@icp-sdk/core/agent';
-import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
+import type { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import type { Principal } from '@icp-sdk/core/principal';
 import { MEMORIES } from '../../../constants/satellite-tests.constants';
 import {

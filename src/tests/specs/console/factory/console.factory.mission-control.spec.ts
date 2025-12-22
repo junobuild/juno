@@ -1,7 +1,6 @@
 import type { ConsoleActor } from '$declarations';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import { fromNullable, fromNullishNullable, toNullable } from '@dfinity/utils';
-import type { Identity } from '@icp-sdk/core/agent';
 import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import type { Principal } from '@icp-sdk/core/principal';
 import {
@@ -9,10 +8,10 @@ import {
 	NO_ACCOUNT_ERROR_MSG,
 	TEST_FEE
 } from '../../../constants/console-tests.constants';
+import { createSatelliteWithConsole } from '../../../utils/console-factory-tests.utils';
 import { initUserAccountAndMissionControl, setupConsole } from '../../../utils/console-tests.utils';
 import { approveIcp, transferIcp } from '../../../utils/ledger-tests.utils';
 import { tick } from '../../../utils/pic-tests.utils';
-import { createSatelliteWithConsole } from '../../../utils/console-factory-tests.utils';
 
 describe('Console > Factory > Mission Control', () => {
 	let pic: PocketIc;

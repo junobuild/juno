@@ -48,9 +48,7 @@ describe('Console > Factory > Canister', () => {
 		await pic?.tearDown();
 	});
 
-	const createSatelliteWithConsole = async ({ user }: { user: Identity }): Promise<Principal> => {
-		return await createSatelliteWithConsoleUtils({ actor, user });
-	};
+	const createSatelliteWithConsole = async ({ user }: { user: Identity }): Promise<Principal> => await createSatelliteWithConsoleUtils({ actor, user });
 
 	const createOrbiterWithConsole = async ({ user }: { user: Identity }): Promise<Principal> => {
 		const { create_orbiter } = actor;
@@ -311,7 +309,7 @@ describe('Console > Factory > Canister', () => {
 				await add_credits(user.getPrincipal(), { e8s: 100_000_000n });
 
 				actor.setIdentity(user);
-			}
+			};
 
 			let missionControlId: MissionControlId;
 
@@ -325,7 +323,7 @@ describe('Console > Factory > Canister', () => {
 				missionControlId = mId;
 
 				await addCredits();
-			})
+			});
 
 			it('should create with mission control', async () => {
 				const { list_segments } = actor;

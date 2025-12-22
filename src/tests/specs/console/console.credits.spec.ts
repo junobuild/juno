@@ -1,4 +1,4 @@
-import { type ConsoleActor } from '$declarations';
+import type { ConsoleActor } from '$declarations';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import { toNullable } from '@dfinity/utils';
 import type { Identity } from '@icp-sdk/core/agent';
@@ -41,7 +41,7 @@ describe('Console > Credits', () => {
 			user = Ed25519KeyIdentity.generate();
 			actor.setIdentity(user);
 
-			const {get_or_init_account} = actor;
+			const { get_or_init_account } = actor;
 			await get_or_init_account();
 		});
 

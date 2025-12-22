@@ -13,5 +13,14 @@ export const WalletIdSchema = z.strictObject({
 });
 export type WalletId = z.infer<typeof WalletIdSchema>;
 
-export const WalletIdsSchema = z.array(WalletIdSchema);
-export type WalletIds = z.infer<typeof WalletIdsSchema>;
+export const SelectedWalletSchema = z.discriminatedUnion('type', [
+	z.strictObject({
+		type: z.literal('dev'),
+		walletId: WalletIdSchema
+	}),
+	z.strictObject({
+		type: z.literal('mission_control'),
+		walletId: WalletIdSchema
+	})
+]);
+export type SelectedWallet = z.infer<typeof SelectedWalletSchema>;

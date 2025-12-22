@@ -10,7 +10,7 @@
 	import WalletIds from '$lib/components/wallet/WalletIds.svelte';
 	import WalletPicker from '$lib/components/wallet/WalletPicker.svelte';
 	import { testIds } from '$lib/constants/test-ids.constants';
-	import type { WalletId } from '$lib/schemas/wallet.schema';
+	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { i18n } from '$lib/stores/app/i18n.store';
 
 	let button: HTMLButtonElement | undefined = $state();
@@ -25,7 +25,7 @@
 		receiveVisible = true;
 	};
 
-	let walletId = $state<WalletId | undefined>(undefined);
+	let selectedWallet = $state<SelectedWallet | undefined>(undefined);
 </script>
 
 <ButtonIcon {onclick} testId={testIds.navbar.openWallet} bind:button>
@@ -38,7 +38,7 @@
 
 <Popover anchor={button} direction="rtl" bind:visible>
 	<div class="container">
-		<WalletPicker bind:walletId />
+		<WalletPicker bind:selectedWallet />
 
 		<div>
 			<Value>
@@ -46,22 +46,22 @@
 					{$i18n.wallet.balance}
 				{/snippet}
 
-				<WalletBalanceById display="inline" {walletId} />
+				<WalletBalanceById display="inline" {selectedWallet} />
 			</Value>
 		</div>
 
-		{#if nonNullish(walletId)}
-			<WalletIds {walletId} />
+		{#if nonNullish(selectedWallet)}
+			<WalletIds {selectedWallet} />
 
 			<div class="actions">
-				<WalletActions onreceive={openReceive} onsend={() => (visible = false)} {walletId} />
+				<WalletActions onreceive={openReceive} onsend={() => (visible = false)} {selectedWallet} />
 			</div>
 		{/if}
 	</div>
 </Popover>
 
-{#if nonNullish(walletId)}
-	<ReceiveTokens {walletId} bind:visible={receiveVisible} />
+{#if nonNullish(selectedWallet)}
+	<ReceiveTokens {selectedWallet} bind:visible={receiveVisible} />
 {/if}
 
 <style lang="scss">

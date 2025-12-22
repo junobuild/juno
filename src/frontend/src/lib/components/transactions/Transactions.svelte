@@ -1,18 +1,25 @@
 <script lang="ts">
 	import Transaction from '$lib/components/transactions/Transaction.svelte';
 	import InfiniteScroll from '$lib/components/ui/InfiniteScroll.svelte';
-	import type { WalletId } from '$lib/schemas/wallet.schema';
+	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { CertifiedTransactions } from '$lib/types/transaction';
 
 	interface Props {
-		walletId: WalletId;
+		selectedWallet: SelectedWallet;
 		transactions: CertifiedTransactions;
 		disableInfiniteScroll?: boolean;
 		onintersect: () => void;
 	}
 
-	let { walletId, transactions, onintersect, disableInfiniteScroll = false }: Props = $props();
+	let {
+		selectedWallet,
+		transactions,
+		onintersect,
+		disableInfiniteScroll = false
+	}: Props = $props();
+
+	let { walletId } = $derived(selectedWallet);
 </script>
 
 {#if transactions.length > 0}

@@ -3,17 +3,19 @@
 	import { encodeIcrcAccount } from '@icp-sdk/canisters/ledger/icrc';
 	import WalletBalance from '$lib/components/wallet/WalletBalance.svelte';
 	import WalletInlineBalance from '$lib/components/wallet/WalletInlineBalance.svelte';
-	import type { WalletId } from '$lib/schemas/wallet.schema';
+	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { balanceCertifiedStore } from '$lib/stores/wallet/balance.store';
 
 	interface Props {
-		walletId: WalletId | undefined;
+		selectedWallet: SelectedWallet | undefined;
 		display?: 'block' | 'inline';
 	}
 
-	let { walletId, display = 'block' }: Props = $props();
+	let { selectedWallet, display = 'block' }: Props = $props();
 
-	let walletIdText = $derived(nonNullish(walletId) ? encodeIcrcAccount(walletId) : undefined);
+	let walletIdText = $derived(
+		nonNullish(selectedWallet) ? encodeIcrcAccount(selectedWallet.walletId) : undefined
+	);
 
 	let balance = $derived(
 		nonNullish(walletIdText) ? $balanceCertifiedStore?.[walletIdText]?.data : undefined

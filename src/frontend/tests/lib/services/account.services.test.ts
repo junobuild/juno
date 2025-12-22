@@ -69,7 +69,7 @@ describe('initAccount', () => {
 		});
 
 		it('should trigger background certified account assertion', async () => {
-			vi.mocked(consoleApi.getAccount).mockImplementation(() => Promise.resolve(mockAccount));
+			vi.mocked(consoleApi.getAccount).mockResolvedValue(mockAccount);
 
 			await initAccount({ identity: mockIdentity });
 
@@ -155,7 +155,7 @@ describe('initAccount', () => {
 
 	describe('assertAccount background validation', () => {
 		it('should update store with certified account on successful assertion', async () => {
-			vi.mocked(consoleApi.getAccount).mockImplementation(() => Promise.resolve(mockAccount));
+			vi.mocked(consoleApi.getAccount).mockResolvedValue(mockAccount);
 
 			await initAccount({ identity: mockIdentity });
 

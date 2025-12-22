@@ -397,7 +397,6 @@ service : () -> {
   init_proposal_many_assets_upload : (vec InitAssetKey, nat) -> (
       vec record { text; InitUploadResult },
     );
-  init_user_mission_control_center : () -> (Account);
   list_accounts : () -> (vec record { principal; Account }) query;
   list_assets : (text, ListParams) -> (ListResults) query;
   list_controllers : () -> (vec record { principal; Controller }) query;

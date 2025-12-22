@@ -490,7 +490,6 @@ export const idlFactory = ({ IDL }) => {
 			[IDL.Vec(IDL.Tuple(IDL.Text, InitUploadResult))],
 			[]
 		),
-		init_user_mission_control_center: IDL.Func([], [Account], []),
 		list_accounts: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Principal, Account))], ['query']),
 		list_assets: IDL.Func([IDL.Text, ListParams], [ListResults], ['query']),
 		list_controllers: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Principal, Controller))], ['query']),

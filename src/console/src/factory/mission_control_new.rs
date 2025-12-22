@@ -14,6 +14,8 @@ use junobuild_shared::mgmt::types::cmc::SubnetId;
 use junobuild_shared::mgmt::types::ic::CreateCanisterInitSettingsArg;
 use junobuild_shared::types::interface::CreateMissionControlArgs;
 
+// TODO: rename to mission_control
+
 pub async fn create_mission_control(
     caller: Principal,
     args: CreateMissionControlArgs,

@@ -1,13 +1,9 @@
-import {
-	type ConsoleActor,
-	idlFactoryMissionControl,
-	type MissionControlActor
-} from '$declarations';
+import type { ConsoleActor } from '$declarations';
 import type { Actor, PocketIc } from '@dfinity/pic';
-import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
+import { toNullable } from '@dfinity/utils';
 import type { Identity } from '@icp-sdk/core/agent';
 import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
-import type { Principal } from '@icp-sdk/core/principal';
+import { createSatelliteWithConsole } from '../../utils/console-factory-tests.utils';
 import { setupConsole } from '../../utils/console-tests.utils';
 
 describe('Console > Credits', () => {
@@ -40,24 +36,13 @@ describe('Console > Credits', () => {
 
 	describe('User', () => {
 		let user: Identity;
-		let missionControlId: Principal;
-		let micActor: Actor<MissionControlActor>;
 
 		beforeAll(async () => {
 			user = Ed25519KeyIdentity.generate();
 			actor.setIdentity(user);
 
-			const { init_user_mission_control_center } = actor;
-			const missionControl = await init_user_mission_control_center();
-
-			const mId = fromNullable(missionControl.mission_control_id);
-
-			assertNonNullish(mId);
-
-			missionControlId = mId;
-
-			micActor = pic.createActor<MissionControlActor>(idlFactoryMissionControl, missionControlId);
-			micActor.setIdentity(user);
+			const { get_or_init_account } = actor;
+			await get_or_init_account();
 		});
 
 		it('should have remaining credits', async () => {
@@ -77,8 +62,7 @@ describe('Console > Credits', () => {
 		});
 
 		it('should create a first satellite and used all credits', async () => {
-			const { create_satellite } = micActor;
-			const { satellite_id } = await create_satellite('test');
+			const satellite_id = await createSatelliteWithConsole({ user, actor });
 
 			expect(satellite_id).not.toBeUndefined();
 
@@ -102,10 +86,10 @@ describe('Console > Credits', () => {
 		});
 
 		it('should not create a satellite without credits', async () => {
-			const { create_satellite } = micActor;
-
 			// No credits -> with payments -> no ICP
-			await expect(create_satellite('test')).rejects.toThrow('InsufficientFunds');
+			await expect(createSatelliteWithConsole({ user, actor })).rejects.toThrow(
+				'InsufficientAllowance'
+			);
 		});
 
 		it('should receive credits', async () => {
@@ -127,8 +111,7 @@ describe('Console > Credits', () => {
 			// Advance time to skip: Rate limit reached, try again later.
 			await pic.advanceTime(1_000 * 60 * 10);
 
-			const { create_satellite } = micActor;
-			const { satellite_id } = await create_satellite('test');
+			const satellite_id = await createSatelliteWithConsole({ user, actor });
 
 			expect(satellite_id).not.toBeUndefined();
 

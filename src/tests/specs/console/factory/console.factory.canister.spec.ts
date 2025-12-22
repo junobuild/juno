@@ -5,7 +5,7 @@ import {
 } from '$declarations';
 import type { MissionControlId } from '$lib/types/mission-control';
 import type { Actor, PocketIc } from '@dfinity/pic';
-import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
+import { toNullable } from '@dfinity/utils';
 import type { Identity } from '@icp-sdk/core/agent';
 import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import type { Principal } from '@icp-sdk/core/principal';
@@ -14,7 +14,7 @@ import {
 	NO_ACCOUNT_ERROR_MSG,
 	TEST_FEE
 } from '../../../constants/console-tests.constants';
-import { setupConsole } from '../../../utils/console-tests.utils';
+import { initUserAccountAndMissionControl, setupConsole } from '../../../utils/console-tests.utils';
 import { approveIcp, transferIcp } from '../../../utils/ledger-tests.utils';
 import { tick } from '../../../utils/pic-tests.utils';
 
@@ -156,15 +156,19 @@ describe('Console > Factory > Canister', () => {
 					createFn({
 						user
 					})
-				).rejects.toThrow("'No mission control center found");
+				).rejects.toThrow('No mission control center found');
 
 				actor.setIdentity(user);
 			});
 
 			it('should fail with unknown caller', async () => {
-				const { init_user_mission_control_center } = actor;
+				const { get_or_init_account, create_mission_control } = actor;
 
-				await init_user_mission_control_center();
+				await get_or_init_account();
+
+				await create_mission_control({
+					subnet_id: []
+				});
 
 				const anotherCaller = Ed25519KeyIdentity.generate();
 				actor.setIdentity(anotherCaller);
@@ -306,13 +310,32 @@ describe('Console > Factory > Canister', () => {
 		});
 
 		describe('Mission Control', () => {
+			const addCredits = async () => {
+				actor.setIdentity(controller);
+
+				// Spinning mission control requires credits or ICP as well
+				const { add_credits } = actor;
+				await add_credits(user.getPrincipal(), { e8s: 100_000_000n });
+
+				actor.setIdentity(user);
+			};
+
+			let missionControlId: MissionControlId;
+
+			beforeEach(async () => {
+				const { missionControlId: mId } = await initUserAccountAndMissionControl({
+					pic,
+					actor,
+					user
+				});
+
+				missionControlId = mId;
+
+				await addCredits();
+			});
+
 			it('should create with mission control', async () => {
-				const { init_user_mission_control_center, list_segments } = actor;
-
-				const { mission_control_id } = await init_user_mission_control_center();
-
-				const missionControlId = fromNullable(mission_control_id);
-				assertNonNullish(missionControlId);
+				const { list_segments } = actor;
 
 				const id = await createFnWithMctrl({
 					user,
@@ -330,13 +353,6 @@ describe('Console > Factory > Canister', () => {
 			});
 
 			it('should fail with without credits and payment', async () => {
-				const { init_user_mission_control_center } = actor;
-
-				const { mission_control_id } = await init_user_mission_control_center();
-
-				const missionControlId = fromNullable(mission_control_id);
-				assertNonNullish(missionControlId);
-
 				// First module works out
 				await createFnWithMctrl({
 					user,
@@ -356,13 +372,6 @@ describe('Console > Factory > Canister', () => {
 			});
 
 			it('should fail without enough payment', async () => {
-				const { init_user_mission_control_center } = actor;
-
-				const { mission_control_id } = await init_user_mission_control_center();
-
-				const missionControlId = fromNullable(mission_control_id);
-				assertNonNullish(missionControlId);
-
 				// First module works out
 				await createFnWithMctrl({
 					user,
@@ -390,13 +399,6 @@ describe('Console > Factory > Canister', () => {
 			});
 
 			it('should succeed with payment', async () => {
-				const { init_user_mission_control_center } = actor;
-
-				const { mission_control_id } = await init_user_mission_control_center();
-
-				const missionControlId = fromNullable(mission_control_id);
-				assertNonNullish(missionControlId);
-
 				// First module works out
 				await createFnWithMctrl({
 					user,

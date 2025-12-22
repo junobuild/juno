@@ -5,12 +5,10 @@ import { getConsoleActor } from '$lib/api/actors/actor.juno.api';
 import type { OptionIdentity } from '$lib/types/itentity';
 import { fromNullable, isNullish } from '@dfinity/utils';
 
-export const initAccountAndMissionControl = async (
-	identity: OptionIdentity
-): Promise<ConsoleDid.Account> => {
-	const { init_user_mission_control_center } = await getConsoleActor({ identity });
+export const getOrInitAccount = async (identity: OptionIdentity): Promise<ConsoleDid.Account> => {
+	const { get_or_init_account } = await getConsoleActor({ identity });
 
-	return await init_user_mission_control_center();
+	return await get_or_init_account();
 };
 
 export const getAccount = async (

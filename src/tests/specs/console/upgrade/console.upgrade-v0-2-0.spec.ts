@@ -11,7 +11,7 @@ import type { Principal } from '@icp-sdk/core/principal';
 import { inject } from 'vitest';
 import {
 	deploySegments,
-	initMissionControls,
+	deprecatedInitMissionControls,
 	updateRateConfig
 } from '../../../utils/console-tests.utils';
 import { tick } from '../../../utils/pic-tests.utils';
@@ -84,7 +84,7 @@ describe('Console > Upgrade > v0.1.5 -> v0.2.0', () => {
 	};
 
 	it('should still provide mission control (users) after move to accounts', async () => {
-		const originalUsers = await initMissionControls({ actor, pic, length: 3 });
+		const originalUsers = await deprecatedInitMissionControls({ actor, pic, length: 3 });
 
 		await upgradeCurrent();
 

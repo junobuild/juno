@@ -460,7 +460,6 @@ export interface _SERVICE {
 		[Array<InitAssetKey>, bigint],
 		Array<[string, InitUploadResult]>
 	>;
-	init_user_mission_control_center: ActorMethod<[], Account>;
 	list_accounts: ActorMethod<[], Array<[Principal, Account]>>;
 	list_assets: ActorMethod<[string, ListParams], ListResults>;
 	list_controllers: ActorMethod<[], Array<[Principal, Controller]>>;

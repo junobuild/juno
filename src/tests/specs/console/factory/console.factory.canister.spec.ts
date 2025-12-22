@@ -117,6 +117,29 @@ describe('Console > Factory > Canister', () => {
 		return orbiter_id;
 	};
 
+	const assertSegments = async ({
+		title,
+		segmentIds
+	}: {
+		title: string;
+		segmentIds: Principal[];
+	}) => {
+		const { list_segments } = actor;
+
+		const segments = await list_segments({
+			segment_type: [title === 'Orbiter' ? { Orbiter: null } : { Satellite: null }],
+			segment_id: []
+		});
+
+		expect(segments).toHaveLength(segmentIds.length);
+
+		for (const segmentId of segmentIds) {
+			expect(
+				segments.find(([_, { segment_id }]) => segment_id.toText() === segmentId.toText())
+			).not.toBeUndefined();
+		}
+	};
+
 	describe.each([
 		{
 			title: 'Satellite',
@@ -185,7 +208,7 @@ describe('Console > Factory > Canister', () => {
 
 		describe('User', () => {
 			it('should create with user', async () => {
-				const { get_or_init_account, list_segments } = actor;
+				const { get_or_init_account } = actor;
 				await get_or_init_account();
 
 				const id = await createFn({
@@ -194,14 +217,10 @@ describe('Console > Factory > Canister', () => {
 
 				expect(id).not.toBeUndefined();
 
-				const segments = await list_segments({
-					segment_type: [title === 'Orbiter' ? { Orbiter: null } : { Satellite: null }],
-					segment_id: [id]
+				await assertSegments({
+					title,
+					segmentIds: [id]
 				});
-
-				expect(segments).toHaveLength(1);
-
-				expect(segments[0][1].segment_id.toText()).toEqual(id.toText());
 			});
 
 			it('should fail with without credits and payment', async () => {
@@ -291,21 +310,10 @@ describe('Console > Factory > Canister', () => {
 
 				expect(secondId).not.toBeUndefined();
 
-				const { list_segments } = actor;
-
-				const segments = await list_segments({
-					segment_type: [title === 'Orbiter' ? { Orbiter: null } : { Satellite: null }],
-					segment_id: []
+				await assertSegments({
+					title,
+					segmentIds: [firstId, secondId]
 				});
-
-				expect(segments).toHaveLength(2);
-
-				expect(
-					segments.find(([_, { segment_id }]) => segment_id.toText() === firstId.toText())
-				).not.toBeUndefined();
-				expect(
-					segments.find(([_, { segment_id }]) => segment_id.toText() === secondId.toText())
-				).not.toBeUndefined();
 			});
 		});
 
@@ -335,8 +343,6 @@ describe('Console > Factory > Canister', () => {
 			});
 
 			it('should create with mission control', async () => {
-				const { list_segments } = actor;
-
 				const id = await createFnWithMctrl({
 					user,
 					missionControlId
@@ -344,12 +350,10 @@ describe('Console > Factory > Canister', () => {
 
 				expect(id).not.toBeUndefined();
 
-				const segments = await list_segments({
-					segment_type: [],
-					segment_id: []
+				await assertSegments({
+					title,
+					segmentIds: [id]
 				});
-
-				expect(segments).toHaveLength(0);
 			});
 
 			it('should fail with without credits and payment', async () => {
@@ -400,7 +404,7 @@ describe('Console > Factory > Canister', () => {
 
 			it('should succeed with payment', async () => {
 				// First module works out
-				await createFnWithMctrl({
+				const firstId = await createFnWithMctrl({
 					user,
 					missionControlId
 				});
@@ -423,14 +427,10 @@ describe('Console > Factory > Canister', () => {
 
 				expect(secondId).not.toBeUndefined();
 
-				const { list_segments } = actor;
-
-				const segments = await list_segments({
-					segment_type: [],
-					segment_id: []
+				await assertSegments({
+					title,
+					segmentIds: [firstId, secondId]
 				});
-
-				expect(segments).toHaveLength(0);
 			});
 		});
 	});

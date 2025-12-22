@@ -100,7 +100,7 @@ where
     F: FnOnce(CanisterCreator, Option<SubnetId>) -> Fut,
     Fut: Future<Output = Result<Principal, String>>,
 {
-    let account_owner = creator.account_owner().clone();
+    let account_owner = *creator.account_owner();
 
     // Create the satellite
     let create_canister_result = create(creator, subnet_id).await;
@@ -132,7 +132,7 @@ where
     F: FnOnce(CanisterCreator, Option<SubnetId>) -> Fut,
     Fut: Future<Output = Result<Principal, String>>,
 {
-    let purchaser = creator.purchaser().clone();
+    let purchaser = *creator.purchaser();
 
     let purchaser_payment_block_index = if let Some(block_index) = block_index {
         if is_known_payment(&block_index) {

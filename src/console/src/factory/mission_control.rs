@@ -53,7 +53,7 @@ async fn create_mission_control_wasm(
 
     // We temporarily use the Console as a controller to create the canister but
     // remove it as soon as it is spin.
-    let temporary_init_controllers = Vec::from([id(), user_id.clone()]);
+    let temporary_init_controllers = Vec::from([id(), user_id]);
 
     let create_settings_arg = CreateCanisterInitSettingsArg {
         controllers: temporary_init_controllers,

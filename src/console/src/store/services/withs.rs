@@ -38,7 +38,7 @@ pub fn with_auth_mut<R>(f: impl FnOnce(&mut Option<AuthenticationHeapState>) -> 
 pub fn with_fees<R>(f: impl FnOnce(&Fees) -> R) -> R {
     read_heap_state(|state| {
         let fees = &state.fees;
-        f(&fees)
+        f(fees)
     })
 }
 

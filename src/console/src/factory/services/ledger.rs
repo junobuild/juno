@@ -26,7 +26,7 @@ pub async fn verify_payment(
         purchaser_account_identifier,
         console_account_identifier,
         canister_fee,
-        purchaser_payment_block_index.clone(),
+        *purchaser_payment_block_index,
     )
     .await;
 
@@ -41,7 +41,7 @@ pub async fn verify_payment(
         .join(""));
     }
 
-    Ok(purchaser_payment_block_index.clone())
+    Ok(*purchaser_payment_block_index)
 }
 
 pub async fn refund_payment(
@@ -70,7 +70,7 @@ pub async fn transfer_from(
     purchaser: &Principal,
     canister_fee: &Tokens,
 ) -> Result<BlockIndex, String> {
-    let purchaser_account: Account = Account::from(purchaser.clone());
+    let purchaser_account: Account = Account::from(*purchaser);
     let console_account: Account = Account::from(id());
 
     let amount = Nat::from(canister_fee.e8s());

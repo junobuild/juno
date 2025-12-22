@@ -46,7 +46,7 @@ pub fn mission_control_wasm_arg(user: &UserId) -> Result<WasmArg, String> {
 }
 
 pub fn satellite_wasm_arg(
-    controllers: &Vec<ControllerId>,
+    controllers: &[ControllerId],
     storage: Option<InitStorageArgs>,
 ) -> Result<WasmArg, String> {
     let latest_version =
@@ -54,19 +54,19 @@ pub fn satellite_wasm_arg(
     let full_path = format!("/releases/satellite-v{latest_version}.wasm.gz");
     let wasm: Blob = get_chunks(&full_path)?;
     let install_arg: Vec<u8> = Encode!(&InitSatelliteArgs {
-        controllers: controllers.clone(),
+        controllers: controllers.to_owned(),
         storage
     })
     .map_err(|e| e.to_string())?;
     Ok(WasmArg { wasm, install_arg })
 }
 
-pub fn orbiter_wasm_arg(controllers: &Vec<ControllerId>) -> Result<WasmArg, String> {
+pub fn orbiter_wasm_arg(controllers: &[ControllerId]) -> Result<WasmArg, String> {
     let latest_version = get_latest_orbiter_version().ok_or("No orbiter versions available.")?;
     let full_path = format!("/releases/orbiter-v{latest_version}.wasm.gz");
     let wasm: Blob = get_chunks(&full_path)?;
     let install_arg: Vec<u8> = Encode!(&InitOrbiterArgs {
-        controllers: controllers.clone()
+        controllers: controllers.to_owned()
     })
     .map_err(|e| e.to_string())?;
     Ok(WasmArg { wasm, install_arg })

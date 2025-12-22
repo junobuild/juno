@@ -26,7 +26,7 @@ fn insert_new_payment_impl(
     let now = time();
 
     let new_payment = Payment {
-        purchaser: Some(purchaser.clone()),
+        purchaser: Some(*purchaser),
         mission_control_id: None,
         block_index_payment: *block_index,
         block_index_refunded: None,

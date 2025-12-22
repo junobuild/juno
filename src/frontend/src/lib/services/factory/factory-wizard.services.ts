@@ -14,6 +14,7 @@ import {
 import { loadCredits } from '$lib/services/console/credits.services';
 import { loadSegments } from '$lib/services/console/segments.services';
 import { unsafeSetEmulatorControllerForSatellite } from '$lib/services/emulator.services';
+import { finalizeMissionControlWizard } from '$lib/services/factory/_factory-wizard.mission-control.services';
 import {
 	createOrbiter,
 	createOrbiterWithConfig,
@@ -27,7 +28,6 @@ import {
 import { loadSettings, loadUserData } from '$lib/services/mission-control/mission-control.services';
 import { waitMissionControlVersionLoaded } from '$lib/services/version/version.mission-control.services';
 import { approveCreateCanisterWithIcp } from '$lib/services/wallet/wallet.transfer.services';
-import { finalizeMissionControlWizard } from '$lib/services/wizard.mission-control.services';
 import { busy } from '$lib/stores/app/busy.store';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';

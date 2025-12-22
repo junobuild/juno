@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { initMissionControlWizard } from '$lib/services/wizard.services';
+	import { initMissionControlWizard } from '$lib/services/factory/factory-wizard.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { authStore } from '$lib/stores/auth.store';
 

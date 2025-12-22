@@ -10,6 +10,7 @@
 	import { testIds } from '$lib/constants/test-ids.constants';
 	import { authSignedOut } from '$lib/derived/auth.derived';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
+	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { createOrbiterWizard } from '$lib/services/factory/factory-wizard.services';
 	import { wizardBusy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
@@ -18,7 +19,6 @@
 	import type { WizardCreateProgress } from '$lib/types/progress-wizard';
 	import type { Option } from '$lib/types/utils';
 	import { testId } from '$lib/utils/test.utils';
-	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
 
 	interface Props {
 		detail: JunoModalDetail;

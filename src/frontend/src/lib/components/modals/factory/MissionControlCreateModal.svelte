@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { nonNullish } from '@dfinity/utils';
 	import type { PrincipalText } from '@dfinity/zod-schemas';
 	import FactoryAdvancedOptions from '$lib/components/factory/FactoryAdvancedOptions.svelte';
 	import FactoryCredits from '$lib/components/factory/FactoryCredits.svelte';
@@ -6,6 +7,7 @@
 	import Confetti from '$lib/components/ui/Confetti.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import { authSignedOut } from '$lib/derived/auth.derived';
+	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { createMissionControlWizard } from '$lib/services/factory/factory-wizard.services';
 	import { wizardBusy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
@@ -13,8 +15,6 @@
 	import type { JunoModalDetail } from '$lib/types/modal';
 	import type { WizardCreateProgress } from '$lib/types/progress-wizard';
 	import type { Option } from '$lib/types/utils';
-	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
-	import { nonNullish } from '@dfinity/utils';
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -101,7 +101,7 @@
 			bind:insufficientFunds
 		>
 			<form onsubmit={onSubmit}>
-				<FactoryAdvancedOptions {detail} bind:selectedWallet bind:subnetId withMonitoring={false} />
+				<FactoryAdvancedOptions {detail} withMonitoring={false} bind:selectedWallet bind:subnetId />
 
 				<button disabled={$authSignedOut || insufficientFunds} type="submit">
 					{$i18n.core.create}

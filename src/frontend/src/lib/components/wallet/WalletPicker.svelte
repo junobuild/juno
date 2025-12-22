@@ -5,9 +5,9 @@
 	import Value from '$lib/components/ui/Value.svelte';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import { devId } from '$lib/derived/dev.derived';
+	import { missionControlBalanceOrZero } from '$lib/derived/wallet/balance.derived';
 	import type { SelectedWallet, WalletId, WalletIdText } from '$lib/schemas/wallet.schema';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import { missionControlBalanceOrZero } from '$lib/derived/wallet/balance.derived';
 
 	interface Props {
 		selectedWallet: SelectedWallet | undefined;

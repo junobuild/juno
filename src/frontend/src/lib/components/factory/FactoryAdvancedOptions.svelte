@@ -31,7 +31,7 @@
 		{$i18n.core.advanced_options}
 	{/snippet}
 
-	<WalletPicker bind:selectedWallet filterMissionControlZeroBalance />
+	<WalletPicker filterMissionControlZeroBalance bind:selectedWallet />
 
 	<CanisterSubnets bind:subnetId />
 

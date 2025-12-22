@@ -1,22 +1,22 @@
 <script lang="ts">
+	import { nonNullish } from '@dfinity/utils';
 	import type { Snippet } from 'svelte';
 	import MissionControlICPInfo from '$lib/components/mission-control/MissionControlICPInfo.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import { E8S_PER_ICP } from '$lib/constants/app.constants';
 	import { creditsOrZero } from '$lib/derived/console/credits.derived';
-	import { icpToUsd } from '$lib/derived/wallet/exchange.derived';
-	import type { JunoModalCreateSegmentDetail, JunoModalDetail } from '$lib/types/modal';
-	import type { Option } from '$lib/types/utils';
-	import { i18nFormat } from '$lib/utils/i18n.utils';
-	import { formatICPToHTML } from '$lib/utils/icp.utils';
-	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
+	import { devId } from '$lib/derived/dev.derived';
 	import {
 		devBalanceOrZero,
 		missionControlBalanceOrZero
 	} from '$lib/derived/wallet/balance.derived';
+	import { icpToUsd } from '$lib/derived/wallet/exchange.derived';
+	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
+	import type { JunoModalCreateSegmentDetail, JunoModalDetail } from '$lib/types/modal';
+	import type { Option } from '$lib/types/utils';
+	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { toAccountIdentifier } from '$lib/utils/icp-icrc-account.utils';
-	import { nonNullish } from '@dfinity/utils';
-	import { devId } from '$lib/derived/dev.derived';
+	import { formatICPToHTML } from '$lib/utils/icp.utils';
 
 	interface Props {
 		detail: JunoModalDetail;

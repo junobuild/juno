@@ -9,9 +9,10 @@ import {
 	NO_ACCOUNT_ERROR_MSG,
 	TEST_FEE
 } from '../../../constants/console-tests.constants';
-import { setupConsole } from '../../../utils/console-tests.utils';
+import { initUserAccountAndMissionControl, setupConsole } from '../../../utils/console-tests.utils';
 import { approveIcp, transferIcp } from '../../../utils/ledger-tests.utils';
 import { tick } from '../../../utils/pic-tests.utils';
+import { createSatelliteWithConsole } from '../../../utils/console-factory-tests.utils';
 
 describe('Console > Factory > Mission Control', () => {
 	let pic: PocketIc;
@@ -49,18 +50,6 @@ describe('Console > Factory > Mission Control', () => {
 		await pic?.tearDown();
 	});
 
-	const createSatelliteWithConsole = async ({ user }: { user: Identity }): Promise<Principal> => {
-		const { create_satellite } = actor;
-
-		return await create_satellite({
-			user: user.getPrincipal(),
-			block_index: toNullable(),
-			name: toNullable(),
-			storage: toNullable(),
-			subnet_id: toNullable()
-		});
-	};
-
 	const createMissionControlWithConsole = async (): Promise<Principal> => {
 		const { create_mission_control } = actor;
 
@@ -75,9 +64,11 @@ describe('Console > Factory > Mission Control', () => {
 		});
 
 		it('should fail if mission control already exists', async () => {
-			const { init_user_mission_control_center } = actor;
-
-			await init_user_mission_control_center();
+			await initUserAccountAndMissionControl({
+				pic,
+				actor,
+				user
+			});
 
 			await expect(createMissionControlWithConsole()).rejects.toThrow(
 				'Mission control center already exist.'
@@ -108,7 +99,7 @@ describe('Console > Factory > Mission Control', () => {
 			await get_or_init_account();
 
 			// Create satellite to use credits
-			await createSatelliteWithConsole({ user });
+			await createSatelliteWithConsole({ user, actor });
 
 			await pic.advanceTime(60_000);
 			await tick(pic);
@@ -122,7 +113,7 @@ describe('Console > Factory > Mission Control', () => {
 			await get_or_init_account();
 
 			// Create satellite to use credits
-			await createSatelliteWithConsole({ user });
+			await createSatelliteWithConsole({ user, actor });
 
 			await pic.advanceTime(60_000);
 			await tick(pic);
@@ -150,7 +141,7 @@ describe('Console > Factory > Mission Control', () => {
 			await get_or_init_account();
 
 			// Create satellite to use credits
-			await createSatelliteWithConsole({ user });
+			await createSatelliteWithConsole({ user, actor });
 
 			await pic.advanceTime(60_000);
 			await tick(pic);

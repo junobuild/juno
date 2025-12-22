@@ -9,7 +9,7 @@ import {
 	type SatelliteActor
 } from '$declarations';
 import { ONE_YEAR, THREE_MONTHS } from '$lib/constants/canister.constants';
-import type { PocketIc, Actor } from '@dfinity/pic';
+import type { Actor, PocketIc } from '@dfinity/pic';
 import {
 	assertNonNullish,
 	fromNullable,

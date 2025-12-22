@@ -48,7 +48,8 @@ describe('Console > Factory > Canister', () => {
 		await pic?.tearDown();
 	});
 
-	const createSatelliteWithConsole = async ({ user }: { user: Identity }): Promise<Principal> => await createSatelliteWithConsoleUtils({ actor, user });
+	const createSatelliteWithConsole = async ({ user }: { user: Identity }): Promise<Principal> =>
+		await createSatelliteWithConsoleUtils({ actor, user });
 
 	const createOrbiterWithConsole = async ({ user }: { user: Identity }): Promise<Principal> => {
 		const { create_orbiter } = actor;

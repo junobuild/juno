@@ -156,7 +156,7 @@ describe('Console > Factory > Canister', () => {
 					createFn({
 						user
 					})
-				).rejects.toThrow("'No mission control center found");
+				).rejects.toThrow('No mission control center found');
 
 				actor.setIdentity(user);
 			});

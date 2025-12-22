@@ -33,7 +33,8 @@ where
 
     if principal_equal(caller, account.owner) {
         // Caller is user
-        let creator: CanisterCreator = CanisterCreator::User(account.owner);
+        let creator: CanisterCreator =
+            CanisterCreator::User((account.owner, account.mission_control_id));
 
         let canister_id =
             create_canister_with_account(create, increment_rate, get_fee, &account, creator, args)

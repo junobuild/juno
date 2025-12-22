@@ -93,7 +93,7 @@ export const setupConsoleAuth = async (
 
 	await deploySegments({
 		actor: consoleActor,
-		withSatellite: false,
+		withSatellite: true,
 		withOrbiter: false
 	});
 

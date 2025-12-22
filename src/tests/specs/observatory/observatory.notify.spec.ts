@@ -1,29 +1,22 @@
-import {
-	type ConsoleActor,
-	idlFactoryConsole,
-	idlFactoryObservatory,
-	type ObservatoryActor
-} from '$declarations';
+import { type ConsoleActor, idlFactoryObservatory, type ObservatoryActor } from '$declarations';
 import type { NotifyArgs } from '$declarations/observatory/observatory.did';
-import { type Actor, PocketIc } from '@dfinity/pic';
+import type { Actor, PocketIc } from '@dfinity/pic';
 import { AnonymousIdentity } from '@icp-sdk/core/agent';
 import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
-import { inject } from 'vitest';
 import { mockMissionControlId } from '../../../frontend/tests/mocks/modules.mock';
-import { CONSOLE_ID, NO_ACCOUNT_ERROR_MSG } from '../../constants/console-tests.constants';
+import { NO_ACCOUNT_ERROR_MSG } from '../../constants/console-tests.constants';
 import {
 	CALLER_NOT_ANONYMOUS_MSG,
 	OBSERVATORY_ID
 } from '../../constants/observatory-tests.constants';
-import { deploySegments, initMissionControls } from '../../utils/console-tests.utils';
-import { CONSOLE_WASM_PATH, OBSERVATORY_WASM_PATH } from '../../utils/setup-tests.utils';
+import { initMissionControls, setupConsole } from '../../utils/console-tests.utils';
+import { OBSERVATORY_WASM_PATH } from '../../utils/setup-tests.utils';
 
 describe('Observatory > Notify', () => {
 	let pic: PocketIc;
 	let consoleActor: Actor<ConsoleActor>;
 	let observatoryActor: Actor<ObservatoryActor>;
-
-	const controller = Ed25519KeyIdentity.generate();
+	let controller: Ed25519KeyIdentity;
 
 	const mockNotifyArgs: NotifyArgs = {
 		kind: {
@@ -44,19 +37,23 @@ describe('Observatory > Notify', () => {
 	};
 
 	beforeAll(async () => {
-		pic = await PocketIc.create(inject('PIC_URL'));
-
-		const { actor: cActor } = await pic.setupCanister<ConsoleActor>({
-			idlFactory: idlFactoryConsole,
-			wasm: CONSOLE_WASM_PATH,
-			sender: controller.getPrincipal(),
-			targetCanisterId: CONSOLE_ID
+		const {
+			pic: p,
+			actor: cConsole,
+			controller: cO
+		} = await setupConsole({
+			withApplyRateTokens: true,
+			withLedger: false,
+			withSegments: true,
+			withFee: false
 		});
 
-		consoleActor = cActor;
-		consoleActor.setIdentity(controller);
+		pic = p;
 
-		await deploySegments({ actor: consoleActor });
+		controller = cO;
+
+		consoleActor = cConsole;
+		consoleActor.setIdentity(controller);
 
 		// Just to have a mission control in memory of the Console.
 		await initMissionControls({ actor: consoleActor, pic, length: 1 });

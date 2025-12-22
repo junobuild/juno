@@ -47,9 +47,14 @@
 			return;
 		}
 
+		if (isNullish(walletId)) {
+			// For simplicity reasons. If walletId is undefined then transactions is an empty array then intersection
+			// likely cannot happen.
+			return;
+		}
+
 		await loadNextTransactions({
-			// TODO: assertion
-			account: walletId!,
+			account: walletId,
 			identity: $authStore.identity,
 			maxResults: PAGINATION,
 			start: lastId,

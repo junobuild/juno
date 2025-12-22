@@ -9,6 +9,7 @@ import {
 	unsafeSetEmulatorControllerForSatellite
 } from '$lib/services/emulator.services';
 import { toasts } from '$lib/stores/app/toasts.store';
+import type { CanisterInfo } from '$lib/types/canister';
 import { Principal } from '@icp-sdk/core/principal';
 import { satelliteVersion } from '@junobuild/admin';
 import i18Mock from '../../mocks/i18n.mock';
@@ -35,7 +36,7 @@ describe('emulator.services', () => {
 			settings: {
 				controllers: [Principal.fromText(mockPrincipalText)]
 			}
-		} as any);
+		} as CanisterInfo);
 		vi.mocked(canisterUpdateSettings).mockResolvedValue(undefined);
 	});
 

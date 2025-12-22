@@ -8,7 +8,7 @@
 
 	interface Props {
 		walletId: WalletId | undefined;
-		display: 'block' | 'inline';
+		display?: 'block' | 'inline';
 	}
 
 	let { walletId, display = 'block' }: Props = $props();

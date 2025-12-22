@@ -1,6 +1,5 @@
 use crate::types::interface::GetNotifications;
 use crate::types::state::NotificationKey;
-use candid::Principal;
 use junobuild_shared::constants_shared::{PRINCIPAL_MAX, PRINCIPAL_MIN};
 use std::ops::RangeBounds;
 

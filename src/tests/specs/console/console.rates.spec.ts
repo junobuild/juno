@@ -2,10 +2,10 @@ import { idlFactoryConsole, type ConsoleActor } from '$declarations';
 import { PocketIc, type Actor } from '@dfinity/pic';
 import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import { inject } from 'vitest';
-import { deploySegments, initMissionControls } from '../../utils/console-tests.utils';
+import { deploySegments, initUserAccounts } from '../../utils/console-tests.utils';
 import { CONSOLE_WASM_PATH } from '../../utils/setup-tests.utils';
 
-describe('Console', () => {
+describe('Console > Rates', () => {
 	let pic: PocketIc;
 	let actor: Actor<ConsoleActor>;
 
@@ -31,7 +31,7 @@ describe('Console', () => {
 	});
 
 	it('should throw errors if too many users are created quickly', async () => {
-		await expect(async () => await initMissionControls({ actor, pic, length: 2 })).rejects.toThrow(
+		await expect(async () => await initUserAccounts({ actor, pic, length: 2 })).rejects.toThrow(
 			new RegExp('Rate limit reached, try again later', 'i')
 		);
 	});

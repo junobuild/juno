@@ -76,7 +76,7 @@ impl Account {
         Self {
             provider: Some(provider.clone()),
             updated_at: time(),
-            ..self.clone()
+            ..*self
         }
     }
 

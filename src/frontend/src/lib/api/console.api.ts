@@ -5,8 +5,11 @@ import { getConsoleActor } from '$lib/api/actors/actor.juno.api';
 import type { OptionIdentity } from '$lib/types/itentity';
 import { fromNullable, isNullish } from '@dfinity/utils';
 
-export const getOrInitAccount = async (identity: OptionIdentity): Promise<ConsoleDid.Account> => {
-	const { get_or_init_account } = await getConsoleActor({ identity });
+export const getOrInitAccount = async (
+	actorParams: Omit<GetActorParams, 'certified'>
+): Promise<ConsoleDid.Account> => {
+	// update only endpoint
+	const { get_or_init_account } = await getConsoleActor({ ...actorParams, certified: true });
 
 	return await get_or_init_account();
 };

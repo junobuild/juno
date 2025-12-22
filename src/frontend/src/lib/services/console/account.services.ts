@@ -1,4 +1,5 @@
 import type { ConsoleDid } from '$declarations';
+import type { GetActorParams } from '$lib/api/actors/actor.api';
 import {
 	getAccount as getAccountApi,
 	getOrInitAccount as getOrInitAccountApi
@@ -8,19 +9,11 @@ import { accountCertifiedStore } from '$lib/stores/account.store';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
-import { fromNullable, isNullish } from '@dfinity/utils';
+import { isNullish, nonNullish } from '@dfinity/utils';
 import type { Identity } from '@icp-sdk/core/agent';
 import { get } from 'svelte/store';
 
-interface Certified {
-	certified: boolean;
-}
-
-type PollAndInitResult = {
-	account: ConsoleDid.Account;
-} & Certified;
-
-export const initAccountAndMissionControl = async ({
+export const initAccount = async ({
 	identity
 }: {
 	identity: OptionIdentity;
@@ -31,27 +24,37 @@ export const initAccountAndMissionControl = async ({
 	}
 
 	try {
-		// Poll to init mission control center
-		const { account, certified } = await pollAndInitMissionControl({
-			identity
+		const { account: uncertifiedAccount } = await getAccount({
+			identity,
+			certified: false
 		});
 
-		accountCertifiedStore.set({
-			data: account,
-			certified
-		});
+		if (nonNullish(uncertifiedAccount)) {
+			accountCertifiedStore.set({
+				data: uncertifiedAccount,
+				certified: false
+			});
 
-		if (certified) {
+			// We deliberately do not await the promise to avoid blocking the main UX. However, if necessary, we take the required measures if the account cannot be certified.
+			assertAccount({ identity });
+
 			return { result: 'success' };
 		}
 
-		// We deliberately do not await the promise to avoid blocking the main UX. However, if necessary, we take the required measures if the account cannot be certified.
-		assertAccount({ identity });
+		// No account was found with the query so we either create it, if the previous answer was not hijacked,
+		// or the call will effectively return the certified account that already existing.
+		// Note: From a performance perspective it's not an overhead in comparison to asserting the account anyway.
+		const { account: certifiedAccount } = await getOrInitAccount({ identity });
+
+		accountCertifiedStore.set({
+			data: certifiedAccount,
+			certified: true
+		});
 
 		return { result: 'success' };
 	} catch (err: unknown) {
 		toasts.error({
-			text: get(i18n).errors.initializing_mission_control,
+			text: get(i18n).errors.initializing_account,
 			detail: err
 		});
 
@@ -62,66 +65,43 @@ export const initAccountAndMissionControl = async ({
 	}
 };
 
-const pollAndInitMissionControl = async ({
-	identity
-}: {
-	identity: Identity;
-	// eslint-disable-next-line require-await
-}): Promise<PollAndInitResult> =>
-	// eslint-disable-next-line no-async-promise-executor
-	new Promise<PollAndInitResult>(async (resolve, reject) => {
-		try {
-			const { account, certified } = await getOrInitMissionControl({
-				identity
-			});
-
-			const missionControlId = fromNullable(account.mission_control_id);
-
-			// TODO: we can/should probably add a max time to not retry forever even though the user will probably close their browsers.
-			if (isNullish(missionControlId)) {
-				setTimeout(async () => {
-					try {
-						const result = await pollAndInitMissionControl({ identity });
-						resolve(result);
-					} catch (err: unknown) {
-						reject(err);
-					}
-				}, 2000);
-				return;
-			}
-
-			resolve({ account, certified });
-		} catch (err: unknown) {
-			reject(err);
-		}
-	});
-
-export const getOrInitMissionControl = async ({
-	identity
-}: {
-	identity: Identity;
-}): Promise<{ account: ConsoleDid.Account } & Certified> => {
-	const existingAccount = await getAccountApi({ identity, certified: false });
-
-	if (isNullish(existingAccount)) {
-		// TODO: to implement correctly separatly
-		const newAccount = await getOrInitAccountApi(identity);
-
-		return {
-			account: newAccount,
-			certified: true
-		};
-	}
+const getAccount = async ({
+	identity,
+	certified
+}: Required<GetActorParams>): Promise<{ account: ConsoleDid.Account | undefined }> => {
+	const existingAccount = await getAccountApi({ identity, certified });
 
 	return {
-		account: existingAccount,
-		certified: false
+		account: existingAccount
+	};
+};
+
+const getOrInitAccount = async ({
+	identity
+}: {
+	identity: Identity;
+}): Promise<{ account: ConsoleDid.Account }> => {
+	const existingAccount = await getOrInitAccountApi({ identity });
+
+	return {
+		account: existingAccount
 	};
 };
 
 const assertAccount = async ({ identity }: { identity: Identity }) => {
 	try {
-		await getAccountApi({ identity, certified: true });
+		const { account: certifiedAccount } = await getAccount({ identity, certified: true });
+
+		// Unlikely as assertAccount is supposed to be called only to validate the existence of existing account
+		if (isNullish(certifiedAccount)) {
+			await accountErrorSignOut();
+			return;
+		}
+
+		accountCertifiedStore.set({
+			data: certifiedAccount,
+			certified: true
+		});
 	} catch (_err: unknown) {
 		await accountErrorSignOut();
 	}

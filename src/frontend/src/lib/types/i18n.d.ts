@@ -557,7 +557,7 @@ interface I18nCli {
 interface I18nErrors {
 	no_identity: string;
 	stack_trace: string;
-	initializing_mission_control: string;
+	initializing_account: string;
 	sign_in: string;
 	sign_in_openid: string;
 	account_sign_out: string;

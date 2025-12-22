@@ -540,7 +540,7 @@
 	"errors": {
 		"no_identity": "Unexpected error. No identity provided.",
 		"stack_trace": "Stack trace of the error",
-		"initializing_mission_control": "Mission control center cannot be initialized.",
+		"initializing_account": "Failed to initialize account.",
 		"sign_in": "An error occurred during sign-in. Please check the error details and try again.",
 		"sign_in_openid": "Oops, docking sequence failed. Retry or reach out!",
 		"account_sign_out": "You have been signed out because your account could not be certified.",

@@ -1,11 +1,13 @@
 <script lang="ts">
+	import { nonNullish } from '@dfinity/utils';
 	import type { PrincipalText } from '@dfinity/zod-schemas';
-	import CanisterAdvancedOptions from '$lib/components/canister/CanisterAdvancedOptions.svelte';
-	import ProgressCreate from '$lib/components/canister/ProgressCreate.svelte';
-	import CreditsGuard from '$lib/components/guards/CreditsGuard.svelte';
+	import FactoryAdvancedOptions from '$lib/components/factory/FactoryAdvancedOptions.svelte';
+	import FactoryCredits from '$lib/components/factory/FactoryCredits.svelte';
+	import FactoryProgressCreate from '$lib/components/factory/FactoryProgressCreate.svelte';
 	import Confetti from '$lib/components/ui/Confetti.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import { authSignedOut } from '$lib/derived/auth.derived';
+	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { createMissionControlWizard } from '$lib/services/factory/factory-wizard.services';
 	import { wizardBusy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
@@ -21,7 +23,6 @@
 
 	let { detail, onclose }: Props = $props();
 
-	let withDevIcpApprove = $state(false);
 	let withFee = $state<Option<bigint>>(undefined);
 	let insufficientFunds = $state(true);
 
@@ -45,6 +46,7 @@
 		step = 'in_progress';
 
 		const { success } = await createMissionControlWizard({
+			selectedWallet,
 			identity: $authStore.identity,
 			subnetId,
 			withFee,
@@ -62,6 +64,7 @@
 		setTimeout(() => (step = 'ready'), 500);
 	};
 
+	let selectedWallet = $state<SelectedWallet | undefined>(undefined);
 	let subnetId = $state<PrincipalText | undefined>(undefined);
 </script>
 
@@ -74,11 +77,11 @@
 			<button onclick={onclose}>{$i18n.core.close}</button>
 		</div>
 	{:else if step === 'in_progress'}
-		<ProgressCreate
+		<FactoryProgressCreate
 			{attachProgressText}
 			{progress}
 			segment="mission_control"
-			withApprove={withDevIcpApprove}
+			withApprove={selectedWallet?.type === 'dev' && nonNullish(withFee)}
 			withAttach={true}
 			withMonitoring={false}
 		/>
@@ -89,27 +92,27 @@
 			{$i18n.mission_control.description}
 		</p>
 
-		<CreditsGuard
+		<FactoryCredits
 			{detail}
 			{onclose}
 			priceLabel={$i18n.mission_control.create_price}
-			bind:withDevIcpApprove
+			{selectedWallet}
 			bind:withFee
 			bind:insufficientFunds
 		>
 			<form onsubmit={onSubmit}>
-				<CanisterAdvancedOptions {detail} withMonitoring={false} bind:subnetId />
+				<FactoryAdvancedOptions {detail} withMonitoring={false} bind:selectedWallet bind:subnetId />
 
 				<button disabled={$authSignedOut || insufficientFunds} type="submit">
 					{$i18n.core.create}
 				</button>
 			</form>
-		</CreditsGuard>
+		</FactoryCredits>
 	{/if}
 </Modal>
 
 <style lang="scss">
-	@use '../../styles/mixins/overlay';
+	@use '../../../styles/mixins/overlay';
 
 	h2 {
 		@include overlay.title;

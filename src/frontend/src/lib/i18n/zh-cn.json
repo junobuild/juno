@@ -646,6 +646,7 @@
 		"empty_amount": "请输入转账金额。",
 		"invalid_amount": "金额应大于0且小于您的余额扣除手续费。",
 		"empty_balance": "您的钱包没有可用资金。",
+		"wallet_not_selected": "未选择钱包。",
 		"sending_error": "发送代币时发生意外错误。",
 		"subnet_loading_errors": "加载模块的子网ID时发生错误。",
 		"snapshot_loading_errors": "加载模块的快照时发生错误。",

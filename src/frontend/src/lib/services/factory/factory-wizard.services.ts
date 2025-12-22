@@ -4,6 +4,7 @@ import { updateAndStartMonitoring } from '$lib/api/mission-control.api';
 import { missionControlMonitored } from '$lib/derived/mission-control/mission-control-settings.derived';
 import { missionControlConfigMonitoring } from '$lib/derived/mission-control/mission-control-user.derived';
 import { isSkylab } from '$lib/env/app.env';
+import type { SelectedWallet } from '$lib/schemas/wallet.schema';
 import { execute } from '$lib/services/_progress.services';
 import { reloadAccount } from '$lib/services/console/account.services';
 import {
@@ -17,13 +18,11 @@ import { unsafeSetEmulatorControllerForSatellite } from '$lib/services/emulator.
 import { finalizeMissionControlWizard } from '$lib/services/factory/_factory-wizard.mission-control.services';
 import {
 	createOrbiter,
-	createOrbiterWithConfig,
-	loadOrbiters
+	createOrbiterWithConfig
 } from '$lib/services/mission-control/mission-control.orbiters.services';
 import {
 	createSatellite as createSatelliteWithMissionControl,
-	createSatelliteWithConfig as createSatelliteWithWithMissionControlAndConfig,
-	loadSatellites
+	createSatelliteWithConfig as createSatelliteWithWithMissionControlAndConfig
 } from '$lib/services/mission-control/mission-control.satellites.services';
 import { loadSettings, loadUserData } from '$lib/services/mission-control/mission-control.services';
 import { waitMissionControlVersionLoaded } from '$lib/services/version/version.mission-control.services';
@@ -272,6 +271,7 @@ const getCreateFeeBalance = async ({
 };
 
 interface CreateWizardParams {
+	selectedWallet: Option<SelectedWallet>;
 	missionControlId: Option<Principal>;
 	identity: OptionIdentity;
 	subnetId: PrincipalText | undefined;
@@ -305,6 +305,14 @@ export const createSatelliteWizard = async ({
 		});
 		return { success: 'error' };
 	}
+
+	const createFn: CreateFn = async ({ identity, selectedWallet: { type: walletType } }) => {
+		if (walletType === 'mission_control') {
+			return await createWithMissionControlFn({ identity });
+		}
+
+		return await createWithConsoleFn({ identity });
+	};
 
 	const createWithConsoleFn = async ({ identity }: { identity: Identity }): Promise<SatelliteId> =>
 		await createSatelliteWithConsoleAndConfig({
@@ -386,20 +394,14 @@ export const createSatelliteWizard = async ({
 		});
 	};
 
-	const reloadFn = async () => {
-		if (isNullish(missionControlId)) {
-			await loadSegments({ missionControlId, reload: true });
-			return;
-		}
-
-		await loadSatellites({ missionControlId, reload: true });
+	const reloadFn: ReloadFn = async () => {
+		await loadSegments({ missionControlId, reload: true });
 	};
 
 	return await createWizard({
 		...rest,
-		missionControlId,
 		onProgress,
-		createFn: missionControlId === null ? createWithConsoleFn : createWithMissionControlFn,
+		createFn,
 		reloadFn,
 		monitoringFn,
 		errorLabel: 'satellite_unexpected_error',
@@ -414,6 +416,14 @@ export const createOrbiterWizard = async ({
 	monitoringStrategy,
 	...rest
 }: CreateWizardParams): Promise<CreateWizardResult> => {
+	const createFn: CreateFn = async ({ identity, selectedWallet: { type: walletType } }) => {
+		if (walletType === 'mission_control') {
+			return await createWithMissionControlFn({ identity });
+		}
+
+		return await createWithConsoleFn({ identity });
+	};
+
 	const createWithConsoleFn = async ({ identity }: { identity: Identity }): Promise<OrbiterId> =>
 		await createOrbiterWithConsoleAndConfig({
 			identity,
@@ -475,19 +485,13 @@ export const createOrbiterWizard = async ({
 	const monitoringFn = buildMonitoringFn();
 
 	const reloadFn = async () => {
-		if (isNullish(missionControlId)) {
-			await loadSegments({ missionControlId, reload: true });
-			return;
-		}
-
-		await loadOrbiters({ missionControlId, reload: true });
+		await loadSegments({ missionControlId, reload: true });
 	};
 
 	return await createWizard({
 		...rest,
-		missionControlId,
 		onProgress,
-		createFn: missionControlId === null ? createWithConsoleFn : createWithMissionControlFn,
+		createFn,
 		reloadFn,
 		monitoringFn,
 		errorLabel: 'orbiter_unexpected_error'
@@ -510,7 +514,7 @@ export const createMissionControlWizard = async ({
 	| { success: 'error'; err?: unknown }
 	| { success: 'warning' }
 > => {
-	const createWithConsoleFn = async ({ identity }: { identity: Identity }): Promise<OrbiterId> =>
+	const createFn: CreateFn = async ({ identity }) =>
 		await createMissionControlWithConsoleAndConfig({
 			identity,
 			// TODO: duplicate payload
@@ -547,15 +551,19 @@ export const createMissionControlWizard = async ({
 	return await createWizard({
 		...rest,
 		identity,
-		missionControlId: null,
 		onProgress,
-		createFn: createWithConsoleFn,
+		createFn,
 		reloadFn,
 		postProcessingFn,
 		monitoringFn: undefined,
 		errorLabel: 'mission_control_unexpected_error'
 	});
 };
+
+type CreateFn = (params: {
+	identity: Identity;
+	selectedWallet: SelectedWallet;
+}) => Promise<Principal>;
 
 type MonitoringFn = (params: { identity: Identity; canisterId: Principal }) => Promise<void>;
 
@@ -569,7 +577,7 @@ type PostProcessingFn = (params: {
 type ReloadFn = (params: { identity: Identity; canisterId: Principal }) => Promise<void>;
 
 const createWizard = async ({
-	missionControlId,
+	selectedWallet,
 	identity,
 	errorLabel,
 	createFn,
@@ -579,9 +587,9 @@ const createWizard = async ({
 	monitoringFn,
 	onProgress,
 	withFee
-}: Omit<CreateWizardParams, 'subnetId' | 'monitoringStrategy'> & {
+}: Omit<CreateWizardParams, 'missionControlId' | 'subnetId' | 'monitoringStrategy'> & {
 	errorLabel: keyof I18nErrors;
-	createFn: (params: { identity: Identity }) => Promise<Principal>;
+	createFn: CreateFn;
 	finalizingFn?: FinalizingFn;
 	postProcessingFn?: PostProcessingFn;
 	reloadFn: ReloadFn;
@@ -590,12 +598,14 @@ const createWizard = async ({
 	try {
 		assertNonNullish(identity, get(i18n).core.not_logged_in);
 
-		// If there are fees and the dev has no mission control, then the amount is to be paid
+		assertNonNullish(selectedWallet, get(i18n).errors.wallet_not_selected);
+
+		// If there are fees and the selected wallet is the one of the dev, then the amount is to be paid
 		// by the dev wallet (the wallet derived by the identity of the login, the dev ID)
-		if (nonNullish(withFee) && withFee > 0n && isNullish(missionControlId)) {
+		if (nonNullish(withFee) && withFee > 0n && selectedWallet.type === 'dev') {
 			const prepareFn = async (): Promise<void> =>
 				await approveCreateCanisterWithIcp({
-					identity,
+					identity, // We know the identity is the dev wallet, a bit of a shortcut for now
 					amount: withFee
 				});
 
@@ -608,7 +618,8 @@ const createWizard = async ({
 
 		const fn = async (): Promise<Principal> =>
 			await createFn({
-				identity
+				identity,
+				selectedWallet
 			});
 
 		const canisterId = await execute({

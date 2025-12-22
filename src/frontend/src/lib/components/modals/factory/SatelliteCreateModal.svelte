@@ -2,15 +2,16 @@
 	import { nonNullish } from '@dfinity/utils';
 	import type { PrincipalText } from '@dfinity/zod-schemas';
 	import type { MissionControlDid } from '$declarations';
-	import CanisterAdvancedOptions from '$lib/components/canister/CanisterAdvancedOptions.svelte';
-	import ProgressCreate from '$lib/components/canister/ProgressCreate.svelte';
-	import CreditsGuard from '$lib/components/guards/CreditsGuard.svelte';
+	import FactoryAdvancedOptions from '$lib/components/factory/FactoryAdvancedOptions.svelte';
+	import FactoryCredits from '$lib/components/factory/FactoryCredits.svelte';
+	import FactoryProgressCreate from '$lib/components/factory/FactoryProgressCreate.svelte';
 	import Confetti from '$lib/components/ui/Confetti.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { testIds } from '$lib/constants/test-ids.constants';
 	import { authSignedOut } from '$lib/derived/auth.derived';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
+	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { createSatelliteWizard } from '$lib/services/factory/factory-wizard.services';
 	import { wizardBusy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
@@ -29,7 +30,6 @@
 
 	let { detail, onclose }: Props = $props();
 
-	let withDevIcpApprove = $state(false);
 	let withFee = $state<Option<bigint>>(undefined);
 	let insufficientFunds = $state(true);
 
@@ -51,6 +51,7 @@
 		step = 'in_progress';
 
 		const result = await createSatelliteWizard({
+			selectedWallet,
 			identity: $authStore.identity,
 			missionControlId: $missionControlId,
 			subnetId,
@@ -80,6 +81,8 @@
 
 	let satelliteName: string | undefined = $state(undefined);
 	let satelliteKind: 'website' | 'application' | undefined = $state(undefined);
+
+	let selectedWallet = $state<SelectedWallet | undefined>(undefined);
 	let subnetId: PrincipalText | undefined = $state();
 	let monitoringStrategy = $state<MissionControlDid.CyclesMonitoringStrategy | undefined>(
 		undefined
@@ -97,10 +100,10 @@
 			</button>
 		</div>
 	{:else if step === 'in_progress'}
-		<ProgressCreate
+		<FactoryProgressCreate
 			{progress}
 			segment="satellite"
-			withApprove={withDevIcpApprove}
+			withApprove={selectedWallet?.type === 'dev' && nonNullish(withFee)}
 			withMonitoring={nonNullish(monitoringStrategy)}
 		/>
 	{:else}
@@ -110,11 +113,11 @@
 			{$i18n.satellites.description}
 		</p>
 
-		<CreditsGuard
+		<FactoryCredits
 			{detail}
 			{onclose}
 			priceLabel={$i18n.satellites.create_satellite_price}
-			bind:withDevIcpApprove
+			{selectedWallet}
 			bind:withFee
 			bind:insufficientFunds
 		>
@@ -167,7 +170,12 @@
 					</Value>
 				</div>
 
-				<CanisterAdvancedOptions {detail} bind:subnetId bind:monitoringStrategy />
+				<FactoryAdvancedOptions
+					{detail}
+					bind:selectedWallet
+					bind:subnetId
+					bind:monitoringStrategy
+				/>
 
 				<button
 					{...testId(testIds.createSatellite.create)}
@@ -177,12 +185,12 @@
 					{$i18n.satellites.create}
 				</button>
 			</form>
-		</CreditsGuard>
+		</FactoryCredits>
 	{/if}
 </Modal>
 
 <style lang="scss">
-	@use '../../styles/mixins/overlay';
+	@use '../../../styles/mixins/overlay';
 
 	h2 {
 		@include overlay.title;

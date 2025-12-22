@@ -354,7 +354,7 @@
 		"export_info": "此过程将显示的交易记录导出为CSV文件。是否继续？",
 		"send": "发送",
 		"receive": "接收",
-		"send_information": "安全地向任何地址发送代币。您的钱包当前持有 <strong>{0}</strong> ICP。",
+		"send_information": "安全地向任何地址发送代币。您的 <strong>{0}</strong> 钱包当前持有 <strong>{1}</strong> ICP。",
 		"destination": "目标地址",
 		"destination_placeholder": "输入目标地址",
 		"amount_placeholder": "输入金额",

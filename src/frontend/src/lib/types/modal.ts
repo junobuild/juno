@@ -12,6 +12,7 @@ import type { Option } from '$lib/types/utils';
 import type { AccountIdentifier } from '@icp-sdk/canisters/ledger/icp';
 import type { Principal } from '@icp-sdk/core/principal';
 import type { BuildType } from '@junobuild/admin';
+import type { SelectedWallet } from '$lib/schemas/wallet.schema';
 
 export interface JunoModalWithAccountIdentifier {
 	accountIdentifier: AccountIdentifier;
@@ -135,6 +136,10 @@ export interface JunoModalCdnUpgradeDetail extends JunoModalWithSatellite {
 	asset: SatelliteDid.AssetNoContent;
 }
 
+export interface JunoModalWalletDetail {
+	selectedWallet: SelectedWallet;
+}
+
 export type JunoModalDetail =
 	| JunoModalUpgradeSatelliteDetail
 	| JunoModalUpgradeDetail
@@ -153,7 +158,8 @@ export type JunoModalDetail =
 	| JunoModalShowUserDetail
 	| JunoModalChangeDetail
 	| JunoModalCdnUpgradeDetail
-	| JunoModalEditAuthConfigDetail;
+	| JunoModalEditAuthConfigDetail
+| JunoModalWalletDetail;
 
 export interface JunoModal<T extends JunoModalDetail> {
 	type:

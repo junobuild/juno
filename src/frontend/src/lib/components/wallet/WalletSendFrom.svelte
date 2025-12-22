@@ -7,15 +7,24 @@
 	import type { MissionControlId } from '$lib/types/mission-control';
 	import { toAccountIdentifier } from '$lib/utils/icp-icrc-account.utils';
 	import { formatICP, formatICPToUsd } from '$lib/utils/icp.utils';
+	import Wallet from "$lib/components/wallet/Wallet.svelte";
+	import type {SelectedWallet} from "$lib/schemas/wallet.schema";
+	import {encodeIcrcAccount} from "@icp-sdk/canisters/ledger/icrc";
 
 	interface Props {
-		missionControlId: MissionControlId;
+		selectedWallet: SelectedWallet;
 		balance: bigint | undefined;
 	}
 
-	let { missionControlId, balance }: Props = $props();
+	let { selectedWallet, balance }: Props = $props();
 
-	let accountIdentifier = $derived(toAccountIdentifier({ owner: missionControlId }));
+	let { walletId } = $derived(selectedWallet);
+
+	let walletIdText = $derived(encodeIcrcAccount(walletId));
+
+	let accountIdentifier = $derived(toAccountIdentifier(walletId));
+
+	let walletName = $derived(selectedWallet.type === 'mission_control' ? $i18n.mission_control.title : $i18n.wallet.dev)
 </script>
 
 <div class="card-container with-title from">
@@ -24,10 +33,19 @@
 	<div class="content">
 		<Value>
 			{#snippet label()}
+				{$i18n.wallet.title}
+			{/snippet}
+			<p class="identifier">
+				{walletName}
+			</p>
+		</Value>
+
+		<Value>
+			{#snippet label()}
 				{$i18n.wallet.wallet_id}
 			{/snippet}
 			<p class="identifier">
-				<Identifier identifier={missionControlId.toText()} shorten={false} />
+				<Identifier identifier={walletIdText} shorten={false} />
 			</p>
 		</Value>
 

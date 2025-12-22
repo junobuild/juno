@@ -1,18 +1,18 @@
 import type { MissionControlDid } from '$declarations';
 import { icpTransfer, icrcTransfer } from '$lib/api/mission-control.api';
 import { ICP_LEDGER_CANISTER_ID, IC_TRANSACTION_FEE_ICP } from '$lib/constants/app.constants';
+import type { SelectedWallet } from '$lib/schemas/wallet.schema';
 import { execute } from '$lib/services/_progress.services';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { MissionControlId } from '$lib/types/mission-control';
 import { type SendTokensProgress, SendTokensProgressStep } from '$lib/types/progress-send-tokens';
-import type { Option } from '$lib/types/utils';
 import { nowInBigIntNanoSeconds } from '$lib/utils/date.utils';
 import { invalidIcpAddress } from '$lib/utils/icp-account.utils';
 import { invalidIcrcAddress } from '$lib/utils/icrc-account.utils';
 import { waitAndRestartWallet } from '$lib/utils/wallet.utils';
-import { type TokenAmountV2, assertNonNullish, isNullish, toNullable } from '@dfinity/utils';
+import { type TokenAmountV2, isNullish, toNullable } from '@dfinity/utils';
 import { AccountIdentifier } from '@icp-sdk/canisters/ledger/icp';
 import { decodeIcrcAccount } from '@icp-sdk/canisters/ledger/icrc';
 import { Principal } from '@icp-sdk/core/principal';
@@ -22,13 +22,13 @@ export const sendTokens = async ({
 	destination,
 	token,
 	identity,
-	missionControlId,
+	selectedWallet,
 	onProgress
 }: {
 	destination: string;
 	token: TokenAmountV2 | undefined;
 	identity: OptionIdentity;
-	missionControlId: Option<MissionControlId>;
+	selectedWallet: SelectedWallet;
 	onProgress: (progress: SendTokensProgress | undefined) => void;
 }): Promise<{ success: 'ok' | 'error'; err?: unknown }> => {
 	const notIcp = invalidIcpAddress(destination);
@@ -53,10 +53,15 @@ export const sendTokens = async ({
 	}
 
 	try {
-		assertNonNullish(missionControlId, get(i18n).errors.mission_control_not_loaded);
+		const { type: walletType, walletId } = selectedWallet;
 
-		const send = async () => {
-			const fn = !invalidIcpAddress(destination) ? sendIcp : sendIcrc;
+		const sendWithMissionControl = async () => {
+			const fn = !invalidIcpAddress(destination)
+				? sendIcpWithMissionControl
+				: sendIcrcWithMissionControl;
+
+			// We do not use subaccount
+			const { owner: missionControlId } = walletId;
 
 			await fn({
 				destination,
@@ -65,6 +70,10 @@ export const sendTokens = async ({
 				missionControlId
 			});
 		};
+
+		const sendWithDev = async () => {};
+
+		const send = walletType === 'mission_control' ? sendWithMissionControl : sendWithDev;
 		await execute({ fn: send, onProgress, step: SendTokensProgressStep.Send });
 
 		const reload = async () => {
@@ -85,7 +94,7 @@ export const sendTokens = async ({
 	return { success: 'ok' };
 };
 
-export const sendIcrc = async ({
+export const sendIcrcWithMissionControl = async ({
 	destination,
 	token,
 	...rest
@@ -117,7 +126,7 @@ export const sendIcrc = async ({
 	});
 };
 
-export const sendIcp = async ({
+export const sendIcpWithMissionControl = async ({
 	destination,
 	token,
 	...rest

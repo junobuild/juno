@@ -38,7 +38,9 @@
 
 <Popover anchor={button} direction="rtl" bind:visible>
 	<div class="container">
-		<WalletPicker bind:selectedWallet />
+		<div class="picker">
+			<WalletPicker bind:selectedWallet />
+		</div>
 
 		<div>
 			<Value>
@@ -82,5 +84,11 @@
 
 	.actions {
 		margin: var(--padding) 0 0;
+	}
+
+	.picker {
+		:global(select) {
+			margin: var(--padding-0_5x) 0;
+		}
 	}
 </style>

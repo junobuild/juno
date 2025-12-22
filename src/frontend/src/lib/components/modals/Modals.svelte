@@ -23,7 +23,7 @@
 	import SatelliteTopUpModal from '$lib/components/modals/SatelliteTopUpModal.svelte';
 	import SatelliteTransferCyclesModal from '$lib/components/modals/SatelliteTransferCyclesModal.svelte';
 	import SatelliteUpgradeModal from '$lib/components/modals/SatelliteUpgradeModal.svelte';
-	import SendTokensModal from '$lib/components/modals/SendTokensModal.svelte';
+	import SendTokensModal from '$lib/components/modals/wallet/SendTokensModal.svelte';
 	import StopMonitoringStrategyModal from '$lib/components/modals/StopMonitoringStrategyModal.svelte';
 	import UserDetailsModal from '$lib/components/modals/UserDetailsModal.svelte';
 	import MissionControlCreateModal from '$lib/components/modals/factory/MissionControlCreateModal.svelte';
@@ -106,8 +106,8 @@
 	<MissionControlTransferCyclesModal detail={modal.detail} onclose={close} />
 {/if}
 
-{#if modal?.type === 'send_tokens'}
-	<SendTokensModal onclose={close} />
+{#if modal?.type === 'send_tokens' && nonNullish(modal.detail)}
+	<SendTokensModal detail={modal.detail} onclose={close} />
 {/if}
 
 {#if modal?.type === 'edit_orbiter_config' && nonNullish(modal.detail)}

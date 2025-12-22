@@ -10,15 +10,23 @@
 	import { formatICP } from '$lib/utils/icp.utils';
 	import { invalidIcrcAddress } from '$lib/utils/icrc-account.utils';
 	import { assertAndConvertAmountToICPToken } from '$lib/utils/token.utils';
+	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
 
 	interface Props {
+		selectedWallet: SelectedWallet;
 		balance: bigint | undefined;
 		destination?: string;
 		amount: string | undefined;
 		onreview: () => void;
 	}
 
-	let { balance, destination = $bindable(''), amount = $bindable(), onreview }: Props = $props();
+	let {
+		balance,
+		selectedWallet,
+		destination = $bindable(''),
+		amount = $bindable(),
+		onreview
+	}: Props = $props();
 
 	const onSubmit = ($event: SubmitEvent) => {
 		$event.preventDefault();
@@ -50,6 +58,11 @@
 		text={i18nFormat($i18n.wallet.send_information, [
 			{
 				placeholder: '{0}',
+				value:
+					selectedWallet.type === 'mission_control' ? $i18n.mission_control.title : $i18n.wallet.dev
+			},
+			{
+				placeholder: '{1}',
 				value: formatICP(balance ?? 0n)
 			}
 		])}

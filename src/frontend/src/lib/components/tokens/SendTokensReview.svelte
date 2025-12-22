@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { TokenAmountV2 } from '@dfinity/utils';
+	import {nonNullish, type TokenAmountV2} from '@dfinity/utils';
 	import SendTokensAmount from '$lib/components/tokens/SendTokensAmount.svelte';
 	import GridArrow from '$lib/components/ui/GridArrow.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
@@ -10,9 +10,11 @@
 	import type { MissionControlId } from '$lib/types/mission-control';
 	import { formatICP } from '$lib/utils/icp.utils';
 	import { amountToICPToken } from '$lib/utils/token.utils';
+	import type {SelectedWallet} from "$lib/schemas/wallet.schema";
+	import {devId} from "$lib/derived/dev.derived";
 
 	interface Props {
-		missionControlId: MissionControlId;
+		selectedWallet: SelectedWallet;
 		balance: bigint | undefined;
 		destination?: string;
 		amount: string | undefined;
@@ -27,7 +29,7 @@
 	}
 
 	let {
-		missionControlId,
+		selectedWallet,
 		balance,
 		destination = $bindable(''),
 		amount = $bindable(),
@@ -48,7 +50,7 @@
 
 <form onsubmit={onSubmit}>
 	<div class="columns">
-		<WalletSendFrom {balance} {missionControlId} />
+		<WalletSendFrom {balance} {selectedWallet} />
 
 		<GridArrow />
 

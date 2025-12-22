@@ -34,7 +34,7 @@ export const missionControlBalanceOrZero = derived(
 
 export const balanceOrZero = derived([balance], ([$balance]) => $balance ?? 0n);
 
-export const balanceLoaded = derived(
+const balanceLoaded = derived(
 	[balanceCertifiedStore],
 	([$balanceStore]) => $balanceStore !== undefined
 );

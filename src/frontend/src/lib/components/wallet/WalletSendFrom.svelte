@@ -3,11 +3,9 @@
 	import { encodeIcrcAccount } from '@icp-sdk/canisters/ledger/icrc';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
-	import Wallet from '$lib/components/wallet/Wallet.svelte';
 	import { icpToUsd, icpToUsdDefined } from '$lib/derived/wallet/exchange.derived';
 	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import type { MissionControlId } from '$lib/types/mission-control';
 	import { toAccountIdentifier } from '$lib/utils/icp-icrc-account.utils';
 	import { formatICP, formatICPToUsd } from '$lib/utils/icp.utils';
 

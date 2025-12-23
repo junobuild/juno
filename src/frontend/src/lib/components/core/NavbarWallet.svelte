@@ -3,17 +3,17 @@
 	import IconWallet from '$lib/components/icons/IconWallet.svelte';
 	import ReceiveTokens from '$lib/components/tokens/ReceiveTokens.svelte';
 	import ButtonIcon from '$lib/components/ui/ButtonIcon.svelte';
+	import Hr from '$lib/components/ui/Hr.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import WalletActions from '$lib/components/wallet/WalletActions.svelte';
 	import WalletBalanceById from '$lib/components/wallet/WalletBalanceById.svelte';
 	import WalletIds from '$lib/components/wallet/WalletIds.svelte';
 	import WalletPicker from '$lib/components/wallet/WalletPicker.svelte';
+	import WalletTotal from '$lib/components/wallet/WalletTotal.svelte';
 	import { testIds } from '$lib/constants/test-ids.constants';
 	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import WalletTotal from '$lib/components/wallet/WalletTotal.svelte';
-	import Hr from '$lib/components/ui/Hr.svelte';
 
 	let button: HTMLButtonElement | undefined = $state();
 	let visible: boolean = $state(false);

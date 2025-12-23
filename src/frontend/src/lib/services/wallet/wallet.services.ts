@@ -4,15 +4,16 @@ import type { WalletId } from '$lib/schemas/wallet.schema';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
 import { transactionsCertifiedStore } from '$lib/stores/wallet/transactions.store';
-import type { OptionIdentity } from '$lib/types/itentity';
 import type { CertifiedTransactions } from '$lib/types/transaction';
 import { formatToDateNumeric } from '$lib/utils/date.utils';
+import { toAccountIdentifier } from '$lib/utils/icp-icrc-account.utils';
 import { mapIcpTransaction } from '$lib/utils/icp-transactions.utils';
 import { CSV_PICKER_OPTIONS, filenameTimestamp, saveToFileSystem } from '$lib/utils/save.utils';
 import { transactionAmount, transactionMemo } from '$lib/utils/wallet.utils';
 import { nonNullish } from '@dfinity/utils';
 import type { IcpIndexDid } from '@icp-sdk/canisters/ledger/icp';
 import { encodeIcrcAccount, type IcrcAccount } from '@icp-sdk/canisters/ledger/icrc';
+import { AnonymousIdentity } from '@icp-sdk/core/agent';
 import { get } from 'svelte/store';
 
 type TransactionId = string;
@@ -66,12 +67,10 @@ export const exportTransactions = async ({
 
 export const loadNextTransactions = ({
 	account,
-	identity,
 	signalEnd,
 	...rest
 }: {
 	account: IcrcAccount;
-	identity: OptionIdentity;
 	start?: bigint;
 	maxResults?: bigint;
 	signalEnd: () => void;
@@ -94,7 +93,7 @@ export const loadNextTransactions = ({
 				transactions: transactions.map((transaction) => ({
 					data: mapIcpTransaction({
 						transaction,
-						identity
+						accountIdentifierHex: toAccountIdentifier(account).toHex()
 					}),
 					certified
 				}))
@@ -108,5 +107,5 @@ export const loadNextTransactions = ({
 
 			signalEnd();
 		},
-		identity
+		identity: new AnonymousIdentity()
 	});

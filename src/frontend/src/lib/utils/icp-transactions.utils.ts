@@ -1,15 +1,13 @@
 import type { IcTransactionUi } from '$lib/types/ic-transaction';
-import type { OptionIdentity } from '$lib/types/itentity';
-import { toAccountIdentifier } from '$lib/utils/icp-icrc-account.utils';
 import { fromNullable, jsonReplacer, nonNullish, uint8ArrayToBigInt } from '@dfinity/utils';
-import type { IcpIndexDid } from '@icp-sdk/canisters/ledger/icp';
+import type { AccountIdentifierHex, IcpIndexDid } from '@icp-sdk/canisters/ledger/icp';
 
 export const mapIcpTransaction = ({
 	transaction: { transaction, id },
-	identity
+	accountIdentifierHex
 }: {
 	transaction: IcpIndexDid.TransactionWithId;
-	identity: OptionIdentity;
+	accountIdentifierHex: AccountIdentifierHex;
 }): IcTransactionUi => {
 	const { operation, timestamp, memo, icrc1_memo } = transaction;
 
@@ -35,16 +33,12 @@ export const mapIcpTransaction = ({
 		...mapMemo()
 	};
 
-	const accountIdentifier = nonNullish(identity)
-		? toAccountIdentifier({ owner: identity.getPrincipal() })
-		: undefined;
-
 	const mapFrom = (
 		from: string
 	): Pick<IcTransactionUi, 'from' | 'fromExplorerUrl' | 'incoming'> => ({
 		from,
 		fromExplorerUrl: `${ICP_EXPLORER_URL}/account/${from}`,
-		incoming: from?.toLowerCase() !== accountIdentifier?.toHex().toLowerCase()
+		incoming: from?.toLowerCase() !== accountIdentifierHex.toLowerCase()
 	});
 
 	const mapTo = (to: string): Pick<IcTransactionUi, 'to' | 'toExplorerUrl'> => ({

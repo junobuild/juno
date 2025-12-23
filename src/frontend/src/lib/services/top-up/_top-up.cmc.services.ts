@@ -11,7 +11,7 @@ import type { OptionIdentity } from '$lib/types/itentity';
 import { nowInBigIntNanoSeconds } from '$lib/utils/date.utils';
 import { i18nFormat } from '$lib/utils/i18n.utils';
 import { waitForMilliseconds } from '$lib/utils/timeout.utils';
-import { principalToSubAccount, TokenAmountV2 } from '@dfinity/utils';
+import { principalToSubAccount, type TokenAmountV2 } from '@dfinity/utils';
 import { ProcessingError } from '@icp-sdk/canisters/cmc';
 import {
 	AccountIdentifier,
@@ -22,11 +22,11 @@ import {
 import { Principal } from '@icp-sdk/core/principal';
 import { get } from 'svelte/store';
 
-type TopUpWithCmcParams = {
+interface TopUpWithCmcParams {
 	canisterId: Principal;
 	identity: OptionIdentity;
 	tokenAmount: TokenAmountV2;
-};
+}
 
 export const topUpWithCmc = async ({
 	canisterId,
@@ -114,7 +114,7 @@ const callNotifyTopUp = async ({
 			return { result: 'processing_error' };
 		}
 
-		return { result: 'error', err: err };
+		return { result: 'error', err };
 	}
 };
 

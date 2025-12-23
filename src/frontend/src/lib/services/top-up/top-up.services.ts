@@ -2,6 +2,7 @@ import { topUp as topUpApiWithMissionControl } from '$lib/api/mission-control.ap
 import { TOP_UP_NETWORK_FEES } from '$lib/constants/app.constants';
 import type { SelectedWallet } from '$lib/schemas/wallet.schema';
 import { execute } from '$lib/services/_progress.services';
+import { topUpWithCmc } from '$lib/services/top-up/_top-up.cmc.services';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
@@ -12,7 +13,6 @@ import { waitAndRestartWallet } from '$lib/utils/wallet.utils';
 import { assertNonNullish, isNullish } from '@dfinity/utils';
 import type { Principal } from '@icp-sdk/core/principal';
 import { get } from 'svelte/store';
-import { topUpWithCmc } from '$lib/services/top-up/_top-up.cmc.services';
 
 export const topUp = async ({
 	identity,
@@ -77,7 +77,7 @@ export const topUp = async ({
 				canisterId,
 				identity,
 				tokenAmount
-			})
+			});
 		};
 
 		const topUp = walletType === 'mission_control' ? topUpWithMissionControl : topUpWithDev;

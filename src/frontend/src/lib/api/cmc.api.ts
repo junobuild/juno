@@ -2,9 +2,8 @@ import { getAgent } from '$lib/api/_agent/_agent.api';
 import { CMC_CANISTER_ID } from '$lib/constants/app.constants';
 import type { OptionIdentity } from '$lib/types/itentity';
 import { assertNonNullish } from '@dfinity/utils';
-import type { CmcDid } from '@icp-sdk/canisters/cmc';
-import { CmcCanister } from '@icp-sdk/canisters/cmc';
-import { type BlockHeight } from '@icp-sdk/canisters/ledger/icp';
+import { type CmcDid, CmcCanister } from '@icp-sdk/canisters/cmc';
+import type { BlockHeight } from '@icp-sdk/canisters/ledger/icp';
 import { AnonymousIdentity } from '@icp-sdk/core/agent';
 import { Principal } from '@icp-sdk/core/principal';
 

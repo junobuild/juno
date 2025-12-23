@@ -36,7 +36,7 @@ export interface JunoModalUpgradeDetail {
 export type JunoModalUpgradeSatelliteDetail = JunoModalUpgradeDetail &
 	JunoModalWithSatellite & { build?: BuildType };
 
-export interface JunoModalCreateSegmentDetail extends JunoModalWithAccountIdentifier {
+export interface JunoModalCreateSegmentDetail {
 	fee: bigint;
 	monitoringEnabled: boolean;
 	monitoringConfig: Option<MissionControlDid.MonitoringConfig>;

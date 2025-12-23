@@ -39,7 +39,6 @@ import type { SatelliteId } from '$lib/types/satellite';
 import type { Option } from '$lib/types/utils';
 import type { CreateWizardResult } from '$lib/types/wizard';
 import { emit } from '$lib/utils/events.utils';
-import { toAccountIdentifier } from '$lib/utils/icp-icrc-account.utils';
 import { waitAndRestartWallet } from '$lib/utils/wallet.utils';
 import { assertNonNullish, isNullish, nonNullish, toNullable } from '@dfinity/utils';
 import type { PrincipalText } from '@dfinity/zod-schemas';
@@ -48,10 +47,7 @@ import { Principal } from '@icp-sdk/core/principal';
 import { get } from 'svelte/store';
 
 type GetFeeBalance =
-	| Omit<
-			JunoModalCreateSegmentDetail,
-			'monitoringConfig' | 'monitoringEnabled' | 'accountIdentifier'
-	  >
+	| Omit<JunoModalCreateSegmentDetail, 'monitoringConfig' | 'monitoringEnabled'>
 	| { error: null | string };
 
 type GetFeeBalanceFn = (params: { identity: Option<Identity> }) => Promise<GetFeeBalance>;
@@ -134,7 +130,7 @@ const initCreateWizard = async ({
 	if (missionControlId === null) {
 		busy.stop();
 
-		initCreateWizardWithoutMissionControl({ identity, fee, modalType });
+		initCreateWizardWithoutMissionControl({ fee, modalType });
 		return;
 	}
 
@@ -164,14 +160,11 @@ const initCreateWizard = async ({
 	const monitoringEnabled = get(missionControlMonitored);
 	const monitoringConfig = get(missionControlConfigMonitoring);
 
-	const accountIdentifier = toAccountIdentifier({ owner: missionControlId });
-
 	emit<JunoModal<JunoModalCreateSegmentDetail>>({
 		message: 'junoModal',
 		detail: {
 			type: modalType,
 			detail: {
-				accountIdentifier,
 				fee,
 				monitoringEnabled,
 				monitoringConfig
@@ -181,22 +174,17 @@ const initCreateWizard = async ({
 };
 
 const initCreateWizardWithoutMissionControl = ({
-	identity,
 	fee,
 	modalType
 }: {
-	identity: Identity;
 	fee: bigint;
 	modalType: 'create_satellite' | 'create_orbiter' | 'create_mission_control';
 }) => {
-	const accountIdentifier = toAccountIdentifier({ owner: identity.getPrincipal() });
-
 	emit<JunoModal<JunoModalCreateSegmentDetail>>({
 		message: 'junoModal',
 		detail: {
 			type: modalType,
 			detail: {
-				accountIdentifier,
 				fee,
 				monitoringEnabled: false,
 				monitoringConfig: undefined

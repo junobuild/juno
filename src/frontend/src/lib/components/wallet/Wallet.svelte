@@ -12,7 +12,7 @@
 	import { authSignedIn, authSignedOut } from '$lib/derived/auth.derived';
 	import { transactions } from '$lib/derived/wallet/transactions.derived';
 	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
-	import { loadNextTransactions } from '$lib/services/wallet/wallet.services';
+	import { loadNextTransactions } from '$lib/services/wallet/wallet.transactions.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
 	import { last } from '$lib/utils/utils';

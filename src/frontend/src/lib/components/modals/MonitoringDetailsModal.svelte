@@ -2,9 +2,9 @@
 	import { nonNullish } from '@dfinity/utils';
 	import { Principal } from '@icp-sdk/core/principal';
 	import { fade } from 'svelte/transition';
+	import CanisterOverview from '$lib/components/canister/display/CanisterOverview.svelte';
 	import CanisterMonitoringChart from '$lib/components/canister/monitoring/CanisterMonitoringChart.svelte';
 	import CanisterMonitoringData from '$lib/components/canister/monitoring/CanisterMonitoringData.svelte';
-	import CanisterOverview from '$lib/components/canister/display/CanisterOverview.svelte';
 	import MonitoringDepositCyclesChart from '$lib/components/monitoring/MonitoringDepositCyclesChart.svelte';
 	import MonitoringStrategyStatus from '$lib/components/monitoring/MonitoringStrategyStatus.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';

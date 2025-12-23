@@ -1,9 +1,9 @@
 <script lang="ts">
 	import type { MissionControlDid } from '$declarations';
 	import CanisterBuyCycleExpress from '$lib/components/canister/cycles/CanisterBuyCycleExpress.svelte';
+	import CanisterTransferCycles from '$lib/components/canister/cycles/CanisterTransferCycles.svelte';
 	import CanisterDelete from '$lib/components/canister/lifecycle/CanisterDelete.svelte';
 	import CanisterStopStart from '$lib/components/canister/lifecycle/CanisterStopStart.svelte';
-	import CanisterTransferCycles from '$lib/components/canister/cycles/CanisterTransferCycles.svelte';
 	import TopUp from '$lib/components/canister/top-up/TopUp.svelte';
 	import SegmentActions from '$lib/components/segments/SegmentActions.svelte';
 	import { i18n } from '$lib/stores/app/i18n.store';

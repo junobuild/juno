@@ -1,9 +1,9 @@
 <script lang="ts">
 	import type { Principal } from '@icp-sdk/core/principal';
 	import Canister from '$lib/components/canister/Canister.svelte';
+	import CanisterIdleConsumption from '$lib/components/canister/CanisterIdleConsumption.svelte';
 	import CanisterCyclesBalance from '$lib/components/canister/display/CanisterCyclesBalance.svelte';
 	import CanisterHealthCheck from '$lib/components/canister/display/CanisterHealthCheck.svelte';
-	import CanisterIdleConsumption from '$lib/components/canister/CanisterIdleConsumption.svelte';
 	import CanisterMemory from '$lib/components/canister/display/CanisterMemory.svelte';
 	import CanisterQueries from '$lib/components/canister/display/CanisterQueries.svelte';
 	import Value from '$lib/components/ui/Value.svelte';

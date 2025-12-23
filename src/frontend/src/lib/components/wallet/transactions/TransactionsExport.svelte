@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Confirmation from '$lib/components/core/Confirmation.svelte';
 	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
-	import { exportTransactions as exportTransactionsServices } from '$lib/services/wallet/wallet.services';
+	import { exportTransactions as exportTransactionsServices } from '$lib/services/wallet/wallet.transactions.services';
 	import { busy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';

@@ -26,7 +26,7 @@ import {
 } from '$lib/services/mission-control/mission-control.satellites.services';
 import { loadSettings, loadUserData } from '$lib/services/mission-control/mission-control.services';
 import { waitMissionControlVersionLoaded } from '$lib/services/version/version.mission-control.services';
-import { approveCreateCanisterWithIcp } from '$lib/services/wallet/wallet.transfer.services';
+import { approveCreateCanisterWithIcp } from '$lib/services/wallet/wallet.approve.services';
 import { busy } from '$lib/stores/app/busy.store';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';

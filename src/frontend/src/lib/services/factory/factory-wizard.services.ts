@@ -15,7 +15,7 @@ import {
 import { loadCredits } from '$lib/services/console/credits.services';
 import { loadSegments } from '$lib/services/console/segments.services';
 import { unsafeSetEmulatorControllerForSatellite } from '$lib/services/emulator.services';
-import { finalizeMissionControlWizard } from '$lib/services/factory/_factory-wizard.mission-control.services';
+import { attachSegmentsToMissionControl } from '$lib/services/factory/_factory-wizard.mission-control.services';
 import {
 	createOrbiter,
 	createOrbiterWithConfig
@@ -30,6 +30,11 @@ import { approveCreateCanisterWithIcp } from '$lib/services/wallet/wallet.approv
 import { busy } from '$lib/stores/app/busy.store';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
+import type {
+	CreateSatelliteConfig,
+	CreateWithConfig,
+	CreateWithConfigAndName
+} from '$lib/types/factory';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { MissionControlId } from '$lib/types/mission-control';
 import type { JunoModal, JunoModalCreateSegmentDetail } from '$lib/types/modal';
@@ -40,7 +45,7 @@ import type { Option } from '$lib/types/utils';
 import type { CreateWizardResult } from '$lib/types/wizard';
 import { emit } from '$lib/utils/events.utils';
 import { waitAndRestartWallet } from '$lib/utils/wallet.utils';
-import { assertNonNullish, isNullish, nonNullish, toNullable } from '@dfinity/utils';
+import { assertNonNullish, isEmptyString, isNullish, nonNullish, toNullable } from '@dfinity/utils';
 import type { PrincipalText } from '@dfinity/zod-schemas';
 import type { Identity } from '@icp-sdk/core/agent';
 import { Principal } from '@icp-sdk/core/principal';
@@ -280,7 +285,7 @@ export const createSatelliteWizard = async ({
 	satelliteName: string | undefined;
 	satelliteKind: 'website' | 'application' | undefined;
 }): Promise<CreateWizardResult> => {
-	if (isNullish(satelliteName)) {
+	if (isEmptyString(satelliteName)) {
 		toasts.error({
 			text: get(i18n).errors.satellite_name_missing
 		});
@@ -302,15 +307,16 @@ export const createSatelliteWizard = async ({
 		return await createWithConsoleFn({ identity });
 	};
 
+	const createConfig: CreateSatelliteConfig = {
+		name: satelliteName,
+		...(nonNullish(subnetId) && { subnetId: Principal.fromText(subnetId) }),
+		kind: satelliteKind
+	};
+
 	const createWithConsoleFn = async ({ identity }: { identity: Identity }): Promise<SatelliteId> =>
 		await createSatelliteWithConsoleAndConfig({
 			identity,
-			// TODO: duplicate payload
-			config: {
-				name: satelliteName,
-				...(nonNullish(subnetId) && { subnetId: Principal.fromText(subnetId) }),
-				kind: satelliteKind
-			}
+			config: createConfig
 		});
 
 	const createWithMissionControlFn = async ({
@@ -326,11 +332,7 @@ export const createSatelliteWizard = async ({
 		const { satellite_id } = await fn({
 			identity,
 			missionControlId,
-			config: {
-				name: satelliteName,
-				...(nonNullish(subnetId) && { subnetId: Principal.fromText(subnetId) }),
-				kind: satelliteKind
-			}
+			config: createConfig
 		});
 
 		return satellite_id;
@@ -412,13 +414,14 @@ export const createOrbiterWizard = async ({
 		return await createWithConsoleFn({ identity });
 	};
 
+	const createConfig: CreateWithConfigAndName = {
+		...(nonNullish(subnetId) && { subnetId: Principal.fromText(subnetId) })
+	};
+
 	const createWithConsoleFn = async ({ identity }: { identity: Identity }): Promise<OrbiterId> =>
 		await createOrbiterWithConsoleAndConfig({
 			identity,
-			// TODO: duplicate payload
-			config: {
-				...(nonNullish(subnetId) && { subnetId: Principal.fromText(subnetId) })
-			}
+			config: createConfig
 		});
 
 	const createWithMissionControlFn = async ({
@@ -431,9 +434,7 @@ export const createOrbiterWizard = async ({
 		const { orbiter_id } = await fn({
 			identity,
 			missionControlId,
-			config: {
-				...(nonNullish(subnetId) && { subnetId: Principal.fromText(subnetId) })
-			}
+			config: createConfig
 		});
 
 		return orbiter_id;
@@ -502,13 +503,14 @@ export const createMissionControlWizard = async ({
 	| { success: 'error'; err?: unknown }
 	| { success: 'warning' }
 > => {
+	const createConfig: CreateWithConfig = {
+		...(nonNullish(subnetId) && { subnetId: Principal.fromText(subnetId) })
+	};
+
 	const createFn: CreateFn = async ({ identity }) =>
 		await createMissionControlWithConsoleAndConfig({
 			identity,
-			// TODO: duplicate payload
-			config: {
-				...(nonNullish(subnetId) && { subnetId: Principal.fromText(subnetId) })
-			}
+			config: createConfig
 		});
 
 	const reloadFn: ReloadFn = async ({ identity, canisterId }) => {
@@ -522,7 +524,7 @@ export const createMissionControlWizard = async ({
 		identity,
 		canisterId
 	}): Promise<CreateWizardResult> => {
-		const result = await finalizeMissionControlWizard({
+		const result = await attachSegmentsToMissionControl({
 			onProgress,
 			onTextProgress: onAttachTextProgress,
 			identity,

@@ -3,16 +3,12 @@ import { getMissionControlActor } from '$lib/api/actors/actor.juno.api';
 import { loadDataStore } from '$lib/services/_loader.services';
 import { authStore } from '$lib/stores/auth.store';
 import { orbitersUncertifiedStore } from '$lib/stores/mission-control/orbiter.store';
+import type { CreateWithConfigAndName } from '$lib/types/factory';
 import type { Option } from '$lib/types/utils';
 import { assertNonNullish, toNullable } from '@dfinity/utils';
 import type { Identity } from '@icp-sdk/core/agent';
 import type { Principal } from '@icp-sdk/core/principal';
 import { get } from 'svelte/store';
-
-interface CreateOrbiterConfig {
-	name?: string;
-	subnetId?: Principal;
-}
 
 export const createOrbiter = async ({
 	identity,
@@ -21,7 +17,7 @@ export const createOrbiter = async ({
 }: {
 	identity: Option<Identity>;
 	missionControlId: Option<Principal>;
-	config: CreateOrbiterConfig;
+	config: Pick<CreateWithConfigAndName, 'name'>;
 }): Promise<MissionControlDid.Orbiter> => {
 	assertNonNullish(missionControlId);
 
@@ -40,7 +36,7 @@ export const createOrbiterWithConfig = async ({
 }: {
 	identity: Option<Identity>;
 	missionControlId: Option<Principal>;
-	config: CreateOrbiterConfig;
+	config: CreateWithConfigAndName;
 }): Promise<MissionControlDid.Orbiter> => {
 	assertNonNullish(missionControlId);
 

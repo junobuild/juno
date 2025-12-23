@@ -326,8 +326,8 @@
 		"create_price": "Starting Mission Control requires {0}. Your current wallet balance is {1}.",
 		"initializing": "Initializing Mission Control...",
 		"ready": "Your Mission Control is ready!",
-		"attaching": "Transferring existing modules to Mission Control...",
-		"warn_attaching": "Failed to transfer the following modules to Mission Control:"
+		"attaching": "Sharing existing modules with Mission Control...",
+		"warn_attaching": "Failed to share the following modules with Mission Control:"
 	},
 	"wallet": {
 		"title": "Wallet",

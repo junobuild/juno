@@ -21,14 +21,14 @@ import type { Identity } from '@icp-sdk/core/agent';
 import type { Principal } from '@icp-sdk/core/principal';
 import { get } from 'svelte/store';
 
-type FinalizeMissionControlWizardResult = Promise<{ success: 'ok' } | { success: 'warning' }>;
+type AttachSegmentsToMissionControlResult = Promise<{ success: 'ok' } | { success: 'warning' }>;
 
 const CONTROLLER_PARAMS: Omit<SetControllerParams, 'controllerId'> = {
 	profile: undefined,
 	scope: 'admin'
 };
 
-export const finalizeMissionControlWizard = async ({
+export const attachSegmentsToMissionControl = async ({
 	onProgress,
 	onTextProgress,
 	missionControlId,
@@ -38,7 +38,7 @@ export const finalizeMissionControlWizard = async ({
 	onTextProgress: (text: string) => void;
 	missionControlId: MissionControlId;
 	identity: Option<Identity>;
-}): Promise<FinalizeMissionControlWizardResult> => {
+}): Promise<AttachSegmentsToMissionControlResult> => {
 	assertNonNullish(identity, get(i18n).core.not_logged_in);
 
 	onProgress({

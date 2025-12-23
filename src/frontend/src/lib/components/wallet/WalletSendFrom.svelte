@@ -37,7 +37,7 @@
 			{#snippet label()}
 				{$i18n.wallet.title}
 			{/snippet}
-			<p class="identifier">
+			<p>
 				{walletName}
 			</p>
 		</Value>
@@ -46,18 +46,14 @@
 			{#snippet label()}
 				{$i18n.wallet.wallet_id}
 			{/snippet}
-			<p class="identifier">
-				<Identifier identifier={walletIdText} shorten={false} />
-			</p>
+			<Identifier identifier={walletIdText} shorten={false} small={false} />
 		</Value>
 
 		<Value>
 			{#snippet label()}
 				{$i18n.wallet.account_identifier}
 			{/snippet}
-			<p class="identifier">
-				<Identifier identifier={accountIdentifier?.toHex() ?? ''} />
-			</p>
+			<Identifier identifier={accountIdentifier?.toHex() ?? ''} small={false} />
 		</Value>
 
 		<Value>

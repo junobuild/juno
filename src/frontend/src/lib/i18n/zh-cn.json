@@ -372,7 +372,8 @@
 		"balance_zero": "您的余额为零。获取一些代币以开始发送。",
 		"wallet_upgrade": "请升级您的钱包以启用发送功能。",
 		"approving_canister_fee": "授权费用中...",
-		"dev": "开发版"
+		"dev": "开发版",
+		"total": "总计"
 	},
 	"authentication": {
 		"title": "身份认证",

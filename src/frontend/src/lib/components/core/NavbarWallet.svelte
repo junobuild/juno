@@ -12,6 +12,8 @@
 	import { testIds } from '$lib/constants/test-ids.constants';
 	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { i18n } from '$lib/stores/app/i18n.store';
+	import WalletTotal from '$lib/components/wallet/WalletTotal.svelte';
+	import Hr from '$lib/components/ui/Hr.svelte';
 
 	let button: HTMLButtonElement | undefined = $state();
 	let visible: boolean = $state(false);
@@ -38,6 +40,12 @@
 
 <Popover anchor={button} direction="rtl" bind:visible>
 	<div class="container">
+		<div>
+			<WalletTotal />
+		</div>
+
+		<Hr />
+
 		<div class="picker">
 			<WalletPicker bind:selectedWallet />
 		</div>
@@ -87,8 +95,11 @@
 	}
 
 	.picker {
+		padding: var(--padding-0_5x) 0 0;
+
 		:global(select) {
 			margin: var(--padding-0_5x) 0;
+			width: fit-content;
 		}
 	}
 </style>

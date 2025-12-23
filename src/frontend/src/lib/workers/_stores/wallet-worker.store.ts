@@ -1,8 +1,9 @@
 import type { IcrcAccountText } from '$lib/schemas/wallet.schema';
 import { walletIdbStore } from '$lib/stores/app/idb.store';
 import type { CertifiedData } from '$lib/types/store';
+import { toAccountIdentifier } from '$lib/utils/icp-icrc-account.utils';
 import type { PrincipalText } from '@dfinity/zod-schemas';
-import type { IcpIndexDid } from '@icp-sdk/canisters/ledger/icp';
+import type { AccountIdentifierHex, IcpIndexDid } from '@icp-sdk/canisters/ledger/icp';
 import { encodeIcrcAccount, type IcrcAccount } from '@icp-sdk/canisters/ledger/icrc';
 import { get, set } from 'idb-keyval';
 
@@ -47,6 +48,10 @@ export class WalletStore {
 
 	get icrcAccountText(): IcrcAccountText {
 		return encodeIcrcAccount(this.#account);
+	}
+
+	get accountIdentifierHex(): AccountIdentifierHex {
+		return toAccountIdentifier(this.#account).toHex();
 	}
 
 	get balance(): CertifiedData<bigint> | undefined {

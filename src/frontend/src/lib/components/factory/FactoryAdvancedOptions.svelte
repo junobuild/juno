@@ -1,8 +1,8 @@
 <script lang="ts">
 	import type { PrincipalText } from '@dfinity/zod-schemas';
 	import type { MissionControlDid } from '$declarations';
-	import CanisterMonitoringDefaultStrategy from '$lib/components/canister/CanisterMonitoringDefaultStrategy.svelte';
-	import CanisterSubnets from '$lib/components/canister/CanisterSubnets.svelte';
+	import CanisterMonitoringDefaultStrategy from '$lib/components/canister/monitoring/CanisterMonitoringDefaultStrategy.svelte';
+	import CanisterSubnets from '$lib/components/canister/display/CanisterSubnets.svelte';
 	import Collapsible from '$lib/components/ui/Collapsible.svelte';
 	import WalletPicker from '$lib/components/wallet/WalletPicker.svelte';
 	import type { SelectedWallet } from '$lib/schemas/wallet.schema';

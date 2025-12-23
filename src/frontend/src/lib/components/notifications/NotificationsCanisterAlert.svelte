@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Component } from 'svelte';
-	import CanisterIndicator from '$lib/components/canister/CanisterIndicator.svelte';
+	import CanisterIndicator from '$lib/components/canister/display/CanisterIndicator.svelte';
 	import IconWarning from '$lib/components/icons/IconWarning.svelte';
 	import NotificationLink from '$lib/components/notifications/NotificationLink.svelte';
 	import { i18n } from '$lib/stores/app/i18n.store';

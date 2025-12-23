@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { nonNullish, type TokenAmountV2 } from '@dfinity/utils';
 	import { Principal } from '@icp-sdk/core/principal';
-	import CanisterTopUpCycles from '$lib/components/canister/CanisterTopUpCycles.svelte';
+	import CanisterTopUpCycles from '$lib/components/canister/top-up/CanisterTopUpCycles.svelte';
 	import Segment from '$lib/components/segments/Segment.svelte';
 	import SendTokensAmount from '$lib/components/tokens/SendTokensAmount.svelte';
 	import GridArrow from '$lib/components/ui/GridArrow.svelte';
@@ -86,7 +86,7 @@
 </form>
 
 <style lang="scss">
-	@use '../../styles/mixins/grid';
+	@use '../../../styles/mixins/grid';
 
 	.columns {
 		@include grid.two-columns-with-arrow;

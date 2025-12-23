@@ -114,7 +114,7 @@
 </div>
 
 <style lang="scss">
-	@use '../../styles/mixins/media';
+	@use '../../../styles/mixins/media';
 
 	.freezing {
 		min-height: calc(54px + var(--padding-2_5x));

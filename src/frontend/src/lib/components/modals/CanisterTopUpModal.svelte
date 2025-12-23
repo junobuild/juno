@@ -3,9 +3,9 @@
 	import { Principal } from '@icp-sdk/core/principal';
 	import type { Snippet } from 'svelte';
 	import { fade } from 'svelte/transition';
-	import CanisterTopUpForm from '$lib/components/canister/CanisterTopUpForm.svelte';
-	import CanisterTopUpReview from '$lib/components/canister/CanisterTopUpReview.svelte';
 	import ProgressTopUp from '$lib/components/canister/ProgressTopUp.svelte';
+	import CanisterTopUpForm from '$lib/components/canister/top-up/CanisterTopUpForm.svelte';
+	import CanisterTopUpReview from '$lib/components/canister/top-up/CanisterTopUpReview.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import { topUp } from '$lib/services/mission-control/topup.services';

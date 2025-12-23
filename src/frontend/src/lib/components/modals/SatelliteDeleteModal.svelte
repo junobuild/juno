@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { deleteSatellite } from '$lib/api/mission-control.api';
-	import CanisterDeleteWizard from '$lib/components/canister/CanisterDeleteWizard.svelte';
+	import CanisterDeleteWizard from '$lib/components/canister/lifecycle/CanisterDeleteWizard.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import { satelliteCustomDomains } from '$lib/derived/satellite/satellite-custom-domains.derived';

@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
-	import CanisterStart from '$lib/components/canister/CanisterStart.svelte';
-	import CanisterStop from '$lib/components/canister/CanisterStop.svelte';
+	import CanisterStart from '$lib/components/canister/lifecycle/CanisterStart.svelte';
+	import CanisterStop from '$lib/components/canister/lifecycle/CanisterStop.svelte';
 	import type { CanisterSyncData, CanisterStatus, CanisterSyncStatus } from '$lib/types/canister';
 
 	interface Props {

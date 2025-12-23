@@ -1,11 +1,11 @@
 <script lang="ts">
 	import type { Principal } from '@icp-sdk/core/principal';
 	import Canister from '$lib/components/canister/Canister.svelte';
-	import CanisterCyclesBalance from '$lib/components/canister/CanisterCyclesBalance.svelte';
-	import CanisterHealthCheck from '$lib/components/canister/CanisterHealthCheck.svelte';
+	import CanisterCyclesBalance from '$lib/components/canister/display/CanisterCyclesBalance.svelte';
+	import CanisterHealthCheck from '$lib/components/canister/display/CanisterHealthCheck.svelte';
 	import CanisterIdleConsumption from '$lib/components/canister/CanisterIdleConsumption.svelte';
-	import CanisterMemory from '$lib/components/canister/CanisterMemory.svelte';
-	import CanisterQueries from '$lib/components/canister/CanisterQueries.svelte';
+	import CanisterMemory from '$lib/components/canister/display/CanisterMemory.svelte';
+	import CanisterQueries from '$lib/components/canister/display/CanisterQueries.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { CanisterData, CanisterSyncStatus, Segment } from '$lib/types/canister';

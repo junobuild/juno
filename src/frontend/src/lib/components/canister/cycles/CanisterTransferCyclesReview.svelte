@@ -87,7 +87,7 @@
 </form>
 
 <style lang="scss">
-	@use '../../styles/mixins/grid';
+	@use '../../../styles/mixins/grid';
 
 	.columns {
 		@include grid.two-columns-with-arrow;

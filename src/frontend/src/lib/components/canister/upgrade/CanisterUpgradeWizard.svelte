@@ -105,7 +105,7 @@
 {/if}
 
 <style lang="scss">
-	@use '../../styles/mixins/overlay';
+	@use '../../../styles/mixins/overlay';
 
 	.msg {
 		@include overlay.message;

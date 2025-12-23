@@ -139,8 +139,8 @@
 </form>
 
 <style lang="scss">
-	@use '../../styles/mixins/media';
-	@use '../../styles/mixins/grid';
+	@use '../../../styles/mixins/media';
+	@use '../../../styles/mixins/grid';
 
 	.columns {
 		@include media.min-width(large) {

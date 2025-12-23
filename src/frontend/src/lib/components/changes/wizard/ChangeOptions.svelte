@@ -1,5 +1,5 @@
 <script lang="ts">
-	import CanisterSnapshotOption from '$lib/components/canister/CanisterSnapshotOption.svelte';
+	import CanisterSnapshotOption from '$lib/components/canister/settings/CanisterSnapshotOption.svelte';
 	import CheckboxInline from '$lib/components/ui/CheckboxInline.svelte';
 	import Collapsible from '$lib/components/ui/Collapsible.svelte';
 	import { i18n } from '$lib/stores/app/i18n.store';

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
-	import CanisterMemoryChart from '$lib/components/canister/CanisterMemoryChart.svelte';
+	import CanisterMemoryChart from '$lib/components/canister/display/CanisterMemoryChart.svelte';
 	import CanisterValue from '$lib/components/canister/CanisterValue.svelte';
 	import InlineWarning from '$lib/components/ui/InlineWarning.svelte';
 	import { i18n } from '$lib/stores/app/i18n.store';
@@ -108,7 +108,7 @@
 </div>
 
 <style lang="scss">
-	@use '../../styles/mixins/media';
+	@use '../../../styles/mixins/media';
 
 	.memory {
 		min-width: 200px;

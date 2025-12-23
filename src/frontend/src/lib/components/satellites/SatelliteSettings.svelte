@@ -1,5 +1,5 @@
 <script lang="ts">
-	import CanisterSettings from '$lib/components/canister/CanisterSettings.svelte';
+	import CanisterSettings from '$lib/components/canister/settings/CanisterSettings.svelte';
 	import SatelliteControllers from '$lib/components/satellites/SatelliteControllers.svelte';
 	import Snapshots from '$lib/components/snapshot/Snapshots.svelte';
 	import { i18n } from '$lib/stores/app/i18n.store';

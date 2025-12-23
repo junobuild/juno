@@ -50,7 +50,7 @@
 </div>
 
 <style lang="scss">
-	@use '../../styles/mixins/media';
+	@use '../../../styles/mixins/media';
 
 	.chart-container {
 		height: 175px;

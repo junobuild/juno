@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { fromNullishNullable } from '@dfinity/utils';
 	import type { MissionControlDid } from '$declarations';
-	import CanisterOverview from '$lib/components/canister/CanisterOverview.svelte';
-	import CanisterSubnet from '$lib/components/canister/CanisterSubnet.svelte';
+	import CanisterOverview from '$lib/components/canister/display/CanisterOverview.svelte';
+	import CanisterSubnet from '$lib/components/canister/display/CanisterSubnet.svelte';
 	import CanisterSyncData from '$lib/components/canister/CanisterSyncData.svelte';
 	import OrbiterOverviewActions from '$lib/components/orbiter/OrbiterOverviewActions.svelte';
 	import OrbiterRuntimeActions from '$lib/components/orbiter/OrbiterRuntimeActions.svelte';

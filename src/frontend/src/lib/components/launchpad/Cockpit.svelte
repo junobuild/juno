@@ -2,8 +2,8 @@
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
 	import Canister from '$lib/components/canister/Canister.svelte';
-	import CanisterIndicator from '$lib/components/canister/CanisterIndicator.svelte';
-	import CanisterTCycles from '$lib/components/canister/CanisterTCycles.svelte';
+	import CanisterIndicator from '$lib/components/canister/display/CanisterIndicator.svelte';
+	import CanisterTCycles from '$lib/components/canister/display/CanisterTCycles.svelte';
 	import IconAnalytics from '$lib/components/icons/IconAnalytics.svelte';
 	import IconMissionControl from '$lib/components/icons/IconMissionControl.svelte';
 	import IconTelescope from '$lib/components/icons/IconTelescope.svelte';

@@ -7,7 +7,7 @@
 	import CanisterUpgradeWizard, {
 		type CanisterUpgradeWizardProps,
 		type CanisterUpgradeWizardStep
-	} from '$lib/components/canister/CanisterUpgradeWizard.svelte';
+	} from '$lib/components/canister/upgrade/CanisterUpgradeWizard.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import CanisterUpgradeOptions from '$lib/components/upgrade/wizard/CanisterUpgradeOptions.svelte';

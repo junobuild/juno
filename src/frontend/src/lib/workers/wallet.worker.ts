@@ -90,7 +90,7 @@ const startTimerWithAccount = async ({
 		ledgerId: ICP_LEDGER_CANISTER_ID
 	});
 
-	emitSavedWallet({ store, identity });
+	emitSavedWallet({ store });
 
 	const sync = async () => await syncWallet({ account, identity, store });
 
@@ -139,7 +139,7 @@ const syncWallet = async ({
 		certified,
 		...rest
 	}) => {
-		syncTransactions({ certified, identity, store, ...rest });
+		syncTransactions({ certified, store, ...rest });
 		cleanTransactions({ certified, store });
 	};
 
@@ -197,12 +197,10 @@ const postMessageWallet = ({
 const syncTransactions = ({
 	response: { transactions: fetchedTransactions, balance, ...rest },
 	certified,
-	identity,
 	store
 }: {
 	response: IcpIndexDid.GetAccountIdentifierTransactionsResponse;
 	certified: boolean;
-	identity: Identity;
 	store: WalletStore;
 }) => {
 	// Is there any new transactions unknown so far or which has become certified
@@ -236,7 +234,7 @@ const syncTransactions = ({
 	store.update({ balance, newTransactions, certified });
 
 	const newUiTransactions = newTransactions.map((transaction) =>
-		mapIcpTransaction({ transaction, identity })
+		mapIcpTransaction({ transaction, accountIdentifierHex: store.accountIdentifierHex })
 	);
 
 	postMessageWallet({
@@ -315,7 +313,7 @@ const postMessageWalletError = (error: unknown) => {
 	});
 };
 
-const emitSavedWallet = ({ store, identity }: { store: WalletStore; identity: Identity }) => {
+const emitSavedWallet = ({ store }: { store: WalletStore }) => {
 	if (isNullish(store.balance)) {
 		return;
 	}
@@ -324,7 +322,7 @@ const emitSavedWallet = ({ store, identity }: { store: WalletStore; identity: Id
 		.sort(({ data: { id: idA } }, { data: { id: idB } }) => Number(idB) - Number(idA))
 		.map(({ certified, data: transaction }) => ({
 			certified,
-			data: mapIcpTransaction({ transaction, identity })
+			data: mapIcpTransaction({ transaction, accountIdentifierHex: store.accountIdentifierHex })
 		}));
 
 	const data: PostMessageDataResponseWallet = {

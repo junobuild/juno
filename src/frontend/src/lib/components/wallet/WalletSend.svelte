@@ -8,10 +8,10 @@
 		devBalance,
 		missionControlBalance
 	} from '$lib/derived/wallet/balance.derived';
+	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
 	import { emit } from '$lib/utils/events.utils';
-	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
 
 	interface Props {
 		onsend?: () => void;
@@ -48,8 +48,8 @@
 			detail: {
 				type: 'send_tokens',
 				detail: {
-                    selectedWallet
-                }
+					selectedWallet
+				}
 			}
 		});
 

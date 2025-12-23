@@ -1,5 +1,12 @@
 import type { MissionControlDid } from '$declarations';
-import { icpTransfer, icrcTransfer } from '$lib/api/mission-control.api';
+import {
+	icpTransfer as icpTransferWithDev,
+	icrcTransfer as icrcTransferWithDev
+} from '$lib/api/icp-ledger.api';
+import {
+	icpTransfer as icpTransferWithMissionControl,
+	icrcTransfer as icrcTransferWithMissionControl
+} from '$lib/api/mission-control.api';
 import { ICP_LEDGER_CANISTER_ID, IC_TRANSACTION_FEE_ICP } from '$lib/constants/app.constants';
 import type { SelectedWallet } from '$lib/schemas/wallet.schema';
 import { execute } from '$lib/services/_progress.services';
@@ -13,7 +20,11 @@ import { invalidIcpAddress } from '$lib/utils/icp-account.utils';
 import { invalidIcrcAddress } from '$lib/utils/icrc-account.utils';
 import { waitAndRestartWallet } from '$lib/utils/wallet.utils';
 import { type TokenAmountV2, isNullish, toNullable } from '@dfinity/utils';
-import { AccountIdentifier } from '@icp-sdk/canisters/ledger/icp';
+import {
+	AccountIdentifier,
+	type Icrc1TransferRequest,
+	type TransferRequest
+} from '@icp-sdk/canisters/ledger/icp';
 import { decodeIcrcAccount } from '@icp-sdk/canisters/ledger/icrc';
 import { Principal } from '@icp-sdk/core/principal';
 import { get } from 'svelte/store';
@@ -71,7 +82,15 @@ export const sendTokens = async ({
 			});
 		};
 
-		const sendWithDev = async () => {};
+		const sendWithDev = async () => {
+			const fn = !invalidIcpAddress(destination) ? sendIcpWithDev : sendIcrcWithDev;
+
+			await fn({
+				destination,
+				token,
+				identity
+			});
+		};
 
 		const send = walletType === 'mission_control' ? sendWithMissionControl : sendWithDev;
 		await execute({ fn: send, onProgress, step: SendTokensProgressStep.Send });
@@ -109,8 +128,7 @@ export const sendIcrcWithMissionControl = async ({
 	const args: MissionControlDid.TransferArg = {
 		to: {
 			owner,
-			// TODO: remove cast after updating libs
-			subaccount: toNullable(subaccount) as [] | [Uint8Array]
+			subaccount: toNullable(subaccount)
 		},
 		amount: token.toE8s(),
 		fee: toNullable(IC_TRANSACTION_FEE_ICP),
@@ -119,7 +137,7 @@ export const sendIcrcWithMissionControl = async ({
 		created_at_time: toNullable(nowInBigIntNanoSeconds())
 	};
 
-	await icrcTransfer({
+	await icrcTransferWithMissionControl({
 		args,
 		ledgerId: Principal.fromText(ICP_LEDGER_CANISTER_ID),
 		...rest
@@ -145,8 +163,57 @@ export const sendIcpWithMissionControl = async ({
 		from_subaccount: toNullable()
 	};
 
-	await icpTransfer({
+	await icpTransferWithMissionControl({
 		args,
+		...rest
+	});
+};
+
+export const sendIcrcWithDev = async ({
+	destination,
+	token,
+	...rest
+}: {
+	destination: string;
+	token: TokenAmountV2;
+	identity: OptionIdentity;
+}): Promise<void> => {
+	const { owner, subaccount } = decodeIcrcAccount(destination);
+
+	const request: Icrc1TransferRequest = {
+		to: {
+			owner,
+			subaccount: toNullable(subaccount)
+		},
+		amount: token.toE8s(),
+		fee: IC_TRANSACTION_FEE_ICP,
+		createdAt: nowInBigIntNanoSeconds()
+	};
+
+	await icrcTransferWithDev({
+		request,
+		...rest
+	});
+};
+
+export const sendIcpWithDev = async ({
+	destination,
+	token,
+	...rest
+}: {
+	destination: string;
+	token: TokenAmountV2;
+	identity: OptionIdentity;
+}): Promise<void> => {
+	const request: TransferRequest = {
+		to: AccountIdentifier.fromHex(destination),
+		amount: token.toE8s(),
+		fee: IC_TRANSACTION_FEE_ICP,
+		createdAt: nowInBigIntNanoSeconds()
+	};
+
+	await icpTransferWithDev({
+		request,
 		...rest
 	});
 };

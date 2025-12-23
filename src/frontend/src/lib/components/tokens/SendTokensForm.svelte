@@ -3,6 +3,7 @@
 	import Html from '$lib/components/ui/Html.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
+	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
@@ -10,7 +11,6 @@
 	import { formatICP } from '$lib/utils/icp.utils';
 	import { invalidIcrcAddress } from '$lib/utils/icrc-account.utils';
 	import { assertAndConvertAmountToICPToken } from '$lib/utils/token.utils';
-	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
 
 	interface Props {
 		selectedWallet: SelectedWallet;

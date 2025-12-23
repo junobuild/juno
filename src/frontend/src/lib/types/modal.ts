@@ -1,4 +1,5 @@
 import type { ICDid, MissionControlDid, OrbiterDid, SatelliteDid } from '$declarations';
+import type { SelectedWallet } from '$lib/schemas/wallet.schema';
 import type { CanisterInfo, CanisterSegmentWithLabel, CanisterSettings } from '$lib/types/canister';
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { CustomDomains } from '$lib/types/custom-domain';
@@ -12,7 +13,6 @@ import type { Option } from '$lib/types/utils';
 import type { AccountIdentifier } from '@icp-sdk/canisters/ledger/icp';
 import type { Principal } from '@icp-sdk/core/principal';
 import type { BuildType } from '@junobuild/admin';
-import type { SelectedWallet } from '$lib/schemas/wallet.schema';
 
 export interface JunoModalWithAccountIdentifier {
 	accountIdentifier: AccountIdentifier;
@@ -159,7 +159,7 @@ export type JunoModalDetail =
 	| JunoModalChangeDetail
 	| JunoModalCdnUpgradeDetail
 	| JunoModalEditAuthConfigDetail
-| JunoModalWalletDetail;
+	| JunoModalWalletDetail;
 
 export interface JunoModal<T extends JunoModalDetail> {
 	type:

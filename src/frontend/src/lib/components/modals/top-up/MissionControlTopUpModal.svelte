@@ -1,29 +1,20 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
-	import CanisterTopUpModal from '$lib/components/modals/CanisterTopUpModal.svelte';
+	import CanisterTopUpModal from '$lib/components/modals/top-up/CanisterTopUpModal.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
-	import { balanceOrZero } from '$lib/derived/wallet/balance.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import type { JunoModalDetail, JunoModalTopUpMissionControlDetail } from '$lib/types/modal';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 
 	interface Props {
-		detail: JunoModalDetail;
 		onclose: () => void;
 	}
 
-	let { detail, onclose }: Props = $props();
-
-	let accountIdentifier = $derived(
-		(detail as JunoModalTopUpMissionControlDetail).accountIdentifier
-	);
+	let { onclose }: Props = $props();
 </script>
 
 {#if nonNullish($missionControlId)}
 	<CanisterTopUpModal
-		{accountIdentifier}
-		balance={$balanceOrZero}
 		{onclose}
 		segment={{
 			segment: 'mission_control',

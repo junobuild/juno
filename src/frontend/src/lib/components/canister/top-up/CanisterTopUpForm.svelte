@@ -1,16 +1,20 @@
 <script lang="ts">
 	import { isNullish, nonNullish, notEmptyString } from '@dfinity/utils';
-	import type { AccountIdentifier } from '@icp-sdk/canisters/ledger/icp';
 	import { onMount, type Snippet } from 'svelte';
 	import { icpXdrConversionRate } from '$lib/api/cmc.api';
 	import InputIcp from '$lib/components/core/InputIcp.svelte';
-	import MissionControlICPInfo from '$lib/components/mission-control/MissionControlICPInfo.svelte';
 	import GridArrow from '$lib/components/ui/GridArrow.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
+	import GetICPInfo from '$lib/components/wallet/GetICPInfo.svelte';
+	import WalletPicker from '$lib/components/wallet/WalletPicker.svelte';
 	import { TOP_UP_NETWORK_FEES } from '$lib/constants/app.constants';
-	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
+	import {
+		devBalanceOrZero,
+		missionControlBalanceOrZero
+	} from '$lib/derived/wallet/balance.derived';
 	import { icpToUsd } from '$lib/derived/wallet/exchange.derived';
+	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { CanisterSegmentWithLabel } from '$lib/types/canister';
 	import { formatTCycles, icpToCycles } from '$lib/utils/cycles.utils';
@@ -21,8 +25,8 @@
 	interface Props {
 		intro?: Snippet;
 		segment: CanisterSegmentWithLabel;
+		selectedWallet: SelectedWallet | undefined;
 		balance: bigint;
-		accountIdentifier: AccountIdentifier | undefined;
 		icp: string | undefined;
 		cycles: number | undefined;
 		onreview: () => void;
@@ -30,11 +34,11 @@
 	}
 
 	let {
-		accountIdentifier,
 		onreview,
 		intro,
 		segment,
-		balance,
+		selectedWallet = $bindable(undefined),
+		balance = $bindable(0n),
 		onclose,
 		icp = $bindable(undefined),
 		cycles = $bindable(undefined)
@@ -54,6 +58,11 @@
 	});
 
 	let displayTCycles = $derived(nonNullish(cycles) ? `${formatTCycles(BigInt(cycles ?? 0))}` : '');
+
+	$effect(() => {
+		balance =
+			selectedWallet?.type === 'mission_control' ? $missionControlBalanceOrZero : $devBalanceOrZero;
+	});
 
 	const onSubmit = ($event: SubmitEvent) => {
 		$event.preventDefault();
@@ -92,15 +101,19 @@
 </p>
 
 {#if balance <= TOP_UP_NETWORK_FEES}
-	<MissionControlICPInfo {accountIdentifier} {onclose} />
+	<GetICPInfo {onclose} />
 {:else}
 	<form onsubmit={onSubmit}>
 		<div class="columns">
-			<InputIcp {balance} fee={TOP_UP_NETWORK_FEES} bind:amount={icp} />
+			<div>
+				<WalletPicker filterMissionControlZeroBalance bind:selectedWallet />
+
+				<InputIcp {balance} fee={TOP_UP_NETWORK_FEES} bind:amount={icp} />
+			</div>
 
 			<GridArrow small />
 
-			<div>
+			<div class="column-cycles">
 				<Value>
 					{#snippet label()}
 						{$i18n.canisters.converted_cycles}
@@ -113,7 +126,7 @@
 			</div>
 		</div>
 
-		<button disabled={isNullish($missionControlId) || isNullish(cycles)} type="submit"
+		<button disabled={isNullish(selectedWallet) || isNullish(cycles)} type="submit"
 			>{$i18n.core.review}</button
 		>
 	</form>
@@ -126,6 +139,16 @@
 	.columns {
 		@include media.min-width(large) {
 			@include grid.two-columns-with-arrow;
+		}
+	}
+
+	.column-cycles {
+		@include media.min-width(large) {
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+
+			padding: 0 0 var(--padding-3x);
 		}
 	}
 

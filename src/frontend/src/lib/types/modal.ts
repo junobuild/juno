@@ -10,23 +10,18 @@ import type { Satellite, SatelliteIdText } from '$lib/types/satellite';
 import type { User as UserListed } from '$lib/types/user';
 import type { UserUsageCollection } from '$lib/types/user-usage';
 import type { Option } from '$lib/types/utils';
-import type { AccountIdentifier } from '@icp-sdk/canisters/ledger/icp';
 import type { Principal } from '@icp-sdk/core/principal';
 import type { BuildType } from '@junobuild/admin';
-
-export interface JunoModalWithAccountIdentifier {
-	accountIdentifier: AccountIdentifier;
-}
 
 export interface JunoModalWithSatellite {
 	satellite: Satellite;
 }
 
-export type JunoModalTopUpSatelliteDetail = JunoModalWithAccountIdentifier & JunoModalWithSatellite;
+export type JunoModalTopUpSatelliteDetail = JunoModalWithSatellite;
 
-export interface JunoModalTopUpMissionControlDetail extends JunoModalWithAccountIdentifier {}
+export interface JunoModalTopUpMissionControlDetail {}
 
-export interface JunoModalTopUpOrbiterDetail extends JunoModalWithAccountIdentifier {}
+export interface JunoModalTopUpOrbiterDetail {}
 
 export interface JunoModalUpgradeDetail {
 	currentVersion: string;

@@ -1,5 +1,4 @@
 <script lang="ts">
-	import type { AccountIdentifier } from '@icp-sdk/canisters/ledger/icp';
 	import { Principal } from '@icp-sdk/core/principal';
 	import type { Snippet } from 'svelte';
 	import { fade } from 'svelte/transition';
@@ -7,8 +6,8 @@
 	import CanisterTopUpForm from '$lib/components/canister/top-up/CanisterTopUpForm.svelte';
 	import CanisterTopUpReview from '$lib/components/canister/top-up/CanisterTopUpReview.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
-	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
-	import { topUp } from '$lib/services/mission-control/topup.services';
+	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
+	import { topUp } from '$lib/services/top-up/top-up.services';
 	import { wizardBusy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { authStore } from '$lib/stores/auth.store';
@@ -16,15 +15,13 @@
 	import type { TopUpProgress } from '$lib/types/progress-topup';
 
 	interface Props {
-		balance: bigint;
-		accountIdentifier: AccountIdentifier | undefined;
 		outro?: Snippet;
 		intro?: Snippet;
 		segment: CanisterSegmentWithLabel;
 		onclose: () => void;
 	}
 
-	let { balance, accountIdentifier, outro, intro, segment, onclose }: Props = $props();
+	let { outro, intro, segment, onclose }: Props = $props();
 
 	let step: 'init' | 'review' | 'in_progress' | 'ready' | 'error' = $state('init');
 
@@ -44,7 +41,7 @@
 
 		const { success } = await topUp({
 			canisterId: Principal.fromText(segment.canisterId),
-			missionControlId: $missionControlId,
+			selectedWallet,
 			identity: $authStore.identity,
 			cycles,
 			balance,
@@ -61,6 +58,9 @@
 
 		step = 'ready';
 	};
+
+	let selectedWallet = $state<SelectedWallet | undefined>(undefined);
+	let balance = $state<bigint>(0n);
 </script>
 
 <Modal {onclose}>
@@ -80,16 +80,17 @@
 				onback={() => (step = 'init')}
 				{onsubmit}
 				{segment}
+				{selectedWallet}
 			/>
 		</div>
 	{:else}
 		<CanisterTopUpForm
-			{accountIdentifier}
-			{balance}
 			{intro}
 			{onclose}
 			onreview={() => (step = 'review')}
 			{segment}
+			bind:selectedWallet
+			bind:balance
 			bind:icp
 			bind:cycles
 		/>
@@ -97,7 +98,7 @@
 </Modal>
 
 <style lang="scss">
-	@use '../../styles/mixins/overlay';
+	@use '../../../styles/mixins/overlay';
 
 	.msg {
 		@include overlay.message;

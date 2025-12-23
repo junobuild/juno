@@ -1,12 +1,12 @@
-import { topUp as topUpApi } from '$lib/api/mission-control.api';
+import { topUp as topUpApiWithMissionControl } from '$lib/api/mission-control.api';
 import { TOP_UP_NETWORK_FEES } from '$lib/constants/app.constants';
+import type { SelectedWallet } from '$lib/schemas/wallet.schema';
 import { execute } from '$lib/services/_progress.services';
+import { topUpWithCmc } from '$lib/services/top-up/_top-up.cmc.services';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
-import type { MissionControlId } from '$lib/types/mission-control';
 import { type TopUpProgress, TopUpProgressStep } from '$lib/types/progress-topup';
-import type { Option } from '$lib/types/utils';
 import { emit } from '$lib/utils/events.utils';
 import { assertAndConvertAmountToICPToken } from '$lib/utils/token.utils';
 import { waitAndRestartWallet } from '$lib/utils/wallet.utils';
@@ -16,7 +16,7 @@ import { get } from 'svelte/store';
 
 export const topUp = async ({
 	identity,
-	missionControlId,
+	selectedWallet,
 	cycles,
 	balance,
 	icp,
@@ -24,16 +24,16 @@ export const topUp = async ({
 	onProgress
 }: {
 	identity: OptionIdentity;
-	missionControlId: Option<MissionControlId>;
+	selectedWallet: SelectedWallet | undefined;
 	cycles: number | undefined;
 	balance: bigint;
 	icp: string | undefined;
 	canisterId: Principal;
 	onProgress: (progress: TopUpProgress | undefined) => void;
 }): Promise<{ success: 'ok' | 'error'; err?: unknown }> => {
-	if (isNullish(missionControlId)) {
+	if (isNullish(selectedWallet)) {
 		toasts.error({
-			text: get(i18n).errors.no_mission_control
+			text: get(i18n).errors.wallet_not_selected
 		});
 		return { success: 'error' };
 	}
@@ -58,13 +58,29 @@ export const topUp = async ({
 	try {
 		assertNonNullish(identity, get(i18n).core.not_logged_in);
 
-		const topUp = async () =>
-			await topUpApi({
+		const { type: walletType, walletId } = selectedWallet;
+
+		const topUpWithMissionControl = async () => {
+			// We do not use subaccount
+			const { owner: missionControlId } = walletId;
+
+			await topUpApiWithMissionControl({
 				canisterId,
 				missionControlId,
 				e8s: tokenAmount.toE8s(),
 				identity
 			});
+		};
+
+		const topUpWithDev = async () => {
+			await topUpWithCmc({
+				canisterId,
+				identity,
+				tokenAmount
+			});
+		};
+
+		const topUp = walletType === 'mission_control' ? topUpWithMissionControl : topUpWithDev;
 		await execute({ fn: topUp, onProgress, step: TopUpProgressStep.TopUp });
 
 		const reload = async () => {

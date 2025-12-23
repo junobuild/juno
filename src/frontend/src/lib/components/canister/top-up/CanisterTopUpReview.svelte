@@ -8,13 +8,14 @@
 	import WalletSendFrom from '$lib/components/wallet/WalletSendFrom.svelte';
 	import SendTokensAmount from '$lib/components/wallet/tokens/SendTokensAmount.svelte';
 	import { TOP_UP_NETWORK_FEES } from '$lib/constants/app.constants';
-	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
+	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { CanisterSegmentWithLabel } from '$lib/types/canister';
 	import { formatICP } from '$lib/utils/icp.utils';
 	import { amountToICPToken } from '$lib/utils/token.utils';
 
 	interface Props {
+		selectedWallet: SelectedWallet | undefined;
 		balance: bigint;
 		segment: CanisterSegmentWithLabel;
 		icp: string | undefined;
@@ -23,7 +24,7 @@
 		onsubmit: ($event: SubmitEvent) => Promise<void>;
 	}
 
-	let { balance, onsubmit, onback, segment, icp, cycles }: Props = $props();
+	let { selectedWallet, balance, onsubmit, onback, segment, icp, cycles }: Props = $props();
 
 	let token: TokenAmountV2 | undefined = $derived(amountToICPToken(icp));
 </script>
@@ -34,8 +35,8 @@
 
 <form {onsubmit}>
 	<div class="columns">
-		{#if nonNullish($missionControlId)}
-			<WalletSendFrom {balance} missionControlId={$missionControlId} />
+		{#if nonNullish(selectedWallet)}
+			<WalletSendFrom {balance} {selectedWallet} />
 		{/if}
 
 		<GridArrow />

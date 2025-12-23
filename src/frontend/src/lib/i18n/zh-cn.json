@@ -613,6 +613,7 @@
 		"upgrade_no_wasm": "未提供wasm文件，请重试。",
 		"upgrade_requires_iterative_version": "在您的 {0} v{1} 和选定版本 {2} 之间可能存在重大变更。请按顺序迭代升级。",
 		"top_up_error": "充值模块时发生错误。",
+		"top_up_timeout": "充值处理失败。请联系 Juno 支持团队,并提供区块索引 {0} 和交易 ID {1}。",
 		"analytics_load_error": "加载统计数据时发生错误。",
 		"analytics_tracked_events_export": "导出跟踪事件时发生意外错误。",
 		"analytics_page_views_export": "导出页面浏览数据时发生意外错误。",

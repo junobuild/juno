@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
 	import IconWallet from '$lib/components/icons/IconWallet.svelte';
-	import ReceiveTokens from '$lib/components/tokens/ReceiveTokens.svelte';
 	import ButtonIcon from '$lib/components/ui/ButtonIcon.svelte';
 	import Hr from '$lib/components/ui/Hr.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
@@ -11,6 +10,7 @@
 	import WalletIds from '$lib/components/wallet/WalletIds.svelte';
 	import WalletPicker from '$lib/components/wallet/WalletPicker.svelte';
 	import WalletTotal from '$lib/components/wallet/WalletTotal.svelte';
+	import ReceiveTokens from '$lib/components/wallet/tokens/ReceiveTokens.svelte';
 	import { testIds } from '$lib/constants/test-ids.constants';
 	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { i18n } from '$lib/stores/app/i18n.store';

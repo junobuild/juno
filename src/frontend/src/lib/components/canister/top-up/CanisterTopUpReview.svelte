@@ -3,10 +3,10 @@
 	import { Principal } from '@icp-sdk/core/principal';
 	import CanisterTopUpCycles from '$lib/components/canister/top-up/CanisterTopUpCycles.svelte';
 	import Segment from '$lib/components/segments/Segment.svelte';
-	import SendTokensAmount from '$lib/components/tokens/SendTokensAmount.svelte';
 	import GridArrow from '$lib/components/ui/GridArrow.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import WalletSendFrom from '$lib/components/wallet/WalletSendFrom.svelte';
+	import SendTokensAmount from '$lib/components/wallet/tokens/SendTokensAmount.svelte';
 	import { TOP_UP_NETWORK_FEES } from '$lib/constants/app.constants';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';

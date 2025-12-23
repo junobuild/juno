@@ -3,9 +3,9 @@
 	import { fade } from 'svelte/transition';
 	import IconOisy from '$lib/components/icons/IconOisy.svelte';
 	import IconQRCode from '$lib/components/icons/IconQRCode.svelte';
-	import ReceiveTokensQRCode from '$lib/components/tokens/ReceiveTokensQRCode.svelte';
-	import ReceiveTokensSigner from '$lib/components/tokens/ReceiveTokensSigner.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
+	import ReceiveTokensQRCode from '$lib/components/wallet/tokens/ReceiveTokensQRCode.svelte';
+	import ReceiveTokensSigner from '$lib/components/wallet/tokens/ReceiveTokensSigner.svelte';
 	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toAccountIdentifier } from '$lib/utils/icp-icrc-account.utils';
@@ -72,7 +72,7 @@
 </Popover>
 
 <style lang="scss">
-	@use '../../styles/mixins/overlay';
+	@use '../../../styles/mixins/overlay';
 
 	@include overlay.popover-container;
 

@@ -1,10 +1,10 @@
 <script lang="ts">
 	import type { TokenAmountV2 } from '@dfinity/utils';
-	import SendTokensAmount from '$lib/components/tokens/SendTokensAmount.svelte';
 	import GridArrow from '$lib/components/ui/GridArrow.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import WalletSendFrom from '$lib/components/wallet/WalletSendFrom.svelte';
+	import SendTokensAmount from '$lib/components/wallet/tokens/SendTokensAmount.svelte';
 	import { IC_TRANSACTION_FEE_ICP } from '$lib/constants/app.constants';
 	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { i18n } from '$lib/stores/app/i18n.store';
@@ -92,7 +92,7 @@
 </form>
 
 <style lang="scss">
-	@use '../../styles/mixins/grid';
+	@use '../../../styles/mixins/grid';
 
 	.columns {
 		@include grid.two-columns-with-arrow;

@@ -1,6 +1,6 @@
 <script lang="ts">
-	import Transaction from '$lib/components/transactions/Transaction.svelte';
 	import InfiniteScroll from '$lib/components/ui/InfiniteScroll.svelte';
+	import Transaction from '$lib/components/wallet/transactions/Transaction.svelte';
 	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { CertifiedTransactions } from '$lib/types/transaction';
@@ -48,7 +48,7 @@
 {/if}
 
 <style lang="scss">
-	@use '../../styles/mixins/media';
+	@use '../../../styles/mixins/media';
 
 	.table-container {
 		margin: var(--padding-6x) 0 var(--padding-4x);

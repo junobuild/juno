@@ -3,9 +3,9 @@
 	import { IcpWallet } from '@dfinity/oisy-wallet-signer/icp-wallet';
 	import { isNullish, nonNullish, toNullable } from '@dfinity/utils';
 	import type { Icrc1TransferRequest } from '@icp-sdk/canisters/ledger/icp';
-	import ReceiveTokensSignerForm from '$lib/components/tokens/ReceiveTokensSignerForm.svelte';
 	import Confetti from '$lib/components/ui/Confetti.svelte';
 	import Spinner from '$lib/components/ui/Spinner.svelte';
+	import ReceiveTokensSignerForm from '$lib/components/wallet/tokens/ReceiveTokensSignerForm.svelte';
 	import { OISY_WALLET_OPTIONS } from '$lib/constants/wallet.constants';
 	import type { WalletId } from '$lib/schemas/wallet.schema';
 	import { wizardBusy } from '$lib/stores/app/busy.store';

@@ -1,13 +1,13 @@
 <script lang="ts">
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { encodeIcrcAccount } from '@icp-sdk/canisters/ledger/icrc';
-	import ReceiveTokens from '$lib/components/tokens/ReceiveTokens.svelte';
-	import Transactions from '$lib/components/transactions/Transactions.svelte';
-	import TransactionsExport from '$lib/components/transactions/TransactionsExport.svelte';
 	import WalletActions from '$lib/components/wallet/WalletActions.svelte';
 	import WalletBalanceById from '$lib/components/wallet/WalletBalanceById.svelte';
 	import WalletIds from '$lib/components/wallet/WalletIds.svelte';
 	import WalletPicker from '$lib/components/wallet/WalletPicker.svelte';
+	import ReceiveTokens from '$lib/components/wallet/tokens/ReceiveTokens.svelte';
+	import Transactions from '$lib/components/wallet/transactions/Transactions.svelte';
+	import TransactionsExport from '$lib/components/wallet/transactions/TransactionsExport.svelte';
 	import { PAGINATION } from '$lib/constants/app.constants';
 	import { authSignedIn, authSignedOut } from '$lib/derived/auth.derived';
 	import { transactions } from '$lib/derived/wallet/transactions.derived';

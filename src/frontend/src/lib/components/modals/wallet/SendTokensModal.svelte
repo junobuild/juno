@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { nonNullish, type TokenAmountV2 } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
-	import ProgressSendTokens from '$lib/components/tokens/ProgressSendTokens.svelte';
-	import SendTokensForm from '$lib/components/tokens/SendTokensForm.svelte';
-	import SendTokensReview from '$lib/components/tokens/SendTokensReview.svelte';
 	import Confetti from '$lib/components/ui/Confetti.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
+	import ProgressSendTokens from '$lib/components/wallet/tokens/ProgressSendTokens.svelte';
+	import SendTokensForm from '$lib/components/wallet/tokens/SendTokensForm.svelte';
+	import SendTokensReview from '$lib/components/wallet/tokens/SendTokensReview.svelte';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import { devBalance, missionControlBalance } from '$lib/derived/wallet/balance.derived';
 	import { sendTokens } from '$lib/services/mission-control/tokens.services';

@@ -372,7 +372,8 @@
 		"balance_zero": "Your balance is zero. Get some tokens to start sending.",
 		"wallet_upgrade": "Please upgrade your wallet to enable the sending feature.",
 		"approving_canister_fee": "Authorizing fee...",
-		"dev": "Developer"
+		"dev": "Developer",
+		"total": "Total"
 	},
 	"authentication": {
 		"title": "Authentication",

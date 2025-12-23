@@ -13,9 +13,10 @@
 
 	interface Props {
 		balance: bigint | undefined;
+		label?: string;
 	}
 
-	let { balance }: Props = $props();
+	let { balance, label: labelText }: Props = $props();
 </script>
 
 {#snippet icpBalance()}
@@ -24,7 +25,7 @@
 
 <Value>
 	{#snippet label()}
-		{$i18n.wallet.balance}
+		{labelText ?? $i18n.wallet.balance}
 	{/snippet}
 
 	<p>
@@ -56,6 +57,7 @@
 
 	.main {
 		font-size: var(--font-size-h2);
+		line-height: var(--line-height-title);
 		font-weight: var(--font-weight-bold);
 		color: var(--color-secondary);
 	}

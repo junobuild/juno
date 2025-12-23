@@ -382,6 +382,7 @@ interface I18nWallet {
 	wallet_upgrade: string;
 	approving_canister_fee: string;
 	dev: string;
+	total: string;
 }
 
 interface I18nAuthentication {

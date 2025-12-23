@@ -3,24 +3,24 @@
 	import { onMount, type Snippet } from 'svelte';
 	import { icpXdrConversionRate } from '$lib/api/cmc.api';
 	import InputIcp from '$lib/components/core/InputIcp.svelte';
-	import GetICPInfo from '$lib/components/wallet/GetICPInfo.svelte';
 	import GridArrow from '$lib/components/ui/GridArrow.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
+	import GetICPInfo from '$lib/components/wallet/GetICPInfo.svelte';
+	import WalletPicker from '$lib/components/wallet/WalletPicker.svelte';
 	import { TOP_UP_NETWORK_FEES } from '$lib/constants/app.constants';
+	import {
+		devBalanceOrZero,
+		missionControlBalanceOrZero
+	} from '$lib/derived/wallet/balance.derived';
 	import { icpToUsd } from '$lib/derived/wallet/exchange.derived';
+	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { CanisterSegmentWithLabel } from '$lib/types/canister';
 	import { formatTCycles, icpToCycles } from '$lib/utils/cycles.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { formatICPToHTML } from '$lib/utils/icp.utils';
 	import { assertAndConvertAmountToICPToken } from '$lib/utils/token.utils';
-	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
-	import {
-		devBalanceOrZero,
-		missionControlBalanceOrZero
-	} from '$lib/derived/wallet/balance.derived';
-	import WalletPicker from '$lib/components/wallet/WalletPicker.svelte';
 
 	interface Props {
 		intro?: Snippet;

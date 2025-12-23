@@ -8,11 +8,11 @@
 	import WalletSendFrom from '$lib/components/wallet/WalletSendFrom.svelte';
 	import SendTokensAmount from '$lib/components/wallet/tokens/SendTokensAmount.svelte';
 	import { TOP_UP_NETWORK_FEES } from '$lib/constants/app.constants';
+	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { CanisterSegmentWithLabel } from '$lib/types/canister';
 	import { formatICP } from '$lib/utils/icp.utils';
 	import { amountToICPToken } from '$lib/utils/token.utils';
-	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
 
 	interface Props {
 		selectedWallet: SelectedWallet | undefined;

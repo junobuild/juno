@@ -2,7 +2,6 @@
 	import IconSatellite from '$lib/components/icons/IconSatellite.svelte';
 	import CanisterTopUpModal from '$lib/components/modals/top-up/CanisterTopUpModal.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
-	import { balanceOrZero } from '$lib/derived/wallet/balance.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { JunoModalTopUpSatelliteDetail, JunoModalDetail } from '$lib/types/modal';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
@@ -16,13 +15,9 @@
 	let { detail, onclose }: Props = $props();
 
 	let { satellite } = $derived(detail as JunoModalTopUpSatelliteDetail);
-
-	let accountIdentifier = $derived((detail as JunoModalTopUpSatelliteDetail).accountIdentifier);
 </script>
 
 <CanisterTopUpModal
-	{accountIdentifier}
-	balance={$balanceOrZero}
 	{onclose}
 	segment={{
 		segment: 'satellite',

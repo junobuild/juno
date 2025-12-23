@@ -9,18 +9,15 @@
 	import CreateMonitoringStrategyModal from '$lib/components/modals/CreateMonitoringStrategyModal.svelte';
 	import CreateSnapshotModal from '$lib/components/modals/CreateSnapshotModal.svelte';
 	import CustomDomainModal from '$lib/components/modals/CustomDomainModal.svelte';
-	import MissionControlTopUpModal from '$lib/components/modals/top-up/MissionControlTopUpModal.svelte';
 	import MissionControlTransferCyclesModal from '$lib/components/modals/MissionControlTransferCyclesModal.svelte';
 	import MissionControlUpgradeModal from '$lib/components/modals/MissionControlUpgradeModal.svelte';
 	import MonitoringDetailsModal from '$lib/components/modals/MonitoringDetailsModal.svelte';
 	import OrbiterConfigModal from '$lib/components/modals/OrbiterConfigModal.svelte';
 	import OrbiterDeleteModal from '$lib/components/modals/OrbiterDeleteModal.svelte';
-	import OrbiterTopUpModal from '$lib/components/modals/top-up/OrbiterTopUpModal.svelte';
 	import OrbiterTransferCyclesModal from '$lib/components/modals/OrbiterTransferCyclesModal.svelte';
 	import OrbiterUpgradeModal from '$lib/components/modals/OrbiterUpgradeModal.svelte';
 	import RejectChangeModal from '$lib/components/modals/RejectChangeModal.svelte';
 	import SatelliteDeleteModal from '$lib/components/modals/SatelliteDeleteModal.svelte';
-	import SatelliteTopUpModal from '$lib/components/modals/top-up/SatelliteTopUpModal.svelte';
 	import SatelliteTransferCyclesModal from '$lib/components/modals/SatelliteTransferCyclesModal.svelte';
 	import SatelliteUpgradeModal from '$lib/components/modals/SatelliteUpgradeModal.svelte';
 	import StopMonitoringStrategyModal from '$lib/components/modals/StopMonitoringStrategyModal.svelte';
@@ -28,6 +25,9 @@
 	import MissionControlCreateModal from '$lib/components/modals/factory/MissionControlCreateModal.svelte';
 	import OrbiterCreateModal from '$lib/components/modals/factory/OrbiterCreateModal.svelte';
 	import SatelliteCreateModal from '$lib/components/modals/factory/SatelliteCreateModal.svelte';
+	import MissionControlTopUpModal from '$lib/components/modals/top-up/MissionControlTopUpModal.svelte';
+	import OrbiterTopUpModal from '$lib/components/modals/top-up/OrbiterTopUpModal.svelte';
+	import SatelliteTopUpModal from '$lib/components/modals/top-up/SatelliteTopUpModal.svelte';
 	import SendTokensModal from '$lib/components/modals/wallet/SendTokensModal.svelte';
 	import type { JunoModal, JunoModalDetail } from '$lib/types/modal';
 

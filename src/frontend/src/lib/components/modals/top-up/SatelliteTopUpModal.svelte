@@ -1,6 +1,6 @@
 <script lang="ts">
 	import IconSatellite from '$lib/components/icons/IconSatellite.svelte';
-	import CanisterTopUpModal from '$lib/components/modals/CanisterTopUpModal.svelte';
+	import CanisterTopUpModal from '$lib/components/modals/top-up/CanisterTopUpModal.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import { balanceOrZero } from '$lib/derived/wallet/balance.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';

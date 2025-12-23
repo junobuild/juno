@@ -9,18 +9,18 @@
 	import CreateMonitoringStrategyModal from '$lib/components/modals/CreateMonitoringStrategyModal.svelte';
 	import CreateSnapshotModal from '$lib/components/modals/CreateSnapshotModal.svelte';
 	import CustomDomainModal from '$lib/components/modals/CustomDomainModal.svelte';
-	import MissionControlTopUpModal from '$lib/components/modals/MissionControlTopUpModal.svelte';
+	import MissionControlTopUpModal from '$lib/components/modals/top-up/MissionControlTopUpModal.svelte';
 	import MissionControlTransferCyclesModal from '$lib/components/modals/MissionControlTransferCyclesModal.svelte';
 	import MissionControlUpgradeModal from '$lib/components/modals/MissionControlUpgradeModal.svelte';
 	import MonitoringDetailsModal from '$lib/components/modals/MonitoringDetailsModal.svelte';
 	import OrbiterConfigModal from '$lib/components/modals/OrbiterConfigModal.svelte';
 	import OrbiterDeleteModal from '$lib/components/modals/OrbiterDeleteModal.svelte';
-	import OrbiterTopUpModal from '$lib/components/modals/OrbiterTopUpModal.svelte';
+	import OrbiterTopUpModal from '$lib/components/modals/top-up/OrbiterTopUpModal.svelte';
 	import OrbiterTransferCyclesModal from '$lib/components/modals/OrbiterTransferCyclesModal.svelte';
 	import OrbiterUpgradeModal from '$lib/components/modals/OrbiterUpgradeModal.svelte';
 	import RejectChangeModal from '$lib/components/modals/RejectChangeModal.svelte';
 	import SatelliteDeleteModal from '$lib/components/modals/SatelliteDeleteModal.svelte';
-	import SatelliteTopUpModal from '$lib/components/modals/SatelliteTopUpModal.svelte';
+	import SatelliteTopUpModal from '$lib/components/modals/top-up/SatelliteTopUpModal.svelte';
 	import SatelliteTransferCyclesModal from '$lib/components/modals/SatelliteTransferCyclesModal.svelte';
 	import SatelliteUpgradeModal from '$lib/components/modals/SatelliteUpgradeModal.svelte';
 	import StopMonitoringStrategyModal from '$lib/components/modals/StopMonitoringStrategyModal.svelte';
@@ -54,12 +54,12 @@
 	<SatelliteTopUpModal detail={modal.detail} onclose={close} />
 {/if}
 
-{#if modal?.type === 'topup_mission_control' && nonNullish(modal.detail)}
-	<MissionControlTopUpModal detail={modal.detail} onclose={close} />
+{#if modal?.type === 'topup_mission_control'}
+	<MissionControlTopUpModal onclose={close} />
 {/if}
 
-{#if modal?.type === 'topup_orbiter' && nonNullish(modal.detail)}
-	<OrbiterTopUpModal detail={modal.detail} onclose={close} />
+{#if modal?.type === 'topup_orbiter'}
+	<OrbiterTopUpModal onclose={close} />
 {/if}
 
 {#if modal?.type === 'add_custom_domain' && nonNullish(modal.detail)}

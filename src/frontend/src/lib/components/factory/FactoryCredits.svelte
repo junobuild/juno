@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
 	import type { Snippet } from 'svelte';
-	import MissionControlICPInfo from '$lib/components/mission-control/MissionControlICPInfo.svelte';
+	import GetICPInfo from '$lib/components/wallet/GetICPInfo.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import { E8S_PER_ICP } from '$lib/constants/app.constants';
 	import { creditsOrZero } from '$lib/derived/console/credits.derived';
@@ -85,7 +85,7 @@
 {/if}
 
 {#if insufficientFunds}
-	<MissionControlICPInfo {accountIdentifier} {onclose} />
+	<GetICPInfo {accountIdentifier} {onclose} />
 {:else}
 	{@render children()}
 {/if}

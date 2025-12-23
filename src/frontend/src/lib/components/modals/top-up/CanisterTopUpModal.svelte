@@ -14,17 +14,16 @@
 	import { authStore } from '$lib/stores/auth.store';
 	import type { CanisterSegmentWithLabel } from '$lib/types/canister';
 	import type { TopUpProgress } from '$lib/types/progress-topup';
+	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
 
 	interface Props {
-		balance: bigint;
-		accountIdentifier: AccountIdentifier | undefined;
 		outro?: Snippet;
 		intro?: Snippet;
 		segment: CanisterSegmentWithLabel;
 		onclose: () => void;
 	}
 
-	let { balance, accountIdentifier, outro, intro, segment, onclose }: Props = $props();
+	let { outro, intro, segment, onclose }: Props = $props();
 
 	let step: 'init' | 'review' | 'in_progress' | 'ready' | 'error' = $state('init');
 
@@ -61,6 +60,9 @@
 
 		step = 'ready';
 	};
+
+	let selectedWallet = $state<SelectedWallet | undefined>(undefined);
+	let balance = $state<bigint>(0n);
 </script>
 
 <Modal {onclose}>
@@ -74,6 +76,7 @@
 	{:else if step === 'review'}
 		<div in:fade>
 			<CanisterTopUpReview
+				{selectedWallet}
 				{balance}
 				{cycles}
 				{icp}
@@ -84,8 +87,8 @@
 		</div>
 	{:else}
 		<CanisterTopUpForm
-			{accountIdentifier}
-			{balance}
+			bind:selectedWallet
+			bind:balance
 			{intro}
 			{onclose}
 			onreview={() => (step = 'review')}
@@ -97,7 +100,7 @@
 </Modal>
 
 <style lang="scss">
-	@use '../../styles/mixins/overlay';
+	@use '../../../styles/mixins/overlay';
 
 	.msg {
 		@include overlay.message;

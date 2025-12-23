@@ -7,18 +7,26 @@
 	import Confetti from '$lib/components/ui/Confetti.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
-	import { balance } from '$lib/derived/wallet/balance.derived';
+	import { devBalance, missionControlBalance } from '$lib/derived/wallet/balance.derived';
 	import { sendTokens } from '$lib/services/mission-control/tokens.services';
 	import { wizardBusy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { authStore } from '$lib/stores/auth.store';
+	import type { JunoModalDetail, JunoModalWalletDetail } from '$lib/types/modal';
 	import type { SendTokensProgress } from '$lib/types/progress-send-tokens';
 
 	interface Props {
+		detail: JunoModalDetail;
 		onclose: () => void;
 	}
 
-	let { onclose }: Props = $props();
+	let { onclose, detail }: Props = $props();
+
+	let { selectedWallet } = $derived(detail as JunoModalWalletDetail);
+
+	let balance = $derived(
+		selectedWallet.type === 'mission_control' ? $missionControlBalance : $devBalance
+	);
 
 	let destination = $state('');
 
@@ -44,7 +52,7 @@
 		step = 'in_progress';
 
 		const { success } = await sendTokens({
-			missionControlId: $missionControlId,
+			selectedWallet,
 			identity: $authStore.identity,
 			destination,
 			token,
@@ -76,18 +84,19 @@
 		{:else if step === 'review'}
 			<div in:fade>
 				<SendTokensReview
-					balance={$balance}
-					missionControlId={$missionControlId}
+					{balance}
 					onback={() => (step = 'form')}
 					{onsubmit}
+					{selectedWallet}
 					bind:amount
 					bind:destination
 				/>
 			</div>
 		{:else}
 			<SendTokensForm
-				balance={$balance}
+				{balance}
 				onreview={() => (step = 'review')}
+				{selectedWallet}
 				bind:amount
 				bind:destination
 			/>
@@ -96,7 +105,7 @@
 {/if}
 
 <style lang="scss">
-	@use '../../styles/mixins/overlay';
+	@use '../../../styles/mixins/overlay';
 
 	h2 {
 		@include overlay.title;

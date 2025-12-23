@@ -71,7 +71,9 @@
 
 		<div class="columns-3 fit-column-1">
 			<div>
-				<WalletPicker bind:selectedWallet />
+				<div class="picker">
+					<WalletPicker bind:selectedWallet />
+				</div>
 
 				{#if nonNullish(selectedWallet)}
 					<WalletIds {selectedWallet} />
@@ -101,3 +103,9 @@
 {#if nonNullish(selectedWallet)}
 	<ReceiveTokens {selectedWallet} bind:visible={receiveVisible} />
 {/if}
+
+<style lang="scss">
+	.picker {
+		margin: 0 0 var(--padding-1_5x);
+	}
+</style>

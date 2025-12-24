@@ -30,8 +30,8 @@
 		preparing: ProgressStep;
 		approve?: ProgressStep;
 		create: ProgressStep;
-		monitoring?: ProgressStep;
 		attaching?: ProgressStep;
+		monitoring?: ProgressStep;
 		finalizing?: ProgressStep;
 		reload: ProgressStep;
 	}
@@ -60,13 +60,6 @@
 						? $i18n.analytics.initializing
 						: $i18n.satellites.initializing
 		},
-		...(withMonitoring === true && {
-			monitoring: {
-				state: 'next',
-				step: 'monitoring',
-				text: $i18n.monitoring.starting_auto_refill
-			}
-		}),
 		...(withAttach === true && {
 			attaching: {
 				state: 'next',
@@ -77,6 +70,13 @@
 						: segment === 'orbiter'
 							? $i18n.analytics.attaching
 							: $i18n.satellites.attaching
+			}
+		}),
+		...(withMonitoring === true && {
+			monitoring: {
+				state: 'next',
+				step: 'monitoring',
+				text: $i18n.monitoring.starting_auto_refill
 			}
 		}),
 		...(isSkylab() &&
@@ -100,7 +100,7 @@
 		progress;
 
 		untrack(() => {
-			const { preparing, approve, create, monitoring, attaching, finalizing, reload } = steps;
+			const { preparing, approve, create, attaching, monitoring, finalizing, reload } = steps;
 
 			steps = {
 				preparing: {
@@ -123,15 +123,6 @@
 							? mapProgressState(progress?.state)
 							: create.state
 				},
-				...(nonNullish(monitoring) && {
-					monitoring: {
-						...monitoring,
-						state:
-							progress?.step === WizardCreateProgressStep.Monitoring
-								? mapProgressState(progress?.state)
-								: monitoring.state
-					}
-				}),
 				...(nonNullish(attaching) && {
 					attaching: {
 						...attaching,
@@ -139,6 +130,15 @@
 							progress?.step === WizardCreateProgressStep.Attaching
 								? mapProgressState(progress?.state)
 								: attaching.state
+					}
+				}),
+				...(nonNullish(monitoring) && {
+					monitoring: {
+						...monitoring,
+						state:
+							progress?.step === WizardCreateProgressStep.Monitoring
+								? mapProgressState(progress?.state)
+								: monitoring.state
 					}
 				}),
 				...(nonNullish(finalizing) && {
@@ -165,7 +165,7 @@
 		attachProgressText;
 
 		untrack(() => {
-			const { attaching, finalizing, reload, ...rest } = steps;
+			const { attaching, monitoring, finalizing, reload, ...rest } = steps;
 
 			steps = {
 				...rest,
@@ -174,6 +174,9 @@
 						...attaching,
 						text: attachProgressText ?? $i18n.mission_control.attaching
 					}
+				}),
+				...(nonNullish(monitoring) && {
+					monitoring
 				}),
 				...(nonNullish(finalizing) && {
 					finalizing

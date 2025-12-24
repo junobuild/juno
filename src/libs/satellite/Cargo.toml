@@ -8,7 +8,7 @@ description = "Core implementation of a Juno Satellite."
 homepage.workspace = true
 documentation = "https://docs.rs/junobuild-satellite"
 readme = "README.md"
-license-file = "LICENSE.md"
+license = "MIT"
 
 [package.metadata.juno.satellite]
 version = "0.1.6"

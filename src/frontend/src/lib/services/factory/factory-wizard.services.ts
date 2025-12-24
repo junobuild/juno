@@ -1,6 +1,6 @@
 import type { MissionControlDid } from '$declarations';
 import { getMissionControlFee, getOrbiterFee, getSatelliteFee } from '$lib/api/console.api';
-import { updateAndStartMonitoring } from '$lib/api/mission-control.api';
+import { setOrbiter, setSatellite, updateAndStartMonitoring } from '$lib/api/mission-control.api';
 import { missionControlMonitored } from '$lib/derived/mission-control/mission-control-settings.derived';
 import { missionControlConfigMonitoring } from '$lib/derived/mission-control/mission-control-user.derived';
 import { isSkylab } from '$lib/env/app.env';
@@ -338,6 +338,27 @@ export const createSatelliteWizard = async ({
 		return satellite_id;
 	};
 
+	const buildAttachFn = (): AttachFn | undefined => {
+		if (isNullish(missionControlId)) {
+			return undefined;
+		}
+
+		const attachFn: AttachFn = async ({ identity, canisterId }) => {
+			// Attach the Satellite to the existing Mission Control.
+			// The controller for the Mission Control to the Satellite has been set by the Console backend.
+			await setSatellite({
+				missionControlId,
+				satelliteId: canisterId,
+				identity,
+				satelliteName
+			});
+		};
+
+		return attachFn;
+	};
+
+	const attachFn = buildAttachFn();
+
 	const buildMonitoringFn = (): MonitoringFn | undefined => {
 		if (isNullish(monitoringStrategy)) {
 			return undefined;
@@ -393,6 +414,7 @@ export const createSatelliteWizard = async ({
 		onProgress,
 		createFn,
 		reloadFn,
+		attachFn,
 		monitoringFn,
 		errorLabel: 'satellite_unexpected_error',
 		...(isSkylab() && { finalizingFn: unsafeFinalizingFn })
@@ -440,6 +462,26 @@ export const createOrbiterWizard = async ({
 		return orbiter_id;
 	};
 
+	const buildAttachFn = (): AttachFn | undefined => {
+		if (isNullish(missionControlId)) {
+			return undefined;
+		}
+
+		const attachFn: AttachFn = async ({ identity, canisterId }) => {
+			// Attach the Satellite to the existing Mission Control.
+			// The controller for the Mission Control to the Satellite has been set by the Console backend.
+			await setOrbiter({
+				missionControlId,
+				orbiterId: canisterId,
+				identity
+			});
+		};
+
+		return attachFn;
+	};
+
+	const attachFn = buildAttachFn();
+
 	const buildMonitoringFn = (): MonitoringFn | undefined => {
 		if (isNullish(monitoringStrategy)) {
 			return undefined;
@@ -482,6 +524,7 @@ export const createOrbiterWizard = async ({
 		onProgress,
 		createFn,
 		reloadFn,
+		attachFn,
 		monitoringFn,
 		errorLabel: 'orbiter_unexpected_error'
 	});
@@ -566,6 +609,8 @@ type PostProcessingFn = (params: {
 
 type ReloadFn = (params: { identity: Identity; canisterId: Principal }) => Promise<void>;
 
+type AttachFn = (params: { identity: Identity; canisterId: Principal }) => Promise<void>;
+
 const createWizard = async ({
 	selectedWallet,
 	identity,
@@ -574,6 +619,7 @@ const createWizard = async ({
 	finalizingFn,
 	postProcessingFn,
 	reloadFn,
+	attachFn,
 	monitoringFn,
 	onProgress,
 	withFee
@@ -583,6 +629,7 @@ const createWizard = async ({
 	finalizingFn?: FinalizingFn;
 	postProcessingFn?: PostProcessingFn;
 	reloadFn: ReloadFn;
+	attachFn?: AttachFn;
 	monitoringFn: MonitoringFn | undefined;
 }): Promise<CreateWizardResult> => {
 	try {
@@ -643,8 +690,27 @@ const createWizard = async ({
 			await execute({
 				fn: executeMonitoringFn,
 				onProgress,
-				step: WizardCreateProgressStep.Monitoring
+				step: WizardCreateProgressStep.Monitoring,
+				errorState: 'warning'
 			});
+		}
+
+		if (nonNullish(attachFn)) {
+			const executeAttachFn = async () => {
+				await attachFn({ identity, canisterId });
+			};
+
+			try {
+				await execute({
+					fn: executeAttachFn,
+					onProgress,
+					step: WizardCreateProgressStep.Attaching
+				});
+			} catch (_error: unknown) {
+				// The module has been created therefore we display a warning and continue the process
+				// Attaching can be retried manually separately afterwards
+				// TODO: toast warn
+			}
 		}
 
 		if (nonNullish(finalizingFn)) {

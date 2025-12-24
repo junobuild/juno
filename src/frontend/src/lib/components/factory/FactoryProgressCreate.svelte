@@ -71,7 +71,12 @@
 			attaching: {
 				state: 'next',
 				step: 'attaching',
-				text: attachProgressText ?? $i18n.mission_control.attaching
+				text:
+					segment === 'mission_control'
+						? (attachProgressText ?? $i18n.mission_control.attaching)
+						: segment === 'orbiter'
+							? $i18n.analytics.attaching
+							: $i18n.satellites.attaching
 			}
 		}),
 		...(isSkylab() &&

@@ -312,7 +312,8 @@
 		"see_all_satellites": "查看全部卫星",
 		"go_launchpad": "前往启动台",
 		"launchpad": "启动台",
-		"attach": "关联卫星"
+		"attach": "关联卫星",
+		"attaching": "正在与任务控制中心共享卫星..."
 	},
 	"mission_control": {
 		"title": "任务控制中心",
@@ -475,7 +476,8 @@
 		"adjust_periodicity": "调整cycles",
 		"periodicity": "cycles",
 		"why_periodicity": "控制台使用分页收集统计——它根据时间间隔获取您所选日期之间的数据，间隔范围可以从几小时到一周。如果您由于大量的浏览量和事件而遇到数据收集问题（首先，恭喜您！），您可以尝试调整间隔以提高可靠性。",
-		"periodicity_impact": "请记住，较小的间隔意味着更多查询——导致您的轨道器负载更高，并且 UI 需要额外工作。"
+		"periodicity_impact": "请记住，较小的间隔意味着更多查询——导致您的轨道器负载更高，并且 UI 需要额外工作。",
+		"attaching": "正在与任务控制中心共享分析..."
 	},
 	"hosting": {
 		"title": "网站托管",

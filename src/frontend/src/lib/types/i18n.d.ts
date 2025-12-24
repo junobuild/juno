@@ -320,6 +320,7 @@ interface I18nSatellites {
 	go_launchpad: string;
 	launchpad: string;
 	attach: string;
+	attaching: string;
 }
 
 interface I18nMission_control {
@@ -489,6 +490,7 @@ interface I18nAnalytics {
 	periodicity: string;
 	why_periodicity: string;
 	periodicity_impact: string;
+	attaching: string;
 }
 
 interface I18nHosting {

@@ -8,11 +8,13 @@ export interface Progress<Step> {
 export const execute = async <Step, Result>({
 	fn,
 	step,
-	onProgress
+	onProgress,
+	errorState = 'error'
 }: {
 	fn: () => Promise<Result>;
 	step: Step;
 	onProgress: (progress: Progress<Step> | undefined) => void;
+	errorState?: 'error' | 'warning';
 }): Promise<Result> => {
 	onProgress({
 		step,
@@ -31,7 +33,7 @@ export const execute = async <Step, Result>({
 	} catch (err: unknown) {
 		onProgress({
 			step,
-			state: 'error'
+			state: errorState
 		});
 
 		throw err;

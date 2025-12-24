@@ -105,6 +105,7 @@
 			segment="satellite"
 			withApprove={selectedWallet?.type === 'dev' && nonNullish(withFee)}
 			withMonitoring={nonNullish(monitoringStrategy)}
+			withAttach={nonNullish($missionControlId)}
 		/>
 	{:else}
 		<h2>{$i18n.satellites.start}</h2>

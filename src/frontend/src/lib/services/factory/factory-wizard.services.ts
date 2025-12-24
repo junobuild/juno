@@ -13,7 +13,6 @@ import {
 	createSatelliteWithConfig as createSatelliteWithConsoleAndConfig
 } from '$lib/services/console/console.factory.services';
 import { loadCredits } from '$lib/services/console/credits.services';
-import { loadSegments } from '$lib/services/console/segments.services';
 import { unsafeSetEmulatorControllerForSatellite } from '$lib/services/emulator.services';
 import {
 	attachOrbiterToMissionControl,
@@ -30,6 +29,7 @@ import {
 	createSatelliteWithConfig as createSatelliteWithWithMissionControlAndConfig
 } from '$lib/services/mission-control/mission-control.satellites.services';
 import { loadSettings, loadUserData } from '$lib/services/mission-control/mission-control.services';
+import { loadSegments } from '$lib/services/segments.services';
 import { waitMissionControlVersionLoaded } from '$lib/services/version/version.mission-control.services';
 import { approveCreateCanisterWithIcp } from '$lib/services/wallet/wallet.approve.services';
 import { busy } from '$lib/stores/app/busy.store';
@@ -411,7 +411,7 @@ export const createSatelliteWizard = async ({
 	};
 
 	const reloadFn: ReloadFn = async () => {
-		await loadSegments({ missionControlId, reload: true });
+		await loadSegments({ missionControlId, reload: true, reloadOrbiters: false });
 	};
 
 	return await createWizard({
@@ -521,7 +521,7 @@ export const createOrbiterWizard = async ({
 	const monitoringFn = buildMonitoringFn();
 
 	const reloadFn = async () => {
-		await loadSegments({ missionControlId, reload: true });
+		await loadSegments({ missionControlId, reload: true, reloadSatellites: false });
 	};
 
 	return await createWizard({
@@ -564,7 +564,7 @@ export const createMissionControlWizard = async ({
 	const reloadFn: ReloadFn = async ({ identity, canisterId }) => {
 		await Promise.all([
 			reloadAccount({ identity }),
-			loadSegments({ missionControlId: canisterId })
+			loadSegments({ missionControlId: canisterId, reload: true })
 		]);
 	};
 

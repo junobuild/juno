@@ -80,7 +80,6 @@ Here are some useful links:
 - Looking to get started? Check out the [Guides & Examples](https://juno.build/docs/category/guides-and-examples) for step-by-step tutorials and sample code.
 - Explore the full [documentation](https://juno.build) for in-depth details on using and configuring Juno.
 - See the [HACKING](HACKING.md) document for instructions on running and developing Juno locally.
-- Have a look at the [LICENSE](LICENSE.md) for information about licensing and limitation.
 
 ## 🖥️ Bootstrap
 

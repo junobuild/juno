@@ -3,7 +3,7 @@
 	"version": "0.0.62",
 	"private": true,
 	"author": "David Dal Busco <david@fluster.io>",
-	"license": "SEE LICENSE IN LICENSE.md",
+	"license": "MIT",
 	"type": "module",
 	"repository": {
 		"type": "git",

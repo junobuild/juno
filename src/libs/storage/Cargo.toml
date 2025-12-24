@@ -8,7 +8,7 @@ description = "Web and storage features of Juno."
 homepage.workspace = true
 documentation = "https://docs.rs/junobuild-collections"
 readme = "README.md"
-license-file = "LICENSE.md"
+license = "MIT"
 
 [package.metadata.docs.rs]
 targets = ["wasm32-unknown-unknown"]

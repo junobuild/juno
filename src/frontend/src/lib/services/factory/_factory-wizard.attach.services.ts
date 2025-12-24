@@ -24,6 +24,7 @@ const CONTROLLER_PARAMS: Omit<SetControllerParams, 'controllerId'> = {
 
 export class AttachToMissionControlError extends Error {
 	static init(ids: Principal[], options?: ErrorOptions): AttachToMissionControlError {
+		// eslint-disable-next-line local-rules/prefer-object-params
 		return new AttachToMissionControlError(
 			`${get(i18n).mission_control.warn_attaching} ${ids.map((id) => id.toText()).join(',')}`,
 			options

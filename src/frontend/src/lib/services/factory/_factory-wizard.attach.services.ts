@@ -7,45 +7,82 @@ import {
 	setControllerWithIcMgmt
 } from '$lib/services/_controllers.services';
 import { i18n } from '$lib/stores/app/i18n.store';
-import { toasts } from '$lib/stores/app/toasts.store';
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { MissionControlId } from '$lib/types/mission-control';
 import type { Orbiter } from '$lib/types/orbiter';
-import { type WizardCreateProgress, WizardCreateProgressStep } from '$lib/types/progress-wizard';
 import type { Satellite } from '$lib/types/satellite';
-import type { Option } from '$lib/types/utils';
 import { orbiterName } from '$lib/utils/orbiter.utils';
 import { satelliteName } from '$lib/utils/satellite.utils';
-import { assertNonNullish } from '@dfinity/utils';
 import type { Identity } from '@icp-sdk/core/agent';
 import type { Principal } from '@icp-sdk/core/principal';
 import { get } from 'svelte/store';
-
-type FinalizeMissionControlWizardResult = Promise<{ success: 'ok' } | { success: 'warning' }>;
 
 const CONTROLLER_PARAMS: Omit<SetControllerParams, 'controllerId'> = {
 	profile: undefined,
 	scope: 'admin'
 };
 
-export const finalizeMissionControlWizard = async ({
-	onProgress,
+export class AttachToMissionControlError extends Error {
+	static init(ids: Principal[], options?: ErrorOptions): AttachToMissionControlError {
+		return new AttachToMissionControlError(
+			`${get(i18n).mission_control.warn_attaching} ${ids.map((id) => id.toText()).join(',')}`,
+			options
+		);
+	}
+}
+
+export const attachSatelliteToMissionControl = async ({
+	satelliteId,
+	missionControlId,
+	identity,
+	satelliteName
+}: {
+	satelliteId: Principal;
+	missionControlId: MissionControlId;
+	identity: Identity;
+	satelliteName: string;
+}) => {
+	try {
+		await setSatellite({
+			missionControlId,
+			satelliteId,
+			identity,
+			satelliteName
+		});
+	} catch (err: unknown) {
+		throw AttachToMissionControlError.init([satelliteId], { cause: err });
+	}
+};
+
+export const attachOrbiterToMissionControl = async ({
+	orbiterId,
+	missionControlId,
+	identity
+}: {
+	orbiterId: Principal;
+	missionControlId: MissionControlId;
+	identity: Identity;
+}) => {
+	try {
+		await setOrbiter({
+			missionControlId,
+			orbiterId,
+			identity
+		});
+	} catch (err: unknown) {
+		throw AttachToMissionControlError.init([orbiterId], { cause: err });
+	}
+};
+
+export const attachSegmentsToMissionControl = async ({
 	onTextProgress,
 	missionControlId,
 	identity
 }: {
-	onProgress: (progress: WizardCreateProgress | undefined) => void;
 	onTextProgress: (text: string) => void;
 	missionControlId: MissionControlId;
-	identity: Option<Identity>;
-}): Promise<FinalizeMissionControlWizardResult> => {
-	assertNonNullish(identity, get(i18n).core.not_logged_in);
-
-	onProgress({
-		step: WizardCreateProgressStep.Attaching,
-		state: 'in_progress'
-	});
-
+	identity: Identity;
+}) => {
 	const { satellites, orbiters } = await setMissionControlAsControllerAndAttach({
 		onTextProgress,
 		identity,
@@ -54,21 +91,9 @@ export const finalizeMissionControlWizard = async ({
 
 	const errors = [...satellites.errors, ...orbiters.errors];
 
-	const withErrors = errors.length > 0;
-
-	if (withErrors) {
-		toasts.error({
-			text: `${get(i18n).mission_control.warn_attaching} ${errors.map((id) => id.toText()).join(',')}`,
-			level: 'warn'
-		});
+	if (errors.length > 0) {
+		throw AttachToMissionControlError.init(errors);
 	}
-
-	onProgress({
-		step: WizardCreateProgressStep.Attaching,
-		state: withErrors ? 'warning' : 'success'
-	});
-
-	return { success: withErrors ? 'warning' : 'ok' };
 };
 
 interface SetMissionControlAsControllerProgressStats {

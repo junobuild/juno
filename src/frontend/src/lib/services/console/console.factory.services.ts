@@ -1,22 +1,14 @@
 import { getConsoleActor } from '$lib/api/actors/actor.juno.api';
+import type {
+	CreateSatelliteConfig,
+	CreateWithConfig,
+	CreateWithConfigAndName
+} from '$lib/types/factory';
 import type { OrbiterId } from '$lib/types/orbiter';
 import type { SatelliteId } from '$lib/types/satellite';
 import type { Option } from '$lib/types/utils';
 import { assertNonNullish, toNullable } from '@dfinity/utils';
 import type { Identity } from '@icp-sdk/core/agent';
-import type { Principal } from '@icp-sdk/core/principal';
-
-interface CreateWithConfig {
-	subnetId?: Principal;
-}
-
-interface CreateWithConfigAndName extends CreateWithConfig {
-	name?: string;
-}
-
-interface CreateSatelliteConfig extends CreateWithConfigAndName {
-	kind: 'website' | 'application';
-}
 
 export const createMissionControlWithConfig = async ({
 	identity,

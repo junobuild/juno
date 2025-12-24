@@ -3,17 +3,12 @@ import { getMissionControlActor } from '$lib/api/actors/actor.juno.api';
 import { loadDataStore } from '$lib/services/_loader.services';
 import { authStore } from '$lib/stores/auth.store';
 import { satellitesUncertifiedStore } from '$lib/stores/mission-control/satellites.store';
+import type { CreateSatelliteConfig } from '$lib/types/factory';
 import type { Option } from '$lib/types/utils';
 import { assertNonNullish, toNullable } from '@dfinity/utils';
 import type { Identity } from '@icp-sdk/core/agent';
 import type { Principal } from '@icp-sdk/core/principal';
 import { get } from 'svelte/store';
-
-interface CreateSatelliteConfig {
-	name: string;
-	subnetId?: Principal;
-	kind: 'website' | 'application';
-}
 
 /**
  * @deprecated use createSatelliteWithConfig
@@ -25,7 +20,7 @@ export const createSatellite = async ({
 }: {
 	identity: Option<Identity>;
 	missionControlId: Option<Principal>;
-	config: CreateSatelliteConfig;
+	config: Required<Pick<CreateSatelliteConfig, 'name'>>;
 }): Promise<MissionControlDid.Satellite> => {
 	assertNonNullish(missionControlId);
 

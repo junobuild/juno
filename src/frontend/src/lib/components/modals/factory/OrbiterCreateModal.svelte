@@ -88,6 +88,7 @@
 			{progress}
 			segment="orbiter"
 			withApprove={selectedWallet?.type === 'dev' && nonNullish(withFee)}
+			withAttach={nonNullish($missionControlId)}
 			withMonitoring={nonNullish(monitoringStrategy)}
 		/>
 	{:else}

@@ -104,6 +104,7 @@
 			{progress}
 			segment="satellite"
 			withApprove={selectedWallet?.type === 'dev' && nonNullish(withFee)}
+			withAttach={nonNullish($missionControlId)}
 			withMonitoring={nonNullish(monitoringStrategy)}
 		/>
 	{:else}

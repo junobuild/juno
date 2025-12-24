@@ -13,7 +13,7 @@
 	} from '$lib/constants/app.constants';
 	import { authSignedOut } from '$lib/derived/auth.derived';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
-	import { loadSegments } from '$lib/services/console/segments.services';
+	import { loadSegments } from '$lib/services/segments.services';
 	import { loadSatellites } from '$lib/services/mission-control/mission-control.satellites.services';
 	import { isBusy, wizardBusy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
@@ -94,7 +94,7 @@
 				reload: true
 			};
 
-			await Promise.all([loadSegments(payload), loadSatellites(payload)]);
+			await loadSegments(payload);
 
 			await goto('/', { replaceState: true });
 

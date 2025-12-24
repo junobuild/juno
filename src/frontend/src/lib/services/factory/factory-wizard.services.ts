@@ -1,6 +1,6 @@
 import type { MissionControlDid } from '$declarations';
 import { getMissionControlFee, getOrbiterFee, getSatelliteFee } from '$lib/api/console.api';
-import { setOrbiter, setSatellite, updateAndStartMonitoring } from '$lib/api/mission-control.api';
+import { updateAndStartMonitoring } from '$lib/api/mission-control.api';
 import { missionControlMonitored } from '$lib/derived/mission-control/mission-control-settings.derived';
 import { missionControlConfigMonitoring } from '$lib/derived/mission-control/mission-control-user.derived';
 import { isSkylab } from '$lib/env/app.env';
@@ -15,7 +15,12 @@ import {
 import { loadCredits } from '$lib/services/console/credits.services';
 import { loadSegments } from '$lib/services/console/segments.services';
 import { unsafeSetEmulatorControllerForSatellite } from '$lib/services/emulator.services';
-import { attachSegmentsToMissionControl } from '$lib/services/factory/_mission-control.attach-segments.services';
+import {
+	attachOrbiterToMissionControl,
+	attachSatelliteToMissionControl,
+	attachSegmentsToMissionControl,
+	AttachToMissionControlError
+} from '$lib/services/factory/_factory-wizard.attach.services';
 import {
 	createOrbiter,
 	createOrbiterWithConfig
@@ -346,7 +351,7 @@ export const createSatelliteWizard = async ({
 		const attachFn: AttachFn = async ({ identity, canisterId }) => {
 			// Attach the Satellite to the existing Mission Control.
 			// The controller for the Mission Control to the Satellite has been set by the Console backend.
-			await setSatellite({
+			await attachSatelliteToMissionControl({
 				missionControlId,
 				satelliteId: canisterId,
 				identity,
@@ -470,7 +475,7 @@ export const createOrbiterWizard = async ({
 		const attachFn: AttachFn = async ({ identity, canisterId }) => {
 			// Attach the Satellite to the existing Mission Control.
 			// The controller for the Mission Control to the Satellite has been set by the Console backend.
-			await setOrbiter({
+			await attachOrbiterToMissionControl({
 				missionControlId,
 				orbiterId: canisterId,
 				identity
@@ -673,8 +678,7 @@ const createWizard = async ({
 			await execute({
 				fn: executeMonitoringFn,
 				onProgress,
-				step: WizardCreateProgressStep.Monitoring,
-				errorState: 'warning'
+				step: WizardCreateProgressStep.Monitoring
 			});
 		}
 
@@ -687,12 +691,20 @@ const createWizard = async ({
 				await execute({
 					fn: executeAttachFn,
 					onProgress,
-					step: WizardCreateProgressStep.Attaching
+					step: WizardCreateProgressStep.Attaching,
+					errorState: 'warning'
 				});
-			} catch (_error: unknown) {
+			} catch (error: unknown) {
 				// The module has been created therefore we display a warning and continue the process
 				// Attaching can be retried manually separately afterwards
-				// TODO: toast warn
+				if (error instanceof AttachToMissionControlError) {
+					toasts.error({
+						text: error.toString(),
+						level: 'warn'
+					});
+				} else {
+					throw error;
+				}
 			}
 		}
 

@@ -22,15 +22,57 @@ const CONTROLLER_PARAMS: Omit<SetControllerParams, 'controllerId'> = {
 	scope: 'admin'
 };
 
-class AttachSegmentsToMissionControl extends Error {
-	constructor(private readonly ids: Principal[]) {
-		super();
-	}
-
-	override toString() {
-		return `${get(i18n).mission_control.warn_attaching} ${this.ids.map((id) => id.toText()).join(',')}`;
+export class AttachToMissionControlError extends Error {
+	static init(ids: Principal[], options?: ErrorOptions): AttachToMissionControlError {
+		return new AttachToMissionControlError(
+			`${get(i18n).mission_control.warn_attaching} ${ids.map((id) => id.toText()).join(',')}`,
+			options
+		);
 	}
 }
+
+export const attachSatelliteToMissionControl = async ({
+	satelliteId,
+	missionControlId,
+	identity,
+	satelliteName
+}: {
+	satelliteId: Principal;
+	missionControlId: MissionControlId;
+	identity: Identity;
+	satelliteName: string;
+}) => {
+	try {
+		await setSatellite({
+			missionControlId,
+			satelliteId,
+			identity,
+			satelliteName
+		});
+	} catch (err: unknown) {
+		throw AttachToMissionControlError.init([satelliteId], { cause: err });
+	}
+};
+
+export const attachOrbiterToMissionControl = async ({
+	orbiterId,
+	missionControlId,
+	identity
+}: {
+	orbiterId: Principal;
+	missionControlId: MissionControlId;
+	identity: Identity;
+}) => {
+	try {
+		await setOrbiter({
+			missionControlId,
+			orbiterId,
+			identity
+		});
+	} catch (err: unknown) {
+		throw AttachToMissionControlError.init([orbiterId], { cause: err });
+	}
+};
 
 export const attachSegmentsToMissionControl = async ({
 	onTextProgress,
@@ -50,7 +92,7 @@ export const attachSegmentsToMissionControl = async ({
 	const errors = [...satellites.errors, ...orbiters.errors];
 
 	if (errors.length > 0) {
-		throw new AttachSegmentsToMissionControl(errors);
+		throw AttachToMissionControlError.init(errors);
 	}
 };
 

@@ -669,19 +669,6 @@ const createWizard = async ({
 			]);
 		};
 
-		if (nonNullish(monitoringFn)) {
-			const executeMonitoringFn = async () => {
-				await waitAndRestartWallet();
-				await monitoringFn({ identity, canisterId });
-			};
-
-			await execute({
-				fn: executeMonitoringFn,
-				onProgress,
-				step: WizardCreateProgressStep.Monitoring
-			});
-		}
-
 		if (nonNullish(attachFn)) {
 			const executeAttachFn = async () => {
 				await attachFn({ identity, canisterId });
@@ -706,6 +693,19 @@ const createWizard = async ({
 					throw error;
 				}
 			}
+		}
+
+		if (nonNullish(monitoringFn)) {
+			const executeMonitoringFn = async () => {
+				await waitAndRestartWallet();
+				await monitoringFn({ identity, canisterId });
+			};
+
+			await execute({
+				fn: executeMonitoringFn,
+				onProgress,
+				step: WizardCreateProgressStep.Monitoring
+			});
 		}
 
 		if (nonNullish(finalizingFn)) {

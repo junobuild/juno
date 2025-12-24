@@ -7,45 +7,40 @@ import {
 	setControllerWithIcMgmt
 } from '$lib/services/_controllers.services';
 import { i18n } from '$lib/stores/app/i18n.store';
-import { toasts } from '$lib/stores/app/toasts.store';
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { MissionControlId } from '$lib/types/mission-control';
 import type { Orbiter } from '$lib/types/orbiter';
-import { type WizardCreateProgress, WizardCreateProgressStep } from '$lib/types/progress-wizard';
 import type { Satellite } from '$lib/types/satellite';
-import type { Option } from '$lib/types/utils';
 import { orbiterName } from '$lib/utils/orbiter.utils';
 import { satelliteName } from '$lib/utils/satellite.utils';
-import { assertNonNullish } from '@dfinity/utils';
 import type { Identity } from '@icp-sdk/core/agent';
 import type { Principal } from '@icp-sdk/core/principal';
 import { get } from 'svelte/store';
-
-type AttachSegmentsToMissionControlResult = Promise<{ success: 'ok' } | { success: 'warning' }>;
 
 const CONTROLLER_PARAMS: Omit<SetControllerParams, 'controllerId'> = {
 	profile: undefined,
 	scope: 'admin'
 };
 
+class AttachSegmentsToMissionControl extends Error {
+	constructor(private readonly ids: Principal[]) {
+		super();
+	}
+
+	override toString() {
+		return `${get(i18n).mission_control.warn_attaching} ${this.ids.map((id) => id.toText()).join(',')}`;
+	}
+}
+
 export const attachSegmentsToMissionControl = async ({
-	onProgress,
 	onTextProgress,
 	missionControlId,
 	identity
 }: {
-	onProgress: (progress: WizardCreateProgress | undefined) => void;
 	onTextProgress: (text: string) => void;
 	missionControlId: MissionControlId;
-	identity: Option<Identity>;
-}): Promise<AttachSegmentsToMissionControlResult> => {
-	assertNonNullish(identity, get(i18n).core.not_logged_in);
-
-	onProgress({
-		step: WizardCreateProgressStep.Attaching,
-		state: 'in_progress'
-	});
-
+	identity: Identity;
+}) => {
 	const { satellites, orbiters } = await setMissionControlAsControllerAndAttach({
 		onTextProgress,
 		identity,
@@ -54,21 +49,9 @@ export const attachSegmentsToMissionControl = async ({
 
 	const errors = [...satellites.errors, ...orbiters.errors];
 
-	const withErrors = errors.length > 0;
-
-	if (withErrors) {
-		toasts.error({
-			text: `${get(i18n).mission_control.warn_attaching} ${errors.map((id) => id.toText()).join(',')}`,
-			level: 'warn'
-		});
+	if (errors.length > 0) {
+		throw new AttachSegmentsToMissionControl(errors);
 	}
-
-	onProgress({
-		step: WizardCreateProgressStep.Attaching,
-		state: withErrors ? 'warning' : 'success'
-	});
-
-	return { success: withErrors ? 'warning' : 'ok' };
 };
 
 interface SetMissionControlAsControllerProgressStats {

@@ -15,7 +15,7 @@ import {
 import { loadCredits } from '$lib/services/console/credits.services';
 import { loadSegments } from '$lib/services/console/segments.services';
 import { unsafeSetEmulatorControllerForSatellite } from '$lib/services/emulator.services';
-import { attachSegmentsToMissionControl } from '$lib/services/factory/_factory-wizard.mission-control.services';
+import { attachSegmentsToMissionControl } from '$lib/services/factory/_mission-control.attach-segments.services';
 import {
 	createOrbiter,
 	createOrbiterWithConfig
@@ -563,22 +563,12 @@ export const createMissionControlWizard = async ({
 		]);
 	};
 
-	const postProcessingFn: PostProcessingFn = async ({
-		identity,
-		canisterId
-	}): Promise<CreateWizardResult> => {
-		const result = await attachSegmentsToMissionControl({
-			onProgress,
-			onTextProgress: onAttachTextProgress,
+	const attachFn: AttachFn = async ({ identity, canisterId }) => {
+		await attachSegmentsToMissionControl({
 			identity,
-			missionControlId: canisterId
+			missionControlId: canisterId,
+			onTextProgress: onAttachTextProgress
 		});
-
-		if (result.success === 'warning') {
-			return result;
-		}
-
-		return { success: 'ok', canisterId };
 	};
 
 	return await createWizard({
@@ -587,7 +577,7 @@ export const createMissionControlWizard = async ({
 		onProgress,
 		createFn,
 		reloadFn,
-		postProcessingFn,
+		attachFn,
 		monitoringFn: undefined,
 		errorLabel: 'mission_control_unexpected_error'
 	});
@@ -602,11 +592,6 @@ type MonitoringFn = (params: { identity: Identity; canisterId: Principal }) => P
 
 type FinalizingFn = (params: { identity: Identity; canisterId: Principal }) => Promise<void>;
 
-type PostProcessingFn = (params: {
-	identity: Identity;
-	canisterId: Principal;
-}) => Promise<CreateWizardResult>;
-
 type ReloadFn = (params: { identity: Identity; canisterId: Principal }) => Promise<void>;
 
 type AttachFn = (params: { identity: Identity; canisterId: Principal }) => Promise<void>;
@@ -617,7 +602,6 @@ const createWizard = async ({
 	errorLabel,
 	createFn,
 	finalizingFn,
-	postProcessingFn,
 	reloadFn,
 	attachFn,
 	monitoringFn,
@@ -627,7 +611,6 @@ const createWizard = async ({
 	errorLabel: keyof I18nErrors;
 	createFn: CreateFn;
 	finalizingFn?: FinalizingFn;
-	postProcessingFn?: PostProcessingFn;
 	reloadFn: ReloadFn;
 	attachFn?: AttachFn;
 	monitoringFn: MonitoringFn | undefined;
@@ -729,24 +712,12 @@ const createWizard = async ({
 			}
 		}
 
-		const reloadBeforeNavigate = async () => {
-			// Reload list of segments and wallet or credits before navigation
-			await execute({
-				fn: reload,
-				onProgress,
-				step: WizardCreateProgressStep.Reload
-			});
-		};
-
-		if (nonNullish(postProcessingFn)) {
-			const result = await postProcessingFn({ identity, canisterId });
-
-			await reloadBeforeNavigate();
-
-			return result;
-		}
-
-		await reloadBeforeNavigate();
+		// Reload list of segments and wallet or credits before navigation
+		await execute({
+			fn: reload,
+			onProgress,
+			step: WizardCreateProgressStep.Reload
+		});
 
 		return { success: 'ok', canisterId };
 	} catch (err: unknown) {

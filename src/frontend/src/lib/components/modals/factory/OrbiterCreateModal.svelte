@@ -88,8 +88,8 @@
 			{progress}
 			segment="orbiter"
 			withApprove={selectedWallet?.type === 'dev' && nonNullish(withFee)}
-			withMonitoring={nonNullish(monitoringStrategy)}
 			withAttach={nonNullish($missionControlId)}
+			withMonitoring={nonNullish(monitoringStrategy)}
 		/>
 	{:else}
 		<h2>{$i18n.core.getting_started}</h2>

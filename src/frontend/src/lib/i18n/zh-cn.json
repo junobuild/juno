@@ -759,7 +759,7 @@
 		"delete_question": "确认删除访问密钥？",
 		"controller_id": "访问密钥ID",
 		"controller_id_placeholder": "访问密钥ID",
-		"no_delete": "若无当前登录身份和任务控制中心的管理员权限，Juno将无法运行。这些设置无法通过控制台修改。",
+		"no_delete": "如果没有将您当前的登录身份设置为管理员，Juno 无法运行。这些设置无法通过控制台编辑。",
 		"more_delete": "但您可以编辑或删除为非交互环境创建的其他访问密钥。",
 		"admin": "管理员",
 		"write": "编辑者",

@@ -758,7 +758,7 @@
 		"delete_question": "Delete access key?",
 		"controller_id": "Access Key ID",
 		"controller_id_placeholder": "Access Key ID",
-		"no_delete": "Juno cannot operate without your current signed-in identity and your mission control set as administrators. These settings cannot be edited through the console.",
+		"no_delete": "Juno cannot operate without your current signed-in identity set as administrators. These settings cannot be edited through the console.",
 		"more_delete": "However, you can edit or delete additional access keys that you may have added for non-interactive environments.",
 		"admin": "Administrator",
 		"write": "Editor",

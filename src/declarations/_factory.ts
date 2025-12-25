@@ -20,6 +20,7 @@ import { idlFactory as idlFactorySatellite008 } from '$declarations/deprecated/s
 import { idlFactory as idlFactorySatellite009 } from '$declarations/deprecated/satellite-0-0-9.factory.did';
 import { idlFactory as idlFactoryCertifiedIC } from '$declarations/ic-management/ic-management.factory.certified.did';
 import { idlFactory as idlFactoryIC } from '$declarations/ic-management/ic-management.factory.did';
+import { idlFactory as idlFactoryCyclesLedger } from '$declarations/ledger/cycles/cycles.factory.did';
 import { idlFactory as idlFactoryMissionControl } from '$declarations/mission_control/mission_control.factory.did';
 import { idlFactory as idlFactoryObservatory } from '$declarations/observatory/observatory.factory.did';
 import { idlFactory as idlFactoryOrbiter } from '$declarations/orbiter/orbiter.factory.did';
@@ -46,6 +47,7 @@ import type { _SERVICE as SatelliteActor0022 } from '$declarations/deprecated/sa
 import type { _SERVICE as SatelliteActor008 } from '$declarations/deprecated/satellite-0-0-8.did';
 import type { _SERVICE as SatelliteActor009 } from '$declarations/deprecated/satellite-0-0-9.did';
 import type { _SERVICE as ICActor } from '$declarations/ic-management/ic-management.did';
+import type { _SERVICE as CyclesLedgerActor } from '$declarations/ledger/cycles/cycles.did';
 import type { _SERVICE as MissionControlActor } from '$declarations/mission_control/mission_control.did';
 import type { _SERVICE as ObservatoryActor } from '$declarations/observatory/observatory.did';
 import type { _SERVICE as OrbiterActor } from '$declarations/orbiter/orbiter.did';
@@ -60,6 +62,7 @@ export {
 	idlFactoryConsole008,
 	idlFactoryConsole015,
 	idlFactoryConsole020,
+	idlFactoryCyclesLedger,
 	idlFactoryIC,
 	idlFactoryMissionControl,
 	idlFactoryMissionControl0013,
@@ -85,6 +88,7 @@ export {
 	type ConsoleActor008,
 	type ConsoleActor015,
 	type ConsoleActor020,
+	type CyclesLedgerActor,
 	type ICActor,
 	type MissionControlActor,
 	type MissionControlActor0013,

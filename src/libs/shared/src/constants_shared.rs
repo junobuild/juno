@@ -4,6 +4,9 @@ use ic_ledger_types::{Memo, Tokens};
 // Specifies the transaction fee for ICP transactions.
 pub const IC_TRANSACTION_FEE_ICP: Tokens = Tokens::from_e8s(10_000);
 
+// Specifies the transaction fee for Cycles ledger transactions.
+pub const IC_TRANSACTION_FEE_CYCLES: Tokens = Tokens::from_e8s(100_000_000);
+
 // Creating a canister require cycles. Those vary according to the subnet size (number of nodes).
 // Check [Gas and cycles cost](https://internetcomputer.org/docs/current/developer-docs/gas-cost) for more details.
 // Cost for creating a canister have been increased by 400% in November 2024:

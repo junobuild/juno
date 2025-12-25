@@ -220,6 +220,7 @@ pub mod ledger {
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct Payment {
         pub purchaser: Option<Principal>,
+        pub ledger_id: Option<Principal>,
         #[deprecated(note = "Deprecated. Use purchaser instead.")]
         pub mission_control_id: Option<MissionControlId>,
         pub block_index_payment: BlockIndex,

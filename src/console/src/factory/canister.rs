@@ -2,11 +2,10 @@ use crate::accounts::{
     credits::{has_credits, use_credits},
     get_existing_account,
 };
-use crate::factory::services::ledger::{refund_payment, transfer_from, verify_payment};
+use crate::factory::services::ledger::refund_payment;
+use crate::factory::services::payment::{process_payment_cycles, process_payment_icp};
 use crate::factory::types::{CanisterCreator, CreateCanisterArgs};
-use crate::store::stable::{
-    insert_new_payment, is_known_payment, update_payment_completed, update_payment_refunded,
-};
+use crate::store::stable::{insert_new_payment, update_payment_completed, update_payment_refunded};
 use crate::types::ledger::Payment;
 use crate::types::state::Account;
 use candid::Principal;
@@ -36,9 +35,16 @@ where
         let creator: CanisterCreator =
             CanisterCreator::User((account.owner, account.mission_control_id));
 
-        let canister_id =
-            create_canister_with_account(create, increment_rate, get_fee, &account, creator, args)
-                .await?;
+        let canister_id = create_canister_with_account(
+            create,
+            process_payment_cycles,
+            increment_rate,
+            get_fee,
+            &account,
+            creator,
+            args,
+        )
+        .await?;
 
         add_segment(&account.owner, &canister_id);
 
@@ -54,9 +60,16 @@ where
         let creator: CanisterCreator =
             CanisterCreator::MissionControl((mission_control_id, account.owner));
 
-        let canister_id =
-            create_canister_with_account(create, increment_rate, get_fee, &account, creator, args)
-                .await?;
+        let canister_id = create_canister_with_account(
+            create,
+            process_payment_icp,
+            increment_rate,
+            get_fee,
+            &account,
+            creator,
+            args,
+        )
+        .await?;
 
         add_segment(&account.owner, &canister_id);
 
@@ -66,8 +79,9 @@ where
     Err("Unknown caller".to_string())
 }
 
-pub async fn create_canister_with_account<F, Fut>(
+pub async fn create_canister_with_account<F, Fut, P, Pay>(
     create: F,
+    process_payment: P,
     increment_rate: &dyn Fn() -> Result<(), String>,
     get_fee: &dyn Fn() -> Result<Tokens, String>,
     account: &Account,
@@ -77,6 +91,8 @@ pub async fn create_canister_with_account<F, Fut>(
 where
     F: FnOnce(CanisterCreator, Option<SubnetId>) -> Fut,
     Fut: Future<Output = Result<Principal, String>>,
+    P: FnOnce(Principal, Option<BlockIndex>, Tokens) -> Pay,
+    Pay: Future<Output = Result<(Principal, BlockIndex), String>>,
 {
     let fee = get_fee()?;
 
@@ -87,7 +103,7 @@ where
         return create_canister_with_credits(create, creator, args).await;
     }
 
-    create_canister_with_payment(create, creator, args, fee).await
+    create_canister_with_payment(create, process_payment, creator, args, fee).await
 }
 
 async fn create_canister_with_credits<F, Fut>(
@@ -118,8 +134,21 @@ where
     }
 }
 
-async fn create_canister_with_payment<F, Fut>(
+async fn refund_canister_creation(
+    purchaser: &Principal,
+    purchaser_payment_block_index: &BlockIndex,
+    fee: Tokens,
+) -> Result<Payment, String> {
+    let refund_block_index = refund_payment(purchaser, fee).await?;
+
+    // We record the refund in the payment list
+    update_payment_refunded(purchaser_payment_block_index, &refund_block_index)
+        .map_err(|e| format!("Insert refund transaction error {e:?}"))
+}
+
+async fn create_canister_with_payment<F, Fut, P, Pay>(
     create: F,
+    process_payment: P,
     creator: CanisterCreator,
     CreateCanisterArgs {
         block_index,
@@ -130,21 +159,16 @@ async fn create_canister_with_payment<F, Fut>(
 where
     F: FnOnce(CanisterCreator, Option<SubnetId>) -> Fut,
     Fut: Future<Output = Result<Principal, String>>,
+    P: FnOnce(Principal, Option<BlockIndex>, Tokens) -> Pay,
+    Pay: Future<Output = Result<(Principal, BlockIndex), String>>,
 {
     let purchaser = *creator.purchaser();
 
-    let purchaser_payment_block_index = if let Some(block_index) = block_index {
-        if is_known_payment(&block_index) {
-            return Err("Payment has been or is being processed.".to_string());
-        }
-
-        verify_payment(&purchaser, &block_index, fee).await?
-    } else {
-        transfer_from(&purchaser, &fee).await?
-    };
+    let (ledger_id, purchaser_payment_block_index) =
+        process_payment(purchaser, block_index, fee).await?;
 
     // We acknowledge the new payment
-    insert_new_payment(&purchaser, &purchaser_payment_block_index)?;
+    insert_new_payment(&purchaser, &ledger_id, &purchaser_payment_block_index)?;
 
     // Create the canister (satellite or orbiter)
     let create_canister_result = create(creator, subnet_id).await;
@@ -162,16 +186,4 @@ where
             Ok(satellite_id)
         }
     }
-}
-
-async fn refund_canister_creation(
-    purchaser: &Principal,
-    purchaser_payment_block_index: &BlockIndex,
-    fee: Tokens,
-) -> Result<Payment, String> {
-    let refund_block_index = refund_payment(purchaser, fee).await?;
-
-    // We record the refund in the payment list
-    update_payment_refunded(purchaser_payment_block_index, &refund_block_index)
-        .map_err(|e| format!("Insert refund transaction error {e:?}"))
 }

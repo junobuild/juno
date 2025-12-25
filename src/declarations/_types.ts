@@ -13,6 +13,7 @@ import type * as ObservatoryDid from '$declarations/observatory/observatory.did'
 import type * as OrbiterDid from '$declarations/orbiter/orbiter.did';
 import type * as SatelliteDid from '$declarations/satellite/satellite.did';
 import type * as SputnikDid from '$declarations/sputnik/sputnik.did';
+import type * as CyclesLedgerDid from '$declarations/ledger/cycles/cycles.did';
 
 export type {
 	ConsoleDid,
@@ -29,5 +30,6 @@ export type {
 	SatelliteDid0016,
 	SatelliteDid0017,
 	SatelliteDid008,
-	SputnikDid
+	SputnikDid,
+	CyclesLedgerDid
 };

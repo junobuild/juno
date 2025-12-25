@@ -13,13 +13,15 @@ pub fn is_known_payment(block_index: &BlockIndex) -> bool {
 
 pub fn insert_new_payment(
     purchaser: &Principal,
+    ledger_id: &Principal,
     block_index: &BlockIndex,
 ) -> Result<Payment, &'static str> {
-    mutate_stable_state(|stable| insert_new_payment_impl(purchaser, block_index, stable))
+    mutate_stable_state(|stable| insert_new_payment_impl(purchaser, ledger_id, block_index, stable))
 }
 
 fn insert_new_payment_impl(
     purchaser: &Principal,
+    ledger_id: &Principal,
     block_index: &BlockIndex,
     state: &mut StableState,
 ) -> Result<Payment, &'static str> {
@@ -27,6 +29,7 @@ fn insert_new_payment_impl(
 
     let new_payment = Payment {
         purchaser: Some(*purchaser),
+        ledger_id: Some(*ledger_id),
         mission_control_id: None,
         block_index_payment: *block_index,
         block_index_refunded: None,

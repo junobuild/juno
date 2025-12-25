@@ -34,7 +34,7 @@ junobuild-shared = { path = "../libs/shared" }
 junobuild-macros = { path = "../libs/macros" }
 junobuild-storage = { path = "../libs/storage" }
 ic-wasi-polyfill = "0.12.0"
-rquickjs = { git = "https://github.com/DelSkayn/rquickjs", features = ["macro", "futures"] }
+rquickjs = { version = "0.11.0", features = ["macro", "futures"] }
 anyhow = "1.0.79"
 itoa = { version = "1", default-features = false }
 ryu = { version = "1", default-features = false }

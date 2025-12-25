@@ -13,6 +13,7 @@ node_modules
 /package
 !.env.example
 target
+cycles.did
 internet_identity.wasm
 internet_identity.wasm.gz
 /internet_identity.did

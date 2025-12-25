@@ -13,6 +13,8 @@ use junobuild_shared::ledger::icp::{
 };
 use junobuild_shared::ledger::icrc::icrc_transfer_token_from;
 
+// TODO: rename module in icp_ledger
+
 pub async fn verify_payment(
     purchaser: &Principal,
     purchaser_payment_block_index: &BlockIndex,
@@ -44,6 +46,9 @@ pub async fn verify_payment(
     Ok(*purchaser_payment_block_index)
 }
 
+// TODO: move to payment
+// TODO: adapt fees and split into ICP and Cycles
+
 pub async fn refund_payment(
     purchaser: &Principal,
     canister_fee: Tokens,
@@ -70,25 +75,36 @@ pub async fn transfer_from(
     purchaser: &Principal,
     canister_fee: &Tokens,
 ) -> Result<BlockIndex, String> {
+    let transaction_fee = Nat::from(IC_TRANSACTION_FEE_ICP.e8s());
+    let ledger_id = Principal::from_text(ICP_LEDGER).unwrap();
+
+    icrc_transfer_from(purchaser, &ledger_id, canister_fee, &transaction_fee).await
+}
+
+// TODO: move to icrc_ledger
+
+pub async fn icrc_transfer_from(
+    purchaser: &Principal,
+    ledger_id: &Principal,
+    canister_fee: &Tokens,
+    transaction_fee: &Nat,
+) -> Result<BlockIndex, String> {
     let purchaser_account: Account = Account::from(*purchaser);
     let console_account: Account = Account::from(id());
 
     let amount = Nat::from(canister_fee.e8s());
-    let transaction_fee = Nat::from(IC_TRANSACTION_FEE_ICP.e8s());
 
     let args: TransferFromArgs = TransferFromArgs {
         amount,
         from: purchaser_account,
         to: console_account,
         created_at_time: None,
-        fee: Some(transaction_fee),
+        fee: Some(transaction_fee.clone()),
         memo: Some(convert_memo_to_icrc(&MEMO_CANISTER_CREATE)),
         spender_subaccount: None,
     };
 
-    let ledger_id = Principal::from_text(ICP_LEDGER).unwrap();
-
-    let result = icrc_transfer_token_from(ledger_id, args)
+    let result = icrc_transfer_token_from(*ledger_id, args)
         .await
         .map_err(|e| format!("failed to call ICRC ledger: {e:?}"))?
         .map_err(|e| format!("ledger ICRC transfer from error {e:?}"))?;

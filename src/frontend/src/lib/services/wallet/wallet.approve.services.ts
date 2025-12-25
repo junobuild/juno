@@ -1,5 +1,9 @@
-import { approveIcpTransfer } from '$lib/api/icp-ledger.api';
-import { CONSOLE_CANISTER_ID, IC_TRANSACTION_FEE_ICP } from '$lib/constants/app.constants';
+import { approveIcrcTransfer } from '$lib/api/icrc-ledger-api';
+import {
+	CONSOLE_CANISTER_ID,
+	CYCLES_LEDGER_CANISTER_ID,
+	IC_TRANSACTION_FEE_ICP
+} from '$lib/constants/app.constants';
 import { MEMO_CANISTER_APPROVE } from '$lib/constants/wallet.constants';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { IcpLedgerDid } from '@icp-sdk/canisters/ledger/icp';
@@ -26,10 +30,11 @@ export const approveCreateCanisterWithIcp = async ({
 		return new Uint8Array(buffer);
 	};
 
-	await approveIcpTransfer({
+	await approveIcrcTransfer({
+		ledgerId: Principal.fromText(CYCLES_LEDGER_CANISTER_ID),
 		identity,
 		spender,
 		amount,
-		icrc1Memo: icpMemoToIcrc(MEMO_CANISTER_APPROVE)
+		memo: icpMemoToIcrc(MEMO_CANISTER_APPROVE)
 	});
 };

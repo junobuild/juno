@@ -1,6 +1,6 @@
 [package]
 name = "console"
-version = "0.1.4"
+version = "0.2.0"
 edition = "2021"
 publish = false
 
@@ -13,6 +13,7 @@ ic-cdk.workspace = true
 ic-cdk-macros.workspace = true
 ic-cdk-timers.workspace = true
 ic-ledger-types.workspace = true
+icrc-ledger-types.workspace = true
 ic-stable-structures.workspace = true
 ic-certification.workspace = true
 serde.workspace = true

@@ -1,11 +1,11 @@
 use crate::controllers::orbiter::{delete_orbiter_controllers, set_orbiter_controllers};
-use crate::guards::caller_is_user_or_admin_controller;
-use crate::segments::orbiter::{
+use crate::factory::orbiter::{
     attach_orbiter, create_orbiter as create_orbiter_console,
     create_orbiter_with_config as create_orbiter_with_config_console, delete_orbiter,
     detach_orbiter,
 };
-use crate::segments::store::{get_orbiters, set_orbiter_metadata as set_orbiter_metadata_store};
+use crate::factory::store::{get_orbiters, set_orbiter_metadata as set_orbiter_metadata_store};
+use crate::guards::caller_is_user_or_admin_controller;
 use crate::types::interface::CreateCanisterConfig;
 use crate::types::state::{Orbiter, Orbiters};
 use ic_cdk_macros::{query, update};

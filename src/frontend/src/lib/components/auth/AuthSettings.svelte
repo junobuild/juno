@@ -1,20 +1,20 @@
 <script lang="ts">
 	import { setContext } from 'svelte';
-	import type { MissionControlDid } from '$declarations';
 	import AuthConfigCore from '$lib/components/auth/AuthConfigCore.svelte';
 	import AuthConfigGoogle from '$lib/components/auth/AuthConfigGoogle.svelte';
 	import AuthConfigII from '$lib/components/auth/AuthConfigII.svelte';
 	import AuthProviders from '$lib/components/auth/AuthProviders.svelte';
 	import AuthSettingsLoader from '$lib/components/auth/AuthSettingsLoader.svelte';
-	import { listCustomDomains } from '$lib/services/custom-domain.services';
-	import { initAuthConfigContext } from '$lib/stores/auth.context.store';
-	import { busy } from '$lib/stores/busy.store';
+	import { listCustomDomains } from '$lib/services/satellite/custom-domain.services';
+	import { busy } from '$lib/stores/app/busy.store';
+	import { initAuthConfigContext } from '$lib/stores/satellite/auth.context.store';
 	import { AUTH_CONFIG_CONTEXT_KEY, type AuthConfigContext } from '$lib/types/auth.context';
 	import type { JunoModalEditAuthConfigDetailType } from '$lib/types/modal';
+	import type { Satellite } from '$lib/types/satellite';
 	import { emit } from '$lib/utils/events.utils';
 
 	interface Props {
-		satellite: MissionControlDid.Satellite;
+		satellite: Satellite;
 	}
 
 	let { satellite }: Props = $props();

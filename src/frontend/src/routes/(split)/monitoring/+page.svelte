@@ -12,8 +12,9 @@
 	import Tabs from '$lib/components/ui/Tabs.svelte';
 	import Warnings from '$lib/components/warning/Warnings.svelte';
 	import { authSignedIn } from '$lib/derived/auth.derived';
-	import { hasMissionControlSettings } from '$lib/derived/mission-control-settings.derived';
-	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
+	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
+	import { hasMissionControlSettings } from '$lib/derived/mission-control/mission-control-settings.derived';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import {
 		type Tab,
 		TABS_CONTEXT_KEY,
@@ -67,13 +68,13 @@
 		{/snippet}
 
 		<Loaders monitoring>
-			<MissionControlGuard>
-				{#if nonNullish($missionControlIdDerived)}
-					<MissionControlDataLoader missionControlId={$missionControlIdDerived} reload>
+			<MissionControlGuard notFoundDescription={$i18n.monitoring.requires_mission_control}>
+				{#if nonNullish($missionControlId)}
+					<MissionControlDataLoader missionControlId={$missionControlId} reload>
 						{#if $store.tabId === $store.tabs[0].id}
-							<MonitoringDashboard missionControlId={$missionControlIdDerived} />
+							<MonitoringDashboard missionControlId={$missionControlId} />
 						{:else if $store.tabId === $store.tabs[1].id && $hasMissionControlSettings}
-							<MonitoringSettings missionControlId={$missionControlIdDerived} />
+							<MonitoringSettings missionControlId={$missionControlId} />
 						{/if}
 					</MissionControlDataLoader>
 				{/if}

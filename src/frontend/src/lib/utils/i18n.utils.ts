@@ -1,4 +1,4 @@
-import { i18n } from '$lib/stores/i18n.store';
+import { i18n } from '$lib/stores/app/i18n.store';
 import type { Languages } from '$lib/types/languages';
 import { setLocalStorageItem } from '$lib/utils/local-storage.utils';
 import { keyOf } from '$lib/utils/utils';

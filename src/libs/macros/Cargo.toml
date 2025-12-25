@@ -8,7 +8,7 @@ description = "Procedural macros for hooking into various events in Juno."
 homepage.workspace = true
 documentation = "https://docs.rs/junobuild-macros"
 readme = "README.md"
-license-file = "LICENSE.md"
+license = "MIT"
 
 [lib]
 proc-macro = true

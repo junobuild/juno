@@ -3,7 +3,7 @@
 	import { type UpgradeCodeProgress, UpgradeCodeProgressStep } from '@junobuild/admin';
 	import { untrack } from 'svelte';
 	import WizardProgressSteps from '$lib/components/ui/WizardProgressSteps.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { ProgressStep } from '$lib/types/progress-step';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { mapProgressState } from '$lib/utils/progress.utils';
@@ -31,7 +31,8 @@
 		text: $i18n.core.creating_snapshot
 	};
 
-	let steps: Steps = $state({
+	// svelte-ignore state_referenced_locally
+	let steps = $state<Steps>({
 		preparing: {
 			state: 'in_progress',
 			step: 'preparing',

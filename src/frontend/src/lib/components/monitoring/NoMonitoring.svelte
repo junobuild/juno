@@ -2,10 +2,10 @@
 	import { compare } from 'semver';
 	import { MISSION_CONTROL_v0_0_14 } from '$lib/constants/version.constants';
 	import { missionControlVersion } from '$lib/derived/version.derived';
-	import { openMonitoringModal } from '$lib/services/monitoring.services';
+	import { openMonitoringModal } from '$lib/services/mission-control/monitoring.services';
 	import { waitMissionControlVersionLoaded } from '$lib/services/version/version.mission-control.services';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { toasts } from '$lib/stores/toasts.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
+	import { toasts } from '$lib/stores/app/toasts.store';
 	import type { MissionControlId } from '$lib/types/mission-control';
 
 	interface Props {

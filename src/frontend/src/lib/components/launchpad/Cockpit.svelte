@@ -2,8 +2,8 @@
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
 	import Canister from '$lib/components/canister/Canister.svelte';
-	import CanisterIndicator from '$lib/components/canister/CanisterIndicator.svelte';
-	import CanisterTCycles from '$lib/components/canister/CanisterTCycles.svelte';
+	import CanisterIndicator from '$lib/components/canister/display/CanisterIndicator.svelte';
+	import CanisterTCycles from '$lib/components/canister/display/CanisterTCycles.svelte';
 	import IconAnalytics from '$lib/components/icons/IconAnalytics.svelte';
 	import IconMissionControl from '$lib/components/icons/IconMissionControl.svelte';
 	import IconTelescope from '$lib/components/icons/IconTelescope.svelte';
@@ -12,23 +12,23 @@
 	import MissionControlDataLoader from '$lib/components/mission-control/MissionControlDataLoader.svelte';
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import WalletInlineBalance from '$lib/components/wallet/WalletInlineBalance.svelte';
-	import { balance } from '$lib/derived/balance.derived';
+	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import {
 		missionControlNotMonitored,
 		missionControlSettingsLoaded
-	} from '$lib/derived/mission-control-settings.derived';
-	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
+	} from '$lib/derived/mission-control/mission-control-settings.derived';
 	import { orbiterStore } from '$lib/derived/orbiter.derived';
 	import { missionControlVersion } from '$lib/derived/version.derived';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { balance } from '$lib/derived/wallet/balance.derived';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { CanisterData } from '$lib/types/canister';
 
 	let missionControlData: CanisterData | undefined = $state(undefined);
 	let orbiterData: CanisterData | undefined = $state(undefined);
 </script>
 
-{#if nonNullish($missionControlIdDerived)}
-	<Canister canisterId={$missionControlIdDerived} display={false} bind:data={missionControlData} />
+{#if nonNullish($missionControlId)}
+	<Canister canisterId={$missionControlId} display={false} bind:data={missionControlData} />
 {/if}
 
 {#if nonNullish($orbiterStore)}
@@ -63,14 +63,15 @@
 	</LaunchpadLink>
 </div>
 
-{#if nonNullish($missionControlIdDerived) && nonNullish($missionControlVersion)}
-	<MissionControlDataLoader missionControlId={$missionControlIdDerived} />
+{#if nonNullish($missionControlId) && nonNullish($missionControlVersion)}
+	<MissionControlDataLoader missionControlId={$missionControlId} />
 {/if}
 
 <div class="monitoring">
 	<LaunchpadLink
 		ariaLabel={`${$i18n.core.open}: ${$i18n.monitoring.title}`}
-		highlight={$missionControlSettingsLoaded && $missionControlNotMonitored}
+		highlight={($missionControlSettingsLoaded && $missionControlNotMonitored) ||
+			$missionControlId === null}
 		href="/monitoring"
 		size="small"
 	>
@@ -87,6 +88,7 @@
 <div class="mission-control">
 	<LaunchpadLink
 		ariaLabel={`${$i18n.core.open}: ${$i18n.mission_control.title}`}
+		highlight={$missionControlId === null}
 		href="/mission-control"
 		size="small"
 	>
@@ -95,15 +97,17 @@
 			<span class="link">
 				<span class="link-title"
 					><span class="link-title-text">{$i18n.mission_control.title}</span>
-					<CanisterIndicator data={missionControlData} /></span
-				>
-				<span class="link-details">
-					{#if isNullish(missionControlData)}
-						<SkeletonText />
-					{:else}
-						<span in:fade><CanisterTCycles data={missionControlData} /></span>
-					{/if}
+					{#if nonNullish($missionControlId)}<CanisterIndicator data={missionControlData} />{/if}
 				</span>
+				{#if nonNullish($missionControlId)}
+					<span class="link-details">
+						{#if isNullish(missionControlData)}
+							<SkeletonText />
+						{:else}
+							<span in:fade><CanisterTCycles data={missionControlData} /></span>
+						{/if}
+					</span>
+				{/if}
 			</span>
 		</p>
 	</LaunchpadLink>

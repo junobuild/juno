@@ -8,7 +8,7 @@
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import JsonCode from '$lib/components/ui/JsonCode.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import { DATA_CONTEXT_KEY, type DataContext } from '$lib/types/data.context';
 	import { formatToDate } from '$lib/utils/date.utils';
 

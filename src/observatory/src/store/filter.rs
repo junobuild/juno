@@ -1,10 +1,7 @@
 use crate::types::interface::GetNotifications;
 use crate::types::state::NotificationKey;
-use candid::Principal;
+use junobuild_shared::constants_shared::{PRINCIPAL_MAX, PRINCIPAL_MIN};
 use std::ops::RangeBounds;
-
-pub const PRINCIPAL_MIN: Principal = Principal::from_slice(&[]);
-pub const PRINCIPAL_MAX: Principal = Principal::from_slice(&[255; 29]);
 
 pub fn filter_notifications_range(
     GetNotifications {

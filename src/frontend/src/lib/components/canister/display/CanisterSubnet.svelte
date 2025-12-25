@@ -1,0 +1,61 @@
+<script lang="ts">
+	import { nonNullish, notEmptyString } from '@dfinity/utils';
+	import type { PrincipalText } from '@dfinity/zod-schemas';
+	import type { Principal } from '@icp-sdk/core/principal';
+	import { onMount } from 'svelte';
+	import { fade } from 'svelte/transition';
+	import Identifier from '$lib/components/ui/Identifier.svelte';
+	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
+	import Value from '$lib/components/ui/Value.svelte';
+	import { loadSubnetId } from '$lib/services/ic-mgmt/subnets.services';
+	import { i18n } from '$lib/stores/app/i18n.store';
+	import { subnetStore } from '$lib/stores/ic-mgmt/subnet.store';
+	import type { Subnet } from '$lib/types/subnet';
+	import type { Option } from '$lib/types/utils';
+
+	interface Props {
+		canisterId: Principal;
+	}
+
+	let { canisterId }: Props = $props();
+
+	onMount(async () => {
+		await loadSubnetId({
+			canisterId
+		});
+	});
+
+	let subnet: Option<Subnet> = $derived($subnetStore?.[canisterId.toText()]);
+
+	let subnetId: PrincipalText | undefined = $derived(subnet?.subnetId);
+</script>
+
+<div>
+	<Value>
+		{#snippet label()}
+			{$i18n.canisters.subnet_id}
+		{/snippet}
+		{#if nonNullish(subnetId)}
+			<Identifier identifier={subnetId} small={false} />
+		{:else}
+			<SkeletonText />
+		{/if}
+	</Value>
+</div>
+
+{#if notEmptyString(subnet?.specialization)}
+	<div in:fade>
+		<Value>
+			{#snippet label()}
+				{$i18n.canisters.subnet_type}
+			{/snippet}
+			<p class="specialization">{subnet?.specialization ?? ''}</p>
+		</Value>
+	</div>
+{/if}
+
+<style lang="scss">
+	.specialization {
+		text-transform: capitalize;
+	}
+</style>

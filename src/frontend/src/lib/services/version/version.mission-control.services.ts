@@ -1,7 +1,7 @@
 import { missionControlVersionNotLoaded } from '$lib/derived/version.derived';
 import { reloadVersion } from '$lib/services/version/_version.reload.services';
-import { i18n } from '$lib/stores/i18n.store';
-import { toasts } from '$lib/stores/toasts.store';
+import { i18n } from '$lib/stores/app/i18n.store';
+import { toasts } from '$lib/stores/app/toasts.store';
 import type { MissionControlId } from '$lib/types/mission-control';
 import { waitReady } from '$lib/utils/timeout.utils';
 import { get } from 'svelte/store';

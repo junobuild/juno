@@ -1,14 +1,10 @@
-import {
-	type ConsoleActor,
-	idlFactoryMissionControl,
-	type MissionControlActor
-} from '$declarations';
-import type { MissionControl } from '$declarations/console/console.did';
+import type { ConsoleActor, ConsoleDid } from '$declarations';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
 import type { DelegationIdentity } from '@icp-sdk/core/identity';
 import { authenticateAndMakeIdentity } from '../../../utils/auth-identity-tests.utils';
 import { setupConsoleAuth, type TestSession } from '../../../utils/auth-tests.utils';
+import { createSatelliteWithConsole } from '../../../utils/console-factory-tests.utils';
 import { makeJwt, type MockOpenIdJwt } from '../../../utils/jwt-tests.utils';
 import { tick } from '../../../utils/pic-tests.utils';
 
@@ -48,12 +44,10 @@ describe('Satellite > Auth > Mission Control', () => {
 		await pic?.tearDown();
 	});
 
-	it('should register a new user and spin a mission control', async () => {
-		const {
-			identity,
-			mission_control: missionControl,
-			jwt
-		} = await authenticateAndMakeIdentity<{ mission_control: MissionControl }>({
+	it('should register a new user', async () => {
+		const { identity, account, jwt } = await authenticateAndMakeIdentity<{
+			account: ConsoleDid.Account;
+		}>({
 			pic,
 			session,
 			actor: consoleActor
@@ -62,9 +56,9 @@ describe('Satellite > Auth > Mission Control', () => {
 		mockJwt = jwt;
 		mockIdentity = identity;
 
-		expect(missionControl.owner.toText()).toEqual(identity.getPrincipal().toText());
+		expect(account.owner.toText()).toEqual(identity.getPrincipal().toText());
 
-		const provider = fromNullable(missionControl.provider);
+		const provider = fromNullable(account.provider);
 
 		assertNonNullish(provider);
 
@@ -82,27 +76,12 @@ describe('Satellite > Auth > Mission Control', () => {
 
 		expect(data).toEqual(mockUserData);
 
-		// Should be a controller
-		const missionControlId = fromNullable(missionControl.mission_control_id);
+		const missionControlId = fromNullable(account.mission_control_id);
 
-		assertNonNullish(missionControlId);
-
-		const micActor = pic.createActor<MissionControlActor>(
-			idlFactoryMissionControl,
-			missionControlId
-		);
-		micActor.setIdentity(identity);
-
-		const { get_user } = micActor;
-
-		const user = await get_user();
-
-		expect(user.toText()).toEqual(missionControl.owner.toText());
+		expect(missionControlId).toBeUndefined();
 	});
 
-	// TODO assert controller
-
-	it('should return same mission control', async () => {
+	it('should return same user', async () => {
 		await pic.advanceTime(1000 * 30); // 30s for cooldown guard
 		await tick(pic);
 
@@ -122,11 +101,11 @@ describe('Satellite > Auth > Mission Control', () => {
 			return;
 		}
 
-		const { mission_control: missionControl } = result.Ok;
+		const { account } = result.Ok;
 
-		expect(missionControl.owner.toText()).toEqual(mockIdentity.getPrincipal().toText());
+		expect(account.owner.toText()).toEqual(mockIdentity.getPrincipal().toText());
 
-		const provider = fromNullable(missionControl.provider);
+		const provider = fromNullable(account.provider);
 
 		assertNonNullish(provider);
 
@@ -179,11 +158,11 @@ describe('Satellite > Auth > Mission Control', () => {
 			return;
 		}
 
-		const { mission_control: missionControl } = result.Ok;
+		const { account } = result.Ok;
 
-		expect(missionControl.owner.toText()).toEqual(mockIdentity.getPrincipal().toText());
+		expect(account.owner.toText()).toEqual(mockIdentity.getPrincipal().toText());
 
-		const provider = fromNullable(missionControl.provider);
+		const provider = fromNullable(account.provider);
 
 		assertNonNullish(provider);
 
@@ -206,5 +185,13 @@ describe('Satellite > Auth > Mission Control', () => {
 			family_name: toNullable(updatePayload.family_name),
 			email: toNullable(updatePayload.email)
 		});
+	});
+
+	it('should be able to spin module', async () => {
+		assertNonNullish(mockIdentity);
+
+		await expect(
+			createSatelliteWithConsole({ user: mockIdentity, actor: consoleActor })
+		).resolves.not.toThrow();
 	});
 });

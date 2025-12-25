@@ -1,15 +1,15 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
-	import type { MissionControlDid } from '$declarations';
 	import CanisterWarnings from '$lib/components/canister/CanisterWarnings.svelte';
 	import LoaderWarnings from '$lib/components/warning/LoaderWarnings.svelte';
 	import VersionWarnings from '$lib/components/warning/VersionWarnings.svelte';
-	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
+	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import { orbiterStore } from '$lib/derived/orbiter.derived';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
+	import type { Satellite } from '$lib/types/satellite';
 
 	interface Props {
-		satellite?: MissionControlDid.Satellite | undefined;
+		satellite?: Satellite | undefined;
 	}
 
 	let { satellite = undefined }: Props = $props();
@@ -17,8 +17,8 @@
 
 <VersionWarnings {satellite} />
 
-{#if nonNullish($missionControlIdDerived)}
-	<LoaderWarnings canisterId={$missionControlIdDerived}>
+{#if nonNullish($missionControlId)}
+	<LoaderWarnings canisterId={$missionControlId}>
 		{#snippet cycles()}
 			{$i18n.canisters.warning_mission_control_low_cycles}
 		{/snippet}

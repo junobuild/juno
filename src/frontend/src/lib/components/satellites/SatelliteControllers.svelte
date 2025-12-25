@@ -7,13 +7,14 @@
 	} from '$lib/api/mission-control.api';
 	import { listControllers } from '$lib/api/satellites.api';
 	import Controllers from '$lib/components/controllers/Controllers.svelte';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import { authStore } from '$lib/stores/auth.store';
-	import { i18n } from '$lib/stores/i18n.store';
 	import type { SetControllerParams } from '$lib/types/controllers';
 	import type { MissionControlId } from '$lib/types/mission-control';
+	import type { Satellite } from '$lib/types/satellite';
 
 	interface Props {
-		satellite: MissionControlDid.Satellite;
+		satellite: Satellite;
 	}
 
 	let { satellite }: Props = $props();

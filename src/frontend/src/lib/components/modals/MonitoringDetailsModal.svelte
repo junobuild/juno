@@ -2,14 +2,14 @@
 	import { nonNullish } from '@dfinity/utils';
 	import { Principal } from '@icp-sdk/core/principal';
 	import { fade } from 'svelte/transition';
-	import CanisterMonitoringChart from '$lib/components/canister/CanisterMonitoringChart.svelte';
-	import CanisterMonitoringData from '$lib/components/canister/CanisterMonitoringData.svelte';
-	import CanisterOverview from '$lib/components/canister/CanisterOverview.svelte';
+	import CanisterOverview from '$lib/components/canister/display/CanisterOverview.svelte';
+	import CanisterMonitoringChart from '$lib/components/canister/monitoring/CanisterMonitoringChart.svelte';
+	import CanisterMonitoringData from '$lib/components/canister/monitoring/CanisterMonitoringData.svelte';
 	import MonitoringDepositCyclesChart from '$lib/components/monitoring/MonitoringDepositCyclesChart.svelte';
 	import MonitoringStrategyStatus from '$lib/components/monitoring/MonitoringStrategyStatus.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import type {
 		CanisterData,
 		CanisterMonitoringData as CanisterMonitoringDataType,

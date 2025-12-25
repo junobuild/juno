@@ -4,8 +4,8 @@
 	import { afterNavigate } from '$app/navigation';
 	import { page } from '$app/state';
 	import { onIntersection } from '$lib/directives/intersection.directives';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { onLayoutTitleIntersection } from '$lib/stores/layout-intersecting.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
+	import { onLayoutTitleIntersection } from '$lib/stores/app/layout-intersecting.store';
 	import { type TabsContext, TABS_CONTEXT_KEY } from '$lib/types/tabs.context';
 	import { initTabId } from '$lib/utils/tabs.utils';
 	import { keyOf } from '$lib/utils/utils';

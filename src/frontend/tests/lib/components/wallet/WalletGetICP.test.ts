@@ -1,7 +1,7 @@
 import WalletGetICP from '$lib/components/wallet/WalletGetICP.svelte';
 import { render } from '@testing-library/svelte';
 
-import { mockMissionControlId } from '../../../mocks/modules.mock';
+import { mockWalletId } from '../../../mocks/modules.mock';
 
 describe('WalletGetICP', () => {
 	beforeEach(() => {
@@ -12,7 +12,7 @@ describe('WalletGetICP', () => {
 	it('should not display button when mode is not dev', () => {
 		vi.stubEnv('DEV', false);
 
-		const { container } = render(WalletGetICP, { missionControlId: mockMissionControlId });
+		const { container } = render(WalletGetICP, { walletId: mockWalletId });
 
 		expect(container.querySelector('button')).not.toBeInTheDocument();
 	});
@@ -21,7 +21,7 @@ describe('WalletGetICP', () => {
 		vi.stubEnv('DEV', false);
 		vi.stubEnv('MODE', 'skylab');
 
-		const { getByRole } = render(WalletGetICP, { missionControlId: mockMissionControlId });
+		const { getByRole } = render(WalletGetICP, { walletId: mockWalletId });
 
 		expect(getByRole('button')).toBeInTheDocument();
 	});
@@ -29,7 +29,7 @@ describe('WalletGetICP', () => {
 	it('should display button when in dev mode', () => {
 		vi.stubEnv('DEV', true);
 
-		const { getByRole } = render(WalletGetICP, { missionControlId: mockMissionControlId });
+		const { getByRole } = render(WalletGetICP, { walletId: mockWalletId });
 
 		expect(getByRole('button')).toBeInTheDocument();
 	});

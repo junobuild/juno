@@ -1,9 +1,14 @@
-import type { MissionControlDid, SatelliteDid } from '$declarations';
+import type { SatelliteDid } from '$declarations';
 import { PAGINATION } from '$lib/constants/app.constants';
 import { isDev } from '$lib/env/app.env';
 import { SatelliteUiMetadataParser } from '$lib/schemas/satellite.schema';
 import type { ListParams } from '$lib/types/list';
-import type { SatelliteUi, SatelliteUiMetadata, SatelliteUiTags } from '$lib/types/satellite';
+import type {
+	Satellite,
+	SatelliteUi,
+	SatelliteUiMetadata,
+	SatelliteUiTags
+} from '$lib/types/satellite';
 import { metadataEnvironment, metadataName, metadataTags } from '$lib/utils/metadata.utils';
 import { isEmptyString, isNullish, notEmptyString, toNullable } from '@dfinity/utils';
 import { Principal } from '@icp-sdk/core/principal';
@@ -16,22 +21,18 @@ export const satelliteUrl = (satelliteId: string): string => {
 	return `https://${satelliteId}.icp0.io`;
 };
 
-export const satelliteMetadata = (satellite: MissionControlDid.Satellite): SatelliteUiMetadata => ({
+export const satelliteMetadata = (satellite: Satellite): SatelliteUiMetadata => ({
 	name: satelliteName(satellite),
 	environment: satelliteEnvironment(satellite),
 	tags: satelliteTags(satellite)
 });
 
-export const satelliteName = ({ metadata }: MissionControlDid.Satellite): string =>
-	metadataName(metadata);
+export const satelliteName = ({ metadata }: Satellite): string => metadataName(metadata);
 
-export const satelliteEnvironment = ({
-	metadata
-}: MissionControlDid.Satellite): string | undefined => metadataEnvironment(metadata);
+export const satelliteEnvironment = ({ metadata }: Satellite): string | undefined =>
+	metadataEnvironment(metadata);
 
-export const satelliteTags = ({
-	metadata
-}: MissionControlDid.Satellite): SatelliteUiTags | undefined => {
+export const satelliteTags = ({ metadata }: Satellite): SatelliteUiTags | undefined => {
 	const tags = metadataTags(metadata);
 	const { data, success } = SatelliteUiMetadataParser.safeParse(tags);
 	return success ? data : undefined;

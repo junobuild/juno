@@ -1,6 +1,6 @@
 [package]
 name = "junobuild-utils"
-version = "0.1.4"
+version = "0.1.5"
 authors.workspace = true
 edition.workspace = true
 repository.workspace = true
@@ -8,7 +8,7 @@ description = "A collection of utilities for developers on Juno."
 homepage.workspace = true
 documentation = "https://docs.rs/junobuild-utils"
 readme = "README.md"
-license-file = "LICENSE.md"
+license = "MIT"
 
 [dependencies]
 candid.workspace = true

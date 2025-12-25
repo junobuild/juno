@@ -1,6 +1,6 @@
 <script lang="ts">
 	import CanisterValue from '$lib/components/canister/CanisterValue.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { CanisterDataInfo, CanisterSyncStatus } from '$lib/types/canister';
 	import { formatTCycles } from '$lib/utils/cycles.utils';
 

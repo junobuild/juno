@@ -1,8 +1,8 @@
-import type { MissionControlDid } from '$declarations';
 import { getReleasesMetadata } from '$lib/services/cdn.services';
-import { busy } from '$lib/stores/busy.store';
-import { i18n } from '$lib/stores/i18n.store';
-import { toasts } from '$lib/stores/toasts.store';
+import { busy } from '$lib/stores/app/busy.store';
+import { i18n } from '$lib/stores/app/i18n.store';
+import { toasts } from '$lib/stores/app/toasts.store';
+import type { Satellite } from '$lib/types/satellite';
 import { emit } from '$lib/utils/events.utils';
 import { isNullish, nonNullish } from '@dfinity/utils';
 import type { BuildType } from '@junobuild/admin';
@@ -17,7 +17,7 @@ export const openUpgradeModal = async ({
 }: {
 	currentVersion: string;
 	type: 'upgrade_satellite' | 'upgrade_mission_control' | 'upgrade_orbiter';
-	satellite?: MissionControlDid.Satellite;
+	satellite?: Satellite;
 	build?: BuildType;
 }) => {
 	busy.start();

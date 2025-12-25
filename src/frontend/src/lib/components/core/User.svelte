@@ -10,10 +10,11 @@
 	import IconUser from '$lib/components/icons/IconUser.svelte';
 	import Avatar from '$lib/components/ui/Avatar.svelte';
 	import ButtonIcon from '$lib/components/ui/ButtonIcon.svelte';
+	import Hr from '$lib/components/ui/Hr.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import { APP_VERSION } from '$lib/constants/app.constants';
-	import { signOut } from '$lib/services/auth/auth.services';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { signOut } from '$lib/services/console/auth/auth.services';
+	import { i18n } from '$lib/stores/app/i18n.store';
 
 	interface Props {
 		provider?: ConsoleDid.Provider;
@@ -67,7 +68,7 @@
 				<span>{$i18n.preferences.title}</span>
 			</a>
 
-			<hr />
+			<Hr />
 		{/if}
 
 		<a
@@ -90,7 +91,7 @@
 			target="_blank"><IconCodeBranch /> <span>Changelog</span></a
 		>
 
-		<hr />
+		<Hr />
 
 		<button class="menu" aria-haspopup="menu" onclick={signOutClose} role="menuitem" type="button">
 			<IconSignOut />
@@ -101,31 +102,10 @@
 
 <style lang="scss">
 	@use '../../styles/mixins/overlay';
-	@use '../../styles/mixins/media';
 
 	@include overlay.popover-container;
 
 	.container {
 		font-size: var(--font-size-small);
-	}
-
-	hr {
-		width: calc(100% - var(--padding-2x));
-		height: auto;
-
-		margin: var(--padding-0_5x) auto;
-		padding: 0;
-
-		border-bottom: 1px solid var(--color-background-shade);
-
-		&::before {
-			content: none;
-		}
-	}
-
-	@include media.dark-theme {
-		hr {
-			border-color: var(--color-background-tint);
-		}
 	}
 </style>

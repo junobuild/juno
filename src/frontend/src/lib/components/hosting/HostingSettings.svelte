@@ -2,16 +2,17 @@
 	import { fromNullable, nonNullish } from '@dfinity/utils';
 	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
-	import type { SatelliteDid, MissionControlDid } from '$declarations';
+	import type { SatelliteDid } from '$declarations';
 	import HostingSwitchMemory from '$lib/components/hosting/HostingSwitchMemory.svelte';
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
-	import { getRuleDapp } from '$lib/services/collection.services';
+	import { getRuleDapp } from '$lib/services/satellite/collection.services';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import { authStore } from '$lib/stores/auth.store';
-	import { i18n } from '$lib/stores/i18n.store';
+	import type { Satellite } from '$lib/types/satellite';
 
 	interface Props {
-		satellite: MissionControlDid.Satellite;
+		satellite: Satellite;
 	}
 
 	let { satellite }: Props = $props();

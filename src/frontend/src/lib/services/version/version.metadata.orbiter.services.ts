@@ -12,7 +12,7 @@ export const getOrbiterVersionMetadata = async ({
 }: {
 	orbiterId: Principal;
 	identity: Identity;
-}): Promise<{ metadata: Omit<VersionMetadata, 'release'> }> => {
+}): Promise<{ metadata: Omit<VersionMetadata, 'release'> | undefined }> => {
 	const [junoPkg] = await Promise.allSettled([
 		getJunoPackage({
 			moduleId: orbiterId,
@@ -33,12 +33,16 @@ export const getOrbiterVersionMetadata = async ({
 		};
 	}
 
-	// Legacy way of fetch build and version information
-	const version = await orbiterVersion({ orbiterId, identity });
+	try {
+		// Legacy way of fetch build and version information
+		const version = await orbiterVersion({ orbiterId, identity });
 
-	return {
-		metadata: {
-			current: version
-		}
-	};
+		return {
+			metadata: {
+				current: version
+			}
+		};
+	} catch (_err: unknown) {
+		return { metadata: undefined };
+	}
 };

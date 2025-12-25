@@ -1,62 +1,56 @@
 import { getAgent } from '$lib/api/_agent/_agent.api';
 import type { OptionIdentity } from '$lib/types/itentity';
+import { toAccountIdentifier } from '$lib/utils/icp-icrc-account.utils';
 import { assertNonNullish } from '@dfinity/utils';
-import {
-	AccountIdentifier,
-	IndexCanister,
-	type GetAccountIdentifierTransactionsResponse
-} from '@icp-sdk/canisters/ledger/icp';
-import type { Principal } from '@icp-sdk/core/principal';
-
-export const getAccountIdentifier = (principal: Principal): AccountIdentifier =>
-	AccountIdentifier.fromPrincipal({ principal, subAccount: undefined });
+import { IcpIndexCanister, type IcpIndexDid } from '@icp-sdk/canisters/ledger/icp';
+import type { IcrcAccount } from '@icp-sdk/canisters/ledger/icrc';
 
 export const getBalance = async ({
-	owner,
+	account,
 	identity
 }: {
-	owner: Principal;
+	account: IcrcAccount;
 	identity: OptionIdentity;
 }): Promise<bigint> => {
 	assertNonNullish(identity, 'No internet identity to initialize the Index actor.');
 
 	const agent = await getAgent({ identity });
 
-	const { accountBalance } = IndexCanister.create({
+	const { accountBalance } = IcpIndexCanister.create({
 		agent
 	});
 
 	return accountBalance({
-		accountIdentifier: getAccountIdentifier(owner).toHex(),
+		accountIdentifier: toAccountIdentifier(account).toHex(),
 		certified: false
 	});
 };
 
 export const getTransactions = async ({
-	owner,
+	account,
 	identity,
 	start,
 	maxResults = 100n,
 	certified
 }: {
-	owner: Principal;
+	account: IcrcAccount;
 	identity: OptionIdentity;
 	start?: bigint;
 	maxResults?: bigint;
 	certified: boolean;
-}): Promise<GetAccountIdentifierTransactionsResponse> => {
+}): Promise<IcpIndexDid.GetAccountIdentifierTransactionsResponse> => {
 	assertNonNullish(identity, 'No internet identity to initialize the Index actor.');
 
 	const agent = await getAgent({ identity });
 
-	const { getTransactions } = IndexCanister.create({
+	const { getTransactions } = IcpIndexCanister.create({
 		agent
 	});
 
 	return getTransactions({
 		start,
 		maxResults,
-		accountIdentifier: getAccountIdentifier(owner).toHex(),
+		accountIdentifier: toAccountIdentifier(account).toHex(),
 		certified
 	});
 };

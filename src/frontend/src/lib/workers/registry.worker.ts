@@ -9,7 +9,7 @@ import { getReleasesMetadata } from '$lib/services/cdn.services';
 import { getMissionControlVersionMetadata } from '$lib/services/version/version.metadata.mission-control.services';
 import { getOrbiterVersionMetadata } from '$lib/services/version/version.metadata.orbiter.services';
 import { getSatelliteVersionMetadata } from '$lib/services/version/version.metadata.satellite.services';
-import { releasesIdbStore, versionIdbStore } from '$lib/stores/idb.store';
+import { releasesIdbStore, versionIdbStore } from '$lib/stores/app/idb.store';
 import type { CanisterIdText, CanisterSegment } from '$lib/types/canister';
 import type {
 	PostMessageDataRequest,

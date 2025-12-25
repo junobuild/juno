@@ -1,23 +1,27 @@
-import { satellitesUncertifiedStore } from '$lib/stores/satellite.store';
-import type { SatelliteUi } from '$lib/types/satellite';
+import { consoleSatellites } from '$lib/derived/console/segments.derived';
+import { satellitesStore as mctrlSatellitesStore } from '$lib/derived/mission-control/satellites.derived';
+import type { Satellite, SatelliteUi } from '$lib/types/satellite';
 import { satelliteMetadata, satelliteName } from '$lib/utils/satellite.utils';
 import { derived } from 'svelte/store';
 
-// TODO: rename without suffix store but find another naming that satellite and satelliteId because we probably already use those for local variable.
-
 export const satellitesStore = derived(
-	[satellitesUncertifiedStore],
-	([$satellitesDataStore]) => $satellitesDataStore?.data
-);
+	[consoleSatellites, mctrlSatellitesStore],
+	([$consoleSatellites, $mctrlSatellitesStore]): Satellite[] | undefined => {
+		// Not yet fully loaded
+		if ($consoleSatellites === undefined || $mctrlSatellitesStore === undefined) {
+			return undefined;
+		}
 
-export const satellitesLoaded = derived(
-	[satellitesUncertifiedStore],
-	([$satellitesDataStore]) => $satellitesDataStore !== undefined
-);
-
-export const satellitesNotLoaded = derived(
-	[satellitesLoaded],
-	([$satellitesLoaded]) => !$satellitesLoaded
+		return [
+			...$consoleSatellites.filter(
+				({ satellite_id }) =>
+					($mctrlSatellitesStore ?? []).find(
+						({ satellite_id: id }) => id.toText() === satellite_id.toText()
+					) === undefined
+			),
+			...($mctrlSatellitesStore ?? [])
+		];
+	}
 );
 
 export const sortedSatellites = derived([satellitesStore], ([$satellitesStore]) =>

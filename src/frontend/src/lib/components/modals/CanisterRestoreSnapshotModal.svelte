@@ -5,10 +5,10 @@
 	import Html from '$lib/components/ui/Html.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import Warning from '$lib/components/ui/Warning.svelte';
-	import { restoreSnapshot } from '$lib/services/snapshots.services';
+	import { restoreSnapshot } from '$lib/services/ic-mgmt/snapshots.services';
+	import { isBusy, wizardBusy } from '$lib/stores/app/busy.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import { authStore } from '$lib/stores/auth.store';
-	import { isBusy, wizardBusy } from '$lib/stores/busy.store';
-	import { i18n } from '$lib/stores/i18n.store';
 	import type { JunoModalDetail, JunoModalRestoreSnapshotDetail } from '$lib/types/modal';
 	import type { SnapshotProgress } from '$lib/types/progress-snapshot';
 	import { formatToDate } from '$lib/utils/date.utils';

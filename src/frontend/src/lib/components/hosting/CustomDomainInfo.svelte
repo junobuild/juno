@@ -17,7 +17,7 @@
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { CustomDomainState } from '$lib/types/custom-domain';
 	import type { Option } from '$lib/types/utils';
 	import { keyOf } from '$lib/utils/utils';
@@ -30,6 +30,7 @@
 
 	let { customDomain, mainDomain } = $derived(info);
 
+	// svelte-ignore state_referenced_locally
 	let registrationState = $state<Option<CustomDomainState>>(info.registrationState);
 
 	let visible = $state(true);
@@ -54,9 +55,8 @@
 </script>
 
 <svelte:window
-	onjunoRegistrationState={({
-		detail: { registrationState: state }
-	}: CustomEvent<{ registrationState: Option<CustomDomainState> }>) => (registrationState = state)}
+	onjunoRegistrationState={({ detail: { registrationState: state } }: CustomEvent) =>
+		(registrationState = state)}
 />
 
 <Popover backdrop="dark" center={true} bind:visible>

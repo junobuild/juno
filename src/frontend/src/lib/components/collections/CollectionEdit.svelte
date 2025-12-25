@@ -14,11 +14,11 @@
 		type MemoryText,
 		type PermissionText
 	} from '$lib/constants/rules.constants';
-	import { setRule } from '$lib/services/collection.services';
+	import { setRule } from '$lib/services/satellite/collection.services';
+	import { busy } from '$lib/stores/app/busy.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
+	import { toasts } from '$lib/stores/app/toasts.store';
 	import { authStore } from '$lib/stores/auth.store';
-	import { busy } from '$lib/stores/busy.store';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { toasts } from '$lib/stores/toasts.store';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { memoryToText, permissionToText } from '$lib/utils/rules.utils';

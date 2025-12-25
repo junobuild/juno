@@ -3,28 +3,29 @@
 	import { AnonymousIdentity } from '@icp-sdk/core/agent';
 	import { Principal } from '@icp-sdk/core/principal';
 	import { type UpgradeCodeParams, upgradeSatellite } from '@junobuild/admin';
-	import type { SatelliteDid, MissionControlDid } from '$declarations';
+	import type { SatelliteDid } from '$declarations';
 	import CanisterUpgradeWizard, {
 		type CanisterUpgradeWizardProps,
 		type CanisterUpgradeWizardStep
-	} from '$lib/components/canister/CanisterUpgradeWizard.svelte';
+	} from '$lib/components/canister/upgrade/CanisterUpgradeWizard.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import CanisterUpgradeOptions from '$lib/components/upgrade/wizard/CanisterUpgradeOptions.svelte';
-	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
+	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import { prepareWasmUpgrade } from '$lib/services/upgrade/upgrade.cdn.services';
 	import { reloadSatelliteVersion } from '$lib/services/version/version.satellite.services';
+	import { wizardBusy } from '$lib/stores/app/busy.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
+	import { toasts } from '$lib/stores/app/toasts.store';
 	import { authStore } from '$lib/stores/auth.store';
-	import { wizardBusy } from '$lib/stores/busy.store';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { toasts } from '$lib/stores/toasts.store';
+	import type { Satellite } from '$lib/types/satellite';
 	import type { Wasm } from '$lib/types/upgrade';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { container } from '$lib/utils/juno.utils';
 	import { satelliteName } from '$lib/utils/satellite.utils';
 
 	interface Props {
-		satellite: MissionControlDid.Satellite;
+		satellite: Satellite;
 		asset: SatelliteDid.AssetNoContent | undefined;
 		onclose: () => void;
 	}
@@ -55,7 +56,7 @@
 				...container()
 			},
 			...params,
-			...(nonNullish($missionControlIdDerived) && { missionControlId: $missionControlIdDerived }),
+			...(nonNullish($missionControlId) && { missionControlId: $missionControlId }),
 			// TODO: option to be removed
 			deprecated: false, // Proposals supported > SATELLITE_v0_0_7,
 			deprecatedNoScope: false // Proposals supported >  SATELLITE_v0_0_9

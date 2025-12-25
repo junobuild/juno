@@ -1,18 +1,20 @@
-import { getAccountIdentifier } from '$lib/api/icp-index.api';
 import {
 	INDEX_RELOAD_DELAY,
+	MEMO_CANISTER_APPROVE,
 	MEMO_CANISTER_CREATE,
 	MEMO_CANISTER_TOP_UP,
 	MEMO_ORBITER_CREATE_REFUND,
 	MEMO_SATELLITE_CREATE_REFUND
 } from '$lib/constants/wallet.constants';
-import { i18n } from '$lib/stores/i18n.store';
+import type { WalletId } from '$lib/schemas/wallet.schema';
+import { i18n } from '$lib/stores/app/i18n.store';
 import type { IcTransactionUi } from '$lib/types/ic-transaction';
-import type { MissionControlId } from '$lib/types/mission-control';
 import { emit } from '$lib/utils/events.utils';
+import { toAccountIdentifier } from '$lib/utils/icp-icrc-account.utils';
 import { formatICP } from '$lib/utils/icp.utils';
 import { waitForMilliseconds } from '$lib/utils/timeout.utils';
 import { nonNullish } from '@dfinity/utils';
+import { encodeIcrcAccount } from '@icp-sdk/canisters/ledger/icrc';
 import { get } from 'svelte/store';
 
 /**
@@ -30,10 +32,10 @@ export const waitAndRestartWallet = async () => {
 
 export const transactionMemo = ({
 	transaction,
-	missionControlId
+	walletId
 }: {
 	transaction: IcTransactionUi;
-	missionControlId: MissionControlId;
+	walletId: WalletId;
 }): string => {
 	const labels = get(i18n);
 
@@ -42,6 +44,8 @@ export const transactionMemo = ({
 	switch (memo) {
 		case MEMO_CANISTER_CREATE:
 			return labels.wallet.memo_create;
+		case MEMO_CANISTER_APPROVE:
+			return labels.wallet.memo_approve;
 		case MEMO_SATELLITE_CREATE_REFUND:
 			return labels.wallet.memo_refund_satellite;
 		case MEMO_ORBITER_CREATE_REFUND:
@@ -49,9 +53,11 @@ export const transactionMemo = ({
 		case MEMO_CANISTER_TOP_UP:
 			return labels.wallet.memo_refund_top_up;
 		default: {
-			const accountIdentifier = getAccountIdentifier(missionControlId);
+			// TODO: likely not performant to encode on each matching transaction...
+			const walletIdText = encodeIcrcAccount(walletId);
+			const accountIdentifier = toAccountIdentifier(walletId);
 
-			if (from === missionControlId.toText() || from === accountIdentifier.toHex()) {
+			if (from === walletIdText || from === accountIdentifier.toHex()) {
 				return labels.wallet.memo_sent;
 			}
 

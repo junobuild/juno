@@ -2,7 +2,7 @@
 	import { getContext, type Snippet } from 'svelte';
 	import DataCollectionsHeader from '$lib/components/data/DataCollectionsHeader.svelte';
 	import IconNew from '$lib/components/icons/IconNew.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { CollectionRule } from '$lib/types/collection';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 

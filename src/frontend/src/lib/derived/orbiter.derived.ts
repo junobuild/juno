@@ -1,15 +1,40 @@
-import type { MissionControlDid } from '$declarations';
-import { type OrbiterConfigs, orbitersConfigsStore } from '$lib/stores/orbiter-configs.store';
-import { orbitersUncertifiedStore } from '$lib/stores/orbiter.store';
+import { consoleOrbiters } from '$lib/derived/console/segments.derived';
+import { mctrlOrbiters } from '$lib/derived/mission-control/orbiters.derived';
+import { orbitersUncertifiedStore } from '$lib/stores/mission-control/orbiter.store';
+import {
+	type OrbiterConfigs,
+	orbitersConfigsStore
+} from '$lib/stores/orbiter/orbiter-configs.store';
+import type { Orbiter } from '$lib/types/orbiter';
 import { nonNullish } from '@dfinity/utils';
 import { derived, type Readable } from 'svelte/store';
 
 export const orbitersStore = derived(
-	[orbitersUncertifiedStore],
-	([$orbitersDataStore]) => $orbitersDataStore?.data
+	[consoleOrbiters, mctrlOrbiters],
+	([$consoleOrbiters, $mctrlOrbiters]): Orbiter[] | undefined | null => {
+		// Not yet fully loaded
+		if ($consoleOrbiters === undefined || $mctrlOrbiters === undefined) {
+			return undefined;
+		}
+
+		// No orbiter
+		if ($consoleOrbiters.length === 0 && $mctrlOrbiters === null) {
+			return null;
+		}
+
+		return [
+			...($consoleOrbiters ?? []).filter(
+				({ orbiter_id }) =>
+					($mctrlOrbiters ?? []).find(
+						({ orbiter_id: id }) => id.toText() === orbiter_id.toText()
+					) === undefined
+			),
+			...($mctrlOrbiters ?? [])
+		];
+	}
 );
 
-export const orbiterStore: Readable<MissionControlDid.Orbiter | undefined | null> = derived(
+export const orbiterStore: Readable<Orbiter | undefined | null> = derived(
 	[orbitersStore],
 	([$orbitersStore]) => $orbitersStore?.[0]
 );

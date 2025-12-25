@@ -1,8 +1,8 @@
 <script lang="ts">
 	import IconShield from '$lib/components/icons/IconShield.svelte';
 	import Notification from '$lib/components/notifications/Notification.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { notificationPreferencesStore } from '$lib/stores/notification-preferences.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
+	import { notificationPreferencesStore } from '$lib/stores/app/notification-preferences.store';
 	import { setLocalStorageItem } from '$lib/utils/local-storage.utils';
 
 	const dismiss = () => {

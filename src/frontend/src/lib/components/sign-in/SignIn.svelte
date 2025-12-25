@@ -1,7 +1,7 @@
 <script lang="ts">
 	import SignInActions from '$lib/components/sign-in/SignInActions.svelte';
 	import ContainerCentered from '$lib/components/ui/ContainerCentered.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 
 	let quotes: string[] = $derived([
 		$i18n.sign_in.quote_1,

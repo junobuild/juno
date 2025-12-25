@@ -12,7 +12,7 @@ export const getMissionControlVersionMetadata = async ({
 }: {
 	missionControlId: Principal;
 	identity: Identity;
-}): Promise<{ metadata: Omit<VersionMetadata, 'release'> }> => {
+}): Promise<{ metadata: Omit<VersionMetadata, 'release'> | undefined }> => {
 	const [junoPkg] = await Promise.allSettled([
 		getJunoPackage({
 			moduleId: missionControlId,
@@ -33,12 +33,16 @@ export const getMissionControlVersionMetadata = async ({
 		};
 	}
 
-	// Legacy way of fetch build and version information
-	const version = await missionControlVersion({ missionControlId, identity });
+	try {
+		// Legacy way of fetch build and version information
+		const version = await missionControlVersion({ missionControlId, identity });
 
-	return {
-		metadata: {
-			current: version
-		}
-	};
+		return {
+			metadata: {
+				current: version
+			}
+		};
+	} catch (_err: unknown) {
+		return { metadata: undefined };
+	}
 };

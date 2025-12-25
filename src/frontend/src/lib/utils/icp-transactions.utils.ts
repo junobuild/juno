@@ -1,38 +1,44 @@
-import { getAccountIdentifier } from '$lib/api/icp-index.api';
 import type { IcTransactionUi } from '$lib/types/ic-transaction';
-import type { OptionIdentity } from '$lib/types/itentity';
-import { fromNullable, jsonReplacer, nonNullish } from '@dfinity/utils';
-import type { Tokens, TransactionWithId } from '@icp-sdk/canisters/ledger/icp';
+import { fromNullable, jsonReplacer, nonNullish, uint8ArrayToBigInt } from '@dfinity/utils';
+import type { AccountIdentifierHex, IcpIndexDid } from '@icp-sdk/canisters/ledger/icp';
 
 export const mapIcpTransaction = ({
 	transaction: { transaction, id },
-	identity
+	accountIdentifierHex
 }: {
-	transaction: TransactionWithId;
-	identity: OptionIdentity;
+	transaction: IcpIndexDid.TransactionWithId;
+	accountIdentifierHex: AccountIdentifierHex;
 }): IcTransactionUi => {
-	const { operation, timestamp, memo } = transaction;
+	const { operation, timestamp, memo, icrc1_memo } = transaction;
 
 	const ICP_EXPLORER_URL = import.meta.env.VITE_ICP_EXPLORER_URL;
+
+	const mapMemo = (): Pick<IcTransactionUi, 'memo'> => {
+		if (memo === 0n) {
+			const icrc1Memo = fromNullable(icrc1_memo);
+
+			if (nonNullish(icrc1Memo)) {
+				return { memo: uint8ArrayToBigInt(icrc1Memo) };
+			}
+		}
+
+		return { memo };
+	};
 
 	const tx: Pick<IcTransactionUi, 'timestamp' | 'id' | 'status' | 'txExplorerUrl' | 'memo'> = {
 		id,
 		timestamp: fromNullable(timestamp)?.timestamp_nanos,
 		status: 'executed',
 		txExplorerUrl: `${ICP_EXPLORER_URL}/transaction/${id}`,
-		memo
+		...mapMemo()
 	};
-
-	const accountIdentifier = nonNullish(identity)
-		? getAccountIdentifier(identity.getPrincipal())
-		: undefined;
 
 	const mapFrom = (
 		from: string
 	): Pick<IcTransactionUi, 'from' | 'fromExplorerUrl' | 'incoming'> => ({
 		from,
 		fromExplorerUrl: `${ICP_EXPLORER_URL}/account/${from}`,
-		incoming: from?.toLowerCase() !== accountIdentifier?.toHex().toLowerCase()
+		incoming: from?.toLowerCase() !== accountIdentifierHex.toLowerCase()
 	});
 
 	const mapTo = (to: string): Pick<IcTransactionUi, 'to' | 'toExplorerUrl'> => ({
@@ -46,8 +52,8 @@ export const mapIcpTransaction = ({
 		incoming
 	}: {
 		incoming: boolean | undefined;
-		fee: Tokens;
-		amount: Tokens;
+		fee: IcpIndexDid.Tokens;
+		amount: IcpIndexDid.Tokens;
 	}): bigint => amount.e8s + (incoming === false ? fee.e8s : 0n);
 
 	if ('Approve' in operation) {

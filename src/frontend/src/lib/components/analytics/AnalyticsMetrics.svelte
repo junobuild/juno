@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import Value from '$lib/components/ui/Value.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { AnalyticsPageViews } from '$lib/types/orbiter';
 	import { formatCompactNumber, formatNumber } from '$lib/utils/number.utils';
 

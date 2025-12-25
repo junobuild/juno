@@ -5,8 +5,8 @@
 	import AnalyticsSatellitesPicker from '$lib/components/analytics/AnalyticsSatellitesPicker.svelte';
 	import Toolbar from '$lib/components/ui/Toolbar.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
-	import { analyticsFiltersStore } from '$lib/stores/analytics-filters.store';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
+	import { analyticsFiltersStore } from '$lib/stores/orbiter/analytics-filters.store';
 	import type { AnalyticsPeriodicity as AnalyticsPeriodicityType } from '$lib/types/orbiter';
 
 	interface Props {

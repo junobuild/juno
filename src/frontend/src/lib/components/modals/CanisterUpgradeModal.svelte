@@ -4,7 +4,7 @@
 	import CanisterUpgradeWizard, {
 		type CanisterUpgradeWizardProps,
 		type CanisterUpgradeWizardStep
-	} from '$lib/components/canister/CanisterUpgradeWizard.svelte';
+	} from '$lib/components/canister/upgrade/CanisterUpgradeWizard.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import SelectUpgradeVersion, {
 		type IgnoreCanUpgradeErrorFn

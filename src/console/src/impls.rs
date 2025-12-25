@@ -1,18 +1,22 @@
-use crate::constants::{ORBITER_CREATION_FEE_ICP, SATELLITE_CREATION_FEE_ICP};
+use crate::constants::{
+    MISSION_CONTROL_CREATION_FEE_ICP, ORBITER_CREATION_FEE_ICP, SATELLITE_CREATION_FEE_ICP,
+};
 use crate::memory::manager::init_stable_state;
 use crate::types::ledger::Payment;
-use crate::types::state::{Fee, Fees, HeapState, MissionControl, OpenIdData, Rate, Rates, State};
+use crate::types::state::{
+    Account, Fee, Fees, HeapState, Rate, Rates, Segment, SegmentKey, SegmentType, State,
+};
 use ic_cdk::api::time;
 use ic_stable_structures::storable::Bound;
 use ic_stable_structures::Storable;
-use junobuild_auth::openid::types::interface::OpenIdCredential;
-use junobuild_auth::profile::types::OpenIdProfile;
 use junobuild_shared::rate::constants::DEFAULT_RATE_CONFIG;
 use junobuild_shared::rate::types::RateTokens;
 use junobuild_shared::serializers::{
     deserialize_from_bytes, serialize_into_bytes, serialize_to_bytes,
 };
+use junobuild_shared::types::state::{Metadata, SegmentId, UserId};
 use std::borrow::Cow;
+use std::collections::HashMap;
 
 impl Default for State {
     fn default() -> Self {
@@ -62,11 +66,15 @@ impl Default for Fees {
                 fee: ORBITER_CREATION_FEE_ICP,
                 updated_at: now,
             },
+            mission_control: Some(Fee {
+                fee: MISSION_CONTROL_CREATION_FEE_ICP,
+                updated_at: now,
+            }),
         }
     }
 }
 
-impl Storable for MissionControl {
+impl Storable for Account {
     fn to_bytes(&self) -> Cow<'_, [u8]> {
         serialize_to_bytes(self)
     }
@@ -98,55 +106,64 @@ impl Storable for Payment {
     const BOUND: Bound = Bound::Unbounded;
 }
 
-impl OpenIdProfile for OpenIdData {
-    fn email(&self) -> Option<&str> {
-        self.email.as_deref()
+impl Storable for Segment {
+    fn to_bytes(&self) -> Cow<'_, [u8]> {
+        serialize_to_bytes(self)
     }
-    fn name(&self) -> Option<&str> {
-        self.name.as_deref()
+
+    fn into_bytes(self) -> Vec<u8> {
+        serialize_into_bytes(&self)
     }
-    fn given_name(&self) -> Option<&str> {
-        self.given_name.as_deref()
+
+    fn from_bytes(bytes: Cow<[u8]>) -> Self {
+        deserialize_from_bytes(bytes)
     }
-    fn family_name(&self) -> Option<&str> {
-        self.family_name.as_deref()
+
+    const BOUND: Bound = Bound::Unbounded;
+}
+
+impl Storable for SegmentKey {
+    fn to_bytes(&self) -> Cow<'_, [u8]> {
+        serialize_to_bytes(self)
     }
-    fn picture(&self) -> Option<&str> {
-        self.picture.as_deref()
+
+    fn into_bytes(self) -> Vec<u8> {
+        serialize_into_bytes(&self)
     }
-    fn locale(&self) -> Option<&str> {
-        self.locale.as_deref()
+
+    fn from_bytes(bytes: Cow<[u8]>) -> Self {
+        deserialize_from_bytes(bytes)
+    }
+
+    const BOUND: Bound = Bound::Unbounded;
+}
+
+fn init_metadata(name: &Option<String>) -> Metadata {
+    match name {
+        Some(name) => HashMap::from([("name".to_string(), name.to_owned())]),
+        None => HashMap::new(),
     }
 }
 
-impl OpenIdData {
-    pub fn merge(existing: &OpenIdData, credential: &OpenIdCredential) -> Self {
+impl Segment {
+    pub fn from(segment_id: &SegmentId, name: &Option<String>) -> Self {
+        let now = time();
+
         Self {
-            email: credential.email.clone().or(existing.email.clone()),
-            name: credential.name.clone().or(existing.name.clone()),
-            given_name: credential
-                .given_name
-                .clone()
-                .or(existing.given_name.clone()),
-            family_name: credential
-                .family_name
-                .clone()
-                .or(existing.family_name.clone()),
-            picture: credential.picture.clone().or(existing.picture.clone()),
-            locale: credential.locale.clone().or(existing.locale.clone()),
+            segment_id: *segment_id,
+            metadata: init_metadata(name),
+            created_at: now,
+            updated_at: now,
         }
     }
 }
 
-impl From<&OpenIdCredential> for OpenIdData {
-    fn from(credential: &OpenIdCredential) -> Self {
+impl SegmentKey {
+    pub fn from(user: &UserId, segment_id: &SegmentId, segment_type: SegmentType) -> Self {
         Self {
-            email: credential.email.clone(),
-            name: credential.name.clone(),
-            given_name: credential.given_name.clone(),
-            family_name: credential.family_name.clone(),
-            picture: credential.picture.clone(),
-            locale: credential.locale.clone(),
+            user: *user,
+            segment_type,
+            segment_id: *segment_id,
         }
     }
 }

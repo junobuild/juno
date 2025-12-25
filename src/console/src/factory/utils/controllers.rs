@@ -1,6 +1,6 @@
 use candid::Principal;
 use junobuild_shared::mgmt::ic::update_canister_controllers;
-use junobuild_shared::types::state::MissionControlId;
+use junobuild_shared::types::state::ControllerId;
 use junobuild_shared::types::state::UserId;
 
 /// Once mission control is created:
@@ -19,25 +19,16 @@ pub async fn update_mission_control_controllers(
     }
 }
 
-// Satellite is ready - canister has been created and code has been installed once - we can remove the console of the list of the controllers of the satellite.
+// Satellite or Orbiter is ready - canister has been created and code has been installed once - we can remove the console of the list of the controllers of the satellite.
 // Note: we install the code the first time with the console as a controller to avoid to have to populate the satellite wasm in each mission control center.
 pub async fn remove_console_controller(
     canister_id: &Principal,
-    mission_control_id: &MissionControlId,
-    user: &UserId,
+    controllers: &Vec<ControllerId>,
 ) -> Result<(), String> {
-    let controllers = user_mission_control_controllers(user, mission_control_id);
     let result = update_canister_controllers(*canister_id, controllers.to_owned()).await;
 
     match result {
         Err(_) => Err("Failed to remove console from the controllers of the segment.".to_string()),
         Ok(_) => Ok(()),
     }
-}
-
-pub fn user_mission_control_controllers(
-    user: &UserId,
-    mission_control_id: &MissionControlId,
-) -> Vec<Principal> {
-    Vec::from([*user, *mission_control_id])
 }

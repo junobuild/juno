@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { isNullish, nonNullish } from '@dfinity/utils';
-	import type { Principal } from '@icp-sdk/core/principal';
 	import { compare } from 'semver';
 	import type { OrbiterDid } from '$declarations';
 	import Checkbox from '$lib/components/ui/Checkbox.svelte';
@@ -12,15 +11,13 @@
 	import { DEFAULT_FEATURES } from '$lib/constants/analytics.constants';
 	import { ORBITER_v0_0_8 } from '$lib/constants/version.constants';
 	import { setOrbiterSatelliteConfigs } from '$lib/services/orbiter/orbiters.services';
+	import { isBusy, wizardBusy } from '$lib/stores/app/busy.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
+	import { toasts } from '$lib/stores/app/toasts.store';
 	import { authStore } from '$lib/stores/auth.store';
-	import { isBusy, wizardBusy } from '$lib/stores/busy.store';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { orbitersConfigsStore } from '$lib/stores/orbiter-configs.store';
-	import { toasts } from '$lib/stores/toasts.store';
+	import { orbitersConfigsStore } from '$lib/stores/orbiter/orbiter-configs.store';
 	import { versionStore } from '$lib/stores/version.store';
 	import type { JunoModalDetail, JunoModalEditOrbiterConfigDetail } from '$lib/types/modal';
-	import type { OrbiterSatelliteConfigEntry } from '$lib/types/orbiter';
-	import type { SatelliteIdText } from '$lib/types/satellite';
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -29,15 +26,11 @@
 
 	let { detail, onclose }: Props = $props();
 
-	let orbiterId: Principal = $state((detail as JunoModalEditOrbiterConfigDetail).orbiterId);
+	let orbiterId = $derived((detail as JunoModalEditOrbiterConfigDetail).orbiterId);
 
-	let config: Record<SatelliteIdText, OrbiterSatelliteConfigEntry> = $state(
-		(detail as JunoModalEditOrbiterConfigDetail).config
-	);
+	let config = $derived((detail as JunoModalEditOrbiterConfigDetail).config);
 
-	let features: OrbiterDid.OrbiterSatelliteFeatures | undefined = $state(
-		(detail as JunoModalEditOrbiterConfigDetail).features
-	);
+	let features = $derived((detail as JunoModalEditOrbiterConfigDetail).features);
 
 	let step: 'init' | 'in_progress' | 'ready' | 'error' = $state('init');
 

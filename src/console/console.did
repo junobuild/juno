@@ -1,3 +1,11 @@
+type Account = record {
+  updated_at : nat64;
+  credits : Tokens;
+  mission_control_id : opt principal;
+  provider : opt Provider;
+  owner : principal;
+  created_at : nat64;
+};
 type AssertMissionControlCenterArgs = record {
   mission_control_id : principal;
   user : principal;
@@ -26,7 +34,7 @@ type AssetNoContent = record {
 type AssetsUpgradeOptions = record { clear_existing_assets : opt bool };
 type Authentication = record {
   delegation : PreparedDelegation;
-  mission_control : MissionControl;
+  account : Account;
 };
 type AuthenticationArgs = variant { OpenId : OpenIdPrepareDelegationArgs };
 type AuthenticationConfig = record {
@@ -69,15 +77,18 @@ type Controller = record {
   expires_at : opt nat64;
 };
 type ControllerScope = variant { Write; Admin; Submit };
-type CreateCanisterArgs = record {
+type CreateMissionControlArgs = record { subnet_id : opt principal };
+type CreateOrbiterArgs = record {
   block_index : opt nat64;
   subnet_id : opt principal;
+  name : opt text;
   user : principal;
 };
 type CreateSatelliteArgs = record {
   block_index : opt nat64;
   subnet_id : opt principal;
   storage : opt InitStorageArgs;
+  name : opt text;
   user : principal;
 };
 type CustomDomain = record {
@@ -183,15 +194,11 @@ type ListResults = record {
   items : vec record { text; AssetNoContent };
   items_length : nat64;
 };
-type Memory = variant { Heap; Stable };
-type MissionControl = record {
-  updated_at : nat64;
-  credits : Tokens;
-  mission_control_id : opt principal;
-  provider : opt Provider;
-  owner : principal;
-  created_at : nat64;
+type ListSegmentsArgs = record {
+  segment_id : opt principal;
+  segment_type : opt SegmentType;
 };
+type Memory = variant { Heap; Stable };
 type OpenId = record { provider : OpenIdProvider; data : OpenIdData };
 type OpenIdData = record {
   name : opt text;
@@ -228,6 +235,7 @@ type Payment = record {
   mission_control_id : opt principal;
   created_at : nat64;
   block_index_refunded : opt nat64;
+  purchaser : opt principal;
 };
 type PaymentStatus = variant { Refunded; Acknowledged; Completed };
 type PrepareDelegationError = variant {
@@ -265,7 +273,19 @@ type Provider = variant { InternetIdentity; OpenId : OpenId };
 type RateConfig = record { max_tokens : nat64; time_per_token_ns : nat64 };
 type Result = variant { Ok : Authentication; Err : AuthenticationError };
 type Result_1 = variant { Ok : SignedDelegation; Err : GetDelegationError };
+type Segment = record {
+  updated_at : nat64;
+  metadata : vec record { text; text };
+  segment_id : principal;
+  created_at : nat64;
+};
+type SegmentKey = record {
+  user : principal;
+  segment_id : principal;
+  segment_type : SegmentType;
+};
 type SegmentKind = variant { Orbiter; MissionControl; Satellite };
+type SegmentType = variant { Orbiter; Satellite };
 type SegmentsDeploymentOptions = record {
   orbiter : opt text;
   mission_control_version : opt text;
@@ -351,20 +371,23 @@ service : () -> {
   commit_proposal_asset_upload : (CommitBatch) -> ();
   commit_proposal_many_assets_upload : (vec CommitBatch) -> ();
   count_proposals : () -> (nat64) query;
-  create_orbiter : (CreateCanisterArgs) -> (principal);
+  create_mission_control : (CreateMissionControlArgs) -> (principal);
+  create_orbiter : (CreateOrbiterArgs) -> (principal);
   create_satellite : (CreateSatelliteArgs) -> (principal);
   del_controllers : (DeleteControllersArgs) -> ();
   del_custom_domain : (text) -> ();
   delete_proposal_assets : (DeleteProposalAssets) -> ();
+  get_account : () -> (opt Account) query;
   get_auth_config : () -> (opt AuthenticationConfig) query;
   get_config : () -> (Config) query;
+  get_create_fee : (SegmentKind) -> (opt Tokens) query;
   get_create_orbiter_fee : (GetCreateCanisterFeeArgs) -> (opt Tokens) query;
   get_create_satellite_fee : (GetCreateCanisterFeeArgs) -> (opt Tokens) query;
   get_credits : () -> (Tokens) query;
   get_delegation : (GetDelegationArgs) -> (Result_1) query;
+  get_or_init_account : () -> (Account);
   get_proposal : (nat) -> (opt Proposal) query;
   get_storage_config : () -> (StorageConfig) query;
-  get_user_mission_control_center : () -> (opt MissionControl) query;
   http_request : (HttpRequest) -> (HttpResponse) query;
   http_request_streaming_callback : (StreamingCallbackToken) -> (
       StreamingCallbackHttpResponse,
@@ -374,14 +397,14 @@ service : () -> {
   init_proposal_many_assets_upload : (vec InitAssetKey, nat) -> (
       vec record { text; InitUploadResult },
     );
-  init_user_mission_control_center : () -> (MissionControl);
+  list_accounts : () -> (vec record { principal; Account }) query;
   list_assets : (text, ListParams) -> (ListResults) query;
   list_controllers : () -> (vec record { principal; Controller }) query;
   list_custom_domains : () -> (vec record { text; CustomDomain }) query;
   list_payments : () -> (vec record { nat64; Payment }) query;
   list_proposals : (ListProposalsParams) -> (ListProposalResults) query;
-  list_user_mission_control_centers : () -> (
-      vec record { principal; MissionControl },
+  list_segments : (ListSegmentsArgs) -> (
+      vec record { SegmentKey; Segment },
     ) query;
   reject_proposal : (CommitProposal) -> (null);
   set_auth_config : (SetAuthenticationConfig) -> (AuthenticationConfig);

@@ -15,10 +15,10 @@
 		THREE_MONTHS,
 		TWO_YEARS
 	} from '$lib/constants/canister.constants';
-	import { updateSettings as updateSettingsServices } from '$lib/services/settings.services';
+	import { updateSettings as updateSettingsServices } from '$lib/services/ic-mgmt/settings.services';
+	import { isBusy, wizardBusy } from '$lib/stores/app/busy.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import { authStore } from '$lib/stores/auth.store';
-	import { isBusy, wizardBusy } from '$lib/stores/busy.store';
-	import { i18n } from '$lib/stores/i18n.store';
 	import type { CanisterLogVisibility } from '$lib/types/canister';
 	import type { JunoModalDetail, JunoModalEditCanisterSettingsDetail } from '$lib/types/modal';
 	import { formatTCycles } from '$lib/utils/cycles.utils';
@@ -38,6 +38,7 @@
 		canister: canisterInfo
 	} = $derived(detail as JunoModalEditCanisterSettingsDetail);
 
+	// svelte-ignore state_referenced_locally
 	let freezingThreshold = $state(
 		Number((detail as JunoModalEditCanisterSettingsDetail).settings.freezingThreshold)
 	);
@@ -55,24 +56,29 @@
 			freezingThreshold !== FIVE_YEARS;
 	});
 
+	// svelte-ignore state_referenced_locally
 	let reservedTCyclesLimit = $state(
 		Number(
 			formatTCycles((detail as JunoModalEditCanisterSettingsDetail).settings.reservedCyclesLimit)
 		)
 	);
 
+	// svelte-ignore state_referenced_locally
 	let logVisibility: CanisterLogVisibility = $state(
 		(detail as JunoModalEditCanisterSettingsDetail).settings.logVisibility
 	);
 
+	// svelte-ignore state_referenced_locally
 	let wasmMemoryLimit = $state(
 		Number((detail as JunoModalEditCanisterSettingsDetail).settings.wasmMemoryLimit)
 	);
 
+	// svelte-ignore state_referenced_locally
 	let memoryAllocation = $state(
 		Number((detail as JunoModalEditCanisterSettingsDetail).settings.memoryAllocation)
 	);
 
+	// svelte-ignore state_referenced_locally
 	let computeAllocation = $state(
 		Number((detail as JunoModalEditCanisterSettingsDetail).settings.computeAllocation)
 	);

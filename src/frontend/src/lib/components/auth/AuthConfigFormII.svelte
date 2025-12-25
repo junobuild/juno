@@ -1,20 +1,21 @@
 <script lang="ts">
 	import { fromNullable, fromNullishNullable, isNullish, nonNullish } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
-	import type { SatelliteDid, MissionControlDid } from '$declarations';
+	import type { SatelliteDid } from '$declarations';
 	import AuthConfigFormIIOptions from '$lib/components/auth/AuthConfigFormIIOptions.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import Warning from '$lib/components/ui/Warning.svelte';
-	import { sortedSatelliteCustomDomains } from '$lib/derived/satellite-custom-domains.derived';
-	import { isBusy } from '$lib/stores/busy.store';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { sortedSatelliteCustomDomains } from '$lib/derived/satellite/satellite-custom-domains.derived';
+	import { isBusy } from '$lib/stores/app/busy.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
+	import type { Satellite } from '$lib/types/satellite';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { satelliteUrl as satelliteUrlUtils } from '$lib/utils/satellite.utils';
 
 	interface Props {
 		config: SatelliteDid.AuthenticationConfig | undefined;
 		selectedDerivationOrigin: URL | undefined;
-		satellite: MissionControlDid.Satellite;
+		satellite: Satellite;
 		externalAlternativeOrigins: string;
 		onsubmit: ($event: SubmitEvent) => Promise<void>;
 	}
@@ -37,10 +38,12 @@
 			.filter(nonNullish)
 	);
 
+	// svelte-ignore state_referenced_locally
 	let currentDerivationOrigin = $state<string | undefined>(
 		fromNullable(fromNullishNullable(config?.internet_identity)?.derivation_origin ?? [])
 	);
 
+	// svelte-ignore state_referenced_locally
 	let derivationOrigin = $state<string | undefined>(
 		fromNullable(fromNullishNullable(config?.internet_identity)?.derivation_origin ?? [])
 	);

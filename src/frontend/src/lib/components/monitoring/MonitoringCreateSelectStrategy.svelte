@@ -3,7 +3,7 @@
 	import type { MissionControlDid } from '$declarations';
 	import MonitoringStepBackContinue from '$lib/components/monitoring/MonitoringStepBackContinue.svelte';
 	import { BASIC_STRATEGY } from '$lib/constants/monitoring.constants';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 
 	interface Props {
 		defaultStrategy: MissionControlDid.CyclesMonitoringStrategy | undefined;

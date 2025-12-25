@@ -57,7 +57,7 @@ export const TEST_SPUTNIK_WASM_PATH = existsSync(SPUTNIK_WASM_PATH_CI)
 	? TEST_SPUTNIK_WASM_PATH_CI
 	: TEST_SPUTNIK_WASM_PATH_LOCAL;
 
-export const controllersInitArgs = (controllers: Identity | Principal[]): ArrayBuffer =>
+export const controllersInitArgs = (controllers: Identity | Principal[]): Uint8Array =>
 	IDL.encode(
 		[
 			IDL.Record({
@@ -65,7 +65,7 @@ export const controllersInitArgs = (controllers: Identity | Principal[]): ArrayB
 			})
 		],
 		[{ controllers: Array.isArray(controllers) ? controllers : [controllers.getPrincipal()] }]
-	).buffer as ArrayBuffer;
+	);
 
 export const satelliteInitArgs = ({
 	controllers,
@@ -73,7 +73,7 @@ export const satelliteInitArgs = ({
 }: {
 	controllers: Identity | Principal[];
 	memory: { Heap: null } | { Stable: null } | null;
-}): ArrayBuffer =>
+}): Uint8Array =>
 	IDL.encode(
 		[
 			IDL.Record({
@@ -102,7 +102,7 @@ export const satelliteInitArgs = ({
 				)
 			}
 		]
-	).buffer as ArrayBuffer;
+	);
 
 const downloadFromURL = async (url: string | RequestOptions): Promise<Buffer> =>
 	await new Promise((resolve, reject) => {
@@ -164,7 +164,7 @@ const downloadGitHub = async ({
 		url: `https://github.com/junobuild/juno/releases/download/v${junoVersion}/${wasm}`
 	});
 
-export const download = async ({ wasm, url }: { wasm: string; url: string }): Promise<string> => {
+const download = async ({ wasm, url }: { wasm: string; url: string }): Promise<string> => {
 	const destination = join(process.cwd(), wasm);
 
 	if (existsSync(destination)) {

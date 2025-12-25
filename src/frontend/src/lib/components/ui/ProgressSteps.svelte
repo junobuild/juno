@@ -1,8 +1,9 @@
 <script lang="ts">
 	import IconCheckCircle from '$lib/components/icons/IconCheckCircle.svelte';
 	import IconClose from '$lib/components/icons/IconClose.svelte';
+	import IconWarning from '$lib/components/icons/IconWarning.svelte';
 	import Spinner from '$lib/components/ui/Spinner.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { ProgressStep } from '$lib/types/progress-step';
 
 	interface Props {
@@ -20,6 +21,8 @@
 				<IconCheckCircle />
 			{:else if state === 'error'}
 				<span class="checkmark round"><IconClose /></span>
+			{:else if state === 'warning'}
+				<span class="checkmark round"><IconWarning size="14px" /></span>
 			{:else if state === 'in_progress'}
 				<div class="spinner">
 					<span class="checkmark">{i + 1}</span>
@@ -38,6 +41,8 @@
 			<span class="state">{$i18n.core.completed}</span>
 		{:else if state === 'error'}
 			<span class="state">{$i18n.core.error}</span>
+		{:else if state === 'warning'}
+			<span class="state">{$i18n.core.warning}</span>
 		{:else if state === 'in_progress'}
 			<span class="state">{$i18n.core.in_progress}</span>
 		{/if}
@@ -79,6 +84,12 @@
 		}
 	}
 
+	.warning {
+		.line {
+			--line-color: var(--color-warning);
+		}
+	}
+
 	.in_progress {
 		.state {
 			color: var(--color-secondary-contrast);
@@ -96,6 +107,18 @@
 
 		.checkmark {
 			--checkmark-color: var(--color-error);
+		}
+	}
+
+	.warning {
+		.state {
+			color: var(--color-warning-contrast);
+			background: rgba(var(--color-warning-rgb), 0.6);
+			border: 1px solid var(--color-warning);
+		}
+
+		.checkmark {
+			--checkmark-color: var(--color-warning);
 		}
 	}
 

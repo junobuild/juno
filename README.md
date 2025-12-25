@@ -1,9 +1,18 @@
 <div align="center" style="display:flex;flex-direction:column;">
   <a href="https://juno.build/">
-    <img src="https://github.com/junobuild/juno/raw/main/src/frontend/static/images/juno_logo.png" width="100%" alt="Juno" role="presentation"/>
+    <img src="https://github.com/junobuild/juno/raw/main/src/frontend/static/images/juno_logo.png" width="100%" alt="Juno logo" role="presentation"/>
   </a>
-
 </div>
+
+<br />
+
+<p align="center">
+  <a href="https://github.com/junobuild/juno"><img alt="GitHub Actions Workflow Status" src="https://img.shields.io/github/actions/workflow/status/junobuild/juno/release.yml?style=flat-square"></a>
+  <a href="https://github.com/junobuild/juno"><img src="https://img.shields.io/github/last-commit/junobuild/juno/main?commit&style=flat-square" alt="Last Commit" /></a>
+  <a href="https://discord.gg/wHZ57Z2RAG"><img src="https://dcbadge.limes.pink/api/server/https://discord.gg/wHZ57Z2RAG?style=flat-square" alt="Discord" /></a>
+</p>
+
+## ⭐️ Description
 
 [Juno] is an open-source serverless platform for hosting static websites, building web applications, and running serverless functions with the privacy and control of self-hosting.
 
@@ -71,7 +80,6 @@ Here are some useful links:
 - Looking to get started? Check out the [Guides & Examples](https://juno.build/docs/category/guides-and-examples) for step-by-step tutorials and sample code.
 - Explore the full [documentation](https://juno.build) for in-depth details on using and configuring Juno.
 - See the [HACKING](HACKING.md) document for instructions on running and developing Juno locally.
-- Have a look at the [LICENSE](LICENSE.md) for information about licensing and limitation.
 
 ## 🖥️ Bootstrap
 
@@ -96,6 +104,6 @@ Have questions, comments, or feedback? Join our [Discord](https://discord.gg/wHZ
 
 ## 💬 Contact
 
-Find us on X/Twitter at [@junobuild](https://twitter.com/junobuild) or email us at [hello@junobuild.ch](mailto://hello@junobuild.ch).
+Find us on X/Twitter at [@junobuild](https://twitter.com/junobuild) or email us at [hi@juno.build](mailto://hi@juno.build).
 
 [juno]: https://juno.build

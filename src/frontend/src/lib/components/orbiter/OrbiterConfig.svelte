@@ -7,10 +7,10 @@
 	import {
 		orbiterFeatures,
 		orbiterSatellitesConfig
-	} from '$lib/derived/orbiter-satellites.derived';
+	} from '$lib/derived/orbiter/orbiter-satellites.derived';
 	import { sortedSatellites } from '$lib/derived/satellites.derived';
 	import { loadOrbiterConfigs } from '$lib/services/orbiter/orbiters.services';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import { versionStore } from '$lib/stores/version.store';
 	import { emit } from '$lib/utils/events.utils';
 

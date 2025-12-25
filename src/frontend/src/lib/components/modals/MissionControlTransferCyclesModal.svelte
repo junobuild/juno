@@ -3,9 +3,9 @@
 	import type { Principal } from '@icp-sdk/core/principal';
 	import { depositCycles } from '$lib/api/mission-control.api';
 	import CanisterTransferCyclesModal from '$lib/components/modals/CanisterTransferCyclesModal.svelte';
-	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
+	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import { authStore } from '$lib/stores/auth.store';
-	import { i18n } from '$lib/stores/i18n.store';
 	import type { JunoModalCycles, JunoModalDetail } from '$lib/types/modal';
 
 	interface Props {
@@ -25,19 +25,19 @@
 					// TODO: resolve no-non-null-assertion
 					// We know for sure that the mission control is defined at this point.
 					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-					missionControlId: $missionControlIdDerived!,
+					missionControlId: $missionControlId!,
 					identity: $authStore.identity
 				})
 		);
 </script>
 
-{#if nonNullish($missionControlIdDerived)}
+{#if nonNullish($missionControlId)}
 	<CanisterTransferCyclesModal
 		{currentCycles}
 		{onclose}
 		segment={{
 			segment: 'mission_control',
-			canisterId: $missionControlIdDerived.toText(),
+			canisterId: $missionControlId.toText(),
 			label: $i18n.mission_control.title
 		}}
 		{transferFn}

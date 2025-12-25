@@ -1,0 +1,19 @@
+<!-- source: https://fonts.google.com/icons?selected=Material+Symbols+Rounded:arrow_upward:FILL@0;wght@300;GRAD@0;opsz@24&icon.size=24&icon.color=%23000000&icon.query=arrow+up -->
+<script lang="ts">
+	interface Props {
+		size?: string;
+	}
+
+	let { size = '48px' }: Props = $props();
+</script>
+
+<svg
+	fill="currentColor"
+	height={size}
+	viewBox="0 -960 960 960"
+	width={size}
+	xmlns="http://www.w3.org/2000/svg"
+	><path
+		d="M450-665.08 243.23-458.31q-8.92 8.92-20.88 8.81-11.96-.12-21.27-9.42-8.69-9.31-9-21.08-.31-11.77 9-21.08l253.61-253.61q5.62-5.62 11.85-7.92 6.23-2.31 13.46-2.31t13.46 2.31q6.23 2.3 11.85 7.92l253.61 253.61q8.31 8.31 8.5 20.58.19 12.27-8.5 21.58-9.31 9.3-21.38 9.3-12.08 0-21.39-9.3L510-665.08V-210q0 12.77-8.62 21.38Q492.77-180 480-180t-21.38-8.62Q450-197.23 450-210v-455.08Z"
+	/></svg
+>

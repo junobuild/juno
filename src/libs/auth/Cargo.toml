@@ -1,6 +1,6 @@
 [package]
 name = "junobuild-auth"
-version = "0.1.0"
+version = "0.1.1"
 authors.workspace = true
 edition.workspace = true
 repository.workspace = true
@@ -8,7 +8,7 @@ description = "Authentication toolkit for Juno."
 homepage.workspace = true
 documentation = "https://docs.rs/junobuild-auth"
 readme = "README.md"
-license-file = "LICENSE.md"
+license = "MIT"
 
 [package.metadata.docs.rs]
 targets = ["wasm32-unknown-unknown"]
@@ -30,7 +30,7 @@ jsonwebtoken = { package = "jsonwebtoken-ic", version = "10.2.0-ic.1", default-f
 	"rust_crypto"
 ] }
 getrandom02 = { package = "getrandom", version = "0.2.16", features = ["custom"] }
-junobuild-shared = "0.4.0"
+junobuild-shared = "0.5.0"
 
 [dev-dependencies]
 jsonwebtoken = { package = "jsonwebtoken-ic", version = "10.2.0-ic.1", default-features = false, features = [

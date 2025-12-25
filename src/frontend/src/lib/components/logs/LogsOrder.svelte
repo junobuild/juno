@@ -2,7 +2,7 @@
 	import { getContext } from 'svelte';
 	import IconSort from '$lib/components/icons/IconSort.svelte';
 	import PopoverApply from '$lib/components/ui/PopoverApply.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { Log as LogType } from '$lib/types/log';
 	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
 

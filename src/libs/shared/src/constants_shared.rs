@@ -1,3 +1,4 @@
+use candid::Principal;
 use ic_ledger_types::{Memo, Tokens};
 
 // Specifies the transaction fee for ICP transactions.
@@ -27,7 +28,10 @@ pub const CREATE_ORBITER_CYCLES: u128 = 1_000_000_000_000;
 
 // Memos for different operations, encoded from specific ASCII strings to hexadecimal values.
 pub const MEMO_CANISTER_CREATE: Memo = Memo(0x41455243); // == 'CREA'
-                                                         // Note: For topup, it has to be exactly the memo used by the IC
+
+pub const MEMO_CANISTER_APPROVE: Memo = Memo(0x4150524F); // == 'APRO'
+
+// Note: For topup, it has to be exactly the memo used by the IC
 pub const MEMO_CANISTER_TOP_UP: Memo = Memo(0x50555054); // == 'TPUP'
 pub const MEMO_SATELLITE_CREATE_REFUND: Memo = Memo(0x44464552544153); // == 'SATREFD'
 pub const MEMO_ORBITER_CREATE_REFUND: Memo = Memo(0x4446455242524f); // == 'ORBREFD'
@@ -37,3 +41,7 @@ pub const MAX_NUMBER_OF_MISSION_CONTROL_CONTROLLERS: usize = 8;
 
 // 10 controllers max on the IC. User and mission control principals are copied in satellite state controllers
 pub const MAX_NUMBER_OF_SATELLITE_CONTROLLERS: usize = 10;
+
+// Useful for filtering stable tree map ranges that use Principal in keys
+pub const PRINCIPAL_MIN: Principal = Principal::from_slice(&[]);
+pub const PRINCIPAL_MAX: Principal = Principal::from_slice(&[255; 29]);

@@ -1,4 +1,4 @@
-import type { UpgradeCodeProgressState } from '@junobuild/admin';
+import type { ProgressState } from '$lib/types/progress-state';
 
 export enum MonitoringStrategyProgressStep {
 	Options = 0,
@@ -6,7 +6,7 @@ export enum MonitoringStrategyProgressStep {
 	Reload = 2
 }
 
-export type MonitoringStrategyProgressState = UpgradeCodeProgressState;
+export type MonitoringStrategyProgressState = ProgressState;
 
 export interface MonitoringStrategyProgress {
 	step: MonitoringStrategyProgressStep;

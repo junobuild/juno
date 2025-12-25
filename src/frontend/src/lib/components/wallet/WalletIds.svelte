@@ -1,17 +1,22 @@
 <script lang="ts">
-	import { getAccountIdentifier } from '$lib/api/icp-index.api';
+	import { encodeIcrcAccount } from '@icp-sdk/canisters/ledger/icrc';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
-	import type { MissionControlId } from '$lib/types/mission-control';
+	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
+	import { i18n } from '$lib/stores/app/i18n.store';
+	import { toAccountIdentifier } from '$lib/utils/icp-icrc-account.utils';
 
 	interface Props {
-		missionControlId: MissionControlId;
+		selectedWallet: SelectedWallet;
 	}
 
-	let { missionControlId }: Props = $props();
+	let { selectedWallet }: Props = $props();
 
-	const accountIdentifier = getAccountIdentifier(missionControlId);
+	let { walletId } = $derived(selectedWallet);
+
+	let walletIdText = $derived(encodeIcrcAccount(walletId));
+
+	let accountIdentifier = $derived(toAccountIdentifier(walletId));
 </script>
 
 <div>
@@ -20,7 +25,7 @@
 			{$i18n.wallet.wallet_id}
 		{/snippet}
 		<Identifier
-			identifier={missionControlId.toText()}
+			identifier={walletIdText}
 			shorten={false}
 			small={false}
 			what={$i18n.wallet.wallet_id}

@@ -4,7 +4,7 @@
 	import SegmentVersion from '$lib/components/segments/SegmentVersion.svelte';
 	import Badge from '$lib/components/ui/Badge.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import { versionStore } from '$lib/stores/version.store';
 	import type { SatelliteIdText } from '$lib/types/satellite';
 

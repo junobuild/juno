@@ -7,15 +7,16 @@
 		exchangePricesNotLoaded,
 		icpToUsd,
 		icpToUsdDefined
-	} from '$lib/derived/exchange.derived';
-	import { i18n } from '$lib/stores/i18n.store';
+	} from '$lib/derived/wallet/exchange.derived';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import { formatICP, formatICPToUsd } from '$lib/utils/icp.utils';
 
 	interface Props {
 		balance: bigint | undefined;
+		label?: string;
 	}
 
-	let { balance }: Props = $props();
+	let { balance, label: labelText }: Props = $props();
 </script>
 
 {#snippet icpBalance()}
@@ -24,7 +25,7 @@
 
 <Value>
 	{#snippet label()}
-		{$i18n.wallet.balance}
+		{labelText ?? $i18n.wallet.balance}
 	{/snippet}
 
 	<p>
@@ -56,6 +57,7 @@
 
 	.main {
 		font-size: var(--font-size-h2);
+		line-height: var(--line-height-title);
 		font-weight: var(--font-weight-bold);
 		color: var(--color-secondary);
 	}

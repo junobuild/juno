@@ -1,3 +1,4 @@
+use crate::factory::store::{get_orbiters, get_satellites};
 use crate::memory::manager::RUNTIME_STATE;
 use crate::monitoring::cycles::funding::init_funding_manager;
 use crate::monitoring::cycles::funding::register_cycles_monitoring;
@@ -7,7 +8,6 @@ use crate::monitoring::cycles::scheduler::{
 use crate::monitoring::store::heap::{
     enable_mission_control_monitoring, enable_orbiter_monitoring, enable_satellite_monitoring,
 };
-use crate::segments::store::{get_orbiters, get_satellites};
 use crate::types::core::SettingsMonitoring;
 use crate::types::runtime::RuntimeState;
 use crate::types::state::CyclesMonitoringStrategy;

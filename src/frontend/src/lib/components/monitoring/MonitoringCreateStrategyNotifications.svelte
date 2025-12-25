@@ -3,9 +3,9 @@
 	import MonitoringStepBackContinue from '$lib/components/monitoring/MonitoringStepBackContinue.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { EMAIL_PLACEHOLDER } from '$lib/constants/monitoring.constants';
-	import { isBusy } from '$lib/stores/busy.store';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { toasts } from '$lib/stores/toasts.store';
+	import { isBusy } from '$lib/stores/app/busy.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
+	import { toasts } from '$lib/stores/app/toasts.store';
 	import { isNotValidEmail } from '$lib/utils/email.utils';
 
 	interface Props {

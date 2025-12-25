@@ -2,6 +2,8 @@ import { idlFactory as idlFactoryCertifiedConsole } from '$declarations/console/
 import { idlFactory as idlFactoryConsole } from '$declarations/console/console.factory.did';
 import { idlFactory as idlFactoryConsole0014 } from '$declarations/deprecated/console-0-0-14.factory.did';
 import { idlFactory as idlFactoryConsole008 } from '$declarations/deprecated/console-0-0-8-patch1.factory.did';
+import { idlFactory as idlFactoryConsole015 } from '$declarations/deprecated/console-0-1-5.factory.did';
+import { idlFactory as idlFactoryConsole020 } from '$declarations/deprecated/console-0-2-0.factory.did';
 import { idlFactory as idlFactoryMissionControl0013 } from '$declarations/deprecated/mission_control-0-0-13.factory.did';
 import { idlFactory as idlFactoryMissionControl0014 } from '$declarations/deprecated/mission_control-0-0-14.factory.did';
 import { idlFactory as idlFactoryMissionControl004 } from '$declarations/deprecated/mission_control-0-0-4.factory.did';
@@ -27,6 +29,8 @@ import { idlFactory as idlFactorySputnik } from '$declarations/sputnik/sputnik.f
 import type { _SERVICE as ConsoleActor } from '$declarations/console/console.did';
 import type { _SERVICE as ConsoleActor0014 } from '$declarations/deprecated/console-0-0-14.did';
 import type { _SERVICE as ConsoleActor008 } from '$declarations/deprecated/console-0-0-8-patch1.did';
+import type { _SERVICE as ConsoleActor015 } from '$declarations/deprecated/console-0-1-5.did';
+import type { _SERVICE as ConsoleActor020 } from '$declarations/deprecated/console-0-2-0.did';
 import type { _SERVICE as MissionControlActor0013 } from '$declarations/deprecated/mission_control-0-0-13.did';
 import type { _SERVICE as MissionControlActor0014 } from '$declarations/deprecated/mission_control-0-0-14.did';
 import type { _SERVICE as MissionControlActor004 } from '$declarations/deprecated/mission_control-0-0-4.did';
@@ -54,6 +58,8 @@ export {
 	idlFactoryConsole,
 	idlFactoryConsole0014,
 	idlFactoryConsole008,
+	idlFactoryConsole015,
+	idlFactoryConsole020,
 	idlFactoryIC,
 	idlFactoryMissionControl,
 	idlFactoryMissionControl0013,
@@ -77,6 +83,8 @@ export {
 	type ConsoleActor,
 	type ConsoleActor0014,
 	type ConsoleActor008,
+	type ConsoleActor015,
+	type ConsoleActor020,
 	type ICActor,
 	type MissionControlActor,
 	type MissionControlActor0013,

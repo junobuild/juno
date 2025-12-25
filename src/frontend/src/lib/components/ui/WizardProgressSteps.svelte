@@ -1,7 +1,8 @@
 <script lang="ts">
-	import type { Snippet } from 'svelte';
+	import { onDestroy, onMount, type Snippet } from 'svelte';
 	import ProgressSteps from '$lib/components/ui/ProgressSteps.svelte';
 	import type { ProgressStep } from '$lib/types/progress-step';
+	import { confirmToCloseBrowser } from '$lib/utils/before-unload.utils';
 
 	interface Props {
 		children: Snippet;
@@ -9,6 +10,9 @@
 	}
 
 	let { children, steps }: Props = $props();
+
+	onMount(() => confirmToCloseBrowser(true));
+	onDestroy(() => confirmToCloseBrowser(false));
 </script>
 
 <h2>{@render children()}</h2>

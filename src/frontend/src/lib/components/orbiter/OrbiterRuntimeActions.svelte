@@ -1,13 +1,13 @@
 <script lang="ts">
 	import type { MissionControlDid } from '$declarations';
-	import CanisterBuyCycleExpress from '$lib/components/canister/CanisterBuyCycleExpress.svelte';
-	import CanisterDelete from '$lib/components/canister/CanisterDelete.svelte';
-	import CanisterStopStart from '$lib/components/canister/CanisterStopStart.svelte';
-	import CanisterTransferCycles from '$lib/components/canister/CanisterTransferCycles.svelte';
-	import TopUp from '$lib/components/canister/TopUp.svelte';
+	import CanisterBuyCycleExpress from '$lib/components/canister/cycles/CanisterBuyCycleExpress.svelte';
+	import CanisterTransferCycles from '$lib/components/canister/cycles/CanisterTransferCycles.svelte';
+	import CanisterDelete from '$lib/components/canister/lifecycle/CanisterDelete.svelte';
+	import CanisterStopStart from '$lib/components/canister/lifecycle/CanisterStopStart.svelte';
+	import TopUp from '$lib/components/canister/top-up/TopUp.svelte';
 	import SegmentActions from '$lib/components/segments/SegmentActions.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { toasts } from '$lib/stores/toasts.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
+	import { toasts } from '$lib/stores/app/toasts.store';
 	import type { CanisterSyncData as CanisterSyncDataType } from '$lib/types/canister';
 	import { emit } from '$lib/utils/events.utils';
 

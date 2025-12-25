@@ -2,16 +2,17 @@
 	import { isNullish, nonNullish, fromNullishNullable } from '@dfinity/utils';
 	import { createEventDispatcher, onDestroy, onMount } from 'svelte';
 	import { run } from 'svelte/legacy';
-	import type { SatelliteDid, MissionControlDid } from '$declarations';
+	import type { SatelliteDid } from '$declarations';
 	import CustomDomainActions from '$lib/components/hosting/CustomDomainActions.svelte';
 	import IconCheckCircle from '$lib/components/icons/IconCheckCircle.svelte';
 	import IconSync from '$lib/components/icons/IconSync.svelte';
 	import ButtonTableAction from '$lib/components/ui/ButtonTableAction.svelte';
 	import ExternalLink from '$lib/components/ui/ExternalLink.svelte';
 	import { HostingWorker } from '$lib/services/workers/worker.hosting.services';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { CustomDomain, CustomDomainState } from '$lib/types/custom-domain';
 	import type { PostMessageDataResponseHosting } from '$lib/types/post-message';
+	import type { Satellite } from '$lib/types/satellite';
 	import type { Option } from '$lib/types/utils';
 	import { emit } from '$lib/utils/events.utils';
 	import { keyOf } from '$lib/utils/utils';
@@ -21,7 +22,7 @@
 		ariaLabel?: string;
 		type?: 'default' | 'custom';
 		customDomain?: CustomDomain | undefined;
-		satellite?: MissionControlDid.Satellite | undefined;
+		satellite?: Satellite | undefined;
 		config?: SatelliteDid.AuthenticationConfig | undefined;
 	}
 

@@ -2,8 +2,8 @@
 	import IconNewReleases from '$lib/components/icons/IconNewReleases.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import { onIntersection } from '$lib/directives/intersection.directives';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { onLayoutTitleIntersection } from '$lib/stores/layout-intersecting.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
+	import { onLayoutTitleIntersection } from '$lib/stores/app/layout-intersecting.store';
 
 	interface Props {
 		text: string;

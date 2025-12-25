@@ -3,7 +3,7 @@
 	import IconChevron from '$lib/components/icons/IconChevron.svelte';
 	import LogLevel from '$lib/components/logs/LogLevel.svelte';
 	import JsonCode from '$lib/components/ui/JsonCode.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { Log } from '$lib/types/log';
 	import { formatToDate } from '$lib/utils/date.utils';
 

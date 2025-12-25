@@ -1,6 +1,6 @@
 [package]
 name = "mission_control"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2021"
 publish = false
 
@@ -19,5 +19,5 @@ serde.workspace = true
 ciborium.workspace = true
 getrandom.workspace = true
 rand.workspace = true
-canfund = { git = "https://github.com/dfinity/canfund" }
+canfund = "0.8.5"
 junobuild-shared = { path = "../libs/shared" }

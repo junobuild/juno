@@ -1,6 +1,6 @@
 [package]
 name = "junobuild-satellite"
-version = "0.3.0"
+version = "0.3.1"
 authors.workspace = true
 edition.workspace = true
 repository.workspace = true
@@ -8,10 +8,10 @@ description = "Core implementation of a Juno Satellite."
 homepage.workspace = true
 documentation = "https://docs.rs/junobuild-satellite"
 readme = "README.md"
-license-file = "LICENSE.md"
+license = "MIT"
 
 [package.metadata.juno.satellite]
-version = "0.1.5"
+version = "0.1.6"
 
 [package.metadata.docs.rs]
 targets = ["wasm32-unknown-unknown"]
@@ -66,9 +66,9 @@ regex.workspace = true
 getrandom.workspace = true
 rand.workspace = true
 url.workspace = true
-junobuild-shared = "0.4.0"
-junobuild-utils = "0.1.4"
-junobuild-collections = "0.2.5"
-junobuild-storage = "0.4.0"
-junobuild-cdn = "0.4.0"
-junobuild-auth = "0.1.0"
+junobuild-shared = "0.5.0"
+junobuild-utils = "0.1.5"
+junobuild-collections = "0.2.6"
+junobuild-storage = "0.4.1"
+junobuild-cdn = "0.4.1"
+junobuild-auth = "0.1.1"

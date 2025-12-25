@@ -1,22 +1,23 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
 	import { onMount } from 'svelte';
-	import type { SatelliteDid, MissionControlDid } from '$declarations';
+	import type { SatelliteDid } from '$declarations';
 	import AddCustomDomain from '$lib/components/hosting/AddCustomDomain.svelte';
 	import CustomDomain from '$lib/components/hosting/CustomDomain.svelte';
 	import CustomDomainInfo, {
 		type SelectedCustomDomain
 	} from '$lib/components/hosting/CustomDomainInfo.svelte';
 	import HostingCount from '$lib/components/hosting/HostingCount.svelte';
-	import { sortedSatelliteCustomDomains } from '$lib/derived/satellite-custom-domains.derived';
-	import { getAuthConfig } from '$lib/services/auth/auth.config.services';
-	import { listCustomDomains } from '$lib/services/custom-domain.services';
+	import { sortedSatelliteCustomDomains } from '$lib/derived/satellite/satellite-custom-domains.derived';
+	import { getAuthConfig } from '$lib/services/console/auth/auth.config.services';
+	import { listCustomDomains } from '$lib/services/satellite/custom-domain.services';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import { authStore } from '$lib/stores/auth.store';
-	import { i18n } from '$lib/stores/i18n.store';
+	import type { Satellite } from '$lib/types/satellite';
 	import { satelliteUrl } from '$lib/utils/satellite.utils';
 
 	interface Props {
-		satellite: MissionControlDid.Satellite;
+		satellite: Satellite;
 	}
 
 	let { satellite }: Props = $props();

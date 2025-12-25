@@ -1,10 +1,10 @@
 <script lang="ts">
 	import type { Principal } from '@icp-sdk/core/principal';
-	import CanisterIndicator from '$lib/components/canister/CanisterIndicator.svelte';
 	import CanisterSyncData from '$lib/components/canister/CanisterSyncData.svelte';
-	import CanisterTCycles from '$lib/components/canister/CanisterTCycles.svelte';
+	import CanisterIndicator from '$lib/components/canister/display/CanisterIndicator.svelte';
+	import CanisterTCycles from '$lib/components/canister/display/CanisterTCycles.svelte';
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import type {
 		CanisterSyncData as CanisterSyncDataType,
 		CanisterData,

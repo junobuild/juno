@@ -10,6 +10,7 @@ import {
 	PAGINATION,
 	SYNC_WALLET_TIMER_INTERVAL
 } from '$lib/constants/app.constants';
+import type { IcrcAccountText } from '$lib/schemas/wallet.schema';
 import type { IcTransactionUi } from '$lib/types/ic-transaction';
 import type {
 	PostMessageDataRequest,
@@ -22,9 +23,13 @@ import { mapIcpTransaction } from '$lib/utils/icp-transactions.utils';
 import { loadIdentity } from '$lib/utils/worker.utils';
 import { type IndexedTransactions, WalletStore } from '$lib/workers/_stores/wallet-worker.store';
 import { isNullish, jsonReplacer } from '@dfinity/utils';
-import type { GetAccountIdentifierTransactionsResponse } from '@icp-sdk/canisters/ledger/icp';
+import type { IcpIndexDid } from '@icp-sdk/canisters/ledger/icp';
+import {
+	decodeIcrcAccount,
+	encodeIcrcAccount,
+	type IcrcAccount
+} from '@icp-sdk/canisters/ledger/icrc';
 import type { Identity } from '@icp-sdk/core/agent';
-import { Principal } from '@icp-sdk/core/principal';
 
 export const onWalletMessage = async ({ data: dataMsg }: MessageEvent<PostMessageRequest>) => {
 	const { msg, data } = dataMsg;
@@ -53,9 +58,9 @@ const stopTimer = () => {
 	timer = undefined;
 };
 
-const startTimer = async ({ data: { missionControlId } }: { data: PostMessageDataRequest }) => {
-	if (isNullish(missionControlId)) {
-		// No mission control ID provided
+const startTimer = async ({ data: { walletIds } }: { data: PostMessageDataRequest }) => {
+	if (isNullish(walletIds)) {
+		// No accounts provided
 		return;
 	}
 
@@ -66,14 +71,28 @@ const startTimer = async ({ data: { missionControlId } }: { data: PostMessageDat
 		return;
 	}
 
+	await Promise.all(
+		walletIds.map(async (walletId) => {
+			await startTimerWithAccount({ identity, account: decodeIcrcAccount(walletId) });
+		})
+	);
+};
+
+const startTimerWithAccount = async ({
+	account,
+	identity
+}: {
+	account: IcrcAccount;
+	identity: Identity;
+}) => {
 	const store = await WalletStore.init({
-		account: { owner: Principal.fromText(missionControlId) },
+		account,
 		ledgerId: ICP_LEDGER_CANISTER_ID
 	});
 
-	emitSavedWallet({ store, identity });
+	emitSavedWallet({ store });
 
-	const sync = async () => await syncWallet({ missionControlId, identity, store });
+	const sync = async () => await syncWallet({ account, identity, store });
 
 	// We sync the cycles now but also schedule the update afterwards
 	await sync();
@@ -81,44 +100,46 @@ const startTimer = async ({ data: { missionControlId } }: { data: PostMessageDat
 	timer = setInterval(sync, SYNC_WALLET_TIMER_INTERVAL);
 };
 
-let syncing = false;
+const syncing: Record<IcrcAccountText, boolean> = {};
 
 let initialized = false;
 
 const syncWallet = async ({
-	missionControlId,
+	account: icrcAccount,
 	identity,
 	store
 }: {
-	missionControlId: string;
+	account: IcrcAccount;
 	identity: Identity;
 	store: WalletStore;
 }) => {
+	const account = encodeIcrcAccount(icrcAccount);
+
 	// We avoid to relaunch a sync while previous sync is not finished
-	if (syncing) {
+	if (syncing[account] === true) {
 		return;
 	}
 
-	syncing = true;
+	syncing[account] = true;
 
 	const request = ({
 		identity: _,
 		certified
-	}: QueryAndUpdateRequestParams): Promise<GetAccountIdentifierTransactionsResponse> =>
+	}: QueryAndUpdateRequestParams): Promise<IcpIndexDid.GetAccountIdentifierTransactionsResponse> =>
 		getTransactions({
 			identity,
-			owner: Principal.fromText(missionControlId),
+			account: icrcAccount,
 			// We query tip to discover the new transactions
 			start: undefined,
 			maxResults: PAGINATION,
 			certified
 		});
 
-	const onLoad: QueryAndUpdateOnResponse<GetAccountIdentifierTransactionsResponse> = ({
+	const onLoad: QueryAndUpdateOnResponse<IcpIndexDid.GetAccountIdentifierTransactionsResponse> = ({
 		certified,
 		...rest
 	}) => {
-		syncTransactions({ certified, identity, store, ...rest });
+		syncTransactions({ certified, store, ...rest });
 		cleanTransactions({ certified, store });
 	};
 
@@ -130,7 +151,7 @@ const syncWallet = async ({
 		stopTimer();
 	};
 
-	await queryAndUpdate<GetAccountIdentifierTransactionsResponse>({
+	await queryAndUpdate<IcpIndexDid.GetAccountIdentifierTransactionsResponse>({
 		request,
 		onLoad,
 		onCertifiedError,
@@ -140,22 +161,25 @@ const syncWallet = async ({
 
 	await store.save();
 
-	syncing = false;
+	syncing[account] = false;
 };
 
 const postMessageWallet = ({
 	certified,
+	icrcAccountText,
 	balance,
 	transactions: newTransactions
-}: Pick<GetAccountIdentifierTransactionsResponse, 'balance'> & {
+}: Pick<IcpIndexDid.GetAccountIdentifierTransactionsResponse, 'balance'> & {
 	transactions: IcTransactionUi[];
 } & {
+	icrcAccountText: IcrcAccountText;
 	certified: boolean;
 }) => {
 	const certifiedTransactions = newTransactions.map((data) => ({ data, certified }));
 
 	const data: PostMessageDataResponseWallet = {
 		wallet: {
+			walletId: icrcAccountText,
 			balance: {
 				data: balance,
 				certified
@@ -173,12 +197,10 @@ const postMessageWallet = ({
 const syncTransactions = ({
 	response: { transactions: fetchedTransactions, balance, ...rest },
 	certified,
-	identity,
 	store
 }: {
-	response: GetAccountIdentifierTransactionsResponse;
+	response: IcpIndexDid.GetAccountIdentifierTransactionsResponse;
 	certified: boolean;
-	identity: Identity;
 	store: WalletStore;
 }) => {
 	// Is there any new transactions unknown so far or which has become certified
@@ -196,6 +218,7 @@ const syncTransactions = ({
 		// We execute postMessage at least once because developer may have no transaction at all so, we want to display the balance zero
 		if (!initialized) {
 			postMessageWallet({
+				icrcAccountText: store.icrcAccountText,
 				transactions: [],
 				balance,
 				certified,
@@ -211,10 +234,11 @@ const syncTransactions = ({
 	store.update({ balance, newTransactions, certified });
 
 	const newUiTransactions = newTransactions.map((transaction) =>
-		mapIcpTransaction({ transaction, identity })
+		mapIcpTransaction({ transaction, accountIdentifierHex: store.accountIdentifierHex })
 	);
 
 	postMessageWallet({
+		icrcAccountText: store.icrcAccountText,
 		transactions: newUiTransactions,
 		balance,
 		certified,
@@ -255,13 +279,20 @@ const cleanTransactions = ({ certified, store }: { certified: boolean; store: Wa
 		return;
 	}
 
-	postMessageWalletCleanUp(notCertifiedTransactions);
+	postMessageWalletCleanUp({ transactions: notCertifiedTransactions, store });
 
 	store.clean(certifiedTransactions);
 };
 
-const postMessageWalletCleanUp = (transactions: IndexedTransactions) => {
+const postMessageWalletCleanUp = ({
+	transactions,
+	store
+}: {
+	transactions: IndexedTransactions;
+	store: WalletStore;
+}) => {
 	const data: PostMessageDataResponseWalletCleanUp = {
+		walletId: store.icrcAccountText,
 		transactionIds: Object.keys(transactions)
 	};
 
@@ -282,7 +313,7 @@ const postMessageWalletError = (error: unknown) => {
 	});
 };
 
-const emitSavedWallet = ({ store, identity }: { store: WalletStore; identity: Identity }) => {
+const emitSavedWallet = ({ store }: { store: WalletStore }) => {
 	if (isNullish(store.balance)) {
 		return;
 	}
@@ -291,11 +322,12 @@ const emitSavedWallet = ({ store, identity }: { store: WalletStore; identity: Id
 		.sort(({ data: { id: idA } }, { data: { id: idB } }) => Number(idB) - Number(idA))
 		.map(({ certified, data: transaction }) => ({
 			certified,
-			data: mapIcpTransaction({ transaction, identity })
+			data: mapIcpTransaction({ transaction, accountIdentifierHex: store.accountIdentifierHex })
 		}));
 
 	const data: PostMessageDataResponseWallet = {
 		wallet: {
+			walletId: store.icrcAccountText,
 			balance: store.balance,
 			newTransactions: JSON.stringify(uiTransactions, jsonReplacer)
 		}

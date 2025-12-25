@@ -1,23 +1,29 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
-	import type { AccountIdentifier } from '@icp-sdk/canisters/ledger/icp';
-	import { getAccountIdentifier } from '$lib/api/icp-index.api';
+	import { encodeIcrcAccount } from '@icp-sdk/canisters/ledger/icrc';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
-	import { icpToUsd, icpToUsdDefined } from '$lib/derived/exchange.derived';
-	import { i18n } from '$lib/stores/i18n.store';
-	import type { MissionControlId } from '$lib/types/mission-control';
+	import { icpToUsd, icpToUsdDefined } from '$lib/derived/wallet/exchange.derived';
+	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
+	import { i18n } from '$lib/stores/app/i18n.store';
+	import { toAccountIdentifier } from '$lib/utils/icp-icrc-account.utils';
 	import { formatICP, formatICPToUsd } from '$lib/utils/icp.utils';
 
 	interface Props {
-		missionControlId: MissionControlId;
+		selectedWallet: SelectedWallet;
 		balance: bigint | undefined;
 	}
 
-	let { missionControlId, balance }: Props = $props();
+	let { selectedWallet, balance }: Props = $props();
 
-	let accountIdentifier: AccountIdentifier | undefined = $derived(
-		getAccountIdentifier(missionControlId)
+	let { walletId } = $derived(selectedWallet);
+
+	let walletIdText = $derived(encodeIcrcAccount(walletId));
+
+	let accountIdentifier = $derived(toAccountIdentifier(walletId));
+
+	let walletName = $derived(
+		selectedWallet.type === 'mission_control' ? $i18n.mission_control.title : $i18n.wallet.dev
 	);
 </script>
 
@@ -27,20 +33,25 @@
 	<div class="content">
 		<Value>
 			{#snippet label()}
+				{$i18n.wallet.title}
+			{/snippet}
+			<p>
+				{walletName}
+			</p>
+		</Value>
+
+		<Value>
+			{#snippet label()}
 				{$i18n.wallet.wallet_id}
 			{/snippet}
-			<p class="identifier">
-				<Identifier identifier={missionControlId.toText()} shorten={false} />
-			</p>
+			<Identifier identifier={walletIdText} shorten={false} small={false} />
 		</Value>
 
 		<Value>
 			{#snippet label()}
 				{$i18n.wallet.account_identifier}
 			{/snippet}
-			<p class="identifier">
-				<Identifier identifier={accountIdentifier?.toHex() ?? ''} />
-			</p>
+			<Identifier identifier={accountIdentifier?.toHex() ?? ''} small={false} />
 		</Value>
 
 		<Value>

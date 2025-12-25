@@ -1,76 +1,83 @@
+use crate::accounts::{get_existing_account, update_mission_control};
 use crate::constants::FREEZING_THRESHOLD_ONE_YEAR;
+use crate::factory::canister::create_canister_with_account;
+use crate::factory::types::CanisterCreator;
 use crate::factory::utils::controllers::update_mission_control_controllers;
 use crate::factory::utils::wasm::mission_control_wasm_arg;
-use crate::store::heap::increment_mission_controls_rate;
-use crate::store::stable::{
-    add_mission_control, delete_mission_control, get_mission_control, init_empty_mission_control,
-};
-use crate::types::state::{MissionControl, Provider};
-use candid::Nat;
+use crate::store::heap::{get_mission_control_fee, increment_mission_controls_rate};
+use candid::{Nat, Principal};
 use junobuild_shared::constants_shared::CREATE_MISSION_CONTROL_CYCLES;
-use junobuild_shared::ic::api::{caller, id};
+use junobuild_shared::ic::api::id;
+use junobuild_shared::mgmt::cmc::cmc_create_canister_install_code;
 use junobuild_shared::mgmt::ic::create_canister_install_code;
+use junobuild_shared::mgmt::types::cmc::SubnetId;
 use junobuild_shared::mgmt::types::ic::CreateCanisterInitSettingsArg;
-use junobuild_shared::types::state::UserId;
+use junobuild_shared::types::interface::CreateMissionControlArgs;
 
-pub async fn init_user_mission_control_with_caller() -> Result<MissionControl, String> {
-    let caller = caller();
+pub async fn create_mission_control(
+    caller: Principal,
+    args: CreateMissionControlArgs,
+) -> Result<Principal, String> {
+    let account = get_existing_account(&caller)?;
 
-    let mission_control = get_mission_control(&caller)?;
-
-    match mission_control {
-        Some(mission_control) => Ok(mission_control),
-        None => {
-            // Guard too many requests
-            increment_mission_controls_rate()?;
-
-            init_empty_mission_control(&caller, &None);
-
-            create_mission_control(&caller).await
-        }
+    if account.mission_control_id.is_some() {
+        return Err("Mission control center already exist.".to_string());
     }
+
+    let creator: CanisterCreator = CanisterCreator::User((account.owner, None));
+
+    let mission_control_id = create_canister_with_account(
+        create_mission_control_wasm,
+        &increment_mission_controls_rate,
+        &get_mission_control_fee,
+        &account,
+        creator,
+        args.into(),
+    )
+    .await?;
+
+    update_mission_control(&account.owner, &mission_control_id)?;
+
+    Ok(mission_control_id)
 }
 
-pub async fn init_user_mission_control_with_provider(
-    user: &UserId,
-    provider: &Provider,
-) -> Result<MissionControl, String> {
-    init_empty_mission_control(user, &Some(provider.clone()));
+async fn create_mission_control_wasm(
+    creator: CanisterCreator,
+    subnet_id: Option<SubnetId>,
+) -> Result<Principal, String> {
+    let CanisterCreator::User((user_id, _)) = creator else {
+        return Err("Mission Control cannot create another Mission Control".to_string());
+    };
 
-    create_mission_control(user).await
-}
+    let wasm_arg = mission_control_wasm_arg(&user_id)?;
 
-async fn create_mission_control(user_id: &UserId) -> Result<MissionControl, String> {
-    let wasm_arg = mission_control_wasm_arg(user_id)?;
-
-    let console = id();
+    // We temporarily use the Console as a controller to create the canister but
+    // remove it as soon as it is spin.
+    let temporary_init_controllers = Vec::from([id(), user_id]);
 
     let create_settings_arg = CreateCanisterInitSettingsArg {
-        controllers: Vec::from([console, *user_id]),
+        controllers: temporary_init_controllers,
         freezing_threshold: Nat::from(FREEZING_THRESHOLD_ONE_YEAR),
     };
 
-    let create = create_canister_install_code(
-        &create_settings_arg,
-        &wasm_arg,
-        CREATE_MISSION_CONTROL_CYCLES,
-    )
-    .await;
+    let mission_control_id = if let Some(subnet_id) = subnet_id {
+        cmc_create_canister_install_code(
+            &create_settings_arg,
+            &wasm_arg,
+            CREATE_MISSION_CONTROL_CYCLES,
+            &subnet_id,
+        )
+        .await
+    } else {
+        create_canister_install_code(
+            &create_settings_arg,
+            &wasm_arg,
+            CREATE_MISSION_CONTROL_CYCLES,
+        )
+        .await
+    }?;
 
-    match create {
-        Err(e) => {
-            // We delete the pending empty mission control center from the list - e.g. this can happens if manager is out of cycles and user would be blocked
-            delete_mission_control(user_id);
-            Err(["Canister cannot be initialized.", &e].join(""))
-        }
-        Ok(mission_control_id) => {
-            // There error is unlikely to happen as the implementation ensures a mission control
-            // metadata was created before calling this factory function.
-            let mission_control = add_mission_control(user_id, &mission_control_id)?;
+    update_mission_control_controllers(&mission_control_id, &user_id).await?;
 
-            update_mission_control_controllers(&mission_control_id, user_id).await?;
-
-            Ok(mission_control)
-        }
-    }
+    Ok(mission_control_id)
 }

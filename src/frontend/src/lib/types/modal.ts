@@ -1,31 +1,27 @@
 import type { ICDid, MissionControlDid, OrbiterDid, SatelliteDid } from '$declarations';
+import type { SelectedWallet } from '$lib/schemas/wallet.schema';
 import type { CanisterInfo, CanisterSegmentWithLabel, CanisterSettings } from '$lib/types/canister';
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { CustomDomains } from '$lib/types/custom-domain';
 import type { MissionControlId } from '$lib/types/mission-control';
 import type { OrbiterSatelliteConfigEntry } from '$lib/types/orbiter';
 import type { ProposalRecord } from '$lib/types/proposals';
-import type { SatelliteIdText } from '$lib/types/satellite';
+import type { Satellite, SatelliteIdText } from '$lib/types/satellite';
 import type { User as UserListed } from '$lib/types/user';
 import type { UserUsageCollection } from '$lib/types/user-usage';
 import type { Option } from '$lib/types/utils';
-import type { AccountIdentifier } from '@icp-sdk/canisters/ledger/icp';
 import type { Principal } from '@icp-sdk/core/principal';
 import type { BuildType } from '@junobuild/admin';
 
-export interface JunoModalWithAccountIdentifier {
-	accountIdentifier: AccountIdentifier;
-}
-
 export interface JunoModalWithSatellite {
-	satellite: MissionControlDid.Satellite;
+	satellite: Satellite;
 }
 
-export type JunoModalTopUpSatelliteDetail = JunoModalWithAccountIdentifier & JunoModalWithSatellite;
+export type JunoModalTopUpSatelliteDetail = JunoModalWithSatellite;
 
-export interface JunoModalTopUpMissionControlDetail extends JunoModalWithAccountIdentifier {}
+export interface JunoModalTopUpMissionControlDetail {}
 
-export interface JunoModalTopUpOrbiterDetail extends JunoModalWithAccountIdentifier {}
+export interface JunoModalTopUpOrbiterDetail {}
 
 export interface JunoModalUpgradeDetail {
 	currentVersion: string;
@@ -35,7 +31,7 @@ export interface JunoModalUpgradeDetail {
 export type JunoModalUpgradeSatelliteDetail = JunoModalUpgradeDetail &
 	JunoModalWithSatellite & { build?: BuildType };
 
-export interface JunoModalCreateSegmentDetail extends JunoModalWithAccountIdentifier {
+export interface JunoModalCreateSegmentDetail {
 	fee: bigint;
 	monitoringEnabled: boolean;
 	monitoringConfig: Option<MissionControlDid.MonitoringConfig>;
@@ -43,7 +39,7 @@ export interface JunoModalCreateSegmentDetail extends JunoModalWithAccountIdenti
 
 export interface JunoModalCustomDomainDetail {
 	editDomainName?: string;
-	satellite: MissionControlDid.Satellite;
+	satellite: Satellite;
 	config: SatelliteDid.AuthenticationConfig | undefined;
 }
 
@@ -135,6 +131,10 @@ export interface JunoModalCdnUpgradeDetail extends JunoModalWithSatellite {
 	asset: SatelliteDid.AssetNoContent;
 }
 
+export interface JunoModalWalletDetail {
+	selectedWallet: SelectedWallet;
+}
+
 export type JunoModalDetail =
 	| JunoModalUpgradeSatelliteDetail
 	| JunoModalUpgradeDetail
@@ -153,12 +153,14 @@ export type JunoModalDetail =
 	| JunoModalShowUserDetail
 	| JunoModalChangeDetail
 	| JunoModalCdnUpgradeDetail
-	| JunoModalEditAuthConfigDetail;
+	| JunoModalEditAuthConfigDetail
+	| JunoModalWalletDetail;
 
 export interface JunoModal<T extends JunoModalDetail> {
 	type:
 		| 'create_satellite'
 		| 'create_orbiter'
+		| 'create_mission_control'
 		| 'delete_satellite'
 		| 'delete_orbiter'
 		| 'transfer_cycles_satellite'

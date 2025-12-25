@@ -1,39 +1,32 @@
 <script lang="ts">
-	import { isNullish, nonNullish, notEmptyString } from '@dfinity/utils';
+	import { isNullish, notEmptyString } from '@dfinity/utils';
 	import type { Principal } from '@icp-sdk/core/principal';
 	import { fade } from 'svelte/transition';
 	import type { MissionControlDid } from '$declarations';
-	import { setOrbitersController } from '$lib/api/mission-control.api';
 	import SegmentsTable from '$lib/components/segments/SegmentsTable.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import Warning from '$lib/components/ui/Warning.svelte';
 	import { REVOKED_CONTROLLERS } from '$lib/constants/app.constants';
-	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
-	import {
-		setMissionControlControllerForVersion,
-		setSatellitesControllerForVersion
-	} from '$lib/services/mission-control.services';
+	import { setCliControllers } from '$lib/services/cli.services';
+	import { busy } from '$lib/stores/app/busy.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
+	import { toasts } from '$lib/stores/app/toasts.store';
 	import { authStore } from '$lib/stores/auth.store';
-	import { busy } from '$lib/stores/busy.store';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { toasts } from '$lib/stores/toasts.store';
 	import type { MissionControlId } from '$lib/types/mission-control';
+	import type { Satellite } from '$lib/types/satellite';
 	import type { Option } from '$lib/types/utils';
-	import { bigintStringify } from '$lib/utils/number.utils';
-	import { orbiterName } from '$lib/utils/orbiter.utils';
-	import { satelliteName } from '$lib/utils/satellite.utils';
 
 	interface Props {
+		missionControlId: Option<MissionControlId>;
 		principal: string;
 		redirect_uri: string;
 		profile: Option<string>;
-		missionControlId: MissionControlId;
 	}
 
-	let { principal, redirect_uri, missionControlId, profile }: Props = $props();
+	let { missionControlId, principal, redirect_uri, profile }: Props = $props();
 
 	let selectedMissionControl = $state(false);
-	let selectedSatellites = $state<[Principal, MissionControlDid.Satellite][]>([]);
+	let selectedSatellites = $state<[Principal, Satellite][]>([]);
 	let selectedOrbiters = $state<[Principal, MissionControlDid.Orbiter][]>([]);
 
 	const onSubmit = async ($event: SubmitEvent) => {
@@ -42,13 +35,6 @@
 		if (isNullish(redirect_uri) || isNullish(principal)) {
 			toasts.error({
 				text: $i18n.errors.cli_missing_params
-			});
-			return;
-		}
-
-		if (isNullish($missionControlIdDerived)) {
-			toasts.error({
-				text: $i18n.errors.no_mission_control
 			});
 			return;
 		}
@@ -76,84 +62,32 @@
 
 		busy.start();
 
-		try {
-			await Promise.all([
-				...(selectedMissionControl
-					? [
-							setMissionControlControllerForVersion({
-								missionControlId: $missionControlIdDerived,
-								controllerId: principal,
-								profile,
-								scope: 'admin',
-								identity: $authStore.identity
-							})
-						]
-					: []),
-				...(selectedSatellites.length > 0
-					? [
-							setSatellitesControllerForVersion({
-								missionControlId: $missionControlIdDerived,
-								controllerId: principal,
-								satelliteIds: selectedSatellites.map((s) => s[0]),
-								profile,
-								scope: 'admin',
-								identity: $authStore.identity
-							})
-						]
-					: []),
-				...(selectedOrbiters.length > 0
-					? [
-							setOrbitersController({
-								missionControlId: $missionControlIdDerived,
-								controllerId: principal,
-								orbiterIds: selectedOrbiters.map((s) => s[0]),
-								profile,
-								scope: 'admin',
-								identity: $authStore.identity
-							})
-						]
-					: [])
-			]);
-
-			const parameters = [
-				selectedSatellites.length > 0
-					? `satellites=${encodeURIComponent(
-							JSON.stringify(
-								selectedSatellites.map(([p, n]) => ({
-									p: p.toText(),
-									n: satelliteName(n)
-								})),
-								bigintStringify
-							)
-						)}`
-					: undefined,
-				selectedOrbiters.length > 0
-					? `orbiters=${encodeURIComponent(
-							JSON.stringify(
-								selectedOrbiters.map(([p, n]) => ({
-									p: p.toText(),
-									n: orbiterName(n)
-								})),
-								bigintStringify
-							)
-						)}`
-					: undefined,
-				selectedMissionControl ? `mission_control=${$missionControlIdDerived.toText()}` : undefined,
-				profile !== '' ? `profile=${profile}` : undefined
-			].filter((param) => nonNullish(param));
-
-			// Redirect when everything is set.
-			window.location.href = `${redirect_uri}${parameters.length > 0 ? '&' : ''}${parameters.join(
-				'&'
-			)}`;
-		} catch (err: unknown) {
-			toasts.error({
-				text: $i18n.errors.cli_unexpected_error,
-				detail: err
-			});
-		}
+		const result = await setCliControllers({
+			selectedMissionControl,
+			missionControlId,
+			controllerId: principal,
+			profile,
+			identity: $authStore.identity,
+			selectedSatellites,
+			selectedOrbiters
+		});
 
 		busy.stop();
+
+		if (result.success === 'error') {
+			toasts.error({
+				text: $i18n.errors.cli_unexpected_error,
+				detail: result.err
+			});
+			return;
+		}
+
+		const { redirectQueryParams } = result;
+
+		// Redirect when everything is set.
+		window.location.href = `${redirect_uri}${redirectQueryParams.length > 0 ? '&' : ''}${redirectQueryParams.join(
+			'&'
+		)}`;
 	};
 
 	let disabled = $state(true);

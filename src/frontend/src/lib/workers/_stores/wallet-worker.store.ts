@@ -1,11 +1,13 @@
-import { walletIdbStore } from '$lib/stores/idb.store';
+import type { IcrcAccountText } from '$lib/schemas/wallet.schema';
+import { walletIdbStore } from '$lib/stores/app/idb.store';
 import type { CertifiedData } from '$lib/types/store';
+import { toAccountIdentifier } from '$lib/utils/icp-icrc-account.utils';
 import type { PrincipalText } from '@dfinity/zod-schemas';
-import type { TransactionWithId } from '@icp-sdk/canisters/ledger/icp';
+import type { AccountIdentifierHex, IcpIndexDid } from '@icp-sdk/canisters/ledger/icp';
 import { encodeIcrcAccount, type IcrcAccount } from '@icp-sdk/canisters/ledger/icrc';
 import { get, set } from 'idb-keyval';
 
-export type IndexedTransactions = Record<string, CertifiedData<TransactionWithId>>;
+export type IndexedTransactions = Record<string, CertifiedData<IcpIndexDid.TransactionWithId>>;
 
 // Not reactive, only used to hold values imperatively.
 interface WalletState {
@@ -28,16 +30,28 @@ export class WalletStore {
 
 	#store: WalletState;
 	#idbKey: WalletIdbKey;
+	#account: IcrcAccount;
 
 	private constructor({
 		state,
-		idbKey: key
+		idbKey: key,
+		account
 	}: {
 		state: WalletState | undefined;
 		idbKey: WalletIdbKey;
+		account: IcrcAccount;
 	}) {
 		this.#store = state ?? WalletStore.EMPTY_STORE;
 		this.#idbKey = key;
+		this.#account = account;
+	}
+
+	get icrcAccountText(): IcrcAccountText {
+		return encodeIcrcAccount(this.#account);
+	}
+
+	get accountIdentifierHex(): AccountIdentifierHex {
+		return toAccountIdentifier(this.#account).toHex();
 	}
 
 	get balance(): CertifiedData<bigint> | undefined {
@@ -54,7 +68,7 @@ export class WalletStore {
 		certified
 	}: {
 		balance: bigint;
-		newTransactions: TransactionWithId[];
+		newTransactions: IcpIndexDid.TransactionWithId[];
 		certified: boolean;
 	}): void {
 		this.#store = {
@@ -62,7 +76,10 @@ export class WalletStore {
 			transactions: {
 				...this.#store.transactions,
 				...newTransactions.reduce(
-					(acc: Record<string, CertifiedData<TransactionWithId>>, { id, transaction }) => ({
+					(
+						acc: Record<string, CertifiedData<IcpIndexDid.TransactionWithId>>,
+						{ id, transaction }
+					) => ({
 						...acc,
 						[`${id}`]: {
 							data: {
@@ -106,9 +123,9 @@ export class WalletStore {
 		await set(this.#idbKey, this.#store, walletIdbStore);
 	}
 
-	static async init(params: WalletTokenAccount): Promise<WalletStore> {
-		const idbKey = WalletStore.toIdbKey(params);
+	static async init({ account, ledgerId }: WalletTokenAccount): Promise<WalletStore> {
+		const idbKey = WalletStore.toIdbKey({ account, ledgerId });
 		const state = await get(idbKey, walletIdbStore);
-		return new WalletStore({ state, idbKey });
+		return new WalletStore({ state, idbKey, account });
 	}
 }

@@ -3,10 +3,10 @@
 	import IconMore from '$lib/components/icons/IconMore.svelte';
 	import IconRefresh from '$lib/components/icons/IconRefresh.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
-	import { reloadSatelliteProposals } from '$lib/services/proposals/proposals.list.satellite.services';
+	import { reloadSatelliteProposals } from '$lib/services/satellite/proposals/proposals.list.satellite.services';
+	import { busy } from '$lib/stores/app/busy.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import { authStore } from '$lib/stores/auth.store';
-	import { busy } from '$lib/stores/busy.store';
-	import { i18n } from '$lib/stores/i18n.store';
 
 	interface Props {
 		satelliteId: Principal;

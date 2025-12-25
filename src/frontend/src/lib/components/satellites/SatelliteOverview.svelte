@@ -1,10 +1,9 @@
 <script lang="ts">
 	import { fromNullishNullable } from '@dfinity/utils';
 	import { onMount } from 'svelte';
-	import type { MissionControlDid } from '$declarations';
-	import CanisterOverview from '$lib/components/canister/CanisterOverview.svelte';
-	import CanisterSubnet from '$lib/components/canister/CanisterSubnet.svelte';
 	import CanisterSyncData from '$lib/components/canister/CanisterSyncData.svelte';
+	import CanisterOverview from '$lib/components/canister/display/CanisterOverview.svelte';
+	import CanisterSubnet from '$lib/components/canister/display/CanisterSubnet.svelte';
 	import SatelliteEnvText from '$lib/components/satellites/SatelliteEnvironmentText.svelte';
 	import SatelliteName from '$lib/components/satellites/SatelliteName.svelte';
 	import SatelliteOverviewActions from '$lib/components/satellites/SatelliteOverviewActions.svelte';
@@ -15,19 +14,21 @@
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { testIds } from '$lib/constants/test-ids.constants';
-	import { listCustomDomains } from '$lib/services/custom-domain.services';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { listCustomDomains } from '$lib/services/satellite/custom-domain.services';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { CanisterSyncData as CanisterSyncDataType } from '$lib/types/canister';
-	import type { SatelliteIdText } from '$lib/types/satellite';
+	import type { Satellite, SatelliteIdText } from '$lib/types/satellite';
 
 	interface Props {
-		satellite: MissionControlDid.Satellite;
+		satellite: Satellite;
 	}
 
 	let { satellite }: Props = $props();
 
 	let monitoring = $derived(
-		fromNullishNullable(fromNullishNullable(satellite.settings)?.monitoring)
+		'settings' in satellite
+			? fromNullishNullable(fromNullishNullable(satellite.settings)?.monitoring)
+			: undefined
 	);
 
 	let monitoringEnabled = $derived(fromNullishNullable(monitoring?.cycles)?.enabled === true);

@@ -1,122 +1,103 @@
-use crate::store::services::{mutate_stable_state, read_stable_state};
+use crate::store::services::mutate_stable_state;
+use crate::store::{with_payments, with_payments_mut};
 use crate::types::ledger::{Payment, PaymentStatus};
 use crate::types::state::{Payments, PaymentsStable, StableState};
+use candid::Principal;
 use ic_cdk::api::time;
 use ic_ledger_types::BlockIndex;
 use junobuild_shared::structures::collect_stable_map_from;
-use junobuild_shared::types::state::UserId;
 
 pub fn is_known_payment(block_index: &BlockIndex) -> bool {
-    read_stable_state(|stable| stable.payments.contains_key(block_index))
+    with_payments(|payments| payments.contains_key(block_index))
 }
 
 pub fn insert_new_payment(
-    user: &UserId,
+    purchaser: &Principal,
     block_index: &BlockIndex,
 ) -> Result<Payment, &'static str> {
-    mutate_stable_state(|stable| insert_new_payment_impl(user, block_index, stable))
+    mutate_stable_state(|stable| insert_new_payment_impl(purchaser, block_index, stable))
 }
 
 fn insert_new_payment_impl(
-    user: &UserId,
+    purchaser: &Principal,
     block_index: &BlockIndex,
     state: &mut StableState,
 ) -> Result<Payment, &'static str> {
-    let existing_mission_control = state.mission_controls.get(user);
+    let now = time();
 
-    match existing_mission_control {
-        None => Err("User does not have a mission control center"),
-        Some(mission_control) => {
-            let now = time();
+    let new_payment = Payment {
+        purchaser: Some(*purchaser),
+        mission_control_id: None,
+        block_index_payment: *block_index,
+        block_index_refunded: None,
+        status: PaymentStatus::Acknowledged,
+        created_at: now,
+        updated_at: now,
+    };
 
-            let new_payment = Payment {
-                mission_control_id: mission_control.mission_control_id,
-                block_index_payment: *block_index,
-                block_index_refunded: None,
-                status: PaymentStatus::Acknowledged,
-                created_at: now,
-                updated_at: now,
-            };
+    state.payments.insert(*block_index, new_payment.clone());
 
-            state.payments.insert(*block_index, new_payment.clone());
-
-            Ok(new_payment)
-        }
-    }
+    Ok(new_payment)
 }
 
 pub fn update_payment_completed(block_index: &BlockIndex) -> Result<Payment, &'static str> {
-    mutate_stable_state(|stable| update_payment_completed_impl(block_index, stable))
+    with_payments_mut(|payments| update_payment_completed_impl(block_index, payments))
 }
 
 fn update_payment_completed_impl(
     block_index: &BlockIndex,
-    state: &mut StableState,
+    payments: &mut PaymentsStable,
 ) -> Result<Payment, &'static str> {
-    let payment = state.payments.get(block_index);
+    let payment = payments.get(block_index).ok_or("Payment not found.")?;
 
-    match payment {
-        None => Err("Payment not found."),
-        Some(payment) => {
-            let now = time();
+    let now = time();
 
-            let updated_payment = Payment {
-                mission_control_id: payment.mission_control_id,
-                block_index_payment: payment.block_index_payment,
-                block_index_refunded: Some(payment.block_index_payment),
-                status: PaymentStatus::Completed,
-                created_at: payment.created_at,
-                updated_at: now,
-            };
+    let updated_payment = Payment {
+        status: PaymentStatus::Completed,
+        updated_at: now,
+        ..payment
+    };
 
-            state.payments.insert(*block_index, updated_payment.clone());
+    payments.insert(*block_index, updated_payment.clone());
 
-            Ok(updated_payment)
-        }
-    }
+    Ok(updated_payment)
 }
 
 pub fn update_payment_refunded(
     block_index_payment: &BlockIndex,
     block_index_refunded: &BlockIndex,
 ) -> Result<Payment, &'static str> {
-    mutate_stable_state(|stable| {
-        update_payment_refunded_impl(block_index_payment, block_index_refunded, stable)
+    with_payments_mut(|payments| {
+        update_payment_refunded_impl(block_index_payment, block_index_refunded, payments)
     })
 }
 
 fn update_payment_refunded_impl(
     block_index_payment: &BlockIndex,
     block_index_refunded: &BlockIndex,
-    state: &mut StableState,
+    payments: &mut PaymentsStable,
 ) -> Result<Payment, &'static str> {
-    let payment = state.payments.get(block_index_payment);
+    let payment = payments
+        .get(block_index_payment)
+        .ok_or("Payment to refund not found.")?;
 
-    match payment {
-        None => Err("Payment to refund not found."),
-        Some(payment) => {
-            let now = time();
+    let now = time();
 
-            let updated_payment = Payment {
-                mission_control_id: payment.mission_control_id,
-                block_index_payment: payment.block_index_payment,
-                block_index_refunded: Some(*block_index_refunded),
-                status: PaymentStatus::Refunded,
-                created_at: payment.created_at,
-                updated_at: now,
-            };
+    let updated_payment = Payment {
+        block_index_refunded: Some(*block_index_refunded),
+        status: PaymentStatus::Refunded,
+        created_at: payment.created_at,
+        updated_at: now,
+        ..payment
+    };
 
-            state
-                .payments
-                .insert(*block_index_payment, updated_payment.clone());
+    payments.insert(*block_index_payment, updated_payment.clone());
 
-            Ok(updated_payment)
-        }
-    }
+    Ok(updated_payment)
 }
 
 pub fn list_payments() -> Payments {
-    read_stable_state(|stable| list_payments_impl(&stable.payments))
+    with_payments(list_payments_impl)
 }
 
 fn list_payments_impl(payments: &PaymentsStable) -> Payments {

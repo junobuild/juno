@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
 	import { deleteOrbiter } from '$lib/api/mission-control.api';
-	import CanisterDeleteWizard from '$lib/components/canister/CanisterDeleteWizard.svelte';
+	import CanisterDeleteWizard from '$lib/components/canister/lifecycle/CanisterDeleteWizard.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import { orbiterStore } from '$lib/derived/orbiter.derived';
 	import { authStore } from '$lib/stores/auth.store';

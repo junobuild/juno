@@ -6,12 +6,12 @@
 	import Html from '$lib/components/ui/Html.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import Warning from '$lib/components/ui/Warning.svelte';
-	import { createSnapshot } from '$lib/services/snapshots.services';
+	import { createSnapshot } from '$lib/services/ic-mgmt/snapshots.services';
+	import { isBusy, wizardBusy } from '$lib/stores/app/busy.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
+	import { toasts } from '$lib/stores/app/toasts.store';
 	import { authStore } from '$lib/stores/auth.store';
-	import { isBusy, wizardBusy } from '$lib/stores/busy.store';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { snapshotStore } from '$lib/stores/snapshot.store';
-	import { toasts } from '$lib/stores/toasts.store';
+	import { snapshotStore } from '$lib/stores/ic-mgmt/snapshot.store';
 	import type { JunoModalDetail, JunoModalSegmentDetail } from '$lib/types/modal';
 	import type { SnapshotProgress } from '$lib/types/progress-snapshot';
 	import { i18nFormat } from '$lib/utils/i18n.utils';

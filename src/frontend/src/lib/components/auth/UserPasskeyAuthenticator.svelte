@@ -4,8 +4,8 @@
 	import Value from '$lib/components/ui/Value.svelte';
 	import aaguids from '$lib/env/aaguids.json';
 	import { type Aaguid, type AaguidName, PasskeyAaguidsSchema } from '$lib/schemas/passkey-aaguids';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { theme } from '$lib/stores/theme.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
+	import { theme } from '$lib/stores/app/theme.store';
 	import { Theme } from '$lib/types/theme';
 	import type { User } from '$lib/types/user';
 	import type { Option } from '$lib/types/utils';

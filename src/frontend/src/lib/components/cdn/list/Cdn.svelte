@@ -1,16 +1,16 @@
 <script lang="ts">
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { getContext, setContext, untrack } from 'svelte';
-	import type { SatelliteDid, MissionControlDid } from '$declarations';
+	import type { SatelliteDid } from '$declarations';
 	import CdnAsset from '$lib/components/cdn/list/CdnAsset.svelte';
 	import DataCount from '$lib/components/data/DataCount.svelte';
 	import DataPaginator from '$lib/components/data/DataPaginator.svelte';
-	import { listWasmAssets } from '$lib/services/proposals/proposals.cdn.services';
+	import { listWasmAssets } from '$lib/services/satellite/proposals/proposals.cdn.services';
+	import { i18n } from '$lib/stores/app/i18n.store';
+	import { initListParamsContext } from '$lib/stores/app/list-params.context.store';
+	import { initPaginationContext } from '$lib/stores/app/pagination.context.store';
+	import { toasts } from '$lib/stores/app/toasts.store';
 	import { authStore } from '$lib/stores/auth.store';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { initListParamsContext } from '$lib/stores/list-params.context.store';
-	import { initPaginationContext } from '$lib/stores/pagination.context.store';
-	import { toasts } from '$lib/stores/toasts.store';
 	import { versionStore } from '$lib/stores/version.store';
 	import {
 		LIST_PARAMS_CONTEXT_KEY,
@@ -18,9 +18,10 @@
 		type ListParamsContext
 	} from '$lib/types/list-params.context';
 	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
+	import type { Satellite } from '$lib/types/satellite';
 
 	interface Props {
-		satellite: MissionControlDid.Satellite;
+		satellite: Satellite;
 	}
 
 	let { satellite }: Props = $props();

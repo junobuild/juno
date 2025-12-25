@@ -7,10 +7,11 @@
 	import Loaders from '$lib/components/loaders/Loaders.svelte';
 	import MissionControl from '$lib/components/mission-control/MissionControl.svelte';
 	import MissionControlSettings from '$lib/components/mission-control/MissionControlSettings.svelte';
+	import NoTabs from '$lib/components/ui/NoTabs.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
 	import Warnings from '$lib/components/warning/Warnings.svelte';
 	import { authSignedIn } from '$lib/derived/auth.derived';
-	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
+	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import {
 		type Tab,
 		TABS_CONTEXT_KEY,
@@ -38,26 +39,28 @@
 	setContext<TabsContext>(TABS_CONTEXT_KEY, {
 		store
 	});
+
+	let TabsCmp = $derived($missionControlId === null ? NoTabs : Tabs);
 </script>
 
 <IdentityGuard>
 	<Loaders>
-		<MissionControlGuard>
-			<Tabs>
-				{#snippet info()}
-					{#if $authSignedIn}
-						<Warnings />
-					{/if}
-				{/snippet}
+		<TabsCmp>
+			{#snippet info()}
+				{#if $authSignedIn}
+					<Warnings />
+				{/if}
+			{/snippet}
 
-				{#if nonNullish($missionControlIdDerived)}
+			<MissionControlGuard>
+				{#if nonNullish($missionControlId)}
 					{#if $store.tabId === $store.tabs[0].id}
-						<MissionControl missionControlId={$missionControlIdDerived} />
+						<MissionControl missionControlId={$missionControlId} />
 					{:else if $store.tabId === $store.tabs[1].id}
-						<MissionControlSettings missionControlId={$missionControlIdDerived} />
+						<MissionControlSettings missionControlId={$missionControlId} />
 					{/if}
 				{/if}
-			</Tabs>
-		</MissionControlGuard>
+			</MissionControlGuard>
+		</TabsCmp>
 	</Loaders>
 </IdentityGuard>

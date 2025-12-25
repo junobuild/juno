@@ -5,7 +5,7 @@
 	import CollectionSelection from '$lib/components/collections/CollectionSelection.svelte';
 	import CollectionsNav from '$lib/components/collections/CollectionsNav.svelte';
 	import IconNew from '$lib/components/icons/IconNew.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { CollectionRule } from '$lib/types/collection';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 

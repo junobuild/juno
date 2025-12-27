@@ -19,12 +19,14 @@
 
 	let selectedWallet = $state<SelectedWallet | undefined>(undefined);
 
+	const ledgerId = ICP_LEDGER_CANISTER_ID;
+
 	let walletIdText = $derived(
 		nonNullish(selectedWallet) ? encodeIcrcAccount(selectedWallet.walletId) : undefined
 	);
 
 	let walletTransactions = $derived(
-		nonNullish(walletIdText) ? ($transactions[walletIdText]?.[ICP_LEDGER_CANISTER_ID] ?? []) : []
+		nonNullish(walletIdText) ? ($transactions[walletIdText]?.[ledgerId] ?? []) : []
 	);
 
 	/**
@@ -56,6 +58,7 @@
 
 		await loadNextTransactions({
 			account: selectedWallet.walletId,
+			ledgerId,
 			maxResults: PAGINATION,
 			start: lastId,
 			signalEnd: () => (disableInfiniteScroll = true)

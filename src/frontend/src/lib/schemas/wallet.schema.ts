@@ -1,8 +1,12 @@
 import { PrincipalSchema } from '$lib/schemas/principal.schema';
 import * as z from 'zod';
+import { PrincipalTextSchema } from '@dfinity/zod-schemas';
 
 export const IcrcAccountTextSchema = z.string();
 export type IcrcAccountText = z.infer<typeof IcrcAccountTextSchema>;
+
+export const LedgerIdTextSchema = PrincipalTextSchema;
+export type LedgerIdText = z.infer<typeof LedgerIdTextSchema>;
 
 export const WalletIdTextSchema = IcrcAccountTextSchema;
 export type WalletIdText = IcrcAccountText;

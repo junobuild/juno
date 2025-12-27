@@ -6,9 +6,21 @@ import { type Readable, writable } from 'svelte/store';
 type CertifiedTransactionsStoreData = CertifiedWalletStoreData<CertifiedTransactions>;
 
 interface CertifiedTransactionsStore extends Readable<CertifiedTransactionsStoreData> {
-	prepend: (params: { walletId: WalletIdText; ledgerId: LedgerIdText; transactions: CertifiedTransactions }) => void;
-	append: (params: { walletId: WalletIdText; ledgerId: LedgerIdText; transactions: CertifiedTransactions }) => void;
-	cleanUp: (params: { walletId: WalletIdText; ledgerId: LedgerIdText; transactionIds: string[] }) => void;
+	prepend: (params: {
+		walletId: WalletIdText;
+		ledgerId: LedgerIdText;
+		transactions: CertifiedTransactions;
+	}) => void;
+	append: (params: {
+		walletId: WalletIdText;
+		ledgerId: LedgerIdText;
+		transactions: CertifiedTransactions;
+	}) => void;
+	cleanUp: (params: {
+		walletId: WalletIdText;
+		ledgerId: LedgerIdText;
+		transactionIds: string[];
+	}) => void;
 	reset: () => void;
 }
 

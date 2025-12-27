@@ -8,7 +8,7 @@
 	import ReceiveTokens from '$lib/components/wallet/tokens/ReceiveTokens.svelte';
 	import Transactions from '$lib/components/wallet/transactions/Transactions.svelte';
 	import TransactionsExport from '$lib/components/wallet/transactions/TransactionsExport.svelte';
-	import { PAGINATION } from '$lib/constants/app.constants';
+	import { ICP_LEDGER_CANISTER_ID, PAGINATION } from '$lib/constants/app.constants';
 	import { authSignedIn, authSignedOut } from '$lib/derived/auth.derived';
 	import { transactions } from '$lib/derived/wallet/transactions.derived';
 	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
@@ -24,7 +24,7 @@
 	);
 
 	let walletTransactions = $derived(
-		nonNullish(walletIdText) ? ($transactions[walletIdText] ?? []) : []
+		nonNullish(walletIdText) ? ($transactions[walletIdText]?.[ICP_LEDGER_CANISTER_ID] ?? []) : []
 	);
 
 	/**

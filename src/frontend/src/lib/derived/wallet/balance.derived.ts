@@ -1,3 +1,4 @@
+import { ICP_LEDGER_CANISTER_ID } from '$lib/constants/app.constants';
 import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 import { devId } from '$lib/derived/dev.derived';
 import { balanceCertifiedStore } from '$lib/stores/wallet/balance.store';
@@ -5,13 +6,15 @@ import { isNullish, nonNullish } from '@dfinity/utils';
 import { derived } from 'svelte/store';
 
 export const devBalance = derived([balanceCertifiedStore, devId], ([$balanceStore, $devId]) =>
-	nonNullish($devId) ? $balanceStore?.[$devId.toText()]?.data : undefined
+	nonNullish($devId) ? $balanceStore?.[$devId.toText()]?.[ICP_LEDGER_CANISTER_ID]?.data : undefined
 );
 
 export const missionControlBalance = derived(
 	[balanceCertifiedStore, missionControlId],
 	([$balanceStore, $missionControlId]) =>
-		nonNullish($missionControlId) ? $balanceStore?.[$missionControlId.toText()]?.data : undefined
+		nonNullish($missionControlId)
+			? $balanceStore?.[$missionControlId.toText()]?.[ICP_LEDGER_CANISTER_ID]?.data
+			: undefined
 );
 
 export const balance = derived(

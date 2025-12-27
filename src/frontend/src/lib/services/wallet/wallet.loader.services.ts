@@ -1,3 +1,4 @@
+import { ICP_LEDGER_CANISTER_ID } from '$lib/constants/app.constants';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
 import { balanceCertifiedStore } from '$lib/stores/wallet/balance.store';
@@ -22,6 +23,7 @@ export const onSyncWallet = (data: PostMessageDataResponseWallet) => {
 
 	balanceCertifiedStore.set({
 		walletId,
+		ledgerId: ICP_LEDGER_CANISTER_ID,
 		data: balance
 	});
 
@@ -29,6 +31,7 @@ export const onSyncWallet = (data: PostMessageDataResponseWallet) => {
 
 	transactionsCertifiedStore.prepend({
 		walletId,
+		ledgerId: ICP_LEDGER_CANISTER_ID,
 		transactions
 	});
 };
@@ -49,7 +52,11 @@ export const onWalletCleanUp = ({
 	transactionIds,
 	walletId
 }: PostMessageDataResponseWalletCleanUp) => {
-	transactionsCertifiedStore.cleanUp({ walletId, transactionIds });
+	transactionsCertifiedStore.cleanUp({
+		walletId,
+		ledgerId: ICP_LEDGER_CANISTER_ID,
+		transactionIds
+	});
 
 	toasts.error({
 		text: get(i18n).errors.wallet_uncertified_transactions_removed

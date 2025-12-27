@@ -1,6 +1,6 @@
 import { queryAndUpdate } from '$lib/api/call/query.api';
 import { getTransactions } from '$lib/api/icp-index.api';
-import type { WalletId } from '$lib/schemas/wallet.schema';
+import type { LedgerIdText, WalletId } from '$lib/schemas/wallet.schema';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
 import { transactionsCertifiedStore } from '$lib/stores/wallet/transactions.store';
@@ -67,10 +67,12 @@ export const exportTransactions = async ({
 
 export const loadNextTransactions = ({
 	account,
+	ledgerId,
 	signalEnd,
 	...rest
 }: {
 	account: IcrcAccount;
+	ledgerId: LedgerIdText;
 	start?: bigint;
 	maxResults?: bigint;
 	signalEnd: () => void;
@@ -90,6 +92,7 @@ export const loadNextTransactions = ({
 
 			transactionsCertifiedStore.append({
 				walletId: encodeIcrcAccount(account),
+				ledgerId,
 				transactions: transactions.map((transaction) => ({
 					data: mapIcpTransaction({
 						transaction,

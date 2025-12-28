@@ -14,10 +14,14 @@ export const requestTransactions = async ({
 	store,
 	...rest
 }: RequestWorkerTransactionsParams): Promise<RequestTransactionsResponse> => {
+	// We query tip to discover the new transactions
+	const start = undefined;
+
 	if (store.ledgerIdText === ICP_LEDGER_CANISTER_ID) {
 		return await requestIcpTransactions({
 			account: store.account,
 			accountIdentifierHex: store.accountIdentifierHex,
+			start,
 			...rest
 		});
 	}
@@ -25,6 +29,7 @@ export const requestTransactions = async ({
 	return await requestIcrcTransactions({
 		account: store.account,
 		ledgerId: Principal.fromText(store.ledgerIdText),
+		start,
 		...rest
 	});
 };

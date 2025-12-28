@@ -17,19 +17,18 @@ export interface RequestTransactionsResponse {
 export const requestIcpTransactions = async ({
 	account,
 	accountIdentifierHex,
-	identity,
-	certified
+	maxResults = PAGINATION,
+	...rest
 }: QueryAndUpdateRequestParams & {
 	account: IcrcAccount;
 	accountIdentifierHex: AccountIdentifierHex;
+	start: bigint | undefined;
+	maxResults?: bigint;
 }): Promise<RequestTransactionsResponse> => {
 	const { transactions: fetchedTransactions, balance } = await getIcpTransactions({
-		identity,
 		account,
-		// We query tip to discover the new transactions
-		start: undefined,
-		maxResults: PAGINATION,
-		certified
+		maxResults,
+		...rest
 	});
 
 	return {
@@ -43,20 +42,19 @@ export const requestIcpTransactions = async ({
 export const requestIcrcTransactions = async ({
 	account,
 	ledgerId,
-	identity,
-	certified
+	maxResults = PAGINATION,
+	...rest
 }: QueryAndUpdateRequestParams & {
 	account: IcrcAccount;
 	ledgerId: LedgerId;
+	start: bigint | undefined;
+	maxResults?: bigint;
 }): Promise<RequestTransactionsResponse> => {
 	const { transactions: fetchedTransactions, balance } = await getIcrcTransactions({
-		identity,
 		account,
 		ledgerId,
-		// We query tip to discover the new transactions
-		start: undefined,
-		maxResults: PAGINATION,
-		certified
+		maxResults,
+		...rest
 	});
 
 	const icrcAccountText = encodeIcrcAccount(account);

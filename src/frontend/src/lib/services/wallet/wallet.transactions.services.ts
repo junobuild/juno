@@ -77,7 +77,7 @@ export const loadNextTransactions = async ({
 }: {
 	account: IcrcAccount;
 	ledgerId: LedgerIdText;
-	start?: bigint;
+	start: bigint;
 	maxResults?: bigint;
 	signalEnd: () => void;
 }): Promise<void> => {
@@ -88,6 +88,7 @@ export const loadNextTransactions = async ({
 			return await requestIcpTransactions({
 				account,
 				accountIdentifierHex: toAccountIdentifier(account).toHex(),
+				...rest,
 				...params
 			});
 		}
@@ -95,6 +96,7 @@ export const loadNextTransactions = async ({
 		return await requestIcrcTransactions({
 			account,
 			ledgerId: Principal.fromText(ledgerId),
+			...rest,
 			...params
 		});
 	};

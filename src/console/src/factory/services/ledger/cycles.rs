@@ -1,10 +1,10 @@
-use crate::factory::services::ledger::icrc_transfer_from;
+use crate::factory::services::ledger::icrc::icrc_transfer_from;
 use candid::{Nat, Principal};
 use ic_ledger_types::{BlockIndex, Tokens};
 use junobuild_shared::constants_shared::IC_TRANSACTION_FEE_CYCLES;
 use junobuild_shared::env::CYCLES_LEDGER;
 
-pub async fn transfer_from_cycles_ledger(
+pub async fn cycles_transfer_from(
     purchaser: &Principal,
     canister_fee: &Tokens,
 ) -> Result<BlockIndex, String> {

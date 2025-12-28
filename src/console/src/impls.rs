@@ -1,5 +1,7 @@
 use crate::constants::{
-    MISSION_CONTROL_CREATION_FEE_ICP, ORBITER_CREATION_FEE_ICP, SATELLITE_CREATION_FEE_ICP,
+    MISSION_CONTROL_CREATION_FEE_CYCLES, MISSION_CONTROL_CREATION_FEE_ICP,
+    ORBITER_CREATION_FEE_CYCLES, ORBITER_CREATION_FEE_ICP, SATELLITE_CREATION_FEE_CYCLES,
+    SATELLITE_CREATION_FEE_ICP,
 };
 use crate::memory::manager::init_stable_state;
 use crate::types::ledger::Payment;
@@ -61,14 +63,17 @@ impl Default for FactoryFees {
         Self {
             satellite: FactoryFee {
                 fee_icp: SATELLITE_CREATION_FEE_ICP,
+                fee_cycles: SATELLITE_CREATION_FEE_CYCLES,
                 updated_at: now,
             },
             orbiter: FactoryFee {
                 fee_icp: ORBITER_CREATION_FEE_ICP,
+                fee_cycles: ORBITER_CREATION_FEE_CYCLES,
                 updated_at: now,
             },
             mission_control: FactoryFee {
                 fee_icp: MISSION_CONTROL_CREATION_FEE_ICP,
+                fee_cycles: MISSION_CONTROL_CREATION_FEE_CYCLES,
                 updated_at: now,
             },
         }

@@ -26,6 +26,7 @@ where
         let fee = selector(factory_fees);
 
         match fee_kind {
+            FeeKind::Cycles => fee.fee_cycles,
             FeeKind::ICP => fee.fee_icp,
         }
     })
@@ -53,6 +54,7 @@ where
         let target = selector(factory_fees);
 
         target.fee_icp = fee.fee_icp;
+        target.fee_cycles = fee.fee_cycles;
         target.updated_at = time();
     })
 }

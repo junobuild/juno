@@ -29,12 +29,14 @@ pub async fn create_mission_control(
 
     let creator: CanisterCreator = CanisterCreator::User((account.owner, None));
 
+    let fee = get_fee(FeeKind::Cycles);
+
     let mission_control_id = create_canister_with_account(
         create_mission_control_wasm,
         process_payment_cycles,
         refund_payment_cycles,
         &increment_mission_controls_rate,
-        &get_fee,
+        fee,
         &account,
         creator,
         args.into(),

@@ -123,6 +123,7 @@ pub mod state {
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct FactoryFee {
+        pub fee_cycles: Tokens,
         pub fee_icp: Tokens,
         pub updated_at: Timestamp,
     }
@@ -213,11 +214,13 @@ pub mod interface {
 
     #[derive(CandidType, Deserialize)]
     pub struct FeesArgs {
+        pub fee_cycles: Tokens,
         pub fee_icp: Tokens,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub enum FeeKind {
+        Cycles,
         ICP,
     }
 }

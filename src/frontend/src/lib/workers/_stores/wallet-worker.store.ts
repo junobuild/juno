@@ -1,8 +1,7 @@
-import type { IcrcAccountText } from '$lib/schemas/wallet.schema';
+import type { IcrcAccountText, LedgerId, LedgerIdText } from '$lib/schemas/wallet.schema';
 import { walletIdbStore } from '$lib/stores/app/idb.store';
 import type { CertifiedData } from '$lib/types/store';
 import { toAccountIdentifier } from '$lib/utils/icp-icrc-account.utils';
-import type { PrincipalText } from '@dfinity/zod-schemas';
 import type { AccountIdentifierHex, IcpIndexDid } from '@icp-sdk/canisters/ledger/icp';
 import { encodeIcrcAccount, type IcrcAccount } from '@icp-sdk/canisters/ledger/icrc';
 import { get, set } from 'idb-keyval';
@@ -16,7 +15,7 @@ interface WalletState {
 }
 
 interface WalletTokenAccount {
-	ledgerId: PrincipalText;
+	ledgerId: LedgerId;
 	account: IcrcAccount;
 }
 
@@ -31,19 +30,23 @@ export class WalletStore {
 	#store: WalletState;
 	#idbKey: WalletIdbKey;
 	#account: IcrcAccount;
+	#ledgerId: LedgerId;
 
 	private constructor({
 		state,
 		idbKey: key,
-		account
+		account,
+		ledgerId
 	}: {
 		state: WalletState | undefined;
 		idbKey: WalletIdbKey;
 		account: IcrcAccount;
+		ledgerId: LedgerId;
 	}) {
 		this.#store = state ?? WalletStore.EMPTY_STORE;
 		this.#idbKey = key;
 		this.#account = account;
+		this.#ledgerId = ledgerId;
 	}
 
 	get icrcAccountText(): IcrcAccountText {
@@ -54,12 +57,20 @@ export class WalletStore {
 		return toAccountIdentifier(this.#account).toHex();
 	}
 
+	get ledgerIdText(): LedgerIdText {
+		return this.#ledgerId.toText();
+	}
+
 	get balance(): CertifiedData<bigint> | undefined {
 		return this.#store.balance;
 	}
 
 	get transactions(): IndexedTransactions {
 		return this.#store.transactions;
+	}
+
+	get idbKey(): WalletIdbKey {
+		return this.#idbKey;
 	}
 
 	update({
@@ -112,10 +123,10 @@ export class WalletStore {
 		account,
 		ledgerId
 	}: {
-		ledgerId: PrincipalText;
+		ledgerId: LedgerId;
 		account: IcrcAccount;
 	}): string {
-		return `${ledgerId}#${encodeIcrcAccount(account)}`;
+		return `${ledgerId.toText()}#${encodeIcrcAccount(account)}`;
 	}
 
 	async save(): Promise<void> {
@@ -126,6 +137,6 @@ export class WalletStore {
 	static async init({ account, ledgerId }: WalletTokenAccount): Promise<WalletStore> {
 		const idbKey = WalletStore.toIdbKey({ account, ledgerId });
 		const state = await get(idbKey, walletIdbStore);
-		return new WalletStore({ state, idbKey, account });
+		return new WalletStore({ state, idbKey, account, ledgerId });
 	}
 }

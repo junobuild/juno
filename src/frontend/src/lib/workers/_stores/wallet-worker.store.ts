@@ -1,12 +1,13 @@
 import type { IcrcAccountText, LedgerId, LedgerIdText } from '$lib/schemas/wallet.schema';
 import { walletIdbStore } from '$lib/stores/app/idb.store';
+import type { IcTransactionUi } from '$lib/types/ic-transaction';
 import type { CertifiedData } from '$lib/types/store';
 import { toAccountIdentifier } from '$lib/utils/icp-icrc-account.utils';
-import type { AccountIdentifierHex, IcpIndexDid } from '@icp-sdk/canisters/ledger/icp';
+import type { AccountIdentifierHex } from '@icp-sdk/canisters/ledger/icp';
 import { encodeIcrcAccount, type IcrcAccount } from '@icp-sdk/canisters/ledger/icrc';
 import { get, set } from 'idb-keyval';
 
-export type IndexedTransactions = Record<string, CertifiedData<IcpIndexDid.TransactionWithId>>;
+export type IndexedTransactions = Record<string, CertifiedData<IcTransactionUi>>;
 
 // Not reactive, only used to hold values imperatively.
 interface WalletState {
@@ -49,6 +50,10 @@ export class WalletStore {
 		this.#ledgerId = ledgerId;
 	}
 
+	get account(): IcrcAccount {
+		return this.#account;
+	}
+
 	get icrcAccountText(): IcrcAccountText {
 		return encodeIcrcAccount(this.#account);
 	}
@@ -79,7 +84,7 @@ export class WalletStore {
 		certified
 	}: {
 		balance: bigint;
-		newTransactions: IcpIndexDid.TransactionWithId[];
+		newTransactions: IcTransactionUi[];
 		certified: boolean;
 	}): void {
 		this.#store = {
@@ -87,15 +92,12 @@ export class WalletStore {
 			transactions: {
 				...this.#store.transactions,
 				...newTransactions.reduce(
-					(
-						acc: Record<string, CertifiedData<IcpIndexDid.TransactionWithId>>,
-						{ id, transaction }
-					) => ({
+					(acc: Record<string, CertifiedData<IcTransactionUi>>, { id, ...transaction }) => ({
 						...acc,
 						[`${id}`]: {
 							data: {
 								id,
-								transaction
+								...transaction
 							},
 							certified
 						}

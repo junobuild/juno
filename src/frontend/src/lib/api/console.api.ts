@@ -52,7 +52,7 @@ const getFee = async ({
 }): Promise<bigint> => {
 	const { get_create_fee } = await getConsoleActor({ identity });
 
-	const result = await get_create_fee(segmentKind, {ICP: null});
+	const result = await get_create_fee(segmentKind, { ICP: null });
 	const fee = fromNullable(result);
 
 	// If user has enough credits, it returns no fee

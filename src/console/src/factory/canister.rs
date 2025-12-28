@@ -5,6 +5,7 @@ use crate::accounts::{
 use crate::factory::services::payment::{process_payment_icp, refund_payment_icp};
 use crate::factory::types::{CanisterCreator, CreateCanisterArgs};
 use crate::store::stable::{insert_new_payment, update_payment_completed, update_payment_refunded};
+use crate::types::interface::FeeKind;
 use crate::types::ledger::Payment;
 use crate::types::state::Account;
 use candid::Principal;
@@ -13,7 +14,6 @@ use junobuild_shared::mgmt::types::cmc::SubnetId;
 use junobuild_shared::types::state::UserId;
 use junobuild_shared::utils::principal_equal;
 use std::future::Future;
-use crate::types::interface::FeeKind;
 
 pub async fn create_canister<F, Fut>(
     create: F,

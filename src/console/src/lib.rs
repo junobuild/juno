@@ -18,6 +18,8 @@ use crate::types::interface::AuthenticationArgs;
 use crate::types::interface::AuthenticationResult;
 use crate::types::interface::Config;
 use crate::types::interface::DeleteProposalAssets;
+use crate::types::interface::FeeKind;
+use crate::types::interface::FeesArgs;
 use crate::types::interface::GetDelegationArgs;
 use crate::types::interface::ListSegmentsArgs;
 use crate::types::state::Account;
@@ -66,7 +68,5 @@ use junobuild_storage::types::interface::SetStorageConfig;
 use junobuild_storage::types::interface::UploadChunk;
 use junobuild_storage::types::interface::UploadChunkResult;
 use junobuild_storage::types::state::FullPath;
-use crate::types::interface::FeeKind;
-use crate::types::interface::FeesArgs;
 
 export_candid!();

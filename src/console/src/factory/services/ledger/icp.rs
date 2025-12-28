@@ -39,7 +39,7 @@ pub async fn icp_verify_payment(
     Ok(*purchaser_payment_block_index)
 }
 
-pub async fn refund_payment(
+pub async fn icp_transfer_payment(
     purchaser: &Principal,
     canister_fee: Tokens,
 ) -> Result<BlockIndex, String> {

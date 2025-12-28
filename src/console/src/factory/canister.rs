@@ -2,8 +2,7 @@ use crate::accounts::{
     credits::{has_credits, use_credits},
     get_existing_account,
 };
-use crate::factory::services::ledger::icp::refund_payment;
-use crate::factory::services::payment::process_payment_icp;
+use crate::factory::services::payment::{process_payment_icp, refund_payment_icp};
 use crate::factory::types::{CanisterCreator, CreateCanisterArgs};
 use crate::store::stable::{insert_new_payment, update_payment_completed, update_payment_refunded};
 use crate::types::ledger::Payment;
@@ -38,6 +37,7 @@ where
         let canister_id = create_canister_with_account(
             create,
             process_payment_icp,
+            refund_payment_icp,
             increment_rate,
             get_fee,
             &account,
@@ -63,6 +63,7 @@ where
         let canister_id = create_canister_with_account(
             create,
             process_payment_icp,
+            refund_payment_icp,
             increment_rate,
             get_fee,
             &account,
@@ -79,9 +80,10 @@ where
     Err("Unknown caller".to_string())
 }
 
-pub async fn create_canister_with_account<F, Fut, P, Pay>(
+pub async fn create_canister_with_account<F, Fut, P, Pay, R, Refund>(
     create: F,
     process_payment: P,
+    refund_payment: R,
     increment_rate: &dyn Fn() -> Result<(), String>,
     get_fee: &dyn Fn() -> Result<Tokens, String>,
     account: &Account,
@@ -93,6 +95,8 @@ where
     Fut: Future<Output = Result<Principal, String>>,
     P: FnOnce(Principal, Option<BlockIndex>, Tokens) -> Pay,
     Pay: Future<Output = Result<(Principal, BlockIndex), String>>,
+    R: FnOnce(Principal, Tokens) -> Refund,
+    Refund: Future<Output = Result<BlockIndex, String>>,
 {
     let fee = get_fee()?;
 
@@ -103,7 +107,7 @@ where
         return create_canister_with_credits(create, creator, args).await;
     }
 
-    create_canister_with_payment(create, process_payment, creator, args, fee).await
+    create_canister_with_payment(create, process_payment, refund_payment, creator, args, fee).await
 }
 
 async fn create_canister_with_credits<F, Fut>(
@@ -134,21 +138,27 @@ where
     }
 }
 
-async fn refund_canister_creation(
+async fn refund_canister_creation<R, Refund>(
+    refund_payment: R,
     purchaser: &Principal,
     purchaser_payment_block_index: &BlockIndex,
     fee: Tokens,
-) -> Result<Payment, String> {
-    let refund_block_index = refund_payment(purchaser, fee).await?;
+) -> Result<Payment, String>
+where
+    R: FnOnce(Principal, Tokens) -> Refund,
+    Refund: Future<Output = Result<BlockIndex, String>>,
+{
+    let refund_block_index = refund_payment(purchaser.clone(), fee).await?;
 
     // We record the refund in the payment list
     update_payment_refunded(purchaser_payment_block_index, &refund_block_index)
         .map_err(|e| format!("Insert refund transaction error {e:?}"))
 }
 
-async fn create_canister_with_payment<F, Fut, P, Pay>(
+async fn create_canister_with_payment<F, Fut, P, Pay, R, Refund>(
     create: F,
     process_payment: P,
+    refund_payment: R,
     creator: CanisterCreator,
     CreateCanisterArgs {
         block_index,
@@ -161,6 +171,8 @@ where
     Fut: Future<Output = Result<Principal, String>>,
     P: FnOnce(Principal, Option<BlockIndex>, Tokens) -> Pay,
     Pay: Future<Output = Result<(Principal, BlockIndex), String>>,
+    R: FnOnce(Principal, Tokens) -> Refund,
+    Refund: Future<Output = Result<BlockIndex, String>>,
 {
     let purchaser = *creator.purchaser();
 
@@ -175,8 +187,13 @@ where
 
     match create_canister_result {
         Err(error) => {
-            // TODO: moved to payment and get function
-            refund_canister_creation(&purchaser, &purchaser_payment_block_index, fee).await?;
+            refund_canister_creation(
+                refund_payment,
+                &purchaser,
+                &purchaser_payment_block_index,
+                fee,
+            )
+            .await?;
 
             Err(["Canister creation failed. Buyer has been refunded.", &error].join(" - "))
         }

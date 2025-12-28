@@ -4,7 +4,11 @@ import {
 	type QueryAndUpdateOnResponse,
 	type QueryAndUpdateRequestParams
 } from '$lib/api/call/query.api';
-import { ICP_LEDGER_CANISTER_ID, SYNC_WALLET_TIMER_INTERVAL } from '$lib/constants/app.constants';
+import {
+	CYCLES_LEDGER_CANISTER_ID,
+	ICP_LEDGER_CANISTER_ID,
+	SYNC_WALLET_TIMER_INTERVAL
+} from '$lib/constants/app.constants';
 import type { IcrcAccountText, LedgerIdText } from '$lib/schemas/wallet.schema';
 import type {
 	PostMessageDataRequest,
@@ -15,7 +19,7 @@ import type {
 } from '$lib/types/post-message';
 import { loadIdentity } from '$lib/utils/worker.utils';
 import {
-	requestIcpTransactions,
+	requestTransactions,
 	type GetTransactionsResponse
 } from '$lib/workers/_services/wallet-worker.services';
 import { WalletStore, type IndexedTransactions } from '$lib/workers/_stores/wallet-worker.store';
@@ -64,11 +68,18 @@ const startTimer = async ({ data: { walletIds } }: { data: PostMessageDataReques
 		return;
 	}
 
+	const ids = walletIds.flatMap((walletId) =>
+		[ICP_LEDGER_CANISTER_ID, CYCLES_LEDGER_CANISTER_ID].flatMap((ledgerId) => ({
+			walletId,
+			ledgerId: Principal.fromText(ledgerId)
+		}))
+	);
+
 	await Promise.all(
-		walletIds.map(async (walletId) => {
+		ids.map(async ({ walletId, ledgerId }) => {
 			await startTimerWithAccount({
 				identity,
-				ledgerId: Principal.fromText(ICP_LEDGER_CANISTER_ID),
+				ledgerId,
 				account: decodeIcrcAccount(walletId)
 			});
 		})
@@ -115,7 +126,7 @@ const syncWallet = async ({ identity, store }: { identity: Identity; store: Wall
 		identity: _,
 		certified
 	}: QueryAndUpdateRequestParams): Promise<GetTransactionsResponse> =>
-		requestIcpTransactions({
+		requestTransactions({
 			identity,
 			certified,
 			store

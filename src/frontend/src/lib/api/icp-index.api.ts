@@ -26,7 +26,7 @@ export const getBalance = async ({
 	});
 };
 
-export const getTransactions = async ({
+export const getIcpTransactions = async ({
 	account,
 	identity,
 	start,

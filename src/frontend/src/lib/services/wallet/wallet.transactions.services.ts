@@ -1,5 +1,5 @@
 import { queryAndUpdate } from '$lib/api/call/query.api';
-import { getTransactions } from '$lib/api/icp-index.api';
+import { getIcpTransactions } from '$lib/api/icp-index.api';
 import type { LedgerIdText, WalletId } from '$lib/schemas/wallet.schema';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
@@ -79,7 +79,7 @@ export const loadNextTransactions = ({
 }): Promise<void> =>
 	queryAndUpdate<IcpIndexDid.GetAccountIdentifierTransactionsResponse>({
 		request: (params) =>
-			getTransactions({
+			getIcpTransactions({
 				account,
 				...rest,
 				...params

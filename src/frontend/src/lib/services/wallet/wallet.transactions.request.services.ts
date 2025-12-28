@@ -2,7 +2,7 @@ import type { QueryAndUpdateRequestParams } from '$lib/api/call/query.api';
 import { getIcpTransactions } from '$lib/api/icp-index.api';
 import { getIcrcTransactions } from '$lib/api/icrc-index.api';
 import { PAGINATION } from '$lib/constants/app.constants';
-import type { LedgerId } from '$lib/schemas/wallet.schema';
+import type { IndexId } from '$lib/schemas/wallet.schema';
 import type { IcTransactionUi } from '$lib/types/ic-transaction';
 import { mapIcpTransaction } from '$lib/utils/icp-transactions.utils';
 import { mapIcrcTransaction } from '$lib/utils/icrc-transactions.utils';
@@ -41,18 +41,18 @@ export const requestIcpTransactions = async ({
 
 export const requestIcrcTransactions = async ({
 	account,
-	ledgerId,
+	indexId,
 	maxResults = PAGINATION,
 	...rest
 }: QueryAndUpdateRequestParams & {
 	account: IcrcAccount;
-	ledgerId: LedgerId;
+	indexId: IndexId;
 	start: bigint | undefined;
 	maxResults?: bigint;
 }): Promise<RequestTransactionsResponse> => {
 	const { transactions: fetchedTransactions, balance } = await getIcrcTransactions({
 		account,
-		ledgerId,
+		indexId,
 		maxResults,
 		...rest
 	});

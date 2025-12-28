@@ -8,8 +8,11 @@ export type IcrcAccountText = z.infer<typeof IcrcAccountTextSchema>;
 export const LedgerIdTextSchema = PrincipalTextSchema;
 export type LedgerIdText = z.infer<typeof LedgerIdTextSchema>;
 
-export const LedgerIdSchema = PrincipalSchema;
+const LedgerIdSchema = PrincipalSchema;
 export type LedgerId = z.infer<typeof LedgerIdSchema>;
+
+const IndexIdSchema = LedgerIdSchema;
+export type IndexId = z.infer<typeof IndexIdSchema>;
 
 export const WalletIdTextSchema = IcrcAccountTextSchema;
 export type WalletIdText = IcrcAccountText;

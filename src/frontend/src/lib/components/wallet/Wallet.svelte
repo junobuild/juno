@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { encodeIcrcAccount } from '@icp-sdk/canisters/ledger/icrc';
+	import { Principal } from '@icp-sdk/core/principal';
 	import WalletActions from '$lib/components/wallet/WalletActions.svelte';
 	import WalletBalanceById from '$lib/components/wallet/WalletBalanceById.svelte';
 	import WalletIds from '$lib/components/wallet/WalletIds.svelte';
@@ -8,7 +9,11 @@
 	import ReceiveTokens from '$lib/components/wallet/tokens/ReceiveTokens.svelte';
 	import Transactions from '$lib/components/wallet/transactions/Transactions.svelte';
 	import TransactionsExport from '$lib/components/wallet/transactions/TransactionsExport.svelte';
-	import { ICP_LEDGER_CANISTER_ID, PAGINATION } from '$lib/constants/app.constants';
+	import {
+		ICP_INDEX_CANISTER_ID,
+		ICP_LEDGER_CANISTER_ID,
+		PAGINATION
+	} from '$lib/constants/app.constants';
 	import { authSignedIn, authSignedOut } from '$lib/derived/auth.derived';
 	import { transactions } from '$lib/derived/wallet/transactions.derived';
 	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
@@ -20,6 +25,7 @@
 	let selectedWallet = $state<SelectedWallet | undefined>(undefined);
 
 	const ledgerId = ICP_LEDGER_CANISTER_ID;
+	const indexId = Principal.fromText(ICP_INDEX_CANISTER_ID);
 
 	let walletIdText = $derived(
 		nonNullish(selectedWallet) ? encodeIcrcAccount(selectedWallet.walletId) : undefined
@@ -59,6 +65,7 @@
 		await loadNextTransactions({
 			account: selectedWallet.walletId,
 			ledgerId,
+			indexId,
 			maxResults: PAGINATION,
 			start: lastId,
 			signalEnd: () => (disableInfiniteScroll = true)

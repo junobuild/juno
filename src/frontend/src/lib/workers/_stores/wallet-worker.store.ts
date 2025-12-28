@@ -1,4 +1,9 @@
-import type { IcrcAccountText, LedgerId, LedgerIdText } from '$lib/schemas/wallet.schema';
+import type {
+	IcrcAccountText,
+	IndexId,
+	LedgerId,
+	LedgerIdText
+} from '$lib/schemas/wallet.schema';
 import { walletIdbStore } from '$lib/stores/app/idb.store';
 import type { IcTransactionUi } from '$lib/types/ic-transaction';
 import type { CertifiedData } from '$lib/types/store';
@@ -17,6 +22,7 @@ interface WalletState {
 
 interface WalletTokenAccount {
 	ledgerId: LedgerId;
+	indexId: IndexId;
 	account: IcrcAccount;
 }
 
@@ -32,22 +38,26 @@ export class WalletStore {
 	#idbKey: WalletIdbKey;
 	#account: IcrcAccount;
 	#ledgerId: LedgerId;
+	#indexId: IndexId;
 
 	private constructor({
 		state,
 		idbKey: key,
 		account,
-		ledgerId
+		ledgerId,
+		indexId
 	}: {
 		state: WalletState | undefined;
 		idbKey: WalletIdbKey;
 		account: IcrcAccount;
 		ledgerId: LedgerId;
+		indexId: IndexId;
 	}) {
 		this.#store = state ?? WalletStore.EMPTY_STORE;
 		this.#idbKey = key;
 		this.#account = account;
 		this.#ledgerId = ledgerId;
+		this.#indexId = indexId;
 	}
 
 	get account(): IcrcAccount {
@@ -64,6 +74,10 @@ export class WalletStore {
 
 	get ledgerIdText(): LedgerIdText {
 		return this.#ledgerId.toText();
+	}
+
+	get indexId(): IndexId {
+		return this.#indexId;
 	}
 
 	get balance(): CertifiedData<bigint> | undefined {
@@ -136,9 +150,9 @@ export class WalletStore {
 		await set(this.#idbKey, this.#store, walletIdbStore);
 	}
 
-	static async init({ account, ledgerId }: WalletTokenAccount): Promise<WalletStore> {
+	static async init({ account, ledgerId, indexId }: WalletTokenAccount): Promise<WalletStore> {
 		const idbKey = WalletStore.toIdbKey({ account, ledgerId });
 		const state = await get(idbKey, walletIdbStore);
-		return new WalletStore({ state, idbKey, account, ledgerId });
+		return new WalletStore({ state, idbKey, account, ledgerId, indexId });
 	}
 }

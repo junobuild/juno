@@ -1,6 +1,6 @@
 import { queryAndUpdate, type QueryAndUpdateRequestParams } from '$lib/api/call/query.api';
 import { ICP_LEDGER_CANISTER_ID } from '$lib/constants/app.constants';
-import type { LedgerIdText, WalletId } from '$lib/schemas/wallet.schema';
+import type { IndexId, LedgerIdText, WalletId } from '$lib/schemas/wallet.schema';
 import {
 	requestIcpTransactions,
 	requestIcrcTransactions,
@@ -17,7 +17,6 @@ import { transactionAmount, transactionMemo } from '$lib/utils/wallet.utils';
 import { nonNullish } from '@dfinity/utils';
 import { encodeIcrcAccount, type IcrcAccount } from '@icp-sdk/canisters/ledger/icrc';
 import { AnonymousIdentity } from '@icp-sdk/core/agent';
-import { Principal } from '@icp-sdk/core/principal';
 import { get } from 'svelte/store';
 
 type TransactionId = string;
@@ -72,11 +71,13 @@ export const exportTransactions = async ({
 export const loadNextTransactions = async ({
 	account,
 	ledgerId,
+	indexId,
 	signalEnd,
 	...rest
 }: {
 	account: IcrcAccount;
 	ledgerId: LedgerIdText;
+	indexId: IndexId;
 	start: bigint;
 	maxResults?: bigint;
 	signalEnd: () => void;
@@ -95,7 +96,7 @@ export const loadNextTransactions = async ({
 
 		return await requestIcrcTransactions({
 			account,
-			ledgerId: Principal.fromText(ledgerId),
+			indexId,
 			...rest,
 			...params
 		});

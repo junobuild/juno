@@ -5,11 +5,13 @@ import {
 	type QueryAndUpdateRequestParams
 } from '$lib/api/call/query.api';
 import {
+	CYCLES_INDEX_CANISTER_ID,
 	CYCLES_LEDGER_CANISTER_ID,
+	ICP_INDEX_CANISTER_ID,
 	ICP_LEDGER_CANISTER_ID,
 	SYNC_WALLET_TIMER_INTERVAL
 } from '$lib/constants/app.constants';
-import type { IcrcAccountText, LedgerIdText } from '$lib/schemas/wallet.schema';
+import type { IcrcAccountText, IndexId, LedgerId, LedgerIdText } from '$lib/schemas/wallet.schema';
 import type { RequestTransactionsResponse } from '$lib/services/wallet/wallet.transactions.request.services';
 import type {
 	PostMessageDataRequest,
@@ -67,17 +69,22 @@ const startTimer = async ({ data: { walletIds } }: { data: PostMessageDataReques
 	}
 
 	const ids = walletIds.flatMap((walletId) =>
-		[ICP_LEDGER_CANISTER_ID, CYCLES_LEDGER_CANISTER_ID].flatMap((ledgerId) => ({
+		[
+			[ICP_LEDGER_CANISTER_ID, ICP_INDEX_CANISTER_ID],
+			[CYCLES_LEDGER_CANISTER_ID, CYCLES_INDEX_CANISTER_ID]
+		].flatMap(([ledgerId, indexId]) => ({
 			walletId,
-			ledgerId: Principal.fromText(ledgerId)
+			ledgerId: Principal.fromText(ledgerId),
+			indexId: Principal.fromText(indexId)
 		}))
 	);
 
 	await Promise.all(
-		ids.map(async ({ walletId, ledgerId }) => {
+		ids.map(async ({ walletId, ledgerId, indexId }) => {
 			await startTimerWithAccount({
 				identity,
 				ledgerId,
+				indexId,
 				account: decodeIcrcAccount(walletId)
 			});
 		})
@@ -87,15 +94,16 @@ const startTimer = async ({ data: { walletIds } }: { data: PostMessageDataReques
 const startTimerWithAccount = async ({
 	account,
 	identity,
-	ledgerId
+	...ids
 }: {
 	account: IcrcAccount;
 	identity: Identity;
-	ledgerId: Principal;
+	ledgerId: LedgerId;
+	indexId: IndexId;
 }) => {
 	const store = await WalletStore.init({
 		account,
-		ledgerId
+		...ids
 	});
 
 	emitSavedWallet({ store });

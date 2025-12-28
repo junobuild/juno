@@ -1,4 +1,5 @@
 import { getAgent } from '$lib/api/_agent/_agent.api';
+import type { IndexId } from '$lib/schemas/wallet.schema';
 import type { OptionIdentity } from '$lib/types/itentity';
 import { assertNonNullish } from '@dfinity/utils';
 import {
@@ -6,18 +7,17 @@ import {
 	IcrcIndexCanister,
 	type IcrcIndexDid
 } from '@icp-sdk/canisters/ledger/icrc';
-import type { Principal } from '@icp-sdk/core/principal';
 
 export const getIcrcTransactions = async ({
 	account,
-	ledgerId,
+	indexId,
 	identity,
 	start,
 	maxResults = 100n,
 	certified
 }: {
 	account: IcrcAccount;
-	ledgerId: Principal;
+	indexId: IndexId;
 	identity: OptionIdentity;
 	start?: bigint;
 	maxResults?: bigint;
@@ -29,7 +29,7 @@ export const getIcrcTransactions = async ({
 
 	const { getTransactions } = IcrcIndexCanister.create({
 		agent,
-		canisterId: ledgerId
+		canisterId: indexId
 	});
 
 	return getTransactions({

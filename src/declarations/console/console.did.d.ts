@@ -279,6 +279,7 @@ export interface Payment {
 	block_index_payment: bigint;
 	mission_control_id: [] | [Principal];
 	created_at: bigint;
+	ledger_id: [] | [Principal];
 	block_index_refunded: [] | [bigint];
 	purchaser: [] | [Principal];
 }

@@ -234,6 +234,7 @@ type Payment = record {
   block_index_payment : nat64;
   mission_control_id : opt principal;
   created_at : nat64;
+  ledger_id : opt principal;
   block_index_refunded : opt nat64;
   purchaser : opt principal;
 };

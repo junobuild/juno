@@ -379,6 +379,7 @@ export const idlFactory = ({ IDL }) => {
 		block_index_payment: IDL.Nat64,
 		mission_control_id: IDL.Opt(IDL.Principal),
 		created_at: IDL.Nat64,
+		ledger_id: IDL.Opt(IDL.Principal),
 		block_index_refunded: IDL.Opt(IDL.Nat64),
 		purchaser: IDL.Opt(IDL.Principal)
 	});

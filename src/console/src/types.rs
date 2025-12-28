@@ -51,7 +51,7 @@ pub mod state {
         pub invitation_codes: InvitationCodes,
         pub controllers: Controllers,
         pub rates: Rates,
-        pub fees: Fees,
+        pub factory_fees: Option<FactoryFees>,
         pub storage: StorageHeapState,
         pub authentication: Option<AuthenticationHeapState>,
         pub releases_metadata: ReleasesMetadata,
@@ -122,16 +122,16 @@ pub mod state {
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub struct Fee {
-        pub fee: Tokens,
+    pub struct FactoryFee {
+        pub fee_icp: Tokens,
         pub updated_at: Timestamp,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub struct Fees {
-        pub satellite: Fee,
-        pub orbiter: Fee,
-        pub mission_control: Option<Fee>,
+    pub struct FactoryFees {
+        pub satellite: FactoryFee,
+        pub orbiter: FactoryFee,
+        pub mission_control: FactoryFee,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
@@ -159,6 +159,7 @@ pub mod state {
 pub mod interface {
     use crate::types::state::{Account, SegmentType};
     use candid::CandidType;
+    use ic_ledger_types::Tokens;
     use junobuild_auth::delegation::types::{
         OpenIdGetDelegationArgs, OpenIdPrepareDelegationArgs, PrepareDelegationError,
         PreparedDelegation,
@@ -208,6 +209,16 @@ pub mod interface {
     pub struct ListSegmentsArgs {
         pub segment_type: Option<SegmentType>,
         pub segment_id: Option<SegmentId>,
+    }
+
+    #[derive(CandidType, Deserialize)]
+    pub struct FeesArgs {
+        pub fee_icp: Tokens,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub enum FeeKind {
+        ICP,
     }
 }
 

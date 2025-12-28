@@ -5,6 +5,7 @@ use crate::factory::utils::controllers::remove_console_controller;
 use crate::factory::utils::wasm::orbiter_wasm_arg;
 use crate::store::heap::{get_orbiter_fee, increment_orbiters_rate};
 use crate::store::stable::add_segment as add_segment_store;
+use crate::types::interface::FeeKind;
 use crate::types::state::{Segment, SegmentKey, SegmentType};
 use candid::{Nat, Principal};
 use ic_ledger_types::Tokens;
@@ -33,8 +34,8 @@ pub async fn create_orbiter(
     .await
 }
 
-fn get_fee() -> Result<Tokens, String> {
-    Ok(get_orbiter_fee())
+fn get_fee(fee_kind: FeeKind) -> Tokens {
+    get_orbiter_fee(fee_kind)
 }
 
 async fn create_orbiter_wasm(

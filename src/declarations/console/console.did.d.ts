@@ -133,6 +133,10 @@ export interface DeleteControllersArgs {
 export interface DeleteProposalAssets {
 	proposal_ids: Array<bigint>;
 }
+export type FeeKind = { ICP: null };
+export interface FeesArgs {
+	fee_icp: Tokens;
+}
 export interface GetCreateCanisterFeeArgs {
 	user: Principal;
 }
@@ -442,7 +446,7 @@ export interface _SERVICE {
 	get_account: ActorMethod<[], [] | [Account]>;
 	get_auth_config: ActorMethod<[], [] | [AuthenticationConfig]>;
 	get_config: ActorMethod<[], Config>;
-	get_create_fee: ActorMethod<[SegmentKind], [] | [Tokens]>;
+	get_create_fee: ActorMethod<[SegmentKind, FeeKind], [] | [Tokens]>;
 	get_create_orbiter_fee: ActorMethod<[GetCreateCanisterFeeArgs], [] | [Tokens]>;
 	get_create_satellite_fee: ActorMethod<[GetCreateCanisterFeeArgs], [] | [Tokens]>;
 	get_credits: ActorMethod<[], Tokens>;
@@ -472,7 +476,7 @@ export interface _SERVICE {
 	set_auth_config: ActorMethod<[SetAuthenticationConfig], AuthenticationConfig>;
 	set_controllers: ActorMethod<[SetControllersArgs], undefined>;
 	set_custom_domain: ActorMethod<[string, [] | [string]], undefined>;
-	set_fee: ActorMethod<[SegmentKind, Tokens], undefined>;
+	set_fee: ActorMethod<[SegmentKind, FeesArgs], undefined>;
 	set_storage_config: ActorMethod<[SetStorageConfig], StorageConfig>;
 	submit_proposal: ActorMethod<[bigint], [bigint, Proposal]>;
 	update_rate_config: ActorMethod<[SegmentKind, RateConfig], undefined>;

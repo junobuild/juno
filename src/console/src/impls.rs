@@ -4,7 +4,8 @@ use crate::constants::{
 use crate::memory::manager::init_stable_state;
 use crate::types::ledger::Payment;
 use crate::types::state::{
-    Account, Fee, Fees, HeapState, Rate, Rates, Segment, SegmentKey, SegmentType, State,
+    Account, FactoryFee, FactoryFees, HeapState, Rate, Rates, Segment, SegmentKey, SegmentType,
+    State,
 };
 use ic_cdk::api::time;
 use ic_stable_structures::storable::Bound;
@@ -53,23 +54,23 @@ impl Default for Rates {
     }
 }
 
-impl Default for Fees {
+impl Default for FactoryFees {
     fn default() -> Self {
         let now = time();
 
-        Fees {
-            satellite: Fee {
-                fee: SATELLITE_CREATION_FEE_ICP,
+        Self {
+            satellite: FactoryFee {
+                fee_icp: SATELLITE_CREATION_FEE_ICP,
                 updated_at: now,
             },
-            orbiter: Fee {
-                fee: ORBITER_CREATION_FEE_ICP,
+            orbiter: FactoryFee {
+                fee_icp: ORBITER_CREATION_FEE_ICP,
                 updated_at: now,
             },
-            mission_control: Some(Fee {
-                fee: MISSION_CONTROL_CREATION_FEE_ICP,
+            mission_control: FactoryFee {
+                fee_icp: MISSION_CONTROL_CREATION_FEE_ICP,
                 updated_at: now,
-            }),
+            },
         }
     }
 }

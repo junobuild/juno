@@ -92,7 +92,7 @@ describe('Console > Upgrade > Fees > v0.2.0 -> v0.3.0', () => {
 		await pic?.tearDown();
 	});
 
-	it('should still provide fees', async () => {
+	it('should provide fees with new interfaces and default of new factory_fees', async () => {
 		const { set_fee } = actor;
 
 		await set_fee({ Satellite: null }, { e8s: 40_000_000n });
@@ -105,11 +105,11 @@ describe('Console > Upgrade > Fees > v0.2.0 -> v0.3.0', () => {
 
 		const { get_create_fee } = newActor;
 
-		await expect(get_create_fee({ Satellite: null })).resolves.toEqual(
-			toNullable({ e8s: 40_000_000n })
+		await expect(get_create_fee({ Satellite: null }, { ICP: null })).resolves.toEqual(
+			toNullable({ e8s: 50_000_000n })
 		);
-		await expect(get_create_fee({ Orbiter: null })).resolves.toEqual(
-			toNullable({ e8s: 77_000_000n })
+		await expect(get_create_fee({ Orbiter: null }, { ICP: null })).resolves.toEqual(
+			toNullable({ e8s: 50_000_000n })
 		);
 	});
 });

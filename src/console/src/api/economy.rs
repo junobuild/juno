@@ -8,6 +8,7 @@ use crate::store::heap::{
     set_create_orbiter_fee, set_create_satellite_fee,
 };
 use crate::store::stable::list_payments as list_payments_state;
+use crate::types::interface::{FeeKind, FeesArgs};
 use crate::types::state::Payments;
 use ic_cdk_macros::{query, update};
 use ic_ledger_types::Tokens;
@@ -34,13 +35,13 @@ fn add_credits(user: UserId, credits: Tokens) {
 }
 
 #[query]
-fn get_create_fee(segment: SegmentKind) -> Option<Tokens> {
+fn get_create_fee(segment: SegmentKind, fee_kind: FeeKind) -> Option<Tokens> {
     let caller = caller();
 
     let fee = match segment {
-        SegmentKind::Orbiter => get_orbiter_fee(),
-        SegmentKind::Satellite => get_satellite_fee(),
-        SegmentKind::MissionControl => get_mission_control_fee().unwrap_or_trap(),
+        SegmentKind::Orbiter => get_orbiter_fee(fee_kind),
+        SegmentKind::Satellite => get_satellite_fee(fee_kind),
+        SegmentKind::MissionControl => get_mission_control_fee(fee_kind),
     };
 
     let has_enough_credits = caller_has_credits(&caller, &fee).unwrap_or_trap();
@@ -52,13 +53,14 @@ fn get_create_fee(segment: SegmentKind) -> Option<Tokens> {
     Some(fee)
 }
 
+#[deprecated(note = "Deprecated. Used by Mission Control before merge to Monitoring.")]
 #[query]
 fn get_create_satellite_fee(
     GetCreateCanisterFeeArgs { user }: GetCreateCanisterFeeArgs,
 ) -> Option<Tokens> {
     let caller = caller();
 
-    let fee = get_satellite_fee();
+    let fee = get_satellite_fee(FeeKind::ICP);
 
     let has_enough_credits =
         caller_is_mission_control_and_user_has_credits(&user, &caller, &fee).unwrap_or_trap();
@@ -69,13 +71,14 @@ fn get_create_satellite_fee(
     }
 }
 
+#[deprecated(note = "Deprecated. Used by Mission Control before merge to Monitoring.")]
 #[query]
 fn get_create_orbiter_fee(
     GetCreateCanisterFeeArgs { user }: GetCreateCanisterFeeArgs,
 ) -> Option<Tokens> {
     let caller = caller();
 
-    let fee = get_orbiter_fee();
+    let fee = get_orbiter_fee(FeeKind::ICP);
 
     let has_enough_credits =
         caller_is_mission_control_and_user_has_credits(&user, &caller, &fee).unwrap_or_trap();
@@ -87,10 +90,10 @@ fn get_create_orbiter_fee(
 }
 
 #[update(guard = "caller_is_admin_controller")]
-fn set_fee(segment: SegmentKind, fee: Tokens) {
+fn set_fee(segment: SegmentKind, fees: FeesArgs) {
     match segment {
-        SegmentKind::Satellite => set_create_satellite_fee(&fee),
-        SegmentKind::MissionControl => set_create_mission_control_fee(&fee),
-        SegmentKind::Orbiter => set_create_orbiter_fee(&fee),
+        SegmentKind::Satellite => set_create_satellite_fee(&fees),
+        SegmentKind::MissionControl => set_create_mission_control_fee(&fees),
+        SegmentKind::Orbiter => set_create_orbiter_fee(&fees),
     }
 }

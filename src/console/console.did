@@ -104,6 +104,8 @@ type Delegation = record {
 };
 type DeleteControllersArgs = record { controllers : vec principal };
 type DeleteProposalAssets = record { proposal_ids : vec nat };
+type FeeKind = variant { ICP };
+type FeesArgs = record { fee_icp : Tokens };
 type GetCreateCanisterFeeArgs = record { user : principal };
 type GetDelegationArgs = variant { OpenId : OpenIdGetDelegationArgs };
 type GetDelegationError = variant {
@@ -381,7 +383,7 @@ service : () -> {
   get_account : () -> (opt Account) query;
   get_auth_config : () -> (opt AuthenticationConfig) query;
   get_config : () -> (Config) query;
-  get_create_fee : (SegmentKind) -> (opt Tokens) query;
+  get_create_fee : (SegmentKind, FeeKind) -> (opt Tokens) query;
   get_create_orbiter_fee : (GetCreateCanisterFeeArgs) -> (opt Tokens) query;
   get_create_satellite_fee : (GetCreateCanisterFeeArgs) -> (opt Tokens) query;
   get_credits : () -> (Tokens) query;
@@ -411,7 +413,7 @@ service : () -> {
   set_auth_config : (SetAuthenticationConfig) -> (AuthenticationConfig);
   set_controllers : (SetControllersArgs) -> ();
   set_custom_domain : (text, opt text) -> ();
-  set_fee : (SegmentKind, Tokens) -> ();
+  set_fee : (SegmentKind, FeesArgs) -> ();
   set_storage_config : (SetStorageConfig) -> (StorageConfig);
   submit_proposal : (nat) -> (nat, Proposal);
   update_rate_config : (SegmentKind, RateConfig) -> ();

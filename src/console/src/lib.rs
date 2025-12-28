@@ -18,6 +18,8 @@ use crate::types::interface::AuthenticationArgs;
 use crate::types::interface::AuthenticationResult;
 use crate::types::interface::Config;
 use crate::types::interface::DeleteProposalAssets;
+use crate::types::interface::FeeKind;
+use crate::types::interface::FeesArgs;
 use crate::types::interface::GetDelegationArgs;
 use crate::types::interface::ListSegmentsArgs;
 use crate::types::state::Account;

@@ -5,6 +5,7 @@ use crate::accounts::{
 use crate::factory::services::payment::{process_payment_icp, refund_payment_icp};
 use crate::factory::types::{CanisterCreator, CreateCanisterArgs};
 use crate::store::stable::{insert_new_payment, update_payment_completed, update_payment_refunded};
+use crate::types::interface::FeeKind;
 use crate::types::ledger::Payment;
 use crate::types::state::Account;
 use candid::Principal;
@@ -17,7 +18,7 @@ use std::future::Future;
 pub async fn create_canister<F, Fut>(
     create: F,
     increment_rate: &dyn Fn() -> Result<(), String>,
-    get_fee: &dyn Fn() -> Tokens,
+    get_fee: &dyn Fn(FeeKind) -> Tokens,
     add_segment: &dyn Fn(&UserId, &Principal),
     caller: Principal,
     user: UserId,
@@ -85,7 +86,7 @@ pub async fn create_canister_with_account<F, Fut, P, Pay, R, Refund>(
     process_payment: P,
     refund_payment: R,
     increment_rate: &dyn Fn() -> Result<(), String>,
-    get_fee: &dyn Fn() -> Tokens,
+    get_fee: &dyn Fn(FeeKind) -> Tokens,
     account: &Account,
     creator: CanisterCreator,
     args: CreateCanisterArgs,
@@ -98,7 +99,7 @@ where
     R: FnOnce(Principal, Tokens) -> Refund,
     Refund: Future<Output = Result<BlockIndex, String>>,
 {
-    let fee = get_fee();
+    let fee = get_fee(FeeKind::ICP);
 
     if has_credits(account, &fee) {
         // Guard too many requests

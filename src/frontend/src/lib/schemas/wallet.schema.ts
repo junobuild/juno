@@ -8,8 +8,17 @@ export type IcrcAccountText = z.infer<typeof IcrcAccountTextSchema>;
 export const LedgerIdTextSchema = PrincipalTextSchema;
 export type LedgerIdText = z.infer<typeof LedgerIdTextSchema>;
 
-export const LedgerIdSchema = PrincipalSchema;
+const LedgerIdSchema = PrincipalSchema;
 export type LedgerId = z.infer<typeof LedgerIdSchema>;
+
+const IndexIdSchema = LedgerIdSchema;
+export type IndexId = z.infer<typeof IndexIdSchema>;
+
+const LedgerIdsSchema = z.strictObject({
+	ledgerId: LedgerIdSchema,
+	indexId: IndexIdSchema
+});
+export type LedgerIds = z.infer<typeof LedgerIdsSchema>;
 
 export const WalletIdTextSchema = IcrcAccountTextSchema;
 export type WalletIdText = IcrcAccountText;

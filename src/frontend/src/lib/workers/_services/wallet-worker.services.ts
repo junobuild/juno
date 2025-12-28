@@ -6,7 +6,6 @@ import {
 	type RequestTransactionsResponse
 } from '$lib/services/wallet/wallet.transactions.request.services';
 import type { WalletStore } from '$lib/workers/_stores/wallet-worker.store';
-import { Principal } from '@icp-sdk/core/principal';
 
 type RequestWorkerTransactionsParams = QueryAndUpdateRequestParams & { store: WalletStore };
 
@@ -28,7 +27,7 @@ export const requestTransactions = async ({
 
 	return await requestIcrcTransactions({
 		account: store.account,
-		ledgerId: Principal.fromText(store.ledgerIdText),
+		indexId: store.indexId,
 		start,
 		...rest
 	});

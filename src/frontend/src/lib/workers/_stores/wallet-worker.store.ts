@@ -1,4 +1,10 @@
-import type { IcrcAccountText, LedgerId, LedgerIdText } from '$lib/schemas/wallet.schema';
+import type {
+	IcrcAccountText,
+	IndexId,
+	LedgerId,
+	LedgerIds,
+	LedgerIdText
+} from '$lib/schemas/wallet.schema';
 import { walletIdbStore } from '$lib/stores/app/idb.store';
 import type { IcTransactionUi } from '$lib/types/ic-transaction';
 import type { CertifiedData } from '$lib/types/store';
@@ -16,8 +22,8 @@ interface WalletState {
 }
 
 interface WalletTokenAccount {
-	ledgerId: LedgerId;
 	account: IcrcAccount;
+	ledgerIds: LedgerIds;
 }
 
 type WalletIdbKey = string;
@@ -31,23 +37,23 @@ export class WalletStore {
 	#store: WalletState;
 	#idbKey: WalletIdbKey;
 	#account: IcrcAccount;
-	#ledgerId: LedgerId;
+	#ledgerIds: LedgerIds;
 
 	private constructor({
 		state,
 		idbKey: key,
 		account,
-		ledgerId
+		ledgerIds
 	}: {
 		state: WalletState | undefined;
 		idbKey: WalletIdbKey;
 		account: IcrcAccount;
-		ledgerId: LedgerId;
+		ledgerIds: LedgerIds;
 	}) {
 		this.#store = state ?? WalletStore.EMPTY_STORE;
 		this.#idbKey = key;
 		this.#account = account;
-		this.#ledgerId = ledgerId;
+		this.#ledgerIds = ledgerIds;
 	}
 
 	get account(): IcrcAccount {
@@ -63,7 +69,13 @@ export class WalletStore {
 	}
 
 	get ledgerIdText(): LedgerIdText {
-		return this.#ledgerId.toText();
+		const { ledgerId } = this.#ledgerIds;
+		return ledgerId.toText();
+	}
+
+	get indexId(): IndexId {
+		const { indexId } = this.#ledgerIds;
+		return indexId;
 	}
 
 	get balance(): CertifiedData<bigint> | undefined {
@@ -136,9 +148,12 @@ export class WalletStore {
 		await set(this.#idbKey, this.#store, walletIdbStore);
 	}
 
-	static async init({ account, ledgerId }: WalletTokenAccount): Promise<WalletStore> {
+	static async init({
+		account,
+		ledgerIds: { ledgerId, indexId }
+	}: WalletTokenAccount): Promise<WalletStore> {
 		const idbKey = WalletStore.toIdbKey({ account, ledgerId });
 		const state = await get(idbKey, walletIdbStore);
-		return new WalletStore({ state, idbKey, account, ledgerId });
+		return new WalletStore({ state, idbKey, account, ledgerIds: { ledgerId, indexId } });
 	}
 }

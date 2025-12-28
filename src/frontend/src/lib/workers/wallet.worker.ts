@@ -10,6 +10,7 @@ import {
 	SYNC_WALLET_TIMER_INTERVAL
 } from '$lib/constants/app.constants';
 import type { IcrcAccountText, LedgerIdText } from '$lib/schemas/wallet.schema';
+import type { RequestTransactionsResponse } from '$lib/services/wallet/wallet.transactions.request.services';
 import type {
 	PostMessageDataRequest,
 	PostMessageDataResponseError,
@@ -18,10 +19,7 @@ import type {
 	PostMessageRequest
 } from '$lib/types/post-message';
 import { loadIdentity } from '$lib/utils/worker.utils';
-import {
-	requestTransactions,
-	type GetTransactionsResponse
-} from '$lib/workers/_services/wallet-worker.services';
+import { requestTransactions } from '$lib/workers/_services/wallet-worker.services';
 import { WalletStore, type IndexedTransactions } from '$lib/workers/_stores/wallet-worker.store';
 import { isNullish, jsonReplacer } from '@dfinity/utils';
 import { decodeIcrcAccount, type IcrcAccount } from '@icp-sdk/canisters/ledger/icrc';
@@ -125,14 +123,17 @@ const syncWallet = async ({ identity, store }: { identity: Identity; store: Wall
 	const request = ({
 		identity: _,
 		certified
-	}: QueryAndUpdateRequestParams): Promise<GetTransactionsResponse> =>
+	}: QueryAndUpdateRequestParams): Promise<RequestTransactionsResponse> =>
 		requestTransactions({
 			identity,
 			certified,
 			store
 		});
 
-	const onLoad: QueryAndUpdateOnResponse<GetTransactionsResponse> = ({ certified, ...rest }) => {
+	const onLoad: QueryAndUpdateOnResponse<RequestTransactionsResponse> = ({
+		certified,
+		...rest
+	}) => {
 		syncTransactions({ certified, store, ...rest });
 		cleanTransactions({ certified, store });
 	};
@@ -145,7 +146,7 @@ const syncWallet = async ({ identity, store }: { identity: Identity; store: Wall
 		stopTimer();
 	};
 
-	await queryAndUpdate<GetTransactionsResponse>({
+	await queryAndUpdate<RequestTransactionsResponse>({
 		request,
 		onLoad,
 		onCertifiedError,
@@ -164,7 +165,7 @@ const postMessageWallet = ({
 	ledgerIdText,
 	balance,
 	transactions: newTransactions
-}: GetTransactionsResponse & {
+}: RequestTransactionsResponse & {
 	icrcAccountText: IcrcAccountText;
 	ledgerIdText: LedgerIdText;
 	certified: boolean;
@@ -194,7 +195,7 @@ const syncTransactions = ({
 	certified,
 	store
 }: {
-	response: GetTransactionsResponse;
+	response: RequestTransactionsResponse;
 	certified: boolean;
 	store: WalletStore;
 }) => {

@@ -2,6 +2,7 @@ import type {
 	IcrcAccountText,
 	IndexId,
 	LedgerId,
+	LedgerIds,
 	LedgerIdText
 } from '$lib/schemas/wallet.schema';
 import { walletIdbStore } from '$lib/stores/app/idb.store';
@@ -21,9 +22,8 @@ interface WalletState {
 }
 
 interface WalletTokenAccount {
-	ledgerId: LedgerId;
-	indexId: IndexId;
 	account: IcrcAccount;
+	ledgerIds: LedgerIds;
 }
 
 type WalletIdbKey = string;
@@ -37,27 +37,23 @@ export class WalletStore {
 	#store: WalletState;
 	#idbKey: WalletIdbKey;
 	#account: IcrcAccount;
-	#ledgerId: LedgerId;
-	#indexId: IndexId;
+	#ledgerIds: LedgerIds;
 
 	private constructor({
 		state,
 		idbKey: key,
 		account,
-		ledgerId,
-		indexId
+		ledgerIds
 	}: {
 		state: WalletState | undefined;
 		idbKey: WalletIdbKey;
 		account: IcrcAccount;
-		ledgerId: LedgerId;
-		indexId: IndexId;
+		ledgerIds: LedgerIds;
 	}) {
 		this.#store = state ?? WalletStore.EMPTY_STORE;
 		this.#idbKey = key;
 		this.#account = account;
-		this.#ledgerId = ledgerId;
-		this.#indexId = indexId;
+		this.#ledgerIds = ledgerIds;
 	}
 
 	get account(): IcrcAccount {
@@ -73,11 +69,13 @@ export class WalletStore {
 	}
 
 	get ledgerIdText(): LedgerIdText {
-		return this.#ledgerId.toText();
+		const { ledgerId } = this.#ledgerIds;
+		return ledgerId.toText();
 	}
 
 	get indexId(): IndexId {
-		return this.#indexId;
+		const { indexId } = this.#ledgerIds;
+		return indexId;
 	}
 
 	get balance(): CertifiedData<bigint> | undefined {
@@ -150,9 +148,12 @@ export class WalletStore {
 		await set(this.#idbKey, this.#store, walletIdbStore);
 	}
 
-	static async init({ account, ledgerId, indexId }: WalletTokenAccount): Promise<WalletStore> {
+	static async init({
+		account,
+		ledgerIds: { ledgerId, indexId }
+	}: WalletTokenAccount): Promise<WalletStore> {
 		const idbKey = WalletStore.toIdbKey({ account, ledgerId });
 		const state = await get(idbKey, walletIdbStore);
-		return new WalletStore({ state, idbKey, account, ledgerId, indexId });
+		return new WalletStore({ state, idbKey, account, ledgerIds: { ledgerId, indexId } });
 	}
 }

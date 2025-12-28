@@ -1,5 +1,5 @@
 import { getAgent } from '$lib/api/_agent/_agent.api';
-import type { IndexId } from '$lib/schemas/wallet.schema';
+import type { LedgerIds } from '$lib/schemas/wallet.schema';
 import type { OptionIdentity } from '$lib/types/itentity';
 import { assertNonNullish } from '@dfinity/utils';
 import {
@@ -17,12 +17,11 @@ export const getIcrcTransactions = async ({
 	certified
 }: {
 	account: IcrcAccount;
-	indexId: IndexId;
 	identity: OptionIdentity;
 	start?: bigint;
 	maxResults?: bigint;
 	certified: boolean;
-}): Promise<IcrcIndexDid.GetTransactions> => {
+} & Pick<LedgerIds, 'indexId'>): Promise<IcrcIndexDid.GetTransactions> => {
 	assertNonNullish(identity, 'No internet identity to initialize the ICRC Index actor.');
 
 	const agent = await getAgent({ identity });

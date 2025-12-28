@@ -1,6 +1,6 @@
 import { queryAndUpdate, type QueryAndUpdateRequestParams } from '$lib/api/call/query.api';
 import { ICP_LEDGER_CANISTER_ID } from '$lib/constants/app.constants';
-import type { IndexId, LedgerIdText, WalletId } from '$lib/schemas/wallet.schema';
+import type { LedgerIds, WalletId } from '$lib/schemas/wallet.schema';
 import {
 	requestIcpTransactions,
 	requestIcrcTransactions,
@@ -76,16 +76,14 @@ export const loadNextTransactions = async ({
 	...rest
 }: {
 	account: IcrcAccount;
-	ledgerId: LedgerIdText;
-	indexId: IndexId;
 	start: bigint;
 	maxResults?: bigint;
 	signalEnd: () => void;
-}): Promise<void> => {
+} & LedgerIds): Promise<void> => {
 	const request = async (
 		params: QueryAndUpdateRequestParams
 	): Promise<RequestTransactionsResponse> => {
-		if (ledgerId === ICP_LEDGER_CANISTER_ID) {
+		if (ledgerId.toText() === ICP_LEDGER_CANISTER_ID) {
 			return await requestIcpTransactions({
 				account,
 				accountIdentifierHex: toAccountIdentifier(account).toHex(),
@@ -112,7 +110,7 @@ export const loadNextTransactions = async ({
 
 			transactionsCertifiedStore.append({
 				walletId: encodeIcrcAccount(account),
-				ledgerId,
+				ledgerId: ledgerId.toText(),
 				transactions: transactions.map((transaction) => ({
 					data: transaction,
 					certified

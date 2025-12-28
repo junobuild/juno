@@ -3,7 +3,7 @@ import { getTransactions } from '$lib/api/icp-index.api';
 import { PAGINATION } from '$lib/constants/app.constants';
 import type { IcTransactionUi } from '$lib/types/ic-transaction';
 import { mapIcpTransaction } from '$lib/utils/icp-transactions.utils';
-import { WalletStore } from '$lib/workers/_stores/wallet-worker.store';
+import type { WalletStore } from '$lib/workers/_stores/wallet-worker.store';
 
 export interface GetTransactionsResponse {
 	balance: bigint;

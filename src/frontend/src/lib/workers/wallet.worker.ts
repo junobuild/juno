@@ -91,7 +91,7 @@ const startTimerWithAccount = async ({
 
 	emitSavedWallet({ store });
 
-	const sync = async () => await syncWallet({ account, identity, store });
+	const sync = async () => await syncWallet({ identity, store });
 
 	// We sync the cycles now but also schedule the update afterwards
 	await sync();
@@ -103,15 +103,7 @@ const syncing: Record<IcrcAccountText, boolean> = {};
 
 let initialized = false;
 
-const syncWallet = async ({
-	account: icrcAccount,
-	identity,
-	store
-}: {
-	account: IcrcAccount;
-	identity: Identity;
-	store: WalletStore;
-}) => {
+const syncWallet = async ({ identity, store }: { identity: Identity; store: WalletStore }) => {
 	// We avoid to relaunch a sync while previous sync is not finished
 	if (syncing[store.idbKey] === true) {
 		return;
@@ -122,13 +114,12 @@ const syncWallet = async ({
 	const request = ({
 		identity: _,
 		certified
-	}: QueryAndUpdateRequestParams): Promise<GetTransactionsResponse> => {
-		return requestIcpTransactions({
+	}: QueryAndUpdateRequestParams): Promise<GetTransactionsResponse> =>
+		requestIcpTransactions({
 			identity,
 			certified,
 			store
 		});
-	};
 
 	const onLoad: QueryAndUpdateOnResponse<GetTransactionsResponse> = ({ certified, ...rest }) => {
 		syncTransactions({ certified, store, ...rest });

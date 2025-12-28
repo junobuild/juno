@@ -678,9 +678,9 @@ export const setupConsole = async ({
 	if (withFee) {
 		const { set_fee } = actor;
 
-		await set_fee({ Satellite: null }, { e8s: TEST_FEE });
-		await set_fee({ Orbiter: null }, { e8s: TEST_FEE });
-		await set_fee({ MissionControl: null }, { e8s: TEST_FEE });
+		await set_fee({ Satellite: null }, { fee_icp: { e8s: TEST_FEE } });
+		await set_fee({ Orbiter: null }, { fee_icp: { e8s: TEST_FEE } });
+		await set_fee({ MissionControl: null }, { fee_icp: { e8s: TEST_FEE } });
 	}
 
 	return { pic, controller, actor, canisterId };

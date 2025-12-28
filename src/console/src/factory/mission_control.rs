@@ -7,6 +7,7 @@ use crate::factory::utils::controllers::update_mission_control_controllers;
 use crate::factory::utils::wasm::mission_control_wasm_arg;
 use crate::store::heap::{get_mission_control_fee, increment_mission_controls_rate};
 use candid::{Nat, Principal};
+use ic_ledger_types::Tokens;
 use junobuild_shared::constants_shared::CREATE_MISSION_CONTROL_CYCLES;
 use junobuild_shared::ic::api::id;
 use junobuild_shared::mgmt::cmc::cmc_create_canister_install_code;
@@ -14,6 +15,7 @@ use junobuild_shared::mgmt::ic::create_canister_install_code;
 use junobuild_shared::mgmt::types::cmc::SubnetId;
 use junobuild_shared::mgmt::types::ic::CreateCanisterInitSettingsArg;
 use junobuild_shared::types::interface::CreateMissionControlArgs;
+use crate::types::interface::FeeKind;
 
 pub async fn create_mission_control(
     caller: Principal,
@@ -32,7 +34,7 @@ pub async fn create_mission_control(
         process_payment_icp,
         refund_payment_icp,
         &increment_mission_controls_rate,
-        &get_mission_control_fee,
+        &get_fee,
         &account,
         creator,
         args.into(),
@@ -42,6 +44,10 @@ pub async fn create_mission_control(
     update_mission_control(&account.owner, &mission_control_id)?;
 
     Ok(mission_control_id)
+}
+
+fn get_fee(fee_kind: FeeKind) -> Tokens {
+    get_mission_control_fee(fee_kind)
 }
 
 async fn create_mission_control_wasm(

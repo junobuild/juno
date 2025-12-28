@@ -66,5 +66,7 @@ use junobuild_storage::types::interface::SetStorageConfig;
 use junobuild_storage::types::interface::UploadChunk;
 use junobuild_storage::types::interface::UploadChunkResult;
 use junobuild_storage::types::state::FullPath;
+use crate::types::interface::FeeKind;
+use crate::types::interface::FeesArgs;
 
 export_candid!();

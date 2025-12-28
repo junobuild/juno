@@ -175,6 +175,7 @@ pub mod state {
 pub mod interface {
     use crate::types::state::{Account, SegmentType};
     use candid::CandidType;
+    use ic_ledger_types::Tokens;
     use junobuild_auth::delegation::types::{
         OpenIdGetDelegationArgs, OpenIdPrepareDelegationArgs, PrepareDelegationError,
         PreparedDelegation,
@@ -224,6 +225,16 @@ pub mod interface {
     pub struct ListSegmentsArgs {
         pub segment_type: Option<SegmentType>,
         pub segment_id: Option<SegmentId>,
+    }
+
+    #[derive(CandidType, Deserialize)]
+    pub struct FeesArgs {
+        pub fee_icp: Tokens,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub enum FeeKind {
+        ICP,
     }
 }
 

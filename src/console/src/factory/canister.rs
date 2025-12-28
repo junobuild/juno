@@ -13,11 +13,12 @@ use junobuild_shared::mgmt::types::cmc::SubnetId;
 use junobuild_shared::types::state::UserId;
 use junobuild_shared::utils::principal_equal;
 use std::future::Future;
+use crate::types::interface::FeeKind;
 
 pub async fn create_canister<F, Fut>(
     create: F,
     increment_rate: &dyn Fn() -> Result<(), String>,
-    get_fee: &dyn Fn() -> Tokens,
+    get_fee: &dyn Fn(FeeKind) -> Tokens,
     add_segment: &dyn Fn(&UserId, &Principal),
     caller: Principal,
     user: UserId,
@@ -85,7 +86,7 @@ pub async fn create_canister_with_account<F, Fut, P, Pay, R, Refund>(
     process_payment: P,
     refund_payment: R,
     increment_rate: &dyn Fn() -> Result<(), String>,
-    get_fee: &dyn Fn() -> Tokens,
+    get_fee: &dyn Fn(FeeKind) -> Tokens,
     account: &Account,
     creator: CanisterCreator,
     args: CreateCanisterArgs,
@@ -98,7 +99,7 @@ where
     R: FnOnce(Principal, Tokens) -> Refund,
     Refund: Future<Output = Result<BlockIndex, String>>,
 {
-    let fee = get_fee();
+    let fee = get_fee(FeeKind::ICP);
 
     if has_credits(account, &fee) {
         // Guard too many requests

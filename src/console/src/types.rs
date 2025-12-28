@@ -51,7 +51,9 @@ pub mod state {
         pub invitation_codes: InvitationCodes,
         pub controllers: Controllers,
         pub rates: Rates,
+        #[deprecated(note = "Deprecated. Use factory_fees instead.")]
         pub fees: Fees,
+        pub factory_fees: Option<FactoryFees>,
         pub storage: StorageHeapState,
         pub authentication: Option<AuthenticationHeapState>,
         pub releases_metadata: ReleasesMetadata,
@@ -121,17 +123,31 @@ pub mod state {
         pub orbiters: Rate,
     }
 
+    #[deprecated(note = "Deprecated. Use FactoryFee instead.")]
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct Fee {
         pub fee: Tokens,
         pub updated_at: Timestamp,
     }
 
+    #[deprecated(note = "Deprecated. Use FactoryFees instead.")]
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct Fees {
         pub satellite: Fee,
         pub orbiter: Fee,
-        pub mission_control: Option<Fee>,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct FactoryFee {
+        pub fee_icp: Tokens,
+        pub updated_at: Timestamp,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct FactoryFees {
+        pub satellite: FactoryFee,
+        pub orbiter: FactoryFee,
+        pub mission_control: FactoryFee,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]

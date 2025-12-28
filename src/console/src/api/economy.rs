@@ -40,7 +40,7 @@ fn get_create_fee(segment: SegmentKind) -> Option<Tokens> {
     let fee = match segment {
         SegmentKind::Orbiter => get_orbiter_fee(),
         SegmentKind::Satellite => get_satellite_fee(),
-        SegmentKind::MissionControl => get_mission_control_fee().unwrap_or_trap(),
+        SegmentKind::MissionControl => get_mission_control_fee(),
     };
 
     let has_enough_credits = caller_has_credits(&caller, &fee).unwrap_or_trap();

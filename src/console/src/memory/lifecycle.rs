@@ -1,7 +1,7 @@
 use crate::cdn::certified_assets::upgrade::defer_init_certified_assets;
 use crate::cdn::lifecycle::init_cdn_storage_heap_state;
 use crate::memory::manager::{get_memory_upgrades, init_stable_state, STATE};
-use crate::types::state::{Fees, HeapState, Rates, ReleasesMetadata, State};
+use crate::types::state::{FactoryFees, Fees, HeapState, Rates, ReleasesMetadata, State};
 use ciborium::{from_reader, into_writer};
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade};
 use junobuild_shared::controllers::init_admin_controllers;
@@ -20,6 +20,7 @@ fn init() {
         controllers: init_admin_controllers(&[manager]),
         rates: Rates::default(),
         fees: Fees::default(),
+        factory_fees: Some(FactoryFees::default()),
         storage: init_cdn_storage_heap_state(),
         authentication: None,
         releases_metadata: ReleasesMetadata::default(),

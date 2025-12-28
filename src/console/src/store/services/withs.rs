@@ -1,7 +1,7 @@
 use crate::store::services::raw::{mutate_heap_state, read_heap_state};
 use crate::store::{mutate_stable_state, read_stable_state};
-use crate::types::state::{AccountsStable, SegmentsStable};
-use crate::types::state::{Fees, PaymentsStable};
+use crate::types::state::PaymentsStable;
+use crate::types::state::{AccountsStable, FactoryFees, SegmentsStable};
 use junobuild_auth::state::types::state::AuthenticationHeapState;
 use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::state::AssetsHeap;
@@ -35,15 +35,15 @@ pub fn with_auth_mut<R>(f: impl FnOnce(&mut Option<AuthenticationHeapState>) -> 
     mutate_heap_state(|state| f(&mut state.authentication))
 }
 
-pub fn with_fees<R>(f: impl FnOnce(&Fees) -> R) -> R {
+pub fn with_factory_fees<R>(f: impl FnOnce(&Option<FactoryFees>) -> R) -> R {
     read_heap_state(|state| {
-        let fees = &state.fees;
+        let fees = &state.factory_fees;
         f(fees)
     })
 }
 
-pub fn with_fees_mut<R>(f: impl FnOnce(&mut Fees) -> R) -> R {
-    mutate_heap_state(|state| f(&mut state.fees))
+pub fn with_factory_fees_mut<R>(f: impl FnOnce(&mut Option<FactoryFees>) -> R) -> R {
+    mutate_heap_state(|state| f(&mut state.factory_fees))
 }
 
 pub fn with_accounts<R>(f: impl FnOnce(&AccountsStable) -> R) -> R {

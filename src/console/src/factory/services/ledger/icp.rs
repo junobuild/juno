@@ -1,12 +1,14 @@
-use candid::Principal;
+use crate::factory::services::ledger::icrc::icrc_transfer_from;
+use candid::{Nat, Principal};
 use ic_ledger_types::{BlockIndex, Tokens};
 use junobuild_shared::constants_shared::{IC_TRANSACTION_FEE_ICP, MEMO_SATELLITE_CREATE_REFUND};
+use junobuild_shared::env::ICP_LEDGER;
 use junobuild_shared::ic::api::id;
 use junobuild_shared::ledger::icp::{
     find_payment, principal_to_account_identifier, transfer_payment, SUB_ACCOUNT,
 };
 
-pub async fn verify_payment(
+pub async fn icp_verify_payment(
     purchaser: &Principal,
     purchaser_payment_block_index: &BlockIndex,
     canister_fee: Tokens,
@@ -57,4 +59,14 @@ pub async fn refund_payment(
     .map_err(|e| format!("ledger transfer error {e:?}"))?;
 
     Ok(refund_block_index)
+}
+
+pub async fn icp_transfer_from(
+    purchaser: &Principal,
+    canister_fee: &Tokens,
+) -> Result<BlockIndex, String> {
+    let transaction_fee = Nat::from(IC_TRANSACTION_FEE_ICP.e8s());
+    let ledger_id = Principal::from_text(ICP_LEDGER).unwrap();
+
+    icrc_transfer_from(purchaser, &ledger_id, canister_fee, &transaction_fee).await
 }

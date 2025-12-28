@@ -1,5 +1,4 @@
-use crate::factory::services::ledger::icp::verify_payment;
-use crate::factory::services::ledger::icrc::transfer_from;
+use crate::factory::services::ledger::icp::{icp_transfer_from, icp_verify_payment};
 use crate::store::stable::is_known_payment;
 use candid::Principal;
 use ic_ledger_types::{BlockIndex, Tokens};
@@ -15,9 +14,9 @@ pub async fn process_payment_icp(
             return Err("Payment has been or is being processed.".to_string());
         }
 
-        verify_payment(&purchaser, &block_index, fee).await?
+        icp_verify_payment(&purchaser, &block_index, fee).await?
     } else {
-        transfer_from(&purchaser, &fee).await?
+        icp_transfer_from(&purchaser, &fee).await?
     };
 
     let ledger_id = Principal::from_text(ICP_LEDGER).unwrap();

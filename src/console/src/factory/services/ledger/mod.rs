@@ -1,2 +1,2 @@
 pub mod icp;
-pub mod icrc;
+pub(super) mod icrc;

@@ -1,15 +1,19 @@
-import { ICP_LEDGER_CANISTER_ID } from '$lib/constants/app.constants';
+import { CYCLES_LEDGER_CANISTER_ID, ICP_LEDGER_CANISTER_ID } from '$lib/constants/app.constants';
 import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 import { devId } from '$lib/derived/dev.derived';
 import { balanceCertifiedStore } from '$lib/stores/wallet/balance.store';
 import { isNullish, nonNullish } from '@dfinity/utils';
 import { derived } from 'svelte/store';
 
-export const devBalance = derived([balanceCertifiedStore, devId], ([$balanceStore, $devId]) =>
-	nonNullish($devId) ? $balanceStore?.[$devId.toText()]?.[ICP_LEDGER_CANISTER_ID]?.data : undefined
+export const devCyclesBalance = derived(
+	[balanceCertifiedStore, devId],
+	([$balanceStore, $devId]) =>
+		nonNullish($devId)
+			? $balanceStore?.[$devId.toText()]?.[CYCLES_LEDGER_CANISTER_ID]?.data
+			: undefined
 );
 
-export const missionControlBalance = derived(
+export const missionControlIcpBalance = derived(
 	[balanceCertifiedStore, missionControlId],
 	([$balanceStore, $missionControlId]) =>
 		nonNullish($missionControlId)
@@ -17,25 +21,34 @@ export const missionControlBalance = derived(
 			: undefined
 );
 
+export const missionControlCyclesBalance = derived(
+	[balanceCertifiedStore, missionControlId],
+	([$balanceStore, $missionControlId]) =>
+		nonNullish($missionControlId)
+			? $balanceStore?.[$missionControlId.toText()]?.[CYCLES_LEDGER_CANISTER_ID]?.data
+			: undefined
+);
+
 export const balance = derived(
-	[devBalance, missionControlBalance],
-	([$devBalance, $missionControlBalance]) => {
-		if (isNullish($devBalance) && isNullish($missionControlBalance)) {
+	[devCyclesBalance, missionControlCyclesBalance],
+	([$devCyclesBalance, $missionControlCyclesBalance]) => {
+		if (isNullish($devCyclesBalance) && isNullish($missionControlCyclesBalance)) {
 			return undefined;
 		}
 
-		return ($devBalance ?? 0n) + ($missionControlBalance ?? 0n);
+		return ($devCyclesBalance ?? 0n) + ($missionControlCyclesBalance ?? 0n);
 	}
 );
 
-export const devBalanceOrZero = derived([devBalance], ([$devBalance]) => $devBalance ?? 0n);
-
-export const missionControlBalanceOrZero = derived(
-	[missionControlBalance],
-	([$missionControlBalance]) => $missionControlBalance ?? 0n
+export const devCyclesBalanceOrZero = derived(
+	[devCyclesBalance],
+	([$devCyclesBalance]) => $devCyclesBalance ?? 0n
 );
 
-export const balanceOrZero = derived([balance], ([$balance]) => $balance ?? 0n);
+export const missionControlIcpBalanceOrZero = derived(
+	[missionControlIcpBalance],
+	([$missionControlIcpBalance]) => $missionControlIcpBalance ?? 0n
+);
 
 const balanceLoaded = derived(
 	[balanceCertifiedStore],

@@ -10,8 +10,8 @@
 	import WalletPicker from '$lib/components/wallet/WalletPicker.svelte';
 	import { TOP_UP_NETWORK_FEES } from '$lib/constants/app.constants';
 	import {
-		devBalanceOrZero,
-		missionControlBalanceOrZero
+		devCyclesBalanceOrZero,
+		missionControlIcpBalanceOrZero
 	} from '$lib/derived/wallet/balance.derived';
 	import { icpToUsd } from '$lib/derived/wallet/exchange.derived';
 	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
@@ -61,7 +61,9 @@
 
 	$effect(() => {
 		balance =
-			selectedWallet?.type === 'mission_control' ? $missionControlBalanceOrZero : $devBalanceOrZero;
+			selectedWallet?.type === 'mission_control'
+				? $missionControlIcpBalanceOrZero
+				: $devCyclesBalanceOrZero;
 	});
 
 	const onSubmit = ($event: SubmitEvent) => {

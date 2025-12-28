@@ -17,11 +17,12 @@ export const onSyncWallet = (data: PostMessageDataResponseWallet) => {
 	}
 
 	const {
-		wallet: { walletId, newTransactions, balance }
+		wallet: { walletId, ledgerId, newTransactions, balance }
 	} = data;
 
 	balanceCertifiedStore.set({
 		walletId,
+		ledgerId,
 		data: balance
 	});
 
@@ -29,6 +30,7 @@ export const onSyncWallet = (data: PostMessageDataResponseWallet) => {
 
 	transactionsCertifiedStore.prepend({
 		walletId,
+		ledgerId,
 		transactions
 	});
 };
@@ -47,9 +49,14 @@ export const onWalletError = ({ error: err }: { error: unknown }) => {
 
 export const onWalletCleanUp = ({
 	transactionIds,
+	ledgerId,
 	walletId
 }: PostMessageDataResponseWalletCleanUp) => {
-	transactionsCertifiedStore.cleanUp({ walletId, transactionIds });
+	transactionsCertifiedStore.cleanUp({
+		walletId,
+		ledgerId,
+		transactionIds
+	});
 
 	toasts.error({
 		text: get(i18n).errors.wallet_uncertified_transactions_removed

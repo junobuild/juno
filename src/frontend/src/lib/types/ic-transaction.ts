@@ -20,5 +20,8 @@ export interface IcTransactionUi {
 	timestamp?: bigint;
 	status: IcTransactionStatus;
 	txExplorerUrl?: string;
+	approveSpender?: string;
+	approveSpenderExplorerUrl?: string;
+	approveExpiresAt?: bigint;
 	memo: bigint;
 }

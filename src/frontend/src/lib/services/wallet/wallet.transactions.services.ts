@@ -1,19 +1,23 @@
-import { queryAndUpdate } from '$lib/api/call/query.api';
-import { getTransactions } from '$lib/api/icp-index.api';
-import type { WalletId } from '$lib/schemas/wallet.schema';
+import { queryAndUpdate, type QueryAndUpdateRequestParams } from '$lib/api/call/query.api';
+import { ICP_LEDGER_CANISTER_ID } from '$lib/constants/app.constants';
+import type { LedgerIdText, WalletId } from '$lib/schemas/wallet.schema';
+import {
+	requestIcpTransactions,
+	requestIcrcTransactions,
+	type RequestTransactionsResponse
+} from '$lib/services/wallet/wallet.transactions.request.services';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
 import { transactionsCertifiedStore } from '$lib/stores/wallet/transactions.store';
 import type { CertifiedTransactions } from '$lib/types/transaction';
 import { formatToDateNumeric } from '$lib/utils/date.utils';
 import { toAccountIdentifier } from '$lib/utils/icp-icrc-account.utils';
-import { mapIcpTransaction } from '$lib/utils/icp-transactions.utils';
 import { CSV_PICKER_OPTIONS, filenameTimestamp, saveToFileSystem } from '$lib/utils/save.utils';
 import { transactionAmount, transactionMemo } from '$lib/utils/wallet.utils';
 import { nonNullish } from '@dfinity/utils';
-import type { IcpIndexDid } from '@icp-sdk/canisters/ledger/icp';
 import { encodeIcrcAccount, type IcrcAccount } from '@icp-sdk/canisters/ledger/icrc';
 import { AnonymousIdentity } from '@icp-sdk/core/agent';
+import { Principal } from '@icp-sdk/core/principal';
 import { get } from 'svelte/store';
 
 type TransactionId = string;
@@ -65,23 +69,40 @@ export const exportTransactions = async ({
 	});
 };
 
-export const loadNextTransactions = ({
+export const loadNextTransactions = async ({
 	account,
+	ledgerId,
 	signalEnd,
 	...rest
 }: {
 	account: IcrcAccount;
-	start?: bigint;
+	ledgerId: LedgerIdText;
+	start: bigint;
 	maxResults?: bigint;
 	signalEnd: () => void;
-}): Promise<void> =>
-	queryAndUpdate<IcpIndexDid.GetAccountIdentifierTransactionsResponse>({
-		request: (params) =>
-			getTransactions({
+}): Promise<void> => {
+	const request = async (
+		params: QueryAndUpdateRequestParams
+	): Promise<RequestTransactionsResponse> => {
+		if (ledgerId === ICP_LEDGER_CANISTER_ID) {
+			return await requestIcpTransactions({
 				account,
+				accountIdentifierHex: toAccountIdentifier(account).toHex(),
 				...rest,
 				...params
-			}),
+			});
+		}
+
+		return await requestIcrcTransactions({
+			account,
+			ledgerId: Principal.fromText(ledgerId),
+			...rest,
+			...params
+		});
+	};
+
+	return await queryAndUpdate<RequestTransactionsResponse>({
+		request,
 		onLoad: ({ response: { transactions }, certified }) => {
 			if (transactions.length === 0) {
 				signalEnd();
@@ -90,11 +111,9 @@ export const loadNextTransactions = ({
 
 			transactionsCertifiedStore.append({
 				walletId: encodeIcrcAccount(account),
+				ledgerId,
 				transactions: transactions.map((transaction) => ({
-					data: mapIcpTransaction({
-						transaction,
-						accountIdentifierHex: toAccountIdentifier(account).toHex()
-					}),
+					data: transaction,
 					certified
 				}))
 			});
@@ -109,3 +128,4 @@ export const loadNextTransactions = ({
 		},
 		identity: new AnonymousIdentity()
 	});
+};

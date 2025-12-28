@@ -4,7 +4,7 @@ import { nowInBigIntNanoSeconds } from '@dfinity/utils';
 import type { IcpLedgerCanisterOptions } from '@icp-sdk/canisters/ledger/icp';
 import { AnonymousIdentity, type Identity } from '@icp-sdk/core/agent';
 import type { Principal } from '@icp-sdk/core/principal';
-import { LEDGER_ID } from '../constants/ledger-tests.contants';
+import { ICP_LEDGER_ID } from '../constants/ledger-tests.contants';
 
 type LedgerActor = IcpLedgerCanisterOptions['serviceOverride'];
 
@@ -17,7 +17,7 @@ export const transferIcp = async ({
 	owner: Principal;
 	amount?: bigint;
 }) => {
-	const ledgerActor = pic.createActor<LedgerActor>(idlFactoryLedger, LEDGER_ID);
+	const ledgerActor = pic.createActor<LedgerActor>(idlFactoryLedger, ICP_LEDGER_ID);
 
 	// Pocket IC sets 1B ICP as the initial balance for the anonymous principal
 	ledgerActor.setIdentity(new AnonymousIdentity());
@@ -47,7 +47,7 @@ export const approveIcp = async ({
 	amount: bigint;
 	spender: Principal;
 }) => {
-	const ledgerActor = pic.createActor<LedgerActor>(idlFactoryLedger, LEDGER_ID);
+	const ledgerActor = pic.createActor<LedgerActor>(idlFactoryLedger, ICP_LEDGER_ID);
 
 	ledgerActor.setIdentity(owner);
 

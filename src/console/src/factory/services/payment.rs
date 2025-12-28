@@ -1,5 +1,7 @@
 use crate::factory::services::ledger::cycles::cycles_transfer_from;
-use crate::factory::services::ledger::icp::{icp_transfer_from, icp_verify_payment};
+use crate::factory::services::ledger::icp::{
+    icp_transfer_from, icp_transfer_payment, icp_verify_payment,
+};
 use crate::store::stable::is_known_payment;
 use candid::Principal;
 use ic_ledger_types::{BlockIndex, Tokens};
@@ -35,4 +37,11 @@ pub async fn process_payment_cycles(
     let ledger_id = Principal::from_text(CYCLES_LEDGER).unwrap();
 
     Ok((ledger_id, purchaser_payment_block_index))
+}
+
+pub async fn refund_payment_icp(
+    purchaser: Principal,
+    canister_fee: Tokens,
+) -> Result<BlockIndex, String> {
+    icp_transfer_payment(&purchaser, canister_fee).await
 }

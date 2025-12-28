@@ -1,4 +1,4 @@
-use crate::factory::services::ledger::cycles::cycles_transfer_from;
+use crate::factory::services::ledger::cycles::{cycles_transfer_from, icrc_transfer_payment};
 use crate::factory::services::ledger::icp::{
     icp_transfer_from, icp_transfer_payment, icp_verify_payment,
 };
@@ -44,4 +44,11 @@ pub async fn refund_payment_icp(
     canister_fee: Tokens,
 ) -> Result<BlockIndex, String> {
     icp_transfer_payment(&purchaser, canister_fee).await
+}
+
+pub async fn refund_payment_cycles(
+    purchaser: Principal,
+    canister_fee: Tokens,
+) -> Result<BlockIndex, String> {
+    icrc_transfer_payment(&purchaser, canister_fee).await
 }

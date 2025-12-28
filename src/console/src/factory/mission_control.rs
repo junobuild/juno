@@ -1,7 +1,7 @@
 use crate::accounts::{get_existing_account, update_mission_control};
 use crate::constants::FREEZING_THRESHOLD_ONE_YEAR;
 use crate::factory::canister::create_canister_with_account;
-use crate::factory::services::payment::{process_payment_cycles, refund_payment_icp};
+use crate::factory::services::payment::{process_payment_cycles, refund_payment_cycles};
 use crate::factory::types::CanisterCreator;
 use crate::factory::utils::controllers::update_mission_control_controllers;
 use crate::factory::utils::wasm::mission_control_wasm_arg;
@@ -30,7 +30,7 @@ pub async fn create_mission_control(
     let mission_control_id = create_canister_with_account(
         create_mission_control_wasm,
         process_payment_cycles,
-        refund_payment_icp,
+        refund_payment_cycles,
         &increment_mission_controls_rate,
         &get_mission_control_fee,
         &account,

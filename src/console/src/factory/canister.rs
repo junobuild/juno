@@ -3,7 +3,7 @@ use crate::accounts::{
     get_existing_account,
 };
 use crate::factory::services::payment::{
-    process_payment_cycles, process_payment_icp, refund_payment_icp,
+    process_payment_cycles, process_payment_icp, refund_payment_cycles, refund_payment_icp,
 };
 use crate::factory::types::{CanisterCreator, CreateCanisterArgs};
 use crate::store::stable::{insert_new_payment, update_payment_completed, update_payment_refunded};
@@ -39,7 +39,7 @@ where
         let canister_id = create_canister_with_account(
             create,
             process_payment_cycles,
-            refund_payment_icp,
+            refund_payment_cycles,
             increment_rate,
             get_fee,
             &account,

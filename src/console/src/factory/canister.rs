@@ -2,7 +2,8 @@ use crate::accounts::{
     credits::{has_credits, use_credits},
     get_existing_account,
 };
-use crate::factory::services::ledger::{refund_payment, transfer_from, verify_payment};
+use crate::factory::services::ledger::icp::{refund_payment, verify_payment};
+use crate::factory::services::ledger::icrc::transfer_from;
 use crate::factory::types::{CanisterCreator, CreateCanisterArgs};
 use crate::store::stable::{
     insert_new_payment, is_known_payment, update_payment_completed, update_payment_refunded,

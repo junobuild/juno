@@ -56,7 +56,7 @@ describe('Console > Credits', () => {
 		it('should have zero fee if remaining credits', async () => {
 			const { get_create_fee } = actor;
 
-			const fee = await get_create_fee({ Satellite: null });
+			const fee = await get_create_fee({ Satellite: null }, {ICP: null});
 
 			expect(fee).toEqual(toNullable());
 		});
@@ -76,11 +76,11 @@ describe('Console > Credits', () => {
 		it('should get fees with no more credits', async () => {
 			const { get_create_fee } = actor;
 
-			const satFee = await get_create_fee({ Satellite: null });
+			const satFee = await get_create_fee({ Satellite: null }, {ICP: null});
 
 			expect(satFee).toEqual(toNullable({ e8s: 50_000_000n }));
 
-			const orbFee = await get_create_fee({ Satellite: null });
+			const orbFee = await get_create_fee({ Satellite: null }, {ICP: null});
 
 			expect(orbFee).toEqual(toNullable({ e8s: 50_000_000n }));
 		});

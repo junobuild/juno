@@ -14,7 +14,7 @@ export type LedgerId = z.infer<typeof LedgerIdSchema>;
 const IndexIdSchema = LedgerIdSchema;
 export type IndexId = z.infer<typeof IndexIdSchema>;
 
-const LedgerIdsSchema = z.strictObject({
+export const LedgerIdsSchema = z.strictObject({
 	ledgerId: LedgerIdSchema,
 	indexId: IndexIdSchema
 });

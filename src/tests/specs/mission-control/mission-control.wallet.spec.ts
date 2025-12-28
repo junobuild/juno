@@ -9,7 +9,7 @@ import { AnonymousIdentity } from '@icp-sdk/core/agent';
 import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import type { Principal } from '@icp-sdk/core/principal';
 import { inject } from 'vitest';
-import { LEDGER_ID } from '../../constants/ledger-tests.contants';
+import { ICP_LEDGER_ID } from '../../constants/ledger-tests.contants';
 import { MISSION_CONTROL_ADMIN_CONTROLLER_ERROR_MSG } from '../../constants/mission-control-tests.constants';
 import { transferIcp } from '../../utils/ledger-tests.utils';
 import { missionControlUserInitArgs } from '../../utils/mission-control-tests.utils';
@@ -92,7 +92,7 @@ describe('Mission Control > Wallet', () => {
 			it('should throw errors on icrc transfer', async () => {
 				const { icrc_transfer } = actor;
 
-				await expect(icrc_transfer(LEDGER_ID, arg)).rejects.toThrow(
+				await expect(icrc_transfer(ICP_LEDGER_ID, arg)).rejects.toThrow(
 					MISSION_CONTROL_ADMIN_CONTROLLER_ERROR_MSG
 				);
 			});
@@ -144,7 +144,7 @@ describe('Mission Control > Wallet', () => {
 			it('should fail at icrc transfer', async () => {
 				const { icrc_transfer } = actor;
 
-				const result = await icrc_transfer(LEDGER_ID, arg);
+				const result = await icrc_transfer(ICP_LEDGER_ID, arg);
 
 				if ('Ok' in result) {
 					throw new Error('Unexpected result. Icrc transfer should have failed.');
@@ -181,7 +181,7 @@ describe('Mission Control > Wallet', () => {
 			it('should execute icrc transfer', async () => {
 				const { icrc_transfer } = actor;
 
-				const result = await icrc_transfer(LEDGER_ID, arg);
+				const result = await icrc_transfer(ICP_LEDGER_ID, arg);
 
 				if ('Err' in result) {
 					throw new Error('Unexpected result. Icrc transfer should have succeeded.');

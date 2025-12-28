@@ -14,6 +14,7 @@ import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import type { Principal } from '@icp-sdk/core/principal';
 import { inject } from 'vitest';
 import { CONSOLE_ID } from '../../../constants/console-tests.constants';
+import { ICP_LEDGER_ID } from '../../../constants/ledger-tests.contants';
 import { deploySegments, updateRateConfig } from '../../../utils/console-tests.utils';
 import { transferIcp } from '../../../utils/ledger-tests.utils';
 import { tick } from '../../../utils/pic-tests.utils';
@@ -178,6 +179,7 @@ describe('Console > Upgrade > Payments > v0.2.0 -> v0.3.0', () => {
 		assertNonNullish(payment);
 
 		expect(fromNullable(payment[1].purchaser)?.toText()).toEqual(missionControlId.toText());
+		expect(fromNullable(payment[1].ledger_id)?.toText()).toEqual(ICP_LEDGER_ID.toText());
 		expect(payment[1].block_index_payment).toEqual(5n);
 		expect(payment[1].block_index_refunded).toEqual([]);
 		expect(payment[1].created_at > 0n).toBeTruthy();

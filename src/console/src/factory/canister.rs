@@ -164,12 +164,11 @@ where
 {
     let purchaser = *creator.purchaser();
 
-    // TODO: ledger_id in saved payment
-    let (_ledger_id, purchaser_payment_block_index) =
+    let (ledger_id, purchaser_payment_block_index) =
         process_payment(purchaser, block_index, fee).await?;
 
     // We acknowledge the new payment
-    insert_new_payment(&purchaser, &purchaser_payment_block_index)?;
+    insert_new_payment(&purchaser, &ledger_id, &purchaser_payment_block_index)?;
 
     // Create the canister (satellite or orbiter)
     let create_canister_result = create(creator, subnet_id).await;

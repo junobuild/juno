@@ -1,4 +1,3 @@
-import { ICP_LEDGER_CANISTER_ID } from '$lib/constants/app.constants';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
 import { balanceCertifiedStore } from '$lib/stores/wallet/balance.store';
@@ -18,12 +17,12 @@ export const onSyncWallet = (data: PostMessageDataResponseWallet) => {
 	}
 
 	const {
-		wallet: { walletId, newTransactions, balance }
+		wallet: { walletId, ledgerId, newTransactions, balance }
 	} = data;
 
 	balanceCertifiedStore.set({
 		walletId,
-		ledgerId: ICP_LEDGER_CANISTER_ID,
+		ledgerId,
 		data: balance
 	});
 
@@ -31,7 +30,7 @@ export const onSyncWallet = (data: PostMessageDataResponseWallet) => {
 
 	transactionsCertifiedStore.prepend({
 		walletId,
-		ledgerId: ICP_LEDGER_CANISTER_ID,
+		ledgerId,
 		transactions
 	});
 };
@@ -50,11 +49,12 @@ export const onWalletError = ({ error: err }: { error: unknown }) => {
 
 export const onWalletCleanUp = ({
 	transactionIds,
+	ledgerId,
 	walletId
 }: PostMessageDataResponseWalletCleanUp) => {
 	transactionsCertifiedStore.cleanUp({
 		walletId,
-		ledgerId: ICP_LEDGER_CANISTER_ID,
+		ledgerId,
 		transactionIds
 	});
 

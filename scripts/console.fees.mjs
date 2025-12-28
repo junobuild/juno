@@ -6,7 +6,9 @@ import { segmentType } from './console.utils.mjs';
 const setFee = async ({ actor, type }) => {
 	const { set_fee } = actor;
 
-	await set_fee(segmentType(type), { e8s: 40_000_000n });
+	await set_fee(segmentType(type), {
+		fee_icp: { e8s: 40_000_000n }
+	});
 
 	console.log(`Fee set for ${type}.`);
 };

@@ -1,4 +1,4 @@
-import { icpXdrConversionRate } from '$lib/api/cmc.api';
+import { getIcpToCyclesConversionRate } from '$lib/api/cmc.api';
 import { canisterStatus } from '$lib/api/ic.api';
 import {
 	CYCLES_WARNING,
@@ -90,7 +90,7 @@ const syncCanisters = async ({
 	});
 
 	try {
-		const trillionRatio: bigint = await icpXdrConversionRate();
+		const trillionRatio: bigint = await getIcpToCyclesConversionRate();
 
 		await syncIcStatusCanisters({ identity, segments, trillionRatio });
 	} finally {

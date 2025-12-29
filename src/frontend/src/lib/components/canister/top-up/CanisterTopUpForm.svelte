@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { isNullish, nonNullish, notEmptyString } from '@dfinity/utils';
 	import { onMount, type Snippet } from 'svelte';
-	import { icpXdrConversionRate } from '$lib/api/cmc.api';
+	import { getIcpToCyclesConversionRate } from '$lib/api/cmc.api';
 	import InputIcp from '$lib/components/core/InputIcp.svelte';
 	import GridArrow from '$lib/components/ui/GridArrow.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
@@ -45,7 +45,7 @@
 	}: Props = $props();
 
 	let trillionRatio: bigint | undefined = $state();
-	onMount(async () => (trillionRatio = await icpXdrConversionRate()));
+	onMount(async () => (trillionRatio = await getIcpToCyclesConversionRate()));
 
 	let convertedCycles: number | undefined = $derived(
 		nonNullish(trillionRatio) && !isNaN(Number(icp)) && nonNullish(icp)

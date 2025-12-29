@@ -28,7 +28,7 @@
 		selectedWallet: SelectedWallet | undefined;
 		balance: bigint;
 		icp: string | undefined;
-		cycles: number | undefined;
+		cycles: bigint | undefined;
 		onreview: () => void;
 		onclose: () => void;
 	}
@@ -44,12 +44,12 @@
 		cycles = $bindable(undefined)
 	}: Props = $props();
 
-	let trillionRatio: bigint | undefined = $state();
+	let trillionRatio = $state<bigint | undefined>();
 	onMount(async () => (trillionRatio = await getIcpToCyclesConversionRate()));
 
-	let convertedCycles: number | undefined = $derived(
+	let convertedCycles = $derived(
 		nonNullish(trillionRatio) && !isNaN(Number(icp)) && nonNullish(icp)
-			? icpToCycles({ icp: Number(icp), trillionRatio })
+			? icpToCycles({ icp: BigInt(icp), trillionRatio })
 			: undefined
 	);
 

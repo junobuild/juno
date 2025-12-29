@@ -17,12 +17,12 @@ export const cyclesToICP = ({
 }: {
 	cycles: bigint;
 	trillionRatio: bigint;
-}): number => Number(cycles) / Number(trillionRatio);
+}): bigint => cycles / trillionRatio;
 
 export const icpToCycles = ({
 	icp,
 	trillionRatio
 }: {
-	icp: number;
+	icp: bigint;
 	trillionRatio: bigint;
-}): number => Math.trunc(icp * Number(trillionRatio));
+}): bigint => icp * trillionRatio;

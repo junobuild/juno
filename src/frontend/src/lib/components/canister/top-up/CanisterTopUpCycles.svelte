@@ -5,7 +5,7 @@
 	import { formatTCycles } from '$lib/utils/cycles.utils';
 
 	interface Props {
-		cycles: number | undefined;
+		cycles: bigint | undefined;
 	}
 
 	let { cycles }: Props = $props();
@@ -16,5 +16,5 @@
 		{$i18n.canisters.converted_cycles}
 	{/snippet}
 
-	<p>{nonNullish(cycles) ? `${formatTCycles(BigInt(cycles ?? 0))}` : '0'} <small>TCycles</small></p>
+	<p>{nonNullish(cycles) ? `${formatTCycles(cycles ?? 0n)}` : '0'} <small>TCycles</small></p>
 </Value>

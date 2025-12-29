@@ -25,7 +25,7 @@ export const topUp = async ({
 }: {
 	identity: OptionIdentity;
 	selectedWallet: SelectedWallet | undefined;
-	cycles: number | undefined;
+	cycles: bigint | undefined;
 	balance: bigint;
 	icp: string | undefined;
 	canisterId: Principal;

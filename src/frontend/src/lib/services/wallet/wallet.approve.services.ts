@@ -2,14 +2,14 @@ import { approveIcrcTransfer } from '$lib/api/icrc-ledger-api';
 import {
 	CONSOLE_CANISTER_ID,
 	CYCLES_LEDGER_CANISTER_ID,
-	IC_TRANSACTION_FEE_ICP
+	IC_TRANSACTION_FEE_CYCLES
 } from '$lib/constants/app.constants';
 import { MEMO_CANISTER_APPROVE } from '$lib/constants/wallet.constants';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { IcpLedgerDid } from '@icp-sdk/canisters/ledger/icp';
 import { Principal } from '@icp-sdk/core/principal';
 
-export const approveCreateCanisterWithIcp = async ({
+export const approveCreateCanisterWithCycles = async ({
 	identity,
 	amount: effectiveAmount
 }: {
@@ -21,7 +21,7 @@ export const approveCreateCanisterWithIcp = async ({
 		subaccount: []
 	};
 
-	const amount = effectiveAmount + IC_TRANSACTION_FEE_ICP;
+	const amount = effectiveAmount + IC_TRANSACTION_FEE_CYCLES;
 
 	const icpMemoToIcrc = (memo: bigint): Uint8Array => {
 		const buffer = new ArrayBuffer(8);

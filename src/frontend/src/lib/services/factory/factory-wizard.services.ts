@@ -31,7 +31,7 @@ import {
 import { loadSettings, loadUserData } from '$lib/services/mission-control/mission-control.services';
 import { loadSegments } from '$lib/services/segments.services';
 import { waitMissionControlVersionLoaded } from '$lib/services/version/version.mission-control.services';
-import { approveCreateCanisterWithIcp } from '$lib/services/wallet/wallet.approve.services';
+import { approveCreateCanisterWithCycles } from '$lib/services/wallet/wallet.approve.services';
 import { busy } from '$lib/stores/app/busy.store';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
@@ -623,7 +623,7 @@ const createWizard = async ({
 		// by the dev wallet (the wallet derived by the identity of the login, the dev ID)
 		if (nonNullish(withFee) && withFee > 0n && selectedWallet.type === 'dev') {
 			const prepareFn = async (): Promise<void> =>
-				await approveCreateCanisterWithIcp({
+				await approveCreateCanisterWithCycles({
 					identity, // We know the identity is the dev wallet, a bit of a shortcut for now
 					amount: withFee
 				});

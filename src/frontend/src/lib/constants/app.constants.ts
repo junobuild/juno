@@ -22,6 +22,7 @@ export const AUTH_POPUP_HEIGHT = 625;
 
 export const E8S_PER_ICP = 100_000_000n;
 export const IC_TRANSACTION_FEE_ICP = 10_000n;
+export const IC_TRANSACTION_FEE_CYCLES = 100_000_000n;
 export const TOP_UP_NETWORK_FEES = 2n * IC_TRANSACTION_FEE_ICP;
 
 export const CYCLES_WARNING = 500_000_000_000n;

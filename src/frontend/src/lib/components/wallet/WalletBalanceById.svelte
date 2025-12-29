@@ -1,13 +1,13 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
 	import { encodeIcrcAccount } from '@icp-sdk/canisters/ledger/icrc';
+	import WalletBalanceCycles from '$lib/components/wallet/WalletBalanceCycles.svelte';
 	import WalletBalanceIcp from '$lib/components/wallet/WalletBalanceIcp.svelte';
+	import WalletInlineBalanceCycles from '$lib/components/wallet/WalletInlineBalanceCycles.svelte';
 	import WalletInlineBalanceIcp from '$lib/components/wallet/WalletInlineBalanceIcp.svelte';
+	import { ICP_LEDGER_CANISTER_ID } from '$lib/constants/app.constants';
 	import type { LedgerIdText, SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { balanceCertifiedStore } from '$lib/stores/wallet/balance.store';
-	import { ICP_LEDGER_CANISTER_ID } from '$lib/constants/app.constants';
-	import WalletInlineBalanceCycles from '$lib/components/wallet/WalletInlineBalanceCycles.svelte';
-	import WalletBalanceCycles from '$lib/components/wallet/WalletBalanceCycles.svelte';
 
 	interface Props {
 		selectedWallet: SelectedWallet | undefined;

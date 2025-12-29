@@ -11,10 +11,10 @@
 	import WalletPicker from '$lib/components/wallet/WalletPicker.svelte';
 	import WalletTotal from '$lib/components/wallet/WalletTotal.svelte';
 	import ReceiveTokens from '$lib/components/wallet/tokens/ReceiveTokens.svelte';
+	import { CYCLES_LEDGER_CANISTER_ID } from '$lib/constants/app.constants';
 	import { testIds } from '$lib/constants/test-ids.constants';
 	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import { CYCLES_LEDGER_CANISTER_ID } from '$lib/constants/app.constants';
 
 	let button: HTMLButtonElement | undefined = $state();
 	let visible: boolean = $state(false);

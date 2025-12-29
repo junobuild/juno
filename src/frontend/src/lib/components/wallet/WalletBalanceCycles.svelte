@@ -9,8 +9,8 @@
 		icpToUsdDefined
 	} from '$lib/derived/wallet/exchange.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import { formatICP, formatICPToUsd } from '$lib/utils/icp.utils';
 	import { formatTCycles } from '$lib/utils/cycles.utils';
+	import { formatICP, formatICPToUsd } from '$lib/utils/icp.utils';
 
 	interface Props {
 		balance: bigint | undefined;

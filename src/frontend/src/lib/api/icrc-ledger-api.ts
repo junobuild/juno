@@ -6,7 +6,7 @@ import {
 	type ApproveParams,
 	type IcrcLedgerDid
 } from '@icp-sdk/canisters/ledger/icrc';
-import { Principal } from '@icp-sdk/core/principal';
+import type { Principal } from '@icp-sdk/core/principal';
 
 const ONE_MINUTE = 1n * 60n * 1000n * 1000n * 1000n;
 

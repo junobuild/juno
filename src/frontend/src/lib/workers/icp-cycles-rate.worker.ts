@@ -99,7 +99,9 @@ const cleanIcpToCyclesRate = async () => {
 
 	postMessage({
 		msg: 'syncIcpToCyclesRate',
-		data: null
+		data: {
+			rate: null
+		}
 	});
 };
 

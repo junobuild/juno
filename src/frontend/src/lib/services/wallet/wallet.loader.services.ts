@@ -2,16 +2,16 @@ import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
 import { balanceCertifiedStore } from '$lib/stores/wallet/balance.store';
 import { exchangePricesCanisterDataStore } from '$lib/stores/wallet/exchange.store';
+import { icpToCyclesRateStore } from '$lib/stores/wallet/icp-cycles-rate.store';
 import { transactionsCertifiedStore } from '$lib/stores/wallet/transactions.store';
 import type {
-	PostMessageDataResponseExchange, PostMessageDataResponseIcpToCyclesRate,
+	PostMessageDataResponseExchange,
+	PostMessageDataResponseIcpToCyclesRate,
 	PostMessageDataResponseWallet,
 	PostMessageDataResponseWalletCleanUp
 } from '$lib/types/post-message';
 import { isNullish, jsonReviver } from '@dfinity/utils';
 import { get } from 'svelte/store';
-import { icpToCyclesRateIdbStore } from '$lib/stores/app/idb.store';
-import { icpToCyclesRateStore } from '$lib/stores/wallet/icp-cycles-rate.store';
 
 export const onSyncWallet = (data: PostMessageDataResponseWallet) => {
 	if (isNullish(data.wallet)) {
@@ -84,15 +84,11 @@ export const onSyncExchange = (data: PostMessageDataResponseExchange) => {
 };
 
 export const onSyncIcpToCyclesRate = (data: PostMessageDataResponseIcpToCyclesRate) => {
-
-
-	console.log('----------------------->', data);
-
 	const { rate } = data;
 
-	if (isNullish(data)) {
+	if (isNullish(rate)) {
 		icpToCyclesRateStore.reset();
 	} else {
 		icpToCyclesRateStore.set(rate);
 	}
-}
+};

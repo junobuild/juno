@@ -11,7 +11,7 @@
 	import LaunchpadLink from '$lib/components/launchpad/LaunchpadLink.svelte';
 	import MissionControlDataLoader from '$lib/components/mission-control/MissionControlDataLoader.svelte';
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
-	import WalletInlineBalance from '$lib/components/wallet/WalletInlineBalance.svelte';
+	import WalletInlineBalanceCycles from '$lib/components/wallet/WalletInlineBalanceCycles.svelte';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import {
 		missionControlNotMonitored,
@@ -124,7 +124,7 @@
 			<span class="link link-without-indicator">
 				<span class="link-title"><span class="link-title-text">{$i18n.wallet.title}</span></span>
 				<span class="link-details">
-					<WalletInlineBalance balance={$balance} />
+					<WalletInlineBalanceCycles balance={$balance} />
 				</span>
 			</span>
 		</p>

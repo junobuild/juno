@@ -1,6 +1,6 @@
 <script lang="ts">
-	import WalletBalance from '$lib/components/wallet/WalletBalance.svelte';
-	import WalletInlineBalance from '$lib/components/wallet/WalletInlineBalance.svelte';
+	import WalletBalanceCycles from '$lib/components/wallet/WalletBalanceCycles.svelte';
+	import WalletInlineBalanceCycles from '$lib/components/wallet/WalletInlineBalanceCycles.svelte';
 	import { balance } from '$lib/derived/wallet/balance.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
 
@@ -10,7 +10,7 @@
 
 	let { display = 'block' }: Props = $props();
 
-	let Balance = $derived(display === 'inline' ? WalletInlineBalance : WalletBalance);
+	let Balance = $derived(display === 'inline' ? WalletInlineBalanceCycles : WalletBalanceCycles);
 </script>
 
 <Balance balance={$balance} label={$i18n.wallet.total} />

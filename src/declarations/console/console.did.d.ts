@@ -133,8 +133,9 @@ export interface DeleteControllersArgs {
 export interface DeleteProposalAssets {
 	proposal_ids: Array<bigint>;
 }
-export type FeeKind = { ICP: null };
+export type FeeKind = { ICP: null } | { Cycles: null };
 export interface FeesArgs {
+	fee_cycles: Tokens;
 	fee_icp: Tokens;
 }
 export interface GetCreateCanisterFeeArgs {

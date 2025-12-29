@@ -104,8 +104,8 @@ type Delegation = record {
 };
 type DeleteControllersArgs = record { controllers : vec principal };
 type DeleteProposalAssets = record { proposal_ids : vec nat };
-type FeeKind = variant { ICP };
-type FeesArgs = record { fee_icp : Tokens };
+type FeeKind = variant { ICP; Cycles };
+type FeesArgs = record { fee_cycles : Tokens; fee_icp : Tokens };
 type GetCreateCanisterFeeArgs = record { user : principal };
 type GetDelegationArgs = variant { OpenId : OpenIdGetDelegationArgs };
 type GetDelegationError = variant {

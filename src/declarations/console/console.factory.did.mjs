@@ -193,7 +193,7 @@ export const idlFactory = ({ IDL }) => {
 		MissionControl: IDL.Null,
 		Satellite: IDL.Null
 	});
-	const FeeKind = IDL.Variant({ ICP: IDL.Null });
+	const FeeKind = IDL.Variant({ ICP: IDL.Null, Cycles: IDL.Null });
 	const GetCreateCanisterFeeArgs = IDL.Record({ user: IDL.Principal });
 	const OpenIdGetDelegationArgs = IDL.Record({
 		jwt: IDL.Text,
@@ -433,7 +433,7 @@ export const idlFactory = ({ IDL }) => {
 		controller: SetController,
 		controllers: IDL.Vec(IDL.Principal)
 	});
-	const FeesArgs = IDL.Record({ fee_icp: Tokens });
+	const FeesArgs = IDL.Record({ fee_cycles: Tokens, fee_icp: Tokens });
 	const SetStorageConfig = IDL.Record({
 		iframe: IDL.Opt(StorageConfigIFrame),
 		rewrites: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),

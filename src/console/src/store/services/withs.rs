@@ -1,7 +1,7 @@
 use crate::store::services::raw::{mutate_heap_state, read_heap_state};
 use crate::store::{mutate_stable_state, read_stable_state};
-use crate::types::state::PaymentsStable;
 use crate::types::state::{AccountsStable, FactoryFees, SegmentsStable};
+use crate::types::state::{IcpPaymentsStable, IcrcPaymentsStable};
 use junobuild_auth::state::types::state::AuthenticationHeapState;
 use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::state::AssetsHeap;
@@ -57,15 +57,22 @@ pub fn with_accounts_mut<R>(f: impl FnOnce(&mut AccountsStable) -> R) -> R {
     mutate_stable_state(|state| f(&mut state.accounts))
 }
 
-pub fn with_payments<R>(f: impl FnOnce(&PaymentsStable) -> R) -> R {
+pub fn with_icp_payments<R>(f: impl FnOnce(&IcpPaymentsStable) -> R) -> R {
     read_stable_state(|state| {
-        let payments = &state.payments;
+        let payments = &state.icp_payments;
         f(payments)
     })
 }
 
-pub fn with_payments_mut<R>(f: impl FnOnce(&mut PaymentsStable) -> R) -> R {
-    mutate_stable_state(|state| f(&mut state.payments))
+pub fn with_icrc_payments<R>(f: impl FnOnce(&IcrcPaymentsStable) -> R) -> R {
+    read_stable_state(|state| {
+        let payments = &state.icrc_payments;
+        f(payments)
+    })
+}
+
+pub fn with_icrc_payments_mut<R>(f: impl FnOnce(&mut IcrcPaymentsStable) -> R) -> R {
+    mutate_stable_state(|state| f(&mut state.icrc_payments))
 }
 
 pub fn with_segments<R>(f: impl FnOnce(&SegmentsStable) -> R) -> R {

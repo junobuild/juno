@@ -18,6 +18,10 @@ export interface Account {
 	owner: Principal;
 	created_at: bigint;
 }
+export interface Account_1 {
+	owner: Principal;
+	subaccount: [] | [Uint8Array];
+}
 export interface AssertMissionControlCenterArgs {
 	mission_control_id: Principal;
 	user: Principal;
@@ -171,6 +175,25 @@ export interface HttpResponse {
 	streaming_strategy: [] | [StreamingStrategy];
 	status_code: number;
 }
+export interface IcpPayment {
+	status: PaymentStatus;
+	updated_at: bigint;
+	block_index_payment: bigint;
+	mission_control_id: [] | [Principal];
+	created_at: bigint;
+	block_index_refunded: [] | [bigint];
+}
+export interface IcrcPayment {
+	status: PaymentStatus;
+	updated_at: bigint;
+	created_at: bigint;
+	block_index_refunded: [] | [bigint];
+	purchaser: Account_1;
+}
+export interface IcrcPaymentKey {
+	block_index: bigint;
+	ledger_id: Principal;
+}
 export interface InitAssetKey {
 	token: [] | [string];
 	collection: string;
@@ -276,16 +299,6 @@ export interface OpenIdProviderConfig {
 export interface OpenIdProviderDelegationConfig {
 	targets: [] | [Array<Principal>];
 	max_time_to_live: [] | [bigint];
-}
-export interface Payment {
-	status: PaymentStatus;
-	updated_at: bigint;
-	block_index_payment: bigint;
-	mission_control_id: [] | [Principal];
-	created_at: bigint;
-	ledger_id: [] | [Principal];
-	block_index_refunded: [] | [bigint];
-	purchaser: [] | [Principal];
 }
 export type PaymentStatus = { Refunded: null } | { Acknowledged: null } | { Completed: null };
 export type PrepareDelegationError =
@@ -469,7 +482,8 @@ export interface _SERVICE {
 	list_assets: ActorMethod<[string, ListParams], ListResults>;
 	list_controllers: ActorMethod<[], Array<[Principal, Controller]>>;
 	list_custom_domains: ActorMethod<[], Array<[string, CustomDomain]>>;
-	list_payments: ActorMethod<[], Array<[bigint, Payment]>>;
+	list_icp_payments: ActorMethod<[], Array<[bigint, IcpPayment]>>;
+	list_icrc_payments: ActorMethod<[], Array<[IcrcPaymentKey, IcrcPayment]>>;
 	list_proposals: ActorMethod<[ListProposalsParams], ListProposalResults>;
 	list_segments: ActorMethod<[ListSegmentsArgs], Array<[SegmentKey, Segment]>>;
 	reject_proposal: ActorMethod<[CommitProposal], null>;

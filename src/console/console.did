@@ -6,6 +6,7 @@ type Account = record {
   owner : principal;
   created_at : nat64;
 };
+type Account_1 = record { owner : principal; subaccount : opt blob };
 type AssertMissionControlCenterArgs = record {
   mission_control_id : principal;
   user : principal;
@@ -140,6 +141,22 @@ type HttpResponse = record {
   streaming_strategy : opt StreamingStrategy;
   status_code : nat16;
 };
+type IcpPayment = record {
+  status : PaymentStatus;
+  updated_at : nat64;
+  block_index_payment : nat64;
+  mission_control_id : opt principal;
+  created_at : nat64;
+  block_index_refunded : opt nat64;
+};
+type IcrcPayment = record {
+  status : PaymentStatus;
+  updated_at : nat64;
+  created_at : nat64;
+  block_index_refunded : opt nat64;
+  purchaser : Account_1;
+};
+type IcrcPaymentKey = record { block_index : nat64; ledger_id : principal };
 type InitAssetKey = record {
   token : opt text;
   collection : text;
@@ -229,16 +246,6 @@ type OpenIdProviderConfig = record {
 type OpenIdProviderDelegationConfig = record {
   targets : opt vec principal;
   max_time_to_live : opt nat64;
-};
-type Payment = record {
-  status : PaymentStatus;
-  updated_at : nat64;
-  block_index_payment : nat64;
-  mission_control_id : opt principal;
-  created_at : nat64;
-  ledger_id : opt principal;
-  block_index_refunded : opt nat64;
-  purchaser : opt principal;
 };
 type PaymentStatus = variant { Refunded; Acknowledged; Completed };
 type PrepareDelegationError = variant {
@@ -404,7 +411,8 @@ service : () -> {
   list_assets : (text, ListParams) -> (ListResults) query;
   list_controllers : () -> (vec record { principal; Controller }) query;
   list_custom_domains : () -> (vec record { text; CustomDomain }) query;
-  list_payments : () -> (vec record { nat64; Payment }) query;
+  list_icp_payments : () -> (vec record { nat64; IcpPayment }) query;
+  list_icrc_payments : () -> (vec record { IcrcPaymentKey; IcrcPayment }) query;
   list_proposals : (ListProposalsParams) -> (ListProposalResults) query;
   list_segments : (ListSegmentsArgs) -> (
       vec record { SegmentKey; Segment },

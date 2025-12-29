@@ -1,6 +1,7 @@
 import type { WalletIdText } from '$lib/schemas/wallet.schema';
 import {
 	onSyncExchange,
+	onSyncIcpToCyclesRate,
 	onSyncWallet,
 	onWalletCleanUp,
 	onWalletError
@@ -9,6 +10,7 @@ import { AppWorker } from '$lib/services/workers/_worker.services';
 import type {
 	PostMessageDataResponseError,
 	PostMessageDataResponseExchange,
+	PostMessageDataResponseIcpToCyclesRate,
 	PostMessageDataResponseWallet,
 	PostMessageDataResponseWalletCleanUp,
 	PostMessages
@@ -35,6 +37,9 @@ export class WalletWorker extends AppWorker {
 					return;
 				case 'syncExchange':
 					onSyncExchange(data.data as PostMessageDataResponseExchange);
+					return;
+				case 'syncIcpToCyclesRate':
+					onSyncIcpToCyclesRate(data.data as PostMessageDataResponseIcpToCyclesRate);
 			}
 		};
 	}

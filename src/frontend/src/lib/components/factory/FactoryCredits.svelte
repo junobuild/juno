@@ -7,8 +7,8 @@
 	import { creditsOrZero } from '$lib/derived/console/credits.derived';
 	import { devId } from '$lib/derived/dev.derived';
 	import {
-		devBalanceOrZero,
-		missionControlBalanceOrZero
+		devCyclesBalanceOrZero,
+		missionControlIcpBalanceOrZero
 	} from '$lib/derived/wallet/balance.derived';
 	import { icpToUsd } from '$lib/derived/wallet/exchange.derived';
 	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
@@ -43,7 +43,9 @@
 	let notEnoughCredits = $derived($creditsOrZero * fee < fee * E8S_PER_ICP);
 
 	let balanceOrZero = $derived(
-		selectedWallet?.type === 'mission_control' ? $missionControlBalanceOrZero : $devBalanceOrZero
+		selectedWallet?.type === 'mission_control'
+			? $missionControlIcpBalanceOrZero
+			: $devCyclesBalanceOrZero
 	);
 
 	// When both wallets - dev and mission control - are empty and devs are no credits left,

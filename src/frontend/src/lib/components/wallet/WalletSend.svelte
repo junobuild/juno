@@ -5,8 +5,8 @@
 	import { missionControlVersion } from '$lib/derived/version.derived';
 	import {
 		balanceNotLoaded,
-		devBalance,
-		missionControlBalance
+		devCyclesBalance,
+		missionControlIcpBalance
 	} from '$lib/derived/wallet/balance.derived';
 	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { i18n } from '$lib/stores/app/i18n.store';
@@ -22,7 +22,7 @@
 
 	let walletMissionControl = $derived(selectedWallet.type === 'mission_control');
 
-	let balance = $derived(walletMissionControl ? $missionControlBalance : $devBalance);
+	let balance = $derived(walletMissionControl ? $missionControlIcpBalance : $devCyclesBalance);
 
 	const openSend = () => {
 		if ($balanceNotLoaded) {

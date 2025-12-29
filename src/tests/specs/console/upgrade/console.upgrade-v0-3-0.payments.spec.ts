@@ -89,7 +89,8 @@ describe('Console > Upgrade > Payments > v0.2.0 -> v0.3.0', () => {
 				state: { type: SubnetStateType.New }
 			},
 			icpFeatures: {
-				icpToken: IcpFeaturesConfig.DefaultConfig
+				icpToken: IcpFeaturesConfig.DefaultConfig,
+				cyclesToken: IcpFeaturesConfig.DefaultConfig
 			}
 		});
 

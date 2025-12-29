@@ -10,7 +10,7 @@ import {
 } from '../../../constants/console-tests.constants';
 import { createSatelliteWithConsole } from '../../../utils/console-factory-tests.utils';
 import { initUserAccountAndMissionControl, setupConsole } from '../../../utils/console-tests.utils';
-import { approveIcp, transferIcp } from '../../../utils/ledger-tests.utils';
+import { approveToken, transferIcp } from '../../../utils/ledger-tests.utils';
 import { tick } from '../../../utils/pic-tests.utils';
 
 describe('Console > Factory > Mission Control', () => {
@@ -122,7 +122,7 @@ describe('Console > Factory > Mission Control', () => {
 				owner: user.getPrincipal()
 			});
 
-			await approveIcp({
+			await approveToken({
 				pic,
 				owner: user,
 				spender: CONSOLE_ID,
@@ -150,7 +150,7 @@ describe('Console > Factory > Mission Control', () => {
 				owner: user.getPrincipal()
 			});
 
-			await approveIcp({
+			await approveToken({
 				pic,
 				owner: user,
 				spender: CONSOLE_ID,

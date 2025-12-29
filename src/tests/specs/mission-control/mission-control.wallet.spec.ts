@@ -54,7 +54,8 @@ describe('Mission Control > Wallet', () => {
 				state: { type: SubnetStateType.New }
 			},
 			icpFeatures: {
-				icpToken: IcpFeaturesConfig.DefaultConfig
+				icpToken: IcpFeaturesConfig.DefaultConfig,
+				cyclesToken: IcpFeaturesConfig.DefaultConfig
 			}
 		});
 	});

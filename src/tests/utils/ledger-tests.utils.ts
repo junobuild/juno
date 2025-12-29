@@ -1,4 +1,5 @@
-import { idlFactory as idlFactoryLedger } from '$declarations/ledger/icp/ledger.factory.did.js';
+import { idlFactory as idlFactoryLedgerIcp } from '$declarations/ledger/icp/ledger.factory.did.js';
+import { idlFactory as idlFactoryLedgerIcrc } from '$declarations/ledger/icrc/ledger.factory.did.js';
 import type { PocketIc } from '@dfinity/pic';
 import { nowInBigIntNanoSeconds } from '@dfinity/utils';
 import type { IcpLedgerCanisterOptions } from '@icp-sdk/canisters/ledger/icp';
@@ -17,7 +18,7 @@ export const transferIcp = async ({
 	owner: Principal;
 	amount?: bigint;
 }) => {
-	const ledgerActor = pic.createActor<LedgerActor>(idlFactoryLedger, ICP_LEDGER_ID);
+	const ledgerActor = pic.createActor<LedgerActor>(idlFactoryLedgerIcp, ICP_LEDGER_ID);
 
 	// Pocket IC sets 1B ICP as the initial balance for the anonymous principal
 	ledgerActor.setIdentity(new AnonymousIdentity());
@@ -36,18 +37,20 @@ export const transferIcp = async ({
 
 const TWENTY_SECONDS = 20n * 1000n * 1000n * 1000n;
 
-export const approveIcp = async ({
+export const approveToken = async ({
 	pic,
 	owner,
 	amount,
-	spender
+	spender,
+	ledgerId = ICP_LEDGER_ID
 }: {
 	pic: PocketIc;
 	owner: Identity;
 	amount: bigint;
 	spender: Principal;
+	ledgerId?: Principal;
 }) => {
-	const ledgerActor = pic.createActor<LedgerActor>(idlFactoryLedger, ICP_LEDGER_ID);
+	const ledgerActor = pic.createActor<LedgerActor>(idlFactoryLedgerIcrc, ledgerId);
 
 	ledgerActor.setIdentity(owner);
 

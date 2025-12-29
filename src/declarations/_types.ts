@@ -8,15 +8,16 @@ import type * as SatelliteDid0016 from '$declarations/deprecated/satellite-0-0-1
 import type * as SatelliteDid0017 from '$declarations/deprecated/satellite-0-0-17.did';
 import type * as SatelliteDid008 from '$declarations/deprecated/satellite-0-0-8.did';
 import type * as ICDid from '$declarations/ic-management/ic-management.did';
+import type * as CyclesLedgerDid from '$declarations/ledger/cycles/cycles.did';
 import type * as MissionControlDid from '$declarations/mission_control/mission_control.did';
 import type * as ObservatoryDid from '$declarations/observatory/observatory.did';
 import type * as OrbiterDid from '$declarations/orbiter/orbiter.did';
 import type * as SatelliteDid from '$declarations/satellite/satellite.did';
 import type * as SputnikDid from '$declarations/sputnik/sputnik.did';
-import type * as CyclesLedgerDid from '$declarations/ledger/cycles/cycles.did';
 
 export type {
 	ConsoleDid,
+	CyclesLedgerDid,
 	ICDid,
 	MissionControlDid,
 	MissionControlDid0013,
@@ -30,6 +31,5 @@ export type {
 	SatelliteDid0016,
 	SatelliteDid0017,
 	SatelliteDid008,
-	SputnikDid,
-	CyclesLedgerDid
+	SputnikDid
 };

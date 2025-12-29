@@ -1,9 +1,9 @@
 import { idlFactoryCyclesLedger, type CyclesLedgerActor } from '$declarations';
 import { ActorApi } from '$lib/api/actors/actor.api';
+import { CYCLES_LEDGER_CANISTER_ID } from '$lib/constants/app.constants';
 import type { OptionIdentity } from '$lib/types/itentity';
 import { nowInBigIntNanoSeconds, toNullable } from '@dfinity/utils';
 import type { Principal } from '@icp-sdk/core/principal';
-import { CYCLES_LEDGER_CANISTER_ID } from '$lib/constants/app.constants';
 
 const cyclesLedgerActor = new ActorApi<CyclesLedgerActor>();
 

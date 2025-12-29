@@ -19,7 +19,7 @@
 		balance: bigint;
 		segment: CanisterSegmentWithLabel;
 		icp: string | undefined;
-		cycles: number | undefined;
+		cycles: bigint | undefined;
 		onback: () => void;
 		onsubmit: ($event: SubmitEvent) => Promise<void>;
 	}

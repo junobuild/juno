@@ -25,10 +25,10 @@
 
 	let step: 'init' | 'review' | 'in_progress' | 'ready' | 'error' = $state('init');
 
-	let icp: string | undefined = $state(undefined);
-	let cycles: number | undefined = $state(undefined);
+	let icp = $state<string | undefined>(undefined);
+	let cycles = $state<bigint | undefined>(undefined);
 
-	let progress: TopUpProgress | undefined = $state(undefined);
+	let progress = $state<TopUpProgress | undefined>(undefined);
 	const onProgress = (topUpProgress: TopUpProgress | undefined) => (progress = topUpProgress);
 
 	const onsubmit = async ($event: SubmitEvent) => {

@@ -23,7 +23,7 @@ import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import type { Principal } from '@icp-sdk/core/principal';
 import { readFile } from 'node:fs/promises';
 import { inject } from 'vitest';
-import { CONSOLE_ID, TEST_FEE } from '../constants/console-tests.constants';
+import { CONSOLE_ID, TEST_FEES } from '../constants/console-tests.constants';
 import { mockScript } from '../mocks/storage.mocks';
 import { tick } from './pic-tests.utils';
 import {
@@ -640,7 +640,8 @@ export const setupConsole = async ({
 		},
 		...(withLedger && {
 			icpFeatures: {
-				icpToken: IcpFeaturesConfig.DefaultConfig
+				icpToken: IcpFeaturesConfig.DefaultConfig,
+				cyclesToken: IcpFeaturesConfig.DefaultConfig
 			}
 		})
 	});
@@ -678,9 +679,9 @@ export const setupConsole = async ({
 	if (withFee) {
 		const { set_fee } = actor;
 
-		await set_fee({ Satellite: null }, { fee_icp: { e8s: TEST_FEE } });
-		await set_fee({ Orbiter: null }, { fee_icp: { e8s: TEST_FEE } });
-		await set_fee({ MissionControl: null }, { fee_icp: { e8s: TEST_FEE } });
+		await set_fee({ Satellite: null }, TEST_FEES);
+		await set_fee({ Orbiter: null }, TEST_FEES);
+		await set_fee({ MissionControl: null }, TEST_FEES);
 	}
 
 	return { pic, controller, actor, canisterId };

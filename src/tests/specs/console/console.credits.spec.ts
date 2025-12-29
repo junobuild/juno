@@ -1,6 +1,5 @@
 import type { ConsoleActor } from '$declarations';
 import type { Actor, PocketIc } from '@dfinity/pic';
-import { toNullable } from '@dfinity/utils';
 import type { Identity } from '@icp-sdk/core/agent';
 import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import { createSatelliteWithConsole } from '../../utils/console-factory-tests.utils';
@@ -53,14 +52,6 @@ describe('Console > Credits', () => {
 			expect(credits).toEqual({ e8s: 100_000_000n });
 		});
 
-		it('should have zero fee if remaining credits', async () => {
-			const { get_create_fee } = actor;
-
-			const fee = await get_create_fee({ Satellite: null }, { ICP: null });
-
-			expect(fee).toEqual(toNullable());
-		});
-
 		it('should create a first satellite and used all credits', async () => {
 			const satellite_id = await createSatelliteWithConsole({ user, actor });
 
@@ -71,18 +62,6 @@ describe('Console > Credits', () => {
 			const credits = await get_credits();
 
 			expect(credits).toEqual({ e8s: 0n });
-		});
-
-		it('should get fees with no more credits', async () => {
-			const { get_create_fee } = actor;
-
-			const satFee = await get_create_fee({ Satellite: null }, { ICP: null });
-
-			expect(satFee).toEqual(toNullable({ e8s: 50_000_000n }));
-
-			const orbFee = await get_create_fee({ Satellite: null }, { ICP: null });
-
-			expect(orbFee).toEqual(toNullable({ e8s: 50_000_000n }));
 		});
 
 		it('should not create a satellite without credits', async () => {

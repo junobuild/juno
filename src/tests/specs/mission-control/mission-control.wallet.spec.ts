@@ -11,7 +11,7 @@ import type { Principal } from '@icp-sdk/core/principal';
 import { inject } from 'vitest';
 import { ICP_LEDGER_ID } from '../../constants/ledger-tests.contants';
 import { MISSION_CONTROL_ADMIN_CONTROLLER_ERROR_MSG } from '../../constants/mission-control-tests.constants';
-import { transferIcp } from '../../utils/ledger-tests.utils';
+import { transferToken } from '../../utils/ledger-tests.utils';
 import { missionControlUserInitArgs } from '../../utils/mission-control-tests.utils';
 import { MISSION_CONTROL_WASM_PATH } from '../../utils/setup-tests.utils';
 
@@ -54,7 +54,8 @@ describe('Mission Control > Wallet', () => {
 				state: { type: SubnetStateType.New }
 			},
 			icpFeatures: {
-				icpToken: IcpFeaturesConfig.DefaultConfig
+				icpToken: IcpFeaturesConfig.DefaultConfig,
+				cyclesToken: IcpFeaturesConfig.DefaultConfig
 			}
 		});
 	});
@@ -160,7 +161,7 @@ describe('Mission Control > Wallet', () => {
 
 		describe('Transfer success', () => {
 			beforeAll(async () => {
-				await transferIcp({
+				await transferToken({
 					pic,
 					owner: missionControlId
 				});

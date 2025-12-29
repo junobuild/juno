@@ -4,6 +4,8 @@ import {
 	idlFactoryMissionControl,
 	type ConsoleActor,
 	type ConsoleActor020,
+	type ConsoleDid,
+	type ConsoleDid020,
 	type MissionControlActor
 } from '$declarations';
 import type { MissionControlId } from '$lib/types/mission-control';
@@ -16,7 +18,7 @@ import { inject } from 'vitest';
 import { CONSOLE_ID } from '../../../constants/console-tests.constants';
 import { ICP_LEDGER_ID } from '../../../constants/ledger-tests.contants';
 import { deploySegments, updateRateConfig } from '../../../utils/console-tests.utils';
-import { transferIcp } from '../../../utils/ledger-tests.utils';
+import { transferToken } from '../../../utils/ledger-tests.utils';
 import { tick } from '../../../utils/pic-tests.utils';
 import {
 	CONSOLE_WASM_PATH,
@@ -89,7 +91,8 @@ describe('Console > Upgrade > Payments > v0.2.0 -> v0.3.0', () => {
 				state: { type: SubnetStateType.New }
 			},
 			icpFeatures: {
-				icpToken: IcpFeaturesConfig.DefaultConfig
+				icpToken: IcpFeaturesConfig.DefaultConfig,
+				cyclesToken: IcpFeaturesConfig.DefaultConfig
 			}
 		});
 
@@ -124,19 +127,16 @@ describe('Console > Upgrade > Payments > v0.2.0 -> v0.3.0', () => {
 
 		missionControlId = mId;
 
-		await transferIcp({
+		await transferToken({
 			pic,
 			owner: missionControlId
 		});
 
 		await createSatellite({ missionControlId, user });
 
-		const assertPayments = async (actor: Actor<ConsoleActor | ConsoleActor020>) => {
-			actor.setIdentity(controller);
-
-			const { list_payments } = actor;
-			const payments = await list_payments();
-
+		const assertPayments = (
+			payments: [bigint, ConsoleDid.IcpPayment][] | [bigint, ConsoleDid020.Payment][]
+		) => {
 			expect(payments).toHaveLength(1);
 			expect(payments[0][0]).toEqual(4n);
 			expect(payments[0][1].block_index_payment).toEqual(4n);
@@ -151,14 +151,22 @@ describe('Console > Upgrade > Payments > v0.2.0 -> v0.3.0', () => {
 			expect(payments[0][1].status).toEqual({ Completed: null });
 		};
 
-		await assertPayments(actor);
+		actor.setIdentity(controller);
+
+		const { list_payments } = actor;
+		const payments = await list_payments();
+
+		assertPayments(payments);
 
 		await upgradeCurrent();
 
 		const newActor = pic.createActor<ConsoleActor>(idlFactoryConsole, canisterId);
 		newActor.setIdentity(controller);
 
-		await assertPayments(newActor);
+		const { list_icp_payments } = newActor;
+		const icpPayments = await list_icp_payments();
+
+		assertPayments(icpPayments);
 	});
 
 	it('should set payments as completed with new interface', async () => {
@@ -169,22 +177,24 @@ describe('Console > Upgrade > Payments > v0.2.0 -> v0.3.0', () => {
 		const newActor = pic.createActor<ConsoleActor>(idlFactoryConsole, canisterId);
 		newActor.setIdentity(controller);
 
-		const { list_payments } = newActor;
-		const payments = await list_payments();
+		const { list_icp_payments, list_icrc_payments } = newActor;
+		const icpPayments = await list_icp_payments();
+		const icrcPayments = await list_icrc_payments();
 
-		expect(payments).toHaveLength(2);
+		expect(icpPayments).toHaveLength(1);
+		expect(icrcPayments).toHaveLength(1);
 
-		const payment = payments.find(([index]) => index === 5n);
+		const payment = icrcPayments.find(
+			([{ ledger_id, block_index }]) =>
+				block_index === 5n && ledger_id.toText() === ICP_LEDGER_ID.toText()
+		);
 
 		assertNonNullish(payment);
 
-		expect(fromNullable(payment[1].purchaser)?.toText()).toEqual(missionControlId.toText());
-		expect(fromNullable(payment[1].ledger_id)?.toText()).toEqual(ICP_LEDGER_ID.toText());
-		expect(payment[1].block_index_payment).toEqual(5n);
+		expect(payment[1].purchaser.owner.toText()).toEqual(missionControlId.toText());
 		expect(payment[1].block_index_refunded).toEqual([]);
 		expect(payment[1].created_at > 0n).toBeTruthy();
 		expect(payment[1].updated_at > 0n).toBeTruthy();
-		expect(fromNullable(payment[1].mission_control_id)).toBeUndefined();
 		expect(payment[1].status).toEqual({ Completed: null });
 	});
 });

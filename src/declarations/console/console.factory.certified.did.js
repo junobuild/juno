@@ -379,15 +379,28 @@ export const idlFactory = ({ IDL }) => {
 		Acknowledged: IDL.Null,
 		Completed: IDL.Null
 	});
-	const Payment = IDL.Record({
+	const IcpPayment = IDL.Record({
 		status: PaymentStatus,
 		updated_at: IDL.Nat64,
 		block_index_payment: IDL.Nat64,
 		mission_control_id: IDL.Opt(IDL.Principal),
 		created_at: IDL.Nat64,
-		ledger_id: IDL.Opt(IDL.Principal),
+		block_index_refunded: IDL.Opt(IDL.Nat64)
+	});
+	const IcrcPaymentKey = IDL.Record({
+		block_index: IDL.Nat64,
+		ledger_id: IDL.Principal
+	});
+	const Account_1 = IDL.Record({
+		owner: IDL.Principal,
+		subaccount: IDL.Opt(IDL.Vec(IDL.Nat8))
+	});
+	const IcrcPayment = IDL.Record({
+		status: PaymentStatus,
+		updated_at: IDL.Nat64,
+		created_at: IDL.Nat64,
 		block_index_refunded: IDL.Opt(IDL.Nat64),
-		purchaser: IDL.Opt(IDL.Principal)
+		purchaser: Account_1
 	});
 	const ListProposalsOrder = IDL.Record({ desc: IDL.Bool });
 	const ListProposalsPaginate = IDL.Record({
@@ -505,7 +518,8 @@ export const idlFactory = ({ IDL }) => {
 		list_assets: IDL.Func([IDL.Text, ListParams], [ListResults], []),
 		list_controllers: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Principal, Controller))], []),
 		list_custom_domains: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Text, CustomDomain))], []),
-		list_payments: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Nat64, Payment))], []),
+		list_icp_payments: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Nat64, IcpPayment))], []),
+		list_icrc_payments: IDL.Func([], [IDL.Vec(IDL.Tuple(IcrcPaymentKey, IcrcPayment))], []),
 		list_proposals: IDL.Func([ListProposalsParams], [ListProposalResults], []),
 		list_segments: IDL.Func([ListSegmentsArgs], [IDL.Vec(IDL.Tuple(SegmentKey, Segment))], []),
 		reject_proposal: IDL.Func([CommitProposal], [IDL.Null], []),

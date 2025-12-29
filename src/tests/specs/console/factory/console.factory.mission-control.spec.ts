@@ -6,11 +6,12 @@ import type { Principal } from '@icp-sdk/core/principal';
 import {
 	CONSOLE_ID,
 	NO_ACCOUNT_ERROR_MSG,
-	TEST_FEE
+	TEST_FEES
 } from '../../../constants/console-tests.constants';
+import { CYCLES_LEDGER_ID } from '../../../constants/ledger-tests.contants';
 import { createSatelliteWithConsole } from '../../../utils/console-factory-tests.utils';
 import { initUserAccountAndMissionControl, setupConsole } from '../../../utils/console-tests.utils';
-import { approveIcp, transferIcp } from '../../../utils/ledger-tests.utils';
+import { approveToken, transferToken } from '../../../utils/ledger-tests.utils';
 import { tick } from '../../../utils/pic-tests.utils';
 
 describe('Console > Factory > Mission Control', () => {
@@ -117,16 +118,19 @@ describe('Console > Factory > Mission Control', () => {
 			await pic.advanceTime(60_000);
 			await tick(pic);
 
-			await transferIcp({
+			await transferToken({
 				pic,
-				owner: user.getPrincipal()
+				owner: user.getPrincipal(),
+				ledgerId: CYCLES_LEDGER_ID,
+				amount: 2n * TEST_FEES.fee_cycles.e12s
 			});
 
-			await approveIcp({
+			await approveToken({
 				pic,
 				owner: user,
 				spender: CONSOLE_ID,
-				amount: TEST_FEE // Fees 10_000n are missing
+				ledgerId: CYCLES_LEDGER_ID,
+				amount: TEST_FEES.fee_cycles.e12s // Fees 100_000_000n are missing
 			});
 
 			await tick(pic);
@@ -145,16 +149,19 @@ describe('Console > Factory > Mission Control', () => {
 			await pic.advanceTime(60_000);
 			await tick(pic);
 
-			await transferIcp({
+			await transferToken({
 				pic,
-				owner: user.getPrincipal()
+				owner: user.getPrincipal(),
+				ledgerId: CYCLES_LEDGER_ID,
+				amount: 2n * TEST_FEES.fee_cycles.e12s
 			});
 
-			await approveIcp({
+			await approveToken({
 				pic,
 				owner: user,
 				spender: CONSOLE_ID,
-				amount: TEST_FEE + 10_000n
+				ledgerId: CYCLES_LEDGER_ID,
+				amount: TEST_FEES.fee_cycles.e12s + 100_000_000n
 			});
 
 			await tick(pic);

@@ -134,7 +134,7 @@ describe('Console > Upgrade > Payments > v0.2.0 -> v0.3.0', () => {
 
 		await createSatellite({ missionControlId, user });
 
-		const assertPayments = async (
+		const assertPayments = (
 			payments: [bigint, ConsoleDid.IcpPayment][] | [bigint, ConsoleDid020.Payment][]
 		) => {
 			expect(payments).toHaveLength(1);
@@ -156,7 +156,7 @@ describe('Console > Upgrade > Payments > v0.2.0 -> v0.3.0', () => {
 		const { list_payments } = actor;
 		const payments = await list_payments();
 
-		await assertPayments(payments);
+		assertPayments(payments);
 
 		await upgradeCurrent();
 
@@ -166,7 +166,7 @@ describe('Console > Upgrade > Payments > v0.2.0 -> v0.3.0', () => {
 		const { list_icp_payments } = newActor;
 		const icpPayments = await list_icp_payments();
 
-		await assertPayments(icpPayments);
+		assertPayments(icpPayments);
 	});
 
 	it('should set payments as completed with new interface', async () => {

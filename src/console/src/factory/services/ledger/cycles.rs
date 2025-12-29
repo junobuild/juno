@@ -1,24 +1,25 @@
 use crate::factory::services::ledger::icrc::icrc_transfer_from;
 use candid::{Nat, Principal};
-use ic_ledger_types::{BlockIndex, Tokens};
+use ic_ledger_types::BlockIndex;
 use icrc_ledger_types::icrc1::account::Account;
 use icrc_ledger_types::icrc1::transfer::TransferArg;
 use junobuild_shared::constants_shared::{IC_TRANSACTION_FEE_CYCLES, MEMO_SATELLITE_CREATE_REFUND};
 use junobuild_shared::env::CYCLES_LEDGER;
 use junobuild_shared::ledger::convert_memo_to_icrc;
 use junobuild_shared::ledger::icrc::icrc_transfer_token;
+use junobuild_shared::ledger::types::cycles::CyclesTokens;
 
 pub async fn icrc_transfer_payment(
     purchaser: &Principal,
-    canister_fee: Tokens,
+    canister_fee: CyclesTokens,
 ) -> Result<BlockIndex, String> {
     let purchaser_account: Account = Account::from(*purchaser);
 
     // We refund the satellite creation fee minus the ic fee - i.e. user pays the fee
     let refund_amount = canister_fee - IC_TRANSACTION_FEE_CYCLES;
-    let amount = Nat::from(refund_amount.e8s());
+    let amount = Nat::from(refund_amount.e12s());
 
-    let transaction_fee = Nat::from(IC_TRANSACTION_FEE_CYCLES.e8s());
+    let transaction_fee = Nat::from(IC_TRANSACTION_FEE_CYCLES.e12s());
 
     let ledger_id = Principal::from_text(CYCLES_LEDGER).unwrap();
 
@@ -45,10 +46,10 @@ pub async fn icrc_transfer_payment(
 
 pub async fn cycles_transfer_from(
     purchaser: &Principal,
-    canister_fee: &Tokens,
+    canister_fee: &CyclesTokens,
 ) -> Result<BlockIndex, String> {
-    let transaction_fee = Nat::from(IC_TRANSACTION_FEE_CYCLES.e8s());
+    let transaction_fee = Nat::from(IC_TRANSACTION_FEE_CYCLES.e12s());
     let ledger_id = Principal::from_text(CYCLES_LEDGER).unwrap();
 
-    icrc_transfer_from(purchaser, &ledger_id, canister_fee, &transaction_fee).await
+    icrc_transfer_from(purchaser, &ledger_id, canister_fee.e12s(), &transaction_fee).await
 }

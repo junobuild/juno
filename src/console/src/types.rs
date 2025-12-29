@@ -8,6 +8,7 @@ pub mod state {
     use junobuild_auth::state::types::state::AuthenticationHeapState;
     use junobuild_cdn::proposals::{ProposalsStable, SegmentDeploymentVersion};
     use junobuild_cdn::storage::{ProposalAssetsStable, ProposalContentChunksStable};
+    use junobuild_shared::ledger::types::cycles::CyclesTokens;
     use junobuild_shared::rate::types::{RateConfig, RateTokens};
     use junobuild_shared::types::memory::Memory;
     use junobuild_shared::types::state::{Controllers, Metadata, SegmentId, Timestamp};
@@ -123,7 +124,7 @@ pub mod state {
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct FactoryFee {
-        pub fee_cycles: Tokens,
+        pub fee_cycles: CyclesTokens,
         pub fee_icp: Tokens,
         pub updated_at: Timestamp,
     }
@@ -167,6 +168,7 @@ pub mod interface {
     };
     use junobuild_auth::state::types::config::AuthenticationConfig;
     use junobuild_cdn::proposals::ProposalId;
+    use junobuild_shared::ledger::types::cycles::CyclesTokens;
     use junobuild_shared::types::state::SegmentId;
     use junobuild_storage::types::config::StorageConfig;
     use serde::{Deserialize, Serialize};
@@ -214,20 +216,15 @@ pub mod interface {
 
     #[derive(CandidType, Deserialize)]
     pub struct FeesArgs {
-        pub fee_cycles: Tokens,
+        pub fee_cycles: CyclesTokens,
         pub fee_icp: Tokens,
-    }
-
-    #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub enum FeeKind {
-        Cycles,
-        ICP,
     }
 }
 
 pub mod ledger {
     use candid::{CandidType, Principal};
-    use ic_ledger_types::BlockIndex;
+    use ic_ledger_types::{BlockIndex, Tokens};
+    use junobuild_shared::ledger::types::cycles::CyclesTokens;
     use junobuild_shared::types::state::{MissionControlId, Timestamp};
     use serde::{Deserialize, Serialize};
 
@@ -249,5 +246,11 @@ pub mod ledger {
         Acknowledged,
         Completed,
         Refunded,
+    }
+
+    #[derive(Clone)]
+    pub enum Fee {
+        Cycles(CyclesTokens),
+        ICP(Tokens),
     }
 }

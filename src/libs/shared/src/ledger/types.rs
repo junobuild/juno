@@ -12,3 +12,13 @@ pub mod icrc {
     pub type IcrcTransferResult = Result<BlockIndex, TransferError>;
     pub type IcrcTransferFromResult = Result<BlockIndex, TransferFromError>;
 }
+
+pub mod cycles {
+    use candid::{CandidType, Deserialize};
+    use serde::Serialize;
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct CyclesTokens {
+        pub e12s: u64,
+    }
+}

@@ -38,7 +38,11 @@
 		onclose
 	}: Props = $props();
 
-	let { fee } = $derived(detail as JunoModalCreateSegmentDetail);
+	let { fee: factoryFee } = $derived(detail as JunoModalCreateSegmentDetail);
+
+	let fee = $derived(
+		selectedWallet?.type === 'mission_control' ? factoryFee.fee_icp.e8s : factoryFee.fee_cycles.e12s
+	);
 
 	let notEnoughCredits = $derived($creditsOrZero * fee < fee * E8S_PER_ICP);
 

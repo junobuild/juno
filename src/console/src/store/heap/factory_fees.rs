@@ -1,34 +1,28 @@
 use crate::store::{with_factory_fees, with_factory_fees_mut};
-use crate::types::interface::{FeeKind, FeesArgs};
+use crate::types::interface::FeesArgs;
 use crate::types::state::{FactoryFee, FactoryFees};
 use ic_cdk::api::time;
-use ic_ledger_types::Tokens;
 
-pub fn get_satellite_fee(fee_kind: FeeKind) -> Tokens {
-    get_fee_impl(fee_kind, |fees| &fees.satellite)
+pub fn get_satellite_fee() -> FactoryFee {
+    get_fee_impl(|fees| &fees.satellite)
 }
 
-pub fn get_orbiter_fee(fee_kind: FeeKind) -> Tokens {
-    get_fee_impl(fee_kind, |fees| &fees.orbiter)
+pub fn get_orbiter_fee() -> FactoryFee {
+    get_fee_impl(|fees| &fees.orbiter)
 }
 
-pub fn get_mission_control_fee(fee_kind: FeeKind) -> Tokens {
-    get_fee_impl(fee_kind, |fees| &fees.mission_control)
+pub fn get_mission_control_fee() -> FactoryFee {
+    get_fee_impl(|fees| &fees.mission_control)
 }
 
-fn get_fee_impl<F>(fee_kind: FeeKind, selector: F) -> Tokens
+fn get_fee_impl<F>(selector: F) -> FactoryFee
 where
     F: FnOnce(&FactoryFees) -> &FactoryFee,
 {
     with_factory_fees(|fees| {
         let default = FactoryFees::default();
         let factory_fees = fees.as_ref().unwrap_or(&default);
-        let fee = selector(factory_fees);
-
-        match fee_kind {
-            FeeKind::Cycles => fee.fee_cycles,
-            FeeKind::ICP => fee.fee_icp,
-        }
+        selector(factory_fees).clone()
     })
 }
 
@@ -54,7 +48,7 @@ where
         let target = selector(factory_fees);
 
         target.fee_icp = fee.fee_icp;
-        target.fee_cycles = fee.fee_cycles;
+        target.fee_cycles = fee.fee_cycles.clone();
         target.updated_at = time();
     })
 }

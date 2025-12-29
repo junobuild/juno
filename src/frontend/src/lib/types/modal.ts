@@ -1,4 +1,4 @@
-import type { ICDid, MissionControlDid, OrbiterDid, SatelliteDid } from '$declarations';
+import type { ConsoleDid, ICDid, MissionControlDid, OrbiterDid, SatelliteDid } from '$declarations';
 import type { SelectedWallet } from '$lib/schemas/wallet.schema';
 import type { CanisterInfo, CanisterSegmentWithLabel, CanisterSettings } from '$lib/types/canister';
 import type { SetControllerParams } from '$lib/types/controllers';
@@ -32,7 +32,7 @@ export type JunoModalUpgradeSatelliteDetail = JunoModalUpgradeDetail &
 	JunoModalWithSatellite & { build?: BuildType };
 
 export interface JunoModalCreateSegmentDetail {
-	fee: bigint;
+	fee: ConsoleDid.FactoryFee;
 	monitoringEnabled: boolean;
 	monitoringConfig: Option<MissionControlDid.MonitoringConfig>;
 }

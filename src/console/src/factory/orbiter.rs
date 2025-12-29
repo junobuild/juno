@@ -1,14 +1,13 @@
 use crate::constants::FREEZING_THRESHOLD_THREE_MONTHS;
 use crate::factory::canister::create_canister;
-use crate::factory::types::CanisterCreator;
+use crate::factory::types::{CanisterCreator, FeeKind};
 use crate::factory::utils::controllers::remove_console_controller;
 use crate::factory::utils::wasm::orbiter_wasm_arg;
 use crate::store::heap::{get_orbiter_fee, increment_orbiters_rate};
 use crate::store::stable::add_segment as add_segment_store;
-use crate::types::interface::FeeKind;
+use crate::types::ledger::Fee;
 use crate::types::state::{Segment, SegmentKey, SegmentType};
 use candid::{Nat, Principal};
-use ic_ledger_types::Tokens;
 use junobuild_shared::constants_shared::CREATE_ORBITER_CYCLES;
 use junobuild_shared::ic::api::id;
 use junobuild_shared::mgmt::cmc::cmc_create_canister_install_code;
@@ -34,8 +33,13 @@ pub async fn create_orbiter(
     .await
 }
 
-fn get_fee(fee_kind: FeeKind) -> Tokens {
-    get_orbiter_fee(fee_kind)
+fn get_fee(fee_kind: FeeKind) -> Fee {
+    let fee = get_orbiter_fee();
+
+    match fee_kind {
+        FeeKind::Cycles => Fee::Cycles(fee.fee_cycles),
+        FeeKind::ICP => Fee::ICP(fee.fee_icp),
+    }
 }
 
 async fn create_orbiter_wasm(

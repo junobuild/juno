@@ -4,14 +4,16 @@ use crate::constants::{
     SATELLITE_CREATION_FEE_ICP,
 };
 use crate::memory::manager::init_stable_state;
-use crate::types::ledger::Payment;
+use crate::types::ledger::{Fee, Payment};
 use crate::types::state::{
     Account, FactoryFee, FactoryFees, HeapState, Rate, Rates, Segment, SegmentKey, SegmentType,
     State,
 };
 use ic_cdk::api::time;
+use ic_ledger_types::Tokens;
 use ic_stable_structures::storable::Bound;
 use ic_stable_structures::Storable;
+use junobuild_shared::ledger::types::cycles::CyclesTokens;
 use junobuild_shared::rate::constants::DEFAULT_RATE_CONFIG;
 use junobuild_shared::rate::types::RateTokens;
 use junobuild_shared::serializers::{
@@ -170,6 +172,29 @@ impl SegmentKey {
             user: *user,
             segment_type,
             segment_id: *segment_id,
+        }
+    }
+}
+
+impl Fee {
+    pub fn amount(&self) -> u64 {
+        match self {
+            Fee::Cycles(cycles) => cycles.e12s(),
+            Fee::ICP(tokens) => tokens.e8s(),
+        }
+    }
+
+    pub fn as_icp(&self) -> Result<Tokens, String> {
+        match self {
+            Fee::ICP(tokens) => Ok(*tokens),
+            Fee::Cycles(_) => Err("Expected ICP fee but got Cycles fee".to_string()),
+        }
+    }
+
+    pub fn as_cycles(&self) -> Result<CyclesTokens, String> {
+        match self {
+            Fee::Cycles(cycles) => Ok(cycles.clone()),
+            Fee::ICP(_) => Err("Expected Cycles fee but got ICP fee".to_string()),
         }
     }
 }

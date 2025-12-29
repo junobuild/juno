@@ -6,9 +6,8 @@ use crate::factory::types::CanisterCreator;
 use crate::factory::utils::controllers::update_mission_control_controllers;
 use crate::factory::utils::wasm::mission_control_wasm_arg;
 use crate::store::heap::{get_mission_control_fee, increment_mission_controls_rate};
-use crate::types::interface::FeeKind;
+use crate::types::ledger::Fee;
 use candid::{Nat, Principal};
-use ic_ledger_types::Tokens;
 use junobuild_shared::constants_shared::CREATE_MISSION_CONTROL_CYCLES;
 use junobuild_shared::ic::api::id;
 use junobuild_shared::mgmt::cmc::cmc_create_canister_install_code;
@@ -29,14 +28,14 @@ pub async fn create_mission_control(
 
     let creator: CanisterCreator = CanisterCreator::User((account.owner, None));
 
-    let fee = get_fee(FeeKind::Cycles);
+    let fee = get_mission_control_fee().fee_cycles;
 
     let mission_control_id = create_canister_with_account(
         create_mission_control_wasm,
         process_payment_cycles,
         refund_payment_cycles,
         &increment_mission_controls_rate,
-        fee,
+        Fee::Cycles(fee),
         &account,
         creator,
         args.into(),
@@ -46,10 +45,6 @@ pub async fn create_mission_control(
     update_mission_control(&account.owner, &mission_control_id)?;
 
     Ok(mission_control_id)
-}
-
-fn get_fee(fee_kind: FeeKind) -> Tokens {
-    get_mission_control_fee(fee_kind)
 }
 
 async fn create_mission_control_wasm(

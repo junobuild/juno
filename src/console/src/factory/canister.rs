@@ -5,13 +5,12 @@ use crate::accounts::{
 use crate::factory::services::payment::{
     process_payment_cycles, process_payment_icp, refund_payment_cycles, refund_payment_icp,
 };
-use crate::factory::types::{CanisterCreator, CreateCanisterArgs};
+use crate::factory::types::{CanisterCreator, CreateCanisterArgs, FeeKind};
 use crate::store::stable::{insert_new_payment, update_payment_completed, update_payment_refunded};
-use crate::types::interface::FeeKind;
-use crate::types::ledger::Payment;
+use crate::types::ledger::{Fee, Payment};
 use crate::types::state::Account;
 use candid::Principal;
-use ic_ledger_types::{BlockIndex, Tokens};
+use ic_ledger_types::BlockIndex;
 use junobuild_shared::mgmt::types::cmc::SubnetId;
 use junobuild_shared::types::state::UserId;
 use junobuild_shared::utils::principal_equal;
@@ -20,7 +19,7 @@ use std::future::Future;
 pub async fn create_canister<F, Fut>(
     create: F,
     increment_rate: &dyn Fn() -> Result<(), String>,
-    get_fee: &dyn Fn(FeeKind) -> Tokens,
+    get_fee: &dyn Fn(FeeKind) -> Fee,
     add_segment: &dyn Fn(&UserId, &Principal),
     caller: Principal,
     user: UserId,
@@ -88,7 +87,7 @@ pub async fn create_canister_with_account<F, Fut, P, Pay, R, Refund>(
     process_payment: P,
     refund_payment: R,
     increment_rate: &dyn Fn() -> Result<(), String>,
-    fee: Tokens,
+    fee: Fee,
     account: &Account,
     creator: CanisterCreator,
     args: CreateCanisterArgs,
@@ -96,9 +95,9 @@ pub async fn create_canister_with_account<F, Fut, P, Pay, R, Refund>(
 where
     F: FnOnce(CanisterCreator, Option<SubnetId>) -> Fut,
     Fut: Future<Output = Result<Principal, String>>,
-    P: FnOnce(Principal, Option<BlockIndex>, Tokens) -> Pay,
+    P: FnOnce(Principal, Option<BlockIndex>, Fee) -> Pay,
     Pay: Future<Output = Result<(Principal, BlockIndex), String>>,
-    R: FnOnce(Principal, Tokens) -> Refund,
+    R: FnOnce(Principal, Fee) -> Refund,
     Refund: Future<Output = Result<BlockIndex, String>>,
 {
     if has_credits(account, &fee) {
@@ -143,10 +142,10 @@ async fn refund_canister_creation<R, Refund>(
     refund_payment: R,
     purchaser: &Principal,
     purchaser_payment_block_index: &BlockIndex,
-    fee: Tokens,
+    fee: Fee,
 ) -> Result<Payment, String>
 where
-    R: FnOnce(Principal, Tokens) -> Refund,
+    R: FnOnce(Principal, Fee) -> Refund,
     Refund: Future<Output = Result<BlockIndex, String>>,
 {
     let refund_block_index = refund_payment(purchaser.clone(), fee).await?;
@@ -165,20 +164,20 @@ async fn create_canister_with_payment<F, Fut, P, Pay, R, Refund>(
         block_index,
         subnet_id,
     }: CreateCanisterArgs,
-    fee: Tokens,
+    fee: Fee,
 ) -> Result<Principal, String>
 where
     F: FnOnce(CanisterCreator, Option<SubnetId>) -> Fut,
     Fut: Future<Output = Result<Principal, String>>,
-    P: FnOnce(Principal, Option<BlockIndex>, Tokens) -> Pay,
+    P: FnOnce(Principal, Option<BlockIndex>, Fee) -> Pay,
     Pay: Future<Output = Result<(Principal, BlockIndex), String>>,
-    R: FnOnce(Principal, Tokens) -> Refund,
+    R: FnOnce(Principal, Fee) -> Refund,
     Refund: Future<Output = Result<BlockIndex, String>>,
 {
     let purchaser = *creator.purchaser();
 
     let (ledger_id, purchaser_payment_block_index) =
-        process_payment(purchaser, block_index, fee).await?;
+        process_payment(purchaser, block_index, fee.clone()).await?;
 
     // We acknowledge the new payment
     insert_new_payment(&purchaser, &ledger_id, &purchaser_payment_block_index)?;

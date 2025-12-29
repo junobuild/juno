@@ -1,6 +1,6 @@
 pub mod state {
     use crate::memory::manager::init_stable_state;
-    use crate::types::ledger::Payment;
+    use crate::types::ledger::{IcpPayment, IcrcPayment, IcrcPaymentKey};
     use candid::CandidType;
     use ic_ledger_types::{BlockIndex, Tokens};
     use ic_stable_structures::StableBTreeMap;
@@ -17,11 +17,13 @@ pub mod state {
     use std::collections::{HashMap, HashSet};
 
     pub type Accounts = HashMap<UserId, Account>;
-    pub type Payments = HashMap<BlockIndex, Payment>;
+    pub type IcpPayments = HashMap<BlockIndex, IcpPayment>;
+    pub type IcrcPayments = HashMap<IcrcPaymentKey, IcrcPayment>;
     pub type InvitationCodes = HashMap<InvitationCode, InvitationCodeRedeem>;
 
     pub type AccountsStable = StableBTreeMap<UserId, Account, Memory>;
-    pub type PaymentsStable = StableBTreeMap<BlockIndex, Payment, Memory>;
+    pub type IcpPaymentsStable = StableBTreeMap<BlockIndex, IcpPayment, Memory>;
+    pub type IcrcPaymentsStable = StableBTreeMap<IcrcPaymentKey, IcrcPayment, Memory>;
     pub type SegmentsStable = StableBTreeMap<SegmentKey, Segment, Memory>;
 
     #[derive(Serialize, Deserialize)]
@@ -35,7 +37,8 @@ pub mod state {
 
     pub struct StableState {
         pub accounts: AccountsStable,
-        pub payments: PaymentsStable,
+        pub icp_payments: IcpPaymentsStable,
+        pub icrc_payments: IcrcPaymentsStable,
         pub proposals_assets: ProposalAssetsStable,
         pub proposals_content_chunks: ProposalContentChunksStable,
         pub proposals: ProposalsStable,
@@ -47,7 +50,7 @@ pub mod state {
         #[deprecated(note = "Deprecated. Use stable memory instead.")]
         pub mission_controls: Accounts,
         #[deprecated(note = "Deprecated. Use stable memory instead.")]
-        pub payments: Payments,
+        pub payments: IcpPayments,
         pub invitation_codes: InvitationCodes,
         pub controllers: Controllers,
         pub rates: Rates,
@@ -225,20 +228,33 @@ pub mod interface {
 pub mod ledger {
     use candid::{CandidType, Principal};
     use ic_ledger_types::BlockIndex;
+    use icrc_ledger_types::icrc1::account::Account;
     use junobuild_shared::types::state::{MissionControlId, Timestamp};
     use serde::{Deserialize, Serialize};
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub struct Payment {
-        pub purchaser: Option<Principal>,
-        pub ledger_id: Option<Principal>,
-        #[deprecated(note = "Deprecated. Use purchaser instead.")]
+    pub struct IcpPayment {
         pub mission_control_id: Option<MissionControlId>,
         pub block_index_payment: BlockIndex,
         pub block_index_refunded: Option<BlockIndex>,
         pub status: PaymentStatus,
         pub created_at: Timestamp,
         pub updated_at: Timestamp,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct IcrcPayment {
+        pub block_index_refunded: Option<BlockIndex>,
+        pub status: PaymentStatus,
+        pub created_at: Timestamp,
+        pub updated_at: Timestamp,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+    pub struct IcrcPaymentKey {
+        pub purchaser: Account,
+        pub ledger_id: Principal,
+        pub block_index: BlockIndex,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]

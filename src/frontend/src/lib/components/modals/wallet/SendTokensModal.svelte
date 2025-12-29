@@ -7,7 +7,7 @@
 	import SendTokensForm from '$lib/components/wallet/tokens/SendTokensForm.svelte';
 	import SendTokensReview from '$lib/components/wallet/tokens/SendTokensReview.svelte';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
-	import { devBalance, missionControlBalance } from '$lib/derived/wallet/balance.derived';
+	import { devCyclesBalance, missionControlIcpBalance } from '$lib/derived/wallet/balance.derived';
 	import { sendTokens } from '$lib/services/wallet/wallet.send.services';
 	import { wizardBusy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
@@ -25,7 +25,7 @@
 	let { selectedWallet } = $derived(detail as JunoModalWalletDetail);
 
 	let balance = $derived(
-		selectedWallet.type === 'mission_control' ? $missionControlBalance : $devBalance
+		selectedWallet.type === 'mission_control' ? $missionControlIcpBalance : $devCyclesBalance
 	);
 
 	let destination = $state('');

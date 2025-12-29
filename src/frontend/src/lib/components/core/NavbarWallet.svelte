@@ -14,6 +14,7 @@
 	import { testIds } from '$lib/constants/test-ids.constants';
 	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { i18n } from '$lib/stores/app/i18n.store';
+	import { CYCLES_LEDGER_CANISTER_ID } from '$lib/constants/app.constants';
 
 	let button: HTMLButtonElement | undefined = $state();
 	let visible: boolean = $state(false);
@@ -56,7 +57,7 @@
 					{$i18n.wallet.balance}
 				{/snippet}
 
-				<WalletBalanceById display="inline" {selectedWallet} />
+				<WalletBalanceById display="inline" ledgerId={CYCLES_LEDGER_CANISTER_ID} {selectedWallet} />
 			</Value>
 		</div>
 

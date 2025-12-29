@@ -10,8 +10,8 @@
 	import Transactions from '$lib/components/wallet/transactions/Transactions.svelte';
 	import TransactionsExport from '$lib/components/wallet/transactions/TransactionsExport.svelte';
 	import {
-		ICP_INDEX_CANISTER_ID,
-		ICP_LEDGER_CANISTER_ID,
+		CYCLES_INDEX_CANISTER_ID,
+		CYCLES_LEDGER_CANISTER_ID,
 		PAGINATION
 	} from '$lib/constants/app.constants';
 	import { authSignedIn, authSignedOut } from '$lib/derived/auth.derived';
@@ -24,8 +24,8 @@
 
 	let selectedWallet = $state<SelectedWallet | undefined>(undefined);
 
-	const ledgerId = ICP_LEDGER_CANISTER_ID;
-	const indexId = ICP_INDEX_CANISTER_ID;
+	const ledgerId = CYCLES_LEDGER_CANISTER_ID;
+	const indexId = CYCLES_INDEX_CANISTER_ID;
 
 	let walletIdText = $derived(
 		nonNullish(selectedWallet) ? encodeIcrcAccount(selectedWallet.walletId) : undefined
@@ -89,9 +89,10 @@
 					<WalletIds {selectedWallet} />
 				{/if}
 			</div>
+			§
 
 			<div>
-				<WalletBalanceById {selectedWallet} />
+				<WalletBalanceById {ledgerId} {selectedWallet} />
 			</div>
 		</div>
 	</div>

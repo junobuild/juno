@@ -640,7 +640,8 @@ export const setupConsole = async ({
 		},
 		...(withLedger && {
 			icpFeatures: {
-				icpToken: IcpFeaturesConfig.DefaultConfig
+				icpToken: IcpFeaturesConfig.DefaultConfig,
+				cyclesToken: IcpFeaturesConfig.DefaultConfig
 			}
 		})
 	});

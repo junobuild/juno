@@ -6,8 +6,10 @@ use crate::factory::services::payment::{
     process_payment_cycles, process_payment_icp, refund_payment_cycles, refund_payment_icp,
 };
 use crate::factory::types::{CanisterCreator, CreateCanisterArgs, FeeKind};
-use crate::store::stable::{insert_new_payment, update_payment_completed, update_payment_refunded};
-use crate::types::ledger::{Fee, Payment};
+use crate::store::stable::payments::{
+    insert_new_icrc_payment, update_icrc_payment_completed, update_icrc_payment_refunded,
+};
+use crate::types::ledger::{Fee, IcrcPayment, IcrcPaymentKey};
 use crate::types::state::Account;
 use candid::Principal;
 use ic_ledger_types::BlockIndex;
@@ -141,9 +143,9 @@ where
 async fn refund_canister_creation<R, Refund>(
     refund_payment: R,
     purchaser: &Principal,
-    purchaser_payment_block_index: &BlockIndex,
+    payment_key: &IcrcPaymentKey,
     fee: Fee,
-) -> Result<Payment, String>
+) -> Result<IcrcPayment, String>
 where
     R: FnOnce(Principal, Fee) -> Refund,
     Refund: Future<Output = Result<BlockIndex, String>>,
@@ -151,7 +153,7 @@ where
     let refund_block_index = refund_payment(purchaser.clone(), fee).await?;
 
     // We record the refund in the payment list
-    update_payment_refunded(purchaser_payment_block_index, &refund_block_index)
+    update_icrc_payment_refunded(payment_key, &refund_block_index)
         .map_err(|e| format!("Insert refund transaction error {e:?}"))
 }
 
@@ -179,27 +181,23 @@ where
     let (ledger_id, purchaser_payment_block_index) =
         process_payment(purchaser, block_index, fee.clone()).await?;
 
+    let payment_key = IcrcPaymentKey::from(&ledger_id, &purchaser_payment_block_index);
+
     // We acknowledge the new payment
-    insert_new_payment(&purchaser, &ledger_id, &purchaser_payment_block_index)?;
+    insert_new_icrc_payment(&payment_key, &purchaser)?;
 
     // Create the canister (satellite or orbiter)
     let create_canister_result = create(creator, subnet_id).await;
 
     match create_canister_result {
         Err(error) => {
-            refund_canister_creation(
-                refund_payment,
-                &purchaser,
-                &purchaser_payment_block_index,
-                fee,
-            )
-            .await?;
+            refund_canister_creation(refund_payment, &purchaser, &payment_key, fee).await?;
 
             Err(["Canister creation failed. Buyer has been refunded.", &error].join(" - "))
         }
         Ok(satellite_id) => {
             // Satellite or orbiter is created, we can update the payment has being processed
-            update_payment_completed(&purchaser_payment_block_index)?;
+            update_icrc_payment_completed(&payment_key)?;
 
             Ok(satellite_id)
         }

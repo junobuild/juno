@@ -7,10 +7,11 @@ use crate::store::heap::{
     get_mission_control_fee, get_orbiter_fee, get_satellite_fee, set_create_mission_control_fee,
     set_create_orbiter_fee, set_create_satellite_fee,
 };
-use crate::store::stable::list_payments as list_payments_state;
+use crate::store::stable::payments::list_icp_payments as list_icp_payments_state;
+use crate::store::stable::payments::list_icrc_payments as list_icrc_payments_state;
 use crate::types::interface::FeesArgs;
 use crate::types::ledger::Fee;
-use crate::types::state::{FactoryFee, Payments};
+use crate::types::state::{FactoryFee, IcpPayments, IcrcPayments};
 use ic_cdk_macros::{query, update};
 use ic_ledger_types::Tokens;
 use junobuild_shared::ic::api::caller;
@@ -19,8 +20,13 @@ use junobuild_shared::types::interface::GetCreateCanisterFeeArgs;
 use junobuild_shared::types::state::{SegmentKind, UserId};
 
 #[query(guard = "caller_is_admin_controller")]
-fn list_payments() -> Payments {
-    list_payments_state()
+fn list_icp_payments() -> IcpPayments {
+    list_icp_payments_state()
+}
+
+#[query(guard = "caller_is_admin_controller")]
+fn list_icrc_payments() -> IcrcPayments {
+    list_icrc_payments_state()
 }
 
 #[query]

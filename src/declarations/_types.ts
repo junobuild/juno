@@ -1,4 +1,5 @@
 import type * as ConsoleDid from '$declarations/console/console.did';
+import type * as ConsoleDid020 from '$declarations/deprecated/console-0-2-0.did';
 import type * as MissionControlDid0013 from '$declarations/deprecated/mission_control-0-0-13.did';
 import type * as MissionControlDid004 from '$declarations/deprecated/mission_control-0-0-4.did';
 import type * as OrbiterDid006 from '$declarations/deprecated/orbiter-0-0-6.did';
@@ -16,6 +17,7 @@ import type * as SputnikDid from '$declarations/sputnik/sputnik.did';
 
 export type {
 	ConsoleDid,
+	ConsoleDid020,
 	ICDid,
 	MissionControlDid,
 	MissionControlDid0013,

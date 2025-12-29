@@ -7,11 +7,12 @@ use std::cell::RefCell;
 
 const UPGRADES: MemoryId = MemoryId::new(0);
 const ACCOUNTS: MemoryId = MemoryId::new(1);
-const PAYMENTS: MemoryId = MemoryId::new(2);
+const ICP_PAYMENTS: MemoryId = MemoryId::new(2);
 const PROPOSAL_ASSETS: MemoryId = MemoryId::new(3);
 const PROPOSAL_CONTENT_CHUNKS: MemoryId = MemoryId::new(4);
 const PROPOSALS: MemoryId = MemoryId::new(5);
 const SEGMENTS: MemoryId = MemoryId::new(6);
+const ICRC_PAYMENTS: MemoryId = MemoryId::new(7);
 
 thread_local! {
     pub static STATE: RefCell<State> = RefCell::default();
@@ -28,8 +29,12 @@ fn get_memory_accounts() -> Memory {
     MEMORY_MANAGER.with(|m| m.borrow().get(ACCOUNTS))
 }
 
-fn get_memory_payments() -> Memory {
-    MEMORY_MANAGER.with(|m| m.borrow().get(PAYMENTS))
+fn get_memory_icp_payments() -> Memory {
+    MEMORY_MANAGER.with(|m| m.borrow().get(ICP_PAYMENTS))
+}
+
+fn get_memory_icrc_payments() -> Memory {
+    MEMORY_MANAGER.with(|m| m.borrow().get(ICRC_PAYMENTS))
 }
 
 fn get_memory_assets() -> Memory {
@@ -51,7 +56,8 @@ fn get_memory_segments() -> Memory {
 pub fn init_stable_state() -> StableState {
     StableState {
         accounts: StableBTreeMap::init(get_memory_accounts()),
-        payments: StableBTreeMap::init(get_memory_payments()),
+        icp_payments: StableBTreeMap::init(get_memory_icp_payments()),
+        icrc_payments: StableBTreeMap::init(get_memory_icrc_payments()),
         proposals_assets: StableBTreeMap::init(get_memory_assets()),
         proposals_content_chunks: StableBTreeMap::init(get_memory_content_chunks()),
         proposals: StableBTreeMap::init(get_memory_proposals()),

@@ -19,7 +19,7 @@ export const onIcpToCyclesRateMessage = async ({
 			return;
 		case 'startWalletTimer':
 			await startTimer();
-			return;
+			
 	}
 };
 

@@ -7,7 +7,10 @@ export const exchangeIdbStore = createStore('juno-exchange', 'juno-exchange-stor
 export const walletIdbStore = createStore('juno-wallet', 'juno-wallet-store');
 export const versionIdbStore = createStore('juno-version', 'juno-version-store');
 export const releasesIdbStore = createStore('juno-releases', 'juno-releases-store');
-export const icpToCyclesRateIdbStore = createStore('juno-icp-cycles-rate', 'juno-icp-cycles-rate-store');
+export const icpToCyclesRateIdbStore = createStore(
+	'juno-icp-cycles-rate',
+	'juno-icp-cycles-rate-store'
+);
 
 // Loaded and set on the UI side
 export const snapshotsIdbStore = createStore('juno-snapshot', 'juno-snapshot-store');

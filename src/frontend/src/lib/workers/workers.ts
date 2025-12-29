@@ -3,10 +3,10 @@ import { onAuthMessage } from '$lib/workers/auth.worker';
 import { onCyclesMessage } from '$lib/workers/cycles.worker';
 import { onExchangeMessage } from '$lib/workers/exchange.worker';
 import { onHostingMessage } from '$lib/workers/hosting.worker';
+import { onIcpToCyclesRateMessage } from '$lib/workers/icp-cycles-rate.worker';
 import { onMonitoringMessage } from '$lib/workers/monitoring.worker';
 import { onRegistryMessage } from '$lib/workers/registry.worker';
 import { onWalletMessage } from '$lib/workers/wallet.worker';
-import { onIcpToCyclesRateMessage } from '$lib/workers/icp-cycles-rate.worker';
 
 onmessage = async (msg: MessageEvent<PostMessageRequest>) => {
 	await Promise.allSettled([

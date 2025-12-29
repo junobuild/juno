@@ -85,7 +85,7 @@ export const PostMessageDataResponseExchangeSchema = z.object({
 });
 
 export const PostMessageDataResponseIcpToCyclesRateSchema = z.object({
-	rate: z.custom<CertifiedData<bigint>>(),
+	rate: z.custom<CertifiedData<bigint>>()
 });
 
 export const PostMessageRequestMsgSchema = z.enum([

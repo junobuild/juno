@@ -84,6 +84,10 @@ export const PostMessageDataResponseExchangeSchema = z.object({
 	exchange: PostMessageDataResponseExchangeDataSchema.optional()
 });
 
+export const PostMessageDataResponseIcpToCyclesRateSchema = z.object({
+	rate: z.custom<CertifiedData<bigint>>()
+});
+
 export const PostMessageRequestMsgSchema = z.enum([
 	'startCyclesTimer',
 	'stopCyclesTimer',
@@ -112,7 +116,8 @@ export const PostMessageResponseMsgSchema = z.enum([
 	'syncWalletError',
 	'syncExchange',
 	'syncRegistry',
-	'syncRegistryError'
+	'syncRegistryError',
+	'syncIcpToCyclesRate'
 ]);
 
 export const PostMessageRequestSchema = z.object({

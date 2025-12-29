@@ -9,6 +9,7 @@ import type {
 	PostMessageDataResponseErrorSchema,
 	PostMessageDataResponseExchangeSchema,
 	PostMessageDataResponseHostingSchema,
+	PostMessageDataResponseIcpToCyclesRateSchema,
 	PostMessageDataResponseRegistrySchema,
 	PostMessageDataResponseWalletCleanUpSchema,
 	PostMessageDataResponseWalletSchema,
@@ -48,6 +49,10 @@ export type PostMessageDataResponseRegistry = z.infer<typeof PostMessageDataResp
 
 export type PostMessageDataResponseExchange = z.infer<typeof PostMessageDataResponseExchangeSchema>;
 
+export type PostMessageDataResponseIcpToCyclesRate = z.infer<
+	typeof PostMessageDataResponseIcpToCyclesRateSchema
+>;
+
 export type PostMessageDataResponseWallet = z.infer<typeof PostMessageDataResponseWalletSchema>;
 
 export type PostMessageDataResponseWalletCleanUp = z.infer<
@@ -68,9 +73,13 @@ type PostMessageError = z.infer<
 type PostMessageExchange = z.infer<
 	ReturnType<typeof inferPostMessageSchema<typeof PostMessageDataResponseExchangeSchema>>
 >;
+type PostMessageIcpToCyclesRate = z.infer<
+	ReturnType<typeof inferPostMessageSchema<typeof PostMessageDataResponseIcpToCyclesRateSchema>>
+>;
 
 export type PostMessages =
 	| PostMessageWallet
 	| PostMessageWalletCleanUp
 	| PostMessageError
-	| PostMessageExchange;
+	| PostMessageExchange
+	| PostMessageIcpToCyclesRate;

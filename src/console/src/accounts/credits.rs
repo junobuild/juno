@@ -40,6 +40,19 @@ pub fn caller_is_mission_control_and_user_has_credits(
     Ok(has_credits(&account, fee))
 }
 
+/// Checks if an account has sufficient credits to cover a creation fee.
+///
+/// Credits are stored in e8s notation (100_000_000 e8s = 1 credit).
+/// This function implements a "1 credit = 1 creation" policy, meaning
+/// one credit covers the creation fee regardless of whether payment is
+/// in ICP or Cycles tokens.
+///
+/// # Arguments
+/// * `account` - The user account to check
+/// * `fee` - The creation fee (can be ICP or Cycles)
+///
+/// # Returns
+/// `true` if the account has at least 1 credit (100_000_000 e8s), `false` otherwise
 pub fn has_credits(account: &Account, fee: &Fee) -> bool {
     let fee_amount = fee.amount();
     account.credits.e8s() * fee_amount >= fee_amount * E8S_PER_ICP.e8s()

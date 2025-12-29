@@ -68,5 +68,5 @@ pub async fn icp_transfer_from(
     let transaction_fee = Nat::from(IC_TRANSACTION_FEE_ICP.e8s());
     let ledger_id = Principal::from_text(ICP_LEDGER).unwrap();
 
-    icrc_transfer_from(purchaser, &ledger_id, canister_fee, &transaction_fee).await
+    icrc_transfer_from(purchaser, &ledger_id, canister_fee.e8s(), &transaction_fee).await
 }

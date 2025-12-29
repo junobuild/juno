@@ -1,5 +1,5 @@
 use candid::{Nat, Principal};
-use ic_ledger_types::{BlockIndex, Tokens};
+use ic_ledger_types::BlockIndex;
 use icrc_ledger_types::icrc1::account::Account;
 use icrc_ledger_types::icrc2::transfer_from::TransferFromArgs;
 use junobuild_shared::constants_shared::MEMO_CANISTER_CREATE;
@@ -10,13 +10,13 @@ use junobuild_shared::ledger::icrc::icrc_transfer_token_from;
 pub async fn icrc_transfer_from(
     purchaser: &Principal,
     ledger_id: &Principal,
-    canister_fee: &Tokens,
+    canister_fee: u64,
     transaction_fee: &Nat,
 ) -> Result<BlockIndex, String> {
     let purchaser_account: Account = Account::from(*purchaser);
     let console_account: Account = Account::from(id());
 
-    let amount = Nat::from(canister_fee.e8s());
+    let amount = Nat::from(canister_fee);
 
     let args: TransferFromArgs = TransferFromArgs {
         amount,

@@ -1,17 +1,20 @@
 use crate::constants::{
-    MISSION_CONTROL_CREATION_FEE_ICP, ORBITER_CREATION_FEE_ICP, SATELLITE_CREATION_FEE_ICP,
+    MISSION_CONTROL_CREATION_FEE_CYCLES, MISSION_CONTROL_CREATION_FEE_ICP,
+    ORBITER_CREATION_FEE_CYCLES, ORBITER_CREATION_FEE_ICP, SATELLITE_CREATION_FEE_CYCLES,
+    SATELLITE_CREATION_FEE_ICP,
 };
 use crate::memory::manager::init_stable_state;
-use crate::types::ledger::{IcpPayment, IcrcPayment, IcrcPaymentKey};
+use crate::types::ledger::{Fee, IcpPayment, IcrcPayment, IcrcPaymentKey};
 use crate::types::state::{
     Account, FactoryFee, FactoryFees, HeapState, Rate, Rates, Segment, SegmentKey, SegmentType,
     State,
 };
 use candid::Principal;
 use ic_cdk::api::time;
-use ic_ledger_types::BlockIndex;
+use ic_ledger_types::{BlockIndex, Tokens};
 use ic_stable_structures::storable::Bound;
 use ic_stable_structures::Storable;
+use junobuild_shared::ledger::types::cycles::CyclesTokens;
 use junobuild_shared::rate::constants::DEFAULT_RATE_CONFIG;
 use junobuild_shared::rate::types::RateTokens;
 use junobuild_shared::serializers::{
@@ -63,14 +66,17 @@ impl Default for FactoryFees {
         Self {
             satellite: FactoryFee {
                 fee_icp: SATELLITE_CREATION_FEE_ICP,
+                fee_cycles: SATELLITE_CREATION_FEE_CYCLES,
                 updated_at: now,
             },
             orbiter: FactoryFee {
                 fee_icp: ORBITER_CREATION_FEE_ICP,
+                fee_cycles: ORBITER_CREATION_FEE_CYCLES,
                 updated_at: now,
             },
             mission_control: FactoryFee {
                 fee_icp: MISSION_CONTROL_CREATION_FEE_ICP,
+                fee_cycles: MISSION_CONTROL_CREATION_FEE_CYCLES,
                 updated_at: now,
             },
         }
@@ -208,6 +214,29 @@ impl IcrcPaymentKey {
         Self {
             ledger_id: *ledger_id,
             block_index: *block_index,
+        }
+    }
+}
+
+impl Fee {
+    pub fn amount(&self) -> u64 {
+        match self {
+            Fee::Cycles(cycles) => cycles.e12s(),
+            Fee::ICP(tokens) => tokens.e8s(),
+        }
+    }
+
+    pub fn as_icp(&self) -> Result<Tokens, String> {
+        match self {
+            Fee::ICP(tokens) => Ok(*tokens),
+            Fee::Cycles(_) => Err("Expected ICP fee but got Cycles fee".to_string()),
+        }
+    }
+
+    pub fn as_cycles(&self) -> Result<CyclesTokens, String> {
+        match self {
+            Fee::Cycles(cycles) => Ok(cycles.clone()),
+            Fee::ICP(_) => Err("Expected Cycles fee but got ICP fee".to_string()),
         }
     }
 }

@@ -1,9 +1,20 @@
 use ic_ledger_types::Tokens;
+use junobuild_shared::ledger::types::cycles::CyclesTokens;
 
+// TODO: bump price
 // 0.5 ICP
 pub const SATELLITE_CREATION_FEE_ICP: Tokens = Tokens::from_e8s(50_000_000);
 pub const ORBITER_CREATION_FEE_ICP: Tokens = Tokens::from_e8s(50_000_000);
 pub const MISSION_CONTROL_CREATION_FEE_ICP: Tokens = Tokens::from_e8s(50_000_000);
+
+// We create canister with CREATE_CANISTER_CYCLES + e.g. CREATE_SATELLITE_CYCLES
+// 0.5 + 1 = 1.5 T Cycles (minus what's get consumed along the way)
+// At the top, we add our platform fees: 1.5 T Cycles
+// So, 1.5 + 1.5 = 3 T Cycles = 3_000_000_000_000
+pub const SATELLITE_CREATION_FEE_CYCLES: CyclesTokens = CyclesTokens::from_e12s(3_000_000_000_000);
+pub const ORBITER_CREATION_FEE_CYCLES: CyclesTokens = CyclesTokens::from_e12s(3_000_000_000_000);
+pub const MISSION_CONTROL_CREATION_FEE_CYCLES: CyclesTokens =
+    CyclesTokens::from_e12s(3_000_000_000_000);
 
 // 1 ICP but also the default credit - i.e. a mission control starts with one credit.
 // A credit which can be used to start one satellite or one orbiter.

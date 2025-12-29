@@ -188,12 +188,6 @@ export const idlFactory = ({ IDL }) => {
 		authentication: IDL.Opt(AuthenticationConfig),
 		storage: StorageConfig
 	});
-	const SegmentKind = IDL.Variant({
-		Orbiter: IDL.Null,
-		MissionControl: IDL.Null,
-		Satellite: IDL.Null
-	});
-	const FeeKind = IDL.Variant({ ICP: IDL.Null });
 	const GetCreateCanisterFeeArgs = IDL.Record({ user: IDL.Principal });
 	const OpenIdGetDelegationArgs = IDL.Record({
 		jwt: IDL.Text,
@@ -222,6 +216,17 @@ export const idlFactory = ({ IDL }) => {
 	const Result_1 = IDL.Variant({
 		Ok: SignedDelegation,
 		Err: GetDelegationError
+	});
+	const SegmentKind = IDL.Variant({
+		Orbiter: IDL.Null,
+		MissionControl: IDL.Null,
+		Satellite: IDL.Null
+	});
+	const CyclesTokens = IDL.Record({ e12s: IDL.Nat64 });
+	const FactoryFee = IDL.Record({
+		updated_at: IDL.Nat64,
+		fee_cycles: CyclesTokens,
+		fee_icp: Tokens
 	});
 	const ProposalStatus = IDL.Variant({
 		Initialized: IDL.Null,
@@ -446,7 +451,10 @@ export const idlFactory = ({ IDL }) => {
 		controller: SetController,
 		controllers: IDL.Vec(IDL.Principal)
 	});
-	const FeesArgs = IDL.Record({ fee_icp: Tokens });
+	const FeesArgs = IDL.Record({
+		fee_cycles: CyclesTokens,
+		fee_icp: Tokens
+	});
 	const SetStorageConfig = IDL.Record({
 		iframe: IDL.Opt(StorageConfigIFrame),
 		rewrites: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
@@ -485,11 +493,11 @@ export const idlFactory = ({ IDL }) => {
 		get_account: IDL.Func([], [IDL.Opt(Account)], ['query']),
 		get_auth_config: IDL.Func([], [IDL.Opt(AuthenticationConfig)], ['query']),
 		get_config: IDL.Func([], [Config], ['query']),
-		get_create_fee: IDL.Func([SegmentKind, FeeKind], [IDL.Opt(Tokens)], ['query']),
 		get_create_orbiter_fee: IDL.Func([GetCreateCanisterFeeArgs], [IDL.Opt(Tokens)], ['query']),
 		get_create_satellite_fee: IDL.Func([GetCreateCanisterFeeArgs], [IDL.Opt(Tokens)], ['query']),
 		get_credits: IDL.Func([], [Tokens], ['query']),
 		get_delegation: IDL.Func([GetDelegationArgs], [Result_1], ['query']),
+		get_fee: IDL.Func([SegmentKind], [FactoryFee], ['query']),
 		get_or_init_account: IDL.Func([], [Account], []),
 		get_proposal: IDL.Func([IDL.Nat], [IDL.Opt(Proposal)], ['query']),
 		get_storage_config: IDL.Func([], [StorageConfig], ['query']),

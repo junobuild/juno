@@ -126,6 +126,9 @@ export interface CustomDomain {
 	version: [] | [bigint];
 	bn_id: [] | [string];
 }
+export interface CyclesTokens {
+	e12s: bigint;
+}
 export interface Delegation {
 	pubkey: Uint8Array;
 	targets: [] | [Array<Principal>];
@@ -137,8 +140,13 @@ export interface DeleteControllersArgs {
 export interface DeleteProposalAssets {
 	proposal_ids: Array<bigint>;
 }
-export type FeeKind = { ICP: null };
+export interface FactoryFee {
+	updated_at: bigint;
+	fee_cycles: CyclesTokens;
+	fee_icp: Tokens;
+}
 export interface FeesArgs {
+	fee_cycles: CyclesTokens;
 	fee_icp: Tokens;
 }
 export interface GetCreateCanisterFeeArgs {
@@ -459,11 +467,11 @@ export interface _SERVICE {
 	get_account: ActorMethod<[], [] | [Account]>;
 	get_auth_config: ActorMethod<[], [] | [AuthenticationConfig]>;
 	get_config: ActorMethod<[], Config>;
-	get_create_fee: ActorMethod<[SegmentKind, FeeKind], [] | [Tokens]>;
 	get_create_orbiter_fee: ActorMethod<[GetCreateCanisterFeeArgs], [] | [Tokens]>;
 	get_create_satellite_fee: ActorMethod<[GetCreateCanisterFeeArgs], [] | [Tokens]>;
 	get_credits: ActorMethod<[], Tokens>;
 	get_delegation: ActorMethod<[GetDelegationArgs], Result_1>;
+	get_fee: ActorMethod<[SegmentKind], FactoryFee>;
 	get_or_init_account: ActorMethod<[], Account>;
 	get_proposal: ActorMethod<[bigint], [] | [Proposal]>;
 	get_storage_config: ActorMethod<[], StorageConfig>;

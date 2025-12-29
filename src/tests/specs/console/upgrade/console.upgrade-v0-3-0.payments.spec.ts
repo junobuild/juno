@@ -18,7 +18,7 @@ import { inject } from 'vitest';
 import { CONSOLE_ID } from '../../../constants/console-tests.constants';
 import { ICP_LEDGER_ID } from '../../../constants/ledger-tests.contants';
 import { deploySegments, updateRateConfig } from '../../../utils/console-tests.utils';
-import { transferIcp } from '../../../utils/ledger-tests.utils';
+import { transferToken } from '../../../utils/ledger-tests.utils';
 import { tick } from '../../../utils/pic-tests.utils';
 import {
 	CONSOLE_WASM_PATH,
@@ -127,7 +127,7 @@ describe('Console > Upgrade > Payments > v0.2.0 -> v0.3.0', () => {
 
 		missionControlId = mId;
 
-		await transferIcp({
+		await transferToken({
 			pic,
 			owner: missionControlId
 		});

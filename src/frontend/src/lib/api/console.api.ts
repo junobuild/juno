@@ -50,10 +50,10 @@ const getFee = async ({
 	identity: OptionIdentity;
 	segmentKind: SegmentKind;
 }): Promise<bigint> => {
-	const { get_create_fee } = await getConsoleActor({ identity });
+	const { get_fee } = await getConsoleActor({ identity });
 
-	const result = await get_create_fee(segmentKind, { ICP: null });
-	const fee = fromNullable(result);
+	const result = await get_fee(segmentKind);
+	const fee = result.fee_icp;
 
 	// If user has enough credits, it returns no fee
 	return isNullish(fee) ? 0n : fee.e8s;

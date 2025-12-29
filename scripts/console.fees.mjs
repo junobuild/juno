@@ -7,6 +7,7 @@ const setFee = async ({ actor, type }) => {
 	const { set_fee } = actor;
 
 	await set_fee(segmentType(type), {
+		fee_cycles: { e12s: 3_000_000_000_000n },
 		fee_icp: { e8s: 40_000_000n }
 	});
 

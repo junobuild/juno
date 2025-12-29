@@ -98,6 +98,7 @@ type CustomDomain = record {
   version : opt nat64;
   bn_id : opt text;
 };
+type CyclesTokens = record { e12s : nat64 };
 type Delegation = record {
   pubkey : blob;
   targets : opt vec principal;
@@ -105,8 +106,12 @@ type Delegation = record {
 };
 type DeleteControllersArgs = record { controllers : vec principal };
 type DeleteProposalAssets = record { proposal_ids : vec nat };
-type FeeKind = variant { ICP };
-type FeesArgs = record { fee_icp : Tokens };
+type FactoryFee = record {
+  updated_at : nat64;
+  fee_cycles : CyclesTokens;
+  fee_icp : Tokens;
+};
+type FeesArgs = record { fee_cycles : CyclesTokens; fee_icp : Tokens };
 type GetCreateCanisterFeeArgs = record { user : principal };
 type GetDelegationArgs = variant { OpenId : OpenIdGetDelegationArgs };
 type GetDelegationError = variant {
@@ -390,11 +395,11 @@ service : () -> {
   get_account : () -> (opt Account) query;
   get_auth_config : () -> (opt AuthenticationConfig) query;
   get_config : () -> (Config) query;
-  get_create_fee : (SegmentKind, FeeKind) -> (opt Tokens) query;
   get_create_orbiter_fee : (GetCreateCanisterFeeArgs) -> (opt Tokens) query;
   get_create_satellite_fee : (GetCreateCanisterFeeArgs) -> (opt Tokens) query;
   get_credits : () -> (Tokens) query;
   get_delegation : (GetDelegationArgs) -> (Result_1) query;
+  get_fee : (SegmentKind) -> (FactoryFee) query;
   get_or_init_account : () -> (Account);
   get_proposal : (nat) -> (opt Proposal) query;
   get_storage_config : () -> (StorageConfig) query;

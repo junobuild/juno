@@ -12,7 +12,6 @@ use ic_cdk::api::time;
 use ic_ledger_types::BlockIndex;
 use ic_stable_structures::storable::Bound;
 use ic_stable_structures::Storable;
-use icrc_ledger_types::icrc1::account::Account as IcrcAccount;
 use junobuild_shared::rate::constants::DEFAULT_RATE_CONFIG;
 use junobuild_shared::rate::types::RateTokens;
 use junobuild_shared::serializers::{
@@ -205,9 +204,8 @@ impl SegmentKey {
 }
 
 impl IcrcPaymentKey {
-    pub fn from(purchaser: &Principal, ledger_id: &Principal, block_index: &BlockIndex) -> Self {
+    pub fn from(ledger_id: &Principal, block_index: &BlockIndex) -> Self {
         Self {
-            purchaser: IcrcAccount::from(*purchaser),
             ledger_id: *ledger_id,
             block_index: *block_index,
         }

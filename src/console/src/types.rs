@@ -244,6 +244,7 @@ pub mod ledger {
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct IcrcPayment {
+        pub purchaser: Account,
         pub block_index_refunded: Option<BlockIndex>,
         pub status: PaymentStatus,
         pub created_at: Timestamp,
@@ -252,7 +253,6 @@ pub mod ledger {
 
     #[derive(CandidType, Serialize, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
     pub struct IcrcPaymentKey {
-        pub purchaser: Account,
         pub ledger_id: Principal,
         pub block_index: BlockIndex,
     }

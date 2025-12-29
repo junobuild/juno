@@ -1,25 +1,32 @@
 use crate::store::{mutate_stable_state, with_icrc_payments, with_icrc_payments_mut};
 use crate::types::ledger::{IcrcPayment, IcrcPaymentKey, PaymentStatus};
 use crate::types::state::{IcrcPayments, IcrcPaymentsStable, StableState};
+use candid::Principal;
 use ic_cdk::api::time;
 use ic_ledger_types::BlockIndex;
+use icrc_ledger_types::icrc1::account::Account;
 use junobuild_shared::structures::collect_stable_map_from;
 
 pub fn is_known_icrc_payment(key: &IcrcPaymentKey) -> bool {
     with_icrc_payments(|payments| payments.contains_key(key))
 }
 
-pub fn insert_new_icrc_payment(key: &IcrcPaymentKey) -> Result<IcrcPayment, &'static str> {
-    mutate_stable_state(|stable| insert_new_icrc_payment_impl(key, stable))
+pub fn insert_new_icrc_payment(
+    key: &IcrcPaymentKey,
+    purchaser: &Principal,
+) -> Result<IcrcPayment, &'static str> {
+    mutate_stable_state(|stable| insert_new_icrc_payment_impl(key, purchaser, stable))
 }
 
 fn insert_new_icrc_payment_impl(
     key: &IcrcPaymentKey,
+    purchaser: &Principal,
     state: &mut StableState,
 ) -> Result<IcrcPayment, &'static str> {
     let now = time();
 
     let new_payment = IcrcPayment {
+        purchaser: Account::from(*purchaser),
         block_index_refunded: None,
         status: PaymentStatus::Acknowledged,
         created_at: now,

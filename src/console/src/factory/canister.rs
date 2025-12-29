@@ -182,10 +182,10 @@ where
     let (ledger_id, purchaser_payment_block_index) =
         process_payment(purchaser, block_index, fee).await?;
 
-    let payment_key = IcrcPaymentKey::from(&purchaser, &ledger_id, &purchaser_payment_block_index);
+    let payment_key = IcrcPaymentKey::from(&ledger_id, &purchaser_payment_block_index);
 
     // We acknowledge the new payment
-    insert_new_icrc_payment(&payment_key)?;
+    insert_new_icrc_payment(&payment_key, &purchaser)?;
 
     // Create the canister (satellite or orbiter)
     let create_canister_result = create(creator, subnet_id).await;

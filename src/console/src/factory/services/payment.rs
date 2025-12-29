@@ -19,7 +19,7 @@ pub async fn process_payment_icp(
             return Err("Payment has been or is being processed.".to_string());
         }
 
-        if is_known_icrc_payment(&IcrcPaymentKey::from(&purchaser, &ledger_id, &block_index)) {
+        if is_known_icrc_payment(&IcrcPaymentKey::from(&ledger_id, &block_index)) {
             return Err("ICRC Payment has been or is being processed.".to_string());
         }
 

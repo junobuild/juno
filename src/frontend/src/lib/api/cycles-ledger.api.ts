@@ -25,12 +25,12 @@ export const withdrawCycles = async ({
 	console.log(canisterId.toText(), result);
 };
 
-const getCyclesLedgerActor = async ({
+const getCyclesLedgerActor = ({
 	identity
 }: {
 	identity: OptionIdentity;
 }): Promise<CyclesLedgerActor> =>
-	await cyclesLedgerActor.getActor({
+	cyclesLedgerActor.getActor({
 		canisterId: CYCLES_LEDGER_CANISTER_ID,
 		idlFactory: idlFactoryCyclesLedger,
 		identity

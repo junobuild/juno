@@ -11,6 +11,7 @@
 	import WalletPicker from '$lib/components/wallet/WalletPicker.svelte';
 	import WalletTotal from '$lib/components/wallet/WalletTotal.svelte';
 	import ReceiveTokens from '$lib/components/wallet/tokens/ReceiveTokens.svelte';
+	import { CYCLES_LEDGER_CANISTER_ID } from '$lib/constants/app.constants';
 	import { testIds } from '$lib/constants/test-ids.constants';
 	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { i18n } from '$lib/stores/app/i18n.store';
@@ -56,7 +57,7 @@
 					{$i18n.wallet.balance}
 				{/snippet}
 
-				<WalletBalanceById display="inline" {selectedWallet} />
+				<WalletBalanceById display="inline" ledgerId={CYCLES_LEDGER_CANISTER_ID} {selectedWallet} />
 			</Value>
 		</div>
 

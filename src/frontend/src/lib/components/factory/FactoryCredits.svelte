@@ -17,6 +17,7 @@
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { toAccountIdentifier } from '$lib/utils/icp-icrc-account.utils';
 	import { formatICPToHTML } from '$lib/utils/icp.utils';
+	import { formatCyclesToHTML } from '$lib/utils/cycles.utils';
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -79,11 +80,17 @@
 			text={i18nFormat(priceLabel, [
 				{
 					placeholder: '{0}',
-					value: formatICPToHTML({ e8s: fee, bold: true, icpToUsd: $icpToUsd })
+					value:
+						selectedWallet?.type === 'mission_control'
+							? formatICPToHTML({ e8s: fee, bold: true, icpToUsd: $icpToUsd })
+							: formatCyclesToHTML({ e12s: fee, bold: true })
 				},
 				{
 					placeholder: '{1}',
-					value: formatICPToHTML({ e8s: balanceOrZero, bold: false, icpToUsd: $icpToUsd })
+					value:
+						selectedWallet?.type === 'mission_control'
+							? formatICPToHTML({ e8s: balanceOrZero, bold: false, icpToUsd: $icpToUsd })
+							: formatCyclesToHTML({ e12s: balanceOrZero, bold: false })
 				}
 			])}
 		/>

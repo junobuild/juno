@@ -1,4 +1,3 @@
-import { icpXdrConversionRate } from '$lib/api/cmc.api';
 import { canisterStatus } from '$lib/api/ic.api';
 import {
 	CYCLES_WARNING,
@@ -9,7 +8,6 @@ import { ONE_YEAR, THREE_MONTHS } from '$lib/constants/canister.constants';
 import { cyclesIdbStore } from '$lib/stores/app/idb.store';
 import type { CanisterInfo, CanisterSegment, CanisterSyncData, Segment } from '$lib/types/canister';
 import type { PostMessageDataRequest, PostMessageRequest } from '$lib/types/post-message';
-import { cyclesToICP } from '$lib/utils/cycles.utils';
 import {
 	emitCanister,
 	emitCanisters,
@@ -90,9 +88,7 @@ const syncCanisters = async ({
 	});
 
 	try {
-		const trillionRatio: bigint = await icpXdrConversionRate();
-
-		await syncIcStatusCanisters({ identity, segments, trillionRatio });
+		await syncIcStatusCanisters({ identity, segments });
 	} finally {
 		syncing = false;
 	}
@@ -100,12 +96,10 @@ const syncCanisters = async ({
 
 const syncIcStatusCanisters = async ({
 	identity,
-	segments,
-	trillionRatio
+	segments
 }: {
 	identity: Identity;
 	segments: CanisterSegment[];
-	trillionRatio: bigint;
 }) => {
 	const syncStatusAndMemoryPerCanister = async ({
 		canisterId,
@@ -116,7 +110,6 @@ const syncIcStatusCanisters = async ({
 
 			const canister = mapCanisterSyncData({
 				canisterInfo,
-				trillionRatio,
 				canisterId: canisterInfo.canisterId,
 				segment
 			});
@@ -148,19 +141,16 @@ const syncIcStatusCanisters = async ({
 
 const mapCanisterSyncData = ({
 	canisterId,
-	trillionRatio,
 	segment,
 	canisterInfo: { canisterId: _, memoryMetrics, cycles, settings, ...rest }
 }: {
 	canisterId: string;
-	trillionRatio: bigint;
 	canisterInfo: CanisterInfo;
 	segment: Segment;
 }): CanisterSyncData => ({
 	id: canisterId,
 	sync: 'synced',
 	data: {
-		icp: cyclesToICP({ cycles, trillionRatio }),
 		warning: {
 			cycles: cycles < CYCLES_WARNING,
 			heap: (memoryMetrics.wasmMemorySize ?? 0n) >= MEMORY_HEAP_WARNING,

@@ -7,17 +7,17 @@ import type { BlockHeight } from '@icp-sdk/canisters/ledger/icp';
 import { AnonymousIdentity } from '@icp-sdk/core/agent';
 import { Principal } from '@icp-sdk/core/principal';
 
-const NUMBER_XDR_PER_ONE_ICP = 10_000;
-
-export const icpXdrConversionRate = async (): Promise<bigint> => {
+export const getIcpToCyclesConversionRate = async (): Promise<bigint> => {
 	const { getIcpToCyclesConversionRate } = await cmcCanister({ identity: new AnonymousIdentity() });
 
-	const xdr_permyriad_per_icp = await getIcpToCyclesConversionRate();
+	const xdrPermyriadPerIcp = await getIcpToCyclesConversionRate();
 
-	const CYCLES_PER_XDR = BigInt(1_000_000_000_000);
+	const CYCLES_PER_XDR = 1_000_000_000_000n;
+
+	const NUMBER_XDR_PER_ONE_ICP = 10_000n;
 
 	// trillionRatio
-	return (xdr_permyriad_per_icp * CYCLES_PER_XDR) / BigInt(NUMBER_XDR_PER_ONE_ICP);
+	return (xdrPermyriadPerIcp * CYCLES_PER_XDR) / NUMBER_XDR_PER_ONE_ICP;
 };
 
 export const getDefaultSubnets = async (): Promise<Principal[]> => {

@@ -5,6 +5,7 @@ import { i18n } from '$lib/stores/app/i18n.store';
 import {
 	cyclesIdbStore,
 	exchangeIdbStore,
+	icpToCyclesRateIdbStore,
 	monitoringIdbStore,
 	releasesIdbStore,
 	versionIdbStore,
@@ -85,6 +86,7 @@ const logout = async ({
 			clear(walletIdbStore),
 			clear(versionIdbStore),
 			clear(releasesIdbStore),
+			clear(icpToCyclesRateIdbStore),
 			resetSnapshots(),
 			resetSubnets(),
 			resetLocalStorage()

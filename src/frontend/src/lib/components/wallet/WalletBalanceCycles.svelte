@@ -1,16 +1,10 @@
 <script lang="ts">
-	import { isNullish, nonNullish } from '@dfinity/utils';
+	import { isNullish } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
-	import {
-		exchangePricesNotLoaded,
-		icpToUsd,
-		icpToUsdDefined
-	} from '$lib/derived/wallet/exchange.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { formatTCycles } from '$lib/utils/cycles.utils';
-	import { formatICP, formatICPToUsd } from '$lib/utils/icp.utils';
 
 	interface Props {
 		balance: bigint | undefined;

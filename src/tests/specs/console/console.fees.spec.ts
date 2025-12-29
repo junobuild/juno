@@ -60,7 +60,7 @@ describe('Console > Fees', () => {
 	describe('With user', () => {
 		let randomIdentityActor: Actor<ConsoleActor>;
 
-		beforeAll(async () => {
+		beforeAll(() => {
 			const randomIdentity = Ed25519KeyIdentity.generate();
 
 			randomIdentityActor = pic.createActor<ConsoleActor>(idlFactoryConsole, canisterId);

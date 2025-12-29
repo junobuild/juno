@@ -2,9 +2,11 @@ import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
 import { balanceCertifiedStore } from '$lib/stores/wallet/balance.store';
 import { exchangePricesCanisterDataStore } from '$lib/stores/wallet/exchange.store';
+import { icpToCyclesRateStore } from '$lib/stores/wallet/icp-cycles-rate.store';
 import { transactionsCertifiedStore } from '$lib/stores/wallet/transactions.store';
 import type {
 	PostMessageDataResponseExchange,
+	PostMessageDataResponseIcpToCyclesRate,
 	PostMessageDataResponseWallet,
 	PostMessageDataResponseWalletCleanUp
 } from '$lib/types/post-message';
@@ -78,5 +80,15 @@ export const onSyncExchange = (data: PostMessageDataResponseExchange) => {
 		} else {
 			exchangePricesCanisterDataStore.set({ canisterId, data });
 		}
+	}
+};
+
+export const onSyncIcpToCyclesRate = (data: PostMessageDataResponseIcpToCyclesRate) => {
+	const { rate } = data;
+
+	if (isNullish(rate)) {
+		icpToCyclesRateStore.reset();
+	} else {
+		icpToCyclesRateStore.set(rate);
 	}
 };

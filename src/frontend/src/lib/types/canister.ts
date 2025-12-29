@@ -67,7 +67,6 @@ export interface CanisterWarning {
 export type CanisterDataInfo = Omit<CanisterInfo, 'canisterId'>;
 
 export interface CanisterData {
-	icp: number;
 	warning: CanisterWarning;
 	canister: CanisterDataInfo;
 }

@@ -52,7 +52,7 @@ describe('Console > Storage', () => {
 					max_memory_size: toNullable(),
 					version: toNullable()
 				})
-			).rejects.toThrow(ERROR_NOT_ADMIN_CONTROLLER);
+			).rejects.toThrowError(ERROR_NOT_ADMIN_CONTROLLER);
 		});
 
 		it('should throw errors on setting auth config', async () => {
@@ -65,25 +65,25 @@ describe('Console > Storage', () => {
 				version: []
 			};
 
-			await expect(set_auth_config(config)).rejects.toThrow(ERROR_NOT_ADMIN_CONTROLLER);
+			await expect(set_auth_config(config)).rejects.toThrowError(ERROR_NOT_ADMIN_CONTROLLER);
 		});
 
 		it('should throw errors on getting storage config', async () => {
 			const { get_storage_config } = actor;
 
-			await expect(get_storage_config()).rejects.toThrow(ERROR_NOT_ADMIN_CONTROLLER);
+			await expect(get_storage_config()).rejects.toThrowError(ERROR_NOT_ADMIN_CONTROLLER);
 		});
 
 		it('should throw errors on getting auth config', async () => {
 			const { get_auth_config } = actor;
 
-			await expect(get_auth_config()).rejects.toThrow(ERROR_NOT_ADMIN_CONTROLLER);
+			await expect(get_auth_config()).rejects.toThrowError(ERROR_NOT_ADMIN_CONTROLLER);
 		});
 
 		it('should throw errors on getting config', async () => {
 			const { get_config } = actor;
 
-			await expect(get_config()).rejects.toThrow(ERROR_NOT_ADMIN_CONTROLLER);
+			await expect(get_config()).rejects.toThrowError(ERROR_NOT_ADMIN_CONTROLLER);
 		});
 	});
 });

@@ -73,7 +73,7 @@ export const testAuthConfig = ({
 			version: []
 		};
 
-		await expect(set_auth_config(config)).rejects.toThrow(
+		await expect(set_auth_config(config)).rejects.toThrowError(
 			`${JUNO_AUTH_ERROR_INVALID_ORIGIN} (${invalidDomain})`
 		);
 	});
@@ -93,7 +93,7 @@ export const testAuthConfig = ({
 			version: []
 		};
 
-		await expect(set_auth_config(config)).rejects.toThrow(
+		await expect(set_auth_config(config)).rejects.toThrowError(
 			`${JUNO_AUTH_ERROR_INVALID_ORIGIN} (${invalidDomain})`
 		);
 	});

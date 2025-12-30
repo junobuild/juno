@@ -47,7 +47,7 @@ describe('Observatory', () => {
 					},
 					controllers: [controller.getPrincipal()]
 				})
-			).rejects.toThrow(CALLER_NOT_CONTROLLER_OBSERVATORY_MSG);
+			).rejects.toThrowError(CALLER_NOT_CONTROLLER_OBSERVATORY_MSG);
 		});
 
 		it('should throw errors on delete controllers', async () => {
@@ -57,13 +57,13 @@ describe('Observatory', () => {
 				del_controllers({
 					controllers: [controller.getPrincipal()]
 				})
-			).rejects.toThrow(CALLER_NOT_CONTROLLER_OBSERVATORY_MSG);
+			).rejects.toThrowError(CALLER_NOT_CONTROLLER_OBSERVATORY_MSG);
 		});
 
 		it('should throw errors on list controllers', async () => {
 			const { list_controllers } = actor;
 
-			await expect(list_controllers()).rejects.toThrow(CALLER_NOT_CONTROLLER_OBSERVATORY_MSG);
+			await expect(list_controllers()).rejects.toThrowError(CALLER_NOT_CONTROLLER_OBSERVATORY_MSG);
 		});
 
 		it('should throw errors on get notify status', async () => {
@@ -75,7 +75,7 @@ describe('Observatory', () => {
 					from: toNullable(),
 					to: toNullable()
 				})
-			).rejects.toThrow(CALLER_NOT_CONTROLLER_OBSERVATORY_MSG);
+			).rejects.toThrowError(CALLER_NOT_CONTROLLER_OBSERVATORY_MSG);
 		});
 
 		it('should throw errors on ping', async () => {
@@ -101,7 +101,7 @@ describe('Observatory', () => {
 						}
 					}
 				})
-			).rejects.toThrow(CALLER_NOT_CONTROLLER_OBSERVATORY_MSG);
+			).rejects.toThrowError(CALLER_NOT_CONTROLLER_OBSERVATORY_MSG);
 		});
 
 		it('should throw errors on set env', async () => {
@@ -111,13 +111,13 @@ describe('Observatory', () => {
 				set_env({
 					email_api_key: ['secret']
 				})
-			).rejects.toThrow(CALLER_NOT_CONTROLLER_OBSERVATORY_MSG);
+			).rejects.toThrowError(CALLER_NOT_CONTROLLER_OBSERVATORY_MSG);
 		});
 
 		it('should throw errors on start openid monitoring', async () => {
 			const { start_openid_monitoring } = actor;
 
-			await expect(start_openid_monitoring()).rejects.toThrow(
+			await expect(start_openid_monitoring()).rejects.toThrowError(
 				CALLER_NOT_CONTROLLER_OBSERVATORY_MSG
 			);
 		});
@@ -125,7 +125,9 @@ describe('Observatory', () => {
 		it('should throw errors on stop openid monitoring', async () => {
 			const { stop_openid_monitoring } = actor;
 
-			await expect(stop_openid_monitoring()).rejects.toThrow(CALLER_NOT_CONTROLLER_OBSERVATORY_MSG);
+			await expect(stop_openid_monitoring()).rejects.toThrowError(
+				CALLER_NOT_CONTROLLER_OBSERVATORY_MSG
+			);
 		});
 	};
 
@@ -143,7 +145,7 @@ describe('Observatory', () => {
 				get_openid_certificate({
 					provider: { Google: null }
 				})
-			).rejects.toThrow(CALLER_NOT_ANONYMOUS_MSG);
+			).rejects.toThrowError(CALLER_NOT_ANONYMOUS_MSG);
 		});
 	});
 

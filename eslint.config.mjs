@@ -11,10 +11,12 @@ export default [
 			// Following rule is annoying for my workflow as it is conflicting when I'm implementing iteratively
 			// features that share similar logic across modules.
 			'vitest/no-commented-out-tests': ['off'],
+			// The test suite was already using those before the rule was inherited.
+			'vitest/no-conditional-expect': ['off'],
 			// It does not always make sense. For example, sometimes it reports function passed as property as being
 			// required to be prefixed with "on".
-			'svelte/require-event-prefix': ['off'],
 			// The linter throws error for goto('/') but, also href="/" which is really annoying.
+			'svelte/require-event-prefix': ['off'],
 			'svelte/no-navigation-without-resolve': ['off']
 		}
 	},

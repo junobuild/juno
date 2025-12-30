@@ -153,7 +153,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 						...doc,
 						version: []
 					})
-				).rejects.toThrow(JUNO_ERROR_NO_VERSION_PROVIDED);
+				).rejects.toThrowError(JUNO_ERROR_NO_VERSION_PROVIDED);
 			});
 
 			it('should not update a document if invalid version', async () => {
@@ -172,7 +172,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 						...doc,
 						version: [123n]
 					})
-				).rejects.toThrow(new RegExp(JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE, 'i'));
+				).rejects.toThrowError(new RegExp(JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE, 'i'));
 			});
 		});
 
@@ -242,21 +242,21 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 						max_memory_size: [],
 						version: [1n]
 					})
-				).rejects.toThrow(JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE);
+				).rejects.toThrowError(JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE);
 
 				await expect(
 					set_db_config({
 						max_memory_size: [],
 						version: [99n]
 					})
-				).rejects.toThrow(JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE);
+				).rejects.toThrowError(JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE);
 
 				await expect(
 					set_db_config({
 						max_memory_size: [],
 						version: []
 					})
-				).rejects.toThrow(JUNO_ERROR_NO_VERSION_PROVIDED);
+				).rejects.toThrowError(JUNO_ERROR_NO_VERSION_PROVIDED);
 			});
 		});
 
@@ -853,7 +853,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 				});
 
 				it('should not allow to set a document', async () => {
-					await expect(createDoc()).rejects.toThrow(
+					await expect(createDoc()).rejects.toThrowError(
 						expect.objectContaining({
 							message: expect.stringContaining(errorMsg)
 						})
@@ -875,7 +875,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 								}
 							])
 						)
-					).rejects.toThrow(errorMsg);
+					).rejects.toThrowError(errorMsg);
 				});
 			});
 

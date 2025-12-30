@@ -56,7 +56,7 @@ describe('Satellite > Switch storage system memory', () => {
 		it('should throw errors on switch memory', async () => {
 			const { switch_storage_system_memory } = actor;
 
-			await expect(switch_storage_system_memory()).rejects.toThrow(
+			await expect(switch_storage_system_memory()).rejects.toThrowError(
 				JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER
 			);
 		});
@@ -72,7 +72,7 @@ describe('Satellite > Switch storage system memory', () => {
 		it('should throw errors on switch memory', async () => {
 			const { switch_storage_system_memory } = actor;
 
-			await expect(switch_storage_system_memory()).rejects.toThrow(
+			await expect(switch_storage_system_memory()).rejects.toThrowError(
 				JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER
 			);
 		});
@@ -175,7 +175,7 @@ describe('Satellite > Switch storage system memory', () => {
 			it('should throw errors because stock satellite has an index.html', async () => {
 				const { switch_storage_system_memory } = actor;
 
-				await expect(switch_storage_system_memory()).rejects.toThrow(
+				await expect(switch_storage_system_memory()).rejects.toThrowError(
 					`${JUNO_COLLECTIONS_ERROR_COLLECTION_NOT_EMPTY} (Storage - ${DAPP_COLLECTION})`
 				);
 			});
@@ -203,7 +203,7 @@ describe('Satellite > Switch storage system memory', () => {
 					actor
 				});
 
-				await expect(switch_storage_system_memory()).rejects.toThrow(
+				await expect(switch_storage_system_memory()).rejects.toThrowError(
 					`${JUNO_COLLECTIONS_ERROR_COLLECTION_NOT_EMPTY} (Storage - ${DAPP_COLLECTION})`
 				);
 			});
@@ -213,7 +213,7 @@ describe('Satellite > Switch storage system memory', () => {
 
 				await del_asset(DAPP_COLLECTION, '/index.html');
 
-				await expect(switch_storage_system_memory()).rejects.toThrow(
+				await expect(switch_storage_system_memory()).rejects.toThrowError(
 					`${JUNO_COLLECTIONS_ERROR_COLLECTION_NOT_EMPTY} (Storage - ${DAPP_COLLECTION})`
 				);
 			});
@@ -223,7 +223,7 @@ describe('Satellite > Switch storage system memory', () => {
 
 				await del_asset(DAPP_COLLECTION, full_path);
 
-				await expect(switch_storage_system_memory()).rejects.toThrow(
+				await expect(switch_storage_system_memory()).rejects.toThrowError(
 					`${JUNO_COLLECTIONS_ERROR_COLLECTION_NOT_EMPTY} (Storage - ${DAPP_COLLECTION})`
 				);
 			});
@@ -269,7 +269,7 @@ describe('Satellite > Switch storage system memory', () => {
 					proposal_id: proposalId
 				});
 
-				await expect(switch_storage_system_memory()).rejects.toThrow(
+				await expect(switch_storage_system_memory()).rejects.toThrowError(
 					`${JUNO_COLLECTIONS_ERROR_COLLECTION_NOT_EMPTY} (Storage - ${RELEASES_COLLECTION})`
 				);
 			});
@@ -359,7 +359,7 @@ describe('Satellite > Switch storage system memory', () => {
 				});
 
 				it('should rollback and still expose .well-known/ic-domains', async () => {
-					await expect(switchMemory({ memory: from })).rejects.toThrow(
+					await expect(switchMemory({ memory: from })).rejects.toThrowError(
 						`${JUNO_COLLECTIONS_ERROR_COLLECTION_NOT_EMPTY} (Storage - ${DAPP_COLLECTION})`
 					);
 
@@ -367,7 +367,7 @@ describe('Satellite > Switch storage system memory', () => {
 				});
 
 				it('should rollback and still expose .well-known/ii-alternative-origins', async () => {
-					await expect(switchMemory({ memory: from })).rejects.toThrow(
+					await expect(switchMemory({ memory: from })).rejects.toThrowError(
 						`${JUNO_COLLECTIONS_ERROR_COLLECTION_NOT_EMPTY} (Storage - ${DAPP_COLLECTION})`
 					);
 

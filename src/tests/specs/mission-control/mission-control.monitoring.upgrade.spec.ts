@@ -15,6 +15,7 @@ import {
 import { tick } from '../../utils/pic-tests.utils';
 import { MISSION_CONTROL_WASM_PATH } from '../../utils/setup-tests.utils';
 
+// eslint-disable-next-line vitest/no-disabled-tests
 describe.skip('Mission control > Upgrade > Monitoring', () => {
 	let pic: PocketIc;
 	let actor: Actor<MissionControlActor>;

@@ -83,7 +83,7 @@ export const testAuthPrepareDelegation = ({
 							salt
 						}
 					})
-				).rejects.toThrow(JUNO_AUTH_ERROR_NOT_CONFIGURED);
+				).rejects.toThrowError(JUNO_AUTH_ERROR_NOT_CONFIGURED);
 			});
 
 			it('should fail when openid configuration is not set', async () => {
@@ -110,7 +110,7 @@ export const testAuthPrepareDelegation = ({
 							salt
 						}
 					})
-				).rejects.toThrow(JUNO_AUTH_ERROR_OPENID_DISABLED);
+				).rejects.toThrowError(JUNO_AUTH_ERROR_OPENID_DISABLED);
 			});
 		});
 

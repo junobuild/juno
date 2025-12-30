@@ -337,7 +337,7 @@ describe('Satellite > User Usage', () => {
 					version: toNullable()
 				};
 
-				await expect(set_doc('#user-usage', key, doc)).rejects.toThrow(
+				await expect(set_doc('#user-usage', key, doc)).rejects.toThrowError(
 					JUNO_DATASTORE_ERROR_CANNOT_WRITE
 				);
 			});
@@ -479,7 +479,7 @@ describe('Satellite > User Usage', () => {
 						version: fromNullable(currentDoc)?.version ?? []
 					};
 
-					await expect(set_doc('#user-usage', key, doc)).rejects.toThrow(
+					await expect(set_doc('#user-usage', key, doc)).rejects.toThrowError(
 						new RegExp(
 							`${JUNO_DATASTORE_ERROR_USER_USAGE_INVALID_DATA}: invalid type: string "invalid", expected u32 at line 1 column 26.`,
 							'i'
@@ -503,7 +503,7 @@ describe('Satellite > User Usage', () => {
 						version: fromNullable(currentDoc)?.version ?? []
 					};
 
-					await expect(set_doc('#user-usage', key, doc)).rejects.toThrow(
+					await expect(set_doc('#user-usage', key, doc)).rejects.toThrowError(
 						new RegExp(
 							`${JUNO_DATASTORE_ERROR_USER_USAGE_INVALID_DATA}: unknown field \`unknown\`, expected \`changes_count\` at line 1 column 30.`,
 							'i'
@@ -696,7 +696,7 @@ describe('Satellite > User Usage', () => {
 					version: toNullable()
 				};
 
-				await expect(set_doc('#user-usage', key, doc)).rejects.toThrow(
+				await expect(set_doc('#user-usage', key, doc)).rejects.toThrowError(
 					JUNO_DATASTORE_ERROR_CANNOT_WRITE
 				);
 			});
@@ -787,7 +787,7 @@ describe('Satellite > User Usage', () => {
 						version: fromNullable(currentDoc)?.version ?? []
 					};
 
-					await expect(set_doc('#user-usage', key, doc)).rejects.toThrow(
+					await expect(set_doc('#user-usage', key, doc)).rejects.toThrowError(
 						new RegExp(
 							`${JUNO_DATASTORE_ERROR_USER_USAGE_INVALID_DATA}: invalid type: string "invalid", expected u32 at line 1 column 26.`,
 							'i'
@@ -811,7 +811,7 @@ describe('Satellite > User Usage', () => {
 						version: fromNullable(currentDoc)?.version ?? []
 					};
 
-					await expect(set_doc('#user-usage', key, doc)).rejects.toThrow(
+					await expect(set_doc('#user-usage', key, doc)).rejects.toThrowError(
 						new RegExp(
 							`${JUNO_DATASTORE_ERROR_USER_USAGE_INVALID_DATA}: unknown field \`unknown\`, expected \`changes_count\` at line 1 column 30.`,
 							'i'

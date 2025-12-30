@@ -151,7 +151,9 @@ describe('Satellite > Max changes', () => {
 				Array.from({ length: countMaxChanges + 1 }).map((_) => createDoc(collection))
 			);
 
-			await expect(promises).rejects.toThrow(JUNO_DATASTORE_ERROR_USER_USAGE_CHANGE_LIMIT_REACHED);
+			await expect(promises).rejects.toThrowError(
+				JUNO_DATASTORE_ERROR_USER_USAGE_CHANGE_LIMIT_REACHED
+			);
 		});
 	});
 
@@ -243,7 +245,9 @@ describe('Satellite > Max changes', () => {
 				Array.from({ length: countMaxChanges + 1 }).map((_, index) => upload({ index, collection }))
 			);
 
-			await expect(promises).rejects.toThrow(JUNO_DATASTORE_ERROR_USER_USAGE_CHANGE_LIMIT_REACHED);
+			await expect(promises).rejects.toThrowError(
+				JUNO_DATASTORE_ERROR_USER_USAGE_CHANGE_LIMIT_REACHED
+			);
 		});
 	});
 });

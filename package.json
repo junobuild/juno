@@ -115,11 +115,11 @@
 	},
 	"dependencies": {
 		"@dfinity/oisy-wallet-signer": "^4.0.0",
-		"@dfinity/utils": "^4.0.2",
-		"@dfinity/zod-schemas": "^3.0.2",
+		"@dfinity/utils": "4.0.2",
+		"@dfinity/zod-schemas": "3.0.2",
 		"@icp-sdk/auth": "^4.2.0",
 		"@icp-sdk/canisters": "^3.0.0",
-		"@icp-sdk/core": "^4.2.3",
+		"@icp-sdk/core": "4.2.3",
 		"@junobuild/admin": "^3.2.0",
 		"@junobuild/auth": "^2.0.0",
 		"@junobuild/cdn": "^2.1.0",
@@ -144,6 +144,9 @@
 		"npm": ">=11.5.1 <12.0.0"
 	},
 	"overrides": {
-		"cookie": "^0.7.0"
+		"cookie": "^0.7.0",
+		"@dfinity/utils": "4.0.2",
+		"@dfinity/zod-schemas": "3.0.2",
+		"@icp-sdk/core": "4.2.3"
 	}
 }

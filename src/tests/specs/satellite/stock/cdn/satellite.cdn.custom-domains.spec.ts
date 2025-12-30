@@ -90,7 +90,7 @@ describe.each(MEMORIES)('Satellite > Custom domains > $title', ({ memory }) => {
 					name: 'ic-domains',
 					token: toNullable()
 				})
-			).rejects.toThrow(`${JUNO_STORAGE_ERROR_RESERVED_ASSET} (/.well-known/ic-domains)`);
+			).rejects.toThrowError(`${JUNO_STORAGE_ERROR_RESERVED_ASSET} (/.well-known/ic-domains)`);
 		});
 
 		it('should not expose /.well-known/ic-domains after all domains are deleted', async () => {

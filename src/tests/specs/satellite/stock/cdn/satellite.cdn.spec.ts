@@ -68,19 +68,19 @@ describe.each(MEMORIES)('Satellite > Cdn > $title', ({ memory }) => {
 		it('should throw errors on get proposal', async () => {
 			const { get_proposal } = actor();
 
-			await expect(get_proposal(1n)).rejects.toThrow(errorMsg);
+			await expect(get_proposal(1n)).rejects.toThrowError(errorMsg);
 		});
 
 		it('should throw errors on lists proposals', async () => {
 			const { list_proposals } = actor();
 
-			await expect(list_proposals(mockListProposalsParams)).rejects.toThrow(errorMsg);
+			await expect(list_proposals(mockListProposalsParams)).rejects.toThrowError(errorMsg);
 		});
 
 		it('should throw errors on count proposals', async () => {
 			const { count_proposals } = actor();
 
-			await expect(count_proposals()).rejects.toThrow(errorMsg);
+			await expect(count_proposals()).rejects.toThrowError(errorMsg);
 		});
 	};
 
@@ -275,7 +275,7 @@ describe.each(MEMORIES)('Satellite > Cdn > $title', ({ memory }) => {
 						},
 						proposalId
 					)
-				).rejects.toThrow(`${JUNO_STORAGE_ERROR_UPLOAD_PATH_COLLECTION_PREFIX}`);
+				).rejects.toThrowError(`${JUNO_STORAGE_ERROR_UPLOAD_PATH_COLLECTION_PREFIX}`);
 			});
 		});
 
@@ -437,13 +437,13 @@ describe.each(MEMORIES)('Satellite > Cdn > $title', ({ memory }) => {
 					sha256: Uint8Array.from(Array.from({ length: 32 }).map((_, i) => i)),
 					proposal_id: 32n
 				})
-			).rejects.toThrow(JUNO_AUTH_ERROR_NOT_WRITE_CONTROLLER);
+			).rejects.toThrowError(JUNO_AUTH_ERROR_NOT_WRITE_CONTROLLER);
 		});
 
 		it('should throw errors on delete proposal assets', async () => {
 			const { delete_proposal_assets } = actor;
 
-			await expect(delete_proposal_assets({ proposal_ids: [1n] })).rejects.toThrow(
+			await expect(delete_proposal_assets({ proposal_ids: [1n] })).rejects.toThrowError(
 				JUNO_AUTH_ERROR_NOT_WRITE_CONTROLLER
 			);
 		});

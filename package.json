@@ -38,7 +38,7 @@
 		"prebuild": "npm run generate",
 		"postinstall:trusted": "node node_modules/@dfinity/pic/postinstall.mjs",
 		"postinstall": "npm run copy:did && npm run postinstall:trusted",
-		"generate": "scripts/did.sh && scripts/did.download.sh && scripts/did.idl.sh && node scripts/did.update.types.mjs && scripts/did.idl.certified.sh && npm run copy:did && npm run format",
+		"generate": "scripts/did.sh && scripts/did.idl.sh && node scripts/did.update.types.mjs && scripts/did.idl.certified.sh && npm run copy:did && npm run format",
 		"copy:did": "scripts/did.copy.sh && prettier --log-level error --write src/declarations/ic-management/**/* && prettier --log-level error --write src/declarations/ledger/**/*",
 		"console:invitation": "node scripts/console.invitation.mjs",
 		"console:credits": "node scripts/console.credits.mjs",

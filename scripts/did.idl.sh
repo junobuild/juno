@@ -57,6 +57,3 @@ do
     generate_did_idl "$fixture" "src/tests/fixtures/$fixture" "src/tests/declarations/$fixture"
 done
 
-# ic-js extra
-
-generate_did_idl "cycles" "./" "src/declarations/ledger/cycles"

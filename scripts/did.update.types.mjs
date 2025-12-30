@@ -29,7 +29,6 @@ const renameFactory = async ({ dest = `./src/declarations` }) => {
 try {
 	await renameFactory({});
 	await renameFactory({ dest: './src/tests/declarations' });
-	await renameFactory({ dest: './src/declarations/ledger' });
 
 	console.log('Declarations renamed to factories!');
 } catch (err) {

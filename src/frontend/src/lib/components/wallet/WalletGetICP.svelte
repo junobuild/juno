@@ -8,6 +8,7 @@
 	import { toasts } from '$lib/stores/app/toasts.store';
 	import { emit } from '$lib/utils/events.utils';
 	import { testId } from '$lib/utils/test.utils';
+	import { CYCLES_LEDGER_CANISTER_ID, ICP_LEDGER_CANISTER_ID } from '$lib/constants/app.constants';
 
 	interface Props {
 		selectedWallet: SelectedWallet;
@@ -17,11 +18,17 @@
 
 	let { walletId } = $derived(selectedWallet);
 
+	let { ledgerId, amount } = $derived(
+		selectedWallet.type === 'mission_control'
+			? { ledgerId: ICP_LEDGER_CANISTER_ID, amount: 5_500_010_000n }
+			: { ledgerId: CYCLES_LEDGER_CANISTER_ID, amount: 330_010_000_000_000n }
+	);
+
 	let confetti = $state(false);
 
 	const onClick = async () => {
 		try {
-			await emulatorLedgerTransfer({ walletId });
+			await emulatorLedgerTransfer({ walletId, ledgerId, amount });
 
 			emit({ message: 'junoRestartWallet' });
 
@@ -39,5 +46,9 @@
 		<ConfettiSpread />
 	{/if}
 
-	<button onclick={onClick} {...testId(testIds.navbar.getIcp)}>{$i18n.emulator.get_icp}</button>
+	<button onclick={onClick} {...testId(testIds.navbar.getIcp)}
+		>{selectedWallet.type === 'mission_control'
+			? $i18n.emulator.get_icp
+			: $i18n.emulator.get_cycles}</button
+	>
 {/if}

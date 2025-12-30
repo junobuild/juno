@@ -931,7 +931,8 @@
 		"session_expires_in": "会话剩余时间"
 	},
 	"emulator": {
-		"get_icp": "获取ICP",
+		"get_icp": "获取 ICP",
+		"get_cycles": "获取 Cycles",
 		"emulator": "模拟器",
 		"setting_emulator_controller": "将模拟器设为管理员（仅开发环境）",
 		"error_never_execute_set_controller": "⚠️ 此功能严禁在模拟器环境外执行。此步骤设置管理员仅适用于模拟器环境（实际执行也会失败）。",

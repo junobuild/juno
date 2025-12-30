@@ -959,6 +959,7 @@ interface I18nPreferences {
 
 interface I18nEmulator {
 	get_icp: string;
+	get_cycles: string;
 	emulator: string;
 	setting_emulator_controller: string;
 	error_never_execute_set_controller: string;

@@ -931,6 +931,7 @@
 	},
 	"emulator": {
 		"get_icp": "Get ICP",
+		"get_cycles": "Get Cycles",
 		"emulator": "Emulator",
 		"setting_emulator_controller": "Setting the emulator as a administrator (DEV only)",
 		"error_never_execute_set_controller": "⚠️ This function should never ever be executed outside the emulator environment. Setting a administrator at this step is strictly for the emulator (and yes, it would fail anyway).",

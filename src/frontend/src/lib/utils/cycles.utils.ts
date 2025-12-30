@@ -11,13 +11,13 @@ export const formatTCycles = (cycles: bigint): string =>
 export const tCyclesToCycles = (tCycles: string): bigint =>
 	BigInt(parseFloat(notEmptyString(tCycles) ? tCycles : '0') * ONE_TRILLION);
 
-export const cyclesToICP = ({
+export const cyclesToIcpE8s = ({
 	cycles,
 	trillionRatio
 }: {
 	cycles: bigint;
 	trillionRatio: bigint;
-}): bigint => cycles / trillionRatio;
+}): bigint => (cycles * E8S_PER_ICP) / trillionRatio;
 
 export const icpE8sToCycles = ({
 	icpE8s,

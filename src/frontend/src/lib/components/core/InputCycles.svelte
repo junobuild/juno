@@ -10,7 +10,7 @@
 	import { amountToToken } from '$lib/utils/token.utils';
 	import { CyclesToken } from '$lib/constants/wallet.constants';
 	import { icpToCyclesRateStore } from '$lib/stores/wallet/icp-cycles-rate.store';
-	import { cyclesToICP } from '$lib/utils/cycles.utils';
+	import { cyclesToIcpE8s } from '$lib/utils/cycles.utils';
 
 	interface Props {
 		balance: bigint | undefined;
@@ -27,7 +27,7 @@
 	let usd = $derived(
 		nonNullish($icpToUsd) && nonNullish($icpToCyclesRateStore) && nonNullish(token)
 			? formatICPToUsd({
-					icp: cyclesToICP({
+					icp: cyclesToIcpE8s({
 						cycles: token.toUlps(),
 						trillionRatio: $icpToCyclesRateStore.data
 					}),

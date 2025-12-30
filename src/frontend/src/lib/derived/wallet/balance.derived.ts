@@ -15,6 +15,14 @@ export const devCyclesBalance = derived(
 			: undefined
 );
 
+export const devIcpBalance = derived(
+	[balanceCertifiedStore, devId],
+	([$balanceStore, $devId]) =>
+		nonNullish($devId)
+			? $balanceStore?.[$devId.toText()]?.[ICP_LEDGER_CANISTER_ID]?.data
+			: undefined
+);
+
 export const missionControlIcpBalance = derived(
 	[balanceCertifiedStore, missionControlId],
 	([$balanceStore, $missionControlId]) =>

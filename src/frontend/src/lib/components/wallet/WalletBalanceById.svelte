@@ -8,6 +8,7 @@
 	import { ICP_LEDGER_CANISTER_ID } from '$lib/constants/app.constants';
 	import type { LedgerIdText, SelectedToken, SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { balanceCertifiedStore } from '$lib/stores/wallet/balance.store';
+    import {isTokenIcp} from "$lib/utils/token.utils";
 
 	interface Props {
 		selectedWallet: SelectedWallet | undefined;
@@ -29,10 +30,10 @@
 
 	let Balance = $derived(
 		display === 'inline'
-			? selectedToken.token === 'icp'
+			? isTokenIcp(selectedToken)
 				? WalletInlineBalanceIcp
 				: WalletInlineBalanceCycles
-			: selectedToken.token === 'icp'
+			: isTokenIcp(selectedToken)
 				? WalletBalanceIcp
 				: WalletBalanceCycles
 	);

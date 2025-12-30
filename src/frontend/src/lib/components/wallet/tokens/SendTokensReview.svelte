@@ -6,13 +6,14 @@
 	import WalletSendFrom from '$lib/components/wallet/WalletSendFrom.svelte';
 	import SendTokensAmount from '$lib/components/wallet/tokens/SendTokensAmount.svelte';
 	import { IC_TRANSACTION_FEE_ICP } from '$lib/constants/app.constants';
-	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
+	import type { SelectedToken, SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { formatICP } from '$lib/utils/icp.utils';
-	import { amountToICPToken } from '$lib/utils/token.utils';
+	import { amountToToken } from '$lib/utils/token.utils';
 
 	interface Props {
 		selectedWallet: SelectedWallet;
+		selectedToken: SelectedToken;
 		balance: bigint | undefined;
 		destination?: string;
 		amount: string | undefined;
@@ -28,6 +29,7 @@
 
 	let {
 		selectedWallet,
+		selectedToken,
 		balance,
 		destination = $bindable(''),
 		amount = $bindable(),
@@ -35,7 +37,7 @@
 		onsubmit
 	}: Props = $props();
 
-	let token: TokenAmountV2 | undefined = $derived(amountToICPToken(amount));
+	let token: TokenAmountV2 | undefined = $derived(amountToToken({ amount, token: selectedToken.token }));
 
 	const onSubmit = async ($event: SubmitEvent) => {
 		await onsubmit({ $event, token });

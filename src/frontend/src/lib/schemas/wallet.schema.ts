@@ -1,6 +1,7 @@
 import { PrincipalSchema } from '$lib/schemas/principal.schema';
 import { PrincipalTextSchema } from '@dfinity/zod-schemas';
 import * as z from 'zod';
+import type { Token } from '@dfinity/utils';
 
 export const IcrcAccountTextSchema = z.string();
 export type IcrcAccountText = z.infer<typeof IcrcAccountTextSchema>;
@@ -50,12 +51,8 @@ export const SelectedWalletSchema = z.discriminatedUnion('type', [
 ]);
 export type SelectedWallet = z.infer<typeof SelectedWalletSchema>;
 
-const TokenSchema = z.strictObject({
-	token: z.enum(['cycles', 'icp'])
-});
-
 const SelectedTokenSchema = z.strictObject({
-	...TokenSchema.shape,
+	token: z.custom<Token>(),
 	...LedgerIdsTextSchema.shape
 });
 export type SelectedToken = z.infer<typeof SelectedTokenSchema>;

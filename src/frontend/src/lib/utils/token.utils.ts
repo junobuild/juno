@@ -1,31 +1,43 @@
 import { IC_TRANSACTION_FEE_ICP } from '$lib/constants/app.constants';
+import type { SelectedToken } from '$lib/schemas/wallet.schema';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
-import { FromStringToTokenError, ICPToken, isNullish, TokenAmountV2 } from '@dfinity/utils';
+import type { Token } from '@dfinity/utils';
+import { FromStringToTokenError, isNullish, TokenAmountV2 } from '@dfinity/utils';
 import { get } from 'svelte/store';
 
-export const amountToICPToken = (amount: string | undefined): TokenAmountV2 | undefined => {
+export const amountToToken = ({
+	amount,
+	token
+}: {
+	amount: string | undefined;
+	token: Token;
+}): TokenAmountV2 | undefined => {
 	// For convenience reason the function accept undefined
 	if (isNullish(amount)) {
 		return undefined;
 	}
 
-	const token = TokenAmountV2.fromString({ token: ICPToken, amount });
+	const tokenAmount = TokenAmountV2.fromString({ token, amount });
 
-	if (Object.values(FromStringToTokenError).includes(token as string | FromStringToTokenError)) {
+	if (
+		Object.values(FromStringToTokenError).includes(tokenAmount as string | FromStringToTokenError)
+	) {
 		return undefined;
 	}
 
-	return <TokenAmountV2>token;
+	return <TokenAmountV2>tokenAmount;
 };
 
-export const assertAndConvertAmountToICPToken = ({
+export const assertAndConvertAmountToToken = ({
 	amount,
 	balance,
+	token,
 	fee = IC_TRANSACTION_FEE_ICP
 }: {
 	amount: string | undefined;
 	balance: bigint | undefined;
+	token: Token;
 	fee?: bigint;
 }): { valid: boolean; tokenAmount?: TokenAmountV2 } => {
 	const labels = get(i18n);
@@ -44,7 +56,7 @@ export const assertAndConvertAmountToICPToken = ({
 		return { valid: false };
 	}
 
-	const tokenAmount = amountToICPToken(amount);
+	const tokenAmount = amountToToken({amount, token});
 
 	if (isNullish(tokenAmount)) {
 		toasts.error({
@@ -53,7 +65,7 @@ export const assertAndConvertAmountToICPToken = ({
 		return { valid: false };
 	}
 
-	if (balance - fee < tokenAmount.toE8s()) {
+	if (balance - fee < tokenAmount.toUlps()) {
 		toasts.error({
 			text: labels.errors.invalid_amount
 		});
@@ -62,3 +74,5 @@ export const assertAndConvertAmountToICPToken = ({
 
 	return { valid: true, tokenAmount };
 };
+
+export const isTokenIcp = ({ token: { symbol } }: SelectedToken): boolean => symbol === 'ICP';

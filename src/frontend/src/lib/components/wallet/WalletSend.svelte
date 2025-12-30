@@ -6,24 +6,35 @@
 	import {
 		balanceNotLoaded,
 		devCyclesBalance,
+		devIcpBalance,
+		missionControlCyclesBalance,
 		missionControlIcpBalance
 	} from '$lib/derived/wallet/balance.derived';
-    import type {SelectedToken, SelectedWallet} from '$lib/schemas/wallet.schema';
+	import type { SelectedToken, SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
 	import { emit } from '$lib/utils/events.utils';
+	import { isTokenIcp } from '$lib/utils/token.utils';
 
 	interface Props {
 		onsend?: () => void;
 		selectedWallet: SelectedWallet;
-        selectedToken: SelectedToken;
+		selectedToken: SelectedToken;
 	}
 
-	let { onsend, selectedWallet }: Props = $props();
+	let { onsend, selectedWallet, selectedToken }: Props = $props();
 
 	let walletMissionControl = $derived(selectedWallet.type === 'mission_control');
 
-	let balance = $derived(walletMissionControl ? $missionControlIcpBalance : $devCyclesBalance);
+	let balance = $derived(
+		walletMissionControl
+			? isTokenIcp(selectedToken)
+				? $missionControlIcpBalance
+				: $missionControlCyclesBalance
+			: isTokenIcp(selectedToken)
+				? $devIcpBalance
+				: $devCyclesBalance
+	);
 
 	const openSend = () => {
 		if ($balanceNotLoaded) {
@@ -49,7 +60,8 @@
 			detail: {
 				type: 'send_tokens',
 				detail: {
-					selectedWallet
+					selectedWallet,
+					selectedToken
 				}
 			}
 		});

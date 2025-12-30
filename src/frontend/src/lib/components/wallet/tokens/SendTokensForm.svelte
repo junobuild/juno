@@ -3,17 +3,20 @@
 	import Html from '$lib/components/ui/Html.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
-	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
+	import type { SelectedToken, SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { invalidIcpAddress } from '$lib/utils/icp-account.utils';
 	import { formatICP } from '$lib/utils/icp.utils';
 	import { invalidIcrcAddress } from '$lib/utils/icrc-account.utils';
-	import { assertAndConvertAmountToICPToken } from '$lib/utils/token.utils';
+	import { assertAndConvertAmountToToken, isTokenIcp } from '$lib/utils/token.utils';
+	import { formatTCycles } from '$lib/utils/cycles.utils';
+	import InputCycles from '$lib/components/core/InputCycles.svelte';
 
 	interface Props {
 		selectedWallet: SelectedWallet;
+		selectedToken: SelectedToken;
 		balance: bigint | undefined;
 		destination?: string;
 		amount: string | undefined;
@@ -23,6 +26,7 @@
 	let {
 		balance,
 		selectedWallet,
+		selectedToken,
 		destination = $bindable(''),
 		amount = $bindable(),
 		onreview
@@ -38,9 +42,10 @@
 			return;
 		}
 
-		const { valid } = assertAndConvertAmountToICPToken({
+		const { valid } = assertAndConvertAmountToToken({
 			balance,
-			amount
+			amount,
+			token: selectedToken.token
 		});
 
 		if (!valid) {
@@ -49,6 +54,8 @@
 
 		onreview();
 	};
+
+	let InputAmount = $derived(isTokenIcp(selectedToken) ? InputIcp : InputCycles);
 </script>
 
 <h2>{$i18n.wallet.send}</h2>
@@ -58,12 +65,18 @@
 		text={i18nFormat($i18n.wallet.send_information, [
 			{
 				placeholder: '{0}',
+				value: isTokenIcp(selectedToken) ? 'ICP' : 'Cycles'
+			},
+			{
+				placeholder: '{1}',
 				value:
 					selectedWallet.type === 'mission_control' ? $i18n.mission_control.title : $i18n.wallet.dev
 			},
 			{
-				placeholder: '{1}',
-				value: formatICP(balance ?? 0n)
+				placeholder: '{2}',
+				value: isTokenIcp(selectedToken)
+					? `${formatICP(balance ?? 0n)} ICP`
+					: `${formatTCycles(balance ?? 0n)} T Cycles`
 			}
 		])}
 	/>
@@ -85,7 +98,7 @@
 		</Value>
 	</div>
 
-	<InputIcp {balance} bind:amount />
+	<InputAmount {balance} bind:amount />
 
 	<button class="action" type="submit">
 		{$i18n.core.review}

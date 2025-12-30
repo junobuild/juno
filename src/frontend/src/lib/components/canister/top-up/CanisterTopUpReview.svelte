@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { nonNullish, type TokenAmountV2 } from '@dfinity/utils';
+	import { ICPToken, nonNullish, type TokenAmountV2 } from '@dfinity/utils';
 	import { Principal } from '@icp-sdk/core/principal';
 	import CanisterTopUpCycles from '$lib/components/canister/top-up/CanisterTopUpCycles.svelte';
 	import Segment from '$lib/components/segments/Segment.svelte';
@@ -12,7 +12,7 @@
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { CanisterSegmentWithLabel } from '$lib/types/canister';
 	import { formatICP } from '$lib/utils/icp.utils';
-	import { amountToICPToken } from '$lib/utils/token.utils';
+	import { amountToToken } from '$lib/utils/token.utils';
 
 	interface Props {
 		selectedWallet: SelectedWallet | undefined;
@@ -26,7 +26,7 @@
 
 	let { selectedWallet, balance, onsubmit, onback, segment, icp, cycles }: Props = $props();
 
-	let token: TokenAmountV2 | undefined = $derived(amountToICPToken(icp));
+	let token: TokenAmountV2 | undefined = $derived(amountToToken({ amount: icp, token: ICPToken }));
 </script>
 
 <h2>{$i18n.canisters.top_up}</h2>

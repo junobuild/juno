@@ -8,9 +8,9 @@ import { toasts } from '$lib/stores/app/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
 import { type TopUpProgress, TopUpProgressStep } from '$lib/types/progress-topup';
 import { emit } from '$lib/utils/events.utils';
-import { assertAndConvertAmountToICPToken } from '$lib/utils/token.utils';
+import { assertAndConvertAmountToToken } from '$lib/utils/token.utils';
 import { waitAndRestartWallet } from '$lib/utils/wallet.utils';
-import { assertNonNullish, isNullish } from '@dfinity/utils';
+import { assertNonNullish, ICPToken, isNullish } from '@dfinity/utils';
 import type { Principal } from '@icp-sdk/core/principal';
 import { get } from 'svelte/store';
 
@@ -45,9 +45,10 @@ export const topUp = async ({
 		return { success: 'error' };
 	}
 
-	const { valid, tokenAmount } = assertAndConvertAmountToICPToken({
+	const { valid, tokenAmount } = assertAndConvertAmountToToken({
 		balance,
 		amount: icp,
+		token: ICPToken,
 		fee: TOP_UP_NETWORK_FEES
 	});
 

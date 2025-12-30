@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { IcrcAccount } from '@dfinity/oisy-wallet-signer';
 	import { IcpWallet } from '@dfinity/oisy-wallet-signer/icp-wallet';
-	import { isNullish, nonNullish, toNullable } from '@dfinity/utils';
+	import { ICPToken, isNullish, nonNullish, toNullable } from '@dfinity/utils';
 	import type { Icrc1TransferRequest } from '@icp-sdk/canisters/ledger/icp';
 	import Confetti from '$lib/components/ui/Confetti.svelte';
 	import Spinner from '$lib/components/ui/Spinner.svelte';
@@ -11,7 +11,7 @@
 	import { wizardBusy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
-	import { assertAndConvertAmountToICPToken } from '$lib/utils/token.utils';
+	import { assertAndConvertAmountToToken } from '$lib/utils/token.utils';
 
 	interface Props {
 		walletId: WalletId;
@@ -69,7 +69,11 @@
 	});
 
 	const onsubmit = async ({ balance, amount }: { balance: bigint | undefined; amount: string }) => {
-		const { valid, tokenAmount } = assertAndConvertAmountToICPToken({ amount, balance });
+		const { valid, tokenAmount } = assertAndConvertAmountToToken({
+			amount,
+			balance,
+			token: ICPToken
+		});
 
 		if (!valid || isNullish(tokenAmount)) {
 			return;

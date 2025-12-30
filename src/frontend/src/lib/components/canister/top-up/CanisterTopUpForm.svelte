@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { isNullish, nonNullish, notEmptyString } from '@dfinity/utils';
+	import { ICPToken, isNullish, nonNullish, notEmptyString } from '@dfinity/utils';
 	import { onMount, type Snippet } from 'svelte';
 	import { getIcpToCyclesConversionRate } from '$lib/api/cmc.api';
 	import InputIcp from '$lib/components/core/InputIcp.svelte';
@@ -20,7 +20,7 @@
 	import { formatTCycles, icpToCycles } from '$lib/utils/cycles.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { formatICPToHTML } from '$lib/utils/icp.utils';
-	import { assertAndConvertAmountToICPToken } from '$lib/utils/token.utils';
+	import { assertAndConvertAmountToToken } from '$lib/utils/token.utils';
 
 	interface Props {
 		intro?: Snippet;
@@ -69,9 +69,10 @@
 	const onSubmit = ($event: SubmitEvent) => {
 		$event.preventDefault();
 
-		const { valid } = assertAndConvertAmountToICPToken({
+		const { valid } = assertAndConvertAmountToToken({
 			balance,
 			amount: icp,
+			token: ICPToken,
 			fee: TOP_UP_NETWORK_FEES
 		});
 

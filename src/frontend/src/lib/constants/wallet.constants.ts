@@ -7,6 +7,7 @@ import {
 import { isDev } from '$lib/env/app.env';
 import type { SelectedToken } from '$lib/schemas/wallet.schema';
 import type { RelyingPartyOptions } from '@dfinity/oisy-wallet-signer';
+import type { Token } from '@dfinity/utils';
 
 export const MEMO_CANISTER_CREATE = BigInt(0x41455243); // == 'CREA'
 
@@ -45,4 +46,10 @@ export const ICP_TOKEN: SelectedToken = {
 	token: 'icp',
 	ledgerId: ICP_LEDGER_CANISTER_ID,
 	indexId: ICP_INDEX_CANISTER_ID
+};
+
+export const CyclesToken: Token = {
+	symbol: "TCYCLES",
+	name: "Trillion Cycles",
+	decimals: 12,
 };

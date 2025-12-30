@@ -1,5 +1,5 @@
 import type { ConsoleDid, ICDid, MissionControlDid, OrbiterDid, SatelliteDid } from '$declarations';
-import type { SelectedWallet } from '$lib/schemas/wallet.schema';
+import type { SelectedToken, SelectedWallet } from '$lib/schemas/wallet.schema';
 import type { CanisterInfo, CanisterSegmentWithLabel, CanisterSettings } from '$lib/types/canister';
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { CustomDomains } from '$lib/types/custom-domain';
@@ -133,6 +133,7 @@ export interface JunoModalCdnUpgradeDetail extends JunoModalWithSatellite {
 
 export interface JunoModalWalletDetail {
 	selectedWallet: SelectedWallet;
+	selectedToken: SelectedToken;
 }
 
 export type JunoModalDetail =

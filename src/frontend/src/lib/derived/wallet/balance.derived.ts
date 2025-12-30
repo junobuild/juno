@@ -3,7 +3,7 @@ import { missionControlId } from '$lib/derived/console/account.mission-control.d
 import { devId } from '$lib/derived/dev.derived';
 import { balanceCertifiedStore } from '$lib/stores/wallet/balance.store';
 import { icpToCyclesRateStore } from '$lib/stores/wallet/icp-cycles-rate.store';
-import { icpToCycles } from '$lib/utils/cycles.utils';
+import { icpE8sToCycles } from '$lib/utils/cycles.utils';
 import { isNullish, nonNullish } from '@dfinity/utils';
 import { derived } from 'svelte/store';
 
@@ -27,7 +27,10 @@ export const missionControlIcpToCyclesBalance = derived(
 	[missionControlIcpBalance, icpToCyclesRateStore],
 	([$missionControlIcpBalance, $icpToCyclesRateStore]) =>
 		nonNullish($missionControlIcpBalance) && nonNullish($icpToCyclesRateStore?.data)
-			? icpToCycles({ icp: $missionControlIcpBalance, trillionRatio: $icpToCyclesRateStore.data })
+			? icpE8sToCycles({
+					icpE8s: $missionControlIcpBalance,
+					trillionRatio: $icpToCyclesRateStore.data
+				})
 			: undefined
 );
 

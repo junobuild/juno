@@ -19,13 +19,21 @@ export const cyclesToICP = ({
 	trillionRatio: bigint;
 }): bigint => cycles / trillionRatio;
 
+export const icpE8sToCycles = ({
+	icpE8s,
+	trillionRatio
+}: {
+	icpE8s: bigint;
+	trillionRatio: bigint;
+}): bigint => (icpE8s * trillionRatio) / E8S_PER_ICP;
+
 export const icpToCycles = ({
 	icp,
 	trillionRatio
 }: {
 	icp: bigint;
 	trillionRatio: bigint;
-}): bigint => (icp * trillionRatio) / E8S_PER_ICP;
+}): bigint => icp * trillionRatio;
 
 export const formatCyclesToHTML = ({ e12s, bold }: { e12s: bigint; bold: boolean }): string => {
 	const tag = bold ? 'strong' : 'span';

@@ -4,7 +4,7 @@
 	import { slide } from 'svelte/transition';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { CYCLES_TOKEN, ICP_TOKEN } from '$lib/constants/wallet.constants';
-	import { missionControlHasIcp } from '$lib/derived/wallet/balance.derived';
+	import { devHasIcp, missionControlHasIcp } from '$lib/derived/wallet/balance.derived';
 	import type { SelectedToken, SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { i18n } from '$lib/stores/app/i18n.store';
 
@@ -30,9 +30,14 @@
 			selectedToken = resourceType === 'icp' ? ICP_TOKEN : CYCLES_TOKEN;
 		});
 	});
+
+	let pickerEnabled = $derived(
+		(selectedWallet?.type === 'mission_control' && $missionControlHasIcp) ||
+			(selectedWallet?.type === 'dev' && $devHasIcp)
+	);
 </script>
 
-{#if selectedWallet?.type === 'mission_control' && $missionControlHasIcp}
+{#if pickerEnabled}
 	<div class="picker" transition:slide={{ delay: 0, duration: 150, easing: quintOut, axis: 'y' }}>
 		<Value ref="ledger-id">
 			{#snippet label()}

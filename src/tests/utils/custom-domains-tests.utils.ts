@@ -15,21 +15,21 @@ export const anonymousCustomDomainsTests = ({
 	it('should throw errors on setting custom domain', async () => {
 		const { set_custom_domain } = actor();
 
-		await expect(set_custom_domain('hello.com', toNullable())).rejects.toThrow(errorMsg);
+		await expect(set_custom_domain('hello.com', toNullable())).rejects.toThrowError(errorMsg);
 	});
 
 	// eslint-disable-next-line vitest/require-top-level-describe
 	it('should throw errors on listing custom domains', async () => {
 		const { list_custom_domains } = actor();
 
-		await expect(list_custom_domains()).rejects.toThrow(errorMsg);
+		await expect(list_custom_domains()).rejects.toThrowError(errorMsg);
 	});
 
 	// eslint-disable-next-line vitest/require-top-level-describe
 	it('should throw errors on deleting custom domains', async () => {
 		const { del_custom_domain } = actor();
 
-		await expect(del_custom_domain('hello.com')).rejects.toThrow(errorMsg);
+		await expect(del_custom_domain('hello.com')).rejects.toThrowError(errorMsg);
 	});
 };
 
@@ -199,6 +199,6 @@ export const adminCustomDomainsWithProposalTests = ({
 				},
 				proposalId
 			)
-		).rejects.toThrow(`${JUNO_STORAGE_ERROR_RESERVED_ASSET} (/.well-known/ic-domains)`);
+		).rejects.toThrowError(`${JUNO_STORAGE_ERROR_RESERVED_ASSET} (/.well-known/ic-domains)`);
 	});
 };

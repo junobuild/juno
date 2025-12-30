@@ -86,7 +86,7 @@ export const testAuthGetDelegation = ({
 							expiration: mockExpiration
 						}
 					})
-				).rejects.toThrow(JUNO_AUTH_ERROR_NOT_CONFIGURED);
+				).rejects.toThrowError(JUNO_AUTH_ERROR_NOT_CONFIGURED);
 			});
 
 			it('should not authenticate when OpenId disabled', async () => {
@@ -108,7 +108,7 @@ export const testAuthGetDelegation = ({
 					get_delegation({
 						OpenId: { jwt, session_key: publicKey, salt, expiration: mockExpiration }
 					})
-				).rejects.toThrow(JUNO_AUTH_ERROR_OPENID_DISABLED);
+				).rejects.toThrowError(JUNO_AUTH_ERROR_OPENID_DISABLED);
 			});
 		});
 

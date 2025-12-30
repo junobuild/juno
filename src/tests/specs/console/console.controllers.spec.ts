@@ -45,13 +45,13 @@ describe('Console > Controllers', () => {
 						scope: { Admin: null }
 					}
 				})
-			).rejects.toThrow(CONTROLLER_ERROR_MSG);
+			).rejects.toThrowError(CONTROLLER_ERROR_MSG);
 		});
 
 		it('should throw errors on list controllers', async () => {
 			const { list_controllers } = actor();
 
-			await expect(list_controllers()).rejects.toThrow(CONTROLLER_ERROR_MSG);
+			await expect(list_controllers()).rejects.toThrowError(CONTROLLER_ERROR_MSG);
 		});
 
 		it('should throw errors on deleting controller', async () => {
@@ -61,7 +61,7 @@ describe('Console > Controllers', () => {
 				del_controllers({
 					controllers: [controller.getPrincipal()]
 				})
-			).rejects.toThrow(CONTROLLER_ERROR_MSG);
+			).rejects.toThrowError(CONTROLLER_ERROR_MSG);
 		});
 	};
 

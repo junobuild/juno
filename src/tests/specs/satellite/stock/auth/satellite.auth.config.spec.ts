@@ -356,13 +356,13 @@ describe('Satellite > Authentication > Configuration', () => {
 					openid: [],
 					version: [10n]
 				})
-			).rejects.toThrow(JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER);
+			).rejects.toThrowError(JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER);
 		});
 
 		it('should throw errors on getting config', async () => {
 			const { get_auth_config } = actor;
 
-			await expect(get_auth_config()).rejects.toThrow(JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER);
+			await expect(get_auth_config()).rejects.toThrowError(JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER);
 		});
 	});
 });

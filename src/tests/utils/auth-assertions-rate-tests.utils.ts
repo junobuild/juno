@@ -120,7 +120,7 @@ export const testAuthRate = ({
 				authenticate({
 					OpenId: { jwt: jwt3, session_key: publicKey, salt }
 				})
-			).rejects.toThrow('Rate limit reached, try again later.');
+			).rejects.toThrowError('Rate limit reached, try again later.');
 		});
 	});
 };

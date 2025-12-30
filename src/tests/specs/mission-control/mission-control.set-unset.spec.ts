@@ -56,7 +56,7 @@ describe('Mission Control > Set / Unset', () => {
 		it('should throw errors on set orbiter', async () => {
 			const { set_orbiter } = actor;
 
-			await expect(set_orbiter(orbiterId, [])).rejects.toThrow(
+			await expect(set_orbiter(orbiterId, [])).rejects.toThrowError(
 				MISSION_CONTROL_ADMIN_CONTROLLER_ERROR_MSG
 			);
 		});
@@ -64,7 +64,7 @@ describe('Mission Control > Set / Unset', () => {
 		it('should throw errors on unset orbiter', async () => {
 			const { unset_orbiter } = actor;
 
-			await expect(unset_orbiter(orbiterId)).rejects.toThrow(
+			await expect(unset_orbiter(orbiterId)).rejects.toThrowError(
 				MISSION_CONTROL_ADMIN_CONTROLLER_ERROR_MSG
 			);
 		});
@@ -72,7 +72,7 @@ describe('Mission Control > Set / Unset', () => {
 		it('should throw errors on set satellite', async () => {
 			const { set_satellite } = actor;
 
-			await expect(set_satellite(satelliteId, [])).rejects.toThrow(
+			await expect(set_satellite(satelliteId, [])).rejects.toThrowError(
 				MISSION_CONTROL_ADMIN_CONTROLLER_ERROR_MSG
 			);
 		});
@@ -80,7 +80,7 @@ describe('Mission Control > Set / Unset', () => {
 		it('should throw errors on unset satellite', async () => {
 			const { unset_satellite } = actor;
 
-			await expect(unset_satellite(satelliteId)).rejects.toThrow(
+			await expect(unset_satellite(satelliteId)).rejects.toThrowError(
 				MISSION_CONTROL_ADMIN_CONTROLLER_ERROR_MSG
 			);
 		});

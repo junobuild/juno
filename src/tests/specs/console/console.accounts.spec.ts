@@ -38,7 +38,7 @@ describe('Console > Accounts', () => {
 
 	describe('Guard', () => {
 		it('should throw errors if too many accounts are created quickly', async () => {
-			await expect(async () => await initAccounts({ actor, pic, length: 2 })).rejects.toThrow(
+			await expect(initAccounts({ actor, pic, length: 2 })).rejects.toThrowError(
 				new RegExp('Rate limit reached, try again later', 'i')
 			);
 		});

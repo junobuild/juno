@@ -49,7 +49,7 @@ describe('emulator.services', () => {
 					satelliteId: mockSatelliteId,
 					identity: mockIdentity
 				})
-			).rejects.toThrow(i18Mock.emulator.error_never_execute_set_controller);
+			).rejects.toThrowError(i18Mock.emulator.error_never_execute_set_controller);
 
 			expect(setControllers).not.toHaveBeenCalled();
 			expect(getEmulatorMainIdentity).not.toHaveBeenCalled();
@@ -85,7 +85,7 @@ describe('emulator.services', () => {
 		it('should throw an error when mode is production', async () => {
 			vi.stubEnv('MODE', 'production');
 
-			await expect(emulatorToggleOpenIdMonitoring({ enable: true })).rejects.toThrow(
+			await expect(emulatorToggleOpenIdMonitoring({ enable: true })).rejects.toThrowError(
 				i18Mock.emulator.error_never_execute_openid_monitoring
 			);
 		});

@@ -81,7 +81,7 @@ describe('Observatory > Notify', () => {
 		it('should throw errors on notify', async () => {
 			const { notify } = observatoryActor;
 
-			await expect(notify(mockNotifyArgs)).rejects.toThrow(CALLER_NOT_ANONYMOUS_MSG);
+			await expect(notify(mockNotifyArgs)).rejects.toThrowError(CALLER_NOT_ANONYMOUS_MSG);
 		});
 	});
 
@@ -95,7 +95,7 @@ describe('Observatory > Notify', () => {
 		it('should throw errors if caller is not a mission control', async () => {
 			const { notify } = observatoryActor;
 
-			await expect(notify(mockNotifyArgs)).rejects.toThrow(NO_ACCOUNT_ERROR_MSG);
+			await expect(notify(mockNotifyArgs)).rejects.toThrowError(NO_ACCOUNT_ERROR_MSG);
 		});
 
 		it('should throw errors if caller is not observatory', async () => {
@@ -106,7 +106,7 @@ describe('Observatory > Notify', () => {
 					mission_control_id: new AnonymousIdentity().getPrincipal(),
 					user: new AnonymousIdentity().getPrincipal()
 				})
-			).rejects.toThrow('Caller is not the observatory.');
+			).rejects.toThrowError('Caller is not the observatory.');
 		});
 	});
 });

@@ -43,7 +43,7 @@ describe('Console > Fees', () => {
 
 			const { set_fee } = newActor;
 
-			await expect(set_fee({ Satellite: null }, TEST_FEES)).rejects.toThrow(
+			await expect(set_fee({ Satellite: null }, TEST_FEES)).rejects.toThrowError(
 				'Caller is not a controller of the console.'
 			);
 		};
@@ -70,7 +70,7 @@ describe('Console > Fees', () => {
 		it('should throw on set_fee with user', async () => {
 			const { set_fee } = randomIdentityActor;
 
-			await expect(set_fee({ Satellite: null }, TEST_FEES)).rejects.toThrow(
+			await expect(set_fee({ Satellite: null }, TEST_FEES)).rejects.toThrowError(
 				'Caller is not a controller of the console.'
 			);
 		});

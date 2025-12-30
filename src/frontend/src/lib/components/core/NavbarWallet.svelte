@@ -15,7 +15,8 @@
 	import { testIds } from '$lib/constants/test-ids.constants';
 	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import {missionControlHasIcp} from "$lib/derived/wallet/balance.derived";
+	import { missionControlHasIcp } from '$lib/derived/wallet/balance.derived';
+	import { CYCLES_TOKEN, ICP_TOKEN } from '$lib/constants/wallet.constants';
 
 	let button: HTMLButtonElement | undefined = $state();
 	let visible: boolean = $state(false);
@@ -59,20 +60,12 @@
 				{/snippet}
 
 				<p>
-					<WalletBalanceById
-						display="inline"
-						ledgerId={CYCLES_LEDGER_CANISTER_ID}
-						{selectedWallet}
-					/>
+					<WalletBalanceById display="inline" selectedToken={CYCLES_TOKEN} {selectedWallet} />
 				</p>
 
 				{#if selectedWallet?.type === 'mission_control' && $missionControlHasIcp}
 					<p>
-						<WalletBalanceById
-							display="inline"
-							ledgerId={ICP_LEDGER_CANISTER_ID}
-							{selectedWallet}
-						/>
+						<WalletBalanceById display="inline" selectedToken={ICP_TOKEN} {selectedWallet} />
 					</p>
 				{/if}
 			</Value>

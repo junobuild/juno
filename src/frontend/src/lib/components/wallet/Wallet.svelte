@@ -9,31 +9,27 @@
 	import ReceiveTokens from '$lib/components/wallet/tokens/ReceiveTokens.svelte';
 	import Transactions from '$lib/components/wallet/transactions/Transactions.svelte';
 	import TransactionsExport from '$lib/components/wallet/transactions/TransactionsExport.svelte';
-	import {
-		CYCLES_INDEX_CANISTER_ID,
-		CYCLES_LEDGER_CANISTER_ID,
-		PAGINATION
-	} from '$lib/constants/app.constants';
+	import { PAGINATION } from '$lib/constants/app.constants';
 	import { authSignedIn, authSignedOut } from '$lib/derived/auth.derived';
 	import { transactions } from '$lib/derived/wallet/transactions.derived';
-	import type { IndexIdText, LedgerIdText, SelectedWallet } from '$lib/schemas/wallet.schema';
+	import type { SelectedToken, SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { loadNextTransactions } from '$lib/services/wallet/wallet.transactions.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
 	import { last } from '$lib/utils/utils';
-	import WalletLedgerPicker from '$lib/components/wallet/WalletLedgerPicker.svelte';
+	import WalletTokenPicker from '$lib/components/wallet/WalletTokenPicker.svelte';
+	import { CYCLES_TOKEN } from '$lib/constants/wallet.constants';
 
 	let selectedWallet = $state<SelectedWallet | undefined>(undefined);
 
-	let ledgerId = $state<LedgerIdText>(CYCLES_LEDGER_CANISTER_ID);
-	let indexId = $state<IndexIdText>(CYCLES_INDEX_CANISTER_ID);
+	let selectedToken = $state<SelectedToken>(CYCLES_TOKEN);
 
 	let walletIdText = $derived(
 		nonNullish(selectedWallet) ? encodeIcrcAccount(selectedWallet.walletId) : undefined
 	);
 
 	let walletTransactions = $derived(
-		nonNullish(walletIdText) ? ($transactions[walletIdText]?.[ledgerId] ?? []) : []
+		nonNullish(walletIdText) ? ($transactions[walletIdText]?.[selectedToken.ledgerId] ?? []) : []
 	);
 
 	/**
@@ -65,8 +61,8 @@
 
 		await loadNextTransactions({
 			account: selectedWallet.walletId,
-			ledgerId: Principal.fromText(ledgerId),
-			indexId: Principal.fromText(indexId),
+			ledgerId: Principal.fromText(selectedToken.ledgerId),
+			indexId: Principal.fromText(selectedToken.indexId),
 			maxResults: PAGINATION,
 			start: lastId,
 			signalEnd: () => (disableInfiniteScroll = true)
@@ -86,7 +82,7 @@
 					<WalletPicker bind:selectedWallet />
 				</div>
 
-				<WalletLedgerPicker {selectedWallet} bind:ledgerId bind:indexId />
+				<WalletTokenPicker {selectedWallet} bind:selectedToken />
 
 				{#if nonNullish(selectedWallet)}
 					<WalletIds {selectedWallet} />
@@ -94,7 +90,7 @@
 			</div>
 
 			<div>
-				<WalletBalanceById {ledgerId} {selectedWallet} />
+				<WalletBalanceById {selectedToken} {selectedWallet} />
 			</div>
 		</div>
 	</div>

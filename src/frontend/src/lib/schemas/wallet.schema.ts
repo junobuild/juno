@@ -17,6 +17,12 @@ export type IndexIdText = z.infer<typeof IndexIdTextSchema>;
 const IndexIdSchema = LedgerIdSchema;
 export type IndexId = z.infer<typeof IndexIdSchema>;
 
+export const LedgerIdsTextSchema = z.strictObject({
+	ledgerId: LedgerIdTextSchema,
+	indexId: IndexIdTextSchema
+});
+export type LedgerIdsText = z.infer<typeof LedgerIdsTextSchema>;
+
 export const LedgerIdsSchema = z.strictObject({
 	ledgerId: LedgerIdSchema,
 	indexId: IndexIdSchema
@@ -43,3 +49,13 @@ export const SelectedWalletSchema = z.discriminatedUnion('type', [
 	})
 ]);
 export type SelectedWallet = z.infer<typeof SelectedWalletSchema>;
+
+const TokenSchema = z.strictObject({
+	token: z.enum(['cycles', 'icp'])
+});
+
+const SelectedTokenSchema = z.strictObject({
+	...TokenSchema.shape,
+	...LedgerIdsTextSchema.shape
+});
+export type SelectedToken = z.infer<typeof SelectedTokenSchema>;

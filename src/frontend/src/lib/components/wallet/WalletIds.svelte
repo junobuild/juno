@@ -7,7 +7,7 @@
 	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toAccountIdentifier } from '$lib/utils/icp-icrc-account.utils';
-	import {missionControlHasIcp} from "$lib/derived/wallet/balance.derived";
+	import { missionControlHasIcp } from '$lib/derived/wallet/balance.derived';
 
 	interface Props {
 		selectedWallet: SelectedWallet;

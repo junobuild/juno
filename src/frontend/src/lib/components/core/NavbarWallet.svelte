@@ -13,10 +13,10 @@
 	import ReceiveTokens from '$lib/components/wallet/tokens/ReceiveTokens.svelte';
 	import { CYCLES_LEDGER_CANISTER_ID, ICP_LEDGER_CANISTER_ID } from '$lib/constants/app.constants';
 	import { testIds } from '$lib/constants/test-ids.constants';
+	import { CYCLES_TOKEN, ICP_TOKEN } from '$lib/constants/wallet.constants';
+	import { missionControlHasIcp } from '$lib/derived/wallet/balance.derived';
 	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import { missionControlHasIcp } from '$lib/derived/wallet/balance.derived';
-	import { CYCLES_TOKEN, ICP_TOKEN } from '$lib/constants/wallet.constants';
 
 	let button: HTMLButtonElement | undefined = $state();
 	let visible: boolean = $state(false);

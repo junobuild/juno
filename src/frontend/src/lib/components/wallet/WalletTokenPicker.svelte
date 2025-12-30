@@ -1,12 +1,12 @@
 <script lang="ts">
+	import { untrack } from 'svelte';
 	import { quintOut } from 'svelte/easing';
 	import { slide } from 'svelte/transition';
-	import type { SelectedToken, SelectedWallet } from '$lib/schemas/wallet.schema';
-	import { missionControlHasIcp } from '$lib/derived/wallet/balance.derived';
-	import { untrack } from 'svelte';
 	import Value from '$lib/components/ui/Value.svelte';
-	import { i18n } from '$lib/stores/app/i18n.store';
 	import { CYCLES_TOKEN, ICP_TOKEN } from '$lib/constants/wallet.constants';
+	import { missionControlHasIcp } from '$lib/derived/wallet/balance.derived';
+	import type { SelectedToken, SelectedWallet } from '$lib/schemas/wallet.schema';
+	import { i18n } from '$lib/stores/app/i18n.store';
 
 	interface Props {
 		selectedWallet: SelectedWallet | undefined;

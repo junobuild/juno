@@ -1,5 +1,6 @@
 <script lang="ts">
 	import ConfettiSpread from '$lib/components/ui/ConfettiSpread.svelte';
+	import { CYCLES_LEDGER_CANISTER_ID, ICP_LEDGER_CANISTER_ID } from '$lib/constants/app.constants';
 	import { testIds } from '$lib/constants/test-ids.constants';
 	import { isDev } from '$lib/env/app.env';
 	import { emulatorLedgerTransfer } from '$lib/rest/emulator.rest';
@@ -8,7 +9,6 @@
 	import { toasts } from '$lib/stores/app/toasts.store';
 	import { emit } from '$lib/utils/events.utils';
 	import { testId } from '$lib/utils/test.utils';
-	import { CYCLES_LEDGER_CANISTER_ID, ICP_LEDGER_CANISTER_ID } from '$lib/constants/app.constants';
 
 	interface Props {
 		selectedWallet: SelectedWallet;

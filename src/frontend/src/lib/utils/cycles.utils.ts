@@ -5,7 +5,7 @@ import { formatNumber } from './number.utils';
 export const formatTCycles = (cycles: bigint): string =>
 	formatNumber(Number(cycles) / Number(ONE_TRILLION), {
 		minFraction: 3,
-		maxFraction: 3
+		maxFraction: 4
 	});
 
 export const tCyclesToCycles = (tCycles: string): bigint =>

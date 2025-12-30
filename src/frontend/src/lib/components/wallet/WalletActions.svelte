@@ -2,15 +2,16 @@
 	import WalletGetICP from '$lib/components/wallet/WalletGetICP.svelte';
 	import WalletReceive from '$lib/components/wallet/WalletReceive.svelte';
 	import WalletSend from '$lib/components/wallet/WalletSend.svelte';
-	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
+	import type { SelectedToken, SelectedWallet } from '$lib/schemas/wallet.schema';
 
 	interface Props {
 		selectedWallet: SelectedWallet;
+		selectedToken: SelectedToken;
 		onsend?: () => void;
 		onreceive: () => void;
 	}
 
-	let { selectedWallet, onreceive, onsend }: Props = $props();
+	let { selectedWallet, selectedToken, onreceive, onsend }: Props = $props();
 </script>
 
 <div class="toolbar">
@@ -18,5 +19,5 @@
 
 	<WalletReceive {onreceive} />
 
-	<WalletSend {onsend} {selectedWallet} />
+	<WalletSend {onsend} {selectedWallet} {selectedToken} />
 </div>

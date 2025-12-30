@@ -8,7 +8,7 @@
 		devCyclesBalance,
 		missionControlIcpBalance
 	} from '$lib/derived/wallet/balance.derived';
-	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
+    import type {SelectedToken, SelectedWallet} from '$lib/schemas/wallet.schema';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
 	import { emit } from '$lib/utils/events.utils';
@@ -16,6 +16,7 @@
 	interface Props {
 		onsend?: () => void;
 		selectedWallet: SelectedWallet;
+        selectedToken: SelectedToken;
 	}
 
 	let { onsend, selectedWallet }: Props = $props();

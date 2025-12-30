@@ -5,8 +5,7 @@
 	import WalletBalanceIcp from '$lib/components/wallet/WalletBalanceIcp.svelte';
 	import WalletInlineBalanceCycles from '$lib/components/wallet/WalletInlineBalanceCycles.svelte';
 	import WalletInlineBalanceIcp from '$lib/components/wallet/WalletInlineBalanceIcp.svelte';
-	import { ICP_LEDGER_CANISTER_ID } from '$lib/constants/app.constants';
-	import type { LedgerIdText, SelectedToken, SelectedWallet } from '$lib/schemas/wallet.schema';
+	import type { SelectedToken, SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { balanceCertifiedStore } from '$lib/stores/wallet/balance.store';
     import {isTokenIcp} from "$lib/utils/token.utils";
 

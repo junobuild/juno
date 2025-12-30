@@ -11,7 +11,7 @@
 	import WalletPicker from '$lib/components/wallet/WalletPicker.svelte';
 	import WalletTotal from '$lib/components/wallet/WalletTotal.svelte';
 	import ReceiveTokens from '$lib/components/wallet/tokens/ReceiveTokens.svelte';
-	import { CYCLES_LEDGER_CANISTER_ID } from '$lib/constants/app.constants';
+	import { CYCLES_LEDGER_CANISTER_ID, ICP_LEDGER_CANISTER_ID } from '$lib/constants/app.constants';
 	import { testIds } from '$lib/constants/test-ids.constants';
 	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { i18n } from '$lib/stores/app/i18n.store';
@@ -57,7 +57,23 @@
 					{$i18n.wallet.balance}
 				{/snippet}
 
-				<WalletBalanceById display="inline" ledgerId={CYCLES_LEDGER_CANISTER_ID} {selectedWallet} />
+				<p>
+					<WalletBalanceById
+						display="inline"
+						ledgerId={CYCLES_LEDGER_CANISTER_ID}
+						{selectedWallet}
+					/>
+				</p>
+
+				{#if selectedWallet?.type === 'mission_control'}
+					<p>
+						<WalletBalanceById
+							display="inline"
+							ledgerId={ICP_LEDGER_CANISTER_ID}
+							{selectedWallet}
+						/>
+					</p>
+				{/if}
 			</Value>
 		</div>
 

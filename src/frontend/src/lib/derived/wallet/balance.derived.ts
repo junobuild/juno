@@ -71,6 +71,11 @@ export const missionControlIcpBalanceOrZero = derived(
 	([$missionControlIcpBalance]) => $missionControlIcpBalance ?? 0n
 );
 
+export const missionControlHasIcp = derived(
+	[missionControlIcpBalanceOrZero],
+	([$missionControlIcpBalanceOrZero]) => $missionControlIcpBalanceOrZero > 0n
+);
+
 const balanceLoaded = derived(
 	[balanceCertifiedStore],
 	([$balanceStore]) => $balanceStore !== undefined

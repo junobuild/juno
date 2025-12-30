@@ -15,6 +15,7 @@
 	import { testIds } from '$lib/constants/test-ids.constants';
 	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { i18n } from '$lib/stores/app/i18n.store';
+	import {missionControlHasIcp} from "$lib/derived/wallet/balance.derived";
 
 	let button: HTMLButtonElement | undefined = $state();
 	let visible: boolean = $state(false);
@@ -65,7 +66,7 @@
 					/>
 				</p>
 
-				{#if selectedWallet?.type === 'mission_control'}
+				{#if selectedWallet?.type === 'mission_control' && $missionControlHasIcp}
 					<p>
 						<WalletBalanceById
 							display="inline"

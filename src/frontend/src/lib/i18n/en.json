@@ -374,7 +374,8 @@
 		"wallet_upgrade": "Please upgrade your wallet to enable the sending feature.",
 		"approving_canister_fee": "Authorizing fee...",
 		"dev": "Developer",
-		"total": "Total"
+		"total": "Total",
+		"resource": "Resource"
 	},
 	"authentication": {
 		"title": "Authentication",

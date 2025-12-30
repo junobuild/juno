@@ -16,7 +16,6 @@
 	import type { Option } from '$lib/types/utils';
 	import { formatCyclesToHTML } from '$lib/utils/cycles.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
-	import { toAccountIdentifier } from '$lib/utils/icp-icrc-account.utils';
 	import { formatICPToHTML } from '$lib/utils/icp.utils';
 
 	interface Props {

@@ -16,16 +16,17 @@
 	} from '$lib/constants/app.constants';
 	import { authSignedIn, authSignedOut } from '$lib/derived/auth.derived';
 	import { transactions } from '$lib/derived/wallet/transactions.derived';
-	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
+	import type { IndexIdText, LedgerIdText, SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { loadNextTransactions } from '$lib/services/wallet/wallet.transactions.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
 	import { last } from '$lib/utils/utils';
+	import WalletLedgerPicker from '$lib/components/wallet/WalletLedgerPicker.svelte';
 
 	let selectedWallet = $state<SelectedWallet | undefined>(undefined);
 
-	const ledgerId = CYCLES_LEDGER_CANISTER_ID;
-	const indexId = CYCLES_INDEX_CANISTER_ID;
+	let ledgerId = $state<LedgerIdText>(CYCLES_LEDGER_CANISTER_ID);
+	let indexId = $state<IndexIdText>(CYCLES_INDEX_CANISTER_ID);
 
 	let walletIdText = $derived(
 		nonNullish(selectedWallet) ? encodeIcrcAccount(selectedWallet.walletId) : undefined
@@ -85,11 +86,12 @@
 					<WalletPicker bind:selectedWallet />
 				</div>
 
+				<WalletLedgerPicker {selectedWallet} bind:ledgerId bind:indexId />
+
 				{#if nonNullish(selectedWallet)}
 					<WalletIds {selectedWallet} />
 				{/if}
 			</div>
-			§
 
 			<div>
 				<WalletBalanceById {ledgerId} {selectedWallet} />

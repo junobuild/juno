@@ -384,6 +384,7 @@ interface I18nWallet {
 	approving_canister_fee: string;
 	dev: string;
 	total: string;
+	resource: string;
 }
 
 interface I18nAuthentication {

@@ -11,6 +11,9 @@ export type LedgerIdText = z.infer<typeof LedgerIdTextSchema>;
 const LedgerIdSchema = PrincipalSchema;
 export type LedgerId = z.infer<typeof LedgerIdSchema>;
 
+export const IndexIdTextSchema = PrincipalTextSchema;
+export type IndexIdText = z.infer<typeof IndexIdTextSchema>;
+
 const IndexIdSchema = LedgerIdSchema;
 export type IndexId = z.infer<typeof IndexIdSchema>;
 

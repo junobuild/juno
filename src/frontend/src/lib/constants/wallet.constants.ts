@@ -1,8 +1,10 @@
 import {
 	CYCLES_INDEX_CANISTER_ID,
-	CYCLES_LEDGER_CANISTER_ID, CYCLES_TRANSACTION_FEE, ICP_TRANSACTION_FEE,
+	CYCLES_LEDGER_CANISTER_ID,
+	CYCLES_TRANSACTION_FEE,
 	ICP_INDEX_CANISTER_ID,
-	ICP_LEDGER_CANISTER_ID
+	ICP_LEDGER_CANISTER_ID,
+	ICP_TRANSACTION_FEE
 } from '$lib/constants/app.constants';
 import { isDev } from '$lib/env/app.env';
 import type { SelectedToken } from '$lib/schemas/wallet.schema';

@@ -100,8 +100,8 @@
 				{balance}
 				onback={() => (step = 'form')}
 				{onsubmit}
-				{selectedWallet}
 				{selectedToken}
+				{selectedWallet}
 				bind:amount
 				bind:destination
 			/>
@@ -110,8 +110,8 @@
 		<SendTokensForm
 			{balance}
 			onreview={() => (step = 'review')}
-			{selectedWallet}
 			{selectedToken}
+			{selectedWallet}
 			bind:amount
 			bind:destination
 		/>

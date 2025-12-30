@@ -1,7 +1,7 @@
 import { PrincipalSchema } from '$lib/schemas/principal.schema';
+import type { Token } from '@dfinity/utils';
 import { PrincipalTextSchema } from '@dfinity/zod-schemas';
 import * as z from 'zod';
-import type { Token } from '@dfinity/utils';
 
 export const IcrcAccountTextSchema = z.string();
 export type IcrcAccountText = z.infer<typeof IcrcAccountTextSchema>;

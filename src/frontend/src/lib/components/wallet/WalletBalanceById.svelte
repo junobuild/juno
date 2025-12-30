@@ -7,7 +7,7 @@
 	import WalletInlineBalanceIcp from '$lib/components/wallet/WalletInlineBalanceIcp.svelte';
 	import type { SelectedToken, SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { balanceCertifiedStore } from '$lib/stores/wallet/balance.store';
-    import {isTokenIcp} from "$lib/utils/token.utils";
+	import { isTokenIcp } from '$lib/utils/token.utils';
 
 	interface Props {
 		selectedWallet: SelectedWallet | undefined;

@@ -4,11 +4,11 @@
 	import Input from '$lib/components/ui/Input.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import SendTokensMax from '$lib/components/wallet/tokens/SendTokensMax.svelte';
+	import { ICP_TOKEN } from '$lib/constants/wallet.constants';
 	import { icpToUsd } from '$lib/derived/wallet/exchange.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { formatICPToUsd } from '$lib/utils/icp.utils';
 	import { amountToToken } from '$lib/utils/token.utils';
-	import { ICP_TOKEN } from '$lib/constants/wallet.constants';
 
 	interface Props {
 		balance: bigint | undefined;
@@ -58,8 +58,8 @@
 				<SendTokensMax
 					{balance}
 					{fee}
-					selectedToken={ICP_TOKEN}
 					onmax={(value) => (amount = value)}
+					selectedToken={ICP_TOKEN}
 				/>
 			{/snippet}
 		</Input>

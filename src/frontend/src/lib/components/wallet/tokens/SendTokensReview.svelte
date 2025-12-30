@@ -5,10 +5,10 @@
 	import Value from '$lib/components/ui/Value.svelte';
 	import WalletSendFrom from '$lib/components/wallet/WalletSendFrom.svelte';
 	import SendTokensAmount from '$lib/components/wallet/tokens/SendTokensAmount.svelte';
+	import TokenSymbol from '$lib/components/wallet/tokens/TokenSymbol.svelte';
 	import type { SelectedToken, SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { amountToToken, formatToken } from '$lib/utils/token.utils';
-	import TokenSymbol from '$lib/components/wallet/tokens/TokenSymbol.svelte';
 
 	interface Props {
 		selectedWallet: SelectedWallet;
@@ -51,7 +51,7 @@
 
 <form onsubmit={onSubmit}>
 	<div class="columns">
-		<WalletSendFrom {balance} {selectedWallet} {selectedToken} />
+		<WalletSendFrom {balance} {selectedToken} {selectedWallet} />
 
 		<GridArrow />
 
@@ -74,7 +74,7 @@
 			<span class="title">{$i18n.wallet.sending}</span>
 
 			<div class="content">
-				<SendTokensAmount {token} {selectedToken} />
+				<SendTokensAmount {selectedToken} {token} />
 
 				<Value>
 					{#snippet label()}

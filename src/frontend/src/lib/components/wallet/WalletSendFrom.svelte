@@ -3,14 +3,14 @@
 	import { encodeIcrcAccount } from '@icp-sdk/canisters/ledger/icrc';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
+	import WalletBalanceUsd from '$lib/components/wallet/WalletBalanceUsd.svelte';
+	import TokenSymbol from '$lib/components/wallet/tokens/TokenSymbol.svelte';
 	import { icpToUsd, icpToUsdDefined } from '$lib/derived/wallet/exchange.derived';
 	import type { SelectedToken, SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toAccountIdentifier } from '$lib/utils/icp-icrc-account.utils';
 	import { formatICPToUsd } from '$lib/utils/icp.utils';
 	import { formatToken } from '$lib/utils/token.utils';
-	import TokenSymbol from '$lib/components/wallet/tokens/TokenSymbol.svelte';
-	import WalletBalanceUsd from "$lib/components/wallet/WalletBalanceUsd.svelte";
 
 	interface Props {
 		selectedWallet: SelectedWallet;
@@ -71,7 +71,7 @@
 					>
 
 					{#if nonNullish($icpToUsd) && $icpToUsdDefined}
-						<span class="usd"><WalletBalanceUsd {selectedToken} {balance} /></span>
+						<span class="usd"><WalletBalanceUsd {balance} {selectedToken} /></span>
 					{/if}
 				{/if}
 			</p>

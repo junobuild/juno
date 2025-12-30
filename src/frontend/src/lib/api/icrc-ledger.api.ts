@@ -2,11 +2,11 @@ import { getAgent } from '$lib/api/_agent/_agent.api';
 import type { LedgerId } from '$lib/schemas/wallet.schema';
 import type { OptionIdentity } from '$lib/types/itentity';
 import { assertNonNullish, nowInBigIntNanoSeconds } from '@dfinity/utils';
-import type { TransferParams } from '@icp-sdk/canisters/ledger/icrc';
 import {
 	IcrcLedgerCanister,
 	type ApproveParams,
-	type IcrcLedgerDid
+	type IcrcLedgerDid,
+	type TransferParams
 } from '@icp-sdk/canisters/ledger/icrc';
 import type { Principal } from '@icp-sdk/core/principal';
 

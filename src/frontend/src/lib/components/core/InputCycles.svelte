@@ -4,13 +4,13 @@
 	import Input from '$lib/components/ui/Input.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import SendTokensMax from '$lib/components/wallet/tokens/SendTokensMax.svelte';
+	import { CYCLES_TOKEN, CyclesToken } from '$lib/constants/wallet.constants';
 	import { icpToUsd } from '$lib/derived/wallet/exchange.derived';
+	import { icpToCyclesRate } from '$lib/derived/wallet/rate.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
+	import { cyclesToIcpE8s } from '$lib/utils/cycles.utils';
 	import { formatICPToUsd } from '$lib/utils/icp.utils';
 	import { amountToToken } from '$lib/utils/token.utils';
-	import {CYCLES_TOKEN, CyclesToken} from '$lib/constants/wallet.constants';
-	import { cyclesToIcpE8s } from '$lib/utils/cycles.utils';
-	import {icpToCyclesRate} from "$lib/derived/wallet/rate.derived";
 
 	interface Props {
 		balance: bigint | undefined;
@@ -55,16 +55,21 @@
 
 		<Input
 			name="amount"
+			decimals={CyclesToken.decimals}
 			footer={withUsd ? footer : undefined}
 			inputType="currency"
-			decimals={CyclesToken.decimals}
 			placeholder={$i18n.wallet.amount_placeholder}
 			required
 			spellcheck={false}
 			bind:value={amount}
 		>
 			{#snippet end()}
-				<SendTokensMax {balance} {fee} selectedToken={CYCLES_TOKEN} onmax={(value) => (amount = value)} />
+				<SendTokensMax
+					{balance}
+					{fee}
+					onmax={(value) => (amount = value)}
+					selectedToken={CYCLES_TOKEN}
+				/>
 			{/snippet}
 		</Input>
 	</Value>

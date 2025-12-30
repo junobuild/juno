@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
+	import type { SelectedToken } from '$lib/schemas/wallet.schema';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import {formatToken} from "$lib/utils/token.utils";
-	import type {SelectedToken} from "$lib/schemas/wallet.schema";
+	import { formatToken } from '$lib/utils/token.utils';
 
 	interface Props {
 		balance: bigint | undefined;
@@ -25,7 +25,7 @@
 		const appliedFee = fee ?? selectedToken.fee;
 		const amount = balance - appliedFee;
 
-		onmax(formatToken({selectedToken, amount}));
+		onmax(formatToken({ selectedToken, amount }));
 	};
 </script>
 

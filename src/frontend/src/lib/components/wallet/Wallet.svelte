@@ -96,7 +96,7 @@
 	</div>
 
 	{#if nonNullish(selectedWallet)}
-		<WalletActions onreceive={() => (receiveVisible = true)} {selectedWallet} {selectedToken} />
+		<WalletActions onreceive={() => (receiveVisible = true)} {selectedToken} {selectedWallet} />
 
 		<Transactions
 			{disableInfiniteScroll}

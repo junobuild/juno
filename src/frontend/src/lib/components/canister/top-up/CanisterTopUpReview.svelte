@@ -8,12 +8,12 @@
 	import WalletSendFrom from '$lib/components/wallet/WalletSendFrom.svelte';
 	import SendTokensAmount from '$lib/components/wallet/tokens/SendTokensAmount.svelte';
 	import { TOP_UP_NETWORK_FEES } from '$lib/constants/app.constants';
+	import { ICP_TOKEN } from '$lib/constants/wallet.constants';
 	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { CanisterSegmentWithLabel } from '$lib/types/canister';
 	import { formatICP } from '$lib/utils/icp.utils';
 	import { amountToToken } from '$lib/utils/token.utils';
-	import {ICP_TOKEN} from "$lib/constants/wallet.constants";
 
 	interface Props {
 		selectedWallet: SelectedWallet | undefined;
@@ -37,7 +37,7 @@
 <form {onsubmit}>
 	<div class="columns">
 		{#if nonNullish(selectedWallet)}
-			<WalletSendFrom {balance} {selectedWallet} selectedToken={ICP_TOKEN} />
+			<WalletSendFrom {balance} selectedToken={ICP_TOKEN} {selectedWallet} />
 		{/if}
 
 		<GridArrow />
@@ -64,7 +64,7 @@
 			<span class="title">{$i18n.canisters.topping_up}</span>
 
 			<div class="content">
-				<SendTokensAmount {token} selectedToken={ICP_TOKEN} />
+				<SendTokensAmount selectedToken={ICP_TOKEN} {token} />
 
 				<Value>
 					{#snippet label()}

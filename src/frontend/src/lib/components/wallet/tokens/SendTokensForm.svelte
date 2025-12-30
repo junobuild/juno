@@ -1,4 +1,5 @@
 <script lang="ts">
+	import InputCycles from '$lib/components/core/InputCycles.svelte';
 	import InputIcp from '$lib/components/core/InputIcp.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
@@ -15,7 +16,6 @@
 		isTokenCycles,
 		isTokenIcp
 	} from '$lib/utils/token.utils';
-	import InputCycles from '$lib/components/core/InputCycles.svelte';
 
 	interface Props {
 		selectedWallet: SelectedWallet;

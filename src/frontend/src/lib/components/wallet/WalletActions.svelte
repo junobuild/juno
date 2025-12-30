@@ -19,5 +19,5 @@
 
 	<WalletReceive {onreceive} />
 
-	<WalletSend {onsend} {selectedWallet} {selectedToken} />
+	<WalletSend {onsend} {selectedToken} {selectedWallet} />
 </div>

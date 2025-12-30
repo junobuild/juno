@@ -28,6 +28,12 @@
 	let resourceType = $state<'cycles' | 'icp'>('cycles');
 
 	$effect(() => {
+		selectedWallet;
+
+		resourceType = 'cycles';
+	});
+
+	$effect(() => {
 		resourceType;
 
 		untrack(() => {

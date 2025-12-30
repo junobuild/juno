@@ -1,4 +1,4 @@
-import { approveIcrcTransfer } from '$lib/api/icrc-ledger-api';
+import { approveIcrcTransfer } from '$lib/api/icrc-ledger.api';
 import {
 	CONSOLE_CANISTER_ID,
 	CYCLES_LEDGER_CANISTER_ID,

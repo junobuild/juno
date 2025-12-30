@@ -374,7 +374,7 @@ interface I18nWallet {
 	sending_in_progress: string;
 	preparing_send: string;
 	review_and_confirm: string;
-	icp_on_its_way: string;
+	on_its_way: string;
 	or_connect_wallet: string;
 	connecting_wallet: string;
 	wallet_approve: string;
@@ -666,6 +666,7 @@ interface I18nErrors {
 	invalid_destination: string;
 	invalid_metadata: string;
 	empty_amount: string;
+	cycles_transfer_not_supported: string;
 	invalid_amount: string;
 	empty_balance: string;
 	wallet_not_selected: string;

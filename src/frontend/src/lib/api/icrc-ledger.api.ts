@@ -1,6 +1,8 @@
 import { getAgent } from '$lib/api/_agent/_agent.api';
+import type { LedgerId } from '$lib/schemas/wallet.schema';
 import type { OptionIdentity } from '$lib/types/itentity';
 import { assertNonNullish, nowInBigIntNanoSeconds } from '@dfinity/utils';
+import type { TransferParams } from '@icp-sdk/canisters/ledger/icrc';
 import {
 	IcrcLedgerCanister,
 	type ApproveParams,
@@ -18,7 +20,7 @@ export const approveIcrcTransfer = async ({
 	...rest
 }: {
 	identity: OptionIdentity;
-	ledgerId: Principal;
+	ledgerId: LedgerId;
 	validity?: bigint;
 } & Pick<ApproveParams, 'amount' | 'spender' | 'memo'>): Promise<IcrcLedgerDid.BlockIndex> => {
 	const { approve } = await icrcLedgerCanister(rest);
@@ -31,6 +33,18 @@ export const approveIcrcTransfer = async ({
 	};
 
 	return approve(request);
+};
+
+export const icrcTransfer = async ({
+	request,
+	...rest
+}: {
+	identity: OptionIdentity;
+	ledgerId: LedgerId;
+	request: TransferParams;
+}): Promise<IcrcLedgerDid.BlockIndex> => {
+	const { transfer } = await icrcLedgerCanister(rest);
+	return await transfer(request);
 };
 
 const icrcLedgerCanister = async ({

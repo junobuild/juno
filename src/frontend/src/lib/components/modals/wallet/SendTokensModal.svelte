@@ -66,6 +66,7 @@
 
 		const { success } = await sendTokens({
 			selectedWallet,
+			selectedToken,
 			identity: $authStore.identity,
 			destination,
 			token,
@@ -88,7 +89,7 @@
 		<Confetti />
 
 		<div class="msg" in:fade>
-			<p>{$i18n.wallet.icp_on_its_way}</p>
+			<p>{$i18n.wallet.on_its_way}</p>
 			<button onclick={onclose}>{$i18n.core.close}</button>
 		</div>
 	{:else if step === 'in_progress'}

@@ -131,7 +131,7 @@
 	<Confetti display="popover" />
 
 	<div class="msg">
-		<p>{$i18n.wallet.icp_on_its_way}</p>
+		<p>{$i18n.wallet.on_its_way}</p>
 		<button onclick={() => (visible = false)}>{$i18n.core.close}</button>
 	</div>
 {:else if step === 'form' && nonNullish(account)}

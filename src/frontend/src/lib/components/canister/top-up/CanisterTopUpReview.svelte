@@ -13,6 +13,7 @@
 	import type { CanisterSegmentWithLabel } from '$lib/types/canister';
 	import { formatICP } from '$lib/utils/icp.utils';
 	import { amountToToken } from '$lib/utils/token.utils';
+	import {ICP_TOKEN} from "$lib/constants/wallet.constants";
 
 	interface Props {
 		selectedWallet: SelectedWallet | undefined;
@@ -36,7 +37,7 @@
 <form {onsubmit}>
 	<div class="columns">
 		{#if nonNullish(selectedWallet)}
-			<WalletSendFrom {balance} {selectedWallet} />
+			<WalletSendFrom {balance} {selectedWallet} selectedToken={ICP_TOKEN} />
 		{/if}
 
 		<GridArrow />
@@ -63,7 +64,7 @@
 			<span class="title">{$i18n.canisters.topping_up}</span>
 
 			<div class="content">
-				<SendTokensAmount {token} />
+				<SendTokensAmount {token} selectedToken={ICP_TOKEN} />
 
 				<Value>
 					{#snippet label()}

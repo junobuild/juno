@@ -647,7 +647,7 @@
 		"full_path_start_slash": "完整路径应以/开头",
 		"full_path_end_slash": "完整路径不应以/结尾",
 		"invalid_email": "请输入有效的邮箱地址。",
-		"invalid_destination": "请输入有效的ICP或ICRC目标地址。",
+		"invalid_destination": "请输入有效的目标地址。",
 		"invalid_metadata": "提供的元数据无效。",
 		"empty_amount": "请输入转账金额。",
 		"invalid_amount": "金额应大于0且小于您的余额扣除手续费。",

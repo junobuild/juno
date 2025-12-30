@@ -1,6 +1,6 @@
 import {
 	CYCLES_INDEX_CANISTER_ID,
-	CYCLES_LEDGER_CANISTER_ID,
+	CYCLES_LEDGER_CANISTER_ID, CYCLES_TRANSACTION_FEE, ICP_TRANSACTION_FEE,
 	ICP_INDEX_CANISTER_ID,
 	ICP_LEDGER_CANISTER_ID
 } from '$lib/constants/app.constants';
@@ -44,12 +44,14 @@ export const CyclesToken: Token = {
 
 export const CYCLES_TOKEN: SelectedToken = {
 	token: CyclesToken,
+	fee: CYCLES_TRANSACTION_FEE,
 	ledgerId: CYCLES_LEDGER_CANISTER_ID,
 	indexId: CYCLES_INDEX_CANISTER_ID
 };
 
 export const ICP_TOKEN: SelectedToken = {
 	token: ICPToken,
+	fee: ICP_TRANSACTION_FEE,
 	ledgerId: ICP_LEDGER_CANISTER_ID,
 	indexId: ICP_INDEX_CANISTER_ID
 };

@@ -2,7 +2,7 @@ import { notifyTopUp } from '$lib/api/cmc.api';
 import { icpTransfer as icpTransferWithDev } from '$lib/api/icp-ledger.api';
 import {
 	CMC_CANISTER_ID,
-	IC_TRANSACTION_FEE_ICP,
+	ICP_TRANSACTION_FEE,
 	TOP_UP_NETWORK_FEES
 } from '$lib/constants/app.constants';
 import { MEMO_CANISTER_TOP_UP } from '$lib/constants/wallet.constants';
@@ -79,7 +79,7 @@ export const sendIcpToCmc = async ({
 	const request: TransferRequest = {
 		to,
 		amount: sendAmount,
-		fee: IC_TRANSACTION_FEE_ICP,
+		fee: ICP_TRANSACTION_FEE,
 		createdAt: nowInBigIntNanoSeconds(),
 		memo: MEMO_CANISTER_TOP_UP
 	};

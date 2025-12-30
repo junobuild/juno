@@ -10,6 +10,8 @@
 	} from '$lib/derived/wallet/exchange.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { formatICP, formatICPToUsd } from '$lib/utils/icp.utils';
+	import { ICP_TOKEN } from '$lib/constants/wallet.constants';
+	import WalletBalanceUsd from '$lib/components/wallet/WalletBalanceUsd.svelte';
 
 	interface Props {
 		balance: bigint | undefined;
@@ -35,7 +37,7 @@
 		{:else}
 			<span class="main" in:fade>
 				{#if nonNullish($icpToUsd) && $icpToUsdDefined}
-					{formatICPToUsd({ icp: balance, icpToUsd: $icpToUsd })}
+					<WalletBalanceUsd selectedToken={ICP_TOKEN} {balance} />
 				{:else}
 					{@render icpBalance()}
 				{/if}

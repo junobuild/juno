@@ -53,6 +53,7 @@ export type SelectedWallet = z.infer<typeof SelectedWalletSchema>;
 
 const SelectedTokenSchema = z.strictObject({
 	token: z.custom<Token>(),
+	fee: z.bigint(),
 	...LedgerIdsTextSchema.shape
 });
 export type SelectedToken = z.infer<typeof SelectedTokenSchema>;

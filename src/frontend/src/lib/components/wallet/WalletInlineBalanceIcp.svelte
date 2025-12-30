@@ -8,6 +8,8 @@
 		icpToUsdDefined
 	} from '$lib/derived/wallet/exchange.derived';
 	import { formatICP, formatICPToUsd } from '$lib/utils/icp.utils';
+	import WalletBalanceUsd from "$lib/components/wallet/WalletBalanceUsd.svelte";
+	import {ICP_TOKEN} from "$lib/constants/wallet.constants";
 
 	interface Props {
 		balance: bigint | undefined;
@@ -19,7 +21,7 @@
 {#if isNullish(balance) || $exchangePricesNotLoaded}
 	<SkeletonText />
 {:else if nonNullish($icpToUsd) && $icpToUsdDefined}
-	<span in:fade>{formatICPToUsd({ icp: balance, icpToUsd: $icpToUsd })}</span>
+	<span in:fade><WalletBalanceUsd selectedToken={ICP_TOKEN} {balance} /></span>
 {:else}
 	<span in:fade>{formatICP(balance)} <small>ICP</small></span>
 {/if}

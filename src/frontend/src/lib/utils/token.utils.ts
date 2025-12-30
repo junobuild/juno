@@ -1,9 +1,16 @@
-import { IC_TRANSACTION_FEE_ICP } from '$lib/constants/app.constants';
+import { CyclesToken } from '$lib/constants/wallet.constants';
 import type { SelectedToken } from '$lib/schemas/wallet.schema';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
-import type { Token } from '@dfinity/utils';
-import { FromStringToTokenError, isNullish, TokenAmountV2 } from '@dfinity/utils';
+import { formatTCycles } from '$lib/utils/cycles.utils';
+import { formatICP } from '$lib/utils/icp.utils';
+import {
+	FromStringToTokenError,
+	ICPToken,
+	isNullish,
+	TokenAmountV2,
+	type Token
+} from '@dfinity/utils';
 import { get } from 'svelte/store';
 
 export const amountToToken = ({
@@ -33,12 +40,12 @@ export const assertAndConvertAmountToToken = ({
 	amount,
 	balance,
 	token,
-	fee = IC_TRANSACTION_FEE_ICP
+	fee
 }: {
 	amount: string | undefined;
 	balance: bigint | undefined;
 	token: Token;
-	fee?: bigint;
+	fee: bigint;
 }): { valid: boolean; tokenAmount?: TokenAmountV2 } => {
 	const labels = get(i18n);
 
@@ -56,7 +63,7 @@ export const assertAndConvertAmountToToken = ({
 		return { valid: false };
 	}
 
-	const tokenAmount = amountToToken({amount, token});
+	const tokenAmount = amountToToken({ amount, token });
 
 	if (isNullish(tokenAmount)) {
 		toasts.error({
@@ -75,4 +82,22 @@ export const assertAndConvertAmountToToken = ({
 	return { valid: true, tokenAmount };
 };
 
-export const isTokenIcp = ({ token: { symbol } }: SelectedToken): boolean => symbol === 'ICP';
+export const isTokenIcp = ({ token: { symbol } }: SelectedToken): boolean =>
+	symbol === ICPToken.symbol;
+
+export const isTokenCycles = ({ token: { symbol } }: SelectedToken): boolean =>
+	symbol === CyclesToken.symbol;
+
+export const formatToken = ({
+	selectedToken,
+	amount,
+	withSymbol = false
+}: {
+	selectedToken: SelectedToken;
+	amount: bigint;
+	withSymbol?: boolean;
+}): string => {
+	const icp = isTokenIcp(selectedToken);
+	const formattedAmount = icp ? formatICP(amount) : formatTCycles(amount);
+	return `${formattedAmount}${withSymbol ? ` ${icp ? 'ICP' : 'T Cycles'}` : ''}`;
+};

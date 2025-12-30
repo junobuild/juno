@@ -4,17 +4,21 @@
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { icpToUsd, icpToUsdDefined } from '$lib/derived/wallet/exchange.derived';
-	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
+	import type { SelectedToken, SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toAccountIdentifier } from '$lib/utils/icp-icrc-account.utils';
-	import { formatICP, formatICPToUsd } from '$lib/utils/icp.utils';
+	import { formatICPToUsd } from '$lib/utils/icp.utils';
+	import { formatToken } from '$lib/utils/token.utils';
+	import TokenSymbol from '$lib/components/wallet/tokens/TokenSymbol.svelte';
+	import WalletBalanceUsd from "$lib/components/wallet/WalletBalanceUsd.svelte";
 
 	interface Props {
 		selectedWallet: SelectedWallet;
+		selectedToken: SelectedToken;
 		balance: bigint | undefined;
 	}
 
-	let { selectedWallet, balance }: Props = $props();
+	let { selectedWallet, selectedToken, balance }: Props = $props();
 
 	let { walletId } = $derived(selectedWallet);
 
@@ -47,12 +51,14 @@
 			<Identifier identifier={walletIdText} shorten={false} small={false} />
 		</Value>
 
-		<Value>
-			{#snippet label()}
-				{$i18n.wallet.account_identifier}
-			{/snippet}
-			<Identifier identifier={accountIdentifier?.toHex() ?? ''} small={false} />
-		</Value>
+		{#if selectedWallet.type === 'mission_control'}
+			<Value>
+				{#snippet label()}
+					{$i18n.wallet.account_identifier}
+				{/snippet}
+				<Identifier identifier={accountIdentifier?.toHex() ?? ''} small={false} />
+			</Value>
+		{/if}
 
 		<Value>
 			{#snippet label()}
@@ -60,10 +66,12 @@
 			{/snippet}
 			<p>
 				{#if nonNullish(balance)}
-					<span>{formatICP(balance)} <small>ICP</small></span>
+					<span
+						>{formatToken({ selectedToken, amount: balance })} <TokenSymbol {selectedToken} /></span
+					>
 
 					{#if nonNullish($icpToUsd) && $icpToUsdDefined}
-						<span class="usd">{formatICPToUsd({ icp: balance, icpToUsd: $icpToUsd })}</span>
+						<span class="usd"><WalletBalanceUsd {selectedToken} {balance} /></span>
 					{/if}
 				{/if}
 			</p>

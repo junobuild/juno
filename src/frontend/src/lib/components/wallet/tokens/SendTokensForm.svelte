@@ -8,10 +8,13 @@
 	import { toasts } from '$lib/stores/app/toasts.store';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { invalidIcpAddress } from '$lib/utils/icp-account.utils';
-	import { formatICP } from '$lib/utils/icp.utils';
 	import { invalidIcrcAddress } from '$lib/utils/icrc-account.utils';
-	import { assertAndConvertAmountToToken, isTokenIcp } from '$lib/utils/token.utils';
-	import { formatTCycles } from '$lib/utils/cycles.utils';
+	import {
+		assertAndConvertAmountToToken,
+		formatToken,
+		isTokenCycles,
+		isTokenIcp
+	} from '$lib/utils/token.utils';
 	import InputCycles from '$lib/components/core/InputCycles.svelte';
 
 	interface Props {
@@ -35,7 +38,18 @@
 	const onSubmit = ($event: SubmitEvent) => {
 		$event.preventDefault();
 
-		if (invalidIcrcAddress(destination) && invalidIcpAddress(destination)) {
+		if (
+			isTokenIcp(selectedToken) &&
+			invalidIcrcAddress(destination) &&
+			invalidIcpAddress(destination)
+		) {
+			toasts.error({
+				text: $i18n.errors.invalid_destination
+			});
+			return;
+		}
+
+		if (isTokenCycles(selectedToken) && invalidIcrcAddress(destination)) {
 			toasts.error({
 				text: $i18n.errors.invalid_destination
 			});
@@ -45,7 +59,8 @@
 		const { valid } = assertAndConvertAmountToToken({
 			balance,
 			amount,
-			token: selectedToken.token
+			token: selectedToken.token,
+			fee: selectedToken.fee
 		});
 
 		if (!valid) {
@@ -74,9 +89,7 @@
 			},
 			{
 				placeholder: '{2}',
-				value: isTokenIcp(selectedToken)
-					? `${formatICP(balance ?? 0n)} ICP`
-					: `${formatTCycles(balance ?? 0n)} T Cycles`
+				value: formatToken({ selectedToken, amount: balance ?? 0n, withSymbol: true })
 			}
 		])}
 	/>

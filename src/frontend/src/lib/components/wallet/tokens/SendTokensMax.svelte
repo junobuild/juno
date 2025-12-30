@@ -1,17 +1,18 @@
 <script lang="ts">
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
-	import { IC_TRANSACTION_FEE_ICP } from '$lib/constants/app.constants';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import { formatICP } from '$lib/utils/icp.utils';
+	import {formatToken} from "$lib/utils/token.utils";
+	import type {SelectedToken} from "$lib/schemas/wallet.schema";
 
 	interface Props {
 		balance: bigint | undefined;
 		onmax: (max: string) => void;
 		fee?: bigint;
+		selectedToken: SelectedToken;
 	}
 
-	let { onmax, balance, fee }: Props = $props();
+	let { onmax, balance, fee, selectedToken }: Props = $props();
 
 	const calculateMax = ($event: MouseEvent | TouchEvent) => {
 		$event.preventDefault();
@@ -21,10 +22,10 @@
 			return;
 		}
 
-		const appliedFee = fee ?? IC_TRANSACTION_FEE_ICP;
+		const appliedFee = fee ?? selectedToken.fee;
 		const amount = balance - appliedFee;
 
-		onmax(formatICP(amount));
+		onmax(formatToken({selectedToken, amount}));
 	};
 </script>
 

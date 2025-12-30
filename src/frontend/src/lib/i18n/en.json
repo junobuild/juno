@@ -646,7 +646,7 @@
 		"full_path_start_slash": "The full path must start with a /",
 		"full_path_end_slash": "The full path must not end with a /",
 		"invalid_email": "Please enter a valid email address.",
-		"invalid_destination": "Please enter a valid ICP or ICRC destination address.",
+		"invalid_destination": "Please enter a valid destination address.",
 		"invalid_metadata": "The metadata provided is invalid.",
 		"empty_amount": "Please enter an amount for the transfer.",
 		"invalid_amount": "The amount should be greater than zero and less than your balance minus the fee.",

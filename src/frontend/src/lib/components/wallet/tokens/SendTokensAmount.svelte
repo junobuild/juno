@@ -4,12 +4,17 @@
 	import { icpToUsd, icpToUsdDefined } from '$lib/derived/wallet/exchange.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { formatICP, formatICPToUsd } from '$lib/utils/icp.utils';
+	import {formatToken} from "$lib/utils/token.utils";
+	import type {SelectedToken} from "$lib/schemas/wallet.schema";
+	import TokenSymbol from "$lib/components/wallet/tokens/TokenSymbol.svelte";
+	import TokenUsd from "$lib/components/wallet/tokens/TokenUsd.svelte";
 
 	interface Props {
 		token: TokenAmountV2 | undefined;
+		selectedToken: SelectedToken;
 	}
 
-	let { token }: Props = $props();
+	let { token, selectedToken }: Props = $props();
 </script>
 
 <Value>
@@ -19,18 +24,9 @@
 
 	<p>
 		{#if nonNullish(token)}
-			<span>{formatICP(token.toE8s())} <small>ICP</small></span>
+			<span>{formatToken({selectedToken, amount: token.toUlps()})} <TokenSymbol {selectedToken} /></span>
 
-			{#if nonNullish($icpToUsd) && $icpToUsdDefined}
-				<span class="usd">{formatICPToUsd({ icp: token.toE8s(), icpToUsd: $icpToUsd })}</span>
-			{/if}
+			<TokenUsd {selectedToken} {token} />
 		{/if}
 	</p>
 </Value>
-
-<style lang="scss">
-	.usd {
-		display: block;
-		font-size: var(--font-size-small);
-	}
-</style>

@@ -7,7 +7,7 @@ import {
 	icpTransfer as icpTransferWithMissionControl,
 	icrcTransfer as icrcTransferWithMissionControl
 } from '$lib/api/mission-control.api';
-import { ICP_LEDGER_CANISTER_ID, IC_TRANSACTION_FEE_ICP } from '$lib/constants/app.constants';
+import { ICP_LEDGER_CANISTER_ID, ICP_TRANSACTION_FEE } from '$lib/constants/app.constants';
 import type { SelectedWallet } from '$lib/schemas/wallet.schema';
 import { execute } from '$lib/services/_progress.services';
 import { i18n } from '$lib/stores/app/i18n.store';
@@ -131,7 +131,7 @@ export const sendIcrcWithMissionControl = async ({
 			subaccount: toNullable(subaccount)
 		},
 		amount: token.toE8s(),
-		fee: toNullable(IC_TRANSACTION_FEE_ICP),
+		fee: toNullable(ICP_TRANSACTION_FEE),
 		memo: toNullable(),
 		from_subaccount: toNullable(),
 		created_at_time: toNullable(nowInBigIntNanoSeconds())
@@ -157,7 +157,7 @@ export const sendIcpWithMissionControl = async ({
 	const args: MissionControlDid.TransferArgs = {
 		to: AccountIdentifier.fromHex(destination).toUint8Array(),
 		amount: { e8s: token.toE8s() },
-		fee: { e8s: IC_TRANSACTION_FEE_ICP },
+		fee: { e8s: ICP_TRANSACTION_FEE },
 		memo: 0n,
 		created_at_time: toNullable({ timestamp_nanos: nowInBigIntNanoSeconds() }),
 		from_subaccount: toNullable()
@@ -186,7 +186,7 @@ export const sendIcrcWithDev = async ({
 			subaccount: toNullable(subaccount)
 		},
 		amount: token.toE8s(),
-		fee: IC_TRANSACTION_FEE_ICP,
+		fee: ICP_TRANSACTION_FEE,
 		createdAt: nowInBigIntNanoSeconds()
 	};
 
@@ -208,7 +208,7 @@ export const sendIcpWithDev = async ({
 	const request: TransferRequest = {
 		to: AccountIdentifier.fromHex(destination),
 		amount: token.toE8s(),
-		fee: IC_TRANSACTION_FEE_ICP,
+		fee: ICP_TRANSACTION_FEE,
 		createdAt: nowInBigIntNanoSeconds()
 	};
 

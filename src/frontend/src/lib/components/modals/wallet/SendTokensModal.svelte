@@ -1,12 +1,11 @@
 <script lang="ts">
-	import { nonNullish, type TokenAmountV2 } from '@dfinity/utils';
+	import type { TokenAmountV2 } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
 	import Confetti from '$lib/components/ui/Confetti.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import ProgressSendTokens from '$lib/components/wallet/tokens/ProgressSendTokens.svelte';
 	import SendTokensForm from '$lib/components/wallet/tokens/SendTokensForm.svelte';
 	import SendTokensReview from '$lib/components/wallet/tokens/SendTokensReview.svelte';
-	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import {
 		devCyclesBalance,
 		devIcpBalance,
@@ -101,6 +100,7 @@
 				onback={() => (step = 'form')}
 				{onsubmit}
 				{selectedWallet}
+				{selectedToken}
 				bind:amount
 				bind:destination
 			/>

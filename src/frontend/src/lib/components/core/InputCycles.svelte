@@ -8,9 +8,9 @@
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { formatICPToUsd } from '$lib/utils/icp.utils';
 	import { amountToToken } from '$lib/utils/token.utils';
-	import { CyclesToken } from '$lib/constants/wallet.constants';
-	import { icpToCyclesRateStore } from '$lib/stores/wallet/icp-cycles-rate.store';
+	import {CYCLES_TOKEN, CyclesToken} from '$lib/constants/wallet.constants';
 	import { cyclesToIcpE8s } from '$lib/utils/cycles.utils';
+	import {icpToCyclesRate} from "$lib/derived/wallet/rate.derived";
 
 	interface Props {
 		balance: bigint | undefined;
@@ -22,14 +22,14 @@
 
 	let token: TokenAmountV2 | undefined = $derived(amountToToken({ amount, token: CyclesToken }));
 
-	let withUsd = $derived(nonNullish($icpToUsd) && nonNullish($icpToCyclesRateStore));
+	let withUsd = $derived(nonNullish($icpToUsd) && nonNullish($icpToCyclesRate));
 
 	let usd = $derived(
-		nonNullish($icpToUsd) && nonNullish($icpToCyclesRateStore) && nonNullish(token)
+		nonNullish($icpToUsd) && nonNullish($icpToCyclesRate) && nonNullish(token)
 			? formatICPToUsd({
 					icp: cyclesToIcpE8s({
 						cycles: token.toUlps(),
-						trillionRatio: $icpToCyclesRateStore.data
+						trillionRatio: $icpToCyclesRate
 					}),
 					icpToUsd: $icpToUsd
 				})
@@ -64,7 +64,7 @@
 			bind:value={amount}
 		>
 			{#snippet end()}
-				<SendTokensMax {balance} {fee} onmax={(value) => (amount = value)} />
+				<SendTokensMax {balance} {fee} selectedToken={CYCLES_TOKEN} onmax={(value) => (amount = value)} />
 			{/snippet}
 		</Input>
 	</Value>

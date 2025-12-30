@@ -5,11 +5,10 @@
 	import Value from '$lib/components/ui/Value.svelte';
 	import WalletSendFrom from '$lib/components/wallet/WalletSendFrom.svelte';
 	import SendTokensAmount from '$lib/components/wallet/tokens/SendTokensAmount.svelte';
-	import { IC_TRANSACTION_FEE_ICP } from '$lib/constants/app.constants';
 	import type { SelectedToken, SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import { formatICP } from '$lib/utils/icp.utils';
-	import { amountToToken } from '$lib/utils/token.utils';
+	import { amountToToken, formatToken } from '$lib/utils/token.utils';
+	import TokenSymbol from '$lib/components/wallet/tokens/TokenSymbol.svelte';
 
 	interface Props {
 		selectedWallet: SelectedWallet;
@@ -37,7 +36,9 @@
 		onsubmit
 	}: Props = $props();
 
-	let token: TokenAmountV2 | undefined = $derived(amountToToken({ amount, token: selectedToken.token }));
+	let token: TokenAmountV2 | undefined = $derived(
+		amountToToken({ amount, token: selectedToken.token })
+	);
 
 	const onSubmit = async ($event: SubmitEvent) => {
 		await onsubmit({ $event, token });
@@ -50,7 +51,7 @@
 
 <form onsubmit={onSubmit}>
 	<div class="columns">
-		<WalletSendFrom {balance} {selectedWallet} />
+		<WalletSendFrom {balance} {selectedWallet} {selectedToken} />
 
 		<GridArrow />
 
@@ -73,14 +74,17 @@
 			<span class="title">{$i18n.wallet.sending}</span>
 
 			<div class="content">
-				<SendTokensAmount {token} />
+				<SendTokensAmount {token} {selectedToken} />
 
 				<Value>
 					{#snippet label()}
 						{$i18n.core.fee}
 					{/snippet}
 					<p>
-						<span>{formatICP(IC_TRANSACTION_FEE_ICP)} <small>ICP</small></span>
+						<span
+							>{formatToken({ selectedToken, amount: selectedToken.fee })}
+							<TokenSymbol {selectedToken} /></span
+						>
 					</p>
 				</Value>
 			</div>

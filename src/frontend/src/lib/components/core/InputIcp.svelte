@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {ICPToken, nonNullish, type TokenAmountV2} from '@dfinity/utils';
+	import { ICPToken, nonNullish, type TokenAmountV2 } from '@dfinity/utils';
 	import { blur } from 'svelte/transition';
 	import Input from '$lib/components/ui/Input.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
@@ -8,6 +8,7 @@
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { formatICPToUsd } from '$lib/utils/icp.utils';
 	import { amountToToken } from '$lib/utils/token.utils';
+	import { ICP_TOKEN } from '$lib/constants/wallet.constants';
 
 	interface Props {
 		balance: bigint | undefined;
@@ -17,7 +18,7 @@
 
 	let { amount = $bindable(), balance, fee }: Props = $props();
 
-	let token: TokenAmountV2 | undefined = $derived(amountToToken({amount, token: ICPToken}));
+	let token: TokenAmountV2 | undefined = $derived(amountToToken({ amount, token: ICPToken }));
 
 	let withUsd = $derived(nonNullish($icpToUsd));
 
@@ -54,7 +55,12 @@
 			bind:value={amount}
 		>
 			{#snippet end()}
-				<SendTokensMax {balance} {fee} onmax={(value) => (amount = value)} />
+				<SendTokensMax
+					{balance}
+					{fee}
+					selectedToken={ICP_TOKEN}
+					onmax={(value) => (amount = value)}
+				/>
 			{/snippet}
 		</Input>
 	</Value>

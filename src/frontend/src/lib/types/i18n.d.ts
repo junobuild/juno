@@ -346,7 +346,7 @@ interface I18nWallet {
 	balance: string;
 	credits: string;
 	transfer_icp_info: string;
-	transfer_to_account_identifier: string;
+	documentation: string;
 	tx_id: string;
 	tx_timestamp: string;
 	tx_from: string;

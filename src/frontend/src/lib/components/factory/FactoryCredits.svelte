@@ -57,14 +57,6 @@
 	// there is no advance options displayed as result, therefore is no selected wallet
 	let fallbackDevWallet = $derived(nonNullish($devId) ? { owner: $devId } : undefined);
 
-	let accountIdentifier = $derived(
-		nonNullish(selectedWallet?.walletId)
-			? toAccountIdentifier(selectedWallet.walletId)
-			: nonNullish(fallbackDevWallet)
-				? toAccountIdentifier(fallbackDevWallet)
-				: undefined
-	);
-
 	$effect(() => {
 		insufficientFunds = balanceOrZero < fee && notEnoughCredits;
 	});
@@ -98,7 +90,7 @@
 {/if}
 
 {#if insufficientFunds}
-	<GetICPInfo {accountIdentifier} {onclose} />
+	<GetICPInfo {onclose} />
 {:else}
 	{@render children()}
 {/if}

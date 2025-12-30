@@ -1,4 +1,4 @@
-import { ONE_TRILLION } from '$lib/constants/app.constants';
+import { E8S_PER_ICP, ONE_TRILLION } from '$lib/constants/app.constants';
 import { notEmptyString } from '@dfinity/utils';
 import { formatNumber } from './number.utils';
 
@@ -25,7 +25,7 @@ export const icpToCycles = ({
 }: {
 	icp: bigint;
 	trillionRatio: bigint;
-}): bigint => icp * trillionRatio;
+}): bigint => (icp * trillionRatio) / E8S_PER_ICP;
 
 export const formatCyclesToHTML = ({ e12s, bold }: { e12s: bigint; bold: boolean }): string => {
 	const tag = bold ? 'strong' : 'span';

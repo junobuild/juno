@@ -1,6 +1,5 @@
 <script lang="ts">
 	import CanisterSyncData from '$lib/components/canister/CanisterSyncData.svelte';
-	import CanisterBuyCycleExpress from '$lib/components/canister/cycles/CanisterBuyCycleExpress.svelte';
 	import CanisterTransferCycles from '$lib/components/canister/cycles/CanisterTransferCycles.svelte';
 	import TopUp from '$lib/components/canister/top-up/TopUp.svelte';
 	import SegmentActions from '$lib/components/segments/SegmentActions.svelte';
@@ -44,7 +43,5 @@
 
 	{#snippet cyclesActions()}
 		<CanisterTransferCycles {canister} onclick={onTransferCycles} />
-
-		<CanisterBuyCycleExpress canisterId={missionControlId} />
 	{/snippet}
 </SegmentActions>

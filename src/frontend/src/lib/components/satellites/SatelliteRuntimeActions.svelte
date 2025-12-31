@@ -1,5 +1,4 @@
 <script lang="ts">
-	import CanisterBuyCycleExpress from '$lib/components/canister/cycles/CanisterBuyCycleExpress.svelte';
 	import CanisterTransferCycles from '$lib/components/canister/cycles/CanisterTransferCycles.svelte';
 	import CanisterDelete from '$lib/components/canister/lifecycle/CanisterDelete.svelte';
 	import CanisterStopStart from '$lib/components/canister/lifecycle/CanisterStopStart.svelte';
@@ -84,8 +83,6 @@
 
 	{#snippet cyclesActions()}
 		<CanisterTransferCycles {canister} onclick={onTransferCycles} />
-
-		<CanisterBuyCycleExpress canisterId={satellite.satellite_id} />
 	{/snippet}
 
 	{#snippet lifecycleActions()}

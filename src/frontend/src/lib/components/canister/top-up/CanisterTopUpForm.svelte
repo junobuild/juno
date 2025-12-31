@@ -1,18 +1,12 @@
 <script lang="ts">
-	import { ICPToken, isEmptyString, isNullish, nonNullish, notEmptyString } from '@dfinity/utils';
-	import { onMount, type Snippet } from 'svelte';
-	import { getIcpToCyclesConversionRate } from '$lib/api/cmc.api';
+	import { isEmptyString, isNullish } from '@dfinity/utils';
+	import type { Snippet } from 'svelte';
 	import CanisterTopUpFormCycles from '$lib/components/canister/top-up/CanisterTopUpFormCycles.svelte';
 	import CanisterTopUpFormIcp from '$lib/components/canister/top-up/CanisterTopUpFormIcp.svelte';
-	import InputCycles from '$lib/components/core/InputCycles.svelte';
-	import InputIcp from '$lib/components/core/InputIcp.svelte';
-	import GridArrow from '$lib/components/ui/GridArrow.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
-	import Value from '$lib/components/ui/Value.svelte';
-	import GetICPInfo from '$lib/components/wallet/GetICPInfo.svelte';
 	import WalletPicker from '$lib/components/wallet/WalletPicker.svelte';
 	import WalletTokenPicker from '$lib/components/wallet/WalletTokenPicker.svelte';
-	import { CYCLES, ICP_TOP_UP_FEE } from '$lib/constants/token.constants';
+	import { CYCLES } from '$lib/constants/token.constants';
 	import {
 		devCyclesBalanceOrZero,
 		devIcpBalanceOrZero,
@@ -23,7 +17,6 @@
 	import type { SelectedToken, SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { CanisterSegmentWithLabel } from '$lib/types/canister';
-	import { formatTCycles, icpToCycles } from '$lib/utils/cycles.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { formatICPToHTML } from '$lib/utils/icp.utils';
 	import { assertAndConvertAmountToToken, isTokenIcp } from '$lib/utils/token.utils';
@@ -109,25 +102,21 @@
 	/>
 </p>
 
-{#if balance <= ICP_TOP_UP_FEE}
-	<GetICPInfo {onclose} />
-{:else}
-	<form onsubmit={onSubmit}>
-		<WalletPicker filterMissionControlZeroBalance bind:selectedWallet />
+<form onsubmit={onSubmit}>
+	<WalletPicker filterMissionControlZeroBalance bind:selectedWallet />
 
-		<WalletTokenPicker {selectedWallet} bind:selectedToken />
+	<WalletTokenPicker {selectedWallet} bind:selectedToken />
 
-		<div class="group-cycles" class:icp={isTokenIcp(selectedToken)}>
-			<InputAmount {balance} bind:amount bind:displayTCycles />
-		</div>
+	<div class="group-cycles" class:icp={isTokenIcp(selectedToken)}>
+		<InputAmount {balance} bind:amount bind:displayTCycles />
+	</div>
 
-		<button
-			disabled={isNullish(selectedWallet) || isEmptyString(amount)}
-			class:icp={isTokenIcp(selectedToken)}
-			type="submit">{$i18n.core.review}</button
-		>
-	</form>
-{/if}
+	<button
+		disabled={isNullish(selectedWallet) || isEmptyString(amount)}
+		class:icp={isTokenIcp(selectedToken)}
+		type="submit">{$i18n.core.review}</button
+	>
+</form>
 
 <style lang="scss">
 	@use '../../../styles/mixins/media';

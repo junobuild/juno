@@ -293,6 +293,7 @@ type Segment = record {
   metadata : vec record { text; text };
   segment_id : principal;
   created_at : nat64;
+  version : opt nat64;
 };
 type SegmentKey = record {
   user : principal;

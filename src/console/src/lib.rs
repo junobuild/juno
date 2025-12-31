@@ -21,6 +21,7 @@ use crate::types::interface::DeleteProposalAssets;
 use crate::types::interface::FeesArgs;
 use crate::types::interface::GetDelegationArgs;
 use crate::types::interface::ListSegmentsArgs;
+use crate::types::interface::SetSegmentMetadataArgs;
 use crate::types::state::Account;
 use crate::types::state::Accounts;
 use crate::types::state::FactoryFee;

@@ -3,13 +3,17 @@ use crate::types::interface::ListSegmentsArgs;
 use crate::types::state::{Segment, SegmentKey, SegmentType, SegmentsStable};
 use junobuild_shared::constants_shared::{PRINCIPAL_MAX, PRINCIPAL_MIN};
 use junobuild_shared::structures::collect_stable_vec;
-use junobuild_shared::types::state::UserId;
+use junobuild_shared::types::state::{Metadata, UserId};
 use std::ops::RangeBounds;
 
 pub fn add_segment(key: &SegmentKey, segment: &Segment) {
     with_segments_mut(|segments| {
         let _ = segments.insert(key.clone(), segment.clone());
     })
+}
+
+pub fn set_segment_metadata(key: &SegmentKey, metadata: &Metadata) -> Result<Segment, String> {
+    with_segments_mut(|segments| set_segment_metadata_impl(key, metadata, segments))
 }
 
 pub fn list_segments(user: &UserId, filter: &ListSegmentsArgs) -> Vec<(SegmentKey, Segment)> {
@@ -26,6 +30,21 @@ fn list_segments_impl(
     segments: &SegmentsStable,
 ) -> Vec<(SegmentKey, Segment)> {
     collect_stable_vec(segments.range(filter_segments_range(user, filter)))
+}
+
+fn set_segment_metadata_impl(
+    key: &SegmentKey,
+    metadata: &Metadata,
+    segments: &mut SegmentsStable,
+) -> Result<Segment, String> {
+    let segment = segments
+        .get(key)
+        .ok_or_else(|| "Segment not found".to_string())?;
+
+    let updated_segment = segment.with_metadata(metadata);
+    segments.insert(key.clone(), updated_segment.clone());
+
+    Ok(updated_segment)
 }
 
 fn detach_segment_impl(key: &SegmentKey, segments: &mut SegmentsStable) -> Result<(), String> {

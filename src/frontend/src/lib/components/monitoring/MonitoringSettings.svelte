@@ -4,11 +4,11 @@
 	import MonitoringDefaultStrategy from '$lib/components/monitoring/MonitoringDefaultStrategy.svelte';
 	import MonitoringNotifications from '$lib/components/monitoring/MonitoringNotifications.svelte';
 	import MonitoringStatus from '$lib/components/monitoring/MonitoringStatus.svelte';
+	import { mctrlSatellitesLoaded } from '$lib/derived/mission-control/mission-control-satellites.derived';
 	import {
 		missionControlMonitored,
 		missionControlSettingsLoaded
 	} from '$lib/derived/mission-control/mission-control-settings.derived';
-	import { satellitesLoaded } from '$lib/derived/mission-control/satellites.derived';
 	import { orbiterLoaded } from '$lib/derived/orbiter.derived';
 	import { openMonitoringModal } from '$lib/services/mission-control/monitoring.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
@@ -54,7 +54,7 @@
 	</div>
 </div>
 
-{#if $missionControlSettingsLoaded && $satellitesLoaded && $orbiterLoaded}
+{#if $missionControlSettingsLoaded && $mctrlSatellitesLoaded && $orbiterLoaded}
 	<div class="toolbar">
 		<button onclick={openCreateModal} in:fade>
 			{#if monitored}

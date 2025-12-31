@@ -7,14 +7,14 @@ import {
 } from '$lib/api/mission-control.api';
 import { METADATA_KEY_EMAIL } from '$lib/constants/metadata.constants';
 import {
+	mctrlSatellitesNotLoaded,
+	mctrlSatellitesStore
+} from '$lib/derived/mission-control/mission-control-satellites.derived';
+import {
 	missionControlSettings,
 	missionControlSettingsNotLoaded
 } from '$lib/derived/mission-control/mission-control-settings.derived';
 import { missionControlUserData } from '$lib/derived/mission-control/mission-control-user.derived';
-import {
-	satellitesNotLoaded,
-	satellitesStore
-} from '$lib/derived/mission-control/satellites.derived';
 import { orbiterNotLoaded, orbiterStore } from '$lib/derived/orbiter.derived';
 import { execute } from '$lib/services/_progress.services';
 import { loadOrbiters } from '$lib/services/mission-control/mission-control.orbiters.services';
@@ -480,7 +480,7 @@ export const openMonitoringModal = ({
 		return;
 	}
 
-	const $satellitesNotLoaded = get(satellitesNotLoaded);
+	const $satellitesNotLoaded = get(mctrlSatellitesNotLoaded);
 	if ($satellitesNotLoaded) {
 		toasts.warn(get(i18n).errors.satellites_not_loaded);
 		return;
@@ -492,7 +492,7 @@ export const openMonitoringModal = ({
 		return;
 	}
 
-	const $satellitesStore = get(satellitesStore);
+	const $satellitesStore = get(mctrlSatellitesStore);
 	const $orbiterStore = get(orbiterStore);
 	if (($satellitesStore ?? []).length === 0 && isNullish($orbiterStore)) {
 		toasts.warn(get(i18n).errors.monitoring_no_modules);

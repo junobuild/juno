@@ -1,5 +1,5 @@
 import { missionControlIdNotLoaded } from '$lib/derived/console/account.mission-control.derived';
-import { satellitesNotLoaded } from '$lib/derived/mission-control/satellites.derived';
+import { mctrlSatellitesNotLoaded } from '$lib/derived/mission-control/mission-control-satellites.derived';
 import { orbiterNotLoaded } from '$lib/derived/orbiter.derived';
 import {
 	missionControlVersion,
@@ -11,7 +11,7 @@ import { derived, type Readable } from 'svelte/store';
 export const hasPendingUpgrades: Readable<boolean | undefined> = derived(
 	[
 		missionControlIdNotLoaded,
-		satellitesNotLoaded,
+		mctrlSatellitesNotLoaded,
 		orbiterNotLoaded,
 		missionControlVersion,
 		orbiterVersion,

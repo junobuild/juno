@@ -5,14 +5,13 @@ import {
 	METADATA_KEY_NAME,
 	METADATA_KEY_TAGS
 } from '$lib/constants/metadata.constants';
-import { satellitesStore } from '$lib/derived/mission-control/satellites.derived';
+import { mctrlSatellitesStore } from '$lib/derived/mission-control/mission-control-satellites.derived';
 import {
 	SatelliteUiMetadataSchema,
 	SatelliteUiMetadataSerializer
 } from '$lib/schemas/satellite.schema';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
-import { authStore } from '$lib/stores/auth.store';
 import { satellitesUncertifiedStore } from '$lib/stores/mission-control/satellites.store';
 import type { MissionControlId } from '$lib/types/mission-control';
 import type { SatelliteUiMetadata } from '$lib/types/satellite';
@@ -70,7 +69,7 @@ export const setSatelliteMetadata = async ({
 			identity
 		});
 
-		const satellites = get(satellitesStore);
+		const satellites = get(mctrlSatellitesStore);
 		satellitesUncertifiedStore.set([
 			...(satellites ?? []).filter(
 				({ satellite_id }) => updatedSatellite.satellite_id.toText() !== satellite_id.toText()

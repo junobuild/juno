@@ -5,7 +5,7 @@
 	import { onDestroy, onMount, type Snippet } from 'svelte';
 	import { MISSION_CONTROL_v0_0_14 } from '$lib/constants/version.constants';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
-	import { satellitesNotLoaded } from '$lib/derived/mission-control/satellites.derived';
+	import { mctrlSatellitesNotLoaded } from '$lib/derived/mission-control/mission-control-satellites.derived';
 	import { orbiterNotLoaded } from '$lib/derived/orbiter.derived';
 	import { missionControlVersion } from '$lib/derived/version.derived';
 	import { MonitoringWorker } from '$lib/services/workers/worker.monitoring.services';
@@ -54,7 +54,7 @@
 		}
 
 		// Likewise for satellites
-		if ($satellitesNotLoaded) {
+		if ($mctrlSatellitesNotLoaded) {
 			return;
 		}
 

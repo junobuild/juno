@@ -3,7 +3,7 @@
 	import type { Snippet } from 'svelte';
 	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
 	import { authIdentity } from '$lib/derived/auth.derived';
-	import { satellitesNotLoaded } from '$lib/derived/mission-control/satellites.derived';
+	import { mctrlSatellitesNotLoaded } from '$lib/derived/mission-control/mission-control-satellites.derived';
 	import { satellitesStore } from '$lib/derived/satellites.derived';
 	import { satellitesVersionNotLoaded } from '$lib/derived/version.derived';
 	import { loadProposals as loadProposalsServices } from '$lib/services/satellite/proposals/proposals.list.services';
@@ -18,7 +18,7 @@
 	let loading: 'init' | 'in_progress' | 'done' | 'error' = $state('init');
 
 	const loadProposals = async () => {
-		if ($satellitesNotLoaded) {
+		if ($mctrlSatellitesNotLoaded) {
 			return;
 		}
 
@@ -43,7 +43,7 @@
 	const debounceLoadProposals = debounce(loadProposals);
 
 	$effect(() => {
-		$satellitesNotLoaded;
+		$mctrlSatellitesNotLoaded;
 		$satellitesVersionNotLoaded;
 
 		debounceLoadProposals();

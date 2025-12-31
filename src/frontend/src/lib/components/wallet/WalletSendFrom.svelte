@@ -9,7 +9,6 @@
 	import type { SelectedToken, SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toAccountIdentifier } from '$lib/utils/icp-icrc-account.utils';
-	import { formatICPToUsd } from '$lib/utils/icp.utils';
 	import { formatToken } from '$lib/utils/token.utils';
 
 	interface Props {

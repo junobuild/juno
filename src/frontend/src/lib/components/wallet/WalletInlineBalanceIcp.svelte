@@ -9,7 +9,7 @@
 		icpToUsd,
 		icpToUsdDefined
 	} from '$lib/derived/wallet/exchange.derived';
-	import { formatICP, formatICPToUsd } from '$lib/utils/icp.utils';
+	import { formatICP } from '$lib/utils/icp.utils';
 
 	interface Props {
 		balance: bigint | undefined;

@@ -6,11 +6,11 @@
 	import Value from '$lib/components/ui/Value.svelte';
 	import WalletSendFrom from '$lib/components/wallet/WalletSendFrom.svelte';
 	import SendTokensAmount from '$lib/components/wallet/tokens/SendTokensAmount.svelte';
+	import TokenSymbol from '$lib/components/wallet/tokens/TokenSymbol.svelte';
 	import type { SelectedToken, SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { CanisterSegmentWithLabel } from '$lib/types/canister';
 	import { amountToToken, formatToken, isTokenIcp } from '$lib/utils/token.utils';
-	import TokenSymbol from '$lib/components/wallet/tokens/TokenSymbol.svelte';
 
 	interface Props {
 		selectedWallet: SelectedWallet | undefined;

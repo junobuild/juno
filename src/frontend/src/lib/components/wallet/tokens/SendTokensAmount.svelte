@@ -3,10 +3,8 @@
 	import Value from '$lib/components/ui/Value.svelte';
 	import TokenSymbol from '$lib/components/wallet/tokens/TokenSymbol.svelte';
 	import TokenUsd from '$lib/components/wallet/tokens/TokenUsd.svelte';
-	import { icpToUsd, icpToUsdDefined } from '$lib/derived/wallet/exchange.derived';
 	import type { SelectedToken } from '$lib/schemas/wallet.schema';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import { formatICP, formatICPToUsd } from '$lib/utils/icp.utils';
 	import { formatToken } from '$lib/utils/token.utils';
 
 	interface Props {

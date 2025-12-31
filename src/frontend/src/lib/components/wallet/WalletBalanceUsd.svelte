@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { nonNullish, type TokenAmountV2 } from '@dfinity/utils';
+	import { nonNullish } from '@dfinity/utils';
 	import { icpToUsd, icpToUsdDefined } from '$lib/derived/wallet/exchange.derived';
 	import { icpToCyclesRate } from '$lib/derived/wallet/rate.derived';
 	import type { SelectedToken } from '$lib/schemas/wallet.schema';

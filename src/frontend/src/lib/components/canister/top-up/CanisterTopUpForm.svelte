@@ -30,7 +30,6 @@
 		amount: string | undefined;
 		displayTCycles: string | undefined;
 		onreview: () => void;
-		onclose: () => void;
 	}
 
 	let {
@@ -40,7 +39,6 @@
 		selectedWallet = $bindable(undefined),
 		selectedToken = $bindable(CYCLES),
 		balance = $bindable(0n),
-		onclose,
 		amount = $bindable(undefined),
 		displayTCycles = $bindable(undefined)
 	}: Props = $props();
@@ -112,8 +110,8 @@
 	</div>
 
 	<button
-		disabled={isNullish(selectedWallet) || isEmptyString(amount)}
 		class:icp={isTokenIcp(selectedToken)}
+		disabled={isNullish(selectedWallet) || isEmptyString(amount)}
 		type="submit">{$i18n.core.review}</button
 	>
 </form>

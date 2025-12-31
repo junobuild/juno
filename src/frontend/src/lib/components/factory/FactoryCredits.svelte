@@ -52,10 +52,6 @@
 			: $devCyclesBalanceOrZero
 	);
 
-	// When both wallets - dev and mission control - are empty and devs are no credits left,
-	// there is no advance options displayed as result, therefore is no selected wallet
-	let fallbackDevWallet = $derived(nonNullish($devId) ? { owner: $devId } : undefined);
-
 	$effect(() => {
 		insufficientFunds = balanceOrZero < fee && notEnoughCredits;
 	});

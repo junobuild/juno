@@ -70,7 +70,10 @@ export const devCyclesBalanceOrZero = derived(
 	([$devCyclesBalance]) => $devCyclesBalance ?? 0n
 );
 
-export const devIcpBalanceOrZero = derived([devIcpBalance], ([$devIcpBalance]) => $devIcpBalance ?? 0n);
+export const devIcpBalanceOrZero = derived(
+	[devIcpBalance],
+	([$devIcpBalance]) => $devIcpBalance ?? 0n
+);
 
 export const missionControlIcpBalanceOrZero = derived(
 	[missionControlIcpBalance],

@@ -95,10 +95,10 @@ export class ConsolePage extends IdentityPage {
 		await expect(this.page).toHaveScreenshot({ fullPage: true, maxDiffPixelRatio: 0.05 });
 	}
 
-	async getICP(expected: { balance: string }): Promise<void> {
+	async getCycles(expected: { balance: string }): Promise<void> {
 		await this.page.getByTestId(testIds.navbar.openWallet).click();
 
-		await this.page.getByTestId(testIds.navbar.getIcp).click();
+		await this.page.getByTestId(testIds.navbar.getCycles).click();
 
 		await expect(this.page.getByRole('menu')).toContainText(expected.balance, TIMEOUT_LONG);
 	}

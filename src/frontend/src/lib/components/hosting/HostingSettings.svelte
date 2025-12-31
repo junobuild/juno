@@ -6,9 +6,9 @@
 	import HostingSwitchMemory from '$lib/components/hosting/HostingSwitchMemory.svelte';
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
+	import { authIdentity } from '$lib/derived/auth.derived';
 	import { getRuleDapp } from '$lib/services/satellite/collection.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import { authStore } from '$lib/stores/auth.store';
 	import type { Satellite } from '$lib/types/satellite';
 
 	interface Props {
@@ -26,7 +26,7 @@
 	let memory = $derived(fromNullable(rule?.memory ?? []));
 
 	const loadRule = async () => {
-		const result = await getRuleDapp({ satelliteId, identity: $authStore.identity });
+		const result = await getRuleDapp({ satelliteId, identity: $authIdentity });
 		rule = result?.rule;
 		supportSettings = result?.result === 'success';
 

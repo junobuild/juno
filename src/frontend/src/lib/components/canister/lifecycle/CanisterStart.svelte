@@ -5,13 +5,12 @@
 	import Confirmation from '$lib/components/core/Confirmation.svelte';
 	import IconStart from '$lib/components/icons/IconStart.svelte';
 	import Text from '$lib/components/ui/Text.svelte';
-	import { authSignedOut } from '$lib/derived/auth.derived';
+	import { authSignedOut, authIdentity } from '$lib/derived/auth.derived';
 	import { reloadOrbiterVersion } from '$lib/services/version/version.orbiter.services';
 	import { reloadSatelliteVersion } from '$lib/services/version/version.satellite.services';
 	import { busy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
-	import { authStore } from '$lib/stores/auth.store';
 	import type { CanisterSyncData } from '$lib/types/canister';
 	import { emit } from '$lib/utils/events.utils';
 	import { i18nCapitalize, i18nFormat } from '$lib/utils/i18n.utils';
@@ -41,9 +40,9 @@
 		try {
 			const canisterId = Principal.fromText(canister.id);
 
-			assertNonNullish($authStore.identity);
+			assertNonNullish($authIdentity);
 
-			await canisterStart({ canisterId, identity: $authStore.identity });
+			await canisterStart({ canisterId, identity: $authIdentity });
 
 			emit({ message: 'junoRestartCycles', detail: { canisterId } });
 

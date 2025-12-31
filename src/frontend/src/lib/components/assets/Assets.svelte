@@ -12,8 +12,8 @@
 	import DataPaginator from '$lib/components/data/DataPaginator.svelte';
 	import IconRefresh from '$lib/components/icons/IconRefresh.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
+	import { authIdentity } from '$lib/derived/auth.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import { authStore } from '$lib/stores/auth.store';
 	import { versionStore } from '$lib/stores/version.store';
 	import { type DataContext, DATA_CONTEXT_KEY } from '$lib/types/data.context';
 	import { type ListParamsContext, LIST_PARAMS_CONTEXT_KEY } from '$lib/types/list-params.context';
@@ -74,7 +74,7 @@
 	 */
 
 	const deleteData = async (params: { collection: string; satelliteId: Principal }) => {
-		await deleteAssets({ ...params, identity: $authStore.identity });
+		await deleteAssets({ ...params, identity: $authIdentity });
 		resetData();
 	};
 

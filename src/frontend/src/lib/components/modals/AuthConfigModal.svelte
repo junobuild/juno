@@ -7,6 +7,7 @@
 	import AuthConfigFormII from '$lib/components/auth/AuthConfigFormII.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
+	import { authIdentity } from '$lib/derived/auth.derived';
 	import { isSkylab } from '$lib/env/app.env';
 	import {
 		updateAuthConfigRules,
@@ -17,7 +18,6 @@
 	import { emulatorToggleOpenIdMonitoring } from '$lib/services/emulator.services';
 	import { wizardBusy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import { authStore } from '$lib/stores/auth.store';
 	import type { JunoModalDetail, JunoModalEditAuthConfigDetail } from '$lib/types/modal';
 	import { emit } from '$lib/utils/events.utils';
 
@@ -64,7 +64,7 @@
 		const update = (): Promise<UpdateAuthConfigResult> => {
 			const commonPayload = {
 				satellite,
-				identity: $authStore.identity,
+				identity: $authIdentity,
 				config
 			};
 

@@ -5,11 +5,10 @@
 	import Confirmation from '$lib/components/core/Confirmation.svelte';
 	import IconStop from '$lib/components/icons/IconStop.svelte';
 	import Text from '$lib/components/ui/Text.svelte';
-	import { authSignedOut } from '$lib/derived/auth.derived';
+	import { authSignedOut, authIdentity } from '$lib/derived/auth.derived';
 	import { busy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
-	import { authStore } from '$lib/stores/auth.store';
 	import type { CanisterSyncData } from '$lib/types/canister';
 	import { emit } from '$lib/utils/events.utils';
 	import { i18nCapitalize, i18nFormat } from '$lib/utils/i18n.utils';
@@ -45,9 +44,9 @@
 		try {
 			const canisterId = Principal.fromText(canister.id);
 
-			assertNonNullish($authStore.identity);
+			assertNonNullish($authIdentity);
 
-			await canisterStop({ canisterId, identity: $authStore.identity });
+			await canisterStop({ canisterId, identity: $authIdentity });
 
 			emit({ message: 'junoRestartCycles', detail: { canisterId } });
 

@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { isNullish } from '@dfinity/utils';
 	import type { MissionControlDid } from '$declarations';
+	import { authIdentity } from '$lib/derived/auth.derived';
 	import { satelliteStore } from '$lib/derived/satellite/satellite.derived';
 	import { exportTrackEvents } from '$lib/services/orbiter/orbiter.export.services';
 	import { busy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
-	import { authStore } from '$lib/stores/auth.store';
 	import { analyticsFiltersStore } from '$lib/stores/orbiter/analytics-filters.store';
 	import type { PageViewsParams } from '$lib/types/orbiter';
 
@@ -29,7 +29,7 @@
 		const params: PageViewsParams = {
 			satelliteId: $satelliteStore?.satellite_id,
 			orbiterId: orbiter.orbiter_id,
-			identity: $authStore.identity,
+			identity: $authIdentity,
 			from,
 			...restPeriod
 		};

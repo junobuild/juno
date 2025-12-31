@@ -3,9 +3,9 @@
 	import { getContext } from 'svelte';
 	import ButtonTableAction from '$lib/components/ui/ButtonTableAction.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
+	import { authIdentity } from '$lib/derived/auth.derived';
 	import { banUser, unbanUser } from '$lib/services/satellite/user/user.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import { authStore } from '$lib/stores/auth.store';
 	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
 	import type { User } from '$lib/types/user';
 	import { shortenWithMiddleEllipsis } from '$lib/utils/format.utils';
@@ -37,7 +37,7 @@
 		const fn = isBanned ? unbanUser : banUser;
 
 		const { success } = await fn({
-			identity: $authStore.identity,
+			identity: $authIdentity,
 			satelliteId,
 			user,
 			setItem

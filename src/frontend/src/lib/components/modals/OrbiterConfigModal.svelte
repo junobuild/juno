@@ -10,11 +10,11 @@
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import { DEFAULT_FEATURES } from '$lib/constants/analytics.constants';
 	import { ORBITER_v0_0_8 } from '$lib/constants/version.constants';
+	import { authIdentity } from '$lib/derived/auth.derived';
 	import { setOrbiterSatelliteConfigs } from '$lib/services/orbiter/orbiters.services';
 	import { isBusy, wizardBusy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
-	import { authStore } from '$lib/stores/auth.store';
 	import { orbitersConfigsStore } from '$lib/stores/orbiter/orbiter-configs.store';
 	import { versionStore } from '$lib/stores/version.store';
 	import type { JunoModalDetail, JunoModalEditOrbiterConfigDetail } from '$lib/types/modal';
@@ -112,7 +112,7 @@
 				orbiterId,
 				config,
 				features,
-				identity: $authStore.identity,
+				identity: $authIdentity,
 				orbiterVersion: $versionStore.orbiter.current
 			});
 

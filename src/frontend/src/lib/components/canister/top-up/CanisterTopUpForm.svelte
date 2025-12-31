@@ -117,12 +117,14 @@
 
 		<WalletTokenPicker {selectedWallet} bind:selectedToken />
 
-		<div class="group-cycles">
+		<div class="group-cycles" class:icp={isTokenIcp(selectedToken)}>
 			<InputAmount {balance} bind:amount bind:displayTCycles />
 		</div>
 
-		<button disabled={isNullish(selectedWallet) || isEmptyString(amount)} type="submit"
-			>{$i18n.core.review}</button
+		<button
+			disabled={isNullish(selectedWallet) || isEmptyString(amount)}
+			class:icp={isTokenIcp(selectedToken)}
+			type="submit">{$i18n.core.review}</button
 		>
 	</form>
 {/if}
@@ -144,8 +146,18 @@
 	}
 
 	.group-cycles {
-		@include media.min-width(large) {
-			grid-column: 1 / 3;
+		&.icp {
+			@include media.min-width(large) {
+				grid-column: 1 / 3;
+			}
+		}
+	}
+
+	button {
+		&:not(.icp) {
+			@include media.min-width(large) {
+				grid-column-start: 1;
+			}
 		}
 	}
 

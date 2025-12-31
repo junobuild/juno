@@ -1,7 +1,6 @@
-use crate::fees::init::default_factory_fees;
-use crate::store::{mutate_heap_state, with_factory_fees};
+use crate::store::{with_factory_fees, with_factory_fees_mut};
 use crate::types::interface::FeesArgs;
-use crate::types::state::{FactoryFee, FactoryFees, HeapState};
+use crate::types::state::{FactoryFee, FactoryFees};
 use ic_cdk::api::time;
 use junobuild_shared::types::state::SegmentKind;
 
@@ -13,28 +12,25 @@ fn get_factory_fee_impl(
     segment_kind: &SegmentKind,
     factory_fees: &Option<FactoryFees>,
 ) -> Result<FactoryFee, String> {
-    if let Some(fees) = factory_fees {
-        if let Some(fee) = fees.get(segment_kind) {
-            return Ok(fee.clone());
-        }
-    }
-
-    default_factory_fees()
-        .get(segment_kind)
+    factory_fees
+        .as_ref()
+        .and_then(|fees| fees.get(segment_kind))
         .cloned()
         .ok_or_else(|| format!("Fee not found for segment kind: {:?}", segment_kind))
 }
 
 pub fn set_factory_fee(segment_kind: &SegmentKind, fee: &FeesArgs) -> Result<(), String> {
-    mutate_heap_state(|state| set_factory_fee_impl(segment_kind, fee, state))
+    with_factory_fees_mut(|factory_fees| set_factory_fee_impl(segment_kind, fee, factory_fees))
 }
 
 fn set_factory_fee_impl(
     segment_kind: &SegmentKind,
     fee: &FeesArgs,
-    state: &mut HeapState,
+    factory_fees: &mut Option<FactoryFees>,
 ) -> Result<(), String> {
-    let fees = state.factory_fees.get_or_insert_with(default_factory_fees);
+    let fees = factory_fees
+        .as_mut()
+        .ok_or_else(|| "Factory fees not initialized".to_string())?;
 
     let target = fees
         .get_mut(segment_kind)

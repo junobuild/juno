@@ -8,7 +8,7 @@ use ic_cdk::api::time;
 use junobuild_shared::types::state::SegmentKind;
 use std::collections::HashMap;
 
-pub fn default_factory_fees() -> FactoryFees {
+pub fn init_factory_fees() -> FactoryFees {
     let now = time();
 
     HashMap::from([

@@ -3,6 +3,7 @@
 	import Html from '$lib/components/ui/Html.svelte';
 	import GetICPInfo from '$lib/components/wallet/GetICPInfo.svelte';
 	import { E8S_PER_ICP } from '$lib/constants/app.constants';
+	import { CYCLES, ICP, ICP_TOP_UP_FEE } from '$lib/constants/token.constants';
 	import { creditsOrZero } from '$lib/derived/console/credits.derived';
 	import {
 		devCyclesBalanceOrZero,
@@ -21,7 +22,6 @@
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { formatICPToHTML } from '$lib/utils/icp.utils';
 	import { isTokenIcp } from '$lib/utils/token.utils';
-	import { CYCLES, ICP, ICP_TOP_UP_FEE } from '$lib/constants/token.constants';
 
 	interface Props {
 		detail: JunoModalDetail;

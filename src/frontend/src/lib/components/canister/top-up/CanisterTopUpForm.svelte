@@ -17,10 +17,10 @@
 	import type { SelectedToken, SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { CanisterSegmentWithLabel } from '$lib/types/canister';
+	import { formatCyclesToHTML } from '$lib/utils/cycles.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { formatICPToHTML } from '$lib/utils/icp.utils';
 	import { assertAndConvertAmountToToken, isTokenIcp } from '$lib/utils/token.utils';
-	import { formatCyclesToHTML } from '$lib/utils/cycles.utils';
 
 	interface Props {
 		intro?: Snippet;

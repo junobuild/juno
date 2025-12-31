@@ -34,7 +34,7 @@
 		});
 	});
 
-	let pickerEnabled = $derived($missionControlId !== null);
+	let pickerEnabled = $derived(nonNullish($missionControlId));
 </script>
 
 {#if pickerEnabled}

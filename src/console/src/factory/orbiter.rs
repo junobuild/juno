@@ -1,4 +1,4 @@
-use crate::constants::{FREEZING_THRESHOLD_THREE_MONTHS, ORBITER_CREATION_FEE_ICP};
+use crate::constants::FREEZING_THRESHOLD_THREE_MONTHS;
 use crate::factory::canister::create_canister;
 use crate::factory::types::{CanisterCreator, FeeKind};
 use crate::factory::utils::controllers::remove_console_controller;
@@ -39,7 +39,10 @@ fn get_fee(fee_kind: FeeKind) -> Result<Fee, String> {
 
     let value = match fee_kind {
         FeeKind::Cycles => Fee::Cycles(fee.fee_cycles),
-        FeeKind::ICP => Fee::ICP(fee.fee_icp.unwrap_or(ORBITER_CREATION_FEE_ICP)),
+        FeeKind::ICP => Fee::ICP(
+            fee.fee_icp
+                .ok_or_else(|| "Fee ICP not initialized".to_string())?,
+        ),
     };
 
     Ok(value)

@@ -2,7 +2,6 @@ use crate::accounts::credits::{
     add_credits as add_credits_store, caller_is_mission_control_and_user_has_credits,
     get_credits as get_credits_store,
 };
-use crate::constants::{ORBITER_CREATION_FEE_ICP, SATELLITE_CREATION_FEE_ICP};
 use crate::fees::{get_factory_fee, set_factory_fee};
 use crate::guards::caller_is_admin_controller;
 use crate::store::stable::payments::list_icp_payments as list_icp_payments_state;
@@ -10,6 +9,7 @@ use crate::store::stable::payments::list_icrc_payments as list_icrc_payments_sta
 use crate::types::interface::FeesArgs;
 use crate::types::ledger::Fee;
 use crate::types::state::{FactoryFee, IcpPayments, IcrcPayments};
+use ic_cdk::trap;
 use ic_cdk_macros::{query, update};
 use ic_ledger_types::Tokens;
 use junobuild_shared::ic::api::caller;
@@ -49,7 +49,7 @@ fn get_create_satellite_fee(
     let fee = get_factory_fee(&SegmentKind::Satellite)
         .unwrap_or_trap()
         .fee_icp
-        .unwrap_or(SATELLITE_CREATION_FEE_ICP);
+        .unwrap_or_else(|| trap("Fee ICP not initialized"));
 
     let has_enough_credits =
         caller_is_mission_control_and_user_has_credits(&user, &caller, &Fee::ICP(fee))
@@ -71,7 +71,7 @@ fn get_create_orbiter_fee(
     let fee = get_factory_fee(&SegmentKind::Orbiter)
         .unwrap_or_trap()
         .fee_icp
-        .unwrap_or(ORBITER_CREATION_FEE_ICP);
+        .unwrap_or_else(|| trap("Fee ICP not initialized"));
 
     let has_enough_credits =
         caller_is_mission_control_and_user_has_credits(&user, &caller, &Fee::ICP(fee))

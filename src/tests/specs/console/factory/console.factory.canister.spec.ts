@@ -12,6 +12,7 @@ import type { Principal } from '@icp-sdk/core/principal';
 import {
 	CONSOLE_ID,
 	NO_ACCOUNT_ERROR_MSG,
+	TEST_FEE_ICP,
 	TEST_FEES
 } from '../../../constants/console-tests.constants';
 import { CYCLES_LEDGER_ID } from '../../../constants/ledger-tests.contants';
@@ -395,7 +396,7 @@ describe('Console > Factory > Canister', () => {
 				await transferToken({
 					pic,
 					owner: missionControlId,
-					amount: TEST_FEES.fee_icp.e8s
+					amount: TEST_FEE_ICP.e8s
 				});
 
 				await tick(pic);

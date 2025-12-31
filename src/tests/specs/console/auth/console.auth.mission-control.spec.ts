@@ -192,6 +192,6 @@ describe('Satellite > Auth > Mission Control', () => {
 
 		await expect(
 			createSatelliteWithConsole({ user: mockIdentity, actor: consoleActor })
-		).resolves.not.toThrow();
+		).resolves.not.toThrowError();
 	});
 });

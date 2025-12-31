@@ -262,6 +262,7 @@ describe('Orbiter > Upgrade', () => {
 
 			const { set_satellite_configs } = actor;
 
+			// eslint-disable-next-line vitest/no-standalone-expect
 			await expect(
 				set_satellite_configs([
 					[
@@ -272,7 +273,7 @@ describe('Orbiter > Upgrade', () => {
 						}
 					]
 				])
-			).resolves.not.toThrow();
+			).resolves.not.toThrowError();
 		});
 
 		describe('Page views', { timeout: 1200000 }, () => {
@@ -456,6 +457,7 @@ describe('Orbiter > Upgrade', () => {
 				track_events: true
 			};
 
+			// eslint-disable-next-line vitest/no-standalone-expect
 			await expect(
 				set_satellite_configs([
 					[
@@ -467,7 +469,7 @@ describe('Orbiter > Upgrade', () => {
 						}
 					]
 				])
-			).resolves.not.toThrow();
+			).resolves.not.toThrowError();
 		});
 
 		it('should still list all page views after upgrade (with new optional fields)', async () => {

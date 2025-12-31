@@ -31,7 +31,7 @@ describe('Console > Rates', () => {
 	});
 
 	it('should throw errors if too many users are created quickly', async () => {
-		await expect(async () => await initUserAccounts({ actor, pic, length: 2 })).rejects.toThrow(
+		await expect(initUserAccounts({ actor, pic, length: 2 })).rejects.toThrowError(
 			new RegExp('Rate limit reached, try again later', 'i')
 		);
 	});

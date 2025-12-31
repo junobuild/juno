@@ -62,7 +62,7 @@ describe('Mission Control', () => {
 	it('should throw errors on set satellite because the user of the mission control has been incorrectly set to another identity than the controller', async () => {
 		const { set_satellite } = actor;
 
-		await expect(set_satellite(satelliteId, [])).rejects.toThrow(
+		await expect(set_satellite(satelliteId, [])).rejects.toThrowError(
 			MISSION_CONTROL_ADMIN_CONTROLLER_ERROR_MSG
 		);
 	});

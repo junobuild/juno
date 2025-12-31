@@ -99,7 +99,7 @@ describe('Sputnik > assert_delete_doc', () => {
 			del_doc(TEST_ASSERTED_COLLECTION, key, {
 				version: doc?.version ?? []
 			})
-		).resolves.not.toThrow();
+		).resolves.not.toThrowError();
 
 		const afterDoc = fromNullable(await get_doc(TEST_ASSERTED_COLLECTION, key));
 
@@ -130,6 +130,6 @@ describe('Sputnik > assert_delete_doc', () => {
 			del_doc(TEST_ASSERTED_COLLECTION, key, {
 				version: doc?.version ?? []
 			})
-		).rejects.toThrow(new RegExp('test keyword not allowed', 'i'));
+		).rejects.toThrowError(new RegExp('test keyword not allowed', 'i'));
 	});
 });

@@ -6,6 +6,7 @@ import { inject } from 'vitest';
 import { createUser as createUserUtils } from '../../../utils/satellite-doc-tests.utils';
 import { SATELLITE_WASM_PATH, controllersInitArgs } from '../../../utils/setup-tests.utils';
 
+// eslint-disable-next-line vitest/no-disabled-tests
 describe.skip('Satellite > Playground (kind of)', () => {
 	let pic: PocketIc;
 	let actor: Actor<SatelliteActor>;

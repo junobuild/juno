@@ -150,7 +150,7 @@ describe('Satellite > User', () => {
 					del_doc('#user', user.getPrincipal().toText(), {
 						version: fromNullable(before)?.version ?? []
 					})
-				).resolves.not.toThrow();
+				).resolves.not.toThrowError();
 			});
 		});
 
@@ -176,7 +176,7 @@ describe('Satellite > User', () => {
 						description: toNullable(),
 						version: fromNullable(before)?.version ?? []
 					})
-				).rejects.toThrow(JUNO_DATASTORE_ERROR_USER_CANNOT_UPDATE);
+				).rejects.toThrowError(JUNO_DATASTORE_ERROR_USER_CANNOT_UPDATE);
 			});
 
 			it('should not delete a user if banned', async () => {
@@ -210,7 +210,7 @@ describe('Satellite > User', () => {
 						description: toNullable(),
 						version: bannedUser.version ?? []
 					})
-				).rejects.toThrow(JUNO_DATASTORE_ERROR_USER_NOT_ALLOWED);
+				).rejects.toThrowError(JUNO_DATASTORE_ERROR_USER_NOT_ALLOWED);
 			});
 		});
 
@@ -259,7 +259,7 @@ describe('Satellite > User', () => {
 							description: toNullable(),
 							version: toNullable()
 						})
-					).rejects.toThrow(
+					).rejects.toThrowError(
 						new RegExp(JUNO_DATASTORE_ERROR_USER_PROVIDER_WEBAUTHN_INVALID_DATA, 'i')
 					);
 				});
@@ -278,7 +278,7 @@ describe('Satellite > User', () => {
 							description: toNullable(),
 							version: toNullable()
 						})
-					).rejects.toThrow(
+					).rejects.toThrowError(
 						new RegExp(
 							`${JUNO_DATASTORE_ERROR_USER_INVALID_DATA}: unknown variant \`test\`, expected \`webauthn\` or \`openid\` at line 1 column 45.`,
 							'i'
@@ -319,7 +319,7 @@ describe('Satellite > User', () => {
 							description: toNullable(),
 							version: toNullable()
 						})
-					).rejects.toThrow(new RegExp(JUNO_DATASTORE_ERROR_USER_AAGUID_INVALID_LENGTH, 'i'));
+					).rejects.toThrowError(new RegExp(JUNO_DATASTORE_ERROR_USER_AAGUID_INVALID_LENGTH, 'i'));
 				});
 
 				it('should not create a user-webauthn with aaguid too long', async () => {
@@ -336,7 +336,7 @@ describe('Satellite > User', () => {
 							description: toNullable(),
 							version: toNullable()
 						})
-					).rejects.toThrow(new RegExp(JUNO_DATASTORE_ERROR_USER_AAGUID_INVALID_LENGTH, 'i'));
+					).rejects.toThrowError(new RegExp(JUNO_DATASTORE_ERROR_USER_AAGUID_INVALID_LENGTH, 'i'));
 				});
 			});
 
@@ -355,7 +355,7 @@ describe('Satellite > User', () => {
 							description: toNullable(),
 							version: toNullable()
 						})
-					).rejects.toThrow(JUNO_DATASTORE_ERROR_USER_PROVIDER_INVALID_DATA);
+					).rejects.toThrowError(JUNO_DATASTORE_ERROR_USER_PROVIDER_INVALID_DATA);
 				});
 
 				it('should not create user with unexpected providerData webauthn', async () => {
@@ -372,7 +372,7 @@ describe('Satellite > User', () => {
 							description: toNullable(),
 							version: toNullable()
 						})
-					).rejects.toThrow(JUNO_DATASTORE_ERROR_USER_PROVIDER_INVALID_DATA);
+					).rejects.toThrowError(JUNO_DATASTORE_ERROR_USER_PROVIDER_INVALID_DATA);
 				});
 			});
 		});
@@ -396,7 +396,7 @@ describe('Satellite > User', () => {
 					description: toNullable(),
 					version: toNullable()
 				})
-			).rejects.toThrow(JUNO_DATASTORE_ERROR_CANNOT_WRITE);
+			).rejects.toThrowError(JUNO_DATASTORE_ERROR_CANNOT_WRITE);
 		});
 
 		it('should not create another user', async () => {
@@ -412,7 +412,7 @@ describe('Satellite > User', () => {
 					description: toNullable(),
 					version: toNullable()
 				})
-			).rejects.toThrow(JUNO_DATASTORE_ERROR_USER_CALLER_KEY);
+			).rejects.toThrowError(JUNO_DATASTORE_ERROR_USER_CALLER_KEY);
 		});
 
 		it('should not delete a user', async () => {
@@ -440,7 +440,7 @@ describe('Satellite > User', () => {
 				del_doc('#user', user.getPrincipal().toText(), {
 					version: fromNullable(before)?.version ?? []
 				})
-			).rejects.toThrow(JUNO_DATASTORE_ERROR_CANNOT_WRITE);
+			).rejects.toThrowError(JUNO_DATASTORE_ERROR_CANNOT_WRITE);
 		});
 	});
 
@@ -492,7 +492,7 @@ describe('Satellite > User', () => {
 						description: toNullable(),
 						version: fromNullable(before)?.version ?? []
 					})
-				).resolves.not.toThrow();
+				).resolves.not.toThrowError();
 			});
 		});
 
@@ -522,7 +522,7 @@ describe('Satellite > User', () => {
 					del_doc('#user', user.getPrincipal().toText(), {
 						version: fromNullable(before)?.version ?? []
 					})
-				).resolves.not.toThrow();
+				).resolves.not.toThrowError();
 			});
 		});
 	});
@@ -589,7 +589,7 @@ describe('Satellite > User', () => {
 					del_doc('#user', user.getPrincipal().toText(), {
 						version: before.version
 					})
-				).resolves.not.toThrow();
+				).resolves.not.toThrowError();
 			});
 
 			it('should delete a banned user', async () => {
@@ -624,7 +624,7 @@ describe('Satellite > User', () => {
 					del_doc('#user', user.getPrincipal().toText(), {
 						version: afterBan.version
 					})
-				).resolves.not.toThrow();
+				).resolves.not.toThrowError();
 			});
 		});
 
@@ -647,7 +647,7 @@ describe('Satellite > User', () => {
 							description: toNullable(),
 							version: toNullable()
 						})
-					).rejects.toThrow(JUNO_DATASTORE_ERROR_USER_CALLER_KEY);
+					).rejects.toThrowError(JUNO_DATASTORE_ERROR_USER_CALLER_KEY);
 				});
 
 				it('should not create a user if key is not a principal', async () => {
@@ -661,7 +661,7 @@ describe('Satellite > User', () => {
 							description: toNullable(),
 							version: toNullable()
 						})
-					).rejects.toThrow(JUNO_DATASTORE_ERROR_USER_KEY_NO_PRINCIPAL);
+					).rejects.toThrowError(JUNO_DATASTORE_ERROR_USER_KEY_NO_PRINCIPAL);
 				});
 			});
 		});
@@ -687,7 +687,7 @@ describe('Satellite > User', () => {
 					description: toNullable(),
 					version: toNullable()
 				})
-			).rejects.toThrow(
+			).rejects.toThrowError(
 				new RegExp(
 					`${JUNO_DATASTORE_ERROR_USER_INVALID_DATA}: unknown variant \`unknown\`, expected one of \`internet_identity\`, \`nfid\`, \`webauthn\`, \`google\` at line 1 column 21.`,
 					'i'
@@ -709,7 +709,7 @@ describe('Satellite > User', () => {
 					description: toNullable(),
 					version: toNullable()
 				})
-			).rejects.toThrow(
+			).rejects.toThrowError(
 				new RegExp(
 					`${JUNO_DATASTORE_ERROR_USER_INVALID_DATA}: unknown variant \`test\`, expected \`webauthn\` or \`openid\` at line 1 column 54.`,
 					'i'
@@ -731,7 +731,7 @@ describe('Satellite > User', () => {
 					description: toNullable(),
 					version: toNullable()
 				})
-			).rejects.toThrow(
+			).rejects.toThrowError(
 				new RegExp(
 					`${JUNO_DATASTORE_ERROR_USER_INVALID_DATA}: unknown field \`unknown\`, expected one of \`provider\`, \`banned\`, \`providerData\` at line 1 column 41.`,
 					'i'

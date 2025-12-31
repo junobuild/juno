@@ -307,7 +307,7 @@ describe('Satellite', () => {
 
 				await expect(
 					set_rule(collectionType, `${collection}_update_throw`, setRule)
-				).rejects.toThrow(JUNO_ERROR_NO_VERSION_PROVIDED);
+				).rejects.toThrowError(JUNO_ERROR_NO_VERSION_PROVIDED);
 			});
 		});
 
@@ -615,7 +615,7 @@ describe('Satellite', () => {
 				it('should throw errors on creating reserved collection', async () => {
 					const { set_rule } = actor;
 
-					await expect(set_rule({ Db: null }, '#test', setRule)).rejects.toThrow(
+					await expect(set_rule({ Db: null }, '#test', setRule)).rejects.toThrowError(
 						JUNO_COLLECTIONS_ERROR_PREFIX_RESERVED
 					);
 				});
@@ -624,7 +624,7 @@ describe('Satellite', () => {
 				it('should not throw errors on creating reserved collection', async () => {
 					const { set_rule } = actor;
 
-					await expect(set_rule({ Db: null }, '#test', setRule)).rejects.not.toThrow(
+					await expect(set_rule({ Db: null }, '#test', setRule)).rejects.not.toThrowError(
 						JUNO_COLLECTIONS_ERROR_RESERVED_COLLECTION
 					);
 				});
@@ -646,7 +646,7 @@ describe('Satellite', () => {
 						del_rule({ Db: null }, systemCollection, {
 							version
 						})
-					).rejects.toThrow(`${JUNO_COLLECTIONS_ERROR_DELETE_PREFIX_RESERVED} (#)`);
+					).rejects.toThrowError(`${JUNO_COLLECTIONS_ERROR_DELETE_PREFIX_RESERVED} (#)`);
 				});
 			});
 		});
@@ -659,7 +659,7 @@ describe('Satellite', () => {
 
 				await pic.advanceTime(100);
 
-				await expect(set_rule({ Db: null }, 'test3', setRule)).rejects.toThrow(
+				await expect(set_rule({ Db: null }, 'test3', setRule)).rejects.toThrowError(
 					JUNO_ERROR_NO_VERSION_PROVIDED
 				);
 			});
@@ -695,7 +695,7 @@ describe('Satellite', () => {
 		it('should throw errors on creating collections', async () => {
 			const { set_rule } = actor;
 
-			await expect(set_rule({ Db: null }, 'user-test', setRule)).rejects.toThrow(
+			await expect(set_rule({ Db: null }, 'user-test', setRule)).rejects.toThrowError(
 				JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER
 			);
 		});
@@ -703,7 +703,7 @@ describe('Satellite', () => {
 		it('should throw errors on list collections', async () => {
 			const { list_rules } = actor;
 
-			await expect(list_rules({ Db: null }, mockListRules)).rejects.toThrow(
+			await expect(list_rules({ Db: null }, mockListRules)).rejects.toThrowError(
 				JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER
 			);
 		});
@@ -711,7 +711,7 @@ describe('Satellite', () => {
 		it('should throw errors on getting a collection', async () => {
 			const { get_rule } = actor;
 
-			await expect(get_rule({ Db: null }, 'test')).rejects.toThrow(
+			await expect(get_rule({ Db: null }, 'test')).rejects.toThrowError(
 				JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER
 			);
 		});
@@ -719,9 +719,9 @@ describe('Satellite', () => {
 		it('should throw errors on deleting collections', async () => {
 			const { del_rule } = actor;
 
-			await expect(del_rule({ Db: null }, 'test', { version: testRuleVersion })).rejects.toThrow(
-				JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER
-			);
+			await expect(
+				del_rule({ Db: null }, 'test', { version: testRuleVersion })
+			).rejects.toThrowError(JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER);
 		});
 
 		it('should throw errors on creating controller', async () => {
@@ -738,13 +738,13 @@ describe('Satellite', () => {
 						scope: { Admin: null }
 					}
 				})
-			).rejects.toThrow(JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER);
+			).rejects.toThrowError(JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER);
 		});
 
 		it('should throw errors on list controllers', async () => {
 			const { list_controllers } = actor;
 
-			await expect(list_controllers()).rejects.toThrow(JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER);
+			await expect(list_controllers()).rejects.toThrowError(JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER);
 		});
 
 		it('should throw errors on deleting controller', async () => {
@@ -754,19 +754,19 @@ describe('Satellite', () => {
 				del_controllers({
 					controllers: [controller.getPrincipal()]
 				})
-			).rejects.toThrow(JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER);
+			).rejects.toThrowError(JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER);
 		});
 
 		it('should throw errors on deleting docs', async () => {
 			const { del_docs } = actor;
 
-			await expect(del_docs('test')).rejects.toThrow(JUNO_AUTH_ERROR_NOT_WRITE_CONTROLLER);
+			await expect(del_docs('test')).rejects.toThrowError(JUNO_AUTH_ERROR_NOT_WRITE_CONTROLLER);
 		});
 
 		it('should throw errors on counting docs', async () => {
 			const { count_collection_docs } = actor;
 
-			await expect(count_collection_docs('test')).rejects.toThrow(
+			await expect(count_collection_docs('test')).rejects.toThrowError(
 				JUNO_AUTH_ERROR_NOT_WRITE_CONTROLLER
 			);
 		});
@@ -774,13 +774,13 @@ describe('Satellite', () => {
 		it('should throw errors on deleting assets', async () => {
 			const { del_assets } = actor;
 
-			await expect(del_assets('test')).rejects.toThrow(JUNO_AUTH_ERROR_NOT_WRITE_CONTROLLER);
+			await expect(del_assets('test')).rejects.toThrowError(JUNO_AUTH_ERROR_NOT_WRITE_CONTROLLER);
 		});
 
 		it('should throw errors on counting assets', async () => {
 			const { count_collection_assets } = actor;
 
-			await expect(count_collection_assets('test')).rejects.toThrow(
+			await expect(count_collection_assets('test')).rejects.toThrowError(
 				JUNO_AUTH_ERROR_NOT_WRITE_CONTROLLER
 			);
 		});
@@ -793,7 +793,7 @@ describe('Satellite', () => {
 					cycles: 123n,
 					destination_id: user.getPrincipal()
 				})
-			).rejects.toThrow(JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER);
+			).rejects.toThrowError(JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER);
 		});
 
 		it('should throw errors on trying to deploy dapp', async () => {
@@ -808,13 +808,13 @@ describe('Satellite', () => {
 					name: 'hello.html',
 					token: toNullable()
 				})
-			).rejects.toThrow(JUNO_STORAGE_ERROR_UPLOAD_NOT_ALLOWED);
+			).rejects.toThrowError(JUNO_STORAGE_ERROR_UPLOAD_NOT_ALLOWED);
 		});
 
 		it('should throw errors on memory size', async () => {
 			const { memory_size } = actor;
 
-			await expect(memory_size()).rejects.toThrow(JUNO_AUTH_ERROR_NOT_CONTROLLER);
+			await expect(memory_size()).rejects.toThrowError(JUNO_AUTH_ERROR_NOT_CONTROLLER);
 		});
 	});
 });

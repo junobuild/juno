@@ -60,7 +60,7 @@ describe('Console > Factory > Mission Control', () => {
 
 	describe('Assertions', () => {
 		it('should fail with unknown account', async () => {
-			await expect(createMissionControlWithConsole()).rejects.toThrow(NO_ACCOUNT_ERROR_MSG);
+			await expect(createMissionControlWithConsole()).rejects.toThrowError(NO_ACCOUNT_ERROR_MSG);
 		});
 
 		it('should fail if mission control already exists', async () => {
@@ -70,7 +70,7 @@ describe('Console > Factory > Mission Control', () => {
 				user
 			});
 
-			await expect(createMissionControlWithConsole()).rejects.toThrow(
+			await expect(createMissionControlWithConsole()).rejects.toThrowError(
 				'Mission control center already exist.'
 			);
 
@@ -105,7 +105,7 @@ describe('Console > Factory > Mission Control', () => {
 			await tick(pic);
 
 			// Second requires payment
-			await expect(createMissionControlWithConsole()).rejects.toThrow('InsufficientAllowance');
+			await expect(createMissionControlWithConsole()).rejects.toThrowError('InsufficientAllowance');
 		});
 
 		it('should fail without enough payment', async () => {
@@ -136,7 +136,7 @@ describe('Console > Factory > Mission Control', () => {
 			await tick(pic);
 
 			// Second requires full payment
-			await expect(createMissionControlWithConsole()).rejects.toThrow('InsufficientAllowance');
+			await expect(createMissionControlWithConsole()).rejects.toThrowError('InsufficientAllowance');
 		});
 
 		it('should succeed with payment', async () => {

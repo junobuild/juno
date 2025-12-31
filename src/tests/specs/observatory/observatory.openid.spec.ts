@@ -60,7 +60,7 @@ describe('Observatory > OpenId', async () => {
 		it('should throw error if openid scheduler is already running', async () => {
 			const { start_openid_monitoring } = actor;
 
-			await expect(start_openid_monitoring()).rejects.toThrow(
+			await expect(start_openid_monitoring()).rejects.toThrowError(
 				'OpenID scheduler for Google already running'
 			);
 		});
@@ -112,7 +112,7 @@ describe('Observatory > OpenId', async () => {
 		it('should throw error if openid scheduler is already stopped', async () => {
 			const { stop_openid_monitoring } = actor;
 
-			await expect(stop_openid_monitoring()).rejects.toThrow(
+			await expect(stop_openid_monitoring()).rejects.toThrowError(
 				'OpenID scheduler for Google is not running'
 			);
 		});

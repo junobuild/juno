@@ -68,7 +68,7 @@ export const testNotAllowedCdnMethods = ({
 	it('should throw errors on init asset upload', async () => {
 		const { init_proposal_asset_upload } = actor();
 
-		await expect(init_proposal_asset_upload(key, 123n)).rejects.toThrow(
+		await expect(init_proposal_asset_upload(key, 123n)).rejects.toThrowError(
 			errorMsgController ?? errorMsgWriteController ?? errorMsgAdminController
 		);
 	});
@@ -76,7 +76,7 @@ export const testNotAllowedCdnMethods = ({
 	it('should throw errors on init many assets upload', async () => {
 		const { init_proposal_many_assets_upload } = actor();
 
-		await expect(init_proposal_many_assets_upload([key], 123n)).rejects.toThrow(
+		await expect(init_proposal_many_assets_upload([key], 123n)).rejects.toThrowError(
 			errorMsgController ?? errorMsgWriteController ?? errorMsgAdminController
 		);
 	});
@@ -90,7 +90,7 @@ export const testNotAllowedCdnMethods = ({
 			order_id: []
 		};
 
-		await expect(upload_proposal_asset_chunk(chunk)).rejects.toThrow(
+		await expect(upload_proposal_asset_chunk(chunk)).rejects.toThrowError(
 			errorMsgController ?? errorMsgWriteController ?? errorMsgAdminController
 		);
 	});
@@ -98,7 +98,7 @@ export const testNotAllowedCdnMethods = ({
 	it('should throw errors on commit asset upload', async () => {
 		const { commit_proposal_asset_upload } = actor();
 
-		await expect(commit_proposal_asset_upload(batch)).rejects.toThrow(
+		await expect(commit_proposal_asset_upload(batch)).rejects.toThrowError(
 			errorMsgController ?? errorMsgWriteController ?? errorMsgAdminController
 		);
 	});
@@ -106,7 +106,7 @@ export const testNotAllowedCdnMethods = ({
 	it('should throw errors on commit many assets upload', async () => {
 		const { commit_proposal_many_assets_upload } = actor();
 
-		await expect(commit_proposal_many_assets_upload([batch])).rejects.toThrow(
+		await expect(commit_proposal_many_assets_upload([batch])).rejects.toThrowError(
 			errorMsgController ?? errorMsgWriteController ?? errorMsgAdminController
 		);
 	});
@@ -124,19 +124,19 @@ export const testNotAllowedCdnMethods = ({
 				max_memory_size: toNullable(),
 				version: toNullable()
 			})
-		).rejects.toThrow(errorMsgAdminController);
+		).rejects.toThrowError(errorMsgAdminController);
 	});
 
 	it('should throw errors on getting storage config', async () => {
 		const { get_storage_config } = actor();
 
-		await expect(get_storage_config()).rejects.toThrow(errorMsgAdminController);
+		await expect(get_storage_config()).rejects.toThrowError(errorMsgAdminController);
 	});
 
 	it('should throw errors on delete proposal assets', async () => {
 		const { delete_proposal_assets } = actor();
 
-		await expect(delete_proposal_assets({ proposal_ids: [1n] })).rejects.toThrow(
+		await expect(delete_proposal_assets({ proposal_ids: [1n] })).rejects.toThrowError(
 			errorMsgWriteController ?? errorMsgAdminController
 		);
 	});
@@ -144,7 +144,9 @@ export const testNotAllowedCdnMethods = ({
 	it('should throw errors on init proposal', async () => {
 		const { init_proposal } = actor();
 
-		await expect(init_proposal({ AssetsUpgrade: { clear_existing_assets: [] } })).rejects.toThrow(
+		await expect(
+			init_proposal({ AssetsUpgrade: { clear_existing_assets: [] } })
+		).rejects.toThrowError(
 			errorMsgController ?? errorMsgWriteController ?? errorMsgAdminController
 		);
 	});
@@ -152,7 +154,7 @@ export const testNotAllowedCdnMethods = ({
 	it('should throw errors on submit proposal', async () => {
 		const { submit_proposal } = actor();
 
-		await expect(submit_proposal(123n)).rejects.toThrow(
+		await expect(submit_proposal(123n)).rejects.toThrowError(
 			errorMsgController ?? errorMsgWriteController ?? errorMsgAdminController
 		);
 	});
@@ -165,7 +167,7 @@ export const testNotAllowedCdnMethods = ({
 			proposal_id: 123n
 		};
 
-		await expect(reject_proposal(commit)).rejects.toThrow(
+		await expect(reject_proposal(commit)).rejects.toThrowError(
 			errorMsgWriteController ?? errorMsgAdminController
 		);
 	});
@@ -178,7 +180,7 @@ export const testNotAllowedCdnMethods = ({
 			proposal_id: 123n
 		};
 
-		await expect(commit_proposal(commit)).rejects.toThrow(
+		await expect(commit_proposal(commit)).rejects.toThrowError(
 			errorMsgWriteController ?? errorMsgAdminController
 		);
 	});
@@ -198,7 +200,7 @@ export const testGuardedAssetsCdnMethods = ({
 
 		await expect(
 			list_assets('#dapp', { matcher: [], order: [], owner: [], paginate: [] })
-		).rejects.toThrow(errorMsgController ?? errorMsgAdminController);
+		).rejects.toThrowError(errorMsgController ?? errorMsgAdminController);
 	});
 };
 
@@ -256,21 +258,21 @@ export const testCdnConfig = ({
 				...config,
 				version: toNullable(configBaseVersion ?? 0n)
 			})
-		).rejects.toThrow(JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE);
+		).rejects.toThrowError(JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE);
 
 		await expect(
 			set_storage_config({
 				...config,
 				version: [99n]
 			})
-		).rejects.toThrow(JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE);
+		).rejects.toThrowError(JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE);
 
 		await expect(
 			set_storage_config({
 				...config,
 				version: []
 			})
-		).rejects.toThrow(JUNO_ERROR_NO_VERSION_PROVIDED);
+		).rejects.toThrowError(JUNO_ERROR_NO_VERSION_PROVIDED);
 	});
 };
 
@@ -370,7 +372,7 @@ export const testControlledCdnMethods = ({
 
 				const unknownProposalId = proposalId + 1n;
 
-				await expect(init_proposal_asset_upload(key, unknownProposalId)).rejects.toThrow(
+				await expect(init_proposal_asset_upload(key, unknownProposalId)).rejects.toThrowError(
 					`${JUNO_CDN_STORAGE_ERROR_NO_PROPOSAL_FOUND} (${unknownProposalId})`
 				);
 			});
@@ -380,7 +382,9 @@ export const testControlledCdnMethods = ({
 
 				const unknownProposalId = proposalId + 1n;
 
-				await expect(init_proposal_many_assets_upload([key], unknownProposalId)).rejects.toThrow(
+				await expect(
+					init_proposal_many_assets_upload([key], unknownProposalId)
+				).rejects.toThrowError(
 					`${JUNO_CDN_STORAGE_ERROR_NO_PROPOSAL_FOUND} (${unknownProposalId})`
 				);
 			});
@@ -438,7 +442,7 @@ export const testControlledCdnMethods = ({
 
 				const unknownProposalId = proposalId + 1n;
 
-				await expect(submit_proposal(unknownProposalId)).rejects.toThrow(
+				await expect(submit_proposal(unknownProposalId)).rejects.toThrowError(
 					JUNO_CDN_PROPOSALS_ERROR_CANNOT_SUBMIT
 				);
 			});
@@ -490,13 +494,15 @@ export const testControlledCdnMethods = ({
 					delete_proposal_assets({
 						proposal_ids: [proposalId]
 					})
-				).rejects.toThrow(`${JUNO_CDN_PROPOSALS_ERROR_CANNOT_DELETE_ASSETS_INVALID_STATUS} (Open)`);
+				).rejects.toThrowError(
+					`${JUNO_CDN_PROPOSALS_ERROR_CANNOT_DELETE_ASSETS_INVALID_STATUS} (Open)`
+				);
 			});
 
 			it('should fail at submitting a proposal if already open', async () => {
 				const { submit_proposal } = actor();
 
-				await expect(submit_proposal(proposalId)).rejects.toThrow(
+				await expect(submit_proposal(proposalId)).rejects.toThrowError(
 					`${JUNO_CDN_PROPOSALS_ERROR_CANNOT_SUBMIT_INVALID_STATUS} (Open)`
 				);
 			});
@@ -511,7 +517,7 @@ export const testControlledCdnMethods = ({
 						sha256: Uint8Array.from(Array.from({ length: 32 }).map((_, i) => i)),
 						proposal_id: proposalId + 1n
 					})
-				).rejects.toThrow(`${JUNO_CDN_PROPOSALS_ERROR_CANNOT_REJECT} (${unknownProposalId})`);
+				).rejects.toThrowError(`${JUNO_CDN_PROPOSALS_ERROR_CANNOT_REJECT} (${unknownProposalId})`);
 			});
 
 			it('should fail at committing a proposal if unknown', async () => {
@@ -524,7 +530,7 @@ export const testControlledCdnMethods = ({
 						sha256: Uint8Array.from(Array.from({ length: 32 }).map((_, i) => i)),
 						proposal_id: proposalId + 1n
 					})
-				).rejects.toThrow(`${JUNO_CDN_PROPOSALS_ERROR_CANNOT_COMMIT} (${unknownProposalId})`);
+				).rejects.toThrowError(`${JUNO_CDN_PROPOSALS_ERROR_CANNOT_COMMIT} (${unknownProposalId})`);
 			});
 
 			it('should fail at rejecting a proposal with incorrect sha256', async () => {
@@ -537,7 +543,7 @@ export const testControlledCdnMethods = ({
 						sha256,
 						proposal_id: proposalId
 					})
-				).rejects.toThrow(
+				).rejects.toThrowError(
 					`${JUNO_CDN_PROPOSALS_ERROR_INVALID_HASH} (${uint8ArrayToHexString(sha256)})`
 				);
 			});
@@ -552,7 +558,7 @@ export const testControlledCdnMethods = ({
 						sha256,
 						proposal_id: proposalId
 					})
-				).rejects.toThrow(
+				).rejects.toThrowError(
 					`${JUNO_CDN_PROPOSALS_ERROR_INVALID_HASH} (${uint8ArrayToHexString(sha256)})`
 				);
 			});
@@ -579,7 +585,7 @@ export const testControlledCdnMethods = ({
 						sha256: sha,
 						proposal_id: proposalId
 					})
-				).resolves.not.toThrow();
+				).resolves.not.toThrowError();
 			});
 
 			it('should have updated proposal to executed', async () => {
@@ -596,7 +602,7 @@ export const testControlledCdnMethods = ({
 				it('should throw errors on delete unknown proposal', async () => {
 					const { delete_proposal_assets } = actor({ requireController: true });
 
-					await expect(delete_proposal_assets({ proposal_ids: [1000n] })).rejects.toThrow(
+					await expect(delete_proposal_assets({ proposal_ids: [1000n] })).rejects.toThrowError(
 						JUNO_CDN_PROPOSALS_ERROR_CANNOT_DELETE_ASSETS
 					);
 				});
@@ -606,7 +612,7 @@ export const testControlledCdnMethods = ({
 
 					await expect(
 						delete_proposal_assets({ proposal_ids: [proposalId] })
-					).resolves.not.toThrow();
+					).resolves.not.toThrowError();
 				});
 			});
 
@@ -689,7 +695,9 @@ export const testControlledCdnMethods = ({
 							sha256: sha,
 							proposal_id: proposalId
 						})
-					).rejects.toThrow(`${JUNO_CDN_PROPOSALS_ERROR_CANNOT_REJECT_INVALID_STATUS} (Executed)`);
+					).rejects.toThrowError(
+						`${JUNO_CDN_PROPOSALS_ERROR_CANNOT_REJECT_INVALID_STATUS} (Executed)`
+					);
 				});
 
 				it('should fail at rejecting proposal not open', async () => {
@@ -704,7 +712,7 @@ export const testControlledCdnMethods = ({
 							sha256: sha,
 							proposal_id: rejectProposalId
 						})
-					).rejects.toThrow(
+					).rejects.toThrowError(
 						`${JUNO_CDN_PROPOSALS_ERROR_CANNOT_REJECT_INVALID_STATUS} (Initialized)`
 					);
 				});
@@ -726,7 +734,7 @@ export const testControlledCdnMethods = ({
 							sha256: rejectSha,
 							proposal_id: rejectProposalId
 						})
-					).rejects.toThrow(
+					).rejects.toThrowError(
 						`${JUNO_CDN_PROPOSALS_ERROR_INVALID_HASH} (${uint8ArrayToHexString(fromNullable(sha256) ?? Uint8Array.from([]))})`
 					);
 				});
@@ -744,7 +752,7 @@ export const testControlledCdnMethods = ({
 							sha256: sha,
 							proposal_id: rejectProposalId
 						})
-					).resolves.not.toThrow();
+					).resolves.not.toThrowError();
 
 					const proposal = fromNullable(await get_proposal(rejectProposalId));
 
@@ -764,7 +772,9 @@ export const testControlledCdnMethods = ({
 							sha256: sha,
 							proposal_id: rejectProposalId
 						})
-					).rejects.toThrow(`${JUNO_CDN_PROPOSALS_ERROR_CANNOT_REJECT_INVALID_STATUS} (Rejected)`);
+					).rejects.toThrowError(
+						`${JUNO_CDN_PROPOSALS_ERROR_CANNOT_REJECT_INVALID_STATUS} (Rejected)`
+					);
 				});
 			});
 		}
@@ -853,7 +863,7 @@ export const testControlledCdnMethods = ({
 				sha256: sha,
 				proposal_id: proposalId
 			})
-		).rejects.toThrow(`${JUNO_CDN_PROPOSALS_ERROR_EMPTY_ASSETS} (${proposalId})`);
+		).rejects.toThrowError(`${JUNO_CDN_PROPOSALS_ERROR_EMPTY_ASSETS} (${proposalId})`);
 
 		const proposal = fromNullable(await get_proposal(proposalId));
 
@@ -915,7 +925,7 @@ export const testReleasesProposal = ({
 						},
 						proposalId
 					)
-				).rejects.toThrow(`${JUNO_CDN_STORAGE_ERROR_INVALID_RELEASES_PATH} (${fullPath}`);
+				).rejects.toThrowError(`${JUNO_CDN_STORAGE_ERROR_INVALID_RELEASES_PATH} (${fullPath}`);
 			});
 		});
 
@@ -941,7 +951,7 @@ export const testReleasesProposal = ({
 						},
 						proposalId
 					)
-				).rejects.toThrow(JUNO_CDN_STORAGE_ERROR_MISSING_RELEASES_DESCRIPTION);
+				).rejects.toThrowError(JUNO_CDN_STORAGE_ERROR_MISSING_RELEASES_DESCRIPTION);
 			});
 
 			it('should throw error if description is using an invalid pattern', async () => {
@@ -965,7 +975,7 @@ export const testReleasesProposal = ({
 						},
 						proposalId
 					)
-				).rejects.toThrow(`${JUNO_CDN_STORAGE_ERROR_INVALID_RELEASES_DESCRIPTION} (test)`);
+				).rejects.toThrowError(`${JUNO_CDN_STORAGE_ERROR_INVALID_RELEASES_DESCRIPTION} (test)`);
 			});
 		});
 
@@ -991,7 +1001,9 @@ export const testReleasesProposal = ({
 						},
 						proposalId
 					)
-				).rejects.toThrow(`${JUNO_CDN_STORAGE_ERROR_INVALID_COLLECTION} (${fullPath} - #dapp)`);
+				).rejects.toThrowError(
+					`${JUNO_CDN_STORAGE_ERROR_INVALID_COLLECTION} (${fullPath} - #dapp)`
+				);
 			});
 		});
 	});
@@ -1498,7 +1510,7 @@ export const testUploadProposalManyAssets = ({
 				sha256: sha,
 				proposal_id: proposalId
 			})
-		).resolves.not.toThrow();
+		).resolves.not.toThrowError();
 	});
 
 	it.each(fullPaths)('should serve asset %s', async (full_path) => {

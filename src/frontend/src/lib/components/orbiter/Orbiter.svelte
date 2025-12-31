@@ -65,7 +65,7 @@
 	</div>
 </div>
 
-<OrbiterRuntimeActions {canister} {monitoringEnabled} {orbiter} />
+<OrbiterRuntimeActions {canister} {monitoringEnabled} />
 
 <style lang="scss">
 	.id {

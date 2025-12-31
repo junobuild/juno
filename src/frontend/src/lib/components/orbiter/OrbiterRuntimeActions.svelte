@@ -1,5 +1,4 @@
 <script lang="ts">
-	import type { MissionControlDid } from '$declarations';
 	import CanisterTransferCycles from '$lib/components/canister/cycles/CanisterTransferCycles.svelte';
 	import CanisterDelete from '$lib/components/canister/lifecycle/CanisterDelete.svelte';
 	import CanisterStopStart from '$lib/components/canister/lifecycle/CanisterStopStart.svelte';
@@ -11,12 +10,11 @@
 	import { emit } from '$lib/utils/events.utils';
 
 	interface Props {
-		orbiter: MissionControlDid.Orbiter;
 		canister: CanisterSyncDataType | undefined;
 		monitoringEnabled: boolean;
 	}
 
-	let { orbiter, canister, monitoringEnabled }: Props = $props();
+	let { canister, monitoringEnabled }: Props = $props();
 
 	let visible: boolean = $state(false);
 	const close = () => (visible = false);

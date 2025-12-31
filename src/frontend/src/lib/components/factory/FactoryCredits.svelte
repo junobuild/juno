@@ -1,11 +1,9 @@
 <script lang="ts">
-	import { nonNullish } from '@dfinity/utils';
 	import type { Snippet } from 'svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import GetICPInfo from '$lib/components/wallet/GetICPInfo.svelte';
 	import { E8S_PER_ICP } from '$lib/constants/app.constants';
 	import { creditsOrZero } from '$lib/derived/console/credits.derived';
-	import { devId } from '$lib/derived/dev.derived';
 	import {
 		devCyclesBalanceOrZero,
 		missionControlIcpBalanceOrZero

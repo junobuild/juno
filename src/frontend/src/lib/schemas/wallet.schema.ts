@@ -56,7 +56,7 @@ export const SelectedTokenFeesSchema = z.strictObject({
 	topUp: z.bigint()
 });
 
-const SelectedTokenSchema = z.strictObject({
+export const SelectedTokenSchema = z.strictObject({
 	token: z.custom<Token>(),
 	fees: SelectedTokenFeesSchema,
 	...LedgerIdsTextSchema.shape

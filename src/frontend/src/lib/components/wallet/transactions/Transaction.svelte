@@ -2,17 +2,20 @@
 	import { nonNullish } from '@dfinity/utils';
 	import { blur } from 'svelte/transition';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
-	import type { WalletId } from '$lib/schemas/wallet.schema';
+	import TokenSymbol from '$lib/components/wallet/tokens/TokenSymbol.svelte';
+	import type { SelectedToken, WalletId } from '$lib/schemas/wallet.schema';
 	import type { IcTransactionUi } from '$lib/types/ic-transaction';
 	import { formatToDate } from '$lib/utils/date.utils';
-	import { transactionAmount, transactionMemo } from '$lib/utils/wallet.utils';
+	import { formatToken } from '$lib/utils/token.utils';
+	import { transactionMemo } from '$lib/utils/wallet.utils';
 
 	interface Props {
 		walletId: WalletId;
 		transaction: IcTransactionUi;
+		selectedToken: SelectedToken;
 	}
 
-	let { walletId, transaction }: Props = $props();
+	let { walletId, transaction, selectedToken }: Props = $props();
 
 	let id = $derived(transaction.id);
 
@@ -24,7 +27,7 @@
 
 	let memo = $derived(transactionMemo({ transaction, walletId }));
 
-	let amount = $derived(transactionAmount(transaction));
+	let amount = $derived(transaction.value);
 </script>
 
 <tr in:blur={{ delay: 0, duration: 125 }}>
@@ -47,7 +50,10 @@
 	<td class="memo">{memo}</td>
 	<td class="amount">
 		{#if nonNullish(amount)}
-			{amount} <small>ICP</small>
+			<span
+				>{formatToken({ selectedToken, amount })}
+				<TokenSymbol {selectedToken} /></span
+			>
 		{/if}
 	</td>
 </tr>

@@ -99,15 +99,15 @@
 		<Transactions
 			{disableInfiniteScroll}
 			{onintersect}
+			{selectedToken}
 			{selectedWallet}
 			transactions={walletTransactions}
 		/>
 
-		<TransactionsExport {selectedWallet} transactions={walletTransactions} />
+		<TransactionsExport {selectedToken} {selectedWallet} transactions={walletTransactions} />
 	{/if}
 {/if}
 
 {#if nonNullish(selectedWallet)}
 	<ReceiveTokens {selectedWallet} bind:visible={receiveVisible} />
 {/if}
-

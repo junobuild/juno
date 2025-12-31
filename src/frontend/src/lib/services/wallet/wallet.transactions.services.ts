@@ -1,6 +1,6 @@
 import { queryAndUpdate, type QueryAndUpdateRequestParams } from '$lib/api/call/query.api';
 import { ICP_LEDGER_CANISTER_ID } from '$lib/constants/app.constants';
-import type { LedgerIds, WalletId } from '$lib/schemas/wallet.schema';
+import type { LedgerIds, SelectedToken, WalletId } from '$lib/schemas/wallet.schema';
 import {
 	requestIcpTransactions,
 	requestIcrcTransactions,
@@ -13,7 +13,8 @@ import type { CertifiedTransactions } from '$lib/types/transaction';
 import { formatToDateNumeric } from '$lib/utils/date.utils';
 import { toAccountIdentifier } from '$lib/utils/icp-icrc-account.utils';
 import { CSV_PICKER_OPTIONS, filenameTimestamp, saveToFileSystem } from '$lib/utils/save.utils';
-import { transactionAmount, transactionMemo } from '$lib/utils/wallet.utils';
+import { formatToken } from '$lib/utils/token.utils';
+import { transactionMemo } from '$lib/utils/wallet.utils';
 import { nonNullish } from '@dfinity/utils';
 import { encodeIcrcAccount, type IcrcAccount } from '@icp-sdk/canisters/ledger/icrc';
 import { AnonymousIdentity } from '@icp-sdk/core/agent';
@@ -37,15 +38,20 @@ type TransactionCsv = [
 
 export const exportTransactions = async ({
 	walletId,
+	selectedToken,
 	transactions
 }: {
 	walletId: WalletId;
+	selectedToken: SelectedToken;
 	transactions: CertifiedTransactions;
 }) => {
 	const transactionsCsv: TransactionCsv[] = transactions.map(({ data: transaction }) => {
 		const { id, timestamp, from, to } = transaction;
 		const memo = transactionMemo({ transaction, walletId });
-		const amount = transactionAmount(transaction);
+
+		const amount = nonNullish(transaction.value)
+			? formatToken({ selectedToken, amount: transaction.value, withSymbol: true })
+			: undefined;
 
 		return [
 			`${id}`,

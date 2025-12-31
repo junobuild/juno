@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
-	import { fade } from 'svelte/transition';
 	import { decodeIcrcAccount } from '@icp-sdk/canisters/ledger/icrc';
 	import { onMount, untrack } from 'svelte';
+	import { fade } from 'svelte/transition';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import { devId } from '$lib/derived/dev.derived';

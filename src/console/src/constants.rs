@@ -4,7 +4,6 @@ use junobuild_shared::ledger::types::cycles::CyclesTokens;
 // 1.5 ICP roughly 3 T Cycles on Dec. 31, 2025
 pub const SATELLITE_CREATION_FEE_ICP: Tokens = Tokens::from_e8s(1_500_000_000);
 pub const ORBITER_CREATION_FEE_ICP: Tokens = Tokens::from_e8s(1_500_000_000);
-pub const MISSION_CONTROL_CREATION_FEE_ICP: Tokens = Tokens::from_e8s(1_500_000_000);
 
 // We create canister with CREATE_CANISTER_CYCLES + e.g. CREATE_SATELLITE_CYCLES
 // 0.5 + 1 = 1.5 T Cycles (minus what's get consumed along the way)

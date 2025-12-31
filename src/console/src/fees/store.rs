@@ -2,10 +2,17 @@ use crate::store::{with_factory_fees, with_factory_fees_mut};
 use crate::types::interface::FeesArgs;
 use crate::types::state::{FactoryFee, FactoryFees};
 use ic_cdk::api::time;
+use ic_ledger_types::Tokens;
 use junobuild_shared::types::state::SegmentKind;
 
 pub fn get_factory_fee(segment_kind: &SegmentKind) -> Result<FactoryFee, String> {
     with_factory_fees(|factory_fees| get_factory_fee_impl(segment_kind, factory_fees))
+}
+
+pub fn get_factory_fee_icp(segment_kind: &SegmentKind) -> Result<Tokens, String> {
+    get_factory_fee(segment_kind)?
+        .fee_icp
+        .ok_or_else(|| format!("ICP fee not available for {:?}", segment_kind))
 }
 
 fn get_factory_fee_impl(

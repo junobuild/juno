@@ -5,7 +5,8 @@ use crate::accounts::{
 use crate::factory::services::payment::{
     process_payment_cycles, process_payment_icp, refund_payment_cycles, refund_payment_icp,
 };
-use crate::factory::types::{CanisterCreator, CreateCanisterArgs, FeeKind};
+use crate::factory::types::{CanisterCreator, CreateCanisterArgs};
+use crate::fees::types::FeeKind;
 use crate::store::stable::payments::{
     insert_new_icrc_payment, update_icrc_payment_completed, update_icrc_payment_refunded,
 };

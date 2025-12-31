@@ -109,9 +109,9 @@ type DeleteProposalAssets = record { proposal_ids : vec nat };
 type FactoryFee = record {
   updated_at : nat64;
   fee_cycles : CyclesTokens;
-  fee_icp : Tokens;
+  fee_icp : opt Tokens;
 };
-type FeesArgs = record { fee_cycles : CyclesTokens; fee_icp : Tokens };
+type FeesArgs = record { fee_cycles : CyclesTokens; fee_icp : opt Tokens };
 type GetCreateCanisterFeeArgs = record { user : principal };
 type GetDelegationArgs = variant { OpenId : OpenIdGetDelegationArgs };
 type GetDelegationError = variant {

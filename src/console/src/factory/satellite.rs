@@ -1,9 +1,10 @@
 use crate::constants::FREEZING_THRESHOLD_ONE_YEAR;
 use crate::factory::canister::create_canister;
-use crate::factory::types::{CanisterCreator, FeeKind};
+use crate::factory::types::CanisterCreator;
 use crate::factory::utils::controllers::remove_console_controller;
 use crate::factory::utils::wasm::satellite_wasm_arg;
-use crate::fees::get_factory_fee;
+use crate::fees::get_factory_fee_for_kind;
+use crate::fees::types::FeeKind;
 use crate::store::heap::increment_satellites_rate;
 use crate::store::stable::add_segment as add_segment_store;
 use crate::types::ledger::Fee;
@@ -40,14 +41,7 @@ pub async fn create_satellite(
 }
 
 fn get_fee(fee_kind: FeeKind) -> Result<Fee, String> {
-    let fee = get_factory_fee(&SegmentKind::Satellite)?;
-
-    let value = match fee_kind {
-        FeeKind::Cycles => Fee::Cycles(fee.fee_cycles),
-        FeeKind::ICP => Fee::ICP(fee.fee_icp),
-    };
-
-    Ok(value)
+    get_factory_fee_for_kind(&SegmentKind::Satellite, fee_kind)
 }
 
 async fn create_satellite_wasm(

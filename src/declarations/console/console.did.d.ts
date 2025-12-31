@@ -143,11 +143,11 @@ export interface DeleteProposalAssets {
 export interface FactoryFee {
 	updated_at: bigint;
 	fee_cycles: CyclesTokens;
-	fee_icp: Tokens;
+	fee_icp: [] | [Tokens];
 }
 export interface FeesArgs {
 	fee_cycles: CyclesTokens;
-	fee_icp: Tokens;
+	fee_icp: [] | [Tokens];
 }
 export interface GetCreateCanisterFeeArgs {
 	user: Principal;

@@ -131,7 +131,7 @@ pub mod state {
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct FactoryFee {
         pub fee_cycles: CyclesTokens,
-        pub fee_icp: Tokens,
+        pub fee_icp: Option<Tokens>,
         pub updated_at: Timestamp,
     }
 
@@ -216,7 +216,7 @@ pub mod interface {
     #[derive(CandidType, Deserialize)]
     pub struct FeesArgs {
         pub fee_cycles: CyclesTokens,
-        pub fee_icp: Tokens,
+        pub fee_icp: Option<Tokens>,
     }
 }
 

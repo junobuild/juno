@@ -1,3 +1,4 @@
+use crate::accounts::get_existing_account;
 use crate::store::heap::get_controllers;
 use candid::Principal;
 use junobuild_shared::controllers::is_admin_controller;
@@ -25,4 +26,12 @@ pub fn caller_is_observatory() -> Result<(), String> {
     } else {
         Err("Caller is not the observatory.".to_string())
     }
+}
+
+pub fn caller_has_account() -> Result<(), String> {
+    let caller = caller();
+
+    get_existing_account(&caller)?;
+
+    Ok(())
 }

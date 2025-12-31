@@ -76,7 +76,7 @@ describe('Console > Fees', () => {
 			);
 		});
 
-		it('should provide default fees', async () => {
+		it('should provide default segments fees', async () => {
 			const { get_fee } = randomIdentityActor;
 
 			const defaultFees = {
@@ -91,6 +91,18 @@ describe('Console > Fees', () => {
 			await expect(get_fee({ Orbiter: null })).resolves.toEqual(
 				expect.objectContaining(defaultFees)
 			);
+		});
+
+		it('should provide default mission control fees', async () => {
+			const { get_fee } = randomIdentityActor;
+
+			// Mission Control cannot be spin with ICP
+			const defaultFees = {
+				fee_icp: toNullable(),
+				fee_cycles: { e12s: 3_000_000_000_000n },
+				updated_at: expect.any(BigInt)
+			};
+
 			await expect(get_fee({ MissionControl: null })).resolves.toEqual(
 				expect.objectContaining(defaultFees)
 			);

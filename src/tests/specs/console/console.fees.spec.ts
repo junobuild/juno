@@ -1,5 +1,6 @@
 import { type ConsoleActor, idlFactoryConsole } from '$declarations';
 import type { Actor, PocketIc } from '@dfinity/pic';
+import { toNullable } from '@dfinity/utils';
 import { AnonymousIdentity, type Identity } from '@icp-sdk/core/agent';
 import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import type { Principal } from '@icp-sdk/core/principal';
@@ -75,11 +76,11 @@ describe('Console > Fees', () => {
 			);
 		});
 
-		it('should provide default fees', async () => {
+		it('should provide default segments fees', async () => {
 			const { get_fee } = randomIdentityActor;
 
 			const defaultFees = {
-				fee_icp: { e8s: 1_500_000_000n },
+				fee_icp: toNullable({ e8s: 1_500_000_000n }),
 				fee_cycles: { e12s: 3_000_000_000_000n },
 				updated_at: expect.any(BigInt)
 			};
@@ -90,6 +91,18 @@ describe('Console > Fees', () => {
 			await expect(get_fee({ Orbiter: null })).resolves.toEqual(
 				expect.objectContaining(defaultFees)
 			);
+		});
+
+		it('should provide default mission control fees', async () => {
+			const { get_fee } = randomIdentityActor;
+
+			// Mission Control cannot be spin with ICP
+			const defaultFees = {
+				fee_icp: toNullable(),
+				fee_cycles: { e12s: 3_000_000_000_000n },
+				updated_at: expect.any(BigInt)
+			};
+
 			await expect(get_fee({ MissionControl: null })).resolves.toEqual(
 				expect.objectContaining(defaultFees)
 			);
@@ -100,34 +113,34 @@ describe('Console > Fees', () => {
 
 			await set_fee(
 				{ Satellite: null },
-				{ fee_icp: { e8s: 33_000_000n }, fee_cycles: { e12s: 2_222_000_000_000n } }
+				{ fee_icp: toNullable({ e8s: 33_000_000n }), fee_cycles: { e12s: 2_222_000_000_000n } }
 			);
 			await set_fee(
 				{ Orbiter: null },
-				{ fee_icp: { e8s: 44_000_000n }, fee_cycles: { e12s: 4_444_000_000_000n } }
+				{ fee_icp: toNullable({ e8s: 44_000_000n }), fee_cycles: { e12s: 4_444_000_000_000n } }
 			);
 			await set_fee(
 				{ MissionControl: null },
-				{ fee_icp: { e8s: 44_000_000n }, fee_cycles: { e12s: 6_666_000_000_000n } }
+				{ fee_icp: toNullable({ e8s: 44_000_000n }), fee_cycles: { e12s: 6_666_000_000_000n } }
 			);
 
 			const { get_fee } = randomIdentityActor;
 
 			await expect(get_fee({ Satellite: null })).resolves.toEqual(
 				expect.objectContaining({
-					fee_icp: { e8s: 33_000_000n },
+					fee_icp: toNullable({ e8s: 33_000_000n }),
 					fee_cycles: { e12s: 2_222_000_000_000n }
 				})
 			);
 			await expect(get_fee({ Orbiter: null })).resolves.toEqual(
 				expect.objectContaining({
-					fee_icp: { e8s: 44_000_000n },
+					fee_icp: toNullable({ e8s: 44_000_000n }),
 					fee_cycles: { e12s: 4_444_000_000_000n }
 				})
 			);
 			await expect(get_fee({ MissionControl: null })).resolves.toEqual(
 				expect.objectContaining({
-					fee_icp: { e8s: 44_000_000n },
+					fee_icp: toNullable({ e8s: 44_000_000n }),
 					fee_cycles: { e12s: 6_666_000_000_000n }
 				})
 			);

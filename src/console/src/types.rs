@@ -11,7 +11,9 @@ pub mod state {
     use junobuild_shared::ledger::types::cycles::CyclesTokens;
     use junobuild_shared::rate::types::{RateConfig, RateTokens};
     use junobuild_shared::types::memory::Memory;
-    use junobuild_shared::types::state::{Controllers, Metadata, SegmentId, Timestamp};
+    use junobuild_shared::types::state::{
+        Controllers, Metadata, SegmentId, SegmentKind, Timestamp,
+    };
     use junobuild_shared::types::state::{MissionControlId, UserId};
     use junobuild_storage::types::state::StorageHeapState;
     use serde::{Deserialize, Serialize};
@@ -21,6 +23,7 @@ pub mod state {
     pub type IcpPayments = HashMap<BlockIndex, IcpPayment>;
     pub type IcrcPayments = HashMap<IcrcPaymentKey, IcrcPayment>;
     pub type InvitationCodes = HashMap<InvitationCode, InvitationCodeRedeem>;
+    pub type FactoryFees = HashMap<SegmentKind, FactoryFee>;
 
     pub type AccountsStable = StableBTreeMap<UserId, Account, Memory>;
     pub type IcpPaymentsStable = StableBTreeMap<BlockIndex, IcpPayment, Memory>;
@@ -128,15 +131,8 @@ pub mod state {
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct FactoryFee {
         pub fee_cycles: CyclesTokens,
-        pub fee_icp: Tokens,
+        pub fee_icp: Option<Tokens>,
         pub updated_at: Timestamp,
-    }
-
-    #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub struct FactoryFees {
-        pub satellite: FactoryFee,
-        pub orbiter: FactoryFee,
-        pub mission_control: FactoryFee,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
@@ -227,7 +223,7 @@ pub mod interface {
     #[derive(CandidType, Deserialize)]
     pub struct FeesArgs {
         pub fee_cycles: CyclesTokens,
-        pub fee_icp: Tokens,
+        pub fee_icp: Option<Tokens>,
     }
 }
 

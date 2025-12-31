@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
+	import { fade } from 'svelte/transition';
 	import { decodeIcrcAccount } from '@icp-sdk/canisters/ledger/icrc';
-	import { untrack } from 'svelte';
+	import { onMount, untrack } from 'svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import { devId } from '$lib/derived/dev.derived';
@@ -17,7 +18,7 @@
 	let { selectedWallet = $bindable(undefined), filterMissionControlZeroBalance = false }: Props =
 		$props();
 
-	let walletIdText = $state<WalletIdText | undefined>(undefined);
+	let walletIdText = $state<WalletIdText | undefined>($devId?.toText());
 
 	$effect(() => {
 		walletIdText;
@@ -32,19 +33,23 @@
 				: undefined;
 		});
 	});
+
+	let pickerEnabled = $derived($missionControlId !== null);
 </script>
 
-<div>
-	<Value ref="wallet-id">
-		{#snippet label()}
-			{$i18n.wallet.title}
-		{/snippet}
+{#if pickerEnabled}
+	<div in:fade>
+		<Value ref="wallet-id">
+			{#snippet label()}
+				{$i18n.wallet.title}
+			{/snippet}
 
-		<select id="wallet-id" name="wallet-id" bind:value={walletIdText}>
-			{#if nonNullish($devId)}<option value={$devId.toText()}>{$i18n.wallet.dev}</option>{/if}
-			{#if nonNullish($missionControlId) && (!filterMissionControlZeroBalance || $missionControlHasIcp)}<option
-					value={$missionControlId.toText()}>{$i18n.mission_control.title}</option
-				>{/if}
-		</select>
-	</Value>
-</div>
+			<select id="wallet-id" name="wallet-id" bind:value={walletIdText}>
+				{#if nonNullish($devId)}<option value={$devId.toText()}>{$i18n.wallet.dev}</option>{/if}
+				{#if nonNullish($missionControlId) && (!filterMissionControlZeroBalance || $missionControlHasIcp)}<option
+						value={$missionControlId.toText()}>{$i18n.mission_control.title}</option
+					>{/if}
+			</select>
+		</Value>
+	</div>
+{/if}

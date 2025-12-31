@@ -226,7 +226,7 @@ export const idlFactory = ({ IDL }) => {
 	const FactoryFee = IDL.Record({
 		updated_at: IDL.Nat64,
 		fee_cycles: CyclesTokens,
-		fee_icp: Tokens
+		fee_icp: IDL.Opt(Tokens)
 	});
 	const ProposalStatus = IDL.Variant({
 		Initialized: IDL.Null,
@@ -453,7 +453,7 @@ export const idlFactory = ({ IDL }) => {
 	});
 	const FeesArgs = IDL.Record({
 		fee_cycles: CyclesTokens,
-		fee_icp: Tokens
+		fee_icp: IDL.Opt(Tokens)
 	});
 	const SetStorageConfig = IDL.Record({
 		iframe: IDL.Opt(StorageConfigIFrame),

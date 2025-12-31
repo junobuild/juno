@@ -166,7 +166,9 @@ export const createSnapshot = async ({
 
 	return await take_canister_snapshot({
 		canister_id: canisterId,
-		replace_snapshot: toNullable(snapshotId)
+		replace_snapshot: toNullable(snapshotId),
+		uninstall_code: toNullable(),
+		sender_canister_version: toNullable()
 	});
 };
 

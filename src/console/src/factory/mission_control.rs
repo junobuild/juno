@@ -5,7 +5,8 @@ use crate::factory::services::payment::{process_payment_cycles, refund_payment_c
 use crate::factory::types::CanisterCreator;
 use crate::factory::utils::controllers::update_mission_control_controllers;
 use crate::factory::utils::wasm::mission_control_wasm_arg;
-use crate::store::heap::{get_mission_control_fee, increment_mission_controls_rate};
+use crate::fees::get_factory_fee;
+use crate::store::heap::increment_mission_controls_rate;
 use crate::types::ledger::Fee;
 use candid::{Nat, Principal};
 use junobuild_shared::constants_shared::CREATE_MISSION_CONTROL_CYCLES;
@@ -15,6 +16,7 @@ use junobuild_shared::mgmt::ic::create_canister_install_code;
 use junobuild_shared::mgmt::types::cmc::SubnetId;
 use junobuild_shared::mgmt::types::ic::CreateCanisterInitSettingsArg;
 use junobuild_shared::types::interface::CreateMissionControlArgs;
+use junobuild_shared::types::state::SegmentKind;
 
 pub async fn create_mission_control(
     caller: Principal,
@@ -28,7 +30,7 @@ pub async fn create_mission_control(
 
     let creator: CanisterCreator = CanisterCreator::User((account.owner, None));
 
-    let fee = get_mission_control_fee().fee_cycles;
+    let fee = get_factory_fee(&SegmentKind::MissionControl)?.fee_cycles;
 
     let mission_control_id = create_canister_with_account(
         create_mission_control_wasm,

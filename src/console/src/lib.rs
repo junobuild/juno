@@ -7,6 +7,7 @@ mod cdn;
 mod certification;
 mod constants;
 mod factory;
+mod fees;
 mod guards;
 mod impls;
 mod memory;

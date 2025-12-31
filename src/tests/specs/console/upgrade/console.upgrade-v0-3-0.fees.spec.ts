@@ -7,7 +7,7 @@ import {
 	type MissionControlActor
 } from '$declarations';
 import { PocketIc, type Actor } from '@dfinity/pic';
-import { assertNonNullish, fromNullable } from '@dfinity/utils';
+import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
 import type { Identity } from '@icp-sdk/core/agent';
 import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import type { Principal } from '@icp-sdk/core/principal';
@@ -107,13 +107,20 @@ describe('Console > Upgrade > Fees > v0.2.0 -> v0.3.0', () => {
 
 		await expect(get_fee({ Satellite: null })).resolves.toEqual(
 			expect.objectContaining({
-				fee_icp: { e8s: 1_500_000_000n },
+				fee_icp: toNullable({ e8s: 1_500_000_000n }),
 				fee_cycles: { e12s: 3_000_000_000_000n }
 			})
 		);
 		await expect(get_fee({ Orbiter: null })).resolves.toEqual(
 			expect.objectContaining({
-				fee_icp: { e8s: 1_500_000_000n },
+				fee_icp: toNullable({ e8s: 1_500_000_000n }),
+				fee_cycles: { e12s: 3_000_000_000_000n }
+			})
+		);
+
+		await expect(get_fee({ MissionControl: null })).resolves.toEqual(
+			expect.objectContaining({
+				fee_icp: toNullable(),
 				fee_cycles: { e12s: 3_000_000_000_000n }
 			})
 		);

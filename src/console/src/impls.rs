@@ -1,13 +1,7 @@
-use crate::constants::{
-    MISSION_CONTROL_CREATION_FEE_CYCLES, MISSION_CONTROL_CREATION_FEE_ICP,
-    ORBITER_CREATION_FEE_CYCLES, ORBITER_CREATION_FEE_ICP, SATELLITE_CREATION_FEE_CYCLES,
-    SATELLITE_CREATION_FEE_ICP,
-};
 use crate::memory::manager::init_stable_state;
 use crate::types::ledger::{Fee, IcpPayment, IcrcPayment, IcrcPaymentKey};
 use crate::types::state::{
-    Account, FactoryFee, FactoryFees, HeapState, Rate, Rates, Segment, SegmentKey, SegmentType,
-    State,
+    Account, HeapState, Rate, Rates, Segment, SegmentKey, SegmentType, State,
 };
 use candid::Principal;
 use ic_cdk::api::time;
@@ -54,30 +48,6 @@ impl Default for Rates {
             orbiters: Rate {
                 config: DEFAULT_RATE_CONFIG,
                 tokens,
-            },
-        }
-    }
-}
-
-impl Default for FactoryFees {
-    fn default() -> Self {
-        let now = time();
-
-        Self {
-            satellite: FactoryFee {
-                fee_icp: SATELLITE_CREATION_FEE_ICP,
-                fee_cycles: SATELLITE_CREATION_FEE_CYCLES,
-                updated_at: now,
-            },
-            orbiter: FactoryFee {
-                fee_icp: ORBITER_CREATION_FEE_ICP,
-                fee_cycles: ORBITER_CREATION_FEE_CYCLES,
-                updated_at: now,
-            },
-            mission_control: FactoryFee {
-                fee_icp: MISSION_CONTROL_CREATION_FEE_ICP,
-                fee_cycles: MISSION_CONTROL_CREATION_FEE_CYCLES,
-                updated_at: now,
             },
         }
     }

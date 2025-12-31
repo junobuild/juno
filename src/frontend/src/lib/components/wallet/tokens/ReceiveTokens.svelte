@@ -59,9 +59,11 @@
 				<button onclick={() => (step = 'wallet_id')}><IconQRCode /> {$i18n.wallet.wallet_id}</button
 				>
 
-				<button onclick={() => (step = 'account_identifier')}
-					><IconQRCode /> {$i18n.wallet.account_identifier}</button
-				>
+				{#if selectedWallet.type === 'mission_control'}
+					<button onclick={() => (step = 'account_identifier')}
+						><IconQRCode /> {$i18n.wallet.account_identifier}</button
+					>
+				{/if}
 
 				<p>{$i18n.wallet.or_connect_wallet}</p>
 

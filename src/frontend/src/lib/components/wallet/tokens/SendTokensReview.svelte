@@ -5,14 +5,14 @@
 	import Value from '$lib/components/ui/Value.svelte';
 	import WalletSendFrom from '$lib/components/wallet/WalletSendFrom.svelte';
 	import SendTokensAmount from '$lib/components/wallet/tokens/SendTokensAmount.svelte';
-	import { IC_TRANSACTION_FEE_ICP } from '$lib/constants/app.constants';
-	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
+	import TokenSymbol from '$lib/components/wallet/tokens/TokenSymbol.svelte';
+	import type { SelectedToken, SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import { formatICP } from '$lib/utils/icp.utils';
-	import { amountToICPToken } from '$lib/utils/token.utils';
+	import { amountToToken, formatToken } from '$lib/utils/token.utils';
 
 	interface Props {
 		selectedWallet: SelectedWallet;
+		selectedToken: SelectedToken;
 		balance: bigint | undefined;
 		destination?: string;
 		amount: string | undefined;
@@ -28,6 +28,7 @@
 
 	let {
 		selectedWallet,
+		selectedToken,
 		balance,
 		destination = $bindable(''),
 		amount = $bindable(),
@@ -35,7 +36,9 @@
 		onsubmit
 	}: Props = $props();
 
-	let token: TokenAmountV2 | undefined = $derived(amountToICPToken(amount));
+	let token: TokenAmountV2 | undefined = $derived(
+		amountToToken({ amount, token: selectedToken.token })
+	);
 
 	const onSubmit = async ($event: SubmitEvent) => {
 		await onsubmit({ $event, token });
@@ -48,7 +51,7 @@
 
 <form onsubmit={onSubmit}>
 	<div class="columns">
-		<WalletSendFrom {balance} {selectedWallet} />
+		<WalletSendFrom {balance} {selectedToken} {selectedWallet} />
 
 		<GridArrow />
 
@@ -71,14 +74,17 @@
 			<span class="title">{$i18n.wallet.sending}</span>
 
 			<div class="content">
-				<SendTokensAmount {token} />
+				<SendTokensAmount {selectedToken} {token} />
 
 				<Value>
 					{#snippet label()}
 						{$i18n.core.fee}
 					{/snippet}
 					<p>
-						<span>{formatICP(IC_TRANSACTION_FEE_ICP)} <small>ICP</small></span>
+						<span
+							>{formatToken({ selectedToken, amount: selectedToken.fees.transaction })}
+							<TokenSymbol {selectedToken} /></span
+						>
 					</p>
 				</Value>
 			</div>

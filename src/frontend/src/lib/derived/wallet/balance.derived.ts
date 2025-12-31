@@ -1,9 +1,9 @@
 import { CYCLES_LEDGER_CANISTER_ID, ICP_LEDGER_CANISTER_ID } from '$lib/constants/app.constants';
 import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 import { devId } from '$lib/derived/dev.derived';
+import { icpToCyclesRate } from '$lib/derived/wallet/rate.derived';
 import { balanceCertifiedStore } from '$lib/stores/wallet/balance.store';
-import { icpToCyclesRateStore } from '$lib/stores/wallet/icp-cycles-rate.store';
-import { icpToCycles } from '$lib/utils/cycles.utils';
+import { icpE8sToCycles } from '$lib/utils/cycles.utils';
 import { isNullish, nonNullish } from '@dfinity/utils';
 import { derived } from 'svelte/store';
 
@@ -15,6 +15,10 @@ export const devCyclesBalance = derived(
 			: undefined
 );
 
+export const devIcpBalance = derived([balanceCertifiedStore, devId], ([$balanceStore, $devId]) =>
+	nonNullish($devId) ? $balanceStore?.[$devId.toText()]?.[ICP_LEDGER_CANISTER_ID]?.data : undefined
+);
+
 export const missionControlIcpBalance = derived(
 	[balanceCertifiedStore, missionControlId],
 	([$balanceStore, $missionControlId]) =>
@@ -24,10 +28,13 @@ export const missionControlIcpBalance = derived(
 );
 
 export const missionControlIcpToCyclesBalance = derived(
-	[missionControlIcpBalance, icpToCyclesRateStore],
-	([$missionControlIcpBalance, $icpToCyclesRateStore]) =>
-		nonNullish($missionControlIcpBalance) && nonNullish($icpToCyclesRateStore?.data)
-			? icpToCycles({ icp: $missionControlIcpBalance, trillionRatio: $icpToCyclesRateStore.data })
+	[missionControlIcpBalance, icpToCyclesRate],
+	([$missionControlIcpBalance, $icpToCyclesRate]) =>
+		nonNullish($missionControlIcpBalance) && nonNullish($icpToCyclesRate)
+			? icpE8sToCycles({
+					icpE8s: $missionControlIcpBalance,
+					trillionRatio: $icpToCyclesRate
+				})
 			: undefined
 );
 
@@ -63,9 +70,29 @@ export const devCyclesBalanceOrZero = derived(
 	([$devCyclesBalance]) => $devCyclesBalance ?? 0n
 );
 
+export const devIcpBalanceOrZero = derived(
+	[devIcpBalance],
+	([$devIcpBalance]) => $devIcpBalance ?? 0n
+);
+
 export const missionControlIcpBalanceOrZero = derived(
 	[missionControlIcpBalance],
 	([$missionControlIcpBalance]) => $missionControlIcpBalance ?? 0n
+);
+
+export const missionControlCyclesBalanceOrZero = derived(
+	[missionControlCyclesBalance],
+	([$missionControlCyclesBalance]) => $missionControlCyclesBalance ?? 0n
+);
+
+export const devHasIcp = derived(
+	[devIcpBalanceOrZero],
+	([$devIcpBalanceOrZero]) => $devIcpBalanceOrZero > 0n
+);
+
+export const missionControlHasIcp = derived(
+	[missionControlIcpBalanceOrZero],
+	([$missionControlIcpBalanceOrZero]) => $missionControlIcpBalanceOrZero > 0n
 );
 
 const balanceLoaded = derived(

@@ -1,4 +1,4 @@
-import type { WalletId } from '$lib/schemas/wallet.schema';
+import type { LedgerIdText, WalletId } from '$lib/schemas/wallet.schema';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { assertNonNullish, isNullish } from '@dfinity/utils';
 import { type PrincipalText, PrincipalTextSchema } from '@dfinity/zod-schemas';
@@ -32,13 +32,21 @@ export const getEmulatorMainIdentity = async (): Promise<PrincipalText> => {
 	return PrincipalTextSchema.parse(identity);
 };
 
-export const emulatorLedgerTransfer = async ({ walletId }: { walletId: WalletId }) => {
+export const emulatorLedgerTransfer = async ({
+	walletId,
+	ledgerId,
+	amount
+}: {
+	walletId: WalletId;
+	ledgerId: LedgerIdText;
+	amount: bigint;
+}) => {
 	const { VITE_EMULATOR_ADMIN_URL } = import.meta.env;
 
 	assertNonNullish(VITE_EMULATOR_ADMIN_URL);
 
 	const response = await fetch(
-		`${VITE_EMULATOR_ADMIN_URL}/ledger/transfer/?to=${encodeIcrcAccount(walletId)}`
+		`${VITE_EMULATOR_ADMIN_URL}/ledger/transfer/?to=${encodeIcrcAccount(walletId)}&ledgerId=${ledgerId}&amount=${amount}`
 	);
 
 	if (!response.ok) {

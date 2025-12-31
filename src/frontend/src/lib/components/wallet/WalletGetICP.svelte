@@ -1,5 +1,6 @@
 <script lang="ts">
 	import ConfettiSpread from '$lib/components/ui/ConfettiSpread.svelte';
+	import { CYCLES_LEDGER_CANISTER_ID, ICP_LEDGER_CANISTER_ID } from '$lib/constants/app.constants';
 	import { testIds } from '$lib/constants/test-ids.constants';
 	import { isDev } from '$lib/env/app.env';
 	import { emulatorLedgerTransfer } from '$lib/rest/emulator.rest';
@@ -17,11 +18,17 @@
 
 	let { walletId } = $derived(selectedWallet);
 
+	let { ledgerId, amount } = $derived(
+		selectedWallet.type === 'mission_control'
+			? { ledgerId: ICP_LEDGER_CANISTER_ID, amount: 5_500_010_000n }
+			: { ledgerId: CYCLES_LEDGER_CANISTER_ID, amount: 330_010_000_000_000n }
+	);
+
 	let confetti = $state(false);
 
 	const onClick = async () => {
 		try {
-			await emulatorLedgerTransfer({ walletId });
+			await emulatorLedgerTransfer({ walletId, ledgerId, amount });
 
 			emit({ message: 'junoRestartWallet' });
 
@@ -39,5 +46,9 @@
 		<ConfettiSpread />
 	{/if}
 
-	<button onclick={onClick} {...testId(testIds.navbar.getIcp)}>{$i18n.emulator.get_icp}</button>
+	<button onclick={onClick} {...testId(testIds.navbar.getIcp)}
+		>{selectedWallet.type === 'mission_control'
+			? $i18n.emulator.get_icp
+			: $i18n.emulator.get_cycles}</button
+	>
 {/if}

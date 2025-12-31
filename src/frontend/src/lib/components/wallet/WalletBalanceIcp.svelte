@@ -3,13 +3,15 @@
 	import { fade } from 'svelte/transition';
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
+	import WalletBalanceUsd from '$lib/components/wallet/WalletBalanceUsd.svelte';
+	import { ICP } from '$lib/constants/token.constants';
 	import {
 		exchangePricesNotLoaded,
 		icpToUsd,
 		icpToUsdDefined
 	} from '$lib/derived/wallet/exchange.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import { formatICP, formatICPToUsd } from '$lib/utils/icp.utils';
+	import { formatICP } from '$lib/utils/icp.utils';
 
 	interface Props {
 		balance: bigint | undefined;
@@ -35,7 +37,7 @@
 		{:else}
 			<span class="main" in:fade>
 				{#if nonNullish($icpToUsd) && $icpToUsdDefined}
-					{formatICPToUsd({ icp: balance, icpToUsd: $icpToUsd })}
+					<WalletBalanceUsd {balance} selectedToken={ICP} />
 				{:else}
 					{@render icpBalance()}
 				{/if}

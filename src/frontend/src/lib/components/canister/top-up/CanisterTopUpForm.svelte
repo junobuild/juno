@@ -1,36 +1,35 @@
 <script lang="ts">
-	import { isNullish, nonNullish, notEmptyString } from '@dfinity/utils';
-	import { onMount, type Snippet } from 'svelte';
-	import { getIcpToCyclesConversionRate } from '$lib/api/cmc.api';
-	import InputIcp from '$lib/components/core/InputIcp.svelte';
-	import GridArrow from '$lib/components/ui/GridArrow.svelte';
+	import { isEmptyString, isNullish } from '@dfinity/utils';
+	import type { Snippet } from 'svelte';
+	import CanisterTopUpFormCycles from '$lib/components/canister/top-up/CanisterTopUpFormCycles.svelte';
+	import CanisterTopUpFormIcp from '$lib/components/canister/top-up/CanisterTopUpFormIcp.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
-	import Value from '$lib/components/ui/Value.svelte';
-	import GetICPInfo from '$lib/components/wallet/GetICPInfo.svelte';
 	import WalletPicker from '$lib/components/wallet/WalletPicker.svelte';
-	import { TOP_UP_NETWORK_FEES } from '$lib/constants/app.constants';
+	import WalletTokenPicker from '$lib/components/wallet/WalletTokenPicker.svelte';
+	import { CYCLES } from '$lib/constants/token.constants';
 	import {
 		devCyclesBalanceOrZero,
+		devIcpBalanceOrZero,
+		missionControlCyclesBalanceOrZero,
 		missionControlIcpBalanceOrZero
 	} from '$lib/derived/wallet/balance.derived';
 	import { icpToUsd } from '$lib/derived/wallet/exchange.derived';
-	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
+	import type { SelectedToken, SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { CanisterSegmentWithLabel } from '$lib/types/canister';
-	import { formatTCycles, icpToCycles } from '$lib/utils/cycles.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { formatICPToHTML } from '$lib/utils/icp.utils';
-	import { assertAndConvertAmountToICPToken } from '$lib/utils/token.utils';
+	import { assertAndConvertAmountToToken, isTokenIcp } from '$lib/utils/token.utils';
 
 	interface Props {
 		intro?: Snippet;
 		segment: CanisterSegmentWithLabel;
 		selectedWallet: SelectedWallet | undefined;
+		selectedToken: SelectedToken;
 		balance: bigint;
-		icp: string | undefined;
-		cycles: bigint | undefined;
+		amount: string | undefined;
+		displayTCycles: string | undefined;
 		onreview: () => void;
-		onclose: () => void;
 	}
 
 	let {
@@ -38,41 +37,31 @@
 		intro,
 		segment,
 		selectedWallet = $bindable(undefined),
+		selectedToken = $bindable(CYCLES),
 		balance = $bindable(0n),
-		onclose,
-		icp = $bindable(undefined),
-		cycles = $bindable(undefined)
+		amount = $bindable(undefined),
+		displayTCycles = $bindable(undefined)
 	}: Props = $props();
-
-	let trillionRatio = $state<bigint | undefined>();
-	onMount(async () => (trillionRatio = await getIcpToCyclesConversionRate()));
-
-	let convertedCycles = $derived(
-		nonNullish(trillionRatio) && !isNaN(Number(icp)) && nonNullish(icp)
-			? icpToCycles({ icp: BigInt(icp), trillionRatio })
-			: undefined
-	);
-
-	$effect(() => {
-		cycles = convertedCycles;
-	});
-
-	let displayTCycles = $derived(nonNullish(cycles) ? `${formatTCycles(BigInt(cycles ?? 0))}` : '');
 
 	$effect(() => {
 		balance =
 			selectedWallet?.type === 'mission_control'
-				? $missionControlIcpBalanceOrZero
-				: $devCyclesBalanceOrZero;
+				? isTokenIcp(selectedToken)
+					? $missionControlIcpBalanceOrZero
+					: $missionControlCyclesBalanceOrZero
+				: isTokenIcp(selectedToken)
+					? $devIcpBalanceOrZero
+					: $devCyclesBalanceOrZero;
 	});
 
 	const onSubmit = ($event: SubmitEvent) => {
 		$event.preventDefault();
 
-		const { valid } = assertAndConvertAmountToICPToken({
+		const { valid } = assertAndConvertAmountToToken({
 			balance,
-			amount: icp,
-			fee: TOP_UP_NETWORK_FEES
+			amount,
+			token: selectedToken.token,
+			fee: selectedToken.fees.topUp
 		});
 
 		if (!valid) {
@@ -81,17 +70,26 @@
 
 		onreview();
 	};
+
+	let InputAmount = $derived(
+		isTokenIcp(selectedToken) ? CanisterTopUpFormIcp : CanisterTopUpFormCycles
+	);
 </script>
 
 {@render intro?.()}
 
 <p>
-	{i18nFormat($i18n.canisters.cycles_description, [
-		{
-			placeholder: '{0}',
-			value: segment.segment.replace('_', ' ')
-		}
-	])}
+	{i18nFormat(
+		selectedWallet?.type === 'mission_control'
+			? $i18n.canisters.icp_to_cycles_description
+			: $i18n.canisters.cycles_description,
+		[
+			{
+				placeholder: '{0}',
+				value: segment.segment.replace('_', ' ')
+			}
+		]
+	)}
 	<Html
 		text={i18nFormat($i18n.canisters.top_up_info, [
 			{
@@ -102,60 +100,52 @@
 	/>
 </p>
 
-{#if balance <= TOP_UP_NETWORK_FEES}
-	<GetICPInfo {onclose} />
-{:else}
-	<form onsubmit={onSubmit}>
-		<div class="columns">
-			<div>
-				<WalletPicker filterMissionControlZeroBalance bind:selectedWallet />
+<form onsubmit={onSubmit}>
+	<WalletPicker filterMissionControlZeroBalance bind:selectedWallet />
 
-				<InputIcp {balance} fee={TOP_UP_NETWORK_FEES} bind:amount={icp} />
-			</div>
+	<WalletTokenPicker {selectedWallet} bind:selectedToken />
 
-			<GridArrow small />
+	<div class="group-cycles" class:icp={isTokenIcp(selectedToken)}>
+		<InputAmount {balance} bind:amount bind:displayTCycles />
+	</div>
 
-			<div class="column-cycles">
-				<Value>
-					{#snippet label()}
-						{$i18n.canisters.converted_cycles}
-					{/snippet}
-
-					<span class="cycles" class:fill={notEmptyString(displayTCycles)}
-						>{displayTCycles}&ZeroWidthSpace;</span
-					>
-				</Value>
-			</div>
-		</div>
-
-		<button disabled={isNullish(selectedWallet) || isNullish(cycles)} type="submit"
-			>{$i18n.core.review}</button
-		>
-	</form>
-{/if}
+	<button
+		class:icp={isTokenIcp(selectedToken)}
+		disabled={isNullish(selectedWallet) || isEmptyString(amount)}
+		type="submit">{$i18n.core.review}</button
+	>
+</form>
 
 <style lang="scss">
 	@use '../../../styles/mixins/media';
 	@use '../../../styles/mixins/grid';
 
-	.columns {
-		@include media.min-width(large) {
-			@include grid.two-columns-with-arrow;
-		}
-	}
+	form {
+		margin: var(--padding-4x) 0;
 
-	.column-cycles {
 		@include media.min-width(large) {
-			display: flex;
-			flex-direction: column;
-			justify-content: center;
-
-			padding: 0 0 var(--padding-3x);
+			@include grid.two-columns;
 		}
 	}
 
 	p {
 		min-height: 24px;
+	}
+
+	.group-cycles {
+		&.icp {
+			@include media.min-width(large) {
+				grid-column: 1 / 3;
+			}
+		}
+	}
+
+	button {
+		&:not(.icp) {
+			@include media.min-width(large) {
+				grid-column-start: 1;
+			}
+		}
 	}
 
 	.cycles {

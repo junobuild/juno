@@ -14,8 +14,8 @@
 	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
 	import type { JunoModalCreateSegmentDetail, JunoModalDetail } from '$lib/types/modal';
 	import type { Option } from '$lib/types/utils';
+	import { formatCyclesToHTML } from '$lib/utils/cycles.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
-	import { toAccountIdentifier } from '$lib/utils/icp-icrc-account.utils';
 	import { formatICPToHTML } from '$lib/utils/icp.utils';
 
 	interface Props {
@@ -38,7 +38,11 @@
 		onclose
 	}: Props = $props();
 
-	let { fee } = $derived(detail as JunoModalCreateSegmentDetail);
+	let { fee: factoryFee } = $derived(detail as JunoModalCreateSegmentDetail);
+
+	let fee = $derived(
+		selectedWallet?.type === 'mission_control' ? factoryFee.fee_icp.e8s : factoryFee.fee_cycles.e12s
+	);
 
 	let notEnoughCredits = $derived($creditsOrZero * fee < fee * E8S_PER_ICP);
 
@@ -46,18 +50,6 @@
 		selectedWallet?.type === 'mission_control'
 			? $missionControlIcpBalanceOrZero
 			: $devCyclesBalanceOrZero
-	);
-
-	// When both wallets - dev and mission control - are empty and devs are no credits left,
-	// there is no advance options displayed as result, therefore is no selected wallet
-	let fallbackDevWallet = $derived(nonNullish($devId) ? { owner: $devId } : undefined);
-
-	let accountIdentifier = $derived(
-		nonNullish(selectedWallet?.walletId)
-			? toAccountIdentifier(selectedWallet.walletId)
-			: nonNullish(fallbackDevWallet)
-				? toAccountIdentifier(fallbackDevWallet)
-				: undefined
 	);
 
 	$effect(() => {
@@ -75,11 +67,17 @@
 			text={i18nFormat(priceLabel, [
 				{
 					placeholder: '{0}',
-					value: formatICPToHTML({ e8s: fee, bold: true, icpToUsd: $icpToUsd })
+					value:
+						selectedWallet?.type === 'mission_control'
+							? formatICPToHTML({ e8s: fee, bold: true, icpToUsd: $icpToUsd })
+							: formatCyclesToHTML({ e12s: fee, bold: true })
 				},
 				{
 					placeholder: '{1}',
-					value: formatICPToHTML({ e8s: balanceOrZero, bold: false, icpToUsd: $icpToUsd })
+					value:
+						selectedWallet?.type === 'mission_control'
+							? formatICPToHTML({ e8s: balanceOrZero, bold: false, icpToUsd: $icpToUsd })
+							: formatCyclesToHTML({ e12s: balanceOrZero, bold: false })
 				}
 			])}
 		/>
@@ -87,7 +85,7 @@
 {/if}
 
 {#if insufficientFunds}
-	<GetICPInfo {accountIdentifier} {onclose} />
+	<GetICPInfo {onclose} />
 {:else}
 	{@render children()}
 {/if}

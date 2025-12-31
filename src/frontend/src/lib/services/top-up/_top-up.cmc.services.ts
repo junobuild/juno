@@ -1,10 +1,7 @@
 import { notifyTopUp } from '$lib/api/cmc.api';
 import { icpTransfer as icpTransferWithDev } from '$lib/api/icp-ledger.api';
-import {
-	CMC_CANISTER_ID,
-	IC_TRANSACTION_FEE_ICP,
-	TOP_UP_NETWORK_FEES
-} from '$lib/constants/app.constants';
+import { CMC_CANISTER_ID } from '$lib/constants/app.constants';
+import { ICP_TOP_UP_FEE, ICP_TRANSACTION_FEE } from '$lib/constants/token.constants';
 import { MEMO_CANISTER_TOP_UP } from '$lib/constants/wallet.constants';
 import { i18n } from '$lib/stores/app/i18n.store';
 import type { OptionIdentity } from '$lib/types/itentity';
@@ -74,12 +71,12 @@ export const sendIcpToCmc = async ({
 	});
 
 	// We need to hold back 1 transaction fee for the 'send' and also 1 for the 'notify'
-	const sendAmount = tokenAmount.toE8s() - TOP_UP_NETWORK_FEES;
+	const sendAmount = tokenAmount.toE8s() - ICP_TOP_UP_FEE;
 
 	const request: TransferRequest = {
 		to,
 		amount: sendAmount,
-		fee: IC_TRANSACTION_FEE_ICP,
+		fee: ICP_TRANSACTION_FEE,
 		createdAt: nowInBigIntNanoSeconds(),
 		memo: MEMO_CANISTER_TOP_UP
 	};

@@ -1,4 +1,5 @@
 import { PrincipalSchema } from '$lib/schemas/principal.schema';
+import type { Token } from '@dfinity/utils';
 import { PrincipalTextSchema } from '@dfinity/zod-schemas';
 import * as z from 'zod';
 
@@ -11,8 +12,17 @@ export type LedgerIdText = z.infer<typeof LedgerIdTextSchema>;
 const LedgerIdSchema = PrincipalSchema;
 export type LedgerId = z.infer<typeof LedgerIdSchema>;
 
+export const IndexIdTextSchema = PrincipalTextSchema;
+export type IndexIdText = z.infer<typeof IndexIdTextSchema>;
+
 const IndexIdSchema = LedgerIdSchema;
 export type IndexId = z.infer<typeof IndexIdSchema>;
+
+export const LedgerIdsTextSchema = z.strictObject({
+	ledgerId: LedgerIdTextSchema,
+	indexId: IndexIdTextSchema
+});
+export type LedgerIdsText = z.infer<typeof LedgerIdsTextSchema>;
 
 export const LedgerIdsSchema = z.strictObject({
 	ledgerId: LedgerIdSchema,
@@ -40,3 +50,15 @@ export const SelectedWalletSchema = z.discriminatedUnion('type', [
 	})
 ]);
 export type SelectedWallet = z.infer<typeof SelectedWalletSchema>;
+
+export const SelectedTokenFeesSchema = z.strictObject({
+	transaction: z.bigint(),
+	topUp: z.bigint()
+});
+
+const SelectedTokenSchema = z.strictObject({
+	token: z.custom<Token>(),
+	fees: SelectedTokenFeesSchema,
+	...LedgerIdsTextSchema.shape
+});
+export type SelectedToken = z.infer<typeof SelectedTokenSchema>;

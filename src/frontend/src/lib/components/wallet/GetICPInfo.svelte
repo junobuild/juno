@@ -1,31 +1,20 @@
 <script lang="ts">
-	import { nonNullish } from '@dfinity/utils';
-	import type { AccountIdentifier } from '@icp-sdk/canisters/ledger/icp';
 	import ExternalLink from '$lib/components/ui/ExternalLink.svelte';
-	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import { testIds } from '$lib/constants/test-ids.constants';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { testId } from '$lib/utils/test.utils';
 
 	interface Props {
-		accountIdentifier?: AccountIdentifier | undefined;
 		onclose: () => void;
 	}
 
-	let { accountIdentifier, onclose }: Props = $props();
+	let { onclose }: Props = $props();
 </script>
-
-{#if nonNullish(accountIdentifier)}
-	<p class="account-identifier">
-		{$i18n.wallet.transfer_to_account_identifier}
-		<strong><Identifier identifier={accountIdentifier.toHex()} small={false} /></strong>.
-	</p>
-{/if}
 
 <p>
 	{$i18n.wallet.transfer_icp_info}
 	<ExternalLink href="https://juno.build/docs/miscellaneous/wallet" underline
-		>documentation</ExternalLink
+		>{$i18n.wallet.documentation}</ExternalLink
 	>.
 </p>
 

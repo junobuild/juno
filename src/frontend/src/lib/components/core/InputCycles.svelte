@@ -1,12 +1,14 @@
 <script lang="ts">
-	import { ICPToken, nonNullish, type TokenAmountV2 } from '@dfinity/utils';
+	import { nonNullish, type TokenAmountV2 } from '@dfinity/utils';
 	import { blur } from 'svelte/transition';
 	import Input from '$lib/components/ui/Input.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import SendTokensMax from '$lib/components/wallet/tokens/SendTokensMax.svelte';
-	import { ICP } from '$lib/constants/token.constants';
+	import { CYCLES, CyclesToken } from '$lib/constants/token.constants';
 	import { icpToUsd } from '$lib/derived/wallet/exchange.derived';
+	import { icpToCyclesRate } from '$lib/derived/wallet/rate.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
+	import { cyclesToIcpE8s } from '$lib/utils/cycles.utils';
 	import { formatICPToUsd } from '$lib/utils/icp.utils';
 	import { amountToToken } from '$lib/utils/token.utils';
 
@@ -18,13 +20,19 @@
 
 	let { amount = $bindable(), balance, fee }: Props = $props();
 
-	let token: TokenAmountV2 | undefined = $derived(amountToToken({ amount, token: ICPToken }));
+	let token: TokenAmountV2 | undefined = $derived(amountToToken({ amount, token: CyclesToken }));
 
-	let withUsd = $derived(nonNullish($icpToUsd));
+	let withUsd = $derived(nonNullish($icpToUsd) && nonNullish($icpToCyclesRate));
 
 	let usd = $derived(
-		nonNullish($icpToUsd) && nonNullish(token)
-			? formatICPToUsd({ icp: token.toE8s(), icpToUsd: $icpToUsd })
+		nonNullish($icpToUsd) && nonNullish($icpToCyclesRate) && nonNullish(token)
+			? formatICPToUsd({
+					icp: cyclesToIcpE8s({
+						cycles: token.toUlps(),
+						trillionRatio: $icpToCyclesRate
+					}),
+					icpToUsd: $icpToUsd
+				})
 			: undefined
 	);
 </script>
@@ -39,14 +47,15 @@
 	</span>
 {/snippet}
 
-<div class="input-icp">
+<div class="input-cycles">
 	<Value>
 		{#snippet label()}
-			{$i18n.core.icp_amount}
+			{$i18n.core.cycles_amount}
 		{/snippet}
 
 		<Input
 			name="amount"
+			decimals={CyclesToken.decimals}
 			footer={withUsd ? footer : undefined}
 			inputType="currency"
 			placeholder={$i18n.wallet.amount_placeholder}
@@ -55,7 +64,7 @@
 			bind:value={amount}
 		>
 			{#snippet end()}
-				<SendTokensMax {balance} {fee} onmax={(value) => (amount = value)} selectedToken={ICP} />
+				<SendTokensMax {balance} {fee} onmax={(value) => (amount = value)} selectedToken={CYCLES} />
 			{/snippet}
 		</Input>
 	</Value>

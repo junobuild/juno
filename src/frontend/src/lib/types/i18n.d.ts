@@ -84,6 +84,7 @@ interface I18nCore {
 	getting_started: string;
 	dashboard: string;
 	icp_amount: string;
+	cycles_amount: string;
 	amount: string;
 	fee: string;
 	preparing: string;
@@ -119,6 +120,7 @@ interface I18nCanisters {
 	top_up_preparing: string;
 	review_and_confirm_top_up: string;
 	cycles_description: string;
+	icp_to_cycles_description: string;
 	top_up_in_progress: string;
 	delete_in_progress: string;
 	upgrade_preparing: string;
@@ -346,7 +348,7 @@ interface I18nWallet {
 	balance: string;
 	credits: string;
 	transfer_icp_info: string;
-	transfer_to_account_identifier: string;
+	documentation: string;
 	tx_id: string;
 	tx_timestamp: string;
 	tx_from: string;
@@ -373,7 +375,7 @@ interface I18nWallet {
 	sending_in_progress: string;
 	preparing_send: string;
 	review_and_confirm: string;
-	icp_on_its_way: string;
+	on_its_way: string;
 	or_connect_wallet: string;
 	connecting_wallet: string;
 	wallet_approve: string;
@@ -384,6 +386,7 @@ interface I18nWallet {
 	approving_canister_fee: string;
 	dev: string;
 	total: string;
+	resource: string;
 }
 
 interface I18nAuthentication {
@@ -664,6 +667,7 @@ interface I18nErrors {
 	invalid_destination: string;
 	invalid_metadata: string;
 	empty_amount: string;
+	cycles_transfer_not_supported: string;
 	invalid_amount: string;
 	empty_balance: string;
 	wallet_not_selected: string;
@@ -959,6 +963,7 @@ interface I18nPreferences {
 
 interface I18nEmulator {
 	get_icp: string;
+	get_cycles: string;
 	emulator: string;
 	setting_emulator_controller: string;
 	error_never_execute_set_controller: string;

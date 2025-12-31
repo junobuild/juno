@@ -1,4 +1,4 @@
-import type { MissionControlDid } from '$declarations';
+import type { ConsoleDid, MissionControlDid } from '$declarations';
 import { getMissionControlFee, getOrbiterFee, getSatelliteFee } from '$lib/api/console.api';
 import { updateAndStartMonitoring } from '$lib/api/mission-control.api';
 import { missionControlMonitored } from '$lib/derived/mission-control/mission-control-settings.derived';
@@ -31,7 +31,7 @@ import {
 import { loadSettings, loadUserData } from '$lib/services/mission-control/mission-control.services';
 import { loadSegments } from '$lib/services/segments.services';
 import { waitMissionControlVersionLoaded } from '$lib/services/version/version.mission-control.services';
-import { approveCreateCanisterWithIcp } from '$lib/services/wallet/wallet.approve.services';
+import { approveCreateCanisterWithCycles } from '$lib/services/wallet/wallet.approve.services';
 import { busy } from '$lib/stores/app/busy.store';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
@@ -187,7 +187,7 @@ const initCreateWizardWithoutMissionControl = ({
 	fee,
 	modalType
 }: {
-	fee: bigint;
+	fee: ConsoleDid.FactoryFee;
 	modalType: 'create_satellite' | 'create_orbiter' | 'create_mission_control';
 }) => {
 	emit<JunoModal<JunoModalCreateSegmentDetail>>({
@@ -217,7 +217,7 @@ const getCreateFeeBalance = async ({
 	getFee
 }: {
 	identity: OptionIdentity;
-	getFee: (params: { user: Principal; identity: OptionIdentity }) => Promise<bigint>;
+	getFee: (params: { identity: OptionIdentity }) => Promise<ConsoleDid.FactoryFee>;
 }): Promise<GetFeeBalance> => {
 	const labels = get(i18n);
 
@@ -226,9 +226,9 @@ const getCreateFeeBalance = async ({
 		return { error: 'No identity provided' };
 	}
 
-	const loadFee = async (): Promise<{ fee: bigint } | { error: null }> => {
+	const loadFee = async (): Promise<{ fee: ConsoleDid.FactoryFee } | { error: null }> => {
 		try {
-			const fee = await getFee({ user: identity.getPrincipal(), identity });
+			const fee = await getFee({ identity });
 			return { fee };
 		} catch (err: unknown) {
 			toasts.error({
@@ -247,12 +247,6 @@ const getCreateFeeBalance = async ({
 	}
 
 	const { fee } = resultFee;
-
-	if (fee === 0n) {
-		return {
-			fee
-		};
-	}
 
 	const { result } = await loadCredits({
 		identity,
@@ -629,7 +623,7 @@ const createWizard = async ({
 		// by the dev wallet (the wallet derived by the identity of the login, the dev ID)
 		if (nonNullish(withFee) && withFee > 0n && selectedWallet.type === 'dev') {
 			const prepareFn = async (): Promise<void> =>
-				await approveCreateCanisterWithIcp({
+				await approveCreateCanisterWithCycles({
 					identity, // We know the identity is the dev wallet, a bit of a shortcut for now
 					amount: withFee
 				});

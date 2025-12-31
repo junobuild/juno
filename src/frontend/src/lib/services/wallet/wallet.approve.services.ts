@@ -1,11 +1,12 @@
-import { approveIcpTransfer } from '$lib/api/icp-ledger.api';
-import { CONSOLE_CANISTER_ID, IC_TRANSACTION_FEE_ICP } from '$lib/constants/app.constants';
+import { approveIcrcTransfer } from '$lib/api/icrc-ledger.api';
+import { CONSOLE_CANISTER_ID, CYCLES_LEDGER_CANISTER_ID } from '$lib/constants/app.constants';
+import { CYCLES_TRANSACTION_FEE } from '$lib/constants/token.constants';
 import { MEMO_CANISTER_APPROVE } from '$lib/constants/wallet.constants';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { IcpLedgerDid } from '@icp-sdk/canisters/ledger/icp';
 import { Principal } from '@icp-sdk/core/principal';
 
-export const approveCreateCanisterWithIcp = async ({
+export const approveCreateCanisterWithCycles = async ({
 	identity,
 	amount: effectiveAmount
 }: {
@@ -17,7 +18,7 @@ export const approveCreateCanisterWithIcp = async ({
 		subaccount: []
 	};
 
-	const amount = effectiveAmount + IC_TRANSACTION_FEE_ICP;
+	const amount = effectiveAmount + CYCLES_TRANSACTION_FEE;
 
 	const icpMemoToIcrc = (memo: bigint): Uint8Array => {
 		const buffer = new ArrayBuffer(8);
@@ -26,10 +27,11 @@ export const approveCreateCanisterWithIcp = async ({
 		return new Uint8Array(buffer);
 	};
 
-	await approveIcpTransfer({
+	await approveIcrcTransfer({
+		ledgerId: Principal.fromText(CYCLES_LEDGER_CANISTER_ID),
 		identity,
 		spender,
 		amount,
-		icrc1Memo: icpMemoToIcrc(MEMO_CANISTER_APPROVE)
+		memo: icpMemoToIcrc(MEMO_CANISTER_APPROVE)
 	});
 };

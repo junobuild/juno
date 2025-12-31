@@ -3,7 +3,7 @@ import type { SegmentKind } from '$declarations/console/console.did';
 import type { GetActorParams } from '$lib/api/actors/actor.api';
 import { getConsoleActor } from '$lib/api/actors/actor.juno.api';
 import type { OptionIdentity } from '$lib/types/itentity';
-import { fromNullable, isNullish } from '@dfinity/utils';
+import { fromNullable } from '@dfinity/utils';
 
 export const getOrInitAccount = async (
 	actorParams: Omit<GetActorParams, 'certified'>
@@ -32,16 +32,20 @@ export const getSatelliteFee = async ({
 	identity
 }: {
 	identity: OptionIdentity;
-}): Promise<bigint> => await getFee({ identity, segmentKind: { Satellite: null } });
+}): Promise<ConsoleDid.FactoryFee> => await getFee({ identity, segmentKind: { Satellite: null } });
 
-export const getOrbiterFee = async ({ identity }: { identity: OptionIdentity }): Promise<bigint> =>
-	await getFee({ identity, segmentKind: { Orbiter: null } });
+export const getOrbiterFee = async ({
+	identity
+}: {
+	identity: OptionIdentity;
+}): Promise<ConsoleDid.FactoryFee> => await getFee({ identity, segmentKind: { Orbiter: null } });
 
 export const getMissionControlFee = async ({
 	identity
 }: {
 	identity: OptionIdentity;
-}): Promise<bigint> => await getFee({ identity, segmentKind: { MissionControl: null } });
+}): Promise<ConsoleDid.FactoryFee> =>
+	await getFee({ identity, segmentKind: { MissionControl: null } });
 
 const getFee = async ({
 	identity,
@@ -49,12 +53,7 @@ const getFee = async ({
 }: {
 	identity: OptionIdentity;
 	segmentKind: SegmentKind;
-}): Promise<bigint> => {
+}): Promise<ConsoleDid.FactoryFee> => {
 	const { get_fee } = await getConsoleActor({ identity });
-
-	const result = await get_fee(segmentKind);
-	const fee = result.fee_icp;
-
-	// If user has enough credits, it returns no fee
-	return isNullish(fee) ? 0n : fee.e8s;
+	return await get_fee(segmentKind);
 };

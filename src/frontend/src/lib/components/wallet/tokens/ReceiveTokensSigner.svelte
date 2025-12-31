@@ -1,17 +1,18 @@
 <script lang="ts">
 	import type { IcrcAccount } from '@dfinity/oisy-wallet-signer';
 	import { IcpWallet } from '@dfinity/oisy-wallet-signer/icp-wallet';
-	import { isNullish, nonNullish, toNullable } from '@dfinity/utils';
+	import { ICPToken, isNullish, nonNullish, toNullable } from '@dfinity/utils';
 	import type { Icrc1TransferRequest } from '@icp-sdk/canisters/ledger/icp';
 	import Confetti from '$lib/components/ui/Confetti.svelte';
 	import Spinner from '$lib/components/ui/Spinner.svelte';
 	import ReceiveTokensSignerForm from '$lib/components/wallet/tokens/ReceiveTokensSignerForm.svelte';
+	import { ICP } from '$lib/constants/token.constants';
 	import { OISY_WALLET_OPTIONS } from '$lib/constants/wallet.constants';
 	import type { WalletId } from '$lib/schemas/wallet.schema';
 	import { wizardBusy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
-	import { assertAndConvertAmountToICPToken } from '$lib/utils/token.utils';
+	import { assertAndConvertAmountToToken } from '$lib/utils/token.utils';
 
 	interface Props {
 		walletId: WalletId;
@@ -69,7 +70,12 @@
 	});
 
 	const onsubmit = async ({ balance, amount }: { balance: bigint | undefined; amount: string }) => {
-		const { valid, tokenAmount } = assertAndConvertAmountToICPToken({ amount, balance });
+		const { valid, tokenAmount } = assertAndConvertAmountToToken({
+			amount,
+			balance,
+			token: ICPToken,
+			fee: ICP.fees.transaction
+		});
 
 		if (!valid || isNullish(tokenAmount)) {
 			return;
@@ -126,7 +132,7 @@
 	<Confetti display="popover" />
 
 	<div class="msg">
-		<p>{$i18n.wallet.icp_on_its_way}</p>
+		<p>{$i18n.wallet.on_its_way}</p>
 		<button onclick={() => (visible = false)}>{$i18n.core.close}</button>
 	</div>
 {:else if step === 'form' && nonNullish(account)}

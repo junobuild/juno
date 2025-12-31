@@ -7,10 +7,10 @@
 	import Html from '$lib/components/ui/Html.svelte';
 	import type { IgnoreCanUpgradeErrorFn } from '$lib/components/upgrade/wizard/SelectUpgradeVersion.svelte';
 	import { ORBITER_v0_0_8, ORBITER_v0_2_0 } from '$lib/constants/version.constants';
+	import { authIdentity } from '$lib/derived/auth.derived';
 	import { orbiterStore } from '$lib/derived/orbiter.derived';
 	import { reloadOrbiterVersion } from '$lib/services/version/version.orbiter.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import { authStore } from '$lib/stores/auth.store';
 	import type { JunoModalDetail, JunoModalUpgradeDetail } from '$lib/types/modal';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { container } from '$lib/utils/juno.utils';
@@ -31,7 +31,7 @@
 				// We know for sure that the orbiter is defined at this point.
 				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 				orbiterId: $orbiterStore!.orbiter_id.toText(),
-				identity: $authStore.identity ?? new AnonymousIdentity(),
+				identity: $authIdentity ?? new AnonymousIdentity(),
 				...container()
 			},
 			...params

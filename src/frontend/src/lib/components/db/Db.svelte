@@ -4,8 +4,8 @@
 	import DbCollections from '$lib/components/db/DbCollections.svelte';
 	import DbData from '$lib/components/db/DbData.svelte';
 	import { DbCollectionType } from '$lib/constants/rules.constants';
+	import { authIdentity } from '$lib/derived/auth.derived';
 	import { initListParamsContext } from '$lib/stores/app/list-params.context.store';
-	import { authStore } from '$lib/stores/auth.store';
 	import { initRulesContext } from '$lib/stores/satellite/rules.context.store';
 	import {
 		type ListParamsContext,
@@ -28,7 +28,7 @@
 	});
 
 	$effect(() => {
-		context.init({ satelliteId, identity: $authStore.identity });
+		context.init({ satelliteId, identity: $authIdentity });
 	});
 
 	setContext<RulesContext>(RULES_CONTEXT_KEY, context);

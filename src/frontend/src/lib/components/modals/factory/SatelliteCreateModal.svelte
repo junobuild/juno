@@ -9,13 +9,12 @@
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { testIds } from '$lib/constants/test-ids.constants';
-	import { authSignedOut } from '$lib/derived/auth.derived';
+	import { authSignedOut, authIdentity } from '$lib/derived/auth.derived';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { createSatelliteWizard } from '$lib/services/factory/factory-wizard.services';
 	import { wizardBusy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import { authStore } from '$lib/stores/auth.store';
 	import type { JunoModalDetail } from '$lib/types/modal';
 	import type { WizardCreateProgress } from '$lib/types/progress-wizard';
 	import type { SatelliteId } from '$lib/types/satellite';
@@ -52,7 +51,7 @@
 
 		const result = await createSatelliteWizard({
 			selectedWallet,
-			identity: $authStore.identity,
+			identity: $authIdentity,
 			missionControlId: $missionControlId,
 			subnetId,
 			monitoringStrategy,

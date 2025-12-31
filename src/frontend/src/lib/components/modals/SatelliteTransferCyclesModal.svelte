@@ -2,7 +2,7 @@
 	import type { Principal } from '@icp-sdk/core/principal';
 	import { depositCycles } from '$lib/api/satellites.api';
 	import CanisterTransferCyclesModal from '$lib/components/modals/CanisterTransferCyclesModal.svelte';
-	import { authStore } from '$lib/stores/auth.store';
+	import { authIdentity } from '$lib/derived/auth.derived';
 	import type { JunoModalCyclesSatelliteDetail, JunoModalDetail } from '$lib/types/modal';
 	import { satelliteName } from '$lib/utils/satellite.utils';
 
@@ -21,7 +21,7 @@
 				await depositCycles({
 					...params,
 					satelliteId: satellite.satellite_id,
-					identity: $authStore.identity
+					identity: $authIdentity
 				})
 		);
 </script>

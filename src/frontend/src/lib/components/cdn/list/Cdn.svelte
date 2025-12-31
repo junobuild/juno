@@ -5,12 +5,12 @@
 	import CdnAsset from '$lib/components/cdn/list/CdnAsset.svelte';
 	import DataCount from '$lib/components/data/DataCount.svelte';
 	import DataPaginator from '$lib/components/data/DataPaginator.svelte';
+	import { authIdentity } from '$lib/derived/auth.derived';
 	import { listWasmAssets } from '$lib/services/satellite/proposals/proposals.cdn.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { initListParamsContext } from '$lib/stores/app/list-params.context.store';
 	import { initPaginationContext } from '$lib/stores/app/pagination.context.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
-	import { authStore } from '$lib/stores/auth.store';
 	import { versionStore } from '$lib/stores/version.store';
 	import {
 		LIST_PARAMS_CONTEXT_KEY,
@@ -39,7 +39,7 @@
 			return;
 		}
 
-		if (isNullish($authStore.identity)) {
+		if (isNullish($authIdentity)) {
 			setItems({ items: undefined, matches_length: undefined, items_length: undefined });
 
 			toasts.error({
@@ -52,7 +52,7 @@
 			const { items, matches_length, items_length } = await listWasmAssets({
 				satelliteId: satellite.satellite_id,
 				startAfter: $startAfter,
-				identity: $authStore.identity
+				identity: $authIdentity
 			});
 
 			setItems({ items, matches_length, items_length });

@@ -1,11 +1,11 @@
 <script lang="ts">
+	import { authIdentity } from '$lib/derived/auth.derived';
 	import { initMissionControlWizard } from '$lib/services/factory/factory-wizard.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import { authStore } from '$lib/stores/auth.store';
 
 	const createMissionControl = async () => {
 		await initMissionControlWizard({
-			identity: $authStore.identity
+			identity: $authIdentity
 		});
 	};
 </script>

@@ -6,12 +6,11 @@
 	import FactoryProgressCreate from '$lib/components/factory/FactoryProgressCreate.svelte';
 	import Confetti from '$lib/components/ui/Confetti.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
-	import { authSignedOut } from '$lib/derived/auth.derived';
+	import { authSignedOut, authIdentity } from '$lib/derived/auth.derived';
 	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { createMissionControlWizard } from '$lib/services/factory/factory-wizard.services';
 	import { wizardBusy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import { authStore } from '$lib/stores/auth.store';
 	import type { JunoModalDetail } from '$lib/types/modal';
 	import type { WizardCreateProgress } from '$lib/types/progress-wizard';
 	import type { Option } from '$lib/types/utils';
@@ -47,7 +46,7 @@
 
 		const { success } = await createMissionControlWizard({
 			selectedWallet,
-			identity: $authStore.identity,
+			identity: $authIdentity,
 			subnetId,
 			withFee,
 			onProgress,

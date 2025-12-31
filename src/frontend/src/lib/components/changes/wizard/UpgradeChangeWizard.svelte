@@ -3,8 +3,8 @@
 	import { onMount } from 'svelte';
 	import type { SatelliteDid } from '$declarations';
 	import UpgradeCdnWizard from '$lib/components/cdn/wizard/UpgradeCdnWizard.svelte';
+	import { authIdentity } from '$lib/derived/auth.derived';
 	import { findWasmAssetForProposal } from '$lib/services/satellite/proposals/proposals.cdn.services';
-	import { authStore } from '$lib/stores/auth.store';
 	import type { ProposalRecord } from '$lib/types/proposals';
 	import type { Satellite } from '$lib/types/satellite';
 
@@ -24,7 +24,7 @@
 		const result = await findWasmAssetForProposal({
 			satelliteId,
 			proposal,
-			identity: $authStore.identity
+			identity: $authIdentity
 		});
 
 		if (isNullish(result)) {

@@ -6,9 +6,9 @@
 	import UserProvider from '$lib/components/auth/UserProvider.svelte';
 	import ButtonTableAction from '$lib/components/ui/ButtonTableAction.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
+	import { authIdentity } from '$lib/derived/auth.derived';
 	import { openUserDetail } from '$lib/services/satellite/user/user.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import { authStore } from '$lib/stores/auth.store';
 	import type { User } from '$lib/types/user';
 	import { formatToDate } from '$lib/utils/date.utils';
 
@@ -25,7 +25,7 @@
 		await openUserDetail({
 			user,
 			satelliteId,
-			identity: $authStore.identity
+			identity: $authIdentity
 		});
 	};
 </script>

@@ -8,8 +8,8 @@
 		setMissionControlController
 	} from '$lib/api/mission-control.api';
 	import Controllers from '$lib/components/controllers/Controllers.svelte';
+	import { authIdentity } from '$lib/derived/auth.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import { authStore } from '$lib/stores/auth.store';
 	import type { SetControllerParams } from '$lib/types/controllers';
 	import type { MissionControlId } from '$lib/types/mission-control';
 
@@ -20,18 +20,18 @@
 	let { missionControlId }: Props = $props();
 
 	const list = (): Promise<[Principal, MissionControlDid.Controller][]> =>
-		listMissionControlControllers({ missionControlId, identity: $authStore.identity });
+		listMissionControlControllers({ missionControlId, identity: $authIdentity });
 
 	const remove = (params: {
 		missionControlId: MissionControlId;
 		controller: Principal;
-	}): Promise<void> => deleteMissionControlController({ ...params, identity: $authStore.identity });
+	}): Promise<void> => deleteMissionControlController({ ...params, identity: $authIdentity });
 
 	const add = (
 		params: {
 			missionControlId: MissionControlId;
 		} & SetControllerParams
-	): Promise<void> => setMissionControlController({ ...params, identity: $authStore.identity });
+	): Promise<void> => setMissionControlController({ ...params, identity: $authIdentity });
 
 	const pseudoAdminController: MissionControlDid.Controller = {
 		created_at: 0n,
@@ -43,9 +43,9 @@
 
 	let extraControllers = $derived<[Principal, MissionControlDid.Controller][]>([
 		[missionControlId, pseudoAdminController],
-		...(nonNullish($authStore.identity)
+		...(nonNullish($authIdentity)
 			? [
-					[$authStore.identity.getPrincipal(), pseudoAdminController] as [
+					[$authIdentity.getPrincipal(), pseudoAdminController] as [
 						Principal,
 						MissionControlDid.Controller
 					]

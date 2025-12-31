@@ -1,15 +1,16 @@
 <script lang="ts">
-	import { isNullish, nonNullish, notEmptyString } from '@dfinity/utils';
+	import { nonNullish, notEmptyString } from '@dfinity/utils';
 	import IconEdit from '$lib/components/icons/IconEdit.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
-	import { setSatelliteMetadata } from '$lib/services/mission-control/mission-control.services';
+	import { setSatelliteMetadata } from '$lib/services/metadata.services';
 	import { busy, isBusy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
 	import type { Satellite, SatelliteUiTags } from '$lib/types/satellite';
 	import { satelliteEnvironment, satelliteName, satelliteTags } from '$lib/utils/satellite.utils';
+	import {authStore} from "$lib/stores/auth.store";
 
 	interface Props {
 		satellite: Satellite;
@@ -46,17 +47,11 @@
 			return;
 		}
 
-		if (isNullish($missionControlId)) {
-			toasts.error({
-				text: $i18n.errors.no_mission_control
-			});
-			return;
-		}
-
 		busy.start();
 
 		const { success } = await setSatelliteMetadata({
 			missionControlId: $missionControlId,
+			identity: $authStore.identity,
 			satellite,
 			metadata: {
 				name: satName,

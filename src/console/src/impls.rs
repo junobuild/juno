@@ -20,7 +20,7 @@ use junobuild_shared::rate::types::RateTokens;
 use junobuild_shared::serializers::{
     deserialize_from_bytes, serialize_into_bytes, serialize_to_bytes,
 };
-use junobuild_shared::types::state::{Metadata, SegmentId, UserId};
+use junobuild_shared::types::state::{Metadata, SegmentId, SegmentKind, UserId};
 use std::borrow::Cow;
 use std::collections::HashMap;
 
@@ -54,30 +54,6 @@ impl Default for Rates {
             orbiters: Rate {
                 config: DEFAULT_RATE_CONFIG,
                 tokens,
-            },
-        }
-    }
-}
-
-impl Default for FactoryFees {
-    fn default() -> Self {
-        let now = time();
-
-        Self {
-            satellite: FactoryFee {
-                fee_icp: SATELLITE_CREATION_FEE_ICP,
-                fee_cycles: SATELLITE_CREATION_FEE_CYCLES,
-                updated_at: now,
-            },
-            orbiter: FactoryFee {
-                fee_icp: ORBITER_CREATION_FEE_ICP,
-                fee_cycles: ORBITER_CREATION_FEE_CYCLES,
-                updated_at: now,
-            },
-            mission_control: FactoryFee {
-                fee_icp: MISSION_CONTROL_CREATION_FEE_ICP,
-                fee_cycles: MISSION_CONTROL_CREATION_FEE_CYCLES,
-                updated_at: now,
             },
         }
     }

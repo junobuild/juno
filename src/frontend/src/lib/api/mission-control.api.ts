@@ -21,8 +21,11 @@ export const setSatellitesController = async ({
 	identity: OptionIdentity;
 } & SetControllerParams) => {
 	try {
-		const actor = await getMissionControlActor({ missionControlId, identity });
-		await actor.set_satellites_controllers(
+		const { set_satellites_controllers } = await getMissionControlActor({
+			missionControlId,
+			identity
+		});
+		await set_satellites_controllers(
 			satelliteIds,
 			[Principal.from(controllerId)],
 			toSetController(rest)
@@ -48,8 +51,11 @@ export const deleteSatellitesController = async ({
 	controller: Principal;
 	identity: OptionIdentity;
 }) => {
-	const actor = await getMissionControlActor({ missionControlId, identity });
-	await actor.del_satellites_controllers(satelliteIds, [controller]);
+	const { del_satellites_controllers } = await getMissionControlActor({
+		missionControlId,
+		identity
+	});
+	await del_satellites_controllers(satelliteIds, [controller]);
 };
 
 export const setMissionControlController = async ({
@@ -62,11 +68,11 @@ export const setMissionControlController = async ({
 	identity: OptionIdentity;
 } & SetControllerParams) => {
 	try {
-		const actor = await getMissionControlActor({ missionControlId, identity });
-		await actor.set_mission_control_controllers(
-			[Principal.from(controllerId)],
-			toSetController(rest)
-		);
+		const { set_mission_control_controllers } = await getMissionControlActor({
+			missionControlId,
+			identity
+		});
+		await set_mission_control_controllers([Principal.from(controllerId)], toSetController(rest));
 	} catch (err: unknown) {
 		console.error('setMissionControlController:', missionControlId.toText());
 		throw err;
@@ -82,8 +88,11 @@ export const deleteMissionControlController = async ({
 	controller: Principal;
 	identity: OptionIdentity;
 }) => {
-	const actor = await getMissionControlActor({ missionControlId, identity });
-	await actor.del_mission_control_controllers([controller]);
+	const { del_mission_control_controllers } = await getMissionControlActor({
+		missionControlId,
+		identity
+	});
+	await del_mission_control_controllers([controller]);
 };
 
 export const listMissionControlControllers = async ({
@@ -93,8 +102,11 @@ export const listMissionControlControllers = async ({
 	missionControlId: MissionControlId;
 	identity: OptionIdentity;
 }): Promise<[Principal, MissionControlDid.Controller][]> => {
-	const actor = await getMissionControlActor({ missionControlId, identity });
-	return actor.list_mission_control_controllers();
+	const { list_mission_control_controllers } = await getMissionControlActor({
+		missionControlId,
+		identity
+	});
+	return list_mission_control_controllers();
 };
 
 export const topUp = async ({
@@ -108,8 +120,8 @@ export const topUp = async ({
 	e8s: bigint;
 	identity: OptionIdentity;
 }) => {
-	const actor = await getMissionControlActor({ missionControlId, identity });
-	await actor.top_up(canisterId, { e8s });
+	const { top_up } = await getMissionControlActor({ missionControlId, identity });
+	await top_up(canisterId, { e8s });
 };
 
 export const setSatelliteMetadata = async ({
@@ -123,8 +135,8 @@ export const setSatelliteMetadata = async ({
 	metadata: Metadata;
 	identity: OptionIdentity;
 }): Promise<MissionControlDid.Satellite> => {
-	const actor = await getMissionControlActor({ missionControlId, identity });
-	return actor.set_satellite_metadata(satelliteId, metadata);
+	const { set_satellite_metadata } = await getMissionControlActor({ missionControlId, identity });
+	return set_satellite_metadata(satelliteId, metadata);
 };
 
 export const setOrbitersController = async ({
@@ -139,8 +151,11 @@ export const setOrbitersController = async ({
 	identity: OptionIdentity;
 } & SetControllerParams) => {
 	try {
-		const actor = await getMissionControlActor({ missionControlId, identity });
-		await actor.set_orbiters_controllers(
+		const { set_orbiters_controllers } = await getMissionControlActor({
+			missionControlId,
+			identity
+		});
+		await set_orbiters_controllers(
 			orbiterIds,
 			[Principal.from(controllerId)],
 			toSetController(rest)
@@ -166,8 +181,8 @@ export const deleteOrbitersController = async ({
 	controller: Principal;
 	identity: OptionIdentity;
 }) => {
-	const actor = await getMissionControlActor({ missionControlId, identity });
-	await actor.del_orbiters_controllers(orbiterIds, [controller]);
+	const { del_orbiters_controllers } = await getMissionControlActor({ missionControlId, identity });
+	await del_orbiters_controllers(orbiterIds, [controller]);
 };
 
 export const deleteSatellite = async ({

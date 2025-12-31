@@ -11,7 +11,7 @@ pub mod state {
     use junobuild_shared::ledger::types::cycles::CyclesTokens;
     use junobuild_shared::rate::types::{RateConfig, RateTokens};
     use junobuild_shared::types::memory::Memory;
-    use junobuild_shared::types::state::{Controllers, Metadata, SegmentId, Timestamp};
+    use junobuild_shared::types::state::{Controllers, Metadata, SegmentId, Timestamp, Version};
     use junobuild_shared::types::state::{MissionControlId, UserId};
     use junobuild_storage::types::state::StorageHeapState;
     use serde::{Deserialize, Serialize};
@@ -143,6 +143,7 @@ pub mod state {
     pub struct Segment {
         pub segment_id: SegmentId,
         pub metadata: Metadata,
+        pub version: Option<Version>,
         pub created_at: Timestamp,
         pub updated_at: Timestamp,
     }

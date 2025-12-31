@@ -356,6 +356,7 @@ export interface Segment {
 	metadata: Array<[string, string]>;
 	segment_id: Principal;
 	created_at: bigint;
+	version: [] | [bigint];
 }
 export interface SegmentKey {
 	user: Principal;

@@ -434,7 +434,8 @@ export const idlFactory = ({ IDL }) => {
 		updated_at: IDL.Nat64,
 		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
 		segment_id: IDL.Principal,
-		created_at: IDL.Nat64
+		created_at: IDL.Nat64,
+		version: IDL.Opt(IDL.Nat64)
 	});
 	const SetAuthenticationConfig = IDL.Record({
 		openid: IDL.Opt(AuthenticationConfigOpenId),

@@ -19,7 +19,6 @@ fn get_factory_fee_impl(
         }
     }
 
-    // Fallback to default only if not found in state
     default_factory_fees()
         .get(segment_kind)
         .cloned()

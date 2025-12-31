@@ -1,13 +1,7 @@
-use crate::constants::{
-    MISSION_CONTROL_CREATION_FEE_CYCLES, MISSION_CONTROL_CREATION_FEE_ICP,
-    ORBITER_CREATION_FEE_CYCLES, ORBITER_CREATION_FEE_ICP, SATELLITE_CREATION_FEE_CYCLES,
-    SATELLITE_CREATION_FEE_ICP,
-};
 use crate::memory::manager::init_stable_state;
 use crate::types::ledger::{Fee, IcpPayment, IcrcPayment, IcrcPaymentKey};
 use crate::types::state::{
-    Account, FactoryFee, FactoryFees, HeapState, Rate, Rates, Segment, SegmentKey, SegmentType,
-    State,
+    Account, HeapState, Rate, Rates, Segment, SegmentKey, SegmentType, State,
 };
 use candid::Principal;
 use ic_cdk::api::time;
@@ -20,7 +14,7 @@ use junobuild_shared::rate::types::RateTokens;
 use junobuild_shared::serializers::{
     deserialize_from_bytes, serialize_into_bytes, serialize_to_bytes,
 };
-use junobuild_shared::types::state::{Metadata, SegmentId, SegmentKind, UserId};
+use junobuild_shared::types::state::{Metadata, SegmentId, UserId};
 use std::borrow::Cow;
 use std::collections::HashMap;
 

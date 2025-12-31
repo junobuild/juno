@@ -13,9 +13,15 @@ fn get_factory_fee_impl(
     segment_kind: &SegmentKind,
     factory_fees: &Option<FactoryFees>,
 ) -> Result<FactoryFee, String> {
-    let fees = factory_fees.as_ref().unwrap_or(&default_factory_fees());
+    if let Some(fees) = factory_fees {
+        if let Some(fee) = fees.get(segment_kind) {
+            return Ok(fee.clone());
+        }
+    }
 
-    fees.get(segment_kind)
+    // Fallback to default only if not found in state
+    default_factory_fees()
+        .get(segment_kind)
         .cloned()
         .ok_or_else(|| format!("Fee not found for segment kind: {:?}", segment_kind))
 }

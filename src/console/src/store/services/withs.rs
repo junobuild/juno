@@ -42,10 +42,6 @@ pub fn with_factory_fees<R>(f: impl FnOnce(&Option<FactoryFees>) -> R) -> R {
     })
 }
 
-pub fn with_factory_fees_mut<R>(f: impl FnOnce(&mut Option<FactoryFees>) -> R) -> R {
-    mutate_heap_state(|state| f(&mut state.factory_fees))
-}
-
 pub fn with_accounts<R>(f: impl FnOnce(&AccountsStable) -> R) -> R {
     read_stable_state(|state| {
         let accounts = &state.accounts;

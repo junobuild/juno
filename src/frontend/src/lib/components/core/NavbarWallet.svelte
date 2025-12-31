@@ -21,6 +21,7 @@
 	let visible: boolean = $state(false);
 
 	const onclick = () => (visible = true);
+	const onclose = () => (visible = false);
 
 	let receiveVisible = $state(false);
 
@@ -73,12 +74,7 @@
 			<WalletIds {selectedWallet} />
 
 			<div class="actions">
-				<WalletActions
-					onreceive={openReceive}
-					onsend={() => (visible = false)}
-					{selectedToken}
-					{selectedWallet}
-				/>
+				<WalletActions onreceive={openReceive} onsend={onclose} {selectedToken} {selectedWallet} />
 			</div>
 		{/if}
 	</div>

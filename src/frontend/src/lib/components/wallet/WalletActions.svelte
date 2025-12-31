@@ -1,4 +1,5 @@
 <script lang="ts">
+	import BuyCycles from '$lib/components/wallet/BuyCycles.svelte';
 	import WalletGetToken from '$lib/components/wallet/WalletGetToken.svelte';
 	import WalletReceive from '$lib/components/wallet/WalletReceive.svelte';
 	import WalletSend from '$lib/components/wallet/WalletSend.svelte';
@@ -15,6 +16,8 @@
 </script>
 
 <div class="toolbar">
+	<BuyCycles {selectedToken} {selectedWallet} />
+
 	<WalletReceive {onreceive} />
 
 	<WalletSend {onsend} {selectedToken} {selectedWallet} />

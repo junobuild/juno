@@ -1,37 +1,37 @@
-import { idlFactoryCyclesLedger, type CyclesLedgerActor } from '$declarations';
-import { ActorApi } from '$lib/api/actors/actor.api';
-import { CYCLES_LEDGER_CANISTER_ID } from '$lib/constants/app.constants';
+import { getAgent } from '$lib/api/_agent/_agent.api';
 import type { OptionIdentity } from '$lib/types/itentity';
-import { nowInBigIntNanoSeconds, toNullable } from '@dfinity/utils';
+import { assertNonNullish, nowInBigIntNanoSeconds } from '@dfinity/utils';
+import type { WithdrawParams, WithdrawResult } from '@icp-sdk/canisters/ledger/cycles';
+import { CyclesLedgerCanister } from '@icp-sdk/canisters/ledger/cycles';
 import type { Principal } from '@icp-sdk/core/principal';
-
-const cyclesLedgerActor = new ActorApi<CyclesLedgerActor>();
 
 export const withdrawCycles = async ({
 	canisterId,
+	amount,
 	identity
 }: {
 	canisterId: Principal;
 	identity: OptionIdentity;
-}): Promise<void> => {
+} & Pick<WithdrawParams, 'amount'>): Promise<WithdrawResult> => {
 	const { withdraw } = await getCyclesLedgerActor({ identity });
-	const result = await withdraw({
-		to: canisterId,
-		from_subaccount: toNullable(),
-		created_at_time: toNullable(nowInBigIntNanoSeconds()),
-		amount: 1_000_000_000_000n // 1 T Cycles
-	});
 
-	console.log(canisterId.toText(), result);
+	return await withdraw({
+		to: canisterId,
+		createdAtTime: nowInBigIntNanoSeconds(),
+		amount
+	});
 };
 
-const getCyclesLedgerActor = ({
+const getCyclesLedgerActor = async ({
 	identity
 }: {
 	identity: OptionIdentity;
-}): Promise<CyclesLedgerActor> =>
-	cyclesLedgerActor.getActor({
-		canisterId: CYCLES_LEDGER_CANISTER_ID,
-		idlFactory: idlFactoryCyclesLedger,
-		identity
+}): Promise<CyclesLedgerCanister> => {
+	assertNonNullish(identity, 'No internet identity to initialize the Cycles Ledger actor.');
+
+	const agent = await getAgent({ identity });
+
+	return CyclesLedgerCanister.create({
+		agent
 	});
+};

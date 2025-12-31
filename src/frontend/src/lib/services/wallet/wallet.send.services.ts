@@ -291,7 +291,7 @@ const sendCyclesWithDev = async ({
 			subaccount: toNullable(subaccount)
 		},
 		amount: token.toUlps(),
-		fee: CYCLES.fee,
+		fee: CYCLES.fees.transaction,
 		created_at_time: nowInBigIntNanoSeconds()
 	};
 

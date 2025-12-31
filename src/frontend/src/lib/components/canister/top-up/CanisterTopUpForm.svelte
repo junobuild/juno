@@ -15,6 +15,8 @@
 	import { CYCLES, ICP_TOP_UP_FEE } from '$lib/constants/token.constants';
 	import {
 		devCyclesBalanceOrZero,
+		devIcpBalanceOrZero,
+		missionControlCyclesBalanceOrZero,
 		missionControlIcpBalanceOrZero
 	} from '$lib/derived/wallet/balance.derived';
 	import { icpToUsd } from '$lib/derived/wallet/exchange.derived';
@@ -53,8 +55,12 @@
 	$effect(() => {
 		balance =
 			selectedWallet?.type === 'mission_control'
-				? $missionControlIcpBalanceOrZero
-				: $devCyclesBalanceOrZero;
+				? isTokenIcp(selectedToken)
+					? $missionControlIcpBalanceOrZero
+					: $missionControlCyclesBalanceOrZero
+				: isTokenIcp(selectedToken)
+					? $devIcpBalanceOrZero
+					: $devCyclesBalanceOrZero;
 	});
 
 	const onSubmit = ($event: SubmitEvent) => {
@@ -62,9 +68,9 @@
 
 		const { valid } = assertAndConvertAmountToToken({
 			balance,
-			amount: icp,
-			token: ICPToken,
-			fee: ICP_TOP_UP_FEE
+			amount,
+			token: selectedToken.token,
+			fee: selectedToken.fees.topUp
 		});
 
 		if (!valid) {

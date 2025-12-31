@@ -22,7 +22,7 @@
 			return;
 		}
 
-		const appliedFee = fee ?? selectedToken.fee;
+		const appliedFee = fee ?? selectedToken.fees.transaction;
 		const amount = balance - appliedFee;
 
 		onmax(formatToken({ selectedToken, amount }));

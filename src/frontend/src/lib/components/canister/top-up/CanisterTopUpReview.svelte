@@ -1,32 +1,40 @@
 <script lang="ts">
-	import { ICPToken, nonNullish, type TokenAmountV2 } from '@dfinity/utils';
+	import { nonNullish } from '@dfinity/utils';
 	import { Principal } from '@icp-sdk/core/principal';
-	import CanisterTopUpCycles from '$lib/components/canister/top-up/CanisterTopUpCycles.svelte';
 	import Segment from '$lib/components/segments/Segment.svelte';
 	import GridArrow from '$lib/components/ui/GridArrow.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import WalletSendFrom from '$lib/components/wallet/WalletSendFrom.svelte';
 	import SendTokensAmount from '$lib/components/wallet/tokens/SendTokensAmount.svelte';
-	import { ICP, ICP_TOP_UP_FEE } from '$lib/constants/token.constants';
-	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
+	import type { SelectedToken, SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { CanisterSegmentWithLabel } from '$lib/types/canister';
-	import { formatICP } from '$lib/utils/icp.utils';
-	import { amountToToken } from '$lib/utils/token.utils';
+	import { amountToToken, formatToken, isTokenIcp } from '$lib/utils/token.utils';
+	import TokenSymbol from '$lib/components/wallet/tokens/TokenSymbol.svelte';
 
 	interface Props {
 		selectedWallet: SelectedWallet | undefined;
+		selectedToken: SelectedToken;
 		balance: bigint;
 		segment: CanisterSegmentWithLabel;
-		icp: string | undefined;
-		cycles: bigint | undefined;
+		amount: string | undefined;
+		displayTCycles: string | undefined;
 		onback: () => void;
 		onsubmit: ($event: SubmitEvent) => Promise<void>;
 	}
 
-	let { selectedWallet, balance, onsubmit, onback, segment, icp, cycles }: Props = $props();
+	let {
+		selectedWallet,
+		selectedToken,
+		balance,
+		onsubmit,
+		onback,
+		segment,
+		amount,
+		displayTCycles
+	}: Props = $props();
 
-	let token: TokenAmountV2 | undefined = $derived(amountToToken({ amount: icp, token: ICPToken }));
+	let token = $derived(amountToToken({ amount, token: selectedToken.token }));
 </script>
 
 <h2>{$i18n.canisters.top_up}</h2>
@@ -36,7 +44,7 @@
 <form {onsubmit}>
 	<div class="columns">
 		{#if nonNullish(selectedWallet)}
-			<WalletSendFrom {balance} selectedToken={ICP} {selectedWallet} />
+			<WalletSendFrom {balance} {selectedToken} {selectedWallet} />
 		{/if}
 
 		<GridArrow />
@@ -63,7 +71,7 @@
 			<span class="title">{$i18n.canisters.topping_up}</span>
 
 			<div class="content">
-				<SendTokensAmount selectedToken={ICP} {token} />
+				<SendTokensAmount {selectedToken} {token} />
 
 				<Value>
 					{#snippet label()}
@@ -71,11 +79,22 @@
 					{/snippet}
 
 					<p>
-						<span>{formatICP(ICP_TOP_UP_FEE)} <small>ICP</small></span>
+						<span
+							>{formatToken({ selectedToken, amount: selectedToken.fees.topUp })}
+							<TokenSymbol {selectedToken} /></span
+						>
 					</p>
 				</Value>
 
-				<CanisterTopUpCycles {cycles} />
+				{#if isTokenIcp(selectedToken)}
+					<Value>
+						{#snippet label()}
+							{$i18n.canisters.converted_cycles}
+						{/snippet}
+
+						<p>{displayTCycles ?? '0'} <small>TCycles</small></p>
+					</Value>
+				{/if}
 			</div>
 		</div>
 	</div>

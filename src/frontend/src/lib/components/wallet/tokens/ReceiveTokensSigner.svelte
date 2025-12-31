@@ -74,7 +74,7 @@
 			amount,
 			balance,
 			token: ICPToken,
-			fee: ICP.fee
+			fee: ICP.fees.transaction
 		});
 
 		if (!valid || isNullish(tokenAmount)) {

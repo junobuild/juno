@@ -1,6 +1,6 @@
+import { withdrawCycles } from '$lib/api/cycles-ledger.api';
 import { topUp as topUpApiWithMissionControl } from '$lib/api/mission-control.api';
-import { ICP_TOP_UP_FEE } from '$lib/constants/token.constants';
-import type { SelectedWallet } from '$lib/schemas/wallet.schema';
+import type { SelectedToken, SelectedWallet } from '$lib/schemas/wallet.schema';
 import { execute } from '$lib/services/_progress.services';
 import { topUpWithCmc } from '$lib/services/top-up/_top-up.cmc.services';
 import { i18n } from '$lib/stores/app/i18n.store';
@@ -8,26 +8,26 @@ import { toasts } from '$lib/stores/app/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
 import { type TopUpProgress, TopUpProgressStep } from '$lib/types/progress-topup';
 import { emit } from '$lib/utils/events.utils';
-import { assertAndConvertAmountToToken } from '$lib/utils/token.utils';
+import { assertAndConvertAmountToToken, isTokenCycles, isTokenIcp } from '$lib/utils/token.utils';
 import { waitAndRestartWallet } from '$lib/utils/wallet.utils';
-import { assertNonNullish, ICPToken, isNullish } from '@dfinity/utils';
+import { assertNonNullish, isEmptyString, isNullish } from '@dfinity/utils';
 import type { Principal } from '@icp-sdk/core/principal';
 import { get } from 'svelte/store';
 
 export const topUp = async ({
 	identity,
 	selectedWallet,
-	cycles,
+	selectedToken,
 	balance,
-	icp,
+	amount,
 	canisterId,
 	onProgress
 }: {
 	identity: OptionIdentity;
 	selectedWallet: SelectedWallet | undefined;
-	cycles: bigint | undefined;
+	selectedToken: SelectedToken;
 	balance: bigint;
-	icp: string | undefined;
+	amount: string | undefined;
 	canisterId: Principal;
 	onProgress: (progress: TopUpProgress | undefined) => void;
 }): Promise<{ success: 'ok' | 'error'; err?: unknown }> => {
@@ -38,7 +38,7 @@ export const topUp = async ({
 		return { success: 'error' };
 	}
 
-	if (isNullish(cycles)) {
+	if (isEmptyString(amount)) {
 		toasts.error({
 			text: get(i18n).errors.invalid_amount_to_top_up
 		});
@@ -47,9 +47,9 @@ export const topUp = async ({
 
 	const { valid, tokenAmount } = assertAndConvertAmountToToken({
 		balance,
-		amount: icp,
-		token: ICPToken,
-		fee: ICP_TOP_UP_FEE
+		amount,
+		token: selectedToken.token,
+		fee: selectedToken.fees.topUp
 	});
 
 	if (!valid || isNullish(tokenAmount)) {
@@ -62,6 +62,11 @@ export const topUp = async ({
 		const { type: walletType, walletId } = selectedWallet;
 
 		const topUpWithMissionControl = async () => {
+			if (isTokenCycles(selectedToken)) {
+				const labels = get(i18n);
+				throw new Error(labels.errors.cycles_transfer_not_supported);
+			}
+
 			// We do not use subaccount
 			const { owner: missionControlId } = walletId;
 
@@ -74,10 +79,19 @@ export const topUp = async ({
 		};
 
 		const topUpWithDev = async () => {
-			await topUpWithCmc({
+			if (isTokenIcp(selectedToken)) {
+				await topUpWithCmc({
+					canisterId,
+					identity,
+					tokenAmount
+				});
+				return;
+			}
+
+			await withdrawCycles({
 				canisterId,
 				identity,
-				tokenAmount
+				amount: tokenAmount.toUlps()
 			});
 		};
 

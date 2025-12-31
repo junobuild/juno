@@ -82,7 +82,7 @@
 					{/snippet}
 					<p>
 						<span
-							>{formatToken({ selectedToken, amount: selectedToken.fee })}
+							>{formatToken({ selectedToken, amount: selectedToken.fees.transaction })}
 							<TokenSymbol {selectedToken} /></span
 						>
 					</p>

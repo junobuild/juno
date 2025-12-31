@@ -51,9 +51,15 @@ export const SelectedWalletSchema = z.discriminatedUnion('type', [
 ]);
 export type SelectedWallet = z.infer<typeof SelectedWalletSchema>;
 
+export const SelectedTokenFeesSchema = z.strictObject({
+	transaction: z.bigint(),
+	topUp: z.bigint(),
+});
+export type SelectedTokenFees = z.infer<typeof SelectedTokenFeesSchema>;
+
 const SelectedTokenSchema = z.strictObject({
 	token: z.custom<Token>(),
-	fee: z.bigint(),
+	fees: SelectedTokenFeesSchema,
 	...LedgerIdsTextSchema.shape
 });
 export type SelectedToken = z.infer<typeof SelectedTokenSchema>;

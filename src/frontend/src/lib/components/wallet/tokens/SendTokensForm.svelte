@@ -60,7 +60,7 @@
 			balance,
 			amount,
 			token: selectedToken.token,
-			fee: selectedToken.fee
+			fee: selectedToken.fees.transaction
 		});
 
 		if (!valid) {

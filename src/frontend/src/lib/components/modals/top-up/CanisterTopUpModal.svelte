@@ -6,13 +6,14 @@
 	import CanisterTopUpForm from '$lib/components/canister/top-up/CanisterTopUpForm.svelte';
 	import CanisterTopUpReview from '$lib/components/canister/top-up/CanisterTopUpReview.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
-	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
+	import type { SelectedToken, SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { topUp } from '$lib/services/top-up/top-up.services';
 	import { wizardBusy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { authStore } from '$lib/stores/auth.store';
 	import type { CanisterSegmentWithLabel } from '$lib/types/canister';
 	import type { TopUpProgress } from '$lib/types/progress-topup';
+	import { CYCLES } from '$lib/constants/token.constants';
 
 	interface Props {
 		outro?: Snippet;
@@ -25,8 +26,8 @@
 
 	let step: 'init' | 'review' | 'in_progress' | 'ready' | 'error' = $state('init');
 
-	let icp = $state<string | undefined>(undefined);
-	let cycles = $state<bigint | undefined>(undefined);
+	let amount = $state<string | undefined>(undefined);
+	let displayTCycles = $state<string | undefined>(undefined);
 
 	let progress = $state<TopUpProgress | undefined>(undefined);
 	const onProgress = (topUpProgress: TopUpProgress | undefined) => (progress = topUpProgress);
@@ -42,10 +43,10 @@
 		const { success } = await topUp({
 			canisterId: Principal.fromText(segment.canisterId),
 			selectedWallet,
+			selectedToken,
 			identity: $authStore.identity,
-			cycles,
 			balance,
-			icp,
+			amount,
 			onProgress
 		});
 
@@ -60,6 +61,7 @@
 	};
 
 	let selectedWallet = $state<SelectedWallet | undefined>(undefined);
+	let selectedToken = $state<SelectedToken>(CYCLES);
 	let balance = $state<bigint>(0n);
 </script>
 
@@ -75,12 +77,13 @@
 		<div in:fade>
 			<CanisterTopUpReview
 				{balance}
-				{cycles}
-				{icp}
+				{amount}
+				{displayTCycles}
 				onback={() => (step = 'init')}
 				{onsubmit}
 				{segment}
 				{selectedWallet}
+				{selectedToken}
 			/>
 		</div>
 	{:else}
@@ -90,9 +93,10 @@
 			onreview={() => (step = 'review')}
 			{segment}
 			bind:selectedWallet
+			bind:selectedToken
 			bind:balance
-			bind:icp
-			bind:cycles
+			bind:amount
+			bind:displayTCycles
 		/>
 	{/if}
 </Modal>

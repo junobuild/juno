@@ -1,5 +1,5 @@
 import { consoleOrbiters } from '$lib/derived/console/segments.derived';
-import { mctrlOrbiters } from '$lib/derived/mission-control/orbiters.derived';
+import { mctrlOrbiters } from '$lib/derived/mission-control/mission-control-orbiters.derived';
 import { orbitersUncertifiedStore } from '$lib/stores/mission-control/orbiter.store';
 import {
 	type OrbiterConfigs,

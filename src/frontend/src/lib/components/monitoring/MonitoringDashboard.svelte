@@ -7,12 +7,12 @@
 	import MonitoringArticle from '$lib/components/monitoring/MonitoringArticle.svelte';
 	import NoMonitoring from '$lib/components/monitoring/NoMonitoring.svelte';
 	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
+	import { mctrlSortedSatellites } from '$lib/derived/mission-control/mission-control-satellites.derived';
 	import {
 		hasMissionControlSettings,
 		missionControlMonitoring,
 		missionControlSettingsNotLoaded
 	} from '$lib/derived/mission-control/mission-control-settings.derived';
-	import { sortedSatellites } from '$lib/derived/mission-control/satellites.derived';
 	import { orbitersStore } from '$lib/derived/orbiter.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { MissionControlId } from '$lib/types/mission-control';
@@ -43,7 +43,7 @@
 			<span>{$i18n.mission_control.title}</span>
 		</MonitoringArticle>
 
-		{#each $sortedSatellites ?? [] as satellite (satellite.satellite_id.toText())}
+		{#each $mctrlSortedSatellites ?? [] as satellite (satellite.satellite_id.toText())}
 			<MonitoringArticle
 				canisterId={satellite.satellite_id}
 				monitoring={fromNullishNullable(fromNullable(satellite.settings)?.monitoring)}

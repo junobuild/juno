@@ -3,7 +3,8 @@ use crate::factory::canister::create_canister;
 use crate::factory::types::{CanisterCreator, FeeKind};
 use crate::factory::utils::controllers::remove_console_controller;
 use crate::factory::utils::wasm::orbiter_wasm_arg;
-use crate::store::heap::{get_orbiter_fee, increment_orbiters_rate};
+use crate::fees::get_factory_fee;
+use crate::store::heap::increment_orbiters_rate;
 use crate::store::stable::add_segment as add_segment_store;
 use crate::types::ledger::Fee;
 use crate::types::state::{Segment, SegmentKey, SegmentType};
@@ -15,7 +16,7 @@ use junobuild_shared::mgmt::ic::create_canister_install_code;
 use junobuild_shared::mgmt::types::cmc::SubnetId;
 use junobuild_shared::mgmt::types::ic::CreateCanisterInitSettingsArg;
 use junobuild_shared::types::interface::CreateOrbiterArgs;
-use junobuild_shared::types::state::UserId;
+use junobuild_shared::types::state::{SegmentKind, UserId};
 
 pub async fn create_orbiter(
     caller: Principal,
@@ -33,13 +34,15 @@ pub async fn create_orbiter(
     .await
 }
 
-fn get_fee(fee_kind: FeeKind) -> Fee {
-    let fee = get_orbiter_fee();
+fn get_fee(fee_kind: FeeKind) -> Result<Fee, String> {
+    let fee = get_factory_fee(&SegmentKind::Orbiter)?;
 
-    match fee_kind {
+    let value = match fee_kind {
         FeeKind::Cycles => Fee::Cycles(fee.fee_cycles),
         FeeKind::ICP => Fee::ICP(fee.fee_icp),
-    }
+    };
+
+    Ok(value)
 }
 
 async fn create_orbiter_wasm(

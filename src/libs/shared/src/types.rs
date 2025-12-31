@@ -72,7 +72,7 @@ pub mod state {
         pub freezing_threshold: Nat,
     }
 
-    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    #[derive(CandidType, Serialize, Deserialize, Copy, Clone, Debug, PartialEq, Eq, Hash)]
     pub enum SegmentKind {
         Satellite,
         MissionControl,

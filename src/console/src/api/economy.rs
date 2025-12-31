@@ -2,11 +2,8 @@ use crate::accounts::credits::{
     add_credits as add_credits_store, caller_is_mission_control_and_user_has_credits,
     get_credits as get_credits_store,
 };
+use crate::fees::{get_factory_fee, set_factory_fee};
 use crate::guards::caller_is_admin_controller;
-use crate::store::heap::{
-    get_mission_control_fee, get_orbiter_fee, get_satellite_fee, set_create_mission_control_fee,
-    set_create_orbiter_fee, set_create_satellite_fee,
-};
 use crate::store::stable::payments::list_icp_payments as list_icp_payments_state;
 use crate::store::stable::payments::list_icrc_payments as list_icrc_payments_state;
 use crate::types::interface::FeesArgs;
@@ -48,7 +45,9 @@ fn get_create_satellite_fee(
 ) -> Option<Tokens> {
     let caller = caller();
 
-    let fee = get_satellite_fee().fee_icp;
+    let fee = get_factory_fee(&SegmentKind::Satellite)
+        .unwrap_or_trap()
+        .fee_icp;
 
     let has_enough_credits =
         caller_is_mission_control_and_user_has_credits(&user, &caller, &Fee::ICP(fee))
@@ -67,7 +66,9 @@ fn get_create_orbiter_fee(
 ) -> Option<Tokens> {
     let caller = caller();
 
-    let fee = get_orbiter_fee().fee_icp;
+    let fee = get_factory_fee(&SegmentKind::Orbiter)
+        .unwrap_or_trap()
+        .fee_icp;
 
     let has_enough_credits =
         caller_is_mission_control_and_user_has_credits(&user, &caller, &Fee::ICP(fee))
@@ -81,18 +82,10 @@ fn get_create_orbiter_fee(
 
 #[update(guard = "caller_is_admin_controller")]
 fn set_fee(segment: SegmentKind, fees: FeesArgs) {
-    match segment {
-        SegmentKind::Satellite => set_create_satellite_fee(&fees),
-        SegmentKind::MissionControl => set_create_mission_control_fee(&fees),
-        SegmentKind::Orbiter => set_create_orbiter_fee(&fees),
-    }
+    set_factory_fee(&segment, &fees).unwrap_or_trap();
 }
 
 #[query]
-fn get_fee(segment: SegmentKind) -> FactoryFee {
-    match segment {
-        SegmentKind::Orbiter => get_orbiter_fee(),
-        SegmentKind::Satellite => get_satellite_fee(),
-        SegmentKind::MissionControl => get_mission_control_fee(),
-    }
+fn get_fee(segment_kind: SegmentKind) -> FactoryFee {
+    get_factory_fee(&segment_kind).unwrap_or_trap()
 }

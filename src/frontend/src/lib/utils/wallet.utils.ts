@@ -11,9 +11,7 @@ import { i18n } from '$lib/stores/app/i18n.store';
 import type { IcTransactionUi } from '$lib/types/ic-transaction';
 import { emit } from '$lib/utils/events.utils';
 import { toAccountIdentifier } from '$lib/utils/icp-icrc-account.utils';
-import { formatICP } from '$lib/utils/icp.utils';
 import { waitForMilliseconds } from '$lib/utils/timeout.utils';
-import { nonNullish } from '@dfinity/utils';
 import { encodeIcrcAccount } from '@icp-sdk/canisters/ledger/icrc';
 import { get } from 'svelte/store';
 
@@ -65,6 +63,3 @@ export const transactionMemo = ({
 		}
 	}
 };
-
-export const transactionAmount = (transaction: IcTransactionUi): string | undefined =>
-	nonNullish(transaction.value) ? formatICP(transaction.value) : undefined;

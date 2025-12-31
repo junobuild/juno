@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Confirmation from '$lib/components/core/Confirmation.svelte';
-	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
+	import type { SelectedToken, SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { exportTransactions as exportTransactionsServices } from '$lib/services/wallet/wallet.transactions.services';
 	import { busy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
@@ -9,10 +9,11 @@
 
 	interface Props {
 		selectedWallet: SelectedWallet;
+		selectedToken: SelectedToken;
 		transactions: CertifiedTransactions;
 	}
 
-	let { selectedWallet, transactions }: Props = $props();
+	let { selectedWallet, selectedToken, transactions }: Props = $props();
 
 	const { walletId } = $derived(selectedWallet);
 
@@ -24,7 +25,7 @@
 		busy.start();
 
 		try {
-			await exportTransactionsServices({ transactions, walletId });
+			await exportTransactionsServices({ transactions, walletId, selectedToken });
 		} catch (err: unknown) {
 			toasts.error({
 				text: $i18n.errors.transactions_export,

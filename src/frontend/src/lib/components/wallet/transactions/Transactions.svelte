@@ -1,12 +1,14 @@
 <script lang="ts">
 	import InfiniteScroll from '$lib/components/ui/InfiniteScroll.svelte';
 	import Transaction from '$lib/components/wallet/transactions/Transaction.svelte';
-	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
+	import type { SelectedToken, SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { CertifiedTransactions } from '$lib/types/transaction';
+	import { isTokenIcp } from '$lib/utils/token.utils';
 
 	interface Props {
 		selectedWallet: SelectedWallet;
+		selectedToken: SelectedToken;
 		transactions: CertifiedTransactions;
 		disableInfiniteScroll?: boolean;
 		onintersect: () => void;
@@ -14,6 +16,7 @@
 
 	let {
 		selectedWallet,
+		selectedToken,
 		transactions,
 		onintersect,
 		disableInfiniteScroll = false
@@ -39,7 +42,7 @@
 
 				<tbody>
 					{#each transactions as transaction, index (`${transaction.data.id}-${index}`)}
-						<Transaction transaction={transaction.data} {walletId} />
+						<Transaction {selectedToken} transaction={transaction.data} {walletId} />
 					{/each}
 				</tbody>
 			</table>

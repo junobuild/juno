@@ -20,9 +20,10 @@ use junobuild_shared::rate::types::RateTokens;
 use junobuild_shared::serializers::{
     deserialize_from_bytes, serialize_into_bytes, serialize_to_bytes,
 };
-use junobuild_shared::types::state::{Metadata, SegmentId, UserId};
+use junobuild_shared::types::state::{Metadata, SegmentId, UserId, Version, Versioned};
 use std::borrow::Cow;
 use std::collections::HashMap;
+use junobuild_shared::version::next_version;
 
 impl Default for State {
     fn default() -> Self {
@@ -187,15 +188,28 @@ fn init_metadata(name: &Option<String>) -> Metadata {
 }
 
 impl Segment {
+    fn get_next_version(current_segment: &Option<Segment>) -> Version {
+        next_version(current_segment)
+    }
+
     pub fn from(segment_id: &SegmentId, name: &Option<String>) -> Self {
         let now = time();
+
+        let version = Self::get_next_version(&None);
 
         Self {
             segment_id: *segment_id,
             metadata: init_metadata(name),
+            version: Some(version),
             created_at: now,
             updated_at: now,
         }
+    }
+}
+
+impl Versioned for Segment {
+    fn version(&self) -> Option<Version> {
+        self.version
     }
 }
 

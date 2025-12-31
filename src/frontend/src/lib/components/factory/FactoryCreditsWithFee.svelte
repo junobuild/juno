@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { fromNullable } from '@dfinity/utils';
 	import type { Snippet } from 'svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import GetICPInfo from '$lib/components/wallet/GetICPInfo.svelte';
@@ -19,7 +20,6 @@
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { formatICPToHTML } from '$lib/utils/icp.utils';
 	import { isTokenIcp } from '$lib/utils/token.utils';
-	import { fromNullable } from '@dfinity/utils';
 
 	interface Props {
 		fee: bigint;

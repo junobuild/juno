@@ -1,11 +1,11 @@
 <script lang="ts">
+	import { fromNullable, isNullish } from '@dfinity/utils';
 	import type { Snippet } from 'svelte';
+	import FactoryCreditsWithFee from '$lib/components/factory/FactoryCreditsWithFee.svelte';
 	import GetICPInfo from '$lib/components/wallet/GetICPInfo.svelte';
 	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
 	import type { JunoModalCreateSegmentDetail, JunoModalDetail } from '$lib/types/modal';
 	import type { Option } from '$lib/types/utils';
-	import { fromNullable, isNullish } from '@dfinity/utils';
-	import FactoryCreditsWithFee from '$lib/components/factory/FactoryCreditsWithFee.svelte';
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -40,12 +40,12 @@
 	<GetICPInfo {onclose} />
 {:else}
 	<FactoryCreditsWithFee
+		{fee}
+		{onclose}
 		{priceLabel}
 		{selectedWallet}
 		bind:insufficientFunds
 		bind:withFee
-		{onclose}
-		{fee}
 	>
 		{@render children()}
 	</FactoryCreditsWithFee>

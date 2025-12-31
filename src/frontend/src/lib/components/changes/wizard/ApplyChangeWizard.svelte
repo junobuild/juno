@@ -4,8 +4,8 @@
 	import ApplyChangeDone from '$lib/components/changes/wizard/ApplyChangeDone.svelte';
 	import ConfirmApplyChange from '$lib/components/changes/wizard/ConfirmApplyChange.svelte';
 	import ProgressApplyChange from '$lib/components/changes/wizard/ProgressApplyChange.svelte';
+	import { authIdentity } from '$lib/derived/auth.derived';
 	import { applyProposal } from '$lib/services/satellite/proposals/proposals.services';
-	import { authStore } from '$lib/stores/auth.store';
 	import type { ProposalRecord } from '$lib/types/proposals';
 	import type { SatelliteIdText } from '$lib/types/satellite';
 
@@ -47,7 +47,7 @@
 		await applyProposal({
 			satelliteId,
 			proposal: proposalRecord,
-			identity: $authStore.identity,
+			identity: $authIdentity,
 			clearProposalAssets,
 			takeSnapshot,
 			nextSteps: (next) => (step = next),

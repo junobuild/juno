@@ -4,8 +4,8 @@
 	import { deleteOrbitersController, setOrbitersController } from '$lib/api/mission-control.api';
 	import { listOrbiterControllers } from '$lib/api/orbiter.api';
 	import Controllers from '$lib/components/controllers/Controllers.svelte';
+	import { authIdentity } from '$lib/derived/auth.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import { authStore } from '$lib/stores/auth.store';
 	import type { SetControllerParams } from '$lib/types/controllers';
 	import type { MissionControlId } from '$lib/types/mission-control';
 
@@ -16,7 +16,7 @@
 	let { orbiterId }: Props = $props();
 
 	const list = (): Promise<[Principal, MissionControlDid.Controller][]> =>
-		listOrbiterControllers({ orbiterId, identity: $authStore.identity });
+		listOrbiterControllers({ orbiterId, identity: $authIdentity });
 
 	const remove = (params: {
 		missionControlId: MissionControlId;
@@ -25,7 +25,7 @@
 		deleteOrbitersController({
 			...params,
 			orbiterIds: [orbiterId],
-			identity: $authStore.identity
+			identity: $authIdentity
 		});
 
 	const add = (
@@ -36,7 +36,7 @@
 		setOrbitersController({
 			...params,
 			orbiterIds: [orbiterId],
-			identity: $authStore.identity
+			identity: $authIdentity
 		});
 </script>
 

@@ -7,11 +7,11 @@
 	import Html from '$lib/components/ui/Html.svelte';
 	import Warning from '$lib/components/ui/Warning.svelte';
 	import { REVOKED_CONTROLLERS } from '$lib/constants/app.constants';
+	import { authIdentity } from '$lib/derived/auth.derived';
 	import { setCliControllers } from '$lib/services/cli.services';
 	import { busy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
-	import { authStore } from '$lib/stores/auth.store';
 	import type { MissionControlId } from '$lib/types/mission-control';
 	import type { Satellite } from '$lib/types/satellite';
 	import type { Option } from '$lib/types/utils';
@@ -53,7 +53,7 @@
 			return;
 		}
 
-		if (isNullish($authStore.identity)) {
+		if (isNullish($authIdentity)) {
 			toasts.error({
 				text: $i18n.authentication.not_signed_in
 			});
@@ -67,7 +67,7 @@
 			missionControlId,
 			controllerId: principal,
 			profile,
-			identity: $authStore.identity,
+			identity: $authIdentity,
 			selectedSatellites,
 			selectedOrbiters
 		});

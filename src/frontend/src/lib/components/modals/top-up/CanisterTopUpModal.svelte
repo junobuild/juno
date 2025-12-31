@@ -7,11 +7,11 @@
 	import CanisterTopUpReview from '$lib/components/canister/top-up/CanisterTopUpReview.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import { CYCLES } from '$lib/constants/token.constants';
+	import { authIdentity } from '$lib/derived/auth.derived';
 	import type { SelectedToken, SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { topUp } from '$lib/services/top-up/top-up.services';
 	import { wizardBusy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import { authStore } from '$lib/stores/auth.store';
 	import type { CanisterSegmentWithLabel } from '$lib/types/canister';
 	import type { TopUpProgress } from '$lib/types/progress-topup';
 
@@ -44,7 +44,7 @@
 			canisterId: Principal.fromText(segment.canisterId),
 			selectedWallet,
 			selectedToken,
-			identity: $authStore.identity,
+			identity: $authIdentity,
 			balance,
 			amount,
 			onProgress

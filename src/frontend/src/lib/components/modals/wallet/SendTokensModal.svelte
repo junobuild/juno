@@ -6,6 +6,7 @@
 	import ProgressSendTokens from '$lib/components/wallet/tokens/ProgressSendTokens.svelte';
 	import SendTokensForm from '$lib/components/wallet/tokens/SendTokensForm.svelte';
 	import SendTokensReview from '$lib/components/wallet/tokens/SendTokensReview.svelte';
+	import { authIdentity } from '$lib/derived/auth.derived';
 	import {
 		devCyclesBalance,
 		devIcpBalance,
@@ -15,7 +16,6 @@
 	import { sendTokens } from '$lib/services/wallet/wallet.send.services';
 	import { wizardBusy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import { authStore } from '$lib/stores/auth.store';
 	import type { JunoModalDetail, JunoModalWalletDetail } from '$lib/types/modal';
 	import type { SendTokensProgress } from '$lib/types/progress-send-tokens';
 	import { isTokenIcp } from '$lib/utils/token.utils';
@@ -67,7 +67,7 @@
 		const { success } = await sendTokens({
 			selectedWallet,
 			selectedToken,
-			identity: $authStore.identity,
+			identity: $authIdentity,
 			destination,
 			token,
 			onProgress

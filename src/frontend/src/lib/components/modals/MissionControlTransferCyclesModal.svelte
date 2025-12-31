@@ -3,9 +3,9 @@
 	import type { Principal } from '@icp-sdk/core/principal';
 	import { depositCycles } from '$lib/api/mission-control.api';
 	import CanisterTransferCyclesModal from '$lib/components/modals/CanisterTransferCyclesModal.svelte';
+	import { authIdentity } from '$lib/derived/auth.derived';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import { authStore } from '$lib/stores/auth.store';
 	import type { JunoModalCycles, JunoModalDetail } from '$lib/types/modal';
 
 	interface Props {
@@ -26,7 +26,7 @@
 					// We know for sure that the mission control is defined at this point.
 					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 					missionControlId: $missionControlId!,
-					identity: $authStore.identity
+					identity: $authIdentity
 				})
 		);
 </script>

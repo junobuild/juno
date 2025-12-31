@@ -27,7 +27,7 @@ import {
 	MISSION_CONTROL_v0_0_3,
 	MISSION_CONTROL_v0_0_5
 } from '$lib/constants/version.constants';
-import { satellitesStore } from '$lib/derived/mission-control/satellites.derived';
+import { mctrlSatellitesStore } from '$lib/derived/mission-control/mission-control-satellites.derived';
 import {
 	SatelliteUiMetadataSchema,
 	SatelliteUiMetadataSerializer
@@ -189,7 +189,7 @@ export const setSatelliteMetadata = async ({
 			identity
 		});
 
-		const satellites = get(satellitesStore);
+		const satellites = get(mctrlSatellitesStore);
 		satellitesUncertifiedStore.set([
 			...(satellites ?? []).filter(
 				({ satellite_id }) => updatedSatellite.satellite_id.toText() !== satellite_id.toText()

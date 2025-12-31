@@ -3,9 +3,9 @@
 	import CanisterDeleteWizard from '$lib/components/canister/lifecycle/CanisterDeleteWizard.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
+	import { authIdentity } from '$lib/derived/auth.derived';
 	import { satelliteCustomDomains } from '$lib/derived/satellite/satellite-custom-domains.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import { authStore } from '$lib/stores/auth.store';
 	import type { MissionControlId } from '$lib/types/mission-control';
 	import type { JunoModalDeleteSatelliteDetail, JunoModalDetail } from '$lib/types/modal';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
@@ -28,7 +28,7 @@
 			await deleteSatellite({
 				...params,
 				satelliteId: satellite.satellite_id,
-				identity: $authStore.identity
+				identity: $authIdentity
 			})
 	);
 </script>

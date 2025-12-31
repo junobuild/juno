@@ -15,10 +15,10 @@
 		THREE_MONTHS,
 		TWO_YEARS
 	} from '$lib/constants/canister.constants';
+	import { authIdentity } from '$lib/derived/auth.derived';
 	import { updateSettings as updateSettingsServices } from '$lib/services/ic-mgmt/settings.services';
 	import { isBusy, wizardBusy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import { authStore } from '$lib/stores/auth.store';
 	import type { CanisterLogVisibility } from '$lib/types/canister';
 	import type { JunoModalDetail, JunoModalEditCanisterSettingsDetail } from '$lib/types/modal';
 	import { formatTCycles } from '$lib/utils/cycles.utils';
@@ -116,7 +116,7 @@
 				memoryAllocation: BigInt(memoryAllocation),
 				computeAllocation: BigInt(computeAllocation)
 			},
-			identity: $authStore.identity
+			identity: $authIdentity
 		});
 
 		wizardBusy.stop();

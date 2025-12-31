@@ -6,15 +6,22 @@
 	import { creditsOrZero } from '$lib/derived/console/credits.derived';
 	import {
 		devCyclesBalanceOrZero,
+		devIcpBalance,
+		devIcpBalanceOrZero,
+		missionControlCyclesBalance,
+		missionControlCyclesBalanceOrZero,
+		missionControlIcpBalance,
 		missionControlIcpBalanceOrZero
 	} from '$lib/derived/wallet/balance.derived';
 	import { icpToUsd } from '$lib/derived/wallet/exchange.derived';
-	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
+	import type { SelectedToken, SelectedWallet } from '$lib/schemas/wallet.schema';
 	import type { JunoModalCreateSegmentDetail, JunoModalDetail } from '$lib/types/modal';
 	import type { Option } from '$lib/types/utils';
 	import { formatCyclesToHTML } from '$lib/utils/cycles.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { formatICPToHTML } from '$lib/utils/icp.utils';
+	import { isTokenIcp } from '$lib/utils/token.utils';
+	import { CYCLES, ICP, ICP_TOP_UP_FEE } from '$lib/constants/token.constants';
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -44,10 +51,21 @@
 
 	let notEnoughCredits = $derived($creditsOrZero * fee < fee * E8S_PER_ICP);
 
+	// Creating a module is either in cycles with dev wallet or in ICP with mission control.
+	// We do not allow to switch token because we want to use only cycles anyway.
+	// A dev account that has ICP is "a mistake". Mission Control being able to spin module is deprecated.
+	let selectedToken = $derived<SelectedToken>(
+		selectedWallet?.type === 'mission_control' ? ICP : CYCLES
+	);
+
 	let balanceOrZero = $derived(
 		selectedWallet?.type === 'mission_control'
-			? $missionControlIcpBalanceOrZero
-			: $devCyclesBalanceOrZero
+			? isTokenIcp(selectedToken)
+				? $missionControlIcpBalanceOrZero
+				: $missionControlCyclesBalanceOrZero
+			: isTokenIcp(selectedToken)
+				? $devIcpBalanceOrZero
+				: $devCyclesBalanceOrZero
 	);
 
 	$effect(() => {
@@ -65,17 +83,15 @@
 			text={i18nFormat(priceLabel, [
 				{
 					placeholder: '{0}',
-					value:
-						selectedWallet?.type === 'mission_control'
-							? formatICPToHTML({ e8s: fee, bold: true, icpToUsd: $icpToUsd })
-							: formatCyclesToHTML({ e12s: fee, bold: true })
+					value: isTokenIcp(selectedToken)
+						? formatICPToHTML({ e8s: fee, bold: true, icpToUsd: $icpToUsd })
+						: formatCyclesToHTML({ e12s: fee, bold: true })
 				},
 				{
 					placeholder: '{1}',
-					value:
-						selectedWallet?.type === 'mission_control'
-							? formatICPToHTML({ e8s: balanceOrZero, bold: false, icpToUsd: $icpToUsd })
-							: formatCyclesToHTML({ e12s: balanceOrZero, bold: false })
+					value: isTokenIcp(selectedToken)
+						? formatICPToHTML({ e8s: balanceOrZero, bold: false, icpToUsd: $icpToUsd })
+						: formatCyclesToHTML({ e12s: balanceOrZero, bold: false })
 				}
 			])}
 		/>

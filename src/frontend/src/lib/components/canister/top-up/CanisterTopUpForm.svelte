@@ -20,6 +20,7 @@
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { formatICPToHTML } from '$lib/utils/icp.utils';
 	import { assertAndConvertAmountToToken, isTokenIcp } from '$lib/utils/token.utils';
+	import { formatCyclesToHTML } from '$lib/utils/cycles.utils';
 
 	interface Props {
 		intro?: Snippet;
@@ -80,7 +81,7 @@
 
 <p>
 	{i18nFormat(
-		selectedWallet?.type === 'mission_control'
+		isTokenIcp(selectedToken)
 			? $i18n.canisters.icp_to_cycles_description
 			: $i18n.canisters.cycles_description,
 		[
@@ -94,7 +95,9 @@
 		text={i18nFormat($i18n.canisters.top_up_info, [
 			{
 				placeholder: '{0}',
-				value: formatICPToHTML({ e8s: balance, bold: false, icpToUsd: $icpToUsd })
+				value: isTokenIcp(selectedToken)
+					? formatICPToHTML({ e8s: balance, bold: false, icpToUsd: $icpToUsd })
+					: formatCyclesToHTML({ e12s: balance, bold: true })
 			}
 		])}
 	/>

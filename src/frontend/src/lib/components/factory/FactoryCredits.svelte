@@ -3,15 +3,12 @@
 	import Html from '$lib/components/ui/Html.svelte';
 	import GetICPInfo from '$lib/components/wallet/GetICPInfo.svelte';
 	import { E8S_PER_ICP } from '$lib/constants/app.constants';
-	import { CYCLES, ICP, ICP_TOP_UP_FEE } from '$lib/constants/token.constants';
+	import { CYCLES, ICP } from '$lib/constants/token.constants';
 	import { creditsOrZero } from '$lib/derived/console/credits.derived';
 	import {
 		devCyclesBalanceOrZero,
-		devIcpBalance,
 		devIcpBalanceOrZero,
-		missionControlCyclesBalance,
 		missionControlCyclesBalanceOrZero,
-		missionControlIcpBalance,
 		missionControlIcpBalanceOrZero
 	} from '$lib/derived/wallet/balance.derived';
 	import { icpToUsd } from '$lib/derived/wallet/exchange.derived';

@@ -2,6 +2,7 @@ use crate::accounts::credits::{
     add_credits as add_credits_store, caller_is_mission_control_and_user_has_credits,
     get_credits as get_credits_store,
 };
+use crate::constants::{ORBITER_CREATION_FEE_ICP, SATELLITE_CREATION_FEE_ICP};
 use crate::fees::{get_factory_fee, set_factory_fee};
 use crate::guards::caller_is_admin_controller;
 use crate::store::stable::payments::list_icp_payments as list_icp_payments_state;
@@ -47,7 +48,8 @@ fn get_create_satellite_fee(
 
     let fee = get_factory_fee(&SegmentKind::Satellite)
         .unwrap_or_trap()
-        .fee_icp;
+        .fee_icp
+        .unwrap_or(SATELLITE_CREATION_FEE_ICP);
 
     let has_enough_credits =
         caller_is_mission_control_and_user_has_credits(&user, &caller, &Fee::ICP(fee))
@@ -68,7 +70,8 @@ fn get_create_orbiter_fee(
 
     let fee = get_factory_fee(&SegmentKind::Orbiter)
         .unwrap_or_trap()
-        .fee_icp;
+        .fee_icp
+        .unwrap_or(ORBITER_CREATION_FEE_ICP);
 
     let has_enough_credits =
         caller_is_mission_control_and_user_has_credits(&user, &caller, &Fee::ICP(fee))

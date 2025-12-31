@@ -1,4 +1,4 @@
-use crate::constants::FREEZING_THRESHOLD_ONE_YEAR;
+use crate::constants::{FREEZING_THRESHOLD_ONE_YEAR, SATELLITE_CREATION_FEE_ICP};
 use crate::factory::canister::create_canister;
 use crate::factory::types::{CanisterCreator, FeeKind};
 use crate::factory::utils::controllers::remove_console_controller;
@@ -44,7 +44,7 @@ fn get_fee(fee_kind: FeeKind) -> Result<Fee, String> {
 
     let value = match fee_kind {
         FeeKind::Cycles => Fee::Cycles(fee.fee_cycles),
-        FeeKind::ICP => Fee::ICP(fee.fee_icp),
+        FeeKind::ICP => Fee::ICP(fee.fee_icp.unwrap_or(SATELLITE_CREATION_FEE_ICP)),
     };
 
     Ok(value)

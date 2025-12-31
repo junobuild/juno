@@ -3,7 +3,7 @@ import { icpTransfer as icpTransferWithDev } from '$lib/api/icp-ledger.api';
 import {
 	CMC_CANISTER_ID,
 	ICP_TRANSACTION_FEE,
-	TOP_UP_NETWORK_FEES
+	ICP_TOP_UP_FEE
 } from '$lib/constants/app.constants';
 import { MEMO_CANISTER_TOP_UP } from '$lib/constants/wallet.constants';
 import { i18n } from '$lib/stores/app/i18n.store';
@@ -74,7 +74,7 @@ export const sendIcpToCmc = async ({
 	});
 
 	// We need to hold back 1 transaction fee for the 'send' and also 1 for the 'notify'
-	const sendAmount = tokenAmount.toE8s() - TOP_UP_NETWORK_FEES;
+	const sendAmount = tokenAmount.toE8s() - ICP_TOP_UP_FEE;
 
 	const request: TransferRequest = {
 		to,

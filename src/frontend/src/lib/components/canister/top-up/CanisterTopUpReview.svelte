@@ -7,7 +7,7 @@
 	import Value from '$lib/components/ui/Value.svelte';
 	import WalletSendFrom from '$lib/components/wallet/WalletSendFrom.svelte';
 	import SendTokensAmount from '$lib/components/wallet/tokens/SendTokensAmount.svelte';
-	import { TOP_UP_NETWORK_FEES } from '$lib/constants/app.constants';
+	import { ICP_TOP_UP_FEE } from '$lib/constants/app.constants';
 	import { ICP_TOKEN } from '$lib/constants/wallet.constants';
 	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { i18n } from '$lib/stores/app/i18n.store';
@@ -72,7 +72,7 @@
 					{/snippet}
 
 					<p>
-						<span>{formatICP(TOP_UP_NETWORK_FEES)} <small>ICP</small></span>
+						<span>{formatICP(ICP_TOP_UP_FEE)} <small>ICP</small></span>
 					</p>
 				</Value>
 

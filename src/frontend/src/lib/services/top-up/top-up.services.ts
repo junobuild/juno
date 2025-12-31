@@ -1,5 +1,5 @@
 import { topUp as topUpApiWithMissionControl } from '$lib/api/mission-control.api';
-import { TOP_UP_NETWORK_FEES } from '$lib/constants/app.constants';
+import { ICP_TOP_UP_FEE } from '$lib/constants/app.constants';
 import type { SelectedWallet } from '$lib/schemas/wallet.schema';
 import { execute } from '$lib/services/_progress.services';
 import { topUpWithCmc } from '$lib/services/top-up/_top-up.cmc.services';
@@ -49,7 +49,7 @@ export const topUp = async ({
 		balance,
 		amount: icp,
 		token: ICPToken,
-		fee: TOP_UP_NETWORK_FEES
+		fee: ICP_TOP_UP_FEE
 	});
 
 	if (!valid || isNullish(tokenAmount)) {

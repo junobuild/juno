@@ -120,6 +120,7 @@ interface I18nCanisters {
 	top_up_preparing: string;
 	review_and_confirm_top_up: string;
 	cycles_description: string;
+	icp_to_cycles_description: string;
 	top_up_in_progress: string;
 	delete_in_progress: string;
 	upgrade_preparing: string;

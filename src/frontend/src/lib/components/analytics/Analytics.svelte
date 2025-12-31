@@ -14,6 +14,7 @@
 	import NoAnalytics from '$lib/components/analytics/NoAnalytics.svelte';
 	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
 	import Warning from '$lib/components/ui/Warning.svelte';
+	import { authIdentity } from '$lib/derived/auth.derived';
 	import { orbiterFeatures } from '$lib/derived/orbiter/orbiter-satellites.derived';
 	import { orbitersStore, orbiterStore } from '$lib/derived/orbiter.derived';
 	import { satelliteStore } from '$lib/derived/satellite/satellite.derived';
@@ -23,7 +24,6 @@
 	import { loadOrbiterConfigs } from '$lib/services/orbiter/orbiters.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
-	import { authStore } from '$lib/stores/auth.store';
 	import { analyticsFiltersStore } from '$lib/stores/orbiter/analytics-filters.store';
 	import { versionStore } from '$lib/stores/version.store';
 	import type {
@@ -59,7 +59,7 @@
 			const params: PageViewsParams = {
 				satelliteId: $satelliteStore?.satellite_id,
 				orbiterId: $orbiterStore.orbiter_id,
-				identity: $authStore.identity,
+				identity: $authIdentity,
 				from,
 				...restPeriod
 			};

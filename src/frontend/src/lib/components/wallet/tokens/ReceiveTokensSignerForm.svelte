@@ -7,9 +7,9 @@
 	import Input from '$lib/components/ui/Input.svelte';
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
+	import { authIdentity } from '$lib/derived/auth.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
-	import { authStore } from '$lib/stores/auth.store';
 	import { formatICP } from '$lib/utils/icp.utils';
 
 	interface Props {
@@ -30,7 +30,7 @@
 				? base64ToUint8Array(account.subaccount)
 				: undefined;
 
-			balance = await getBalance({ account: { owner, subaccount }, identity: $authStore.identity });
+			balance = await getBalance({ account: { owner, subaccount }, identity: $authIdentity });
 		} catch (err: unknown) {
 			toasts.error({
 				text: $i18n.errors.wallet_load_balance,

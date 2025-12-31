@@ -3,8 +3,8 @@
 	import { deleteOrbiter } from '$lib/api/mission-control.api';
 	import CanisterDeleteWizard from '$lib/components/canister/lifecycle/CanisterDeleteWizard.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
+	import { authIdentity } from '$lib/derived/auth.derived';
 	import { orbiterStore } from '$lib/derived/orbiter.derived';
-	import { authStore } from '$lib/stores/auth.store';
 	import type { MissionControlId } from '$lib/types/mission-control';
 	import type { JunoModalCycles, JunoModalDetail } from '$lib/types/modal';
 
@@ -28,7 +28,7 @@
 				// We know for sure that the orbiter is defined at this point.
 				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 				orbiterId: $orbiterStore!.orbiter_id,
-				identity: $authStore.identity
+				identity: $authIdentity
 			})
 	);
 </script>

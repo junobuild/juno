@@ -8,10 +8,10 @@
 	import ControllerInfo from '$lib/components/controllers/ControllerInfo.svelte';
 	import ButtonTableAction from '$lib/components/ui/ButtonTableAction.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
+	import { authIdentity } from '$lib/derived/auth.derived';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
-	import { authStore } from '$lib/stores/auth.store';
 	import type { CanisterSegmentWithLabel } from '$lib/types/canister';
 	import type { SetControllerParams } from '$lib/types/controllers';
 	import type { MissionControlId } from '$lib/types/mission-control';
@@ -63,8 +63,7 @@
 	const isMissionControl = (controllerId: Principal): boolean =>
 		nonNullish($missionControlId) && $missionControlId.toText() === controllerId.toText();
 	const isDev = (controllerId: Principal): boolean =>
-		nonNullish($authStore.identity) &&
-		$authStore.identity.getPrincipal().toText() === controllerId.toText();
+		nonNullish($authIdentity) && $authIdentity.getPrincipal().toText() === controllerId.toText();
 </script>
 
 <div class="table-container">

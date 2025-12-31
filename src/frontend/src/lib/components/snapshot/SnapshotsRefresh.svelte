@@ -1,10 +1,10 @@
 <script lang="ts">
 	import type { Principal } from '@icp-sdk/core/principal';
 	import IconAutoRenew from '$lib/components/icons/IconAutoRenew.svelte';
+	import { authIdentity } from '$lib/derived/auth.derived';
 	import { reloadSnapshots } from '$lib/services/ic-mgmt/snapshots.services';
 	import { busy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import { authStore } from '$lib/stores/auth.store';
 
 	interface Props {
 		canisterId: Principal;
@@ -17,7 +17,7 @@
 
 		await reloadSnapshots({
 			canisterId,
-			identity: $authStore.identity
+			identity: $authIdentity
 		});
 
 		busy.stop();

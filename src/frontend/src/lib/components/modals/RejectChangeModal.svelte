@@ -4,9 +4,9 @@
 	import ConfirmRejectChange from '$lib/components/changes/wizard/ConfirmRejectChange.svelte';
 	import ProgressRejectChange from '$lib/components/changes/wizard/ProgressRejectChange.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
+	import { authIdentity } from '$lib/derived/auth.derived';
 	import { rejectProposal } from '$lib/services/satellite/proposals/proposals.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import { authStore } from '$lib/stores/auth.store';
 	import type { JunoModalChangeDetail, JunoModalDetail } from '$lib/types/modal';
 
 	interface Props {
@@ -43,7 +43,7 @@
 		await rejectProposal({
 			satelliteId,
 			proposal: proposalRecord,
-			identity: $authStore.identity,
+			identity: $authIdentity,
 			clearProposalAssets,
 			nextSteps: (next) => (step = next),
 			onProgress

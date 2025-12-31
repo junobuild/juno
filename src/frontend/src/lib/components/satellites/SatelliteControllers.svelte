@@ -7,8 +7,8 @@
 	} from '$lib/api/mission-control.api';
 	import { listControllers } from '$lib/api/satellites.api';
 	import Controllers from '$lib/components/controllers/Controllers.svelte';
+	import { authIdentity } from '$lib/derived/auth.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import { authStore } from '$lib/stores/auth.store';
 	import type { SetControllerParams } from '$lib/types/controllers';
 	import type { MissionControlId } from '$lib/types/mission-control';
 	import type { Satellite } from '$lib/types/satellite';
@@ -20,7 +20,7 @@
 	let { satellite }: Props = $props();
 
 	const list = (): Promise<[Principal, MissionControlDid.Controller][]> =>
-		listControllers({ satelliteId: satellite.satellite_id, identity: $authStore.identity });
+		listControllers({ satelliteId: satellite.satellite_id, identity: $authIdentity });
 
 	const remove = (params: {
 		missionControlId: MissionControlId;
@@ -29,7 +29,7 @@
 		deleteSatellitesController({
 			...params,
 			satelliteIds: [satellite.satellite_id],
-			identity: $authStore.identity
+			identity: $authIdentity
 		});
 
 	const add = (
@@ -40,7 +40,7 @@
 		setSatellitesController({
 			...params,
 			satelliteIds: [satellite.satellite_id],
-			identity: $authStore.identity
+			identity: $authIdentity
 		});
 </script>
 

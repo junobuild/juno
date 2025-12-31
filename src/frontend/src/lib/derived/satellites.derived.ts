@@ -24,6 +24,16 @@ export const satellitesStore = derived(
 	}
 );
 
+export const satellitesLoaded = derived(
+	[satellitesStore],
+	([$satellitesStore]) => $satellitesStore !== undefined
+);
+
+export const satellitesNotLoaded = derived(
+	[satellitesLoaded],
+	([$satellitesLoaded]) => !$satellitesLoaded
+);
+
 export const sortedSatellites = derived([satellitesStore], ([$satellitesStore]) =>
 	($satellitesStore ?? []).sort((a, b) => satelliteName(a).localeCompare(satelliteName(b)))
 );

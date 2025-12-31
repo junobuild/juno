@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { debounce } from '@dfinity/utils';
 	import { onDestroy, onMount, type Snippet } from 'svelte';
-	import { mctrlSatellitesNotLoaded } from '$lib/derived/mission-control/mission-control-satellites.derived';
 	import { orbiterNotLoaded } from '$lib/derived/orbiter.derived';
+	import { satellitesNotLoaded } from '$lib/derived/satellites.derived';
 	import { RegistryWorker } from '$lib/services/workers/worker.registry.services';
 	import type { CanisterSegment } from '$lib/types/canister';
 
@@ -25,7 +25,7 @@
 	);
 
 	$effect(() => {
-		if ($mctrlSatellitesNotLoaded) {
+		if ($satellitesNotLoaded) {
 			return;
 		}
 

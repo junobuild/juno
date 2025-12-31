@@ -18,7 +18,8 @@ export const testIds = {
 	},
 	navbar: {
 		openWallet: 'btn-open-wallet',
-		getIcp: 'btn-get-icp'
+		getIcp: 'btn-get-icp',
+		getCycles: 'btn-get-cycles'
 	},
 	createAnalytics: {
 		navLink: 'link-analytics-dashboard',

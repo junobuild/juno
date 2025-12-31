@@ -4,7 +4,7 @@
 	import { testIds } from '$lib/constants/test-ids.constants';
 	import { isDev } from '$lib/env/app.env';
 	import { emulatorLedgerTransfer } from '$lib/rest/emulator.rest';
-	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
+	import type { LedgerIdText, SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
 	import { emit } from '$lib/utils/events.utils';
@@ -18,25 +18,36 @@
 
 	let { walletId } = $derived(selectedWallet);
 
-	let { ledgerId, amount } = $derived(
-		selectedWallet.type === 'mission_control'
-			? { ledgerId: ICP_LEDGER_CANISTER_ID, amount: 5_500_010_000n }
-			: { ledgerId: CYCLES_LEDGER_CANISTER_ID, amount: 330_010_000_000_000n }
-	);
-
 	let confetti = $state(false);
 
-	const onClick = async () => {
+	const getCycles = async () => {
+		await transferWithEmulator({
+			ledgerId: CYCLES_LEDGER_CANISTER_ID,
+			amount: 330_010_000_000_000n
+		});
+	};
+
+	const getIcp = async () => {
+		await transferWithEmulator({ ledgerId: ICP_LEDGER_CANISTER_ID, amount: 5_500_010_000n });
+	};
+
+	const transferWithEmulator = async ({
+		ledgerId,
+		amount
+	}: {
+		ledgerId: LedgerIdText;
+		amount: bigint;
+	}) => {
 		try {
 			await emulatorLedgerTransfer({ walletId, ledgerId, amount });
 
 			emit({ message: 'junoRestartWallet' });
-
+		} catch (err: unknown) {
+			toasts.error({ text: $i18n.emulator.error_getting_icp, detail: err });
+		} finally {
 			confetti = true;
 
 			setTimeout(() => (confetti = false), 5000);
-		} catch (err: unknown) {
-			toasts.error({ text: $i18n.emulator.error_getting_icp, detail: err });
 		}
 	};
 </script>
@@ -46,9 +57,9 @@
 		<ConfettiSpread />
 	{/if}
 
-	<button onclick={onClick} {...testId(testIds.navbar.getIcp)}
-		>{selectedWallet.type === 'mission_control'
-			? $i18n.emulator.get_icp
-			: $i18n.emulator.get_cycles}</button
+	<button onclick={getCycles} {...testId(testIds.navbar.getCycles)}
+		>{$i18n.emulator.get_cycles}</button
 	>
+
+	<button onclick={getIcp} {...testId(testIds.navbar.getIcp)}>{$i18n.emulator.get_icp}</button>
 {/if}

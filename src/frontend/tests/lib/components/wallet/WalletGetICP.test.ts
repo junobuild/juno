@@ -1,4 +1,4 @@
-import WalletGetICP from '$lib/components/wallet/WalletGetICP.svelte';
+import WalletGetICP from '$lib/components/wallet/WalletGetToken.svelte';
 import { render } from '@testing-library/svelte';
 
 import { mockWalletId } from '../../../mocks/modules.mock';

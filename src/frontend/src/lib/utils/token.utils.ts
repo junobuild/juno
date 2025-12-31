@@ -1,4 +1,4 @@
-import { CyclesToken } from '$lib/constants/wallet.constants';
+import { CyclesToken } from '$lib/constants/token.constants';
 import type { SelectedToken } from '$lib/schemas/wallet.schema';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';

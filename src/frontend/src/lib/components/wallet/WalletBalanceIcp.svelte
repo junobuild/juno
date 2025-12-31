@@ -4,7 +4,7 @@
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import WalletBalanceUsd from '$lib/components/wallet/WalletBalanceUsd.svelte';
-	import { ICP_TOKEN } from '$lib/constants/wallet.constants';
+	import { ICP } from '$lib/constants/token.constants';
 	import {
 		exchangePricesNotLoaded,
 		icpToUsd,
@@ -37,7 +37,7 @@
 		{:else}
 			<span class="main" in:fade>
 				{#if nonNullish($icpToUsd) && $icpToUsdDefined}
-					<WalletBalanceUsd {balance} selectedToken={ICP_TOKEN} />
+					<WalletBalanceUsd {balance} selectedToken={ICP} />
 				{:else}
 					{@render icpBalance()}
 				{/if}

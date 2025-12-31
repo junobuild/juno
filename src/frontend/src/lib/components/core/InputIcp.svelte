@@ -4,7 +4,7 @@
 	import Input from '$lib/components/ui/Input.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import SendTokensMax from '$lib/components/wallet/tokens/SendTokensMax.svelte';
-	import { ICP_TOKEN } from '$lib/constants/wallet.constants';
+	import { ICP } from '$lib/constants/token.constants';
 	import { icpToUsd } from '$lib/derived/wallet/exchange.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { formatICPToUsd } from '$lib/utils/icp.utils';
@@ -55,12 +55,7 @@
 			bind:value={amount}
 		>
 			{#snippet end()}
-				<SendTokensMax
-					{balance}
-					{fee}
-					onmax={(value) => (amount = value)}
-					selectedToken={ICP_TOKEN}
-				/>
+				<SendTokensMax {balance} {fee} onmax={(value) => (amount = value)} selectedToken={ICP} />
 			{/snippet}
 		</Input>
 	</Value>

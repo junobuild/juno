@@ -1,6 +1,6 @@
 <script lang="ts">
-    import {CYCLES_TOP_UP_FEE} from '$lib/constants/app.constants.js';
 	import InputCycles from '$lib/components/core/InputCycles.svelte';
+	import { CYCLES_TOP_UP_FEE } from '$lib/constants/token.constants';
 
 	interface Props {
 		balance: bigint;

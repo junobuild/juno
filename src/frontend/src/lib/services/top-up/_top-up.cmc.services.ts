@@ -1,10 +1,7 @@
 import { notifyTopUp } from '$lib/api/cmc.api';
 import { icpTransfer as icpTransferWithDev } from '$lib/api/icp-ledger.api';
-import {
-	CMC_CANISTER_ID,
-	ICP_TRANSACTION_FEE,
-	ICP_TOP_UP_FEE
-} from '$lib/constants/app.constants';
+import { CMC_CANISTER_ID } from '$lib/constants/app.constants';
+import { ICP_TOP_UP_FEE, ICP_TRANSACTION_FEE } from '$lib/constants/token.constants';
 import { MEMO_CANISTER_TOP_UP } from '$lib/constants/wallet.constants';
 import { i18n } from '$lib/stores/app/i18n.store';
 import type { OptionIdentity } from '$lib/types/itentity';

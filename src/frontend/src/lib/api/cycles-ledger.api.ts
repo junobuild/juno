@@ -1,8 +1,7 @@
 import { getAgent } from '$lib/api/_agent/_agent.api';
 import type { OptionIdentity } from '$lib/types/itentity';
 import { assertNonNullish, nowInBigIntNanoSeconds } from '@dfinity/utils';
-import type { WithdrawParams, WithdrawResult } from '@icp-sdk/canisters/ledger/cycles';
-import { CyclesLedgerCanister } from '@icp-sdk/canisters/ledger/cycles';
+import { type WithdrawParams, type WithdrawResult , CyclesLedgerCanister } from '@icp-sdk/canisters/ledger/cycles';
 import type { Principal } from '@icp-sdk/core/principal';
 
 export const withdrawCycles = async ({

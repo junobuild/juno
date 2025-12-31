@@ -1,6 +1,9 @@
 <script lang="ts">
 	import { isNullish, nonNullish } from '@dfinity/utils';
-    import {missionControlId, missionControlIdNotLoaded} from '$lib/derived/console/account.mission-control.derived';
+	import {
+		missionControlId,
+		missionControlIdNotLoaded
+	} from '$lib/derived/console/account.mission-control.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
 	import type { JunoModalWithSatellite } from '$lib/types/modal';
@@ -30,7 +33,7 @@
 			detail: {
 				type,
 				detail: {
-					...(nonNullish(detail) && detail),
+					...(nonNullish(detail) && detail)
 				}
 			}
 		});

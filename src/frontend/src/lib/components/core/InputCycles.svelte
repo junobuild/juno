@@ -4,7 +4,7 @@
 	import Input from '$lib/components/ui/Input.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import SendTokensMax from '$lib/components/wallet/tokens/SendTokensMax.svelte';
-	import { CYCLES_TOKEN, CyclesToken } from '$lib/constants/wallet.constants';
+	import { CYCLES, CyclesToken } from '$lib/constants/token.constants';
 	import { icpToUsd } from '$lib/derived/wallet/exchange.derived';
 	import { icpToCyclesRate } from '$lib/derived/wallet/rate.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
@@ -64,12 +64,7 @@
 			bind:value={amount}
 		>
 			{#snippet end()}
-				<SendTokensMax
-					{balance}
-					{fee}
-					onmax={(value) => (amount = value)}
-					selectedToken={CYCLES_TOKEN}
-				/>
+				<SendTokensMax {balance} {fee} onmax={(value) => (amount = value)} selectedToken={CYCLES} />
 			{/snippet}
 		</Input>
 	</Value>

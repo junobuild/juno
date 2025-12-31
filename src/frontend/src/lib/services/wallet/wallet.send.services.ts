@@ -8,8 +8,8 @@ import {
 	icpTransfer as icpTransferWithMissionControl,
 	icrcTransfer as icrcTransferWithMissionControl
 } from '$lib/api/mission-control.api';
-import { ICP_LEDGER_CANISTER_ID, ICP_TRANSACTION_FEE } from '$lib/constants/app.constants';
-import { CYCLES_TOKEN } from '$lib/constants/wallet.constants';
+import { ICP_LEDGER_CANISTER_ID } from '$lib/constants/app.constants';
+import { CYCLES, ICP_TRANSACTION_FEE } from '$lib/constants/token.constants';
 import type { SelectedToken, SelectedWallet } from '$lib/schemas/wallet.schema';
 import { execute } from '$lib/services/_progress.services';
 import { i18n } from '$lib/stores/app/i18n.store';
@@ -291,12 +291,12 @@ const sendCyclesWithDev = async ({
 			subaccount: toNullable(subaccount)
 		},
 		amount: token.toUlps(),
-		fee: CYCLES_TOKEN.fee,
+		fee: CYCLES.fee,
 		created_at_time: nowInBigIntNanoSeconds()
 	};
 
 	await icrcTransferWithDev({
-		ledgerId: Principal.fromText(CYCLES_TOKEN.ledgerId),
+		ledgerId: Principal.fromText(CYCLES.ledgerId),
 		request,
 		...rest
 	});

@@ -2,13 +2,17 @@
 	import { ICPToken, isEmptyString, isNullish, nonNullish, notEmptyString } from '@dfinity/utils';
 	import { onMount, type Snippet } from 'svelte';
 	import { getIcpToCyclesConversionRate } from '$lib/api/cmc.api';
+	import CanisterTopUpFormCycles from '$lib/components/canister/top-up/CanisterTopUpFormCycles.svelte';
+	import CanisterTopUpFormIcp from '$lib/components/canister/top-up/CanisterTopUpFormIcp.svelte';
+	import InputCycles from '$lib/components/core/InputCycles.svelte';
 	import InputIcp from '$lib/components/core/InputIcp.svelte';
 	import GridArrow from '$lib/components/ui/GridArrow.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import GetICPInfo from '$lib/components/wallet/GetICPInfo.svelte';
 	import WalletPicker from '$lib/components/wallet/WalletPicker.svelte';
-	import { ICP_TOP_UP_FEE } from '$lib/constants/app.constants';
+	import WalletTokenPicker from '$lib/components/wallet/WalletTokenPicker.svelte';
+	import { CYCLES, ICP_TOP_UP_FEE } from '$lib/constants/token.constants';
 	import {
 		devCyclesBalanceOrZero,
 		missionControlIcpBalanceOrZero
@@ -21,11 +25,6 @@
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { formatICPToHTML } from '$lib/utils/icp.utils';
 	import { assertAndConvertAmountToToken, isTokenIcp } from '$lib/utils/token.utils';
-	import CanisterTopUpFormIcp from '$lib/components/canister/top-up/CanisterTopUpFormIcp.svelte';
-	import WalletTokenPicker from '$lib/components/wallet/WalletTokenPicker.svelte';
-	import { CYCLES_TOKEN } from '$lib/constants/wallet.constants';
-	import InputCycles from '$lib/components/core/InputCycles.svelte';
-	import CanisterTopUpFormCycles from '$lib/components/canister/top-up/CanisterTopUpFormCycles.svelte';
 
 	interface Props {
 		intro?: Snippet;
@@ -44,7 +43,7 @@
 		intro,
 		segment,
 		selectedWallet = $bindable(undefined),
-		selectedToken = $bindable(CYCLES_TOKEN),
+		selectedToken = $bindable(CYCLES),
 		balance = $bindable(0n),
 		onclose,
 		amount = $bindable(undefined),

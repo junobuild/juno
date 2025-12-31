@@ -11,7 +11,7 @@
 	import Transactions from '$lib/components/wallet/transactions/Transactions.svelte';
 	import TransactionsExport from '$lib/components/wallet/transactions/TransactionsExport.svelte';
 	import { PAGINATION } from '$lib/constants/app.constants';
-	import { CYCLES_TOKEN } from '$lib/constants/wallet.constants';
+	import { CYCLES } from '$lib/constants/token.constants';
 	import { authSignedIn, authSignedOut } from '$lib/derived/auth.derived';
 	import { transactions } from '$lib/derived/wallet/transactions.derived';
 	import type { SelectedToken, SelectedWallet } from '$lib/schemas/wallet.schema';
@@ -22,7 +22,7 @@
 
 	let selectedWallet = $state<SelectedWallet | undefined>(undefined);
 
-	let selectedToken = $state<SelectedToken>(CYCLES_TOKEN);
+	let selectedToken = $state<SelectedToken>(CYCLES);
 
 	let walletIdText = $derived(
 		nonNullish(selectedWallet) ? encodeIcrcAccount(selectedWallet.walletId) : undefined

@@ -13,7 +13,7 @@
 	import WalletTotal from '$lib/components/wallet/WalletTotal.svelte';
 	import ReceiveTokens from '$lib/components/wallet/tokens/ReceiveTokens.svelte';
 	import { testIds } from '$lib/constants/test-ids.constants';
-	import { CYCLES_TOKEN } from '$lib/constants/wallet.constants';
+	import { CYCLES } from '$lib/constants/token.constants';
 	import type { SelectedToken, SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { i18n } from '$lib/stores/app/i18n.store';
 
@@ -30,7 +30,7 @@
 	};
 
 	let selectedWallet = $state<SelectedWallet | undefined>(undefined);
-	let selectedToken = $state<SelectedToken>(CYCLES_TOKEN);
+	let selectedToken = $state<SelectedToken>(CYCLES);
 </script>
 
 <ButtonIcon {onclick} testId={testIds.navbar.openWallet} bind:button>

@@ -1,15 +1,5 @@
-import {
-	CYCLES_INDEX_CANISTER_ID,
-	CYCLES_LEDGER_CANISTER_ID,
-	CYCLES_TRANSACTION_FEE,
-	ICP_INDEX_CANISTER_ID,
-	ICP_LEDGER_CANISTER_ID,
-	ICP_TRANSACTION_FEE
-} from '$lib/constants/app.constants';
 import { isDev } from '$lib/env/app.env';
-import type { SelectedToken } from '$lib/schemas/wallet.schema';
 import type { RelyingPartyOptions } from '@dfinity/oisy-wallet-signer';
-import { ICPToken, type Token } from '@dfinity/utils';
 
 export const MEMO_CANISTER_CREATE = BigInt(0x41455243); // == 'CREA'
 
@@ -37,23 +27,3 @@ export const OISY_WALLET_OPTIONS: RelyingPartyOptions = isDev()
 // (however)
 // ICP Index has not been upgraded yet so right know for ICP is variable between 0 and 2 seconds. Leo has changed the ckBTC and ckETH to run every second and we want to change the ICP one too eventually. We just didn't get to work on it yet
 export const INDEX_RELOAD_DELAY = 2000;
-
-export const CyclesToken: Token = {
-	symbol: 'TCYCLES',
-	name: 'Trillion Cycles',
-	decimals: 12
-};
-
-export const CYCLES_TOKEN: SelectedToken = {
-	token: CyclesToken,
-	fee: CYCLES_TRANSACTION_FEE,
-	ledgerId: CYCLES_LEDGER_CANISTER_ID,
-	indexId: CYCLES_INDEX_CANISTER_ID
-};
-
-export const ICP_TOKEN: SelectedToken = {
-	token: ICPToken,
-	fee: ICP_TRANSACTION_FEE,
-	ledgerId: ICP_LEDGER_CANISTER_ID,
-	indexId: ICP_INDEX_CANISTER_ID
-};

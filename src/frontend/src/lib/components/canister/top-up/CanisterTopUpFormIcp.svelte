@@ -1,12 +1,12 @@
 <script lang="ts">
-	import { ICP_TOP_UP_FEE } from '$lib/constants/app.constants.js';
 	import { nonNullish, notEmptyString } from '@dfinity/utils';
-	import GridArrow from '$lib/components/ui/GridArrow.svelte';
-	import InputIcp from '$lib/components/core/InputIcp.svelte';
-	import Value from '$lib/components/ui/Value.svelte';
 	import { onMount } from 'svelte';
-	import { i18n } from '$lib/stores/app/i18n.store';
 	import { getIcpToCyclesConversionRate } from '$lib/api/cmc.api';
+	import InputIcp from '$lib/components/core/InputIcp.svelte';
+	import GridArrow from '$lib/components/ui/GridArrow.svelte';
+	import Value from '$lib/components/ui/Value.svelte';
+	import { ICP_TOP_UP_FEE } from '$lib/constants/token.constants';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import { formatTCycles, icpToCycles } from '$lib/utils/cycles.utils';
 
 	interface Props {

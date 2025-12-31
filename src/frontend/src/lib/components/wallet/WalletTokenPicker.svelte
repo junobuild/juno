@@ -3,7 +3,7 @@
 	import { quintOut } from 'svelte/easing';
 	import { slide } from 'svelte/transition';
 	import Value from '$lib/components/ui/Value.svelte';
-	import { CYCLES_TOKEN, ICP_TOKEN } from '$lib/constants/wallet.constants';
+	import { CYCLES, ICP } from '$lib/constants/token.constants';
 	import { devHasIcp, missionControlHasIcp } from '$lib/derived/wallet/balance.derived';
 	import type { SelectedToken, SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { i18n } from '$lib/stores/app/i18n.store';
@@ -13,7 +13,7 @@
 		selectedToken: SelectedToken;
 	}
 
-	let { selectedWallet, selectedToken = $bindable(CYCLES_TOKEN) }: Props = $props();
+	let { selectedWallet, selectedToken = $bindable(CYCLES) }: Props = $props();
 
 	let resourceType = $state<'cycles' | 'icp'>('cycles');
 
@@ -27,7 +27,7 @@
 		resourceType;
 
 		untrack(() => {
-			selectedToken = resourceType === 'icp' ? ICP_TOKEN : CYCLES_TOKEN;
+			selectedToken = resourceType === 'icp' ? ICP : CYCLES;
 		});
 	});
 

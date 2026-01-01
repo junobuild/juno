@@ -1,10 +1,11 @@
 <script lang="ts">
-	import { isNullish, nonNullish, notEmptyString } from '@dfinity/utils';
+	import { nonNullish, notEmptyString } from '@dfinity/utils';
 	import IconEdit from '$lib/components/icons/IconEdit.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
+	import { authIdentity } from '$lib/derived/auth.derived';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
-	import { setSatelliteMetadata } from '$lib/services/mission-control/mission-control.services';
+	import { setSatelliteMetadata } from '$lib/services/metadata.services';
 	import { busy, isBusy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
@@ -46,17 +47,11 @@
 			return;
 		}
 
-		if (isNullish($missionControlId)) {
-			toasts.error({
-				text: $i18n.errors.no_mission_control
-			});
-			return;
-		}
-
 		busy.start();
 
 		const { success } = await setSatelliteMetadata({
 			missionControlId: $missionControlId,
+			identity: $authIdentity,
 			satellite,
 			metadata: {
 				name: satName,

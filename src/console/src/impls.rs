@@ -14,7 +14,7 @@ use junobuild_shared::rate::types::RateTokens;
 use junobuild_shared::serializers::{
     deserialize_from_bytes, serialize_into_bytes, serialize_to_bytes,
 };
-use junobuild_shared::types::state::{Metadata, SegmentId, UserId};
+use junobuild_shared::types::state::{Metadata, SegmentId, Timestamp, UserId};
 use std::borrow::Cow;
 use std::collections::HashMap;
 
@@ -165,6 +165,16 @@ impl Segment {
             metadata: init_metadata(name),
             created_at: now,
             updated_at: now,
+        }
+    }
+
+    pub fn with_metadata(&self, metadata: &Metadata) -> Self {
+        let updated_at: Timestamp = time();
+
+        Self {
+            metadata: metadata.clone(),
+            updated_at,
+            ..self.clone()
         }
     }
 }

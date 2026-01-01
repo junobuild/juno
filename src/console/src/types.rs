@@ -168,7 +168,7 @@ pub mod interface {
     use junobuild_auth::state::types::config::AuthenticationConfig;
     use junobuild_cdn::proposals::ProposalId;
     use junobuild_shared::ledger::types::cycles::CyclesTokens;
-    use junobuild_shared::types::state::SegmentId;
+    use junobuild_shared::types::state::{Metadata, SegmentId};
     use junobuild_storage::types::config::StorageConfig;
     use serde::{Deserialize, Serialize};
 
@@ -211,6 +211,13 @@ pub mod interface {
     pub struct ListSegmentsArgs {
         pub segment_type: Option<SegmentType>,
         pub segment_id: Option<SegmentId>,
+    }
+
+    #[derive(CandidType, Deserialize, Clone)]
+    pub struct SetSegmentMetadataArgs {
+        pub segment_type: SegmentType,
+        pub segment_id: SegmentId,
+        pub metadata: Metadata,
     }
 
     #[derive(CandidType, Deserialize)]

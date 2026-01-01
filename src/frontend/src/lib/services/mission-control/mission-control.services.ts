@@ -6,7 +6,6 @@ import {
 	setMissionControlController,
 	setOrbiter,
 	setSatellite,
-	setSatelliteMetadata as setSatelliteMetadataApi,
 	setSatellitesController,
 	unsetOrbiter,
 	unsetSatellite
@@ -16,22 +15,12 @@ import {
 	addSatellitesController003,
 	setMissionControlController004
 } from '$lib/api/mission-control.deprecated.api';
-import {
-	METADATA_KEY_EMAIL,
-	METADATA_KEY_ENVIRONMENT,
-	METADATA_KEY_NAME,
-	METADATA_KEY_TAGS
-} from '$lib/constants/metadata.constants';
+import { METADATA_KEY_EMAIL } from '$lib/constants/metadata.constants';
 import {
 	MISSION_CONTROL_v0_0_14,
 	MISSION_CONTROL_v0_0_3,
 	MISSION_CONTROL_v0_0_5
 } from '$lib/constants/version.constants';
-import { mctrlSatellitesStore } from '$lib/derived/mission-control/mission-control-satellites.derived';
-import {
-	SatelliteUiMetadataSchema,
-	SatelliteUiMetadataSerializer
-} from '$lib/schemas/satellite.schema';
 import { loadDataStore } from '$lib/services/_loader.services';
 import { loadSatellites } from '$lib/services/mission-control/mission-control.satellites.services';
 import { mapSatellitesForControllersFn } from '$lib/services/satellite/satellite.controller.services';
@@ -43,23 +32,20 @@ import {
 	missionControlUserUncertifiedStore
 } from '$lib/stores/mission-control/mission-control.store';
 import { orbitersUncertifiedStore } from '$lib/stores/mission-control/orbiter.store';
-import { satellitesUncertifiedStore } from '$lib/stores/mission-control/satellites.store';
 import { versionStore } from '$lib/stores/version.store';
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { Metadata } from '$lib/types/metadata';
 import type { MissionControlId } from '$lib/types/mission-control';
-import type { SatelliteUiMetadata } from '$lib/types/satellite';
 import type { Option } from '$lib/types/utils';
 import { isNotValidEmail } from '$lib/utils/email.utils';
 import { container } from '$lib/utils/juno.utils';
-import { fromNullable, isEmptyString, isNullish, notEmptyString } from '@dfinity/utils';
+import { fromNullable, isEmptyString, isNullish } from '@dfinity/utils';
 import type { Identity } from '@icp-sdk/core/agent';
 import type { Principal } from '@icp-sdk/core/principal';
 import { missionControlVersion } from '@junobuild/admin';
 import { compare } from 'semver';
 import { get } from 'svelte/store';
-import * as z from 'zod';
 
 export const setMissionControlControllerForVersion = async ({
 	missionControlId,
@@ -139,73 +125,6 @@ export const setSatellitesControllerForVersion = async ({
 				]
 			: [])
 	]);
-};
-
-export const setSatelliteMetadata = async ({
-	missionControlId,
-	satellite: { satellite_id: satelliteId, metadata: currentMetadata },
-	metadata
-}: {
-	missionControlId: MissionControlId;
-	satellite: MissionControlDid.Satellite;
-	metadata: SatelliteUiMetadata;
-}): Promise<{ success: boolean }> => {
-	const { error, success, data } = SatelliteUiMetadataSchema.safeParse(metadata);
-
-	if (!success) {
-		toasts.error({
-			text: get(i18n).errors.invalid_metadata,
-			detail: z.prettifyError(error)
-		});
-		return { success: false };
-	}
-
-	const { name: satelliteName, environment: satelliteEnv, tags: satelliteTags } = data;
-
-	try {
-		const updateData = new Map<string, string>(currentMetadata);
-		updateData.set(METADATA_KEY_NAME, satelliteName);
-
-		if (notEmptyString(satelliteEnv)) {
-			updateData.set(METADATA_KEY_ENVIRONMENT, satelliteEnv);
-		} else {
-			updateData.delete(METADATA_KEY_ENVIRONMENT);
-		}
-
-		const tags = SatelliteUiMetadataSerializer.parse(satelliteTags);
-
-		if (notEmptyString(tags)) {
-			updateData.set(METADATA_KEY_TAGS, tags);
-		} else {
-			updateData.delete(METADATA_KEY_TAGS);
-		}
-
-		const { identity } = get(authStore);
-
-		const updatedSatellite = await setSatelliteMetadataApi({
-			missionControlId,
-			satelliteId,
-			metadata: Array.from(updateData),
-			identity
-		});
-
-		const satellites = get(mctrlSatellitesStore);
-		satellitesUncertifiedStore.set([
-			...(satellites ?? []).filter(
-				({ satellite_id }) => updatedSatellite.satellite_id.toText() !== satellite_id.toText()
-			),
-			updatedSatellite
-		]);
-
-		return { success: true };
-	} catch (err: unknown) {
-		toasts.error({
-			text: get(i18n).errors.satellite_metadata_update,
-			detail: err
-		});
-
-		return { success: false };
-	}
 };
 
 export const attachSatellite = async ({

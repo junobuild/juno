@@ -12,7 +12,7 @@
 	import { wizardBusy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
-	import type { SetControllerScope } from '$lib/types/controllers';
+	import type { SetAccessKeyScope } from '$lib/types/controllers';
 	import type { JunoModalCreateControllerDetail, JunoModalDetail } from '$lib/types/modal';
 
 	interface Props {
@@ -27,7 +27,7 @@
 	let step: 'init' | 'in_progress' | 'ready' | 'error' = $state('init');
 
 	let controllerId = $state('');
-	let scope = $state<SetControllerScope>('write');
+	let scope = $state<SetAccessKeyScope>('write');
 	let identity: string | undefined = $state();
 
 	const initController = (): string | undefined => {
@@ -76,7 +76,7 @@
 		try {
 			await add({
 				missionControlId: $missionControlId,
-				controllerId: controller,
+				accessKeyId: controller,
 				profile: undefined,
 				scope
 			});

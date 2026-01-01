@@ -10,7 +10,7 @@
 	import Controllers from '$lib/components/access-keys/AccessKeys.svelte';
 	import { authIdentity } from '$lib/derived/auth.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import type { SetControllerParams } from '$lib/types/controllers';
+	import type { SetAccessKeyParams } from '$lib/types/controllers';
 	import type { MissionControlId } from '$lib/types/mission-control';
 
 	interface Props {
@@ -30,7 +30,7 @@
 	const add = (
 		params: {
 			missionControlId: MissionControlId;
-		} & SetControllerParams
+		} & SetAccessKeyParams
 	): Promise<void> => setMissionControlController({ ...params, identity: $authIdentity });
 
 	const pseudoAdminController: MissionControlDid.Controller = {

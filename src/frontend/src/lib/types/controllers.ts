@@ -1,10 +1,10 @@
 import type { Option } from '$lib/types/utils';
 import type { Principal } from '@icp-sdk/core/principal';
 
-export interface SetControllerParams {
-	controllerId: string | Principal;
+export interface SetAccessKeyParams {
+	accessKeyId: string | Principal;
 	profile: Option<string>;
-	scope: SetControllerScope;
+	scope: SetAccessKeyScope;
 }
 
-export type SetControllerScope = 'write' | 'admin' | 'submit';
+export type SetAccessKeyScope = 'write' | 'admin' | 'submit';

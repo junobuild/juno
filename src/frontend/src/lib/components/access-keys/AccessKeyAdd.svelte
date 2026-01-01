@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { CanisterSegmentWithLabel } from '$lib/types/canister';
-	import type { SetControllerParams } from '$lib/types/controllers';
+	import type { SetAccessKeyParams } from '$lib/types/controllers';
 	import type { MissionControlId } from '$lib/types/mission-control';
 	import { emit } from '$lib/utils/events.utils';
 
@@ -9,7 +9,7 @@
 		add: (
 			params: {
 				missionControlId: MissionControlId;
-			} & SetControllerParams
+			} & SetAccessKeyParams
 		) => Promise<void>;
 		load: () => Promise<void>;
 		segment: CanisterSegmentWithLabel;

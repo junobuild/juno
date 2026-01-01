@@ -13,7 +13,7 @@
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
 	import type { CanisterSegmentWithLabel } from '$lib/types/canister';
-	import type { SetControllerParams } from '$lib/types/controllers';
+	import type { SetAccessKeyParams } from '$lib/types/controllers';
 	import type { MissionControlId } from '$lib/types/mission-control';
 	import { metadataProfile } from '$lib/utils/metadata.utils';
 
@@ -26,7 +26,7 @@
 		add: (
 			params: {
 				missionControlId: MissionControlId;
-			} & SetControllerParams
+			} & SetAccessKeyParams
 		) => Promise<void>;
 		segment: CanisterSegmentWithLabel;
 		// The canister and user are controllers of the mission control but not added in its state per default

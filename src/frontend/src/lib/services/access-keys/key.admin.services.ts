@@ -2,7 +2,7 @@ import type { ICDid } from '$declarations';
 import { canisterStatus, canisterUpdateSettings } from '$lib/api/ic.api';
 import { MAX_NUMBER_OF_SATELLITE_CONTROLLERS } from '$lib/constants/canister.constants';
 import { i18n } from '$lib/stores/app/i18n.store';
-import type { SetControllerParams } from '$lib/types/controllers';
+import type { SetAccessKeyParams } from '$lib/types/controllers';
 import { toSetController } from '$lib/utils/controllers.utils';
 import { toNullable } from '@dfinity/utils';
 import type { Identity } from '@icp-sdk/core/agent';
@@ -10,31 +10,31 @@ import { Principal } from '@icp-sdk/core/principal';
 import type { OrbiterDid, SatelliteDid } from '@junobuild/ic-client/actor';
 import { get } from 'svelte/store';
 
-interface SetControllersFnParams {
+interface SetAccessKeysFnParams {
 	args: SatelliteDid.SetControllersArgs | OrbiterDid.SetControllersArgs;
 }
 
-export type SetControllersFn = (params: SetControllersFnParams) => Promise<void>;
+export type SetAccessKeysFn = (params: SetAccessKeysFnParams) => Promise<void>;
 
-export type SetControllerWithIcMgmtResult =
+export type SetAdminAccessKeyResult =
 	| { result: 'ok' | 'skip' }
 	| { result: 'reject'; reason: string }
 	| { result: 'error'; err: unknown };
 
-export const setControllerWithIcMgmt = async ({
-	setControllersFn,
+export const setAdminAccessKey = async ({
+	setAccessKeysFn,
 	attachFn,
 	canisterId,
-	controllerId: controllerIdParam,
+	accessKeyId: controllerIdParam,
 	scope,
 	profile,
 	identity
 }: {
-	setControllersFn: SetControllersFn;
+	setAccessKeysFn: SetAccessKeysFn;
 	attachFn?: () => Promise<void>;
 	canisterId: Principal;
 	identity: Identity;
-} & SetControllerParams): Promise<SetControllerWithIcMgmtResult> => {
+} & SetAccessKeyParams): Promise<SetAdminAccessKeyResult> => {
 	try {
 		const controllerId = Principal.isPrincipal(controllerIdParam)
 			? controllerIdParam
@@ -50,7 +50,7 @@ export const setControllerWithIcMgmt = async ({
 			return result;
 		}
 
-		await setControllersFn({
+		await setAccessKeysFn({
 			args: {
 				controller: toSetController({
 					profile,

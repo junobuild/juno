@@ -3,7 +3,7 @@ import {
 	getMissionControlActor0013,
 	getMissionControlActor004
 } from '$lib/api/actors/actor.deprecated.api';
-import type { SetControllerParams } from '$lib/types/controllers';
+import type { SetAccessKeyParams } from '$lib/types/controllers';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { MissionControlId } from '$lib/types/mission-control';
 import { nonNullish, toNullable } from '@dfinity/utils';
@@ -11,7 +11,7 @@ import { Principal } from '@icp-sdk/core/principal';
 
 const toSetController = ({
 	profile
-}: Omit<SetControllerParams, 'controllerId'>): MissionControlDid004.SetController => ({
+}: Omit<SetAccessKeyParams, 'accessKeyId'>): MissionControlDid004.SetController => ({
 	metadata: nonNullish(profile) && profile !== '' ? [['profile', profile]] : [],
 	expires_at: toNullable<bigint>(undefined)
 });
@@ -21,17 +21,17 @@ const toSetController = ({
  */
 export const setMissionControlController004 = async ({
 	missionControlId,
-	controllerId,
+	accessKeyId,
 	identity,
 	...rest
 }: {
 	missionControlId: MissionControlId;
 	identity: OptionIdentity;
-} & SetControllerParams) => {
+} & SetAccessKeyParams) => {
 	try {
 		const actor = await getMissionControlActor004({ missionControlId, identity });
 		await actor.set_mission_control_controllers(
-			[Principal.from(controllerId)],
+			[Principal.from(accessKeyId)],
 			toSetController(rest)
 		);
 	} catch (err: unknown) {
@@ -115,13 +115,13 @@ export const missionControlVersion = async ({
 export const addSatellitesController003 = async ({
 	missionControlId,
 	satelliteIds,
-	controllerId,
+	accessKeyId,
 	identity
 }: {
 	missionControlId: MissionControlId;
 	satelliteIds: Principal[];
 	identity: OptionIdentity;
-} & SetControllerParams) => {
+} & SetAccessKeyParams) => {
 	try {
 		// We use getMissionControlActor004 actor because the method add_satellites_controllers
 		// was ultimately deprecated (removed) in Mission Control v0.2.0
@@ -129,7 +129,7 @@ export const addSatellitesController003 = async ({
 			missionControlId,
 			identity
 		});
-		await add_satellites_controllers(satelliteIds, [Principal.from(controllerId)]);
+		await add_satellites_controllers(satelliteIds, [Principal.from(accessKeyId)]);
 	} catch (err: unknown) {
 		console.error(
 			'addSatellitesController:',
@@ -145,12 +145,12 @@ export const addSatellitesController003 = async ({
  */
 export const addMissionControlController003 = async ({
 	missionControlId,
-	controllerId,
+	accessKeyId,
 	identity
 }: {
 	missionControlId: MissionControlId;
 	identity: OptionIdentity;
-} & SetControllerParams) => {
+} & SetAccessKeyParams) => {
 	try {
 		// We use getMissionControlActor004 actor because the method add_mission_control_controllers
 		// was ultimately deprecated (removed) in Mission Control v0.2.0
@@ -158,7 +158,7 @@ export const addMissionControlController003 = async ({
 			missionControlId,
 			identity
 		});
-		await add_mission_control_controllers([Principal.from(controllerId)]);
+		await add_mission_control_controllers([Principal.from(accessKeyId)]);
 	} catch (err: unknown) {
 		console.error('addMissionControlController:', missionControlId.toText());
 		throw err;

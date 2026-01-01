@@ -1,6 +1,6 @@
 import type { MissionControlDid } from '$declarations';
 import { getMissionControlActor } from '$lib/api/actors/actor.juno.api';
-import type { SetControllerParams } from '$lib/types/controllers';
+import type { SetAccessKeyParams } from '$lib/types/controllers';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { Metadata } from '$lib/types/metadata';
 import type { MissionControlId } from '$lib/types/mission-control';
@@ -13,13 +13,13 @@ export const setSatellitesController = async ({
 	identity,
 	missionControlId,
 	satelliteIds,
-	controllerId,
+	accessKeyId,
 	...rest
 }: {
 	missionControlId: MissionControlId;
 	satelliteIds: Principal[];
 	identity: OptionIdentity;
-} & SetControllerParams) => {
+} & SetAccessKeyParams) => {
 	try {
 		const { set_satellites_controllers } = await getMissionControlActor({
 			missionControlId,
@@ -27,7 +27,7 @@ export const setSatellitesController = async ({
 		});
 		await set_satellites_controllers(
 			satelliteIds,
-			[Principal.from(controllerId)],
+			[Principal.from(accessKeyId)],
 			toSetController(rest)
 		);
 	} catch (err: unknown) {
@@ -61,18 +61,18 @@ export const deleteSatellitesController = async ({
 export const setMissionControlController = async ({
 	identity,
 	missionControlId,
-	controllerId,
+	accessKeyId,
 	...rest
 }: {
 	missionControlId: MissionControlId;
 	identity: OptionIdentity;
-} & SetControllerParams) => {
+} & SetAccessKeyParams) => {
 	try {
 		const { set_mission_control_controllers } = await getMissionControlActor({
 			missionControlId,
 			identity
 		});
-		await set_mission_control_controllers([Principal.from(controllerId)], toSetController(rest));
+		await set_mission_control_controllers([Principal.from(accessKeyId)], toSetController(rest));
 	} catch (err: unknown) {
 		console.error('setMissionControlController:', missionControlId.toText());
 		throw err;
@@ -142,14 +142,14 @@ export const setSatelliteMetadata = async ({
 export const setOrbitersController = async ({
 	missionControlId,
 	orbiterIds,
-	controllerId,
+	accessKeyId,
 	identity,
 	...rest
 }: {
 	missionControlId: MissionControlId;
 	orbiterIds: Principal[];
 	identity: OptionIdentity;
-} & SetControllerParams) => {
+} & SetAccessKeyParams) => {
 	try {
 		const { set_orbiters_controllers } = await getMissionControlActor({
 			missionControlId,
@@ -157,7 +157,7 @@ export const setOrbitersController = async ({
 		});
 		await set_orbiters_controllers(
 			orbiterIds,
-			[Principal.from(controllerId)],
+			[Principal.from(accessKeyId)],
 			toSetController(rest)
 		);
 	} catch (err: unknown) {

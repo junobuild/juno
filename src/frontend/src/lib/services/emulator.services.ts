@@ -3,10 +3,10 @@ import {
 	emulatorObservatoryMonitoringOpenId,
 	getEmulatorMainIdentity
 } from '$lib/rest/emulator.rest';
-import { setSatellitesControllerForVersion } from '$lib/services/satellite/satellite.controller.services';
+import { setSatellitesAdminAccessKey } from '$lib/services/access-keys/satellites.key.admin.services';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
-import type { SetControllerParams } from '$lib/types/controllers';
+import type { SetAccessKeyParams } from '$lib/types/controllers';
 import type { Identity } from '@icp-sdk/core/agent';
 import type { Principal } from '@icp-sdk/core/principal';
 import { get } from 'svelte/store';
@@ -25,8 +25,8 @@ export const unsafeSetEmulatorControllerForSatellite = async ({
 	satelliteId: Principal;
 	identity: Identity;
 }) => {
-	const add = (params: SetControllerParams): Promise<void> =>
-		setSatellitesControllerForVersion({
+	const add = (params: SetAccessKeyParams): Promise<void> =>
+		setSatellitesAdminAccessKey({
 			...params,
 			identity,
 			satelliteIds: [satelliteId]
@@ -40,7 +40,7 @@ export const unsafeSetEmulatorControllerForSatellite = async ({
 const unsafeSetEmulatorController = async ({
 	addController
 }: {
-	addController: (params: SetControllerParams) => Promise<void>;
+	addController: (params: SetAccessKeyParams) => Promise<void>;
 }) => {
 	if (isNotSkylab()) {
 		throw new Error(get(i18n).emulator.error_never_execute_set_controller);
@@ -49,7 +49,7 @@ const unsafeSetEmulatorController = async ({
 	const mainIdentity = await getEmulatorMainIdentity();
 
 	await addController({
-		controllerId: mainIdentity,
+		accessKeyId: mainIdentity,
 		profile: `👾 ${get(i18n).emulator.emulator}`,
 		scope: 'admin'
 	});

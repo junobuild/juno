@@ -1,11 +1,11 @@
 import type { MissionControlDid } from '$declarations';
 import { setOrbitersController as setOrbitersControllerWithMctrl } from '$lib/api/mission-control.api';
+import { setOrbiterAdminAccessKey } from '$lib/services/access-keys/orbiter.key.admin.services';
+import { setSatellitesAdminAccessKey } from '$lib/services/access-keys/satellites.key.admin.services';
 import {
 	setMissionControlControllerForVersion,
 	setSatellitesControllerForVersion as setSatellitesControllerForVersionWithMctrl
 } from '$lib/services/mission-control/mission-control.services';
-import { setOrbitersController } from '$lib/services/orbiter/orbiter.controller.services';
-import { setSatellitesControllerForVersion } from '$lib/services/satellite/satellite.controller.services';
 import type { MissionControlId } from '$lib/types/mission-control';
 import type { Option } from '$lib/types/utils';
 import { bigintStringify } from '$lib/utils/number.utils';
@@ -60,8 +60,8 @@ const setCliControllersWithoutMissionControl = async ({
 	await Promise.all([
 		...(selectedSatellites.length > 0
 			? [
-					setSatellitesControllerForVersion({
-						controllerId,
+					setSatellitesAdminAccessKey({
+						accessKeyId: controllerId,
 						satelliteIds: selectedSatellites.map((s) => s[0]),
 						profile,
 						scope: 'admin',
@@ -71,8 +71,8 @@ const setCliControllersWithoutMissionControl = async ({
 			: []),
 		...(selectedOrbiters.length > 0
 			? [
-					setOrbitersController({
-						controllerId,
+					setOrbiterAdminAccessKey({
+						accessKeyId: controllerId,
 						orbiterIds: selectedOrbiters.map((s) => s[0]),
 						profile,
 						scope: 'admin',
@@ -97,7 +97,7 @@ const setCliControllersWithMissionControl = async ({
 			? [
 					setMissionControlControllerForVersion({
 						missionControlId,
-						controllerId,
+						accessKeyId: controllerId,
 						profile,
 						scope: 'admin',
 						identity
@@ -108,7 +108,7 @@ const setCliControllersWithMissionControl = async ({
 			? [
 					setSatellitesControllerForVersionWithMctrl({
 						missionControlId,
-						controllerId,
+						accessKeyId: controllerId,
 						satelliteIds: selectedSatellites.map((s) => s[0]),
 						profile,
 						scope: 'admin',
@@ -120,7 +120,7 @@ const setCliControllersWithMissionControl = async ({
 			? [
 					setOrbitersControllerWithMctrl({
 						missionControlId,
-						controllerId,
+						accessKeyId: controllerId,
 						orbiterIds: selectedOrbiters.map((s) => s[0]),
 						profile,
 						scope: 'admin',

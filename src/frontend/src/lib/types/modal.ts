@@ -1,7 +1,7 @@
 import type { ConsoleDid, ICDid, MissionControlDid, OrbiterDid, SatelliteDid } from '$declarations';
 import type { SelectedToken, SelectedWallet } from '$lib/schemas/wallet.schema';
 import type { CanisterInfo, CanisterSegmentWithLabel, CanisterSettings } from '$lib/types/canister';
-import type { SetControllerParams } from '$lib/types/controllers';
+import type { SetAccessKeyParams } from '$lib/types/controllers';
 import type { CustomDomains } from '$lib/types/custom-domain';
 import type { MissionControlId } from '$lib/types/mission-control';
 import type { OrbiterSatelliteConfigEntry } from '$lib/types/orbiter';
@@ -65,7 +65,7 @@ export interface JunoModalCreateControllerDetail extends JunoModalSegmentDetail 
 	add: (
 		params: {
 			missionControlId: MissionControlId;
-		} & SetControllerParams
+		} & SetAccessKeyParams
 	) => Promise<void>;
 	load: () => Promise<void>;
 }

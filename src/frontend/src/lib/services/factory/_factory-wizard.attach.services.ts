@@ -3,11 +3,11 @@ import { setControllers as setOrbiterControllers } from '$lib/api/orbiter.api';
 import { setControllers as setSatelliteControllers } from '$lib/api/satellites.api';
 import { consoleOrbiters, consoleSatellites } from '$lib/derived/console/segments.derived';
 import {
-	type SetControllersFn,
-	setControllerWithIcMgmt
-} from '$lib/services/_controllers.services';
+	type SetAccessKeysFn,
+	setAdminAccessKey
+} from '$lib/services/access-keys/key.admin.services';
 import { i18n } from '$lib/stores/app/i18n.store';
-import type { SetControllerParams } from '$lib/types/controllers';
+import type { SetAccessKeyParams } from '$lib/types/controllers';
 import type { MissionControlId } from '$lib/types/mission-control';
 import type { Orbiter } from '$lib/types/orbiter';
 import type { Satellite } from '$lib/types/satellite';
@@ -17,7 +17,7 @@ import type { Identity } from '@icp-sdk/core/agent';
 import type { Principal } from '@icp-sdk/core/principal';
 import { get } from 'svelte/store';
 
-const CONTROLLER_PARAMS: Omit<SetControllerParams, 'controllerId'> = {
+const CONTROLLER_PARAMS: Omit<SetAccessKeyParams, 'accessKeyId'> = {
 	profile: undefined,
 	scope: 'admin'
 };
@@ -229,7 +229,7 @@ const attachSatellite = async ({
 }): Promise<AttachSegmentResult> => {
 	const { satellite_id: satelliteId } = satellite;
 
-	const setControllersFn: SetControllersFn = async ({ args }) => {
+	const setControllersFn: SetAccessKeysFn = async ({ args }) => {
 		await setSatelliteControllers({
 			args,
 			satelliteId,
@@ -246,12 +246,12 @@ const attachSatellite = async ({
 		});
 	};
 
-	return await setControllerWithIcMgmt({
-		setControllersFn,
+	return await setAdminAccessKey({
+		setAccessKeysFn: setControllersFn,
 		attachFn,
 		...CONTROLLER_PARAMS,
 		canisterId: satelliteId,
-		controllerId: missionControlId,
+		accessKeyId: missionControlId,
 		identity
 	});
 };
@@ -267,7 +267,7 @@ const attachOrbiter = async ({
 }): Promise<AttachSegmentResult> => {
 	const { orbiter_id: orbiterId } = orbiter;
 
-	const setControllersFn: SetControllersFn = async ({ args }) => {
+	const setControllersFn: SetAccessKeysFn = async ({ args }) => {
 		await setOrbiterControllers({
 			args,
 			orbiterId,
@@ -279,12 +279,12 @@ const attachOrbiter = async ({
 		await setOrbiter({ missionControlId, orbiterId, identity, orbiterName: orbiterName(orbiter) });
 	};
 
-	await setControllerWithIcMgmt({
-		setControllersFn,
+	await setAdminAccessKey({
+		setAccessKeysFn: setControllersFn,
 		attachFn,
 		...CONTROLLER_PARAMS,
 		canisterId: orbiterId,
-		controllerId: missionControlId,
+		accessKeyId: missionControlId,
 		identity
 	});
 

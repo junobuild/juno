@@ -22,8 +22,8 @@ import {
 	MISSION_CONTROL_v0_0_5
 } from '$lib/constants/version.constants';
 import { loadDataStore } from '$lib/services/_loader.services';
+import { mapSatellitesForControllersFn } from '$lib/services/access-keys/satellites.key.admin.services';
 import { loadSatellites } from '$lib/services/mission-control/mission-control.satellites.services';
-import { mapSatellitesForControllersFn } from '$lib/services/satellite/satellite.controller.services';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
 import { authStore } from '$lib/stores/auth.store';
@@ -33,7 +33,7 @@ import {
 } from '$lib/stores/mission-control/mission-control.store';
 import { orbitersUncertifiedStore } from '$lib/stores/mission-control/orbiter.store';
 import { versionStore } from '$lib/stores/version.store';
-import type { SetControllerParams } from '$lib/types/controllers';
+import type { SetAccessKeyParams } from '$lib/types/controllers';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { Metadata } from '$lib/types/metadata';
 import type { MissionControlId } from '$lib/types/mission-control';
@@ -49,13 +49,13 @@ import { get } from 'svelte/store';
 
 export const setMissionControlControllerForVersion = async ({
 	missionControlId,
-	controllerId,
+	accessKeyId,
 	profile,
 	identity
 }: {
 	missionControlId: MissionControlId;
 	identity: Identity;
-} & SetControllerParams) => {
+} & SetAccessKeyParams) => {
 	let version: string;
 	try {
 		version = await missionControlVersion({
@@ -76,7 +76,7 @@ export const setMissionControlControllerForVersion = async ({
 
 	await missionControlController({
 		missionControlId,
-		controllerId,
+		controllerId: accessKeyId,
 		profile,
 		scope: 'admin',
 		identity
@@ -86,14 +86,14 @@ export const setMissionControlControllerForVersion = async ({
 export const setSatellitesControllerForVersion = async ({
 	missionControlId,
 	satelliteIds,
-	controllerId,
+	accessKeyId,
 	profile,
 	identity
 }: {
 	missionControlId: MissionControlId;
 	satelliteIds: Principal[];
 	identity: Identity;
-} & SetControllerParams) => {
+} & SetAccessKeyParams) => {
 	const { setSatelliteIds, addSatellitesIds } = await mapSatellitesForControllersFn({
 		satelliteIds,
 		identity
@@ -105,7 +105,7 @@ export const setSatellitesControllerForVersion = async ({
 					setSatellitesController({
 						satelliteIds: setSatelliteIds,
 						missionControlId,
-						controllerId,
+						controllerId: accessKeyId,
 						profile,
 						scope: 'admin',
 						identity
@@ -117,7 +117,7 @@ export const setSatellitesControllerForVersion = async ({
 					addSatellitesController003({
 						satelliteIds: addSatellitesIds,
 						missionControlId,
-						controllerId,
+						controllerId: accessKeyId,
 						profile,
 						scope: 'admin',
 						identity

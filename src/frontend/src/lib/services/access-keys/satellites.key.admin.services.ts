@@ -1,11 +1,11 @@
 import { setControllers as setSatelliteControllers } from '$lib/api/satellites.api';
 import { SATELLITE_v0_0_7 } from '$lib/constants/version.constants';
 import {
-	type SetControllersFn,
-	setControllerWithIcMgmt,
-	type SetControllerWithIcMgmtResult
-} from '$lib/services/_controllers.services';
-import type { SetControllerParams } from '$lib/types/controllers';
+	type SetAccessKeysFn,
+	setAdminAccessKey,
+	type SetAdminAccessKeyResult
+} from '$lib/services/access-keys/key.admin.services';
+import type { SetAccessKeyParams } from '$lib/types/controllers';
 import type { SatelliteId } from '$lib/types/satellite';
 import { container } from '$lib/utils/juno.utils';
 import type { Identity } from '@icp-sdk/core/agent';
@@ -13,15 +13,15 @@ import type { Principal } from '@icp-sdk/core/principal';
 import { satelliteVersion } from '@junobuild/admin';
 import { compare } from 'semver';
 
-export const setSatellitesControllerForVersion = async ({
+export const setSatellitesAdminAccessKey = async ({
 	satelliteIds,
-	controllerId,
+	accessKeyId,
 	identity,
 	...rest
 }: {
-	satelliteIds: Principal[];
+	satelliteIds: SatelliteId[];
 	identity: Identity;
-} & SetControllerParams) => {
+} & SetAccessKeyParams) => {
 	const { setSatelliteIds, addSatellitesIds } = await mapSatellitesForControllersFn({
 		satelliteIds,
 		identity
@@ -31,10 +31,10 @@ export const setSatellitesControllerForVersion = async ({
 		// TODO: throw exception asking for upgrade super old Satellites so unlikely
 	}
 
-	const setSatelliteControllerWithIcMgmt = async (
+	const setSatelliteAdminAccessKey = async (
 		satelliteId: SatelliteId
-	): Promise<SetControllerWithIcMgmtResult> => {
-		const setControllersFn: SetControllersFn = async ({ args }) => {
+	): Promise<SetAdminAccessKeyResult> => {
+		const setAccessKeysFn: SetAccessKeysFn = async ({ args }) => {
 			await setSatelliteControllers({
 				args,
 				satelliteId,
@@ -42,16 +42,16 @@ export const setSatellitesControllerForVersion = async ({
 			});
 		};
 
-		return await setControllerWithIcMgmt({
-			setControllersFn,
+		return await setAdminAccessKey({
+			setAccessKeysFn,
 			...rest,
 			canisterId: satelliteId,
-			controllerId,
+			accessKeyId,
 			identity
 		});
 	};
 
-	await Promise.all(setSatelliteIds.map(setSatelliteControllerWithIcMgmt));
+	await Promise.all(setSatelliteIds.map(setSatelliteAdminAccessKey));
 };
 
 interface SatellitesForControllersFn {

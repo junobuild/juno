@@ -455,6 +455,11 @@ export const idlFactory = ({ IDL }) => {
 		fee_cycles: CyclesTokens,
 		fee_icp: IDL.Opt(Tokens)
 	});
+	const SetSegmentMetadataArgs = IDL.Record({
+		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
+		segment_id: IDL.Principal,
+		segment_type: SegmentType
+	});
 	const SetStorageConfig = IDL.Record({
 		iframe: IDL.Opt(StorageConfigIFrame),
 		rewrites: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
@@ -527,6 +532,7 @@ export const idlFactory = ({ IDL }) => {
 		set_controllers: IDL.Func([SetControllersArgs], [], []),
 		set_custom_domain: IDL.Func([IDL.Text, IDL.Opt(IDL.Text)], [], []),
 		set_fee: IDL.Func([SegmentKind, FeesArgs], [], []),
+		set_segment_metadata: IDL.Func([SetSegmentMetadataArgs], [Segment], []),
 		set_storage_config: IDL.Func([SetStorageConfig], [StorageConfig], []),
 		submit_proposal: IDL.Func([IDL.Nat], [IDL.Nat, Proposal], []),
 		update_rate_config: IDL.Func([SegmentKind, RateConfig], [], []),

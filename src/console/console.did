@@ -321,6 +321,11 @@ type SetControllersArgs = record {
   controller : SetController;
   controllers : vec principal;
 };
+type SetSegmentMetadataArgs = record {
+  metadata : vec record { text; text };
+  segment_id : principal;
+  segment_type : SegmentType;
+};
 type SetStorageConfig = record {
   iframe : opt StorageConfigIFrame;
   rewrites : vec record { text; text };
@@ -427,6 +432,7 @@ service : () -> {
   set_controllers : (SetControllersArgs) -> ();
   set_custom_domain : (text, opt text) -> ();
   set_fee : (SegmentKind, FeesArgs) -> ();
+  set_segment_metadata : (SetSegmentMetadataArgs) -> (Segment);
   set_storage_config : (SetStorageConfig) -> (StorageConfig);
   submit_proposal : (nat) -> (nat, Proposal);
   update_rate_config : (SegmentKind, RateConfig) -> ();

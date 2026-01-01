@@ -1,6 +1,6 @@
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
-import type { AddAccessKeyResult, SetAccessKeyParams } from '$lib/types/controllers';
+import type { AddAccessKeyParams, AddAccessKeyResult } from '$lib/types/access-keys';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { MissionControlId } from '$lib/types/mission-control';
 import type { Option } from '$lib/types/utils';
@@ -23,7 +23,7 @@ export const addAccessKey = async ({
 }: {
 	identity: OptionIdentity;
 	missionControlId: Option<MissionControlId>;
-	accessKey: SetAccessKeyParams;
+	accessKey: AddAccessKeyParams;
 	addAccessKeyWithMissionControlFn: AddAccessKeyWithMissionControlFn;
 	addAccessKeyWithDevFn: AddAccessKeyWithDevFn;
 }): Promise<AddAccessKeyResult> => {

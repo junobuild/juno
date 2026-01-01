@@ -1,6 +1,6 @@
 import type { MissionControlDid } from '$declarations';
 import { getMissionControlActor } from '$lib/api/actors/actor.juno.api';
-import type { SetAccessKeyParams } from '$lib/types/controllers';
+import type { AddAccessKeyParams } from '$lib/types/access-keys';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { Metadata } from '$lib/types/metadata';
 import type { MissionControlId } from '$lib/types/mission-control';
@@ -19,7 +19,7 @@ export const setSatellitesController = async ({
 	missionControlId: MissionControlId;
 	satelliteIds: Principal[];
 	identity: OptionIdentity;
-} & SetAccessKeyParams) => {
+} & AddAccessKeyParams) => {
 	try {
 		const { set_satellites_controllers } = await getMissionControlActor({
 			missionControlId,
@@ -67,7 +67,7 @@ export const setMissionControlController = async ({
 }: {
 	missionControlId: MissionControlId;
 	identity: OptionIdentity;
-} & SetAccessKeyParams) => {
+} & AddAccessKeyParams) => {
 	try {
 		const { set_mission_control_controllers } = await getMissionControlActor({
 			missionControlId,
@@ -151,7 +151,7 @@ export const setOrbitersController = async ({
 	missionControlId: MissionControlId;
 	orbiterIds: Principal[];
 	identity: OptionIdentity;
-} & SetAccessKeyParams) => {
+} & AddAccessKeyParams) => {
 	try {
 		const { set_orbiters_controllers } = await getMissionControlActor({
 			missionControlId,

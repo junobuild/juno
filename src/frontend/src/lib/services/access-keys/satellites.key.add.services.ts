@@ -6,10 +6,10 @@ import {
 } from '$lib/services/access-keys/key.admin.services';
 import { mapSatellitesForControllersFn } from '$lib/services/access-keys/satellites.key.map.services';
 import type {
-	SetAccessKeyParams,
-	SetAccessKeyScope,
-	SetAdminAccessKeyParams
-} from '$lib/types/controllers';
+	AddAccessKeyParams,
+	AddAccessKeyScope,
+	AddAdminAccessKeyParams
+} from '$lib/types/access-keys';
 import type { SatelliteId } from '$lib/types/satellite';
 import { toSetController } from '$lib/utils/controllers.utils';
 import type { Identity } from '@icp-sdk/core/agent';
@@ -24,7 +24,7 @@ export const addSatellitesAccessKey = async ({
 }: {
 	satelliteIds: Principal[];
 	identity: Identity;
-} & SetAccessKeyParams) => {
+} & AddAccessKeyParams) => {
 	const { satelliteIds } = await filterSatelliteIds({ satelliteIds: satelliteIdsParam, identity });
 
 	if (scope === 'admin') {
@@ -53,7 +53,7 @@ export const addSatellitesAdminAccessKey = async ({
 }: {
 	satelliteIds: SatelliteId[];
 	identity: Identity;
-} & SetAdminAccessKeyParams) => {
+} & AddAdminAccessKeyParams) => {
 	const { satelliteIds } = await filterSatelliteIds({ satelliteIds: satelliteIdsParam, identity });
 
 	await setSatellitesAdminAccessKey({
@@ -90,7 +90,7 @@ const setSatellitesAdminAccessKey = async ({
 }: {
 	satelliteIds: SatelliteId[];
 	identity: Identity;
-} & SetAdminAccessKeyParams) => {
+} & AddAdminAccessKeyParams) => {
 	const setSatelliteAdminAccessKey = async (
 		satelliteId: SatelliteId
 	): Promise<SetAdminAccessKeyResult> => {
@@ -123,14 +123,14 @@ const setSatellitesNonAdminAccessKey = async ({
 }: {
 	satelliteIds: SatelliteId[];
 	identity: Identity;
-	scope: Omit<SetAccessKeyScope, 'admin'>;
-} & SetAdminAccessKeyParams) => {
+	scope: Omit<AddAccessKeyScope, 'admin'>;
+} & AddAdminAccessKeyParams) => {
 	const setSatelliteAccessKey = async (satelliteId: SatelliteId): Promise<void> => {
 		await setSatelliteControllers({
 			args: {
 				controller: toSetController({
 					profile,
-					scope: scope as SetAccessKeyScope // Safe case, the param is explicit to avoid passing admin to the function
+					scope: scope as AddAccessKeyScope // Safe case, the param is explicit to avoid passing admin to the function
 				}),
 				controllers: [Principal.from(accessKeyId)]
 			},

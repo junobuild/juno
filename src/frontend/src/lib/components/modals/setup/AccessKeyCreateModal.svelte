@@ -13,7 +13,7 @@
 	import { wizardBusy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
-	import type { SetAccessKeyScope } from '$lib/types/controllers';
+	import type { AddAccessKeyScope } from '$lib/types/access-keys';
 	import type { JunoModalCreateControllerDetail, JunoModalDetail } from '$lib/types/modal';
 
 	interface Props {
@@ -28,7 +28,7 @@
 	let step: 'init' | 'in_progress' | 'ready' | 'error' = $state('init');
 
 	let accessKeyId = $state('');
-	let scope = $state<SetAccessKeyScope>('write');
+	let scope = $state<AddAccessKeyScope>('write');
 	let identity: string | undefined = $state();
 
 	const initAccessKey = (): string | undefined => {

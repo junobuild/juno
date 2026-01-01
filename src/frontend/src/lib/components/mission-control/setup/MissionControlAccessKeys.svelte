@@ -15,7 +15,7 @@
 	} from '$lib/services/access-keys/key.add.services';
 	import { addMissionControlAccessKey } from '$lib/services/access-keys/mission-control.key.add.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import type { AddAccessKeyResult, SetAccessKeyParams } from '$lib/types/controllers';
+	import type { AddAccessKeyResult, AddAccessKeyParams } from '$lib/types/access-keys';
 	import type { MissionControlId } from '$lib/types/mission-control';
 
 	interface Props {
@@ -32,7 +32,7 @@
 		controller: Principal;
 	}): Promise<void> => deleteMissionControlController({ ...params, identity: $authIdentity });
 
-	const add = async (accessKey: SetAccessKeyParams): Promise<AddAccessKeyResult> =>
+	const add = async (accessKey: AddAccessKeyParams): Promise<AddAccessKeyResult> =>
 		await addMissionControlAccessKey({
 			identity: $authIdentity,
 			missionControlId,

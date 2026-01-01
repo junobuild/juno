@@ -5,10 +5,10 @@ import {
 	type SetAdminAccessKeyResult
 } from '$lib/services/access-keys/key.admin.services';
 import type {
-	SetAccessKeyParams,
-	SetAccessKeyScope,
-	SetAdminAccessKeyParams
-} from '$lib/types/controllers';
+	AddAccessKeyParams,
+	AddAccessKeyScope,
+	AddAdminAccessKeyParams
+} from '$lib/types/access-keys';
 import type { OrbiterId } from '$lib/types/orbiter';
 import { toSetController } from '$lib/utils/controllers.utils';
 import type { Identity } from '@icp-sdk/core/agent';
@@ -23,7 +23,7 @@ export const addOrbiterAccessKey = async ({
 }: {
 	orbiterIds: OrbiterId[];
 	identity: Identity;
-} & SetAccessKeyParams) => {
+} & AddAccessKeyParams) => {
 	if (scope === 'admin') {
 		await addOrbitersAdminAccessKey({
 			identity,
@@ -51,7 +51,7 @@ export const addOrbitersAdminAccessKey = async ({
 }: {
 	orbiterIds: OrbiterId[];
 	identity: Identity;
-} & SetAdminAccessKeyParams) => {
+} & AddAdminAccessKeyParams) => {
 	const setOrbiterAdminAccessKeyWithIcMgmt = async (
 		orbiterId: OrbiterId
 	): Promise<SetAdminAccessKeyResult> => {
@@ -84,14 +84,14 @@ const setOrbitersNonAdminAccessKey = async ({
 }: {
 	orbiterIds: OrbiterId[];
 	identity: Identity;
-	scope: Omit<SetAccessKeyScope, 'admin'>;
-} & SetAdminAccessKeyParams) => {
+	scope: Omit<AddAccessKeyScope, 'admin'>;
+} & AddAdminAccessKeyParams) => {
 	const setOrbiterAccessKey = async (orbiterId: OrbiterId): Promise<void> => {
 		await setOrbiterControllers({
 			args: {
 				controller: toSetController({
 					profile,
-					scope: scope as SetAccessKeyScope // Safe case, the param is explicit to avoid passing admin to the function
+					scope: scope as AddAccessKeyScope // Safe case, the param is explicit to avoid passing admin to the function
 				}),
 				controllers: [Principal.from(accessKeyId)]
 			},

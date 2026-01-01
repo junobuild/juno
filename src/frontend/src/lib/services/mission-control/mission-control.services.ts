@@ -33,7 +33,7 @@ import {
 } from '$lib/stores/mission-control/mission-control.store';
 import { orbitersUncertifiedStore } from '$lib/stores/mission-control/orbiter.store';
 import { versionStore } from '$lib/stores/version.store';
-import type { SetAccessKeyParams } from '$lib/types/controllers';
+import type { AddAccessKeyParams } from '$lib/types/access-keys';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { Metadata } from '$lib/types/metadata';
 import type { MissionControlId } from '$lib/types/mission-control';
@@ -55,7 +55,7 @@ export const setMissionControlControllerForVersion = async ({
 }: {
 	missionControlId: MissionControlId;
 	identity: Identity;
-} & SetAccessKeyParams) => {
+} & AddAccessKeyParams) => {
 	let version: string;
 	try {
 		version = await missionControlVersion({
@@ -93,7 +93,7 @@ export const setSatellitesControllerForVersion = async ({
 	missionControlId: MissionControlId;
 	satelliteIds: Principal[];
 	identity: Identity;
-} & SetAccessKeyParams) => {
+} & AddAccessKeyParams) => {
 	const { setSatelliteIds, addSatellitesIds } = await mapSatellitesForControllersFn({
 		satelliteIds,
 		identity

@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { i18n } from '$lib/stores/app/i18n.store';
+	import type { AddAccessKeyResult, AddAccessKeyParams } from '$lib/types/access-keys';
 	import type { CanisterSegmentWithLabel } from '$lib/types/canister';
-	import type { AddAccessKeyResult, SetAccessKeyParams } from '$lib/types/controllers';
 	import type { MissionControlId } from '$lib/types/mission-control';
 	import { emit } from '$lib/utils/events.utils';
 
 	interface Props {
-		add: (params: SetAccessKeyParams) => Promise<AddAccessKeyResult>;
+		add: (params: AddAccessKeyParams) => Promise<AddAccessKeyResult>;
 		load: () => Promise<void>;
 		segment: CanisterSegmentWithLabel;
 	}

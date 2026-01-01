@@ -7,7 +7,7 @@ import {
 	setAdminAccessKey
 } from '$lib/services/access-keys/key.admin.services';
 import { i18n } from '$lib/stores/app/i18n.store';
-import type { SetAdminAccessKeyParams } from '$lib/types/controllers';
+import type { AddAdminAccessKeyParams } from '$lib/types/access-keys';
 import type { MissionControlId } from '$lib/types/mission-control';
 import type { Orbiter } from '$lib/types/orbiter';
 import type { Satellite } from '$lib/types/satellite';
@@ -17,7 +17,7 @@ import type { Identity } from '@icp-sdk/core/agent';
 import type { Principal } from '@icp-sdk/core/principal';
 import { get } from 'svelte/store';
 
-const CONTROLLER_PARAMS: Omit<SetAdminAccessKeyParams, 'accessKeyId'> = {
+const CONTROLLER_PARAMS: Omit<AddAdminAccessKeyParams, 'accessKeyId'> = {
 	profile: undefined
 };
 

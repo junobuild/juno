@@ -16,7 +16,7 @@
 	} from '$lib/services/access-keys/key.add.services';
 	import { addSatellitesAccessKey } from '$lib/services/access-keys/satellites.key.add.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import type { AddAccessKeyResult, SetAccessKeyParams } from '$lib/types/controllers';
+	import type { AddAccessKeyResult, AddAccessKeyParams } from '$lib/types/access-keys';
 	import type { MissionControlId } from '$lib/types/mission-control';
 	import type { Satellite } from '$lib/types/satellite';
 
@@ -39,7 +39,7 @@
 			identity: $authIdentity
 		});
 
-	const add = async (accessKey: SetAccessKeyParams): Promise<AddAccessKeyResult> => {
+	const add = async (accessKey: AddAccessKeyParams): Promise<AddAccessKeyResult> => {
 		const satelliteIds = [satellite.satellite_id];
 
 		const addAccessKeyWithMissionControlFn: AddAccessKeyWithMissionControlFn = async (params) => {

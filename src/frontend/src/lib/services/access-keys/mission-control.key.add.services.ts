@@ -1,7 +1,7 @@
 import { setMissionControlController } from '$lib/api/mission-control.api';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
-import type { AddAccessKeyResult, SetAccessKeyParams } from '$lib/types/controllers';
+import type { AddAccessKeyParams, AddAccessKeyResult } from '$lib/types/access-keys';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { MissionControlId } from '$lib/types/mission-control';
 import { isNullish } from '@dfinity/utils';
@@ -16,7 +16,7 @@ export const addMissionControlAccessKey = async ({
 }: {
 	missionControlId: MissionControlId;
 	identity: OptionIdentity;
-} & SetAccessKeyParams): Promise<AddAccessKeyResult> => {
+} & AddAccessKeyParams): Promise<AddAccessKeyResult> => {
 	// TODO: indentity check service
 	if (isNullish(identity) || isNullish(identity?.getPrincipal())) {
 		toasts.error({ text: get(i18n).core.not_logged_in });

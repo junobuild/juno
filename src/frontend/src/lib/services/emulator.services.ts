@@ -6,7 +6,7 @@ import {
 import { addSatellitesAdminAccessKey } from '$lib/services/access-keys/satellites.key.add.services';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
-import type { SetAdminAccessKeyParams } from '$lib/types/controllers';
+import type { AddAdminAccessKeyParams } from '$lib/types/access-keys';
 import type { Identity } from '@icp-sdk/core/agent';
 import type { Principal } from '@icp-sdk/core/principal';
 import { get } from 'svelte/store';
@@ -25,7 +25,7 @@ export const unsafeSetEmulatorControllerForSatellite = async ({
 	satelliteId: Principal;
 	identity: Identity;
 }) => {
-	const add = (params: SetAdminAccessKeyParams): Promise<void> =>
+	const add = (params: AddAdminAccessKeyParams): Promise<void> =>
 		addSatellitesAdminAccessKey({
 			...params,
 			identity,
@@ -40,7 +40,7 @@ export const unsafeSetEmulatorControllerForSatellite = async ({
 const unsafeSetEmulatorController = async ({
 	addController
 }: {
-	addController: (params: SetAdminAccessKeyParams) => Promise<void>;
+	addController: (params: AddAdminAccessKeyParams) => Promise<void>;
 }) => {
 	if (isNotSkylab()) {
 		throw new Error(get(i18n).emulator.error_never_execute_set_controller);

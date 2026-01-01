@@ -110,7 +110,7 @@
 </Modal>
 
 <style lang="scss">
-	@use '../../styles/mixins/overlay';
+	@use '../../../../styles/mixins/overlay';
 
 	button {
 		margin: var(--padding-2x) 0 0;

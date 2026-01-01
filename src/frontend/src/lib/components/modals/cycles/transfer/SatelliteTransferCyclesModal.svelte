@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Principal } from '@icp-sdk/core/principal';
 	import { depositCycles } from '$lib/api/satellites.api';
-	import CanisterTransferCyclesModal from '$lib/components/modals/CanisterTransferCyclesModal.svelte';
+	import CanisterTransferCyclesModal from '$lib/components/modals/cycles/transfer/CanisterTransferCyclesModal.svelte';
 	import { authIdentity } from '$lib/derived/auth.derived';
 	import type { JunoModalCyclesSatelliteDetail, JunoModalDetail } from '$lib/types/modal';
 	import { satelliteName } from '$lib/utils/satellite.utils';

@@ -267,9 +267,9 @@
 </Modal>
 
 <style lang="scss">
-	@use '../../styles/mixins/overlay';
-	@use '../../styles/mixins/media';
-	@use '../../styles/mixins/grid';
+	@use '../../../styles/mixins/overlay';
+	@use '../../../styles/mixins/media';
+	@use '../../../styles/mixins/grid';
 
 	.msg {
 		@include overlay.message;

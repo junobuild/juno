@@ -2,7 +2,7 @@
 	import { nonNullish } from '@dfinity/utils';
 	import { AnonymousIdentity } from '@icp-sdk/core/agent';
 	import { type UpgradeCodeParams, upgradeMissionControl } from '@junobuild/admin';
-	import CanisterUpgradeModal from '$lib/components/modals/CanisterUpgradeModal.svelte';
+	import CanisterUpgradeModal from '$lib/components/modals/upgrade/CanisterUpgradeModal.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import { authIdentity } from '$lib/derived/auth.derived';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';

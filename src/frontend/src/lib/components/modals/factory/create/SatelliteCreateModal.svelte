@@ -190,7 +190,7 @@
 </Modal>
 
 <style lang="scss">
-	@use '../../../styles/mixins/overlay';
+	@use '../../../../styles/mixins/overlay';
 
 	h2 {
 		@include overlay.title;

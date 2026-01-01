@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
-	import CanisterTopUpModal from '$lib/components/modals/top-up/CanisterTopUpModal.svelte';
+	import CanisterTopUpModal from '$lib/components/modals/cycles/top-up/CanisterTopUpModal.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';

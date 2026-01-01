@@ -102,7 +102,7 @@
 </Modal>
 
 <style lang="scss">
-	@use '../../styles/mixins/media';
+	@use '../../../styles/mixins/media';
 
 	.card-container {
 		padding: var(--padding-2x) var(--padding-2x) 0 0;

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import IconSatellite from '$lib/components/icons/IconSatellite.svelte';
-	import CanisterTopUpModal from '$lib/components/modals/top-up/CanisterTopUpModal.svelte';
+	import CanisterTopUpModal from '$lib/components/modals/cycles/top-up/CanisterTopUpModal.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { JunoModalTopUpSatelliteDetail, JunoModalDetail } from '$lib/types/modal';

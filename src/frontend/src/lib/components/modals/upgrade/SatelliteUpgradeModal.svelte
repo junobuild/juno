@@ -3,7 +3,7 @@
 	import { AnonymousIdentity } from '@icp-sdk/core/agent';
 	import { type UpgradeCodeParams, upgradeSatellite } from '@junobuild/admin';
 	import { compare } from 'semver';
-	import CanisterUpgradeModal from '$lib/components/modals/CanisterUpgradeModal.svelte';
+	import CanisterUpgradeModal from '$lib/components/modals/upgrade/CanisterUpgradeModal.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import { SATELLITE_v0_0_7, SATELLITE_v0_0_9 } from '$lib/constants/version.constants';
 	import { authIdentity } from '$lib/derived/auth.derived';

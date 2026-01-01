@@ -2,7 +2,7 @@
 	import { nonNullish } from '@dfinity/utils';
 	import type { Principal } from '@icp-sdk/core/principal';
 	import { depositCycles } from '$lib/api/orbiter.api';
-	import CanisterTransferCyclesModal from '$lib/components/modals/CanisterTransferCyclesModal.svelte';
+	import CanisterTransferCyclesModal from '$lib/components/modals/cycles/transfer/CanisterTransferCyclesModal.svelte';
 	import { authIdentity } from '$lib/derived/auth.derived';
 	import { orbiterStore } from '$lib/derived/orbiter.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';

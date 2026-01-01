@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { nonNullish, fromNullishNullable } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
-	import MonitoringSentence from '$lib/components/modals/MonitoringSentence.svelte';
+	import MonitoringSentence from '$lib/components/modals/monitoring/MonitoringSentence.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import {
 		missionControlConfigMonitoring,

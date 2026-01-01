@@ -6,10 +6,17 @@
 		setSatellitesController
 	} from '$lib/api/mission-control.api';
 	import { listControllers } from '$lib/api/satellites.api';
-	import Controllers from '$lib/components/access-keys/AccessKeys.svelte';
+	import AccessKeys from '$lib/components/access-keys/AccessKeys.svelte';
 	import { authIdentity } from '$lib/derived/auth.derived';
+	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
+	import {
+		addAccessKey,
+		type AddAccessKeyWithDevFn,
+		type AddAccessKeyWithMissionControlFn
+	} from '$lib/services/access-keys/key.add.services';
+	import { addSatellitesAccessKey } from '$lib/services/access-keys/satellites.key.add.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import type { SetAccessKeyParams } from '$lib/types/controllers';
+	import type { AddAccessKeyResult, SetAccessKeyParams } from '$lib/types/controllers';
 	import type { MissionControlId } from '$lib/types/mission-control';
 	import type { Satellite } from '$lib/types/satellite';
 
@@ -32,19 +39,36 @@
 			identity: $authIdentity
 		});
 
-	const add = (
-		params: {
-			missionControlId: MissionControlId;
-		} & SetAccessKeyParams
-	): Promise<void> =>
-		setSatellitesController({
-			...params,
-			satelliteIds: [satellite.satellite_id],
-			identity: $authIdentity
+	const add = async (accessKey: SetAccessKeyParams): Promise<AddAccessKeyResult> => {
+		const satelliteIds = [satellite.satellite_id];
+
+		const addAccessKeyWithMissionControlFn: AddAccessKeyWithMissionControlFn = async (params) => {
+			await setSatellitesController({
+				...accessKey,
+				...params,
+				satelliteIds
+			});
+		};
+
+		const addAccessKeyWithDevFn: AddAccessKeyWithDevFn = async (params) => {
+			await addSatellitesAccessKey({
+				...accessKey,
+				...params,
+				satelliteIds
+			});
+		};
+
+		return await addAccessKey({
+			identity: $authIdentity,
+			missionControlId: $missionControlId,
+			accessKey,
+			addAccessKeyWithMissionControlFn,
+			addAccessKeyWithDevFn
 		});
+	};
 </script>
 
-<Controllers
+<AccessKeys
 	{add}
 	{list}
 	{remove}

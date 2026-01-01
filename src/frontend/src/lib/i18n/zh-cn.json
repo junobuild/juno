@@ -600,6 +600,7 @@
 		"hosting_switch_memory": "切换托管存储内存时发生错误。",
 		"controllers_listing": "获取密钥列表时发生错误。",
 		"controllers_no_selection": "未选择要删除的密钥。",
+		"controllers_add": "添加访问密钥时发生意外错误。",
 		"controllers_delete": "删除密钥时发生意外错误。",
 		"data_delete": "删除时发生意外错误。",
 		"key_invalid": "密钥无效或为空。",

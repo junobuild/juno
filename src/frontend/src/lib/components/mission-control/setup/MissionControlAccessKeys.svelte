@@ -7,10 +7,15 @@
 		listMissionControlControllers,
 		setMissionControlController
 	} from '$lib/api/mission-control.api';
-	import Controllers from '$lib/components/access-keys/AccessKeys.svelte';
+	import AccessKeys from '$lib/components/access-keys/AccessKeys.svelte';
 	import { authIdentity } from '$lib/derived/auth.derived';
+	import {
+		addAccessKey,
+		type AddAccessKeyWithMissionControlFn
+	} from '$lib/services/access-keys/key.add.services';
+	import { addMissionControlAccessKey } from '$lib/services/access-keys/mission-control.key.add.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import type { SetAccessKeyParams } from '$lib/types/controllers';
+	import type { AddAccessKeyResult, SetAccessKeyParams } from '$lib/types/controllers';
 	import type { MissionControlId } from '$lib/types/mission-control';
 
 	interface Props {
@@ -27,11 +32,12 @@
 		controller: Principal;
 	}): Promise<void> => deleteMissionControlController({ ...params, identity: $authIdentity });
 
-	const add = (
-		params: {
-			missionControlId: MissionControlId;
-		} & SetAccessKeyParams
-	): Promise<void> => setMissionControlController({ ...params, identity: $authIdentity });
+	const add = async (accessKey: SetAccessKeyParams): Promise<AddAccessKeyResult> =>
+		await addMissionControlAccessKey({
+			identity: $authIdentity,
+			missionControlId,
+			...accessKey
+		});
 
 	const pseudoAdminController: MissionControlDid.Controller = {
 		created_at: 0n,
@@ -54,7 +60,7 @@
 	]);
 </script>
 
-<Controllers
+<AccessKeys
 	{add}
 	{extraControllers}
 	{list}

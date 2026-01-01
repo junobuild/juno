@@ -599,6 +599,7 @@
 		"hosting_switch_memory": "Error while switching hosting storage memory.",
 		"controllers_listing": "Error while listing the access keys.",
 		"controllers_no_selection": "No access key to delete selected.",
+		"controllers_add": "Unexpected error(s) while adding the access key.",
 		"controllers_delete": "Unexpected error(s) while deleting the access key.",
 		"data_delete": "Unexpected error(s) while deleting.",
 		"key_invalid": "Key is invalid or empty.",

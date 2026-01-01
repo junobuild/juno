@@ -22,7 +22,7 @@ import {
 	MISSION_CONTROL_v0_0_5
 } from '$lib/constants/version.constants';
 import { loadDataStore } from '$lib/services/_loader.services';
-import { mapSatellitesForControllersFn } from '$lib/services/access-keys/satellites.key.admin.services';
+import { mapSatellitesForControllersFn } from '$lib/services/access-keys/satellites.key.map.services';
 import { loadSatellites } from '$lib/services/mission-control/mission-control.satellites.services';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
@@ -76,7 +76,7 @@ export const setMissionControlControllerForVersion = async ({
 
 	await missionControlController({
 		missionControlId,
-		controllerId: accessKeyId,
+		accessKeyId,
 		profile,
 		scope: 'admin',
 		identity
@@ -105,7 +105,7 @@ export const setSatellitesControllerForVersion = async ({
 					setSatellitesController({
 						satelliteIds: setSatelliteIds,
 						missionControlId,
-						controllerId: accessKeyId,
+						accessKeyId,
 						profile,
 						scope: 'admin',
 						identity
@@ -117,7 +117,7 @@ export const setSatellitesControllerForVersion = async ({
 					addSatellitesController003({
 						satelliteIds: addSatellitesIds,
 						missionControlId,
-						controllerId: accessKeyId,
+						accessKeyId,
 						profile,
 						scope: 'admin',
 						identity

@@ -2,7 +2,6 @@ import type { ConsoleActor } from '$declarations';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import { AnonymousIdentity } from '@icp-sdk/core/agent';
 import { ECDSAKeyIdentity, Ed25519KeyIdentity } from '@icp-sdk/core/identity';
-import type { Principal } from '@icp-sdk/core/principal';
 import { ANONYMOUS_ERROR_MSG } from '../../../constants/console-tests.constants';
 import { mockClientId } from '../../../mocks/jwt.mocks';
 import { generateNonce } from '../../../utils/auth-nonce-tests.utils';
@@ -12,16 +11,12 @@ import { makeMockGoogleOpenIdJwt } from '../../../utils/jwt-tests.utils';
 describe('Console > Authentication > Guard', () => {
 	let pic: PocketIc;
 	let actor: Actor<ConsoleActor>;
-	let canisterId: Principal;
-	let controller: Ed25519KeyIdentity;
 
 	beforeAll(async () => {
-		const { pic: p, actor: c, canisterId: cId, controller: cO } = await setupConsole({});
+		const { pic: p, actor: c } = await setupConsole({});
 
 		pic = p;
 		actor = c;
-		canisterId = cId;
-		controller = cO;
 	});
 
 	afterAll(async () => {

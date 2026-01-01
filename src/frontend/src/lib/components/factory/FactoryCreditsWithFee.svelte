@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { fromNullable } from '@dfinity/utils';
 	import type { Snippet } from 'svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import GetICPInfo from '$lib/components/wallet/GetICPInfo.svelte';
@@ -14,7 +13,6 @@
 	} from '$lib/derived/wallet/balance.derived';
 	import { icpToUsd } from '$lib/derived/wallet/exchange.derived';
 	import type { SelectedToken, SelectedWallet } from '$lib/schemas/wallet.schema';
-	import type { JunoModalCreateSegmentDetail, JunoModalDetail } from '$lib/types/modal';
 	import type { Option } from '$lib/types/utils';
 	import { formatCyclesToHTML } from '$lib/utils/cycles.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';

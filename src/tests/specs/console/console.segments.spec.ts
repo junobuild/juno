@@ -16,11 +16,7 @@ describe('Console > Segments', () => {
 	let segmentId: Principal;
 
 	beforeAll(async () => {
-		const {
-			pic: p,
-			actor: c,
-			controller: cO
-		} = await setupConsole({
+		const { pic: p, actor: c } = await setupConsole({
 			withApplyRateTokens: true,
 			withLedger: true,
 			withSegments: true,

@@ -23,7 +23,7 @@
 		emit({
 			message: 'junoModal',
 			detail: {
-				type: 'create_controller',
+				type: 'create_access_key',
 				detail: {
 					add,
 					load,

@@ -4,11 +4,11 @@
 	import { run } from 'svelte/legacy';
 	import { writable } from 'svelte/store';
 	import Analytics from '$lib/components/analytics/Analytics.svelte';
-	import AnalyticsSettings from '$lib/components/analytics/AnalyticsSettings.svelte';
 	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
 	import Loaders from '$lib/components/loaders/Loaders.svelte';
 	import Orbiter from '$lib/components/orbiter/Orbiter.svelte';
 	import OrbiterConfig from '$lib/components/orbiter/OrbiterConfig.svelte';
+	import OrbiterSettings from '$lib/components/orbiter/setup/OrbiterSettings.svelte';
 	import NoTabs from '$lib/components/ui/NoTabs.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
 	import Warnings from '$lib/components/warning/Warnings.svelte';
@@ -78,7 +78,7 @@
 			{:else if $store.tabId === $store.tabs[2].id && nonNullish($orbiterStore)}
 				<OrbiterConfig orbiterId={$orbiterStore.orbiter_id} />
 
-				<AnalyticsSettings orbiterId={$orbiterStore.orbiter_id} />
+				<OrbiterSettings orbiterId={$orbiterStore.orbiter_id} />
 			{/if}
 		</Loaders>
 	</TabsCmp>

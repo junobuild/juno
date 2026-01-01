@@ -6,7 +6,7 @@
 	import MissionControlGuard from '$lib/components/guards/MissionControlGuard.svelte';
 	import Loaders from '$lib/components/loaders/Loaders.svelte';
 	import MissionControl from '$lib/components/mission-control/MissionControl.svelte';
-	import MissionControlSettings from '$lib/components/mission-control/MissionControlSettings.svelte';
+	import MissionControlSettings from '$lib/components/mission-control/setup/MissionControlSettings.svelte';
 	import NoTabs from '$lib/components/ui/NoTabs.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
 	import Warnings from '$lib/components/warning/Warnings.svelte';

@@ -6,7 +6,7 @@
 	import SatelliteGuard from '$lib/components/guards/SatelliteGuard.svelte';
 	import Loaders from '$lib/components/loaders/Loaders.svelte';
 	import SatelliteOverview from '$lib/components/satellites/SatelliteOverview.svelte';
-	import SatelliteSettings from '$lib/components/satellites/SatelliteSettings.svelte';
+	import SatelliteSettings from '$lib/components/satellites/setup/SatelliteSettings.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
 	import Warnings from '$lib/components/warning/Warnings.svelte';
 	import { satelliteStore } from '$lib/derived/satellite/satellite.derived';

@@ -173,7 +173,7 @@ export interface JunoModal<T extends JunoModalDetail> {
 		| 'add_custom_domain'
 		| 'restore_snapshot'
 		| 'create_snapshot'
-		| 'create_controller'
+		| 'create_access_key'
 		| 'edit_canister_settings'
 		| 'edit_orbiter_config'
 		| 'edit_auth_config'

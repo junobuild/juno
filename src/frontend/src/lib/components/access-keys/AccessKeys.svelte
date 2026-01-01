@@ -3,9 +3,9 @@
 	import type { Principal } from '@icp-sdk/core/principal';
 	import { onMount } from 'svelte';
 	import type { MissionControlDid } from '$declarations';
-	import ControllerAdd from '$lib/components/controllers/ControllerAdd.svelte';
-	import ControllerDelete from '$lib/components/controllers/ControllerDelete.svelte';
-	import ControllerInfo from '$lib/components/controllers/ControllerInfo.svelte';
+	import ControllerAdd from '$lib/components/access-keys/AccessKeyAdd.svelte';
+	import ControllerDelete from '$lib/components/access-keys/AccessKeyDelete.svelte';
+	import ControllerInfo from '$lib/components/access-keys/AccessKeyInfo.svelte';
 	import ButtonTableAction from '$lib/components/ui/ButtonTableAction.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import { authIdentity } from '$lib/derived/auth.derived';

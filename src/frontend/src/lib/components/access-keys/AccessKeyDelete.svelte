@@ -35,6 +35,7 @@
 			return;
 		}
 
+		// TODO: if ($missionControlIdNotLoaded) {
 		if (isNullish($missionControlId)) {
 			toasts.error({
 				text: $i18n.errors.no_mission_control

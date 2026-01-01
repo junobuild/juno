@@ -19,8 +19,8 @@
 	import CreateMonitoringStrategyModal from '$lib/components/modals/monitoring/CreateMonitoringStrategyModal.svelte';
 	import MonitoringDetailsModal from '$lib/components/modals/monitoring/MonitoringDetailsModal.svelte';
 	import StopMonitoringStrategyModal from '$lib/components/modals/monitoring/StopMonitoringStrategyModal.svelte';
+	import AccessKeyCreateModal from '$lib/components/modals/setup/AccessKeyCreateModal.svelte';
 	import CanisterEditSettingsModal from '$lib/components/modals/setup/CanisterEditSettingsModal.svelte';
-	import ControllerCreateModal from '$lib/components/modals/setup/ControllerCreateModal.svelte';
 	import OrbiterConfigModal from '$lib/components/modals/setup/OrbiterConfigModal.svelte';
 	import CanisterRestoreSnapshotModal from '$lib/components/modals/snapshot/CanisterRestoreSnapshotModal.svelte';
 	import CreateSnapshotModal from '$lib/components/modals/snapshot/CreateSnapshotModal.svelte';
@@ -66,8 +66,8 @@
 	<CustomDomainModal detail={modal.detail} onclose={close} />
 {/if}
 
-{#if modal?.type === 'create_controller' && nonNullish(modal.detail)}
-	<ControllerCreateModal detail={modal.detail} onclose={close} />
+{#if modal?.type === 'create_access_key' && nonNullish(modal.detail)}
+	<AccessKeyCreateModal detail={modal.detail} onclose={close} />
 {/if}
 
 {#if modal?.type === 'edit_canister_settings' && nonNullish(modal.detail)}

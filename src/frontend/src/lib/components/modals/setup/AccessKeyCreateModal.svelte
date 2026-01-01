@@ -46,6 +46,7 @@
 	const addController = async ($event: SubmitEvent) => {
 		$event.preventDefault();
 
+		// TODO: if ($missionControlIdNotLoaded) {
 		if (isNullish($missionControlId)) {
 			toasts.error({
 				text: $i18n.errors.no_mission_control
@@ -95,7 +96,7 @@
 		wizardBusy.stop();
 	};
 
-	let action = $state('generate');
+	let action = $state<'generate' | 'add'>('generate');
 	$effect(() => {
 		action;
 

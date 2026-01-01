@@ -1,9 +1,10 @@
 import { idlFactoryConsole, type ConsoleActor, type ConsoleDid } from '$declarations';
 import { PocketIc, type Actor } from '@dfinity/pic';
 import { assertNonNullish, fromNullable } from '@dfinity/utils';
-import type { Identity } from '@icp-sdk/core/agent';
+import { AnonymousIdentity, type Identity } from '@icp-sdk/core/agent';
 import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import { inject } from 'vitest';
+import { ANONYMOUS_ERROR_MSG } from '../../constants/console-tests.constants';
 import { deploySegments, initAccounts } from '../../utils/console-tests.utils';
 import { CONSOLE_WASM_PATH } from '../../utils/setup-tests.utils';
 
@@ -37,6 +38,24 @@ describe('Console > Accounts', () => {
 	});
 
 	describe('Guard', () => {
+		describe('Anonymous', () => {
+			beforeEach(() => {
+				actor.setIdentity(new AnonymousIdentity());
+			});
+
+			it('should throw error on get_account', async () => {
+				const { get_account } = actor;
+
+				await expect(get_account()).rejects.toThrowError(ANONYMOUS_ERROR_MSG);
+			});
+
+			it('should throw error on get_or_init_account', async () => {
+				const { get_or_init_account } = actor;
+
+				await expect(get_or_init_account()).rejects.toThrowError(ANONYMOUS_ERROR_MSG);
+			});
+		});
+
 		it('should throw errors if too many accounts are created quickly', async () => {
 			await expect(initAccounts({ actor, pic, length: 2 })).rejects.toThrowError(
 				new RegExp('Rate limit reached, try again later', 'i')

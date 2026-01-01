@@ -1,19 +1,16 @@
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
-import type { AddAccessKeyParams, AddAccessKeyResult } from '$lib/types/access-keys';
+import type {
+	AccessKeyWithDevFn,
+	AccessKeyWithMissionControlFn,
+	AddAccessKeyParams,
+	AddAccessKeyResult
+} from '$lib/types/access-keys';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { MissionControlId } from '$lib/types/mission-control';
 import type { Option } from '$lib/types/utils';
 import { isNullish, nonNullish } from '@dfinity/utils';
-import type { Identity } from '@icp-sdk/core/agent';
 import { get } from 'svelte/store';
-
-export type AddAccessKeyWithMissionControlFn = (params: {
-	identity: Identity;
-	missionControlId: MissionControlId;
-}) => Promise<void>;
-
-export type AddAccessKeyWithDevFn = (params: { identity: Identity }) => Promise<void>;
 
 export const addAccessKey = async ({
 	missionControlId,
@@ -24,8 +21,8 @@ export const addAccessKey = async ({
 	identity: OptionIdentity;
 	missionControlId: Option<MissionControlId>;
 	accessKey: AddAccessKeyParams;
-	addAccessKeyWithMissionControlFn: AddAccessKeyWithMissionControlFn;
-	addAccessKeyWithDevFn: AddAccessKeyWithDevFn;
+	addAccessKeyWithMissionControlFn: AccessKeyWithMissionControlFn;
+	addAccessKeyWithDevFn: AccessKeyWithDevFn;
 }): Promise<AddAccessKeyResult> => {
 	// TODO: duplicate code
 	if (missionControlId === undefined) {

@@ -9,13 +9,14 @@
 	} from '$lib/api/mission-control.api';
 	import AccessKeys from '$lib/components/access-keys/AccessKeys.svelte';
 	import { authIdentity } from '$lib/derived/auth.derived';
-	import {
-		addAccessKey,
-		type AddAccessKeyWithMissionControlFn
-	} from '$lib/services/access-keys/key.add.services';
+	import { addAccessKey } from '$lib/services/access-keys/key.add.services';
 	import { addMissionControlAccessKey } from '$lib/services/access-keys/mission-control.key.add.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import type { AddAccessKeyResult, AddAccessKeyParams } from '$lib/types/access-keys';
+	import type {
+		AddAccessKeyResult,
+		AddAccessKeyParams,
+		AccessKeyWithMissionControlFn
+	} from '$lib/types/access-keys';
 	import type { MissionControlId } from '$lib/types/mission-control';
 
 	interface Props {

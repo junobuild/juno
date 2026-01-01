@@ -6,15 +6,16 @@
 	import AccessKeys from '$lib/components/access-keys/AccessKeys.svelte';
 	import { authIdentity } from '$lib/derived/auth.derived';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
-	import {
-		addAccessKey,
-		type AddAccessKeyWithDevFn,
-		type AddAccessKeyWithMissionControlFn
-	} from '$lib/services/access-keys/key.add.services';
+	import { addAccessKey } from '$lib/services/access-keys/key.add.services';
 	import { addOrbiterAccessKey } from '$lib/services/access-keys/orbiter.key.add.services';
 	import { addSatellitesAccessKey } from '$lib/services/access-keys/satellites.key.add.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import type { AddAccessKeyResult, AddAccessKeyParams } from '$lib/types/access-keys';
+	import type {
+		AddAccessKeyResult,
+		AddAccessKeyParams,
+		AccessKeyWithDevFn,
+		AccessKeyWithMissionControlFn
+	} from '$lib/types/access-keys';
 	import type { MissionControlId } from '$lib/types/mission-control';
 
 	interface Props {
@@ -39,7 +40,7 @@
 	const add = async (accessKey: AddAccessKeyParams): Promise<AddAccessKeyResult> => {
 		const orbiterIds = [orbiterId];
 
-		const addAccessKeyWithMissionControlFn: AddAccessKeyWithMissionControlFn = async (params) => {
+		const addAccessKeyWithMissionControlFn: AccessKeyWithMissionControlFn = async (params) => {
 			await setOrbitersController({
 				...accessKey,
 				...params,
@@ -47,7 +48,7 @@
 			});
 		};
 
-		const addAccessKeyWithDevFn: AddAccessKeyWithDevFn = async (params) => {
+		const addAccessKeyWithDevFn: AccessKeyWithDevFn = async (params) => {
 			await addOrbiterAccessKey({
 				...accessKey,
 				...params,

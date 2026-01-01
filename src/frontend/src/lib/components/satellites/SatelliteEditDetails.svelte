@@ -3,6 +3,7 @@
 	import IconEdit from '$lib/components/icons/IconEdit.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
+	import { authIdentity } from '$lib/derived/auth.derived';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import { setSatelliteMetadata } from '$lib/services/metadata.services';
 	import { busy, isBusy } from '$lib/stores/app/busy.store';
@@ -10,7 +11,6 @@
 	import { toasts } from '$lib/stores/app/toasts.store';
 	import type { Satellite, SatelliteUiTags } from '$lib/types/satellite';
 	import { satelliteEnvironment, satelliteName, satelliteTags } from '$lib/utils/satellite.utils';
-	import {authStore} from "$lib/stores/auth.store";
 
 	interface Props {
 		satellite: Satellite;
@@ -51,7 +51,7 @@
 
 		const { success } = await setSatelliteMetadata({
 			missionControlId: $missionControlId,
-			identity: $authStore.identity,
+			identity: $authIdentity,
 			satellite,
 			metadata: {
 				name: satName,

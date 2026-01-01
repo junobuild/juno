@@ -330,7 +330,8 @@
 		"initializing": "正在初始化 Mission Control...",
 		"ready": "您的 Mission Control 已就绪！",
 		"attaching": "正在与任务控制中心共享现有模块...",
-		"warn_attaching": "无法与任务控制中心共享以下模块："
+		"warn_attaching": "无法与任务控制中心共享以下模块：",
+		"satellite_metadata_update": "在任务控制中心未找到 Satellite。这是意外情况。"
 	},
 	"wallet": {
 		"title": "钱包",

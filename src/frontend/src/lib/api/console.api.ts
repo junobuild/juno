@@ -1,9 +1,11 @@
 import type { ConsoleDid } from '$declarations';
-import type { SegmentKind } from '$declarations/console/console.did';
+import type { SegmentKind, SegmentType } from '$declarations/console/console.did';
 import type { GetActorParams } from '$lib/api/actors/actor.api';
 import { getConsoleActor } from '$lib/api/actors/actor.juno.api';
 import type { OptionIdentity } from '$lib/types/itentity';
+import type { Metadata } from '$lib/types/metadata';
 import { fromNullable } from '@dfinity/utils';
+import type { Principal } from '@icp-sdk/core/principal';
 
 export const getOrInitAccount = async (
 	actorParams: Omit<GetActorParams, 'certified'>
@@ -56,4 +58,23 @@ const getFee = async ({
 }): Promise<ConsoleDid.FactoryFee> => {
 	const { get_fee } = await getConsoleActor({ identity });
 	return await get_fee(segmentKind);
+};
+
+export const setSegmentMetadata = async ({
+	segmentId,
+	segmentType,
+	metadata,
+	identity
+}: {
+	segmentId: Principal;
+	segmentType: SegmentType;
+	metadata: Metadata;
+	identity: OptionIdentity;
+}): Promise<ConsoleDid.Segment> => {
+	const { set_segment_metadata } = await getConsoleActor({ identity });
+	return set_segment_metadata({
+		segment_id: segmentId,
+		segment_type: segmentType,
+		metadata
+	});
 };

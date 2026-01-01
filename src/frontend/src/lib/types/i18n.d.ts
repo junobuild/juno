@@ -339,6 +339,7 @@ interface I18nMission_control {
 	ready: string;
 	attaching: string;
 	warn_attaching: string;
+	warn_satellite_metadata_update: string;
 }
 
 interface I18nWallet {

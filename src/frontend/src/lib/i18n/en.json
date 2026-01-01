@@ -330,7 +330,8 @@
 		"initializing": "Initializing Mission Control...",
 		"ready": "Your Mission Control is ready!",
 		"attaching": "Sharing existing modules with Mission Control...",
-		"warn_attaching": "Failed to share the following modules with Mission Control:"
+		"warn_attaching": "Failed to share the following modules with Mission Control:",
+		"warn_satellite_metadata_update": "Satellite not found in Mission Control. This is unexpected."
 	},
 	"wallet": {
 		"title": "Wallet",

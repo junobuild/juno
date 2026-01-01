@@ -4,7 +4,7 @@ import {
 	setAdminAccessKey,
 	type SetAdminAccessKeyResult
 } from '$lib/services/access-keys/key.admin.services';
-import type { SetAccessKeyParams } from '$lib/types/controllers';
+import type { SetAdminAccessKeyParams } from '$lib/types/controllers';
 import type { OrbiterId } from '$lib/types/orbiter';
 import type { Identity } from '@icp-sdk/core/agent';
 import type { Principal } from '@icp-sdk/core/principal';
@@ -17,7 +17,7 @@ export const setOrbiterAdminAccessKey = async ({
 }: {
 	orbiterIds: Principal[];
 	identity: Identity;
-} & SetAccessKeyParams) => {
+} & SetAdminAccessKeyParams) => {
 	const setOrbiterAdminAccessKeyWithIcMgmt = async (
 		orbiterId: OrbiterId
 	): Promise<SetAdminAccessKeyResult> => {

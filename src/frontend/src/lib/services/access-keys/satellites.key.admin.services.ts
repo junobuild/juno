@@ -5,7 +5,7 @@ import {
 	setAdminAccessKey,
 	type SetAdminAccessKeyResult
 } from '$lib/services/access-keys/key.admin.services';
-import type { SetAccessKeyParams } from '$lib/types/controllers';
+import type { SetAdminAccessKeyParams } from '$lib/types/controllers';
 import type { SatelliteId } from '$lib/types/satellite';
 import { container } from '$lib/utils/juno.utils';
 import type { Identity } from '@icp-sdk/core/agent';
@@ -21,7 +21,7 @@ export const setSatellitesAdminAccessKey = async ({
 }: {
 	satelliteIds: SatelliteId[];
 	identity: Identity;
-} & SetAccessKeyParams) => {
+} & SetAdminAccessKeyParams) => {
 	const { setSatelliteIds, addSatellitesIds } = await mapSatellitesForControllersFn({
 		satelliteIds,
 		identity

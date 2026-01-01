@@ -64,7 +64,6 @@ const setCliControllersWithoutMissionControl = async ({
 						accessKeyId: controllerId,
 						satelliteIds: selectedSatellites.map((s) => s[0]),
 						profile,
-						scope: 'admin',
 						identity
 					})
 				]
@@ -75,7 +74,6 @@ const setCliControllersWithoutMissionControl = async ({
 						accessKeyId: controllerId,
 						orbiterIds: selectedOrbiters.map((s) => s[0]),
 						profile,
-						scope: 'admin',
 						identity
 					})
 				]

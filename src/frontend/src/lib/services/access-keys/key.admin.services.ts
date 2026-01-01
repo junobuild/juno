@@ -2,7 +2,7 @@ import type { ICDid } from '$declarations';
 import { canisterStatus, canisterUpdateSettings } from '$lib/api/ic.api';
 import { MAX_NUMBER_OF_SATELLITE_CONTROLLERS } from '$lib/constants/canister.constants';
 import { i18n } from '$lib/stores/app/i18n.store';
-import type { SetAccessKeyParams } from '$lib/types/controllers';
+import type { SetAdminAccessKeyParams } from '$lib/types/controllers';
 import { toSetController } from '$lib/utils/controllers.utils';
 import { toNullable } from '@dfinity/utils';
 import type { Identity } from '@icp-sdk/core/agent';
@@ -26,7 +26,6 @@ export const setAdminAccessKey = async ({
 	attachFn,
 	canisterId,
 	accessKeyId: controllerIdParam,
-	scope,
 	profile,
 	identity
 }: {
@@ -34,7 +33,7 @@ export const setAdminAccessKey = async ({
 	attachFn?: () => Promise<void>;
 	canisterId: Principal;
 	identity: Identity;
-} & SetAccessKeyParams): Promise<SetAdminAccessKeyResult> => {
+} & SetAdminAccessKeyParams): Promise<SetAdminAccessKeyResult> => {
 	try {
 		const controllerId = Principal.isPrincipal(controllerIdParam)
 			? controllerIdParam
@@ -54,7 +53,7 @@ export const setAdminAccessKey = async ({
 			args: {
 				controller: toSetController({
 					profile,
-					scope
+					scope: 'admin'
 				}),
 				controllers: [controllerId]
 			}

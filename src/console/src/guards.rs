@@ -1,9 +1,10 @@
+use crate::accounts::get_existing_account;
 use crate::store::heap::get_controllers;
 use candid::Principal;
 use junobuild_shared::controllers::is_admin_controller;
 use junobuild_shared::env::OBSERVATORY;
 use junobuild_shared::ic::api::caller;
-use junobuild_shared::utils::principal_equal;
+use junobuild_shared::utils::{principal_equal, principal_not_anonymous};
 
 pub fn caller_is_admin_controller() -> Result<(), String> {
     let caller = caller();
@@ -24,5 +25,23 @@ pub fn caller_is_observatory() -> Result<(), String> {
         Ok(())
     } else {
         Err("Caller is not the observatory.".to_string())
+    }
+}
+
+pub fn caller_has_account() -> Result<(), String> {
+    let caller = caller();
+
+    get_existing_account(&caller)?;
+
+    Ok(())
+}
+
+pub fn caller_is_not_anonymous() -> Result<(), String> {
+    let caller = caller();
+
+    if principal_not_anonymous(caller) {
+        Ok(())
+    } else {
+        Err("Anonymous caller is not allowed.".to_string())
     }
 }

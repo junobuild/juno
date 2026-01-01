@@ -616,6 +616,7 @@ interface I18nErrors {
 	hosting_switch_memory: string;
 	controllers_listing: string;
 	controllers_no_selection: string;
+	controllers_add: string;
 	controllers_delete: string;
 	data_delete: string;
 	key_invalid: string;

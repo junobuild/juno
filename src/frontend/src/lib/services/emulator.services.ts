@@ -3,7 +3,7 @@ import {
 	emulatorObservatoryMonitoringOpenId,
 	getEmulatorMainIdentity
 } from '$lib/rest/emulator.rest';
-import { setSatellitesAdminAccessKey } from '$lib/services/access-keys/satellites.key.admin.services';
+import { addSatellitesAdminAccessKey } from '$lib/services/access-keys/satellites.key.add.services';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
 import type { SetAdminAccessKeyParams } from '$lib/types/controllers';
@@ -26,7 +26,7 @@ export const unsafeSetEmulatorControllerForSatellite = async ({
 	identity: Identity;
 }) => {
 	const add = (params: SetAdminAccessKeyParams): Promise<void> =>
-		setSatellitesAdminAccessKey({
+		addSatellitesAdminAccessKey({
 			...params,
 			identity,
 			satelliteIds: [satelliteId]

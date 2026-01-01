@@ -3,11 +3,19 @@
 	import type { MissionControlDid } from '$declarations';
 	import { deleteOrbitersController, setOrbitersController } from '$lib/api/mission-control.api';
 	import { listOrbiterControllers } from '$lib/api/orbiter.api';
-	import Controllers from '$lib/components/access-keys/AccessKeys.svelte';
+	import AccessKeys from '$lib/components/access-keys/AccessKeys.svelte';
 	import { authIdentity } from '$lib/derived/auth.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import type { SetAccessKeyParams } from '$lib/types/controllers';
+	import type { AddAccessKeyResult, SetAccessKeyParams } from '$lib/types/controllers';
 	import type { MissionControlId } from '$lib/types/mission-control';
+	import {
+		addAccessKey,
+		type AddAccessKeyWithDevFn,
+		type AddAccessKeyWithMissionControlFn
+	} from '$lib/services/access-keys/key.add.services';
+	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
+	import { addSatellitesAccessKey } from '$lib/services/access-keys/satellites.key.add.services';
+	import { addOrbiterAccessKey } from '$lib/services/access-keys/orbiter.key.add.services';
 
 	interface Props {
 		orbiterId: Principal;
@@ -28,19 +36,36 @@
 			identity: $authIdentity
 		});
 
-	const add = (
-		params: {
-			missionControlId: MissionControlId;
-		} & SetAccessKeyParams
-	): Promise<void> =>
-		setOrbitersController({
-			...params,
-			orbiterIds: [orbiterId],
-			identity: $authIdentity
+	const add = async (accessKey: SetAccessKeyParams): Promise<AddAccessKeyResult> => {
+		const orbiterIds = [orbiterId];
+
+		const addAccessKeyWithMissionControlFn: AddAccessKeyWithMissionControlFn = async (params) => {
+			await setOrbitersController({
+				...accessKey,
+				...params,
+				orbiterIds
+			});
+		};
+
+		const addAccessKeyWithDevFn: AddAccessKeyWithDevFn = async (params) => {
+			await addOrbiterAccessKey({
+				...accessKey,
+				...params,
+				orbiterIds
+			});
+		};
+
+		return await addAccessKey({
+			identity: $authIdentity,
+			missionControlId: $missionControlId,
+			accessKey,
+			addAccessKeyWithMissionControlFn,
+			addAccessKeyWithDevFn
 		});
+	};
 </script>
 
-<Controllers
+<AccessKeys
 	{add}
 	{list}
 	{remove}

@@ -1,7 +1,7 @@
 import type { MissionControlDid } from '$declarations';
 import { setOrbitersController as setOrbitersControllerWithMctrl } from '$lib/api/mission-control.api';
-import { setOrbiterAdminAccessKey } from '$lib/services/access-keys/orbiter.key.admin.services';
-import { setSatellitesAdminAccessKey } from '$lib/services/access-keys/satellites.key.admin.services';
+import { addOrbitersAdminAccessKey } from '$lib/services/access-keys/orbiter.key.add.services';
+import { addSatellitesAdminAccessKey } from '$lib/services/access-keys/satellites.key.add.services';
 import {
 	setMissionControlControllerForVersion,
 	setSatellitesControllerForVersion as setSatellitesControllerForVersionWithMctrl
@@ -60,7 +60,7 @@ const setCliControllersWithoutMissionControl = async ({
 	await Promise.all([
 		...(selectedSatellites.length > 0
 			? [
-					setSatellitesAdminAccessKey({
+					addSatellitesAdminAccessKey({
 						accessKeyId: controllerId,
 						satelliteIds: selectedSatellites.map((s) => s[0]),
 						profile,
@@ -70,7 +70,7 @@ const setCliControllersWithoutMissionControl = async ({
 			: []),
 		...(selectedOrbiters.length > 0
 			? [
-					setOrbiterAdminAccessKey({
+					addOrbitersAdminAccessKey({
 						accessKeyId: controllerId,
 						orbiterIds: selectedOrbiters.map((s) => s[0]),
 						profile,

@@ -14,6 +14,7 @@
 	import { toasts } from '$lib/stores/app/toasts.store';
 	import type { SetAccessKeyScope } from '$lib/types/controllers';
 	import type { JunoModalCreateControllerDetail, JunoModalDetail } from '$lib/types/modal';
+	import { authIdentity } from '$lib/derived/auth.derived';
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -26,44 +27,36 @@
 
 	let step: 'init' | 'in_progress' | 'ready' | 'error' = $state('init');
 
-	let controllerId = $state('');
+	let accessKeyId = $state('');
 	let scope = $state<SetAccessKeyScope>('write');
 	let identity: string | undefined = $state();
 
-	const initController = (): string | undefined => {
+	const initAccessKey = (): string | undefined => {
 		if (action === 'add') {
-			return controllerId;
+			return accessKeyId;
 		}
 
 		const key = Ed25519KeyIdentity.generate();
 
 		identity = btoa(JSON.stringify({ token: key.toJSON() }));
-		controllerId = key.getPrincipal().toText();
+		accessKeyId = key.getPrincipal().toText();
 
-		return controllerId;
+		return accessKeyId;
 	};
 
 	const addController = async ($event: SubmitEvent) => {
 		$event.preventDefault();
 
-		// TODO: if ($missionControlIdNotLoaded) {
-		if (isNullish($missionControlId)) {
-			toasts.error({
-				text: $i18n.errors.no_mission_control
-			});
-			return;
-		}
+		const accessKeyId = initAccessKey();
 
-		const controller = initController();
-
-		if (isNullish(controller) || controller === '') {
+		if (isNullish(accessKeyId) || accessKeyId === '') {
 			toasts.error({
 				text: $i18n.errors.controller_invalid
 			});
 			return;
 		}
 
-		if (REVOKED_CONTROLLERS.includes(controller)) {
+		if (REVOKED_CONTROLLERS.includes(accessKeyId)) {
 			toasts.error({
 				text: 'The controller has been revoked for security reason!'
 			});
@@ -73,34 +66,29 @@
 		wizardBusy.start();
 		step = 'in_progress';
 
-		try {
-			await add({
-				missionControlId: $missionControlId,
-				accessKeyId: controller,
-				profile: undefined,
-				scope
-			});
-
-			await load();
-
-			step = 'ready';
-		} catch (err: unknown) {
-			toasts.error({
-				text: $i18n.errors.controllers_delete,
-				detail: err
-			});
-
-			step = 'error';
-		}
+		const { result } = await add({
+			accessKeyId,
+			profile: undefined,
+			scope
+		});
 
 		wizardBusy.stop();
+
+		if (result === 'error') {
+			step = 'error';
+			return;
+		}
+
+		await load();
+
+		step = 'ready';
 	};
 
 	let action = $state<'generate' | 'add'>('generate');
 	$effect(() => {
 		action;
 
-		untrack(() => (controllerId = ''));
+		untrack(() => (accessKeyId = ''));
 	});
 </script>
 
@@ -132,7 +120,7 @@
 						{#snippet label()}
 							{$i18n.controllers.new_controller_id}
 						{/snippet}
-						<Identifier identifier={controllerId} shorten={false} small={false} />
+						<Identifier identifier={accessKeyId} shorten={false} small={false} />
 					</Value>
 				</div>
 
@@ -187,7 +175,7 @@
 				placeholder={$i18n.controllers.controller_id_placeholder}
 				required={action === 'add'}
 				type="text"
-				bind:value={controllerId}
+				bind:value={accessKeyId}
 			/>
 
 			<div class="scope">
@@ -204,7 +192,7 @@
 			</div>
 
 			<button
-				disabled={action === 'add' && (isNullish(controllerId) || controllerId === '')}
+				disabled={action === 'add' && (isNullish(accessKeyId) || accessKeyId === '')}
 				type="submit"
 			>
 				{$i18n.core.submit}

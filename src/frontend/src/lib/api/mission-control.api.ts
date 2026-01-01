@@ -25,6 +25,7 @@ export const setSatellitesController = async ({
 			missionControlId,
 			identity
 		});
+
 		await set_satellites_controllers(
 			satelliteIds,
 			[Principal.from(accessKeyId)],
@@ -72,6 +73,7 @@ export const setMissionControlController = async ({
 			missionControlId,
 			identity
 		});
+
 		await set_mission_control_controllers([Principal.from(accessKeyId)], toSetController(rest));
 	} catch (err: unknown) {
 		console.error('setMissionControlController:', missionControlId.toText());
@@ -155,6 +157,7 @@ export const setOrbitersController = async ({
 			missionControlId,
 			identity
 		});
+
 		await set_orbiters_controllers(
 			orbiterIds,
 			[Principal.from(accessKeyId)],

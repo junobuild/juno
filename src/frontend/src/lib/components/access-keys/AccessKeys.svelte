@@ -3,9 +3,9 @@
 	import type { Principal } from '@icp-sdk/core/principal';
 	import { onMount } from 'svelte';
 	import type { MissionControlDid } from '$declarations';
-	import ControllerAdd from '$lib/components/access-keys/AccessKeyAdd.svelte';
-	import ControllerDelete from '$lib/components/access-keys/AccessKeyDelete.svelte';
-	import ControllerInfo from '$lib/components/access-keys/AccessKeyInfo.svelte';
+	import AccessKeyAdd from '$lib/components/access-keys/AccessKeyAdd.svelte';
+	import AccessKeyDelete from '$lib/components/access-keys/AccessKeyDelete.svelte';
+	import AccessKeyInfo from '$lib/components/access-keys/AccessKeyInfo.svelte';
 	import ButtonTableAction from '$lib/components/ui/ButtonTableAction.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import { authIdentity } from '$lib/derived/auth.derived';
@@ -13,7 +13,7 @@
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
 	import type { CanisterSegmentWithLabel } from '$lib/types/canister';
-	import type { SetAccessKeyParams } from '$lib/types/controllers';
+	import type { AddAccessKeyResult, SetAccessKeyParams } from '$lib/types/controllers';
 	import type { MissionControlId } from '$lib/types/mission-control';
 	import { metadataProfile } from '$lib/utils/metadata.utils';
 
@@ -23,11 +23,7 @@
 			missionControlId: MissionControlId;
 			controller: Principal;
 		}) => Promise<void>;
-		add: (
-			params: {
-				missionControlId: MissionControlId;
-			} & SetAccessKeyParams
-		) => Promise<void>;
+		add: (params: SetAccessKeyParams) => Promise<AddAccessKeyResult>;
 		segment: CanisterSegmentWithLabel;
 		// The canister and user are controllers of the mission control but not added in its state per default
 		extraControllers?: [Principal, MissionControlDid.Controller][];
@@ -132,11 +128,11 @@
 	</table>
 </div>
 
-<ControllerAdd {add} {load} {segment} />
+<AccessKeyAdd {add} {load} {segment} />
 
-<ControllerDelete {load} {remove} bind:selectedController bind:visible={visibleDelete} />
+<AccessKeyDelete {load} {remove} bind:selectedController bind:visible={visibleDelete} />
 
-<ControllerInfo bind:visible={visibleInfo} />
+<AccessKeyInfo bind:visible={visibleInfo} />
 
 <style lang="scss">
 	@use '../../styles/mixins/media';

@@ -4,17 +4,16 @@ import type {
 	CreateWithConfig,
 	CreateWithConfigAndName
 } from '$lib/types/factory';
+import type { OptionIdentity } from '$lib/types/itentity';
 import type { OrbiterId } from '$lib/types/orbiter';
 import type { SatelliteId } from '$lib/types/satellite';
-import type { Option } from '$lib/types/utils';
 import { assertNonNullish, toNullable } from '@dfinity/utils';
-import type { Identity } from '@icp-sdk/core/agent';
 
 export const createMissionControlWithConfig = async ({
 	identity,
 	config: { subnetId }
 }: {
-	identity: Option<Identity>;
+	identity: OptionIdentity;
 	config: CreateWithConfig;
 }): Promise<SatelliteId> => {
 	assertNonNullish(identity);
@@ -33,7 +32,7 @@ export const createSatelliteWithConfig = async ({
 	identity,
 	config: { name, subnetId, kind }
 }: {
-	identity: Option<Identity>;
+	identity: OptionIdentity;
 	config: CreateSatelliteConfig;
 }): Promise<SatelliteId> => {
 	assertNonNullish(identity);
@@ -67,7 +66,7 @@ export const createOrbiterWithConfig = async ({
 	identity,
 	config: { name, subnetId }
 }: {
-	identity: Option<Identity>;
+	identity: OptionIdentity;
 	config: CreateWithConfigAndName;
 }): Promise<OrbiterId> => {
 	assertNonNullish(identity);

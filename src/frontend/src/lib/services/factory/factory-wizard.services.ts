@@ -60,14 +60,14 @@ type GetFeeBalance =
 	| Omit<JunoModalCreateSegmentDetail, 'monitoringConfig' | 'monitoringEnabled'>
 	| { error: null | string };
 
-type GetFeeBalanceFn = (params: { identity: Option<Identity> }) => Promise<GetFeeBalance>;
+type GetFeeBalanceFn = (params: { identity: OptionIdentity }) => Promise<GetFeeBalance>;
 
 export const initSatelliteWizard = ({
 	missionControlId,
 	identity
 }: {
 	missionControlId: Option<Principal>;
-	identity: Option<Identity>;
+	identity: OptionIdentity;
 }): Promise<void> =>
 	initCreateWizard({
 		missionControlId,
@@ -81,7 +81,7 @@ export const initOrbiterWizard = ({
 	identity
 }: {
 	missionControlId: Option<Principal>;
-	identity: Option<Identity>;
+	identity: OptionIdentity;
 }): Promise<void> =>
 	initCreateWizard({
 		missionControlId,
@@ -93,7 +93,7 @@ export const initOrbiterWizard = ({
 export const initMissionControlWizard = ({
 	identity
 }: {
-	identity: Option<Identity>;
+	identity: OptionIdentity;
 }): Promise<void> =>
 	initCreateWizard({
 		missionControlId: null,
@@ -109,7 +109,7 @@ const initCreateWizard = async ({
 	modalType
 }: {
 	missionControlId: Option<MissionControlId>;
-	identity: Option<Identity>;
+	identity: OptionIdentity;
 	feeFn: GetFeeBalanceFn;
 	modalType: 'create_satellite' | 'create_orbiter' | 'create_mission_control';
 }) => {

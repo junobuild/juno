@@ -4,6 +4,7 @@ import { loadDataStore } from '$lib/services/_loader.services';
 import { authStore } from '$lib/stores/auth.store';
 import { orbitersUncertifiedStore } from '$lib/stores/mission-control/orbiter.store';
 import type { CreateWithConfigAndName } from '$lib/types/factory';
+import type { OptionIdentity } from '$lib/types/itentity';
 import type { Option } from '$lib/types/utils';
 import { assertNonNullish, toNullable } from '@dfinity/utils';
 import type { Identity } from '@icp-sdk/core/agent';
@@ -15,7 +16,7 @@ export const createOrbiter = async ({
 	missionControlId,
 	config: { name }
 }: {
-	identity: Option<Identity>;
+	identity: OptionIdentity;
 	missionControlId: Option<Principal>;
 	config: Pick<CreateWithConfigAndName, 'name'>;
 }): Promise<MissionControlDid.Orbiter> => {
@@ -34,7 +35,7 @@ export const createOrbiterWithConfig = async ({
 	missionControlId,
 	config: { name, subnetId }
 }: {
-	identity: Option<Identity>;
+	identity: OptionIdentity;
 	missionControlId: Option<Principal>;
 	config: CreateWithConfigAndName;
 }): Promise<MissionControlDid.Orbiter> => {

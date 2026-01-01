@@ -4,6 +4,7 @@ import { loadDataStore } from '$lib/services/_loader.services';
 import { authStore } from '$lib/stores/auth.store';
 import { satellitesUncertifiedStore } from '$lib/stores/mission-control/satellites.store';
 import type { CreateSatelliteConfig } from '$lib/types/factory';
+import type { OptionIdentity } from '$lib/types/itentity';
 import type { Option } from '$lib/types/utils';
 import { assertNonNullish, toNullable } from '@dfinity/utils';
 import type { Identity } from '@icp-sdk/core/agent';
@@ -18,7 +19,7 @@ export const createSatellite = async ({
 	missionControlId,
 	config: { name }
 }: {
-	identity: Option<Identity>;
+	identity: OptionIdentity;
 	missionControlId: Option<Principal>;
 	config: Required<Pick<CreateSatelliteConfig, 'name'>>;
 }): Promise<MissionControlDid.Satellite> => {
@@ -37,7 +38,7 @@ export const createSatelliteWithConfig = async ({
 	missionControlId,
 	config: { name, subnetId, kind }
 }: {
-	identity: Option<Identity>;
+	identity: OptionIdentity;
 	missionControlId: Option<Principal>;
 	config: CreateSatelliteConfig;
 }): Promise<MissionControlDid.Satellite> => {

@@ -1,5 +1,7 @@
 use crate::guards::caller_has_account;
-use crate::store::stable::{list_segments as list_segments_store, set_segment_metadata as set_segment_metadata_store};
+use crate::store::stable::{
+    list_segments as list_segments_store, set_segment_metadata as set_segment_metadata_store,
+};
 use crate::types::interface::{ListSegmentsArgs, SetSegmentMetadataArgs};
 use crate::types::state::{Segment, SegmentKey};
 use ic_cdk_macros::{query, update};

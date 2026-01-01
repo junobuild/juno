@@ -39,7 +39,7 @@ fn set_segment_metadata_impl(
 ) -> Result<Segment, String> {
     let segment = segments
         .get(key)
-        .ok_or_else(|| "Segment not found".to_string())?;
+        .ok_or_else(|| "Segment not found.".to_string())?;
 
     let updated_segment = segment.with_metadata(metadata);
     segments.insert(key.clone(), updated_segment.clone());

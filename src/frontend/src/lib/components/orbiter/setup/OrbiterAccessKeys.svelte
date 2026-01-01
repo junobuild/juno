@@ -5,17 +5,17 @@
 	import { listOrbiterControllers } from '$lib/api/orbiter.api';
 	import AccessKeys from '$lib/components/access-keys/AccessKeys.svelte';
 	import { authIdentity } from '$lib/derived/auth.derived';
-	import { i18n } from '$lib/stores/app/i18n.store';
-	import type { AddAccessKeyResult, SetAccessKeyParams } from '$lib/types/controllers';
-	import type { MissionControlId } from '$lib/types/mission-control';
+	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import {
 		addAccessKey,
 		type AddAccessKeyWithDevFn,
 		type AddAccessKeyWithMissionControlFn
 	} from '$lib/services/access-keys/key.add.services';
-	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
-	import { addSatellitesAccessKey } from '$lib/services/access-keys/satellites.key.add.services';
 	import { addOrbiterAccessKey } from '$lib/services/access-keys/orbiter.key.add.services';
+	import { addSatellitesAccessKey } from '$lib/services/access-keys/satellites.key.add.services';
+	import { i18n } from '$lib/stores/app/i18n.store';
+	import type { AddAccessKeyResult, SetAccessKeyParams } from '$lib/types/controllers';
+	import type { MissionControlId } from '$lib/types/mission-control';
 
 	interface Props {
 		orbiterId: Principal;

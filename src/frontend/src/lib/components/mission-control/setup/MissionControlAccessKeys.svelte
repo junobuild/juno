@@ -2,14 +2,9 @@
 	import { nonNullish } from '@dfinity/utils';
 	import type { Principal } from '@icp-sdk/core/principal';
 	import type { MissionControlDid } from '$declarations';
-	import {
-		deleteMissionControlController,
-		listMissionControlControllers,
-		setMissionControlController
-	} from '$lib/api/mission-control.api';
+	import { listMissionControlControllers } from '$lib/api/mission-control.api';
 	import AccessKeys from '$lib/components/access-keys/AccessKeys.svelte';
 	import { authIdentity } from '$lib/derived/auth.derived';
-	import { addAccessKey } from '$lib/services/access-keys/access-keys.services';
 	import {
 		addMissionControlAccessKey,
 		removeMissionControlAccessKey
@@ -18,7 +13,6 @@
 	import type {
 		AddAccessKeyResult,
 		AddAccessKeyParams,
-		AccessKeyWithMissionControlFn,
 		AccessKeyIdParam
 	} from '$lib/types/access-keys';
 	import type { MissionControlId } from '$lib/types/mission-control';

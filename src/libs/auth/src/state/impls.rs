@@ -3,8 +3,8 @@ use crate::state::types::config::AuthenticationConfig;
 use crate::state::types::interface::SetAuthenticationConfig;
 use crate::state::types::state::{OpenIdCachedCertificate, OpenIdLastFetchAttempt};
 use ic_cdk::api::time;
+use junobuild_shared::data::version::next_version;
 use junobuild_shared::types::state::{Timestamp, Version, Versioned};
-use junobuild_shared::version::next_version;
 
 impl AuthenticationConfig {
     pub fn prepare(

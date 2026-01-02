@@ -1,7 +1,7 @@
 use crate::proposals::state::filter::filter_proposals_range;
 use crate::proposals::{ListProposalResults, Proposal, ProposalId, ProposalKey, ProposalsStable};
 use crate::strategies::CdnStableStrategy;
-use junobuild_shared::structures::collect_stable_vec;
+use junobuild_shared::data::collect::collect_stable_vec;
 
 pub fn get_proposal(
     cdn_stable: &impl CdnStableStrategy,

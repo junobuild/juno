@@ -4,8 +4,8 @@ use crate::openid::types::interface::{OpenIdCredential, OpenIdCredentialKey};
 use crate::openid::types::provider::{OpenIdCertificate, OpenIdProvider};
 use ic_cdk::api::time;
 use jsonwebtoken::TokenData;
+use junobuild_shared::data::version::next_version;
 use junobuild_shared::types::state::{Version, Versioned};
-use junobuild_shared::version::next_version;
 use std::fmt::{Display, Formatter, Result as FmtResult};
 
 impl From<TokenData<Claims>> for OpenIdCredential {

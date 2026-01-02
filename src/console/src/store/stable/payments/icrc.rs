@@ -5,7 +5,7 @@ use candid::Principal;
 use ic_cdk::api::time;
 use ic_ledger_types::BlockIndex;
 use icrc_ledger_types::icrc1::account::Account;
-use junobuild_shared::structures::collect_stable_map_from;
+use junobuild_shared::data::collect::collect_stable_map_from;
 
 pub fn is_known_icrc_payment(key: &IcrcPaymentKey) -> bool {
     with_icrc_payments(|payments| payments.contains_key(key))

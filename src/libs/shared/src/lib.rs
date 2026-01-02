@@ -4,6 +4,7 @@ pub mod assert;
 pub mod canister;
 pub mod constants;
 pub mod controllers;
+pub mod data;
 pub mod date;
 #[doc(hidden)]
 pub mod env;
@@ -13,15 +14,11 @@ pub mod ic;
 #[doc(hidden)]
 pub mod impls;
 pub mod ledger;
-pub mod list;
 pub mod memory;
 pub mod mgmt;
 pub mod random;
 pub mod rate;
 pub mod regex;
-pub mod structures;
 #[doc(hidden)]
 pub mod types;
 pub mod utils;
-#[doc(hidden)]
-pub mod version;

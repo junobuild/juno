@@ -21,7 +21,7 @@ use candid::Principal;
 use junobuild_collections::msg::msg_db_collection_not_empty;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::{Memory, Rule};
-use junobuild_shared::list::list_values;
+use junobuild_shared::data::list::list_values;
 use junobuild_shared::types::core::Key;
 use junobuild_shared::types::list::{ListParams, ListResults};
 use junobuild_shared::types::state::{Controllers, UserId};

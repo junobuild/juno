@@ -1,6 +1,6 @@
 use crate::store::{with_accounts, with_accounts_mut};
 use crate::types::state::{Account, Accounts, AccountsStable, Provider};
-use junobuild_shared::structures::collect_stable_map_from;
+use junobuild_shared::data::collect::collect_stable_map_from;
 use junobuild_shared::types::state::{MissionControlId, UserId};
 use junobuild_shared::utils::principal_equal;
 

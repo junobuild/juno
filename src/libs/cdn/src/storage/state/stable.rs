@@ -4,7 +4,7 @@ use crate::storage::{ProposalContentChunkKey, ProposalContentChunksStable};
 use crate::strategies::CdnStableStrategy;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_shared::data::collect::collect_stable_vec;
-use junobuild_shared::serializers::deserialize_from_bytes;
+use junobuild_shared::memory::serializers::deserialize_from_bytes;
 use junobuild_shared::types::core::Blob;
 use junobuild_storage::stable_utils::insert_asset_encoding_stable;
 use junobuild_storage::types::state::FullPath;

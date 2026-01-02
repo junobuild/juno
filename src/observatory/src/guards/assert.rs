@@ -1,6 +1,6 @@
 use crate::memory::state::services::with_controllers;
-use junobuild_shared::controllers::is_admin_controller as is_admin_controller_impl;
 use junobuild_shared::ic::api::caller;
+use junobuild_shared::segments::controllers::is_admin_controller as is_admin_controller_impl;
 use junobuild_shared::utils::principal_not_anonymous;
 
 pub fn caller_is_admin_controller() -> Result<(), String> {

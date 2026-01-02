@@ -5,7 +5,7 @@ use candid::Principal;
 use junobuild_auth::state::types::config::AuthenticationConfig;
 use junobuild_collections::constants::db::COLLECTION_USER_KEY;
 use junobuild_collections::msg::msg_db_collection_not_found;
-use junobuild_shared::controllers::controller_can_write;
+use junobuild_shared::segments::controllers::controller_can_write;
 use junobuild_shared::types::state::Controllers;
 use junobuild_shared::utils::principal_equal;
 

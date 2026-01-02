@@ -7,7 +7,7 @@ use junobuild_collections::assert::stores::{
 use junobuild_collections::constants::assets::COLLECTION_ASSET_KEY;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::Permission;
-use junobuild_shared::controllers::{controller_can_write, is_controller};
+use junobuild_shared::segments::controllers::{controller_can_write, is_controller};
 use junobuild_shared::types::state::Controllers;
 
 pub fn assert_cdn_write_on_dapp_collection(caller: Principal, controllers: &Controllers) -> bool {

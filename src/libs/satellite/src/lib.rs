@@ -518,7 +518,7 @@ pub async fn deposit_cycles(args: DepositCyclesArgs) {
 #[doc(hidden)]
 #[query(guard = "caller_is_controller")]
 pub fn memory_size() -> MemorySize {
-    junobuild_shared::canister::memory_size()
+    junobuild_shared::segments::utils::memory_size()
 }
 
 /// Include the stock Juno satellite features into your Juno application.

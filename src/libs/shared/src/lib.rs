@@ -1,11 +1,9 @@
 #![doc = include_str!("../README.md")]
 
 pub mod assert;
-pub mod canister;
 mod constants_internal;
 #[doc(hidden)]
 pub mod constants_shared;
-pub mod controllers;
 pub mod date;
 #[doc(hidden)]
 pub mod env;
@@ -20,6 +18,7 @@ pub mod mgmt;
 pub mod random;
 pub mod rate;
 pub mod regex;
+pub mod segments;
 pub mod serializers;
 pub mod structures;
 #[doc(hidden)]

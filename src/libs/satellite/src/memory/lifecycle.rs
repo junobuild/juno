@@ -8,7 +8,7 @@ use crate::memory::utils::init_storage_heap_state;
 use crate::random::init::defer_init_random_seed;
 use crate::types::state::{HeapState, RuntimeState, State};
 use ciborium::{from_reader, into_writer};
-use junobuild_shared::controllers::init_admin_controllers;
+use junobuild_shared::segments::controllers::init_admin_controllers;
 use junobuild_shared::types::interface::InitSatelliteArgs;
 use junobuild_shared::types::memory::Memory;
 use junobuild_shared::upgrade::{read_post_upgrade, write_pre_upgrade};

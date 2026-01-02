@@ -1,6 +1,6 @@
 import type { MissionControlDid } from '$declarations';
 import { getMissionControlActor } from '$lib/api/actors/actor.juno.api';
-import type { AddAccessKeyParams } from '$lib/types/access-keys';
+import type { AccessKeyIdParam, AddAccessKeyParams } from '$lib/types/access-keys';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { Metadata } from '$lib/types/metadata';
 import type { MissionControlId } from '$lib/types/mission-control';
@@ -44,19 +44,18 @@ export const setSatellitesController = async ({
 export const deleteSatellitesController = async ({
 	missionControlId,
 	satelliteIds,
-	controller,
+	accessKeyId,
 	identity
 }: {
 	missionControlId: MissionControlId;
 	satelliteIds: Principal[];
-	controller: Principal;
 	identity: OptionIdentity;
-}) => {
+} & AccessKeyIdParam) => {
 	const { del_satellites_controllers } = await getMissionControlActor({
 		missionControlId,
 		identity
 	});
-	await del_satellites_controllers(satelliteIds, [controller]);
+	await del_satellites_controllers(satelliteIds, [Principal.from(accessKeyId)]);
 };
 
 export const setMissionControlController = async ({
@@ -83,18 +82,17 @@ export const setMissionControlController = async ({
 
 export const deleteMissionControlController = async ({
 	missionControlId,
-	controller,
-	identity
+	identity,
+	accessKeyId
 }: {
 	missionControlId: MissionControlId;
-	controller: Principal;
 	identity: OptionIdentity;
-}) => {
+} & AccessKeyIdParam) => {
 	const { del_mission_control_controllers } = await getMissionControlActor({
 		missionControlId,
 		identity
 	});
-	await del_mission_control_controllers([controller]);
+	await del_mission_control_controllers([Principal.from(accessKeyId)]);
 };
 
 export const listMissionControlControllers = async ({
@@ -176,16 +174,15 @@ export const setOrbitersController = async ({
 export const deleteOrbitersController = async ({
 	missionControlId,
 	orbiterIds,
-	controller,
+	accessKeyId,
 	identity
 }: {
 	missionControlId: MissionControlId;
 	orbiterIds: Principal[];
-	controller: Principal;
 	identity: OptionIdentity;
-}) => {
+} & AccessKeyIdParam) => {
 	const { del_orbiters_controllers } = await getMissionControlActor({ missionControlId, identity });
-	await del_orbiters_controllers(orbiterIds, [controller]);
+	await del_orbiters_controllers(orbiterIds, [Principal.from(accessKeyId)]);
 };
 
 export const deleteSatellite = async ({

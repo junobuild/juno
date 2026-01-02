@@ -1,8 +1,8 @@
 import { setControllers as setOrbiterControllers } from '$lib/api/orbiter.api';
 import {
-	type SetAccessKeysFn,
 	setAdminAccessKey,
-	type SetAdminAccessKeyResult
+	type AdminAccessKeyResult,
+	type SetAccessKeysFn
 } from '$lib/services/access-keys/key.admin.services';
 import type {
 	AddAccessKeyParams,
@@ -54,7 +54,7 @@ export const addOrbitersAdminAccessKey = async ({
 } & AddAdminAccessKeyParams) => {
 	const setOrbiterAdminAccessKeyWithIcMgmt = async (
 		orbiterId: OrbiterId
-	): Promise<SetAdminAccessKeyResult> => {
+	): Promise<AdminAccessKeyResult> => {
 		const setAccessKeysFn: SetAccessKeysFn = async ({ args }) => {
 			await setOrbiterControllers({
 				args,

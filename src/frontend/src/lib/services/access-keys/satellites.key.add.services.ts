@@ -1,8 +1,8 @@
 import { setControllers as setSatelliteControllers } from '$lib/api/satellites.api';
 import {
-	type SetAccessKeysFn,
 	setAdminAccessKey,
-	type SetAdminAccessKeyResult
+	type AdminAccessKeyResult,
+	type SetAccessKeysFn
 } from '$lib/services/access-keys/key.admin.services';
 import { mapSatellitesForControllersFn } from '$lib/services/access-keys/satellites.key.map.services';
 import type {
@@ -93,7 +93,7 @@ const setSatellitesAdminAccessKey = async ({
 } & AddAdminAccessKeyParams) => {
 	const setSatelliteAdminAccessKey = async (
 		satelliteId: SatelliteId
-	): Promise<SetAdminAccessKeyResult> => {
+	): Promise<AdminAccessKeyResult> => {
 		const setAccessKeysFn: SetAccessKeysFn = async ({ args }) => {
 			await setSatelliteControllers({
 				args,

@@ -11,4 +11,4 @@ export const TWO_YEARS = ONE_YEAR * 2;
 export const FIVE_YEARS = ONE_YEAR * 5;
 
 // 10 controllers max on the IC.
-export const MAX_NUMBER_OF_SATELLITE_CONTROLLERS = 10;
+export const MAX_NUMBER_OF_CONTROLLERS = 10;

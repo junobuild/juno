@@ -8,8 +8,6 @@
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { REVOKED_CONTROLLERS } from '$lib/constants/app.constants';
-	import { authIdentity } from '$lib/derived/auth.derived';
-	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import { wizardBusy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';

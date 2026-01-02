@@ -12,17 +12,17 @@
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
-	import type { AddAccessKeyResult, AddAccessKeyParams } from '$lib/types/access-keys';
+	import type {
+		AddAccessKeyResult,
+		AddAccessKeyParams,
+		AccessKeyIdParam
+	} from '$lib/types/access-keys';
 	import type { CanisterSegmentWithLabel } from '$lib/types/canister';
-	import type { MissionControlId } from '$lib/types/mission-control';
 	import { metadataProfile } from '$lib/utils/metadata.utils';
 
 	interface Props {
 		list: () => Promise<[Principal, MissionControlDid.Controller][]>;
-		remove: (params: {
-			missionControlId: MissionControlId;
-			controller: Principal;
-		}) => Promise<void>;
+		remove: (params: AccessKeyIdParam) => Promise<AddAccessKeyResult>;
 		add: (params: AddAccessKeyParams) => Promise<AddAccessKeyResult>;
 		segment: CanisterSegmentWithLabel;
 		// The canister and user are controllers of the mission control but not added in its state per default

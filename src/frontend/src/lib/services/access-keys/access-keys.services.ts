@@ -1,6 +1,7 @@
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
 import type {
+	AccessKeyIdParam,
 	AccessKeyWithDevFn,
 	AccessKeyWithMissionControlFn,
 	AddAccessKeyParams,
@@ -13,16 +14,54 @@ import { isNullish, nonNullish } from '@dfinity/utils';
 import { get } from 'svelte/store';
 
 export const addAccessKey = async ({
-	missionControlId,
-	identity,
 	addAccessKeyWithMissionControlFn,
-	addAccessKeyWithDevFn
+	addAccessKeyWithDevFn,
+	...rest
 }: {
 	identity: OptionIdentity;
 	missionControlId: Option<MissionControlId>;
 	accessKey: AddAccessKeyParams;
 	addAccessKeyWithMissionControlFn: AccessKeyWithMissionControlFn;
 	addAccessKeyWithDevFn: AccessKeyWithDevFn;
+}): Promise<AddAccessKeyResult> =>
+	await executeAccessKey({
+		accessKeyWithDevFn: addAccessKeyWithDevFn,
+		accessKeyWithMissionControlFn: addAccessKeyWithMissionControlFn,
+		errorLabel: get(i18n).errors.controllers_add,
+		...rest
+	});
+
+export const removeAccessKey = async ({
+	removeAccessKeyWithMissionControlFn,
+	removeAccessKeyWithDevFn,
+	...rest
+}: {
+	identity: OptionIdentity;
+	missionControlId: Option<MissionControlId>;
+	accessKey: AccessKeyIdParam;
+	removeAccessKeyWithMissionControlFn: AccessKeyWithMissionControlFn;
+	removeAccessKeyWithDevFn: AccessKeyWithDevFn;
+}): Promise<AddAccessKeyResult> =>
+	await executeAccessKey({
+		accessKeyWithDevFn: removeAccessKeyWithDevFn,
+		accessKeyWithMissionControlFn: removeAccessKeyWithMissionControlFn,
+		errorLabel: get(i18n).errors.controllers_delete,
+		...rest
+	});
+
+const executeAccessKey = async <AccessKeyParams>({
+	missionControlId,
+	identity,
+	accessKeyWithMissionControlFn,
+	accessKeyWithDevFn,
+	errorLabel
+}: {
+	identity: OptionIdentity;
+	missionControlId: Option<MissionControlId>;
+	accessKey: AccessKeyParams;
+	accessKeyWithMissionControlFn: AccessKeyWithMissionControlFn;
+	accessKeyWithDevFn: AccessKeyWithDevFn;
+	errorLabel: string;
 }): Promise<AddAccessKeyResult> => {
 	// TODO: duplicate code
 	if (missionControlId === undefined) {
@@ -39,14 +78,14 @@ export const addAccessKey = async ({
 	try {
 		const fn = async () => {
 			if (nonNullish(missionControlId)) {
-				await addAccessKeyWithMissionControlFn({
+				await accessKeyWithMissionControlFn({
 					identity,
 					missionControlId
 				});
 				return;
 			}
 
-			await addAccessKeyWithDevFn({
+			await accessKeyWithDevFn({
 				identity
 			});
 		};
@@ -56,7 +95,7 @@ export const addAccessKey = async ({
 		return { result: 'ok' };
 	} catch (err: unknown) {
 		toasts.error({
-			text: get(i18n).errors.controllers_add,
+			text: errorLabel,
 			detail: err
 		});
 

@@ -11,6 +11,8 @@ export interface AddAccessKeyParams {
 	scope: AddAccessKeyScope;
 }
 
+export type AccessKeyIdParam = Pick<AddAccessKeyParams, 'accessKeyId'>;
+
 export type AddAdminAccessKeyParams = Omit<AddAccessKeyParams, 'scope'>;
 
 export type AddAccessKeyResult = { result: 'ok' } | { result: 'error'; err?: unknown };

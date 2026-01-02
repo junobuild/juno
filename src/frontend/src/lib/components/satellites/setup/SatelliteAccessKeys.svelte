@@ -9,16 +9,17 @@
 	import AccessKeys from '$lib/components/access-keys/AccessKeys.svelte';
 	import { authIdentity } from '$lib/derived/auth.derived';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
-	import { addAccessKey } from '$lib/services/access-keys/key.add.services';
+	import { addAccessKey, removeAccessKey } from '$lib/services/access-keys/access-keys.services';
 	import { addSatellitesAccessKey } from '$lib/services/access-keys/satellites.key.add.services';
+	import { removeSatellitesAccessKey } from '$lib/services/access-keys/satellites.key.remove.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type {
 		AddAccessKeyResult,
 		AddAccessKeyParams,
 		AccessKeyWithDevFn,
-		AccessKeyWithMissionControlFn
+		AccessKeyWithMissionControlFn,
+		AccessKeyIdParam
 	} from '$lib/types/access-keys';
-	import type { MissionControlId } from '$lib/types/mission-control';
 	import type { Satellite } from '$lib/types/satellite';
 
 	interface Props {
@@ -30,15 +31,33 @@
 	const list = (): Promise<[Principal, MissionControlDid.Controller][]> =>
 		listControllers({ satelliteId: satellite.satellite_id, identity: $authIdentity });
 
-	const remove = (params: {
-		missionControlId: MissionControlId;
-		controller: Principal;
-	}): Promise<void> =>
-		deleteSatellitesController({
-			...params,
-			satelliteIds: [satellite.satellite_id],
-			identity: $authIdentity
+	const remove = async (accessKey: AccessKeyIdParam): Promise<AddAccessKeyResult> => {
+		const satelliteIds = [satellite.satellite_id];
+
+		const removeAccessKeyWithMissionControlFn: AccessKeyWithMissionControlFn = async (params) => {
+			await deleteSatellitesController({
+				...params,
+				...accessKey,
+				satelliteIds
+			});
+		};
+
+		const removeAccessKeyWithDevFn: AccessKeyWithDevFn = async (params) => {
+			await removeSatellitesAccessKey({
+				...accessKey,
+				...params,
+				satelliteIds
+			});
+		};
+
+		return await removeAccessKey({
+			identity: $authIdentity,
+			missionControlId: $missionControlId,
+			accessKey,
+			removeAccessKeyWithMissionControlFn,
+			removeAccessKeyWithDevFn
 		});
+	};
 
 	const add = async (accessKey: AddAccessKeyParams): Promise<AddAccessKeyResult> => {
 		const satelliteIds = [satellite.satellite_id];

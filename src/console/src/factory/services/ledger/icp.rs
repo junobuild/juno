@@ -1,7 +1,7 @@
 use crate::factory::services::ledger::icrc::icrc_transfer_from;
 use candid::{Nat, Principal};
 use ic_ledger_types::{BlockIndex, Tokens};
-use junobuild_shared::constants_shared::{IC_TRANSACTION_FEE_ICP, MEMO_SATELLITE_CREATE_REFUND};
+use junobuild_shared::constants::shared::{IC_TRANSACTION_FEE_ICP, MEMO_SATELLITE_CREATE_REFUND};
 use junobuild_shared::env::ICP_LEDGER;
 use junobuild_shared::ic::api::id;
 use junobuild_shared::ledger::icp::{

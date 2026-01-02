@@ -1,7 +1,7 @@
 use crate::store::{with_segments, with_segments_mut};
 use crate::types::interface::ListSegmentsArgs;
 use crate::types::state::{Segment, SegmentKey, SegmentType, SegmentsStable};
-use junobuild_shared::constants_shared::{PRINCIPAL_MAX, PRINCIPAL_MIN};
+use junobuild_shared::constants::shared::{PRINCIPAL_MAX, PRINCIPAL_MIN};
 use junobuild_shared::structures::collect_stable_vec;
 use junobuild_shared::types::state::{Metadata, UserId};
 use std::ops::RangeBounds;

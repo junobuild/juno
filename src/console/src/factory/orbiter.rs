@@ -10,7 +10,7 @@ use crate::store::stable::add_segment as add_segment_store;
 use crate::types::ledger::Fee;
 use crate::types::state::{Segment, SegmentKey, SegmentType};
 use candid::{Nat, Principal};
-use junobuild_shared::constants_shared::CREATE_ORBITER_CYCLES;
+use junobuild_shared::constants::shared::CREATE_ORBITER_CYCLES;
 use junobuild_shared::ic::api::id;
 use junobuild_shared::mgmt::cmc::cmc_create_canister_install_code;
 use junobuild_shared::mgmt::ic::create_canister_install_code;

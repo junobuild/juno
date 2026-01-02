@@ -5,8 +5,8 @@ use crate::factory::utils::controllers::remove_console_controller;
 use crate::factory::utils::wasm::satellite_wasm_arg;
 use crate::fees::get_factory_fee_for_kind;
 use crate::fees::types::FeeKind;
+use crate::segments::add_segment as add_segment_store;
 use crate::store::heap::increment_satellites_rate;
-use crate::store::stable::add_segment as add_segment_store;
 use crate::types::ledger::Fee;
 use crate::types::state::{Segment, SegmentKey, SegmentType};
 use candid::{Nat, Principal};
@@ -84,7 +84,8 @@ async fn create_satellite_wasm(
 }
 
 fn add_segment(user: &UserId, canister_id: &Principal, name: &Option<String>) {
-    let satellite = Segment::from(canister_id, name);
+    let metadata = Segment::init_metadata(name);
+    let satellite = Segment::new(canister_id, Some(metadata));
     let key = SegmentKey::from(user, canister_id, SegmentType::Satellite);
     add_segment_store(&key, &satellite)
 }

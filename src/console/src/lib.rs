@@ -12,6 +12,7 @@ mod guards;
 mod impls;
 mod memory;
 mod metadata;
+mod segments;
 mod store;
 mod types;
 
@@ -23,6 +24,8 @@ use crate::types::interface::FeesArgs;
 use crate::types::interface::GetDelegationArgs;
 use crate::types::interface::ListSegmentsArgs;
 use crate::types::interface::SetSegmentMetadataArgs;
+use crate::types::interface::SetSegmentsArgs;
+use crate::types::interface::UnsetSegmentsArgs;
 use crate::types::state::Account;
 use crate::types::state::Accounts;
 use crate::types::state::FactoryFee;

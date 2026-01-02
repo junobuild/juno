@@ -213,6 +213,19 @@ pub mod interface {
         pub segment_id: Option<SegmentId>,
     }
 
+    #[derive(CandidType, Deserialize)]
+    pub struct SetSegmentsArgs {
+        pub segment_type: SegmentType,
+        pub segment_id: SegmentId,
+        pub metadata: Option<Metadata>,
+    }
+
+    #[derive(CandidType, Deserialize)]
+    pub struct UnsetSegmentsArgs {
+        pub segment_type: SegmentType,
+        pub segment_id: SegmentId,
+    }
+
     #[derive(CandidType, Deserialize, Clone)]
     pub struct SetSegmentMetadataArgs {
         pub segment_type: SegmentType,

@@ -342,7 +342,16 @@ export const createSatelliteWizard = async ({
 			return undefined;
 		}
 
-		const attachFn: AttachFn = async ({ identity, canisterId }) => {
+		const attachFn: AttachFn = async ({
+			identity,
+			canisterId,
+			selectedWallet: { type: walletType }
+		}) => {
+			// Mission Control already knowns the newly created module
+			if (walletType === 'mission_control') {
+				return;
+			}
+
 			// Attach the Satellite to the existing Mission Control.
 			// The controller for the Mission Control to the Satellite has been set by the Console backend.
 			await attachSatelliteToMissionControl({
@@ -466,7 +475,16 @@ export const createOrbiterWizard = async ({
 			return undefined;
 		}
 
-		const attachFn: AttachFn = async ({ identity, canisterId }) => {
+		const attachFn: AttachFn = async ({
+			identity,
+			canisterId,
+			selectedWallet: { type: walletType }
+		}) => {
+			// Mission Control already knowns the newly created module
+			if (walletType === 'mission_control') {
+				return;
+			}
+
 			// Attach the Satellite to the existing Mission Control.
 			// The controller for the Mission Control to the Satellite has been set by the Console backend.
 			await attachOrbiterToMissionControl({
@@ -593,7 +611,11 @@ type FinalizingFn = (params: { identity: Identity; canisterId: Principal }) => P
 
 type ReloadFn = (params: { identity: Identity; canisterId: Principal }) => Promise<void>;
 
-type AttachFn = (params: { identity: Identity; canisterId: Principal }) => Promise<void>;
+type AttachFn = (params: {
+	identity: Identity;
+	canisterId: Principal;
+	selectedWallet: SelectedWallet;
+}) => Promise<void>;
 
 const createWizard = async ({
 	selectedWallet,
@@ -665,7 +687,7 @@ const createWizard = async ({
 
 		if (nonNullish(attachFn)) {
 			const executeAttachFn = async () => {
-				await attachFn({ identity, canisterId });
+				await attachFn({ identity, canisterId, selectedWallet });
 			};
 
 			try {

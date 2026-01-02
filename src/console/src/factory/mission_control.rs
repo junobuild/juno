@@ -9,7 +9,7 @@ use crate::fees::get_factory_fee;
 use crate::store::heap::increment_mission_controls_rate;
 use crate::types::ledger::Fee;
 use candid::{Nat, Principal};
-use junobuild_shared::constants_shared::CREATE_MISSION_CONTROL_CYCLES;
+use junobuild_shared::constants::shared::CREATE_MISSION_CONTROL_CYCLES;
 use junobuild_shared::ic::api::id;
 use junobuild_shared::mgmt::cmc::cmc_create_canister_install_code;
 use junobuild_shared::mgmt::ic::create_canister_install_code;

@@ -3,7 +3,7 @@ use crate::user::store::get_user;
 use candid::Principal;
 use ic_cdk::call::Call;
 use ic_ledger_types::{BlockIndex, Tokens};
-use junobuild_shared::constants_shared::{IC_TRANSACTION_FEE_ICP, MEMO_CANISTER_CREATE};
+use junobuild_shared::constants::shared::{IC_TRANSACTION_FEE_ICP, MEMO_CANISTER_CREATE};
 use junobuild_shared::env::CONSOLE;
 use junobuild_shared::ic::api::id;
 use junobuild_shared::ic::DecodeCandid;

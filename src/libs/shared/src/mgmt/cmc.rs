@@ -1,4 +1,4 @@
-use crate::constants_shared::{IC_TRANSACTION_FEE_ICP, MEMO_CANISTER_TOP_UP};
+use crate::constants::shared::{IC_TRANSACTION_FEE_ICP, MEMO_CANISTER_TOP_UP};
 use crate::env::CMC;
 use crate::errors::{
     JUNO_ERROR_CMC_CALL_CREATE_CANISTER_FAILED, JUNO_ERROR_CMC_CALL_LEDGER_FAILED,

@@ -1,4 +1,4 @@
-use crate::constants_internal::REVOKED_CONTROLLERS;
+use crate::constants::internal::REVOKED_CONTROLLERS;
 use crate::env::{CONSOLE, OBSERVATORY};
 use crate::errors::{
     JUNO_ERROR_CONTROLLERS_ANONYMOUS_NOT_ALLOWED, JUNO_ERROR_CONTROLLERS_MAX_NUMBER,

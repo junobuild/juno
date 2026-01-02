@@ -16,16 +16,14 @@ pub mod ic;
 pub mod impls;
 pub mod ledger;
 pub mod list;
+pub mod memory;
 pub mod mgmt;
 pub mod random;
 pub mod rate;
 pub mod regex;
-pub mod serializers;
 pub mod structures;
 #[doc(hidden)]
 pub mod types;
-#[doc(hidden)]
-pub mod upgrade;
 pub mod utils;
 #[doc(hidden)]
 pub mod version;

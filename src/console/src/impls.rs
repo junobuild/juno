@@ -9,11 +9,11 @@ use ic_ledger_types::{BlockIndex, Tokens};
 use ic_stable_structures::storable::Bound;
 use ic_stable_structures::Storable;
 use junobuild_shared::ledger::types::cycles::CyclesTokens;
-use junobuild_shared::rate::constants::DEFAULT_RATE_CONFIG;
-use junobuild_shared::rate::types::RateTokens;
-use junobuild_shared::serializers::{
+use junobuild_shared::memory::serializers::{
     deserialize_from_bytes, serialize_into_bytes, serialize_to_bytes,
 };
+use junobuild_shared::rate::constants::DEFAULT_RATE_CONFIG;
+use junobuild_shared::rate::types::RateTokens;
 use junobuild_shared::types::state::{Metadata, SegmentId, Timestamp, UserId};
 use std::borrow::Cow;
 use std::collections::HashMap;

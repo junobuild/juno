@@ -4,9 +4,9 @@ use crate::state::types::state::{HeapState, State};
 use ciborium::{from_reader, into_writer};
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade};
 use junobuild_shared::controllers::init_admin_controllers;
+use junobuild_shared::memory::upgrade::{read_post_upgrade, write_pre_upgrade};
 use junobuild_shared::types::interface::InitOrbiterArgs;
 use junobuild_shared::types::memory::Memory;
-use junobuild_shared::upgrade::{read_post_upgrade, write_pre_upgrade};
 
 #[init]
 fn init(args: InitOrbiterArgs) {

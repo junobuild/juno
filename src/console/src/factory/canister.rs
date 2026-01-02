@@ -7,7 +7,7 @@ use crate::factory::services::payment::{
 };
 use crate::factory::types::{CanisterCreator, CreateCanisterArgs};
 use crate::fees::types::FeeKind;
-use crate::store::stable::payments::{
+use crate::payments::{
     insert_new_icrc_payment, update_icrc_payment_completed, update_icrc_payment_refunded,
 };
 use crate::types::ledger::{Fee, IcrcPayment, IcrcPaymentKey};

@@ -25,7 +25,7 @@ export const removeSatellitesAccessKey = async ({
 	});
 };
 
-export const removeSatellitesAdminAccessKey = async ({
+const removeSatellitesAdminAccessKey = async ({
 	satelliteIds,
 	accessKeyId,
 	identity,

@@ -25,7 +25,7 @@ export const removeOrbiterAccessKey = async ({
 	});
 };
 
-export const removeOrbitersAdminAccessKey = async ({
+const removeOrbitersAdminAccessKey = async ({
 	orbiterIds,
 	accessKeyId,
 	identity,

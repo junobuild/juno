@@ -4,7 +4,6 @@
 	import type { SatelliteDid } from '$declarations';
 	import Confirmation from '$lib/components/core/Confirmation.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
-	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import { busy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
@@ -28,14 +27,6 @@
 		if (isNullish(selectedController)) {
 			toasts.error({
 				text: $i18n.errors.controllers_no_selection
-			});
-			return;
-		}
-
-		// TODO: if ($missionControlIdNotLoaded) {
-		if (isNullish($missionControlId)) {
-			toasts.error({
-				text: $i18n.errors.no_mission_control
 			});
 			return;
 		}

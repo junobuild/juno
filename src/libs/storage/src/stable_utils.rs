@@ -1,7 +1,7 @@
 use crate::types::state::FullPath;
 use crate::types::store::{Asset, AssetEncoding};
 use ic_stable_structures::{StableBTreeMap, Storable};
-use junobuild_shared::serializers::serialize_to_bytes;
+use junobuild_shared::memory::serializers::serialize_to_bytes;
 use junobuild_shared::types::core::Blob;
 use junobuild_shared::types::memory::Memory;
 use serde::Serialize;

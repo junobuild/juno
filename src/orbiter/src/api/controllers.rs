@@ -5,7 +5,7 @@ use crate::controllers::store::{
 use crate::guards::caller_is_admin_controller;
 use ic_cdk::trap;
 use ic_cdk_macros::{query, update};
-use junobuild_shared::constants_shared::MAX_NUMBER_OF_SATELLITE_CONTROLLERS;
+use junobuild_shared::constants::shared::MAX_NUMBER_OF_SATELLITE_CONTROLLERS;
 use junobuild_shared::ic::UnwrapOrTrap;
 use junobuild_shared::segments::controllers::{
     assert_controllers, assert_max_number_of_controllers,

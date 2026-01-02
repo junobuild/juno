@@ -9,7 +9,7 @@ use crate::types::state::{
     MonitoringHistory, MonitoringHistoryCycles, MonitoringHistoryKey, MonitoringHistoryStable,
 };
 use ic_cdk::api::time;
-use junobuild_shared::structures::collect_stable_vec;
+use junobuild_shared::data::collect::collect_stable_vec;
 use junobuild_shared::types::state::SegmentId;
 use std::ops::RangeBounds;
 

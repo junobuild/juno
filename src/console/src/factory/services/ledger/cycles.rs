@@ -3,7 +3,9 @@ use candid::{Nat, Principal};
 use ic_ledger_types::BlockIndex;
 use icrc_ledger_types::icrc1::account::Account;
 use icrc_ledger_types::icrc1::transfer::TransferArg;
-use junobuild_shared::constants_shared::{IC_TRANSACTION_FEE_CYCLES, MEMO_SATELLITE_CREATE_REFUND};
+use junobuild_shared::constants::shared::{
+    IC_TRANSACTION_FEE_CYCLES, MEMO_SATELLITE_CREATE_REFUND,
+};
 use junobuild_shared::env::CYCLES_LEDGER;
 use junobuild_shared::ledger::convert_memo_to_icrc;
 use junobuild_shared::ledger::icrc::icrc_transfer_token;

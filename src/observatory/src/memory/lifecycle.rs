@@ -6,8 +6,8 @@ use crate::types::state::{HeapState, State};
 use ciborium::{from_reader, into_writer};
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade};
 use junobuild_shared::ic::api::caller;
+use junobuild_shared::memory::upgrade::{read_post_upgrade, write_pre_upgrade};
 use junobuild_shared::segments::controllers::init_admin_controllers;
-use junobuild_shared::upgrade::{read_post_upgrade, write_pre_upgrade};
 
 #[init]
 fn init() {

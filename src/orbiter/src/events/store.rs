@@ -11,9 +11,9 @@ use crate::state::types::state::{
 use crate::types::interface::{GetAnalytics, SetPageView, SetPerformanceMetric, SetTrackEvent};
 use ic_cdk::api::time;
 use junobuild_shared::assert::{assert_timestamp, assert_version};
-use junobuild_shared::structures::collect_stable_vec;
+use junobuild_shared::data::collect::collect_stable_vec;
+use junobuild_shared::data::version::next_version;
 use junobuild_shared::types::state::Timestamp;
-use junobuild_shared::version::next_version;
 
 pub fn insert_page_view(key: AnalyticKey, page_view: SetPageView) -> Result<PageView, String> {
     STATE.with(|state| insert_page_view_impl(key, page_view, &mut state.borrow_mut().stable))

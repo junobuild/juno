@@ -1,6 +1,6 @@
 use crate::controllers::store::{delete_controllers, get_admin_controllers, set_controllers};
 use crate::user::store::get_user;
-use junobuild_shared::constants_shared::MAX_NUMBER_OF_MISSION_CONTROL_CONTROLLERS;
+use junobuild_shared::constants::shared::MAX_NUMBER_OF_MISSION_CONTROL_CONTROLLERS;
 use junobuild_shared::ic::api::id;
 use junobuild_shared::mgmt::ic::update_canister_controllers;
 use junobuild_shared::segments::controllers::{

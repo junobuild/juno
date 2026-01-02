@@ -455,6 +455,11 @@ export const idlFactory = ({ IDL }) => {
 		fee_cycles: CyclesTokens,
 		fee_icp: IDL.Opt(Tokens)
 	});
+	const SetSegmentsArgs = IDL.Record({
+		metadata: IDL.Opt(IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))),
+		segment_id: IDL.Principal,
+		segment_type: SegmentType
+	});
 	const SetSegmentMetadataArgs = IDL.Record({
 		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
 		segment_id: IDL.Principal,
@@ -468,6 +473,10 @@ export const idlFactory = ({ IDL }) => {
 		max_memory_size: IDL.Opt(ConfigMaxMemorySize),
 		raw_access: IDL.Opt(StorageConfigRawAccess),
 		redirects: IDL.Opt(IDL.Vec(IDL.Tuple(IDL.Text, StorageConfigRedirect)))
+	});
+	const UnsetSegmentsArgs = IDL.Record({
+		segment_id: IDL.Principal,
+		segment_type: SegmentType
 	});
 	const RateConfig = IDL.Record({
 		max_tokens: IDL.Nat64,
@@ -532,9 +541,11 @@ export const idlFactory = ({ IDL }) => {
 		set_controllers: IDL.Func([SetControllersArgs], [], []),
 		set_custom_domain: IDL.Func([IDL.Text, IDL.Opt(IDL.Text)], [], []),
 		set_fee: IDL.Func([SegmentKind, FeesArgs], [], []),
+		set_segment: IDL.Func([SetSegmentsArgs], [Segment], []),
 		set_segment_metadata: IDL.Func([SetSegmentMetadataArgs], [Segment], []),
 		set_storage_config: IDL.Func([SetStorageConfig], [StorageConfig], []),
 		submit_proposal: IDL.Func([IDL.Nat], [IDL.Nat, Proposal], []),
+		unset_segment: IDL.Func([UnsetSegmentsArgs], [], []),
 		update_rate_config: IDL.Func([SegmentKind, RateConfig], [], []),
 		upload_proposal_asset_chunk: IDL.Func([UploadChunk], [UploadChunkResult], [])
 	});

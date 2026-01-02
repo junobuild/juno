@@ -12,7 +12,7 @@ use ic_stable_structures::Storable;
 use junobuild_collections::constants::assets::DEFAULT_ASSETS_COLLECTIONS;
 use junobuild_collections::types::interface::SetRule;
 use junobuild_collections::types::rules::{Memory, Rule, Rules};
-use junobuild_shared::serializers::{
+use junobuild_shared::memory::serializers::{
     deserialize_from_bytes, serialize_into_bytes, serialize_to_bytes,
 };
 use junobuild_shared::types::core::{Blob, Hash, Hashable};

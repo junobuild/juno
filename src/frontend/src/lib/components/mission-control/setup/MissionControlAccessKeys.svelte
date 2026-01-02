@@ -9,7 +9,7 @@
 	} from '$lib/api/mission-control.api';
 	import AccessKeys from '$lib/components/access-keys/AccessKeys.svelte';
 	import { authIdentity } from '$lib/derived/auth.derived';
-	import { addAccessKey } from '$lib/services/access-keys/key.add.services';
+	import { addAccessKey } from '$lib/services/access-keys/access-keys.services';
 	import { addMissionControlAccessKey } from '$lib/services/access-keys/mission-control.key.add.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type {

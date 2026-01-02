@@ -6,17 +6,17 @@
 	import AccessKeys from '$lib/components/access-keys/AccessKeys.svelte';
 	import { authIdentity } from '$lib/derived/auth.derived';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
-	import { addAccessKey } from '$lib/services/access-keys/key.add.services';
+	import { addAccessKey, removeAccessKey } from '$lib/services/access-keys/access-keys.services';
 	import { addOrbiterAccessKey } from '$lib/services/access-keys/orbiter.key.add.services';
-	import { addSatellitesAccessKey } from '$lib/services/access-keys/satellites.key.add.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type {
 		AddAccessKeyResult,
 		AddAccessKeyParams,
 		AccessKeyWithDevFn,
-		AccessKeyWithMissionControlFn
+		AccessKeyWithMissionControlFn,
+		AccessKeyIdParam
 	} from '$lib/types/access-keys';
-	import type { MissionControlId } from '$lib/types/mission-control';
+	import { removeOrbiterAccessKey } from '$lib/services/access-keys/orbiter.key.remove.services';
 
 	interface Props {
 		orbiterId: Principal;
@@ -27,15 +27,33 @@
 	const list = (): Promise<[Principal, MissionControlDid.Controller][]> =>
 		listOrbiterControllers({ orbiterId, identity: $authIdentity });
 
-	const remove = (params: {
-		missionControlId: MissionControlId;
-		controller: Principal;
-	}): Promise<void> =>
-		deleteOrbitersController({
-			...params,
-			orbiterIds: [orbiterId],
-			identity: $authIdentity
+	const remove = async (accessKey: AccessKeyIdParam): Promise<AddAccessKeyResult> => {
+		const orbiterIds = [orbiterId];
+
+		const removeAccessKeyWithMissionControlFn: AccessKeyWithMissionControlFn = async (params) => {
+			await deleteOrbitersController({
+				...params,
+				...accessKey,
+				orbiterIds
+			});
+		};
+
+		const removeAccessKeyWithDevFn: AccessKeyWithDevFn = async (params) => {
+			await removeOrbiterAccessKey({
+				...accessKey,
+				...params,
+				orbiterIds
+			});
+		};
+
+		return await removeAccessKey({
+			identity: $authIdentity,
+			missionControlId: $missionControlId,
+			accessKey,
+			removeAccessKeyWithMissionControlFn,
+			removeAccessKeyWithDevFn
 		});
+	};
 
 	const add = async (accessKey: AddAccessKeyParams): Promise<AddAccessKeyResult> => {
 		const orbiterIds = [orbiterId];

@@ -8,15 +8,12 @@
 	import { busy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
-	import type { MissionControlId } from '$lib/types/mission-control';
+	import type { AccessKeyIdParam, AddAccessKeyResult } from '$lib/types/access-keys';
 
 	interface Props {
 		visible?: boolean;
 		selectedController: [Principal, SatelliteDid.Controller | undefined] | undefined;
-		remove: (params: {
-			missionControlId: MissionControlId;
-			controller: Principal;
-		}) => Promise<void>;
+		remove: (params: AccessKeyIdParam) => Promise<AddAccessKeyResult>;
 		load: () => Promise<void>;
 	}
 
@@ -45,17 +42,9 @@
 
 		busy.start();
 
-		try {
-			await remove({
-				missionControlId: $missionControlId,
-				controller: selectedController[0]
-			});
-		} catch (err: unknown) {
-			toasts.error({
-				text: $i18n.errors.controllers_delete,
-				detail: err
-			});
-		}
+		await remove({
+			accessKeyId: selectedController[0]
+		});
 
 		close();
 

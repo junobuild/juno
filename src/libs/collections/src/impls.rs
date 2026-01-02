@@ -4,8 +4,8 @@ use crate::types::core::CollectionKey;
 use crate::types::interface::SetRule;
 use crate::types::rules::{Memory, Rule};
 use ic_cdk::api::time;
+use junobuild_shared::data::version::next_version;
 use junobuild_shared::types::state::{Timestamp, Version, Versioned};
-use junobuild_shared::version::next_version;
 
 impl Rule {
     pub fn mem(&self) -> Memory {

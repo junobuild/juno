@@ -9,7 +9,7 @@ use candid::Principal;
 use junobuild_collections::constants::assets::COLLECTION_ASSET_KEY;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::Permission;
-use junobuild_shared::list::{filter_timestamps, matcher_regex};
+use junobuild_shared::data::list::{filter_timestamps, matcher_regex};
 use junobuild_shared::types::core::Blob;
 use junobuild_shared::types::list::ListParams;
 use junobuild_shared::types::state::{Controllers, UserId};

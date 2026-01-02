@@ -4,7 +4,7 @@ use crate::store::filter::filter_notifications_range;
 use crate::types::interface::GetNotifications;
 use crate::types::state::{Notification, NotificationKey, NotificationsStable};
 use ic_cdk::api::time;
-use junobuild_shared::structures::collect_stable_vec;
+use junobuild_shared::data::collect::collect_stable_vec;
 use junobuild_shared::types::state::SegmentId;
 
 pub fn insert_notification(

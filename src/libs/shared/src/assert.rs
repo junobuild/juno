@@ -1,9 +1,9 @@
-use crate::canister::memory_size;
 use crate::errors::{
     JUNO_ERROR_MEMORY_HEAP_EXCEEDED, JUNO_ERROR_MEMORY_STABLE_EXCEEDED, JUNO_ERROR_NO_TIMESTAMP,
     JUNO_ERROR_NO_VERSION, JUNO_ERROR_TIMESTAMP_OUTDATED_OR_FUTURE,
     JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE,
 };
+use crate::segments::utils::memory_size;
 use crate::types::config::ConfigMaxMemorySize;
 use crate::types::interface::MemorySize;
 use crate::types::state::Version;

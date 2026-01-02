@@ -1,5 +1,5 @@
 use crate::memory::state::services::{mutate_heap_state, read_heap_state};
-use junobuild_shared::controllers::{
+use junobuild_shared::segments::controllers::{
     delete_controllers as delete_controllers_impl, set_controllers as set_controllers_impl,
 };
 use junobuild_shared::types::interface::SetController;

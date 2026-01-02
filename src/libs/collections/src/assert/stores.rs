@@ -1,6 +1,6 @@
 use crate::types::rules::Permission;
 use candid::Principal;
-use junobuild_shared::controllers::controller_can_write;
+use junobuild_shared::segments::controllers::controller_can_write;
 use junobuild_shared::types::state::{Controllers, UserId};
 use junobuild_shared::utils::{principal_not_anonymous, principal_not_anonymous_and_equal};
 

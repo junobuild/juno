@@ -3,8 +3,10 @@ use crate::errors::auth::{
     JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER, JUNO_AUTH_ERROR_NOT_CONTROLLER,
     JUNO_AUTH_ERROR_NOT_WRITE_CONTROLLER,
 };
-use junobuild_shared::controllers::{controller_can_write, is_admin_controller, is_controller};
 use junobuild_shared::ic::api::caller;
+use junobuild_shared::segments::controllers::{
+    controller_can_write, is_admin_controller, is_controller,
+};
 use junobuild_shared::types::state::Controllers;
 
 pub fn caller_is_admin_controller() -> Result<(), String> {

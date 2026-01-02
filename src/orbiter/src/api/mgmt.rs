@@ -1,8 +1,8 @@
 use crate::guards::{caller_is_admin_controller, caller_is_controller};
 use ic_cdk_macros::{query, update};
-use junobuild_shared::canister::memory_size as canister_memory_size;
 use junobuild_shared::ic::UnwrapOrTrap;
 use junobuild_shared::mgmt::ic::deposit_cycles as deposit_cycles_shared;
+use junobuild_shared::segments::utils::memory_size as canister_memory_size;
 use junobuild_shared::types::interface::{DepositCyclesArgs, MemorySize};
 
 #[update(guard = "caller_is_admin_controller")]

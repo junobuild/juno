@@ -2,8 +2,10 @@ use crate::controllers::store::{delete_controllers, set_controllers as set_contr
 use crate::{get_admin_controllers, get_controllers};
 use ic_cdk::trap;
 use junobuild_shared::constants::shared::MAX_NUMBER_OF_SATELLITE_CONTROLLERS;
-use junobuild_shared::controllers::{assert_controllers, assert_max_number_of_controllers};
 use junobuild_shared::ic::UnwrapOrTrap;
+use junobuild_shared::segments::controllers::{
+    assert_controllers, assert_max_number_of_controllers,
+};
 use junobuild_shared::types::interface::{DeleteControllersArgs, SetControllersArgs};
 use junobuild_shared::types::state::{ControllerScope, Controllers};
 

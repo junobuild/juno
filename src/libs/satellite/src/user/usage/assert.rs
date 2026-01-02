@@ -9,7 +9,7 @@ use crate::SetDoc;
 use junobuild_collections::assert::collection::is_system_collection;
 use junobuild_collections::constants::db::COLLECTION_USER_USAGE_KEY;
 use junobuild_collections::types::core::CollectionKey;
-use junobuild_shared::controllers::controller_can_write;
+use junobuild_shared::segments::controllers::controller_can_write;
 use junobuild_shared::types::state::{Controllers, UserId};
 use junobuild_utils::decode_doc_data;
 // ---------------------------------------------------------

@@ -2,7 +2,7 @@ use crate::hooks::js::types::shared::{JsControllers, JsUserId};
 use junobuild_satellite::{
     get_admin_controllers as get_admin_controllers_sdk, get_controllers as get_controllers_sdk,
 };
-use junobuild_shared::controllers::{
+use junobuild_shared::segments::controllers::{
     controller_can_write as is_controller_sdk, is_admin_controller as is_admin_controller_sdk,
 };
 use rquickjs::{Ctx, Error as JsError, Result as JsResult};

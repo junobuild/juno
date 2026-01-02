@@ -12,7 +12,7 @@ mod guards;
 mod impls;
 mod memory;
 mod metadata;
-pub mod payments;
+mod payments;
 mod store;
 mod types;
 

@@ -2,7 +2,7 @@ use crate::factory::services::ledger::cycles::{cycles_transfer_from, icrc_transf
 use crate::factory::services::ledger::icp::{
     icp_transfer_from, icp_transfer_payment, icp_verify_payment,
 };
-use crate::store::stable::payments::{is_known_icp_payment, is_known_icrc_payment};
+use crate::payments::{is_known_icp_payment, is_known_icrc_payment};
 use crate::types::ledger::{Fee, IcrcPaymentKey};
 use candid::Principal;
 use ic_ledger_types::BlockIndex;

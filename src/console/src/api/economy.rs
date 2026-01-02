@@ -4,8 +4,8 @@ use crate::accounts::credits::{
 };
 use crate::fees::{get_factory_fee, get_factory_fee_icp, set_factory_fee};
 use crate::guards::caller_is_admin_controller;
-use crate::store::stable::payments::list_icp_payments as list_icp_payments_state;
-use crate::store::stable::payments::list_icrc_payments as list_icrc_payments_state;
+use crate::payments::list_icp_payments as list_icp_payments_state;
+use crate::payments::list_icrc_payments as list_icrc_payments_state;
 use crate::types::interface::FeesArgs;
 use crate::types::ledger::Fee;
 use crate::types::state::{FactoryFee, IcpPayments, IcrcPayments};

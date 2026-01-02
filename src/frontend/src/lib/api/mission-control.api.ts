@@ -82,18 +82,17 @@ export const setMissionControlController = async ({
 
 export const deleteMissionControlController = async ({
 	missionControlId,
-	controller,
-	identity
+	identity,
+	accessKeyId
 }: {
 	missionControlId: MissionControlId;
-	controller: Principal;
 	identity: OptionIdentity;
-}) => {
+} & AccessKeyIdParam) => {
 	const { del_mission_control_controllers } = await getMissionControlActor({
 		missionControlId,
 		identity
 	});
-	await del_mission_control_controllers([controller]);
+	await del_mission_control_controllers([Principal.from(accessKeyId)]);
 };
 
 export const listMissionControlControllers = async ({

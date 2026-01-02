@@ -10,12 +10,16 @@
 	import AccessKeys from '$lib/components/access-keys/AccessKeys.svelte';
 	import { authIdentity } from '$lib/derived/auth.derived';
 	import { addAccessKey } from '$lib/services/access-keys/access-keys.services';
-	import { addMissionControlAccessKey } from '$lib/services/access-keys/mission-control.key.add.services';
+	import {
+		addMissionControlAccessKey,
+		removeMissionControlAccessKey
+	} from '$lib/services/access-keys/mission-control.key.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type {
 		AddAccessKeyResult,
 		AddAccessKeyParams,
-		AccessKeyWithMissionControlFn
+		AccessKeyWithMissionControlFn,
+		AccessKeyIdParam
 	} from '$lib/types/access-keys';
 	import type { MissionControlId } from '$lib/types/mission-control';
 
@@ -28,10 +32,12 @@
 	const list = (): Promise<[Principal, MissionControlDid.Controller][]> =>
 		listMissionControlControllers({ missionControlId, identity: $authIdentity });
 
-	const remove = (params: {
-		missionControlId: MissionControlId;
-		controller: Principal;
-	}): Promise<void> => deleteMissionControlController({ ...params, identity: $authIdentity });
+	const remove = async (accessKey: AccessKeyIdParam): Promise<AddAccessKeyResult> =>
+		await removeMissionControlAccessKey({
+			identity: $authIdentity,
+			missionControlId,
+			...accessKey
+		});
 
 	const add = async (accessKey: AddAccessKeyParams): Promise<AddAccessKeyResult> =>
 		await addMissionControlAccessKey({

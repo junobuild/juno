@@ -11,6 +11,7 @@
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import { addAccessKey, removeAccessKey } from '$lib/services/access-keys/access-keys.services';
 	import { addSatellitesAccessKey } from '$lib/services/access-keys/satellites.key.add.services';
+	import { removeSatellitesAccessKey } from '$lib/services/access-keys/satellites.key.remove.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type {
 		AddAccessKeyResult,
@@ -20,7 +21,6 @@
 		AccessKeyIdParam
 	} from '$lib/types/access-keys';
 	import type { Satellite } from '$lib/types/satellite';
-	import { removeSatellitesAccessKey } from '$lib/services/access-keys/satellites.key.remove.services';
 
 	interface Props {
 		satellite: Satellite;

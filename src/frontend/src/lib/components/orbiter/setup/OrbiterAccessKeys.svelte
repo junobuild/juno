@@ -8,6 +8,7 @@
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import { addAccessKey, removeAccessKey } from '$lib/services/access-keys/access-keys.services';
 	import { addOrbiterAccessKey } from '$lib/services/access-keys/orbiter.key.add.services';
+	import { removeOrbiterAccessKey } from '$lib/services/access-keys/orbiter.key.remove.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type {
 		AddAccessKeyResult,
@@ -16,7 +17,6 @@
 		AccessKeyWithMissionControlFn,
 		AccessKeyIdParam
 	} from '$lib/types/access-keys';
-	import { removeOrbiterAccessKey } from '$lib/services/access-keys/orbiter.key.remove.services';
 
 	interface Props {
 		orbiterId: Principal;

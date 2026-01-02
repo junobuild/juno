@@ -23,14 +23,13 @@ export const addAccessKey = async ({
 	accessKey: AddAccessKeyParams;
 	addAccessKeyWithMissionControlFn: AccessKeyWithMissionControlFn;
 	addAccessKeyWithDevFn: AccessKeyWithDevFn;
-}): Promise<AddAccessKeyResult> => {
-	return await executeAccessKey({
+}): Promise<AddAccessKeyResult> =>
+	await executeAccessKey({
 		accessKeyWithDevFn: addAccessKeyWithDevFn,
 		accessKeyWithMissionControlFn: addAccessKeyWithMissionControlFn,
 		errorLabel: get(i18n).errors.controllers_add,
 		...rest
 	});
-};
 
 export const removeAccessKey = async ({
 	removeAccessKeyWithMissionControlFn,
@@ -42,14 +41,13 @@ export const removeAccessKey = async ({
 	accessKey: AccessKeyIdParam;
 	removeAccessKeyWithMissionControlFn: AccessKeyWithMissionControlFn;
 	removeAccessKeyWithDevFn: AccessKeyWithDevFn;
-}): Promise<AddAccessKeyResult> => {
-	return await executeAccessKey({
+}): Promise<AddAccessKeyResult> =>
+	await executeAccessKey({
 		accessKeyWithDevFn: removeAccessKeyWithDevFn,
 		accessKeyWithMissionControlFn: removeAccessKeyWithMissionControlFn,
 		errorLabel: get(i18n).errors.controllers_delete,
 		...rest
 	});
-};
 
 const executeAccessKey = async <AccessKeyParams>({
 	missionControlId,

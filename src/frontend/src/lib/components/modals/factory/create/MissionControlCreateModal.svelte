@@ -8,7 +8,7 @@
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import { authSignedOut, authIdentity } from '$lib/derived/auth.derived';
 	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
-	import { createMissionControlWizard } from '$lib/services/factory/factory-wizard.services';
+	import { createMissionControlWizard } from '$lib/services/factory/factory.create.services';
 	import { wizardBusy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { JunoModalDetail } from '$lib/types/modal';

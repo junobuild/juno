@@ -19,7 +19,7 @@ import {
 	attachSatelliteToMissionControl,
 	attachSegmentsToMissionControl,
 	AttachToMissionControlError
-} from '$lib/services/factory/_factory-wizard.attach.services';
+} from '$lib/services/factory/_factory.attach.services';
 import {
 	createOrbiter,
 	createOrbiterWithConfig

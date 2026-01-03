@@ -11,7 +11,7 @@
 	import { authSignedOut, authIdentity } from '$lib/derived/auth.derived';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
-	import { createOrbiterWizard } from '$lib/services/factory/factory-wizard.services';
+	import { createOrbiterWizard } from '$lib/services/factory/factory.create.services';
 	import { wizardBusy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { JunoModalDetail } from '$lib/types/modal';

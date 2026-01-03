@@ -326,6 +326,11 @@ type SetSegmentMetadataArgs = record {
   segment_id : principal;
   segment_type : SegmentType;
 };
+type SetSegmentsArgs = record {
+  metadata : opt vec record { text; text };
+  segment_id : principal;
+  segment_type : SegmentType;
+};
 type SetStorageConfig = record {
   iframe : opt StorageConfigIFrame;
   rewrites : vec record { text; text };
@@ -376,6 +381,10 @@ type TimestampMatcher = variant {
   LessThan : nat64;
 };
 type Tokens = record { e8s : nat64 };
+type UnsetSegmentsArgs = record {
+  segment_id : principal;
+  segment_type : SegmentType;
+};
 type UploadChunk = record {
   content : blob;
   batch_id : nat;
@@ -432,9 +441,11 @@ service : () -> {
   set_controllers : (SetControllersArgs) -> ();
   set_custom_domain : (text, opt text) -> ();
   set_fee : (SegmentKind, FeesArgs) -> ();
+  set_segment : (SetSegmentsArgs) -> (Segment);
   set_segment_metadata : (SetSegmentMetadataArgs) -> (Segment);
   set_storage_config : (SetStorageConfig) -> (StorageConfig);
   submit_proposal : (nat) -> (nat, Proposal);
+  unset_segment : (UnsetSegmentsArgs) -> ();
   update_rate_config : (SegmentKind, RateConfig) -> ();
   upload_proposal_asset_chunk : (UploadChunk) -> (UploadChunkResult);
 }

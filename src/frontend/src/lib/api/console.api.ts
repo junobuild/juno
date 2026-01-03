@@ -78,3 +78,25 @@ export const setSegmentMetadata = async ({
 		metadata
 	});
 };
+
+export const unsetSegment = async ({
+	args,
+	identity
+}: {
+	args: ConsoleDid.UnsetSegmentsArgs;
+	identity: OptionIdentity;
+}): Promise<void> => {
+	const { unset_segment } = await getConsoleActor({ identity });
+	await unset_segment(args);
+};
+
+export const setSegment = async ({
+	args,
+	identity
+}: {
+	args: ConsoleDid.SetSegmentsArgs;
+	identity: OptionIdentity;
+}): Promise<ConsoleDid.Segment> => {
+	const { set_segment } = await getConsoleActor({ identity });
+	return set_segment(args);
+};

@@ -1,16 +1,12 @@
 <script lang="ts">
-	import { isNullish } from '@dfinity/utils';
 	import type { Principal } from '@icp-sdk/core/principal';
 	import { goto } from '$app/navigation';
 	import Confirmation from '$lib/components/core/Confirmation.svelte';
 	import IconLinkOff from '$lib/components/icons/IconLinkOff.svelte';
 	import Text from '$lib/components/ui/Text.svelte';
-	import { authSignedOut } from '$lib/derived/auth.derived';
+	import { authIdentity } from '$lib/derived/auth.derived';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
-	import {
-		detachOrbiter,
-		detachSatellite
-	} from '$lib/services/mission-control/mission-control.services';
+	import { detachSegment } from '$lib/services/attach-detach/detach.services';
 	import { busy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
@@ -30,58 +26,36 @@
 	const detach = async () => {
 		ondetach();
 
-		if ($authSignedOut) {
-			toasts.error({
-				text: $i18n.errors.no_identity
-			});
-			return;
-		}
-
-		if (isNullish($missionControlId)) {
-			toasts.error({
-				text: $i18n.errors.no_mission_control
-			});
-			return;
-		}
-
-		// TODO: can be removed once the mission control is patched to disable monitoring on detach
-		if (monitoringEnabled) {
-			toasts.warn($i18n.monitoring.warn_monitoring_enabled);
-			return;
-		}
-
 		busy.start();
 
-		try {
-			const fn = segment === 'orbiter' ? detachOrbiter : detachSatellite;
-
-			await fn({
-				canisterId: segmentId,
-				missionControlId: $missionControlId
-			});
-
-			await goto('/', { replaceState: true });
-
-			close();
-
-			toasts.success({
-				text: i18nCapitalize(
-					i18nFormat($i18n.canisters.detach_success, [
-						{
-							placeholder: '{0}',
-							value: segment
-						}
-					])
-				)
-			});
-		} catch (err: unknown) {
-			toasts.error({
-				text: $i18n.errors.segment_detach,
-				detail: err
-			});
-		}
+		const { result } = await detachSegment({
+			segmentId,
+			segment,
+			monitoringEnabled,
+			missionControlId: $missionControlId,
+			identity: $authIdentity
+		});
 
 		busy.stop();
+
+		if (result === 'error' || result === 'warn') {
+			return;
+		}
+
+		await goto('/', { replaceState: true });
+
+		close();
+
+		toasts.success({
+			text: i18nCapitalize(
+				i18nFormat($i18n.canisters.detach_success, [
+					{
+						placeholder: '{0}',
+						value: segment
+					}
+				])
+			)
+		});
 	};
 
 	const close = () => (visible = false);

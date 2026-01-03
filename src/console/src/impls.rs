@@ -149,20 +149,20 @@ impl Storable for IcrcPaymentKey {
     const BOUND: Bound = Bound::Unbounded;
 }
 
-fn init_metadata(name: &Option<String>) -> Metadata {
-    match name {
-        Some(name) => HashMap::from([("name".to_string(), name.to_owned())]),
-        None => HashMap::new(),
-    }
-}
-
 impl Segment {
-    pub fn from(segment_id: &SegmentId, name: &Option<String>) -> Self {
+    pub fn init_metadata(name: &Option<String>) -> Metadata {
+        match name {
+            Some(name) => HashMap::from([("name".to_string(), name.to_owned())]),
+            None => HashMap::new(),
+        }
+    }
+
+    pub fn new(segment_id: &SegmentId, metadata: Option<Metadata>) -> Self {
         let now = time();
 
         Self {
             segment_id: *segment_id,
-            metadata: init_metadata(name),
+            metadata: metadata.unwrap_or(HashMap::new()),
             created_at: now,
             updated_at: now,
         }

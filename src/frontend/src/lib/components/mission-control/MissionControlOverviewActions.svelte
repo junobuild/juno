@@ -1,6 +1,4 @@
 <script lang="ts">
-	import MissionControlAttachOrbiter from '$lib/components/attach-detach/MissionControlAttachOrbiter.svelte';
-	import MissionControlAttachSatellite from '$lib/components/attach-detach/MissionControlAttachSatellite.svelte';
 	import MissionControlReloadVersion from '$lib/components/mission-control/MissionControlReloadVersion.svelte';
 	import SegmentActions from '$lib/components/segments/SegmentActions.svelte';
 	import type { MissionControlId } from '$lib/types/mission-control';
@@ -17,10 +15,6 @@
 
 <SegmentActions bind:visible>
 	{#snippet moreActions()}
-		<MissionControlAttachSatellite on:junoAttach={close} />
-
-		<MissionControlAttachOrbiter on:junoAttach={close} />
-
 		<MissionControlReloadVersion {missionControlId} onreload={close} />
 	{/snippet}
 </SegmentActions>

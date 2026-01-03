@@ -5,8 +5,8 @@ use crate::factory::utils::controllers::remove_console_controller;
 use crate::factory::utils::wasm::orbiter_wasm_arg;
 use crate::fees::get_factory_fee_for_kind;
 use crate::fees::types::FeeKind;
+use crate::segments::add_segment as add_segment_store;
 use crate::store::heap::increment_orbiters_rate;
-use crate::store::stable::add_segment as add_segment_store;
 use crate::types::ledger::Fee;
 use crate::types::state::{Segment, SegmentKey, SegmentType};
 use candid::{Nat, Principal};
@@ -78,7 +78,7 @@ async fn create_orbiter_wasm(
 }
 
 fn add_segment(user: &UserId, canister_id: &Principal) {
-    let orbiter = Segment::from(canister_id, &None);
+    let orbiter = Segment::new(canister_id, None);
     let key = SegmentKey::from(user, canister_id, SegmentType::Orbiter);
     add_segment_store(&key, &orbiter)
 }

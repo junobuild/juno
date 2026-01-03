@@ -4,11 +4,7 @@ import {
 	getUserData,
 	setMetadata,
 	setMissionControlController,
-	setOrbiter,
-	setSatellite,
-	setSatellitesController,
-	unsetOrbiter,
-	unsetSatellite
+	setSatellitesController
 } from '$lib/api/mission-control.api';
 import {
 	addMissionControlController003,
@@ -23,15 +19,12 @@ import {
 } from '$lib/constants/version.constants';
 import { loadDataStore } from '$lib/services/_loader.services';
 import { mapSatellitesForControllersFn } from '$lib/services/access-keys/satellites.key.map.services';
-import { loadSatellites } from '$lib/services/mission-control/mission-control.satellites.services';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
-import { authStore } from '$lib/stores/auth.store';
 import {
 	missionControlSettingsUncertifiedStore,
 	missionControlUserUncertifiedStore
 } from '$lib/stores/mission-control/mission-control.store';
-import { orbitersUncertifiedStore } from '$lib/stores/mission-control/orbiter.store';
 import { versionStore } from '$lib/stores/version.store';
 import type { AddAccessKeyParams } from '$lib/types/access-keys';
 import type { OptionIdentity } from '$lib/types/itentity';
@@ -125,66 +118,6 @@ export const setSatellitesControllerForVersion = async ({
 				]
 			: [])
 	]);
-};
-
-export const attachSatellite = async ({
-	missionControlId,
-	satelliteId
-}: {
-	missionControlId: MissionControlId;
-	satelliteId: Principal;
-}) => {
-	const { identity } = get(authStore);
-
-	await setSatellite({ missionControlId, satelliteId, identity });
-
-	// We reload all satellites because if the developer accesses the mission control page directly, the satellites may not be loaded. Adding just one satellite could give the user the impression that there is an issue.
-	await loadSatellites({
-		missionControlId,
-		reload: true
-	});
-};
-
-export const detachSatellite = async ({
-	canisterId,
-	missionControlId
-}: {
-	missionControlId: MissionControlId;
-	canisterId: Principal;
-}) => {
-	const { identity } = get(authStore);
-
-	await unsetSatellite({ missionControlId, satelliteId: canisterId, identity });
-
-	await loadSatellites({
-		missionControlId,
-		reload: true
-	});
-};
-
-export const attachOrbiter = async (params: {
-	missionControlId: MissionControlId;
-	orbiterId: Principal;
-}) => {
-	const { identity } = get(authStore);
-
-	const orbiter = await setOrbiter({ ...params, identity });
-
-	orbitersUncertifiedStore.set([orbiter]);
-};
-
-export const detachOrbiter = async ({
-	canisterId,
-	...rest
-}: {
-	missionControlId: MissionControlId;
-	canisterId: Principal;
-}) => {
-	const { identity } = get(authStore);
-
-	await unsetOrbiter({ ...rest, orbiterId: canisterId, identity });
-
-	orbitersUncertifiedStore.reset();
 };
 
 export const loadSettings = async ({

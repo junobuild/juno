@@ -649,6 +649,7 @@ interface I18nErrors {
 	orbiter_not_loaded: string;
 	canister_id_missing: string;
 	canister_attach_error: string;
+	canister_cannot_attach: string;
 	orbiter_attach: string;
 	orbiter_unexpected_error: string;
 	transactions_next: string;

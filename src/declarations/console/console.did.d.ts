@@ -389,6 +389,11 @@ export interface SetSegmentMetadataArgs {
 	segment_id: Principal;
 	segment_type: SegmentType;
 }
+export interface SetSegmentsArgs {
+	metadata: [] | [Array<[string, string]>];
+	segment_id: Principal;
+	segment_type: SegmentType;
+}
 export interface SetStorageConfig {
 	iframe: [] | [StorageConfigIFrame];
 	rewrites: Array<[string, string]>;
@@ -445,6 +450,10 @@ export type TimestampMatcher =
 	| { LessThan: bigint };
 export interface Tokens {
 	e8s: bigint;
+}
+export interface UnsetSegmentsArgs {
+	segment_id: Principal;
+	segment_type: SegmentType;
 }
 export interface UploadChunk {
 	content: Uint8Array;
@@ -504,9 +513,11 @@ export interface _SERVICE {
 	set_controllers: ActorMethod<[SetControllersArgs], undefined>;
 	set_custom_domain: ActorMethod<[string, [] | [string]], undefined>;
 	set_fee: ActorMethod<[SegmentKind, FeesArgs], undefined>;
+	set_segment: ActorMethod<[SetSegmentsArgs], Segment>;
 	set_segment_metadata: ActorMethod<[SetSegmentMetadataArgs], Segment>;
 	set_storage_config: ActorMethod<[SetStorageConfig], StorageConfig>;
 	submit_proposal: ActorMethod<[bigint], [bigint, Proposal]>;
+	unset_segment: ActorMethod<[UnsetSegmentsArgs], undefined>;
 	update_rate_config: ActorMethod<[SegmentKind, RateConfig], undefined>;
 	upload_proposal_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;
 }

@@ -12,6 +12,10 @@ pub fn add_segment(key: &SegmentKey, segment: &Segment) {
     })
 }
 
+pub fn try_add_segment(key: &SegmentKey, segment: &Segment) -> Result<(), String> {
+    with_segments_mut(|segments| try_add_segment_impl(key, segment, segments))
+}
+
 pub fn set_segment_metadata(key: &SegmentKey, metadata: &Metadata) -> Result<Segment, String> {
     with_segments_mut(|segments| set_segment_metadata_impl(key, metadata, segments))
 }
@@ -20,8 +24,8 @@ pub fn list_segments(user: &UserId, filter: &ListSegmentsArgs) -> Vec<(SegmentKe
     with_segments(|segments| list_segments_impl(user, filter, segments))
 }
 
-pub fn detach_segment(key: &SegmentKey) -> Result<(), String> {
-    with_segments_mut(|segments| detach_segment_impl(key, segments))
+pub fn unset_segment(key: &SegmentKey) -> Result<(), String> {
+    with_segments_mut(|segments| unset_segment_impl(key, segments))
 }
 
 fn list_segments_impl(
@@ -30,6 +34,22 @@ fn list_segments_impl(
     segments: &SegmentsStable,
 ) -> Vec<(SegmentKey, Segment)> {
     collect_stable_vec(segments.range(filter_segments_range(user, filter)))
+}
+
+fn try_add_segment_impl(
+    key: &SegmentKey,
+    segment: &Segment,
+    segments: &mut SegmentsStable,
+) -> Result<(), String> {
+    let segment_exist = segments.contains_key(key);
+
+    if segment_exist {
+        return Err("Segment already attached.".to_string());
+    }
+
+    let _ = segments.insert(key.clone(), segment.clone());
+
+    Ok(())
 }
 
 fn set_segment_metadata_impl(
@@ -47,11 +67,11 @@ fn set_segment_metadata_impl(
     Ok(updated_segment)
 }
 
-fn detach_segment_impl(key: &SegmentKey, segments: &mut SegmentsStable) -> Result<(), String> {
+fn unset_segment_impl(key: &SegmentKey, segments: &mut SegmentsStable) -> Result<(), String> {
     let segment = segments.contains_key(key);
 
     if !segment {
-        return Err("Segment not found".to_string());
+        return Err("Segment not found.".to_string());
     }
 
     segments.remove(key);

@@ -261,7 +261,7 @@ describe('Console > Segments', () => {
 		describe('User', () => {
 			let payload: ConsoleDid.UnsetSegmentsArgs;
 
-			beforeAll(async () => {
+			beforeAll(() => {
 				actor.setIdentity(user);
 
 				payload = {

@@ -47,7 +47,6 @@ import type { OrbiterId } from '$lib/types/orbiter';
 import { type WizardCreateProgress, WizardCreateProgressStep } from '$lib/types/progress-wizard';
 import type { SatelliteId } from '$lib/types/satellite';
 import type { Option } from '$lib/types/utils';
-import type { CreateWizardResult } from '$lib/types/wizard';
 import { emit } from '$lib/utils/events.utils';
 import { waitAndRestartWallet } from '$lib/utils/wallet.utils';
 import { assertNonNullish, isEmptyString, isNullish, nonNullish, toNullable } from '@dfinity/utils';
@@ -271,6 +270,15 @@ interface CreateWizardParams {
 	withFee: Option<bigint>;
 	onProgress: (progress: WizardCreateProgress | undefined) => void;
 }
+
+type CreateWizardResult = Promise<
+	| {
+			success: 'ok';
+			canisterId: Principal;
+	  }
+	| { success: 'error'; err?: unknown }
+	| { success: 'warning' }
+>;
 
 export const createSatelliteWizard = async ({
 	missionControlId,

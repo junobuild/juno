@@ -2,7 +2,6 @@ import type { ConsoleDid, ICDid, MissionControlDid, OrbiterDid, SatelliteDid } f
 import type { SelectedToken, SelectedWallet } from '$lib/schemas/wallet.schema';
 import type { AddAccessKeyParams, AddAccessKeyResult } from '$lib/types/access-keys';
 import type { CanisterInfo, CanisterSegmentWithLabel, CanisterSettings } from '$lib/types/canister';
-import type { CustomDomains } from '$lib/types/custom-domain';
 import type { MissionControlId } from '$lib/types/mission-control';
 import type { OrbiterSatelliteConfigEntry } from '$lib/types/orbiter';
 import type { ProposalRecord } from '$lib/types/proposals';
@@ -47,15 +46,13 @@ export interface JunoModalCycles {
 	cycles: bigint;
 }
 
-export interface JunoModalCustomDomainsDetail {
-	customDomains: CustomDomains;
+export interface JunoModalDeleteSegmentDetail extends JunoModalCycles {
+	monitoringEnabled: boolean;
 }
 
 export type JunoModalCyclesSatelliteDetail = JunoModalCycles & JunoModalWithSatellite;
 
-export type JunoModalDeleteSatelliteDetail = JunoModalCycles &
-	JunoModalCustomDomainsDetail &
-	JunoModalWithSatellite;
+export type JunoModalDeleteSatelliteDetail = JunoModalDeleteSegmentDetail & JunoModalWithSatellite;
 
 export interface JunoModalSegmentDetail {
 	segment: CanisterSegmentWithLabel;

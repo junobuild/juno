@@ -1,6 +1,5 @@
 import { unsetSegment } from '$lib/api/console.api';
 import { unsetOrbiter, unsetSatellite } from '$lib/api/mission-control.api';
-import { loadSegments } from '$lib/services/segments.services';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
@@ -37,6 +36,7 @@ export const detachSegment = async ({
 		return { result: 'error' };
 	}
 
+	// TODO: duplicate code
 	// TODO: can be removed once the mission control is patched to disable monitoring on detach
 	if (monitoringEnabled) {
 		toasts.warn(get(i18n).monitoring.warn_monitoring_enabled);
@@ -58,13 +58,6 @@ export const detachSegment = async ({
 		});
 
 		return { result: 'error', err };
-	} finally {
-		await loadSegments({
-			missionControlId,
-			reload: true,
-			reloadSatellites: segment === 'satellite',
-			reloadOrbiters: segment === 'orbiter'
-		});
 	}
 };
 

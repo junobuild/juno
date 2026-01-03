@@ -4,8 +4,6 @@
 	import CanisterStopStart from '$lib/components/canister/lifecycle/CanisterStopStart.svelte';
 	import TopUp from '$lib/components/canister/top-up/TopUp.svelte';
 	import SegmentActions from '$lib/components/segments/SegmentActions.svelte';
-	import { i18n } from '$lib/stores/app/i18n.store';
-	import { toasts } from '$lib/stores/app/toasts.store';
 	import type { CanisterSyncData as CanisterSyncDataType } from '$lib/types/canister';
 	import { emit } from '$lib/utils/events.utils';
 
@@ -38,18 +36,13 @@
 	const onDeleteOrbiter = async () => {
 		close();
 
-		// TODO: can be removed once the mission control is patched to disable monitoring on delete
-		if (monitoringEnabled) {
-			toasts.warn($i18n.monitoring.warn_monitoring_enabled);
-			return;
-		}
-
 		emit({
 			message: 'junoModal',
 			detail: {
 				type: 'delete_orbiter',
 				detail: {
-					cycles: canister?.data?.canister?.cycles ?? 0n
+					cycles: canister?.data?.canister?.cycles ?? 0n,
+					monitoringEnabled
 				}
 			}
 		});

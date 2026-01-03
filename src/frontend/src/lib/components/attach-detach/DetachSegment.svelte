@@ -7,6 +7,7 @@
 	import { authIdentity } from '$lib/derived/auth.derived';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import { detachSegment } from '$lib/services/attach-detach/detach.services';
+	import { loadSegments } from '$lib/services/segments.services';
 	import { busy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
@@ -34,6 +35,14 @@
 			monitoringEnabled,
 			missionControlId: $missionControlId,
 			identity: $authIdentity
+		});
+
+		// Reload segments before navigating
+		await loadSegments({
+			missionControlId: $missionControlId,
+			reload: true,
+			reloadSatellites: segment === 'satellite',
+			reloadOrbiters: segment === 'orbiter'
 		});
 
 		busy.stop();

@@ -122,7 +122,6 @@ interface I18nCanisters {
 	cycles_description: string;
 	icp_to_cycles_description: string;
 	top_up_in_progress: string;
-	delete_in_progress: string;
 	upgrade_preparing: string;
 	upgrade_validating: string;
 	upgrade_stopping: string;
@@ -250,7 +249,6 @@ interface I18nCanisters {
 	snapshot_restored: string;
 	restoring_snapshot: string;
 	snapshot_preparing: string;
-	snapshot_stopping: string;
 	edit_snapshot: string;
 	delete_snapshot: string;
 	delete_snapshot_confirm: string;
@@ -265,6 +263,11 @@ interface I18nCanisters {
 	of_cycles_needed: string;
 	only: string;
 	reload_initiated: string;
+	depositing_cycles: string;
+	stopping: string;
+	deleting: string;
+	detaching: string;
+	destination_deposit: string;
 }
 
 interface I18nSign_in {

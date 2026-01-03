@@ -10,6 +10,7 @@
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
 	import { i18nCapitalize, i18nFormat } from '$lib/utils/i18n.utils';
+	import InputCanisterId from '$lib/components/core/InputCanisterId.svelte';
 
 	interface Props {
 		segment: 'satellite' | 'orbiter';
@@ -22,23 +23,7 @@
 	let { segment, visible = $bindable(), title, input, onsuccess }: Props = $props();
 
 	let validConfirm = $state(false);
-
 	let canisterId = $state('');
-
-	const assertForm = debounce(() => {
-		try {
-			validConfirm =
-				nonNullish(canisterId) && canisterId !== '' && nonNullish(Principal.fromText(canisterId));
-		} catch (_err: unknown) {
-			validConfirm = false;
-		}
-	});
-
-	$effect(() => {
-		canisterId;
-
-		assertForm();
-	});
 
 	const handleSubmit = async ($event: SubmitEvent) => {
 		$event.preventDefault();
@@ -87,18 +72,11 @@
 	<form class="container" onsubmit={handleSubmit}>
 		<h3>{@render title?.()}</h3>
 
-		<label for="canisterId">{@render input?.()}:</label>
-
-		<input
-			id="canisterId"
-			autocomplete="off"
-			data-1p-ignore
-			disabled={$isBusy}
-			maxlength={64}
-			placeholder="_____-_____-_____-_____-cai"
-			type="text"
-			bind:value={canisterId}
-		/>
+		<InputCanisterId disabled={$isBusy} bind:canisterId bind:valid={validConfirm}>
+			{#snippet label()}
+				{@render input?.()}
+			{/snippet}
+		</InputCanisterId>
 
 		<button class="submit" disabled={$isBusy || !validConfirm} type="submit">
 			{$i18n.core.submit}

@@ -123,6 +123,17 @@ export const canisterStop = async ({
 	return stop_canister({ canister_id: canisterId });
 };
 
+export const canisterDelete = async ({
+	canisterId,
+	identity
+}: {
+	canisterId: Principal;
+	identity: Identity;
+}): Promise<void> => {
+	const { delete_canister } = await getICActor({ identity });
+	return delete_canister({ canister_id: canisterId });
+};
+
 export const canisterLogs = async ({
 	canisterId,
 	identity

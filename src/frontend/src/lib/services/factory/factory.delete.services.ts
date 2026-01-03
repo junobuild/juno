@@ -110,7 +110,7 @@ export const deleteSegmentWizard = async ({
 		// 1. deposit_cycles to move out the cycles the devs want to keep
 		const depositFn = async () => {
 			const buildDepositCyclesFn =
-				segment === 'orbiter' ? buildSatelliteDepositCyclesFn : buildSatelliteDepositCyclesFn;
+				segment === 'orbiter' ? buildOrbiterDepositCyclesFn : buildSatelliteDepositCyclesFn;
 
 			const depositCyclesFn = buildDepositCyclesFn({
 				canisterIdForDeposit,

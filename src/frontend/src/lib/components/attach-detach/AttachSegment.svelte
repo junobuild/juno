@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { debounce, nonNullish } from '@dfinity/utils';
 	import { Principal } from '@icp-sdk/core/principal';
 	import type { Snippet } from 'svelte';
+	import InputCanisterId from '$lib/components/core/InputCanisterId.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import { authIdentity } from '$lib/derived/auth.derived';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
@@ -10,7 +10,6 @@
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
 	import { i18nCapitalize, i18nFormat } from '$lib/utils/i18n.utils';
-	import InputCanisterId from '$lib/components/core/InputCanisterId.svelte';
 
 	interface Props {
 		segment: 'satellite' | 'orbiter';

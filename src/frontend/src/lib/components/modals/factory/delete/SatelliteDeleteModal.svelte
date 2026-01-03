@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { deleteSatellite } from '$lib/api/mission-control.api';
 	import FactoryDeleteWizard from '$lib/components/factory/delete/FactoryDeleteWizard.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';

@@ -3,6 +3,7 @@
 	import { Principal } from '@icp-sdk/core/principal';
 	import { untrack } from 'svelte';
 	import { goto } from '$app/navigation';
+	import InputCanisterId from '$lib/components/core/InputCanisterId.svelte';
 	import FactoryProgressDelete from '$lib/components/factory/delete/FactoryProgressDelete.svelte';
 	import IconWarning from '$lib/components/icons/IconWarning.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
@@ -21,7 +22,6 @@
 	import type { FactoryDeleteProgress } from '$lib/types/progress-factory-delete';
 	import { formatTCycles } from '$lib/utils/cycles.utils';
 	import { i18nCapitalize, i18nFormat } from '$lib/utils/i18n.utils';
-	import InputCanisterId from '$lib/components/core/InputCanisterId.svelte';
 
 	interface Props {
 		segmentName?: string;

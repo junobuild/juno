@@ -6,8 +6,6 @@
 	import SegmentActions from '$lib/components/segments/SegmentActions.svelte';
 	import { listCustomDomains } from '$lib/services/satellite/custom-domain.services';
 	import { busy } from '$lib/stores/app/busy.store';
-	import { i18n } from '$lib/stores/app/i18n.store';
-	import { toasts } from '$lib/stores/app/toasts.store';
 	import type { CanisterSyncData as CanisterSyncDataType } from '$lib/types/canister';
 	import type { Satellite } from '$lib/types/satellite';
 	import { emit } from '$lib/utils/events.utils';

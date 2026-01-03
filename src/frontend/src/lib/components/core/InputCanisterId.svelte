@@ -30,7 +30,7 @@
 	});
 </script>
 
-<Value ref="canisterId" {label}>
+<Value {label} ref="canisterId">
 	<input
 		id="canisterId"
 		autocomplete="off"

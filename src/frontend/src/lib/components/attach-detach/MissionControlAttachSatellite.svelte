@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Principal } from '@icp-sdk/core/principal';
 	import { createEventDispatcher } from 'svelte';
-	import CanisterAttach from '$lib/components/canister/CanisterAttach.svelte';
+	import CanisterAttach from '$lib/components/attach-detach/CanisterAttach.svelte';
 	import IconLink from '$lib/components/icons/IconLink.svelte';
 	import { attachSatellite } from '$lib/services/mission-control/mission-control.services';
 	import { i18n } from '$lib/stores/app/i18n.store';

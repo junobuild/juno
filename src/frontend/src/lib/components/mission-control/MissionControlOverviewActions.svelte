@@ -1,6 +1,6 @@
 <script lang="ts">
-	import MissionControlAttachOrbiter from '$lib/components/mission-control/MissionControlAttachOrbiter.svelte';
-	import MissionControlAttachSatellite from '$lib/components/mission-control/MissionControlAttachSatellite.svelte';
+	import MissionControlAttachOrbiter from '$lib/components/attach-detach/MissionControlAttachOrbiter.svelte';
+	import MissionControlAttachSatellite from '$lib/components/attach-detach/MissionControlAttachSatellite.svelte';
 	import MissionControlReloadVersion from '$lib/components/mission-control/MissionControlReloadVersion.svelte';
 	import SegmentActions from '$lib/components/segments/SegmentActions.svelte';
 	import type { MissionControlId } from '$lib/types/mission-control';

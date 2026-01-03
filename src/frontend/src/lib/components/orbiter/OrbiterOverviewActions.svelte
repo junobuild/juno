@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { MissionControlDid } from '$declarations';
-	import SegmentDetach from '$lib/components/canister/SegmentDetach.svelte';
+	import DetachSegment from '$lib/components/attach-detach/DetachSegment.svelte';
 	import OrbiterReloadVersion from '$lib/components/orbiter/OrbiterReloadVersion.svelte';
 	import SegmentActions from '$lib/components/segments/SegmentActions.svelte';
 
@@ -17,7 +17,7 @@
 
 <SegmentActions bind:visible>
 	{#snippet moreActions()}
-		<SegmentDetach
+		<DetachSegment
 			{monitoringEnabled}
 			ondetach={close}
 			segment="orbiter"

@@ -1,6 +1,7 @@
-import type { ConsoleActor } from '$declarations';
+import type { ConsoleActor, ConsoleDid } from '$declarations';
 import type { SetSegmentMetadataArgs } from '$declarations/console/console.did';
 import type { Actor, PocketIc } from '@dfinity/pic';
+import { toNullable } from '@dfinity/utils';
 import { AnonymousIdentity, type Identity } from '@icp-sdk/core/agent';
 import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import type { Principal } from '@icp-sdk/core/principal';
@@ -14,6 +15,11 @@ describe('Console > Segments', () => {
 
 	let user: Identity;
 	let segmentId: Principal;
+
+	const metadata: [string, string][] = [
+		['name', 'hello'],
+		['env', 'staging']
+	];
 
 	beforeAll(async () => {
 		const { pic: p, actor: c } = await setupConsole({
@@ -83,11 +89,6 @@ describe('Console > Segments', () => {
 	});
 
 	describe('Set metadata', () => {
-		const metadata: [string, string][] = [
-			['name', 'hello'],
-			['env', 'staging']
-		];
-
 		describe('Errors', () => {
 			const assertNoAccountGuard = async () => {
 				const { set_segment_metadata } = actor;
@@ -161,7 +162,7 @@ describe('Console > Segments', () => {
 				expect(updatedSegment.segment_id.toText()).toEqual(segmentId.toText());
 				expect(updatedSegment.created_at).toEqual(currentSegment.created_at);
 				expect(updatedSegment.updated_at > currentSegment.updated_at).toBeTruthy();
-				expect(updatedSegment.metadata).toEqual(metadata);
+				expect(updatedSegment.metadata.sort()).toEqual(metadata.sort());
 			};
 
 			it('should set segment metadata if user has an account', async () => {
@@ -170,6 +171,115 @@ describe('Console > Segments', () => {
 
 			it('should set segment metadata again', async () => {
 				await assertSetSegmentMetadata([['hello', 'world']]);
+			});
+		});
+	});
+
+	describe('Set segment', () => {
+		describe('Unknown identity', () => {
+			const assertNoAccountGuard = async () => {
+				const { set_segment } = actor;
+
+				await expect(
+					set_segment({
+						segment_id: segmentId,
+						segment_type: { Satellite: null },
+						metadata: toNullable(metadata)
+					})
+				).rejects.toThrowError('User does not have an account.');
+			};
+
+			it('should not set segment if anonymous', async () => {
+				actor.setIdentity(new AnonymousIdentity());
+				await assertNoAccountGuard();
+			});
+
+			it('should not set segment for some identity', async () => {
+				actor.setIdentity(Ed25519KeyIdentity.generate());
+				await assertNoAccountGuard();
+			});
+		});
+
+		describe('User', () => {
+			let payload: ConsoleDid.SetSegmentsArgs;
+
+			beforeAll(async () => {
+				actor.setIdentity(user);
+
+				payload = {
+					segment_id: segmentId,
+					segment_type: { Satellite: null },
+					metadata: toNullable(metadata)
+				};
+
+				// Otherwise we cannot test set
+				const { unset_segment } = actor;
+				await unset_segment({
+					segment_id: segmentId,
+					segment_type: { Satellite: null }
+				});
+			});
+
+			it('should set segment', async () => {
+				const { set_segment } = actor;
+
+				await expect(set_segment(payload)).resolves.not.toThrowError();
+			});
+
+			it('should not set segment if already exists', async () => {
+				const { set_segment } = actor;
+
+				await expect(set_segment(payload)).rejects.toThrowError('Segment already attached.');
+			});
+		});
+	});
+
+	describe('Unset segment', () => {
+		describe('Unknown identity', () => {
+			const assertNoAccountGuard = async () => {
+				const { unset_segment } = actor;
+
+				await expect(
+					unset_segment({
+						segment_id: segmentId,
+						segment_type: { Satellite: null }
+					})
+				).rejects.toThrowError('User does not have an account.');
+			};
+
+			it('should not unset segment if anonymous', async () => {
+				actor.setIdentity(new AnonymousIdentity());
+				await assertNoAccountGuard();
+			});
+
+			it('should not unset segment for some identity', async () => {
+				actor.setIdentity(Ed25519KeyIdentity.generate());
+				await assertNoAccountGuard();
+			});
+		});
+
+		describe('User', () => {
+			let payload: ConsoleDid.UnsetSegmentsArgs;
+
+			beforeAll(async () => {
+				actor.setIdentity(user);
+
+				payload = {
+					segment_id: segmentId,
+					segment_type: { Satellite: null }
+				};
+			});
+
+			it('should unset segment', async () => {
+				const { unset_segment } = actor;
+
+				await expect(unset_segment(payload)).resolves.not.toThrowError();
+			});
+
+			it('should not unset segment if already detached', async () => {
+				const { unset_segment } = actor;
+
+				await expect(unset_segment(payload)).rejects.toThrowError('Segment not found.');
 			});
 		});
 	});

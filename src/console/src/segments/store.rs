@@ -71,7 +71,7 @@ fn unset_segment_impl(key: &SegmentKey, segments: &mut SegmentsStable) -> Result
     let segment = segments.contains_key(key);
 
     if !segment {
-        return Err("Segment not found".to_string());
+        return Err("Segment not found.".to_string());
     }
 
     segments.remove(key);

@@ -15,7 +15,7 @@
 <button class="menu" onclick={() => (visible = true)}><IconLink /> {$i18n.satellites.attach}</button
 >
 
-<AttachSegment segment="satellite" onsuccess={ondetach} bind:visible>
+<AttachSegment onsuccess={ondetach} segment="satellite" bind:visible>
 	{#snippet title()}
 		{$i18n.satellites.attach}
 	{/snippet}

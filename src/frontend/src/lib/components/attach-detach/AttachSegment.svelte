@@ -1,16 +1,14 @@
 <script lang="ts">
-	import { debounce, isNullish, nonNullish } from '@dfinity/utils';
+	import { debounce, nonNullish } from '@dfinity/utils';
 	import { Principal } from '@icp-sdk/core/principal';
 	import type { Snippet } from 'svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
+	import { authIdentity } from '$lib/derived/auth.derived';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
+	import { attachSegment } from '$lib/services/attach-detach/attach.services';
 	import { busy, isBusy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
-	import type { MissionControlId } from '$lib/types/mission-control';
-	import { detachSegment } from '$lib/services/attach-detach/detach.services';
-	import { attachSegment } from '$lib/services/attach-detach/attach.services';
-	import { authIdentity } from '$lib/derived/auth.derived';
 	import { i18nCapitalize, i18nFormat } from '$lib/utils/i18n.utils';
 
 	interface Props {

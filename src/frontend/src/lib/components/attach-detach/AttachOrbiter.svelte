@@ -14,7 +14,7 @@
 
 <button class="menu" onclick={() => (visible = true)}><IconLink /> {$i18n.analytics.attach}</button>
 
-<AttachSegment segment="orbiter" onsuccess={ondetach} bind:visible>
+<AttachSegment onsuccess={ondetach} segment="orbiter" bind:visible>
 	{#snippet title()}
 		{$i18n.analytics.attach}
 	{/snippet}

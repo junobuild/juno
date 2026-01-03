@@ -33,7 +33,7 @@
 		stopping: {
 			state: 'next',
 			step: 'stopping',
-			text: i18nFormat($i18n.canisters.snapshot_stopping, [
+			text: i18nFormat($i18n.canisters.stopping, [
 				{
 					placeholder: '{0}',
 					value: segment.replace('_', ' ')

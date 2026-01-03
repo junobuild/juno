@@ -7,7 +7,7 @@
 		ondetach: () => void;
 	}
 
-	let {ondetach}: Props = $props();
+	let { ondetach }: Props = $props();
 
 	let visible: boolean = $state(false);
 </script>

@@ -6,8 +6,12 @@ import { toasts } from '$lib/stores/app/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { MissionControlId } from '$lib/types/mission-control';
 import type { Option } from '$lib/types/utils';
+import { i18nCapitalize, i18nFormat } from '$lib/utils/i18n.utils';
+import { container } from '$lib/utils/juno.utils';
 import { isNullish, nonNullish, toNullable } from '@dfinity/utils';
+import type { Identity } from '@icp-sdk/core/agent';
 import type { Principal } from '@icp-sdk/core/principal';
+import { orbiterVersion, satelliteVersion } from '@junobuild/admin';
 import { get } from 'svelte/store';
 
 interface AttachParams {
@@ -35,9 +39,13 @@ export const attachSegment = async ({
 		return { result: 'error' };
 	}
 
-	try {
-		// TODO: assertion
+	const { valid } = await assertKnowSegmentType({ segment, segmentId, identity });
 
+	if (!valid) {
+		return { result: 'error' };
+	}
+
+	try {
 		if (nonNullish(missionControlId)) {
 			await attachWithMissionControl({ segment, segmentId, missionControlId, identity });
 		}
@@ -59,6 +67,51 @@ export const attachSegment = async ({
 			reloadSatellites: segment === 'satellite',
 			reloadOrbiters: segment === 'orbiter'
 		});
+	}
+};
+
+/**
+ * Not bullet-proof but, this gives us a hint the developer did not mistakenly enters
+ * the incorrect ID or selected the incorrect segment type.
+ */
+const assertKnowSegmentType = async ({
+	segment,
+	segmentId,
+	identity
+}: Pick<AttachParams, 'segment' | 'segmentId'> & { identity: Identity }): Promise<{
+	valid: boolean;
+}> => {
+	const assertSatellite = async () => {
+		await satelliteVersion({
+			satellite: { satelliteId: segmentId.toText(), identity, ...container() }
+		});
+	};
+
+	const assertOrbiter = async () => {
+		await orbiterVersion({
+			orbiter: { orbiterId: segmentId.toText(), identity, ...container() }
+		});
+	};
+
+	try {
+		// "old" modules won't throw an error as the version checks fallback on the deprecated
+		// version() end point. For simplicity reasons, we are cool with it. Anyway, this is just a
+		// nice friendly check.
+		const fn = segment === 'orbiter' ? assertOrbiter : assertSatellite;
+		await fn();
+
+		return { valid: true };
+	} catch {
+		toasts.error({
+			text: i18nFormat(get(i18n).errors.canister_cannot_attach, [
+				{
+					placeholder: '{0}',
+					value: i18nCapitalize(segment)
+				}
+			])
+		});
+
+		return { valid: false };
 	}
 };
 

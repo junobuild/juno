@@ -633,6 +633,7 @@
 		"orbiter_not_loaded": "轨道器数据未加载。",
 		"canister_id_missing": "必须提供有效的ID。",
 		"canister_attach_error": "附加模块时发生意外错误。",
+		"canister_cannot_attach": "此模块无法作为{0}附加。请验证它确实是一个{0}。",
 		"orbiter_attach": "附加轨道器到您的任务控制中心时发生意外错误。",
 		"orbiter_unexpected_error": "创建轨道器时发生意外错误。",
 		"transactions_next": "获取下一笔交易时发生错误。",

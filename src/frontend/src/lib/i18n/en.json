@@ -632,6 +632,7 @@
 		"orbiter_not_loaded": "The Orbiter data are not yet loaded.",
 		"canister_id_missing": "A valid ID must be provided.",
 		"canister_attach_error": "Unexpected error(s) while trying to attach the module.",
+		"canister_cannot_attach": "This module cannot be a attached as a {0}. Please verify it is effectively one.",
 		"orbiter_attach": "Unexpected error(s) while trying to attach the Orbiter to your Mission Control.",
 		"orbiter_unexpected_error": "Unexpected error(s) while creating the Orbiter.",
 		"transactions_next": "Error while fetching the next transactions.",

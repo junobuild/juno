@@ -8,10 +8,10 @@
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
 	import type { MissionControlId } from '$lib/types/mission-control';
-	import {detachSegment} from "$lib/services/attach-detach/detach.services";
-	import {attachSegment} from "$lib/services/attach-detach/attach.services";
-	import {authIdentity} from "$lib/derived/auth.derived";
-	import {i18nCapitalize, i18nFormat} from "$lib/utils/i18n.utils";
+	import { detachSegment } from '$lib/services/attach-detach/detach.services';
+	import { attachSegment } from '$lib/services/attach-detach/attach.services';
+	import { authIdentity } from '$lib/derived/auth.derived';
+	import { i18nCapitalize, i18nFormat } from '$lib/utils/i18n.utils';
 
 	interface Props {
 		segment: 'satellite' | 'orbiter';
@@ -74,12 +74,12 @@
 
 		toasts.success({
 			text: i18nCapitalize(
-					i18nFormat($i18n.canisters.attach_success, [
-						{
-							placeholder: '{0}',
-							value: segment
-						}
-					])
+				i18nFormat($i18n.canisters.attach_success, [
+					{
+						placeholder: '{0}',
+						value: segment
+					}
+				])
 			)
 		});
 	};

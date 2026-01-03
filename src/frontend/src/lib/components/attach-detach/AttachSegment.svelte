@@ -8,16 +8,20 @@
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
 	import type { MissionControlId } from '$lib/types/mission-control';
+	import {detachSegment} from "$lib/services/attach-detach/detach.services";
+	import {attachSegment} from "$lib/services/attach-detach/attach.services";
+	import {authIdentity} from "$lib/derived/auth.derived";
+	import {i18nCapitalize, i18nFormat} from "$lib/utils/i18n.utils";
 
 	interface Props {
-		setFn: (params: { missionControlId: MissionControlId; canisterId: Principal }) => Promise<void>;
+		segment: 'satellite' | 'orbiter';
 		visible: boolean | undefined;
 		title?: Snippet;
 		input?: Snippet;
-		attach: () => void;
+		onsuccess: () => void;
 	}
 
-	let { setFn, visible = $bindable(), title, input, attach }: Props = $props();
+	let { segment, visible = $bindable(), title, input, onsuccess }: Props = $props();
 
 	let validConfirm = $state(false);
 
@@ -49,32 +53,35 @@
 			return;
 		}
 
-		if (isNullish($missionControlId)) {
-			toasts.error({
-				text: $i18n.errors.no_mission_control
-			});
+		busy.start();
+
+		const { result } = await attachSegment({
+			segmentId: Principal.fromText(canisterId),
+			segment,
+			missionControlId: $missionControlId,
+			identity: $authIdentity
+		});
+
+		busy.stop();
+
+		if (result === 'error') {
 			return;
 		}
 
-		busy.start();
+		visible = false;
 
-		try {
-			await setFn({
-				missionControlId: $missionControlId,
-				canisterId: Principal.fromText(canisterId)
-			});
+		onsuccess();
 
-			visible = false;
-
-			attach();
-		} catch (err: unknown) {
-			toasts.error({
-				text: $i18n.errors.canister_attach_error,
-				detail: err
-			});
-		}
-
-		busy.stop();
+		toasts.success({
+			text: i18nCapitalize(
+					i18nFormat($i18n.canisters.attach_success, [
+						{
+							placeholder: '{0}',
+							value: segment
+						}
+					])
+			)
+		});
 	};
 </script>
 

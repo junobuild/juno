@@ -6,11 +6,11 @@
 	import Text from '$lib/components/ui/Text.svelte';
 	import { authIdentity } from '$lib/derived/auth.derived';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
+	import { detachSegment } from '$lib/services/attach-detach/detach.services';
 	import { busy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
 	import { i18nCapitalize, i18nFormat } from '$lib/utils/i18n.utils';
-	import { detachSegment } from '$lib/services/attach-detach/detach.services';
 
 	interface Props {
 		segment: 'satellite' | 'orbiter';

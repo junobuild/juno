@@ -183,7 +183,7 @@
 		"start_info": "Do you want to resume your {0}?",
 		"start_success": "{0} resumed.",
 		"detach_title": "Detach {0}",
-		"detach_explanation": "Detaching this {0} will remove it from your Mission Control list. It will continue to function if it's active, or be forgotten if it's inactive and won't appear in the console anymore.",
+		"detach_explanation": "Detaching this {0} will remove it from your Console list. It will continue to function if it's active, or be forgotten if it's inactive.",
 		"detach_info": "Do you want to detach your {0}?",
 		"attach_success": "{0} attached.",
 		"detach_success": "{0} detached.",

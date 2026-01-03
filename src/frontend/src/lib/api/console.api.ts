@@ -78,3 +78,14 @@ export const setSegmentMetadata = async ({
 		metadata
 	});
 };
+
+export const unsetSegment = async ({
+	args,
+	identity
+}: {
+	args: ConsoleDid.UnsetSegmentsArgs;
+	identity: OptionIdentity;
+}): Promise<void> => {
+	const { unset_segment } = await getConsoleActor({ identity });
+	await unset_segment(args);
+};

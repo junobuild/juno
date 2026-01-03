@@ -6,9 +6,7 @@ import {
 	setMissionControlController,
 	setOrbiter,
 	setSatellite,
-	setSatellitesController,
-	unsetOrbiter,
-	unsetSatellite
+	setSatellitesController
 } from '$lib/api/mission-control.api';
 import {
 	addMissionControlController003,
@@ -145,23 +143,6 @@ export const attachSatellite = async ({
 	});
 };
 
-export const detachSatellite = async ({
-	canisterId,
-	missionControlId
-}: {
-	missionControlId: MissionControlId;
-	canisterId: Principal;
-}) => {
-	const { identity } = get(authStore);
-
-	await unsetSatellite({ missionControlId, satelliteId: canisterId, identity });
-
-	await loadSatellites({
-		missionControlId,
-		reload: true
-	});
-};
-
 export const attachOrbiter = async (params: {
 	missionControlId: MissionControlId;
 	orbiterId: Principal;
@@ -171,20 +152,6 @@ export const attachOrbiter = async (params: {
 	const orbiter = await setOrbiter({ ...params, identity });
 
 	orbitersUncertifiedStore.set([orbiter]);
-};
-
-export const detachOrbiter = async ({
-	canisterId,
-	...rest
-}: {
-	missionControlId: MissionControlId;
-	canisterId: Principal;
-}) => {
-	const { identity } = get(authStore);
-
-	await unsetOrbiter({ ...rest, orbiterId: canisterId, identity });
-
-	orbitersUncertifiedStore.reset();
 };
 
 export const loadSettings = async ({

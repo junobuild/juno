@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
 	import { deleteOrbiter } from '$lib/api/mission-control.api';
-	import CanisterDeleteWizard from '$lib/components/canister/lifecycle/CanisterDeleteWizard.svelte';
+	import FactoryDeleteWizard from '$lib/components/factory/delete/FactoryDeleteWizard.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import { authIdentity } from '$lib/derived/auth.derived';
 	import { orbiterStore } from '$lib/derived/orbiter.derived';
@@ -35,6 +35,6 @@
 
 {#if nonNullish($orbiterStore)}
 	<Modal {onclose}>
-		<CanisterDeleteWizard {currentCycles} {deleteFn} {onclose} segment="analytics" />
+		<FactoryDeleteWizard {currentCycles} {deleteFn} {onclose} segment="analytics" />
 	</Modal>
 {/if}

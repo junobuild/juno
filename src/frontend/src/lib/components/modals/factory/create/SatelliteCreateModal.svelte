@@ -2,9 +2,9 @@
 	import { nonNullish } from '@dfinity/utils';
 	import type { PrincipalText } from '@dfinity/zod-schemas';
 	import type { MissionControlDid } from '$declarations';
-	import FactoryAdvancedOptions from '$lib/components/factory/FactoryAdvancedOptions.svelte';
-	import FactoryCredits from '$lib/components/factory/FactoryCredits.svelte';
-	import FactoryProgressCreate from '$lib/components/factory/FactoryProgressCreate.svelte';
+	import FactoryAdvancedOptions from '$lib/components/factory/create/FactoryAdvancedOptions.svelte';
+	import FactoryCredits from '$lib/components/factory/create/FactoryCredits.svelte';
+	import FactoryProgressCreate from '$lib/components/factory/create/FactoryProgressCreate.svelte';
 	import Confetti from '$lib/components/ui/Confetti.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import Value from '$lib/components/ui/Value.svelte';

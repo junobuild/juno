@@ -15,7 +15,7 @@
 	import { wizardBusy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { JunoModalDetail } from '$lib/types/modal';
-	import type { WizardCreateProgress } from '$lib/types/progress-wizard';
+	import type { FactoryCreateProgress } from '$lib/types/progress-factory-create';
 	import type { Option } from '$lib/types/utils';
 	import { testId } from '$lib/utils/test.utils';
 
@@ -33,8 +33,8 @@
 
 	// Submit
 
-	let progress: WizardCreateProgress | undefined = $state(undefined);
-	const onProgress = (applyProgress: WizardCreateProgress | undefined) =>
+	let progress: FactoryCreateProgress | undefined = $state(undefined);
+	const onProgress = (applyProgress: FactoryCreateProgress | undefined) =>
 		(progress = applyProgress);
 
 	const onSubmit = async ($event: SubmitEvent) => {

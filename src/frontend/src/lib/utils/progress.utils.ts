@@ -1,7 +1,7 @@
+import type { FactoryCreateProgressState } from '$lib/types/progress-factory-create';
 import type { SnapshotProgressState } from '$lib/types/progress-snapshot';
 import type { ProgressStepState } from '$lib/types/progress-step';
 import type { MonitoringStrategyProgressState } from '$lib/types/progress-strategy';
-import type { WizardCreateProgressState } from '$lib/types/progress-wizard';
 import type { UpgradeCodeProgressState } from '@junobuild/admin';
 
 export const mapProgressState = (
@@ -9,7 +9,7 @@ export const mapProgressState = (
 		| UpgradeCodeProgressState
 		| SnapshotProgressState
 		| MonitoringStrategyProgressState
-		| WizardCreateProgressState
+		| FactoryCreateProgressState
 		| undefined
 ): ProgressStepState => {
 	switch (state) {

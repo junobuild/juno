@@ -44,7 +44,10 @@ import type { OptionIdentity } from '$lib/types/itentity';
 import type { MissionControlId } from '$lib/types/mission-control';
 import type { JunoModal, JunoModalCreateSegmentDetail } from '$lib/types/modal';
 import type { OrbiterId } from '$lib/types/orbiter';
-import { type WizardCreateProgress, WizardCreateProgressStep } from '$lib/types/progress-wizard';
+import {
+	type FactoryCreateProgress,
+	FactoryCreateProgressStep
+} from '$lib/types/progress-factory-create';
 import type { SatelliteId } from '$lib/types/satellite';
 import type { Option } from '$lib/types/utils';
 import { emit } from '$lib/utils/events.utils';
@@ -268,7 +271,7 @@ interface CreateWizardParams {
 	subnetId: PrincipalText | undefined;
 	monitoringStrategy: MissionControlDid.CyclesMonitoringStrategy | undefined;
 	withFee: Option<bigint>;
-	onProgress: (progress: WizardCreateProgress | undefined) => void;
+	onProgress: (progress: FactoryCreateProgress | undefined) => void;
 }
 
 type CreateWizardResult = Promise<
@@ -661,7 +664,7 @@ const createWizard = async ({
 			await execute({
 				fn: prepareFn,
 				onProgress,
-				step: WizardCreateProgressStep.Approve
+				step: FactoryCreateProgressStep.Approve
 			});
 		}
 
@@ -674,7 +677,7 @@ const createWizard = async ({
 		const canisterId = await execute({
 			fn,
 			onProgress,
-			step: WizardCreateProgressStep.Create
+			step: FactoryCreateProgressStep.Create
 		});
 
 		const reload = async () => {
@@ -702,7 +705,7 @@ const createWizard = async ({
 				await execute({
 					fn: executeAttachFn,
 					onProgress,
-					step: WizardCreateProgressStep.Attaching,
+					step: FactoryCreateProgressStep.Attaching,
 					errorState: 'warning'
 				});
 			} catch (error: unknown) {
@@ -728,7 +731,7 @@ const createWizard = async ({
 			await execute({
 				fn: executeMonitoringFn,
 				onProgress,
-				step: WizardCreateProgressStep.Monitoring
+				step: FactoryCreateProgressStep.Monitoring
 			});
 		}
 
@@ -741,7 +744,7 @@ const createWizard = async ({
 				await execute({
 					fn: executeFinalizingFn,
 					onProgress,
-					step: WizardCreateProgressStep.Finalizing
+					step: FactoryCreateProgressStep.Finalizing
 				});
 			} catch (_error: unknown) {
 				// This is used for development purpose only. We continue the wizard even if it failed.
@@ -752,7 +755,7 @@ const createWizard = async ({
 		await execute({
 			fn: reload,
 			onProgress,
-			step: WizardCreateProgressStep.Reload
+			step: FactoryCreateProgressStep.Reload
 		});
 
 		return { success: 'ok', canisterId };

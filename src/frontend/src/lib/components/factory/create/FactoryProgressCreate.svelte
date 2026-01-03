@@ -4,12 +4,15 @@
 	import WizardProgressSteps from '$lib/components/ui/WizardProgressSteps.svelte';
 	import { isSkylab } from '$lib/env/app.env';
 	import { i18n } from '$lib/stores/app/i18n.store';
+	import {
+		type FactoryCreateProgress,
+		FactoryCreateProgressStep
+	} from '$lib/types/progress-factory-create';
 	import type { ProgressStep } from '$lib/types/progress-step';
-	import { type WizardCreateProgress, WizardCreateProgressStep } from '$lib/types/progress-wizard';
 	import { mapProgressState } from '$lib/utils/progress.utils';
 
 	interface Props {
-		progress: WizardCreateProgress | undefined;
+		progress: FactoryCreateProgress | undefined;
 		segment: 'satellite' | 'mission_control' | 'orbiter';
 		withApprove: boolean;
 		withMonitoring?: boolean;
@@ -111,7 +114,7 @@
 					approve: {
 						...approve,
 						state:
-							progress?.step === WizardCreateProgressStep.Approve
+							progress?.step === FactoryCreateProgressStep.Approve
 								? mapProgressState(progress?.state)
 								: approve.state
 					}
@@ -119,7 +122,7 @@
 				create: {
 					...create,
 					state:
-						progress?.step === WizardCreateProgressStep.Create
+						progress?.step === FactoryCreateProgressStep.Create
 							? mapProgressState(progress?.state)
 							: create.state
 				},
@@ -127,7 +130,7 @@
 					attaching: {
 						...attaching,
 						state:
-							progress?.step === WizardCreateProgressStep.Attaching
+							progress?.step === FactoryCreateProgressStep.Attaching
 								? mapProgressState(progress?.state)
 								: attaching.state
 					}
@@ -136,7 +139,7 @@
 					monitoring: {
 						...monitoring,
 						state:
-							progress?.step === WizardCreateProgressStep.Monitoring
+							progress?.step === FactoryCreateProgressStep.Monitoring
 								? mapProgressState(progress?.state)
 								: monitoring.state
 					}
@@ -145,7 +148,7 @@
 					finalizing: {
 						...finalizing,
 						state:
-							progress?.step === WizardCreateProgressStep.Finalizing
+							progress?.step === FactoryCreateProgressStep.Finalizing
 								? mapProgressState(progress?.state)
 								: finalizing.state
 					}
@@ -153,7 +156,7 @@
 				reload: {
 					...reload,
 					state:
-						progress?.step === WizardCreateProgressStep.Reload
+						progress?.step === FactoryCreateProgressStep.Reload
 							? mapProgressState(progress?.state)
 							: reload.state
 				}

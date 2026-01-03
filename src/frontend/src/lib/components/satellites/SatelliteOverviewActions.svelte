@@ -1,5 +1,5 @@
 <script lang="ts">
-	import SegmentDetach from '$lib/components/canister/SegmentDetach.svelte';
+	import DetachSegment from '$lib/components/attach-detach/DetachSegment.svelte';
 	import SatelliteEditDetails from '$lib/components/satellites/SatelliteEditDetails.svelte';
 	import SatelliteReloadVersion from '$lib/components/satellites/SatelliteReloadVersion.svelte';
 	import SatelliteVisit from '$lib/components/satellites/SatelliteVisit.svelte';
@@ -25,7 +25,7 @@
 	{#snippet moreActions()}
 		<SatelliteEditDetails {satellite} />
 
-		<SegmentDetach
+		<DetachSegment
 			{monitoringEnabled}
 			ondetach={close}
 			segment="satellite"

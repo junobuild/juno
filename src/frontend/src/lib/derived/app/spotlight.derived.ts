@@ -91,10 +91,10 @@ const homeItem: Readable<SpotlightNavItem> = derived(
 	([$i18n, $authNotSignedIn]) => ({
 		type: 'nav' as const,
 		icon: IconRocket,
-		text: $authNotSignedIn ? $i18n.core.home : $i18n.satellites.launchpad,
+		text: $authNotSignedIn ? $i18n.core.home : $i18n.launchpad.launchpad,
 		href: '/',
 		filter: ({ query }: SpotlightItemFilterParams) =>
-			[$i18n.core.home, $i18n.satellites.launchpad].find((text) =>
+			[$i18n.core.home, $i18n.launchpad.launchpad].find((text) =>
 				text.toLowerCase().includes(query)
 			) !== undefined
 	})

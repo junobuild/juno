@@ -112,6 +112,7 @@ interface I18nCore {
 	two_years: string;
 	five_years: string;
 	custom: string;
+	launch: string;
 }
 
 interface I18nCanisters {
@@ -293,10 +294,24 @@ interface I18nSign_in_openid {
 	avatar: string;
 }
 
+interface I18nLaunchpad {
+	loading_launchpad: string;
+	go_launchpad: string;
+	launchpad: string;
+	attach: string;
+	morning: string;
+	afternoon: string;
+	good_evening: string;
+	welcome_back: string;
+	greetings: string;
+	commander: string;
+	spacebuilder: string;
+	captain: string;
+}
+
 interface I18nSatellites {
 	title: string;
 	launch: string;
-	loading_launchpad: string;
 	create: string;
 	search: string;
 	satellite: string;
@@ -322,9 +337,6 @@ interface I18nSatellites {
 	extended_version: string;
 	build: string;
 	see_all_satellites: string;
-	go_launchpad: string;
-	launchpad: string;
-	attach: string;
 	attaching: string;
 }
 
@@ -1062,6 +1074,7 @@ interface I18n {
 	canisters: I18nCanisters;
 	sign_in: I18nSign_in;
 	sign_in_openid: I18nSign_in_openid;
+	launchpad: I18nLaunchpad;
 	satellites: I18nSatellites;
 	mission_control: I18nMission_control;
 	wallet: I18nWallet;

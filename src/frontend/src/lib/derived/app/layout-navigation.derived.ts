@@ -23,6 +23,6 @@ export const layoutNavigationTitle: Readable<string> = derived(
 			return `${$layoutNavigation?.data.title ?? ''} / ${satName} / ${JUNO_CONSOLE}`;
 		}
 
-		return `${$layoutNavigation?.data.title ?? $i18n.satellites.launchpad} / ${JUNO_CONSOLE}`;
+		return `${$layoutNavigation?.data.title ?? $i18n.launchpad.launchpad} / ${JUNO_CONSOLE}`;
 	}
 );

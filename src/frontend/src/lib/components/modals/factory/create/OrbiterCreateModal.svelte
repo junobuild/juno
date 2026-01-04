@@ -8,6 +8,7 @@
 	import Confetti from '$lib/components/ui/Confetti.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import { testIds } from '$lib/constants/test-ids.constants';
+	import { isLaunchpadRoute } from '$lib/derived/app/route.launchpad.derived.svelte';
 	import { authSignedOut, authIdentity } from '$lib/derived/auth.derived';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
@@ -17,6 +18,7 @@
 	import type { JunoModalDetail } from '$lib/types/modal';
 	import type { FactoryCreateProgress } from '$lib/types/progress-factory-create';
 	import type { Option } from '$lib/types/utils';
+	import { navigateToAnalytics, navigateToSatellite } from '$lib/utils/nav.utils';
 	import { testId } from '$lib/utils/test.utils';
 
 	interface Props {
@@ -70,6 +72,14 @@
 	let monitoringStrategy = $state<MissionControlDid.CyclesMonitoringStrategy | undefined>(
 		undefined
 	);
+
+	const navigate = async () => {
+		if ($isLaunchpadRoute) {
+			await navigateToAnalytics(null);
+		}
+
+		onclose();
+	};
 </script>
 
 <Modal {onclose}>
@@ -78,8 +88,9 @@
 
 		<div class="msg">
 			<p>{$i18n.analytics.ready}</p>
-			<button onclick={onclose} {...testId(testIds.createAnalytics.close)}
-				>{$i18n.core.close}</button
+
+			<button onclick={navigate} {...testId(testIds.createAnalytics.close)}
+				>{$isLaunchpadRoute ? $i18n.core.continue : $i18n.core.close}</button
 			>
 		</div>
 	{:else if step === 'in_progress'}

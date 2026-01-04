@@ -6,19 +6,20 @@
 
 	interface Props {
 		visible?: boolean | undefined;
+		direction?: 'ltr' | 'rtl';
 		children: Snippet;
 	}
 
-	let { visible = $bindable(false), children }: Props = $props();
+	let { visible = $bindable(false), direction, children }: Props = $props();
 
 	let button: HTMLButtonElement | undefined = $state();
 </script>
 
 <button bind:this={button} aria-label={$i18n.core.more} onclick={() => (visible = true)}
-	><IconMore size="18px" /></button
+	><IconMore size="20px" /></button
 >
 
-<Popover anchor={button} bind:visible>
+<Popover anchor={button} {direction} bind:visible>
 	<div class="container">
 		{@render children()}
 	</div>

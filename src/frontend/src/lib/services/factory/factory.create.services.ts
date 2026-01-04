@@ -585,12 +585,14 @@ export const createMissionControlWizard = async ({
 			loadSettings({
 				missionControlId: canisterId,
 				identity,
-				reload: true
+				reload: true,
+				skipVersionGuard: true
 			}),
 			loadUserData({
 				missionControlId: canisterId,
 				identity,
-				reload: true
+				reload: true,
+				skipVersionGuard: true
 			})
 		]);
 	};

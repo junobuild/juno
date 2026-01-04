@@ -9,6 +9,7 @@
 	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toAccountIdentifier } from '$lib/utils/icp-icrc-account.utils';
+	import { isNotSkylab } from '$lib/env/app.env';
 
 	interface Props {
 		selectedWallet: SelectedWallet;
@@ -65,9 +66,11 @@
 					>
 				{/if}
 
-				<p>{$i18n.wallet.or_connect_wallet}</p>
+				{#if isNotSkylab()}
+					<p>{$i18n.wallet.or_connect_wallet}</p>
 
-				<button onclick={() => (step = 'signer')}><IconOisy /> OISY</button>
+					<button onclick={() => (step = 'signer')}><IconOisy /> OISY</button>
+				{/if}
 			</div>
 		{/if}
 	</div>

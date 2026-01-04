@@ -9,6 +9,7 @@
 	import { emit } from '$lib/utils/events.utils';
 	import { isTokenCycles } from '$lib/utils/token.utils';
 	import { popupCenter } from '$lib/utils/window.utils';
+	import { isNotSkylab } from '$lib/env/app.env';
 
 	interface Props {
 		selectedWallet: SelectedWallet;
@@ -53,6 +54,6 @@
 	const CYCLE_EXPRESS_URL = import.meta.env.VITE_CYCLE_EXPRESS_URL;
 </script>
 
-{#if nonNullish(CYCLE_EXPRESS_URL) && isTokenCycles(selectedToken)}
+{#if nonNullish(CYCLE_EXPRESS_URL) && isTokenCycles(selectedToken) && isNotSkylab()}
 	<button onclick={buyCycles} in:fade>{$i18n.canisters.buy_cycles}</button>
 {/if}

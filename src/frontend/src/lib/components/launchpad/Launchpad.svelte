@@ -8,9 +8,7 @@
 	import Message from '$lib/components/ui/Message.svelte';
 	import Spinner from '$lib/components/ui/Spinner.svelte';
 	import { satellitesStore } from '$lib/derived/satellites.derived';
-	import { onIntersection } from '$lib/directives/intersection.directives';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import { onLayoutTitleIntersection } from '$lib/stores/app/layout-intersecting.store';
 
 	let loading = $state(true);
 	run(() => {
@@ -23,12 +21,6 @@
 			loading = true;
 		})();
 	});
-
-	const customOnIntersection = (element: HTMLElement) =>
-		onIntersection(element, {
-			threshold: 0.8,
-			rootMargin: '-50px 0px'
-		});
 </script>
 
 {#if loading || ($satellitesStore?.length ?? 0n) === 0}
@@ -50,7 +42,7 @@
 		</div>
 	{/if}
 {:else if ($satellitesStore?.length ?? 0) >= 1}
-	<section onjunoIntersecting={onLayoutTitleIntersection} use:customOnIntersection in:fade>
+	<section in:fade>
 		<LaunchpadSegments />
 	</section>
 {/if}
@@ -73,7 +65,6 @@
 	h1,
 	div {
 		position: relative;
-		z-index: var(--z-index);
 	}
 
 	.spinner {

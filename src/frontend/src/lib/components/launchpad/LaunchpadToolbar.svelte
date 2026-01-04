@@ -7,6 +7,8 @@
 	import SatellitesLayout from '$lib/components/satellites/SatellitesLayout.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
 	import { i18n } from '$lib/stores/app/i18n.store';
+	import { onIntersection } from '$lib/directives/intersection.directives';
+	import { onLayoutTitleIntersection } from '$lib/stores/app/layout-intersecting.store';
 
 	interface Props {
 		filter?: string;
@@ -22,9 +24,15 @@
 		// @ts-expect-error TODO: to be migrated to Svelte v5
 		(filterInput, debounceUpdateFilter());
 	});
+
+	const customOnIntersection = (element: HTMLElement) =>
+			onIntersection(element, {
+				threshold: 0.8,
+				rootMargin: '-50px 0px'
+			});
 </script>
 
-<div class="header">
+<div class="header" onjunoIntersecting={onLayoutTitleIntersection} use:customOnIntersection>
 	<LaunchpadGreetings />
 
 	<div role="toolbar">

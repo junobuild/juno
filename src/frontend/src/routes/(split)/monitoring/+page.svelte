@@ -15,7 +15,6 @@
 	import { authSignedIn } from '$lib/derived/auth.derived';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import { hasMissionControlSettings } from '$lib/derived/mission-control/mission-control-settings.derived';
-	import { i18n } from '$lib/stores/app/i18n.store';
 	import {
 		type Tab,
 		TABS_CONTEXT_KEY,
@@ -75,7 +74,7 @@
 		{/snippet}
 
 		<Loaders monitoring>
-			<MissionControlGuard notFoundDescription={$i18n.monitoring.requires_mission_control}>
+			<MissionControlGuard>
 				{#if nonNullish($missionControlId)}
 					<MissionControlDataLoader missionControlId={$missionControlId} reload>
 						{#if $store.tabId === $store.tabs[0].id}

@@ -16,8 +16,8 @@
 	import OrbiterDeleteModal from '$lib/components/modals/factory/delete/OrbiterDeleteModal.svelte';
 	import SatelliteDeleteModal from '$lib/components/modals/factory/delete/SatelliteDeleteModal.svelte';
 	import CustomDomainModal from '$lib/components/modals/hosting/CustomDomainModal.svelte';
-	import CreateMonitoringStrategyModal from '$lib/components/modals/monitoring/CreateMonitoringStrategyModal.svelte';
 	import MonitoringDetailsModal from '$lib/components/modals/monitoring/MonitoringDetailsModal.svelte';
+	import MonitoringStrategyCreateModal from '$lib/components/modals/monitoring/MonitoringStrategyCreateModal.svelte';
 	import StopMonitoringStrategyModal from '$lib/components/modals/monitoring/StopMonitoringStrategyModal.svelte';
 	import AccessKeyCreateModal from '$lib/components/modals/setup/AccessKeyCreateModal.svelte';
 	import CanisterEditSettingsModal from '$lib/components/modals/setup/CanisterEditSettingsModal.svelte';
@@ -127,7 +127,7 @@
 {/if}
 
 {#if modal?.type === 'create_monitoring_strategy' && nonNullish(modal.detail)}
-	<CreateMonitoringStrategyModal detail={modal.detail} onclose={close} />
+	<MonitoringStrategyCreateModal detail={modal.detail} onclose={close} />
 {/if}
 
 {#if modal?.type === 'stop_monitoring_strategy' && nonNullish(modal.detail)}

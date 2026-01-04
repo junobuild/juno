@@ -18,6 +18,8 @@
 	import type { FactoryCreateProgress } from '$lib/types/progress-factory-create';
 	import type { Option } from '$lib/types/utils';
 	import { testId } from '$lib/utils/test.utils';
+	import { navigateToAnalytics, navigateToSatellite } from '$lib/utils/nav.utils';
+	import { isLaunchpadRoute } from '$lib/derived/app/route.launchpad.derived.svelte';
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -70,6 +72,14 @@
 	let monitoringStrategy = $state<MissionControlDid.CyclesMonitoringStrategy | undefined>(
 		undefined
 	);
+
+	const navigate = async () => {
+		if ($isLaunchpadRoute) {
+			await navigateToAnalytics(null);
+		}
+
+		onclose();
+	};
 </script>
 
 <Modal {onclose}>
@@ -78,8 +88,9 @@
 
 		<div class="msg">
 			<p>{$i18n.analytics.ready}</p>
-			<button onclick={onclose} {...testId(testIds.createAnalytics.close)}
-				>{$i18n.core.close}</button
+
+			<button onclick={navigate} {...testId(testIds.createAnalytics.close)}
+				>{$isLaunchpadRoute ? $i18n.core.continue : $i18n.core.close}</button
 			>
 		</div>
 	{:else if step === 'in_progress'}

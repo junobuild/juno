@@ -1,13 +1,13 @@
 <script lang="ts">
-	import { fade } from 'svelte/transition';
 	import { nonNullish } from '@dfinity/utils';
-	import Modal from '$lib/components/ui/Modal.svelte';
-	import type { JunoModalDetail } from '$lib/types/modal';
+	import { fade } from 'svelte/transition';
+	import type { MissionControlDid } from '$declarations';
 	import MissionControlCreateWizard from '$lib/components/mission-control/create/MissionControlCreateWizard.svelte';
 	import MonitoringCreateWizard from '$lib/components/monitoring/create/MonitoringCreateWizard.svelte';
-	import { assertAndGetForMonitoringWizard } from '$lib/services/mission-control/monitoring.services';
-	import type { MissionControlDid } from '$declarations';
+	import Modal from '$lib/components/ui/Modal.svelte';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
+	import { assertAndGetForMonitoringWizard } from '$lib/services/mission-control/monitoring.services';
+	import type { JunoModalDetail } from '$lib/types/modal';
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -44,10 +44,10 @@
 	{#if step === 'monitoring' && nonNullish($missionControlId) && nonNullish(user)}
 		<div in:fade>
 			<MonitoringCreateWizard
-				{settings}
-				{user}
 				missionControlId={$missionControlId}
 				{onclose}
+				{settings}
+				{user}
 				bind:onback
 			/>
 		</div>

@@ -17,10 +17,10 @@
 	} from '$lib/services/mission-control/monitoring.services';
 	import { wizardBusy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
+	import type { MissionControlId } from '$lib/types/mission-control';
 	import type { MonitoringStrategyProgress } from '$lib/types/progress-strategy';
 	import type { Option } from '$lib/types/utils';
 	import { metadataEmail } from '$lib/utils/metadata.utils';
-	import type { MissionControlId } from '$lib/types/mission-control';
 
 	interface Props {
 		missionControlId: MissionControlId;

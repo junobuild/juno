@@ -16,8 +16,8 @@
 	import OrbiterDeleteModal from '$lib/components/modals/factory/delete/OrbiterDeleteModal.svelte';
 	import SatelliteDeleteModal from '$lib/components/modals/factory/delete/SatelliteDeleteModal.svelte';
 	import CustomDomainModal from '$lib/components/modals/hosting/CustomDomainModal.svelte';
-	import MonitoringStrategyCreateModal from '$lib/components/modals/monitoring/MonitoringStrategyCreateModal.svelte';
 	import MonitoringDetailsModal from '$lib/components/modals/monitoring/MonitoringDetailsModal.svelte';
+	import MonitoringStrategyCreateModal from '$lib/components/modals/monitoring/MonitoringStrategyCreateModal.svelte';
 	import StopMonitoringStrategyModal from '$lib/components/modals/monitoring/StopMonitoringStrategyModal.svelte';
 	import AccessKeyCreateModal from '$lib/components/modals/setup/AccessKeyCreateModal.svelte';
 	import CanisterEditSettingsModal from '$lib/components/modals/setup/CanisterEditSettingsModal.svelte';

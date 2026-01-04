@@ -10,6 +10,7 @@
 	import MonitoringCreateStrategyWithDefault from '$lib/components/monitoring/MonitoringCreateStrategyWithDefault.svelte';
 	import MonitoringSelectSegments from '$lib/components/monitoring/MonitoringSelectSegments.svelte';
 	import ProgressMonitoring from '$lib/components/monitoring/ProgressMonitoring.svelte';
+	import MonitoringCreateWizard from '$lib/components/monitoring/create/MonitoringCreateWizard.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import { authIdentity } from '$lib/derived/auth.derived';
 	import {
@@ -22,7 +23,6 @@
 	import type { MonitoringStrategyProgress } from '$lib/types/progress-strategy';
 	import type { Option } from '$lib/types/utils';
 	import { metadataEmail } from '$lib/utils/metadata.utils';
-	import MonitoringCreateWizard from '$lib/components/monitoring/create/MonitoringCreateWizard.svelte';
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -39,5 +39,5 @@
 </script>
 
 <Modal {onback} {onclose}>
-	<MonitoringCreateWizard {settings} {user} {missionControlId} {onclose} bind:onback />
+	<MonitoringCreateWizard {missionControlId} {onclose} {settings} {user} bind:onback />
 </Modal>

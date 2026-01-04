@@ -9,7 +9,6 @@
 	import IconDatastore from '$lib/components/icons/IconDatastore.svelte';
 	import IconFunctions from '$lib/components/icons/IconFunctions.svelte';
 	import IconHosting from '$lib/components/icons/IconHosting.svelte';
-	import IconMissionControl from '$lib/components/icons/IconMissionControl.svelte';
 	import IconSatellite from '$lib/components/icons/IconSatellite.svelte';
 	import IconStorage from '$lib/components/icons/IconStorage.svelte';
 	import IconTelescope from '$lib/components/icons/IconTelescope.svelte';
@@ -126,17 +125,6 @@
 			>
 				<IconTelescope />
 				<span>{$i18n.monitoring.title}</span>
-			</a>
-
-			<a
-				class="link not-themed"
-				class:collapsed={$menuCollapsed}
-				class:selected={isRouteSelected({ routeId, path: 'mission-control' })}
-				href={`/mission-control${queryParam}`}
-				role="menuitem"
-			>
-				<IconMissionControl />
-				<span>{$i18n.mission_control.title}</span>
 			</a>
 
 			<a

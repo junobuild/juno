@@ -14,6 +14,8 @@
 	import ReceiveTokens from '$lib/components/wallet/tokens/ReceiveTokens.svelte';
 	import { testIds } from '$lib/constants/test-ids.constants';
 	import { CYCLES } from '$lib/constants/token.constants';
+	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
+	import { devHasIcp } from '$lib/derived/wallet/balance.derived';
 	import type { SelectedToken, SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { i18n } from '$lib/stores/app/i18n.store';
 
@@ -32,6 +34,8 @@
 
 	let selectedWallet = $state<SelectedWallet | undefined>(undefined);
 	let selectedToken = $state<SelectedToken>(CYCLES);
+
+	let detailed = $derived(nonNullish($missionControlId) || $devHasIcp);
 </script>
 
 <ButtonIcon {onclick} testId={testIds.navbar.openWallet} bind:button>
@@ -58,17 +62,11 @@
 			<WalletTokenPicker {selectedWallet} bind:selectedToken />
 		</div>
 
-		<div>
-			<Value>
-				{#snippet label()}
-					{$i18n.wallet.balance}
-				{/snippet}
-
-				<p>
-					<WalletBalanceById display="inline" {selectedToken} {selectedWallet} />
-				</p>
-			</Value>
-		</div>
+		{#if detailed}
+			<div>
+				<WalletBalanceById highlight={false} {selectedToken} {selectedWallet} />
+			</div>
+		{/if}
 
 		{#if nonNullish(selectedWallet)}
 			<WalletIds {selectedWallet} />

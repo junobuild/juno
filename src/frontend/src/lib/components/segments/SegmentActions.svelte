@@ -3,6 +3,7 @@
 	import type { Snippet } from 'svelte';
 	import Actions from '$lib/components/core/Actions.svelte';
 	import { i18n } from '$lib/stores/app/i18n.store';
+	import IconMore from '$lib/components/icons/IconMore.svelte';
 
 	interface Props {
 		visible?: boolean | undefined;
@@ -26,6 +27,10 @@
 
 	<Actions bind:visible>
 		{@render moreActions?.()}
+
+		{#snippet icon()}
+			<IconMore size="18px" />
+		{/snippet}
 
 		{#if nonNullish(cyclesActions)}
 			<span>{$i18n.canisters.cycles}:</span>

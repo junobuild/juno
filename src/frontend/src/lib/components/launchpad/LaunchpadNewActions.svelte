@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { isNullish } from '@dfinity/utils';
 	import IconAnalytics from '$lib/components/icons/IconAnalytics.svelte';
-	import IconRefresh from '$lib/components/icons/IconRefresh.svelte';
 	import IconRocket from '$lib/components/icons/IconRocket.svelte';
 	import IconSatellite from '$lib/components/icons/IconSatellite.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';

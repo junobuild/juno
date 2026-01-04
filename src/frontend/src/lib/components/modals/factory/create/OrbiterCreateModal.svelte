@@ -18,7 +18,7 @@
 	import type { JunoModalDetail } from '$lib/types/modal';
 	import type { FactoryCreateProgress } from '$lib/types/progress-factory-create';
 	import type { Option } from '$lib/types/utils';
-	import { navigateToAnalytics, navigateToSatellite } from '$lib/utils/nav.utils';
+	import { navigateToAnalytics } from '$lib/utils/nav.utils';
 	import { testId } from '$lib/utils/test.utils';
 
 	interface Props {

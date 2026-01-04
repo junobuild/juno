@@ -3,13 +3,13 @@
 	import { encodeIcrcAccount } from '@icp-sdk/canisters/ledger/icrc';
 	import { onDestroy } from 'svelte';
 	import { fade } from 'svelte/transition';
+	import { isNotSkylab } from '$lib/env/app.env';
 	import type { SelectedToken, SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { busy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { emit } from '$lib/utils/events.utils';
 	import { isTokenCycles } from '$lib/utils/token.utils';
 	import { popupCenter } from '$lib/utils/window.utils';
-	import { isNotSkylab } from '$lib/env/app.env';
 
 	interface Props {
 		selectedWallet: SelectedWallet;

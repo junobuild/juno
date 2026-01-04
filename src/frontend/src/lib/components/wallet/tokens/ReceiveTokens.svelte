@@ -6,10 +6,10 @@
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import ReceiveTokensQRCode from '$lib/components/wallet/tokens/ReceiveTokensQRCode.svelte';
 	import ReceiveTokensSigner from '$lib/components/wallet/tokens/ReceiveTokensSigner.svelte';
+	import { isNotSkylab } from '$lib/env/app.env';
 	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toAccountIdentifier } from '$lib/utils/icp-icrc-account.utils';
-	import { isNotSkylab } from '$lib/env/app.env';
 
 	interface Props {
 		selectedWallet: SelectedWallet;

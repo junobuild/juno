@@ -8,6 +8,7 @@
 	import Confetti from '$lib/components/ui/Confetti.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import { testIds } from '$lib/constants/test-ids.constants';
+	import { isLaunchpadRoute } from '$lib/derived/app/route.launchpad.derived.svelte';
 	import { authSignedOut, authIdentity } from '$lib/derived/auth.derived';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
@@ -17,9 +18,8 @@
 	import type { JunoModalDetail } from '$lib/types/modal';
 	import type { FactoryCreateProgress } from '$lib/types/progress-factory-create';
 	import type { Option } from '$lib/types/utils';
-	import { testId } from '$lib/utils/test.utils';
 	import { navigateToAnalytics, navigateToSatellite } from '$lib/utils/nav.utils';
-	import { isLaunchpadRoute } from '$lib/derived/app/route.launchpad.derived.svelte';
+	import { testId } from '$lib/utils/test.utils';
 
 	interface Props {
 		detail: JunoModalDetail;

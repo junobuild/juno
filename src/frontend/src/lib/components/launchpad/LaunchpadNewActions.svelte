@@ -1,20 +1,20 @@
 <script lang="ts">
+	import { isNullish } from '@dfinity/utils';
+	import IconAnalytics from '$lib/components/icons/IconAnalytics.svelte';
+	import IconRefresh from '$lib/components/icons/IconRefresh.svelte';
 	import IconRocket from '$lib/components/icons/IconRocket.svelte';
+	import IconSatellite from '$lib/components/icons/IconSatellite.svelte';
+	import Popover from '$lib/components/ui/Popover.svelte';
 	import { testIds } from '$lib/constants/test-ids.constants';
 	import { authIdentity } from '$lib/derived/auth.derived';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
+	import { orbiterLoaded, orbiterStore } from '$lib/derived/orbiter.derived';
 	import {
 		initOrbiterWizard,
 		initSatelliteWizard
 	} from '$lib/services/factory/factory.create.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { testId } from '$lib/utils/test.utils';
-	import Popover from '$lib/components/ui/Popover.svelte';
-	import IconRefresh from '$lib/components/icons/IconRefresh.svelte';
-	import IconSatellite from '$lib/components/icons/IconSatellite.svelte';
-	import { isNullish } from '@dfinity/utils';
-	import { orbiterLoaded, orbiterStore } from '$lib/derived/orbiter.derived';
-	import IconAnalytics from '$lib/components/icons/IconAnalytics.svelte';
 
 	const createSatellite = async () => {
 		close();
@@ -43,8 +43,8 @@
 </script>
 
 <button
-	class="primary"
 	bind:this={button}
+	class="primary"
 	onclick={() => (visible = true)}
 	{...testId(testIds.createSatellite.launch)}
 >
@@ -52,7 +52,7 @@
 	<IconRocket size="16px" />
 </button>
 
-<Popover anchor={button} bind:visible direction="rtl">
+<Popover anchor={button} direction="rtl" bind:visible>
 	<div class="container">
 		<button class="menu" onclick={createSatellite}
 			><IconSatellite /> {$i18n.satellites.launch}</button

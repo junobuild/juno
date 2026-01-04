@@ -19,7 +19,7 @@
 	><IconMore size="20px" /></button
 >
 
-<Popover anchor={button} bind:visible {direction}>
+<Popover anchor={button} {direction} bind:visible>
 	<div class="container">
 		{@render children()}
 	</div>

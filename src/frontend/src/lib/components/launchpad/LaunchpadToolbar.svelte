@@ -6,8 +6,8 @@
 	import LaunchpadNewActions from '$lib/components/launchpad/LaunchpadNewActions.svelte';
 	import SatellitesLayout from '$lib/components/satellites/SatellitesLayout.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
-	import { i18n } from '$lib/stores/app/i18n.store';
 	import { onIntersection } from '$lib/directives/intersection.directives';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import { onLayoutTitleIntersection } from '$lib/stores/app/layout-intersecting.store';
 
 	interface Props {
@@ -26,10 +26,10 @@
 	});
 
 	const customOnIntersection = (element: HTMLElement) =>
-			onIntersection(element, {
-				threshold: 0.8,
-				rootMargin: '-50px 0px'
-			});
+		onIntersection(element, {
+			threshold: 0.8,
+			rootMargin: '-50px 0px'
+		});
 </script>
 
 <div class="header" onjunoIntersecting={onLayoutTitleIntersection} use:customOnIntersection>

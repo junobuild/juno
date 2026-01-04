@@ -5,6 +5,7 @@
 	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
 	import MissionControlGuard from '$lib/components/guards/MissionControlGuard.svelte';
 	import Loaders from '$lib/components/loaders/Loaders.svelte';
+	import MissionControl from '$lib/components/mission-control/MissionControl.svelte';
 	import MissionControlDataLoader from '$lib/components/mission-control/MissionControlDataLoader.svelte';
 	import MonitoringDashboard from '$lib/components/monitoring/MonitoringDashboard.svelte';
 	import MonitoringSettings from '$lib/components/monitoring/MonitoringSettings.svelte';
@@ -28,6 +29,11 @@
 		labelKey: 'core.dashboard'
 	};
 
+	const tabMissionControl = {
+		id: Symbol('3'),
+		labelKey: 'core.service'
+	};
+
 	let tabs: Tab[] = $derived([
 		tabDashboard,
 		...($hasMissionControlSettings
@@ -37,7 +43,8 @@
 						labelKey: 'core.setup'
 					}
 				]
-			: [])
+			: []),
+		tabMissionControl
 	]);
 
 	const store = writable<TabsData>({
@@ -73,8 +80,14 @@
 					<MissionControlDataLoader missionControlId={$missionControlId} reload>
 						{#if $store.tabId === $store.tabs[0].id}
 							<MonitoringDashboard missionControlId={$missionControlId} />
-						{:else if $store.tabId === $store.tabs[1].id && $hasMissionControlSettings}
-							<MonitoringSettings missionControlId={$missionControlId} />
+						{:else if $hasMissionControlSettings}
+							{#if $store.tabId === $store.tabs[1].id}
+								<MonitoringSettings missionControlId={$missionControlId} />
+							{:else if $store.tabId === $store.tabs[2].id}
+								<MissionControl missionControlId={$missionControlId} />
+							{/if}
+						{:else if $store.tabId === $store.tabs[1].id}
+							<MissionControl missionControlId={$missionControlId} />
 						{/if}
 					</MissionControlDataLoader>
 				{/if}

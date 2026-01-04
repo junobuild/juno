@@ -21,11 +21,7 @@
 	const tabs: Tab[] = [
 		{
 			id: Symbol('1'),
-			labelKey: 'satellites.satellite'
-		},
-		{
-			id: Symbol('2'),
-			labelKey: 'core.setup'
+			labelKey: 'core.service'
 		}
 	];
 
@@ -52,7 +48,7 @@
 				{#if nonNullish($satelliteStore)}
 					{#if $store.tabId === $store.tabs[0].id}
 						<SatelliteOverview satellite={$satelliteStore} />
-					{:else if $store.tabId === $store.tabs[1].id}
+
 						<SatelliteSettings satellite={$satelliteStore} />
 					{/if}
 				{/if}

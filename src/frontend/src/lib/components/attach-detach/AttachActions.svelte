@@ -7,7 +7,7 @@
 	const close = () => (visible = false);
 </script>
 
-<Actions bind:visible>
+<Actions bind:visible direction="rtl">
 	<AttachSatellite ondetach={close} />
 
 	<AttachOrbiter ondetach={close} />

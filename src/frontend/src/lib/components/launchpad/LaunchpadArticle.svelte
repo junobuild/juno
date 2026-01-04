@@ -1,8 +1,8 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import LaunchpadLink from '$lib/components/launchpad/LaunchpadLink.svelte';
-	import { layoutSatellites } from '$lib/stores/app/layout-launchpad.store';
-	import { SatellitesLayout } from '$lib/types/layout';
+	import { layoutLaunchpad } from '$lib/stores/app/layout-launchpad.store';
+	import { LaunchpadLayout } from '$lib/types/layout';
 
 	interface Props {
 		href: string;
@@ -15,7 +15,7 @@
 
 	let { children, href, ariaLabel, description, details, icon }: Props = $props();
 
-	let row = $derived($layoutSatellites === SatellitesLayout.LIST);
+	let row = $derived($layoutLaunchpad === LaunchpadLayout.LIST);
 </script>
 
 <LaunchpadLink {ariaLabel} {href} {row}>

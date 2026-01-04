@@ -1,22 +1,22 @@
 <script lang="ts">
 	import IconCards from '$lib/components/icons/IconCards.svelte';
 	import IconList from '$lib/components/icons/IconList.svelte';
-	import { layoutSatellites } from '$lib/stores/app/layout-launchpad.store';
-	import { SatellitesLayout } from '$lib/types/layout';
+	import { layoutLaunchpad } from '$lib/stores/app/layout-launchpad.store';
+	import { LaunchpadLayout } from '$lib/types/layout';
 </script>
 
 <button
 	class="primary"
-	class:active={$layoutSatellites === SatellitesLayout.CARDS}
-	onclick={() => layoutSatellites.select(SatellitesLayout.CARDS)}
+	class:active={$layoutLaunchpad === LaunchpadLayout.CARDS}
+	onclick={() => layoutLaunchpad.select(LaunchpadLayout.CARDS)}
 >
 	<IconCards />
 </button>
 
 <button
 	class="primary"
-	class:active={$layoutSatellites === SatellitesLayout.LIST}
-	onclick={() => layoutSatellites.select(SatellitesLayout.LIST)}
+	class:active={$layoutLaunchpad === LaunchpadLayout.LIST}
+	onclick={() => layoutLaunchpad.select(LaunchpadLayout.LIST)}
 >
 	<IconList />
 </button>

@@ -1,4 +1,4 @@
-export enum SatellitesLayout {
+export enum LaunchpadLayout {
 	CARDS = 'cards',
 	LIST = 'list'
 }

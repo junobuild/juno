@@ -3,8 +3,8 @@
 	import { run } from 'svelte/legacy';
 	import AttachActions from '$lib/components/attach-detach/AttachActions.svelte';
 	import LaunchpadGreetings from '$lib/components/launchpad/LaunchpadGreetings.svelte';
+	import LaunchpadLayout from '$lib/components/launchpad/LaunchpadLayout.svelte';
 	import LaunchpadNewActions from '$lib/components/launchpad/LaunchpadNewActions.svelte';
-	import SatellitesLayout from '$lib/components/satellites/SatellitesLayout.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
 	import { onIntersection } from '$lib/directives/intersection.directives';
 	import { i18n } from '$lib/stores/app/i18n.store';
@@ -47,7 +47,7 @@
 				/>
 			</div>
 
-			<SatellitesLayout />
+			<LaunchpadLayout />
 
 			<AttachActions />
 		</div>

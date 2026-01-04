@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Canister from '$lib/components/canister/Canister.svelte';
 	import IconSatellite from '$lib/components/icons/IconSatellite.svelte';
+	import LaunchpadArticle from '$lib/components/launchpad/LaunchpadArticle.svelte';
 	import SatelliteEnvironment from '$lib/components/satellites/SatelliteEnvironment.svelte';
 	import Badge from '$lib/components/ui/Badge.svelte';
 	import { i18n } from '$lib/stores/app/i18n.store';
@@ -8,7 +9,6 @@
 	import { SatellitesLayout } from '$lib/types/layout';
 	import type { SatelliteUi } from '$lib/types/satellite';
 	import { overviewLink } from '$lib/utils/nav.utils';
-	import LaunchpadArticle from '$lib/components/launchpad/LaunchpadArticle.svelte';
 
 	interface Props {
 		satellite: SatelliteUi;

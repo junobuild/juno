@@ -1,6 +1,8 @@
 <script lang="ts">
-	import { missionControlVersion } from '$lib/derived/version.derived';
 	import { nonNullish } from '@dfinity/utils';
+	import Canister from '$lib/components/canister/Canister.svelte';
+	import IconTelescope from '$lib/components/icons/IconTelescope.svelte';
+	import LaunchpadArticle from '$lib/components/launchpad/LaunchpadArticle.svelte';
 	import MissionControlDataLoader from '$lib/components/mission-control/MissionControlDataLoader.svelte';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import {
@@ -8,12 +10,10 @@
 		missionControlMonitored,
 		missionControlSettingsLoaded
 	} from '$lib/derived/mission-control/mission-control-settings.derived';
-	import IconTelescope from '$lib/components/icons/IconTelescope.svelte';
+	import { missionControlVersion } from '$lib/derived/version.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import { SatellitesLayout } from '$lib/types/layout';
 	import { layoutSatellites } from '$lib/stores/app/layout-launchpad.store';
-	import LaunchpadArticle from '$lib/components/launchpad/LaunchpadArticle.svelte';
-	import Canister from '$lib/components/canister/Canister.svelte';
+	import { SatellitesLayout } from '$lib/types/layout';
 
 	let row = $derived($layoutSatellites === SatellitesLayout.LIST);
 
@@ -35,7 +35,7 @@
 		{/snippet}
 
 		<div class="canister" class:row>
-			<Canister canisterId={$missionControlId} {row} displayMemoryTotal={false} />
+			<Canister canisterId={$missionControlId} displayMemoryTotal={false} {row} />
 
 			<span
 				>{$i18n.monitoring.auto_refill}: {enabled ? $i18n.core.enabled : $i18n.core.disabled}</span

@@ -2,8 +2,8 @@
 	import { nonNullish } from '@dfinity/utils';
 	import { run } from 'svelte/legacy';
 	import { fade } from 'svelte/transition';
-	import SatelliteNewLaunchButton from '$lib/components/satellites/SatelliteNewLaunchButton.svelte';
 	import LaunchpadSegments from '$lib/components/launchpad/LaunchpadSegments.svelte';
+	import SatelliteNewLaunchButton from '$lib/components/satellites/SatelliteNewLaunchButton.svelte';
 	import ContainerCentered from '$lib/components/ui/ContainerCentered.svelte';
 	import Message from '$lib/components/ui/Message.svelte';
 	import Spinner from '$lib/components/ui/Spinner.svelte';
@@ -50,7 +50,7 @@
 		</div>
 	{/if}
 {:else if ($satellitesStore?.length ?? 0) >= 1}
-	<section in:fade onjunoIntersecting={onLayoutTitleIntersection} use:customOnIntersection>
+	<section onjunoIntersecting={onLayoutTitleIntersection} use:customOnIntersection in:fade>
 		<LaunchpadSegments />
 	</section>
 {/if}

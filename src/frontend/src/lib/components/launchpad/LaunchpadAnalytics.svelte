@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
-	import { orbiterStore } from '$lib/derived/orbiter.derived.js';
-	import LaunchpadArticle from '$lib/components/launchpad/LaunchpadArticle.svelte';
-	import { i18n } from '$lib/stores/app/i18n.store';
-	import { SatellitesLayout } from '$lib/types/layout';
-	import IconAnalytics from '$lib/components/icons/IconAnalytics.svelte';
-	import { layoutSatellites } from '$lib/stores/app/layout-launchpad.store';
 	import Canister from '$lib/components/canister/Canister.svelte';
+	import IconAnalytics from '$lib/components/icons/IconAnalytics.svelte';
+	import LaunchpadArticle from '$lib/components/launchpad/LaunchpadArticle.svelte';
+	import { orbiterStore } from '$lib/derived/orbiter.derived.js';
+	import { i18n } from '$lib/stores/app/i18n.store';
+	import { layoutSatellites } from '$lib/stores/app/layout-launchpad.store';
+	import { SatellitesLayout } from '$lib/types/layout';
 
 	let row = $derived($layoutSatellites === SatellitesLayout.LIST);
 </script>
@@ -22,7 +22,7 @@
 		{/snippet}
 
 		<div class="canister" class:row>
-			<Canister canisterId={$orbiterStore.orbiter_id} {row} displayMemoryTotal={false} />
+			<Canister canisterId={$orbiterStore.orbiter_id} displayMemoryTotal={false} {row} />
 		</div>
 	</LaunchpadArticle>
 {/if}

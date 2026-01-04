@@ -1,8 +1,8 @@
 <script lang="ts">
+	import type { Snippet } from 'svelte';
 	import LaunchpadLink from '$lib/components/launchpad/LaunchpadLink.svelte';
 	import { layoutSatellites } from '$lib/stores/app/layout-launchpad.store';
 	import { SatellitesLayout } from '$lib/types/layout';
-	import type { Snippet } from 'svelte';
 
 	interface Props {
 		href: string;

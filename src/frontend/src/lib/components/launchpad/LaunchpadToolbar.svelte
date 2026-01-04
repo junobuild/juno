@@ -2,11 +2,11 @@
 	import { debounce } from '@dfinity/utils';
 	import { run } from 'svelte/legacy';
 	import AttachActions from '$lib/components/attach-detach/AttachActions.svelte';
+	import LaunchpadGreetings from '$lib/components/launchpad/LaunchpadGreetings.svelte';
 	import SatelliteNewButton from '$lib/components/satellites/SatelliteNewButton.svelte';
 	import SatellitesLayout from '$lib/components/satellites/SatellitesLayout.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import LaunchpadGreetings from '$lib/components/launchpad/LaunchpadGreetings.svelte';
 
 	interface Props {
 		filter?: string;

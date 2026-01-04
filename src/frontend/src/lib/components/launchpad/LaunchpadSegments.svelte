@@ -1,10 +1,10 @@
 <script lang="ts">
+	import LaunchpadAnalytics from '$lib/components/launchpad/LaunchpadAnalytics.svelte';
+	import LaunchpadMonitoring from '$lib/components/launchpad/LaunchpadMonitoring.svelte';
 	import LaunchpadSatellite from '$lib/components/launchpad/LaunchpadSatellite.svelte';
 	import LaunchpadToolbar from '$lib/components/launchpad/LaunchpadToolbar.svelte';
 	import { sortedSatelliteUis } from '$lib/derived/satellites.derived';
 	import { satelliteMatchesFilter } from '$lib/utils/satellite.utils';
-	import LaunchpadMonitoring from '$lib/components/launchpad/LaunchpadMonitoring.svelte';
-	import LaunchpadAnalytics from '$lib/components/launchpad/LaunchpadAnalytics.svelte';
 
 	let filter = $state('');
 

@@ -1,16 +1,14 @@
 <script lang="ts">
 	import AttachOrbiter from '$lib/components/attach-detach/AttachOrbiter.svelte';
 	import AttachSatellite from '$lib/components/attach-detach/AttachSatellite.svelte';
-	import SegmentActions from '$lib/components/segments/SegmentActions.svelte';
+	import Actions from '$lib/components/core/Actions.svelte';
 
 	let visible: boolean = $state(false);
 	const close = () => (visible = false);
 </script>
 
-<SegmentActions bind:visible>
-	{#snippet moreActions()}
-		<AttachSatellite ondetach={close} />
+<Actions bind:visible>
+	<AttachSatellite ondetach={close} />
 
-		<AttachOrbiter ondetach={close} />
-	{/snippet}
-</SegmentActions>
+	<AttachOrbiter ondetach={close} />
+</Actions>

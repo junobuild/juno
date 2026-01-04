@@ -5,6 +5,7 @@
 	import { initSatelliteWizard } from '$lib/services/factory/factory.create.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { testId } from '$lib/utils/test.utils';
+	import IconRocket from '$lib/components/icons/IconRocket.svelte';
 
 	const createSatellite = async () => {
 		await initSatelliteWizard({
@@ -15,7 +16,8 @@
 </script>
 
 <button class="primary" onclick={createSatellite} {...testId(testIds.createSatellite.launch)}>
-	{$i18n.satellites.launch}
+	<span>{$i18n.core.launch}&nbsp;</span>
+	<IconRocket size="16px" />
 </button>
 
 <style lang="scss">

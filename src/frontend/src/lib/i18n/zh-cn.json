@@ -286,10 +286,23 @@
 		"already_signed_in": "你已登录。",
 		"avatar": "来自您登录服务的个人头像"
 	},
+	"launchpad": {
+		"loading_launchpad": "正在加载启动台...",
+		"go_launchpad": "前往启动台",
+		"launchpad": "启动台",
+		"attach": "关联卫星",
+		"morning": "早上好",
+		"afternoon": "下午好",
+		"good_evening": "晚上好",
+		"welcome_back": "欢迎回来",
+		"greetings": "您好",
+		"commander": "指挥官",
+		"spacebuilder": "太空建造者",
+		"captain": "船长"
+	},
 	"satellites": {
 		"title": "所有卫星",
 		"launch": "部署新卫星",
-		"loading_launchpad": "正在加载启动台...",
 		"create": "创建卫星",
 		"search": "搜索",
 		"satellite": "卫星",
@@ -315,9 +328,6 @@
 		"extended_version": "增强版",
 		"build": "构建",
 		"see_all_satellites": "查看全部卫星",
-		"go_launchpad": "前往启动台",
-		"launchpad": "启动台",
-		"attach": "关联卫星",
 		"attaching": "正在与任务控制中心共享卫星..."
 	},
 	"mission_control": {

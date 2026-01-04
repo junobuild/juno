@@ -108,7 +108,8 @@
 		"a_year": "A year",
 		"two_years": "Two years",
 		"five_years": "Five years",
-		"custom": "Custom"
+		"custom": "Custom",
+		"launch": "Launch"
 	},
 	"canisters": {
 		"top_up": "Top-up",
@@ -286,10 +287,23 @@
 		"already_signed_in": "You are already signed in.",
 		"avatar": "Your profile picture from your sign-in service"
 	},
+	"launchpad": {
+		"loading_launchpad": "Loading your launchpad...",
+		"go_launchpad": "Go to launchpad",
+		"launchpad": "Launchpad",
+		"attach": "Attach Satellite",
+		"morning": "Morning",
+		"afternoon": "Afternoon",
+		"good_evening": "Good evening",
+		"welcome_back": "Welcome back",
+		"greetings": "Greetings",
+		"commander": "Commander",
+		"spacebuilder": "Spacebuilder",
+		"captain": "Captain"
+	},
 	"satellites": {
 		"title": "Satellites",
 		"launch": "Launch a new Satellite",
-		"loading_launchpad": "Loading your launchpad...",
 		"create": "Create Satellite",
 		"search": "Search",
 		"satellite": "Satellite",
@@ -315,9 +329,6 @@
 		"extended_version": "Extended version",
 		"build": "Build",
 		"see_all_satellites": "See all Satellites",
-		"go_launchpad": "Go to launchpad",
-		"launchpad": "Launchpad",
-		"attach": "Attach Satellite",
 		"attaching": "Sharing Satellite with Mission Control..."
 	},
 	"mission_control": {

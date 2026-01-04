@@ -6,6 +6,7 @@
 	import SatellitesLayout from '$lib/components/satellites/SatellitesLayout.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
 	import { i18n } from '$lib/stores/app/i18n.store';
+	import LaunchpadGreetings from '$lib/components/launchpad/LaunchpadGreetings.svelte';
 
 	interface Props {
 		filter?: string;
@@ -23,40 +24,48 @@
 	});
 </script>
 
-<div role="toolbar">
-	<div class="filters">
-		<div class="input">
-			<Input
-				name="filter"
-				inputType="text"
-				placeholder={$i18n.satellites.search}
-				spellcheck={false}
-				bind:value={filterInput}
-			/>
+<div class="header">
+	<LaunchpadGreetings />
+
+	<div role="toolbar">
+		<div class="filters">
+			<div class="input">
+				<Input
+					name="filter"
+					inputType="text"
+					placeholder={$i18n.satellites.search}
+					spellcheck={false}
+					bind:value={filterInput}
+				/>
+			</div>
+
+			<SatellitesLayout />
+
+			<AttachActions />
 		</div>
 
-		<SatellitesLayout />
-
-		<AttachActions />
+		<SatelliteNewButton />
 	</div>
-
-	<SatelliteNewButton />
 </div>
 
 <style lang="scss">
-	@use '../../../lib/styles/mixins/media';
+	@use '../../styles/mixins/media';
+
+	.header {
+		grid-column: 1 / 13;
+
+		@include media.min-width(medium) {
+			grid-column: 1 / 12;
+		}
+	}
 
 	[role='toolbar'] {
 		display: flex;
 		flex-direction: column;
 		column-gap: var(--padding-2x);
 
-		grid-column: 1 / 13;
-
 		@include media.min-width(medium) {
 			flex-direction: row;
-
-			grid-column: 1 / 12;
 		}
 	}
 

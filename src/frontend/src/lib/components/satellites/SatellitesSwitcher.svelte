@@ -20,7 +20,7 @@
 		<a
 			class="menu"
 			aria-haspopup="menu"
-			aria-label={$i18n.satellites.go_launchpad}
+			aria-label={$i18n.launchpad.go_launchpad}
 			href="/"
 			rel="external noopener norefferer"
 			role="menuitem"

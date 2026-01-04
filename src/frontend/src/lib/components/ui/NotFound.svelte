@@ -12,7 +12,7 @@
 
 <p class="label"><Info><Html text={warnText} /></Info></p>
 
-<a class="button" href="/">{$i18n.satellites.go_launchpad}</a>
+<a class="button" href="/">{$i18n.launchpad.go_launchpad}</a>
 
 <style lang="scss">
 	p {

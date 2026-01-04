@@ -2,9 +2,8 @@
 	import { nonNullish } from '@dfinity/utils';
 	import { run } from 'svelte/legacy';
 	import { fade } from 'svelte/transition';
-	import Cockpit from '$lib/components/launchpad/Cockpit.svelte';
 	import SatelliteNewLaunchButton from '$lib/components/satellites/SatelliteNewLaunchButton.svelte';
-	import Satellites from '$lib/components/satellites/Satellites.svelte';
+	import LaunchpadSegments from '$lib/components/launchpad/LaunchpadSegments.svelte';
 	import ContainerCentered from '$lib/components/ui/ContainerCentered.svelte';
 	import Message from '$lib/components/ui/Message.svelte';
 	import Spinner from '$lib/components/ui/Spinner.svelte';
@@ -40,7 +39,7 @@
 					<Spinner inline />
 				{/snippet}
 
-				<p>{$i18n.satellites.loading_launchpad}</p>
+				<p>{$i18n.launchpad.loading_launchpad}</p>
 			</Message>
 		</div>
 	{:else}
@@ -51,23 +50,9 @@
 		</div>
 	{/if}
 {:else if ($satellitesStore?.length ?? 0) >= 1}
-	<div in:fade>
-		<section
-			class="cockpit"
-			onjunoIntersecting={onLayoutTitleIntersection}
-			use:customOnIntersection
-		>
-			<Cockpit />
-		</section>
-
-		<h1>
-			{$i18n.satellites.title}
-		</h1>
-
-		<section>
-			<Satellites />
-		</section>
-	</div>
+	<section in:fade onjunoIntersecting={onLayoutTitleIntersection} use:customOnIntersection>
+		<LaunchpadSegments />
+	</section>
 {/if}
 
 <style lang="scss">
@@ -82,27 +67,6 @@
 		&:first-of-type {
 			margin-top: var(--padding-4x);
 		}
-
-		&.cockpit {
-			padding: 0 var(--padding-12x);
-
-			@include grid.two-columns;
-
-			@include media.min-width(small) {
-				display: flex;
-				justify-content: center;
-
-				padding: 0;
-			}
-
-			@include media.min-width(large) {
-				@include grid.twelve-columns;
-			}
-		}
-	}
-
-	h1 {
-		margin-top: var(--padding-8x);
 	}
 
 	section,

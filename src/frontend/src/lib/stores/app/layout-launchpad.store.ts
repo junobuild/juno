@@ -20,4 +20,5 @@ export const initSatellitesLayout = () => {
 	};
 };
 
+// TODO: migrate to launchpad_layout
 export const layoutSatellites = initSatellitesLayout();

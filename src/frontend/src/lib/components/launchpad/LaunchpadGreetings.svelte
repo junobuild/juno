@@ -25,7 +25,8 @@
 <p>🖖 {greeting} {title}</p>
 
 <style lang="scss">
-	h1 {
-		margin-top: var(--padding-4x);
+	p {
+		margin: 0 0 var(--padding-6x);
+		width: fit-content;
 	}
 </style>

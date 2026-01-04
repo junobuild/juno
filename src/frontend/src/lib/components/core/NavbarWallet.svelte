@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
+	import { decodeIcrcAccount } from '@icp-sdk/canisters/ledger/icrc';
 	import IconWallet from '$lib/components/icons/IconWallet.svelte';
 	import ButtonIcon from '$lib/components/ui/ButtonIcon.svelte';
 	import Hr from '$lib/components/ui/Hr.svelte';
@@ -15,11 +16,10 @@
 	import { testIds } from '$lib/constants/test-ids.constants';
 	import { CYCLES } from '$lib/constants/token.constants';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
+	import { devId } from '$lib/derived/dev.derived';
 	import { devHasIcp } from '$lib/derived/wallet/balance.derived';
 	import type { SelectedToken, SelectedWallet, WalletId } from '$lib/schemas/wallet.schema';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import { devId } from '$lib/derived/dev.derived';
-	import { decodeIcrcAccount } from '@icp-sdk/canisters/ledger/icrc';
 
 	let button: HTMLButtonElement | undefined = $state();
 	let visible: boolean = $state(false);

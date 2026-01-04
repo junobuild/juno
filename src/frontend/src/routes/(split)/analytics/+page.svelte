@@ -33,11 +33,11 @@
 			? [
 					{
 						id: Symbol('2'),
-						labelKey: 'analytics.overview'
+						labelKey: 'core.setup'
 					},
 					{
 						id: Symbol('3'),
-						labelKey: 'core.setup'
+						labelKey: 'core.service'
 					}
 				]
 			: [])
@@ -73,12 +73,12 @@
 		<Loaders>
 			{#if $store.tabId === $store.tabs[0].id}
 				<Analytics />
-			{:else if $store.tabId === $store.tabs[1].id && nonNullish($orbiterStore)}
-				<Orbiter orbiter={$orbiterStore} />
 			{:else if $store.tabId === $store.tabs[2].id && nonNullish($orbiterStore)}
-				<OrbiterConfig orbiterId={$orbiterStore.orbiter_id} />
+				<Orbiter orbiter={$orbiterStore} />
 
 				<OrbiterSettings orbiterId={$orbiterStore.orbiter_id} />
+			{:else if $store.tabId === $store.tabs[1].id && nonNullish($orbiterStore)}
+				<OrbiterConfig orbiterId={$orbiterStore.orbiter_id} />
 			{/if}
 		</Loaders>
 	</TabsCmp>

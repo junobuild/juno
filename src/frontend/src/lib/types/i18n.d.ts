@@ -23,6 +23,7 @@ interface I18nCore {
 	controllers: string;
 	settings: string;
 	setup: string;
+	service: string;
 	continue: string;
 	not_logged_in: string;
 	ready: string;

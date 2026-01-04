@@ -46,7 +46,7 @@ const withMissionControlItems: Readable<SpotlightItems> = derived(
 						type: 'nav' as const,
 						icon: IconMissionControl,
 						text: $i18n.mission_control.title,
-						href: '/mission-control',
+						href: '/monitoring/?tab=service',
 						filter: ({ signedIn, query }: SpotlightItemFilterParams) =>
 							signedIn && $i18n.mission_control.title.toLowerCase().includes(query)
 					},

@@ -8,6 +8,9 @@ import type { LoadEvent } from '@sveltejs/kit';
 export const overviewLink = (satelliteId: Option<Principal>): string =>
 	`/satellite/?s=${satelliteId?.toText() ?? ''}`;
 
+export const monitoringLink = (satelliteId?: Option<Principal>): string =>
+	`/monitoring/${nonNullish(satelliteId) ? `?s=${satelliteId?.toText() ?? ''}` : ''}`;
+
 export const analyticsLink = (satelliteId?: Option<Principal>): string =>
 	`/analytics/${nonNullish(satelliteId) ? `?s=${satelliteId?.toText() ?? ''}` : ''}`;
 
@@ -23,8 +26,8 @@ export const navigateToSatellite = async (satelliteId: Option<Principal>) =>
 export const navigateToAnalytics = async (satelliteId: Option<Principal>) =>
 	await goto(analyticsLink(satelliteId), { replaceState: true });
 
-export const navigateToUpgradeDock = async (satelliteId: Option<Principal>) =>
-	await goto(upgradeDockLink(satelliteId), { replaceState: true });
+export const navigateToMonitoring = async (satelliteId: Option<Principal>) =>
+	await goto(monitoringLink(satelliteId), { replaceState: true });
 
 export const navigateToChangesDock = async (satelliteId: Option<Principal>) =>
 	await goto(upgradeChangesLink(satelliteId), { replaceState: true });

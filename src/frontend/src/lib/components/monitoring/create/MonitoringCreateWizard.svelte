@@ -10,6 +10,7 @@
 	import MonitoringCreateStrategyWithDefault from '$lib/components/monitoring/MonitoringCreateStrategyWithDefault.svelte';
 	import MonitoringSelectSegments from '$lib/components/monitoring/MonitoringSelectSegments.svelte';
 	import ProgressMonitoring from '$lib/components/monitoring/ProgressMonitoring.svelte';
+	import { isLaunchpadRoute } from '$lib/derived/app/route.launchpad.derived.svelte';
 	import { authIdentity } from '$lib/derived/auth.derived';
 	import {
 		applyMonitoringCyclesStrategy,
@@ -182,7 +183,7 @@
 		<p>
 			{$i18n.monitoring.auto_refill_activated}
 		</p>
-		<button onclick={onclose}>{$i18n.core.close}</button>
+		<button onclick={onclose}>{$isLaunchpadRoute ? $i18n.core.continue : $i18n.core.close}</button>
 	</div>
 {:else if step === 'in_progress'}
 	<ProgressMonitoring action="create" {progress} withOptions={nonNullish(withOptions)} />

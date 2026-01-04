@@ -123,15 +123,20 @@ export const setSatellitesControllerForVersion = async ({
 export const loadSettings = async ({
 	missionControlId,
 	identity,
-	reload = false
+	reload = false,
+	skipVersionGuard = false
 }: {
 	missionControlId: MissionControlId;
 	identity: OptionIdentity;
 	reload?: boolean;
+	skipVersionGuard?: boolean;
 }): Promise<{ success: boolean }> => {
 	const store = get(versionStore);
 
-	if (compare(store.missionControl?.current ?? '0.0.0', MISSION_CONTROL_v0_0_14) < 0) {
+	if (
+		!skipVersionGuard &&
+		compare(store.missionControl?.current ?? '0.0.0', MISSION_CONTROL_v0_0_14) < 0
+	) {
 		missionControlSettingsUncertifiedStore.reset();
 		return { success: true };
 	}
@@ -161,15 +166,20 @@ export const loadSettings = async ({
 export const loadUserData = async ({
 	missionControlId,
 	identity,
-	reload = false
+	reload = false,
+	skipVersionGuard = false
 }: {
 	missionControlId: MissionControlId;
 	identity: OptionIdentity;
 	reload?: boolean;
+	skipVersionGuard?: boolean;
 }): Promise<{ success: boolean }> => {
 	const store = get(versionStore);
 
-	if (compare(store.missionControl?.current ?? '0.0.0', MISSION_CONTROL_v0_0_14) < 0) {
+	if (
+		!skipVersionGuard &&
+		compare(store.missionControl?.current ?? '0.0.0', MISSION_CONTROL_v0_0_14) < 0
+	) {
 		missionControlUserUncertifiedStore.reset();
 		return { success: true };
 	}

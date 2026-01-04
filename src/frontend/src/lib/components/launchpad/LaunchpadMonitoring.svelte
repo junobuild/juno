@@ -5,11 +5,7 @@
 	import LaunchpadArticle from '$lib/components/launchpad/LaunchpadArticle.svelte';
 	import MissionControlDataLoader from '$lib/components/mission-control/MissionControlDataLoader.svelte';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
-	import {
-		hasMissionControlSettings,
-		missionControlMonitored,
-		missionControlSettingsLoaded
-	} from '$lib/derived/mission-control/mission-control-settings.derived';
+	import { missionControlMonitored } from '$lib/derived/mission-control/mission-control-settings.derived';
 	import { missionControlVersion } from '$lib/derived/version.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { layoutLaunchpad } from '$lib/stores/app/layout-launchpad.store';
@@ -24,7 +20,7 @@
 	<MissionControlDataLoader missionControlId={$missionControlId} />
 {/if}
 
-{#if nonNullish($missionControlId) && $missionControlSettingsLoaded && $hasMissionControlSettings}
+{#if nonNullish($missionControlId)}
 	<LaunchpadArticle ariaLabel={`${$i18n.core.open}: ${$i18n.monitoring.title}`} href="/monitoring">
 		{#snippet description()}
 			{$i18n.monitoring.title}

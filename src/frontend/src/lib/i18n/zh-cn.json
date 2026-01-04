@@ -109,7 +109,8 @@
 		"a_year": "一年",
 		"two_years": "两年",
 		"five_years": "五年",
-		"custom": "自定义"
+		"custom": "自定义",
+		"launch": "启动"
 	},
 	"canisters": {
 		"top_up": "充值",

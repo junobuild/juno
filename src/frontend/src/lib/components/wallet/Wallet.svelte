@@ -3,10 +3,10 @@
 	import { encodeIcrcAccount } from '@icp-sdk/canisters/ledger/icrc';
 	import { Principal } from '@icp-sdk/core/principal';
 	import WalletActions from '$lib/components/wallet/WalletActions.svelte';
-	import WalletBalanceById from '$lib/components/wallet/WalletBalanceById.svelte';
 	import WalletIds from '$lib/components/wallet/WalletIds.svelte';
 	import WalletPicker from '$lib/components/wallet/WalletPicker.svelte';
 	import WalletTokenPicker from '$lib/components/wallet/WalletTokenPicker.svelte';
+	import WalletBalanceById from '$lib/components/wallet/balance/WalletBalanceById.svelte';
 	import ReceiveTokens from '$lib/components/wallet/tokens/ReceiveTokens.svelte';
 	import Transactions from '$lib/components/wallet/transactions/Transactions.svelte';
 	import TransactionsExport from '$lib/components/wallet/transactions/TransactionsExport.svelte';

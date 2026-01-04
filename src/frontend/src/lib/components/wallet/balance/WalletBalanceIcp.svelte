@@ -3,7 +3,7 @@
 	import { fade } from 'svelte/transition';
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
-	import WalletBalanceUsd from '$lib/components/wallet/WalletBalanceUsd.svelte';
+	import WalletBalanceUsd from '$lib/components/wallet/balance/WalletBalanceUsd.svelte';
 	import { ICP } from '$lib/constants/token.constants';
 	import {
 		exchangePricesNotLoaded,

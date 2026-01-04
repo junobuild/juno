@@ -3,7 +3,7 @@
 	import { encodeIcrcAccount } from '@icp-sdk/canisters/ledger/icrc';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
-	import WalletBalanceUsd from '$lib/components/wallet/WalletBalanceUsd.svelte';
+	import WalletBalanceUsd from '$lib/components/wallet/balance/WalletBalanceUsd.svelte';
 	import TokenSymbol from '$lib/components/wallet/tokens/TokenSymbol.svelte';
 	import { icpToUsd, icpToUsdDefined } from '$lib/derived/wallet/exchange.derived';
 	import type { SelectedToken, SelectedWallet } from '$lib/schemas/wallet.schema';

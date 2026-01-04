@@ -6,11 +6,11 @@
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import WalletActions from '$lib/components/wallet/WalletActions.svelte';
-	import WalletBalanceById from '$lib/components/wallet/WalletBalanceById.svelte';
 	import WalletIds from '$lib/components/wallet/WalletIds.svelte';
 	import WalletPicker from '$lib/components/wallet/WalletPicker.svelte';
 	import WalletTokenPicker from '$lib/components/wallet/WalletTokenPicker.svelte';
-	import WalletTotal from '$lib/components/wallet/WalletTotal.svelte';
+	import WalletBalanceById from '$lib/components/wallet/balance/WalletBalanceById.svelte';
+	import WalletTotal from '$lib/components/wallet/balance/WalletTotal.svelte';
 	import ReceiveTokens from '$lib/components/wallet/tokens/ReceiveTokens.svelte';
 	import { testIds } from '$lib/constants/test-ids.constants';
 	import { CYCLES } from '$lib/constants/token.constants';

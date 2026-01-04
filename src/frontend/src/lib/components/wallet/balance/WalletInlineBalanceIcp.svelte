@@ -2,7 +2,7 @@
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
-	import WalletBalanceUsd from '$lib/components/wallet/WalletBalanceUsd.svelte';
+	import WalletBalanceUsd from '$lib/components/wallet/balance/WalletBalanceUsd.svelte';
 	import { ICP } from '$lib/constants/token.constants';
 	import {
 		exchangePricesNotLoaded,

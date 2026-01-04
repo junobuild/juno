@@ -4,7 +4,7 @@ import { DEFAULT_LIST_PARAMS, DEFAULT_LIST_RULES_PARAMS } from '$lib/constants/d
 import { DEFAULT_NOTIFICATION_PREFERENCES } from '$lib/constants/notification.constants';
 import { NotificationPreferencesSchema } from '$lib/schemas/notification.schema';
 import type { Languages } from '$lib/types/languages';
-import { SatellitesLayout } from '$lib/types/layout';
+import { LaunchpadLayout } from '$lib/types/layout';
 import type { LayoutMenuState } from '$lib/types/layout-menu';
 import type { ListRulesParams } from '$lib/types/list';
 import type { ListParamsData, ListParamsKey } from '$lib/types/list-params.context';
@@ -102,16 +102,16 @@ export const getLocalStorageObserveLogs = (): boolean => {
 	}
 };
 
-export const getLocalStorageSatellitesLayout = (): SatellitesLayout => {
+export const getLocalStorageLaunchpadLayout = (): LaunchpadLayout => {
 	try {
-		const { satellites_layout }: Storage = browser
+		const { launchpad_layout }: Storage = browser
 			? localStorage
-			: ({ satellites_layout: SatellitesLayout.CARDS } as unknown as Storage);
-		return satellites_layout ?? SatellitesLayout.CARDS;
+			: ({ launchpad_layout: LaunchpadLayout.CARDS } as unknown as Storage);
+		return launchpad_layout ?? LaunchpadLayout.CARDS;
 	} catch (err: unknown) {
 		// We use the local storage for the operational part of the app but, not crucial
 		console.error(err);
-		return SatellitesLayout.CARDS;
+		return LaunchpadLayout.CARDS;
 	}
 };
 

@@ -12,10 +12,10 @@
 	} from '$lib/derived/mission-control/mission-control-settings.derived';
 	import { missionControlVersion } from '$lib/derived/version.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import { layoutSatellites } from '$lib/stores/app/layout-launchpad.store';
-	import { SatellitesLayout } from '$lib/types/layout';
+	import { layoutLaunchpad } from '$lib/stores/app/layout-launchpad.store';
+	import { LaunchpadLayout } from '$lib/types/layout';
 
-	let row = $derived($layoutSatellites === SatellitesLayout.LIST);
+	let row = $derived($layoutLaunchpad === LaunchpadLayout.LIST);
 
 	let enabled = $derived($missionControlMonitored);
 </script>

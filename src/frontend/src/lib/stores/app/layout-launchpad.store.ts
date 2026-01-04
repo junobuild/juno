@@ -1,24 +1,23 @@
-import type { SatellitesLayout } from '$lib/types/layout';
+import type { LaunchpadLayout } from '$lib/types/layout';
 import {
-	getLocalStorageSatellitesLayout,
+	getLocalStorageLaunchpadLayout,
 	setLocalStorageItem
 } from '$lib/utils/local-storage.utils';
 import { writable } from 'svelte/store';
 
-const initialSatellitesLayout = getLocalStorageSatellitesLayout();
+const initialLayout = getLocalStorageLaunchpadLayout();
 
-export const initSatellitesLayout = () => {
-	const { subscribe, set } = writable<SatellitesLayout>(initialSatellitesLayout);
+export const initLayout = () => {
+	const { subscribe, set } = writable<LaunchpadLayout>(initialLayout);
 
 	return {
 		subscribe,
 
-		select: (layout: SatellitesLayout) => {
-			setLocalStorageItem({ key: 'satellites_layout', value: layout });
+		select: (layout: LaunchpadLayout) => {
+			setLocalStorageItem({ key: 'launchpad_layout', value: layout });
 			set(layout);
 		}
 	};
 };
 
-// TODO: migrate to launchpad_layout
-export const layoutSatellites = initSatellitesLayout();
+export const layoutLaunchpad = initLayout();

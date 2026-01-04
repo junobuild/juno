@@ -5,8 +5,8 @@
 	import SatelliteEnvironment from '$lib/components/satellites/SatelliteEnvironment.svelte';
 	import Badge from '$lib/components/ui/Badge.svelte';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import { layoutSatellites } from '$lib/stores/app/layout-launchpad.store';
-	import { SatellitesLayout } from '$lib/types/layout';
+	import { layoutLaunchpad } from '$lib/stores/app/layout-launchpad.store';
+	import { LaunchpadLayout } from '$lib/types/layout';
 	import type { SatelliteUi } from '$lib/types/satellite';
 	import { overviewLink } from '$lib/utils/nav.utils';
 
@@ -24,7 +24,7 @@
 
 	let href = $derived(overviewLink(satellite.satellite_id));
 
-	let row = $derived($layoutSatellites === SatellitesLayout.LIST);
+	let row = $derived($layoutLaunchpad === LaunchpadLayout.LIST);
 </script>
 
 <LaunchpadArticle ariaLabel={`${$i18n.core.open}: ${name}`} {href}>

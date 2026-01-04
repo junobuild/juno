@@ -5,10 +5,10 @@
 	import LaunchpadArticle from '$lib/components/launchpad/LaunchpadArticle.svelte';
 	import { orbiterStore } from '$lib/derived/orbiter.derived.js';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import { layoutSatellites } from '$lib/stores/app/layout-launchpad.store';
-	import { SatellitesLayout } from '$lib/types/layout';
+	import { layoutLaunchpad } from '$lib/stores/app/layout-launchpad.store';
+	import { LaunchpadLayout } from '$lib/types/layout';
 
-	let row = $derived($layoutSatellites === SatellitesLayout.LIST);
+	let row = $derived($layoutLaunchpad === LaunchpadLayout.LIST);
 </script>
 
 {#if nonNullish($orbiterStore)}

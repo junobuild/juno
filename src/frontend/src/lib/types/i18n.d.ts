@@ -972,6 +972,7 @@ interface I18nMonitoring {
 	warn_monitoring_enabled: string;
 	runtime: string;
 	requires_mission_control: string;
+	create: string;
 }
 
 interface I18nPreferences {

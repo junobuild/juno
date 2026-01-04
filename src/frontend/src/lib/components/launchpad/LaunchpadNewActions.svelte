@@ -3,12 +3,17 @@
 	import IconAnalytics from '$lib/components/icons/IconAnalytics.svelte';
 	import IconRocket from '$lib/components/icons/IconRocket.svelte';
 	import IconSatellite from '$lib/components/icons/IconSatellite.svelte';
+	import IconTelescope from '$lib/components/icons/IconTelescope.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import { testIds } from '$lib/constants/test-ids.constants';
 	import { authIdentity } from '$lib/derived/auth.derived';
-	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
+	import {
+		missionControlId,
+		missionControlIdLoaded
+	} from '$lib/derived/console/account.mission-control.derived';
 	import { orbiterLoaded, orbiterStore } from '$lib/derived/orbiter.derived';
 	import {
+		initMissionControlWizard,
 		initOrbiterWizard,
 		initSatelliteWizard
 	} from '$lib/services/factory/factory.create.services';
@@ -33,12 +38,21 @@
 		});
 	};
 
+	const createMonitoring = async () => {
+		close();
+
+		await initMissionControlWizard({
+			identity: $authIdentity
+		});
+	};
+
 	const close = () => (visible = false);
 
 	let visible = $state(false);
 	let button = $state<HTMLButtonElement | undefined>();
 
 	let analyticsNotEnabled = $derived(isNullish($orbiterStore) && $orbiterLoaded);
+	let missionControlNotEnabled = $derived(isNullish($missionControlId) && missionControlIdLoaded);
 </script>
 
 <button
@@ -60,6 +74,12 @@
 		{#if analyticsNotEnabled}
 			<button class="menu" onclick={createAnalytics}
 				><IconAnalytics /> {$i18n.analytics.create}</button
+			>
+		{/if}
+
+		{#if missionControlNotEnabled}
+			<button class="menu" onclick={createMonitoring}
+				><IconTelescope /> {$i18n.monitoring.create}</button
 			>
 		{/if}
 	</div>

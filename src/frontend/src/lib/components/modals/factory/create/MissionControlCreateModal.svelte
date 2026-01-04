@@ -5,9 +5,11 @@
 	import MissionControlCreateWizard from '$lib/components/mission-control/create/MissionControlCreateWizard.svelte';
 	import MonitoringCreateWizard from '$lib/components/monitoring/create/MonitoringCreateWizard.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
+	import { isLaunchpadRoute } from '$lib/derived/app/route.launchpad.derived.svelte';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import { assertAndGetForMonitoringWizard } from '$lib/services/mission-control/monitoring.services';
 	import type { JunoModalDetail } from '$lib/types/modal';
+	import { navigateToMonitoring } from '$lib/utils/nav.utils';
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -38,6 +40,14 @@
 
 		step = 'monitoring';
 	};
+
+	const navigate = async () => {
+		if ($isLaunchpadRoute) {
+			await navigateToMonitoring(null);
+		}
+
+		onclose();
+	};
 </script>
 
 <Modal {onback} {onclose}>
@@ -45,7 +55,7 @@
 		<div in:fade>
 			<MonitoringCreateWizard
 				missionControlId={$missionControlId}
-				{onclose}
+				onclose={navigate}
 				{settings}
 				{user}
 				bind:onback

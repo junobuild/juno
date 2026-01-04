@@ -3,8 +3,6 @@
 	import { encodeIcrcAccount } from '@icp-sdk/canisters/ledger/icrc';
 	import WalletBalanceCycles from '$lib/components/wallet/balance/WalletBalanceCycles.svelte';
 	import WalletBalanceIcp from '$lib/components/wallet/balance/WalletBalanceIcp.svelte';
-	import WalletInlineBalanceCycles from '$lib/components/wallet/balance/WalletInlineBalanceCycles.svelte';
-	import WalletInlineBalanceIcp from '$lib/components/wallet/balance/WalletInlineBalanceIcp.svelte';
 	import type { SelectedToken, SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { balanceCertifiedStore } from '$lib/stores/wallet/balance.store';
 	import { isTokenIcp } from '$lib/utils/token.utils';
@@ -12,10 +10,10 @@
 	interface Props {
 		selectedWallet: SelectedWallet | undefined;
 		selectedToken: SelectedToken;
-		display?: 'block' | 'inline';
+		highlight?: boolean;
 	}
 
-	let { selectedWallet, selectedToken, display = 'block' }: Props = $props();
+	let { selectedWallet, selectedToken, highlight }: Props = $props();
 
 	let walletIdText = $derived(
 		nonNullish(selectedWallet) ? encodeIcrcAccount(selectedWallet.walletId) : undefined
@@ -27,15 +25,7 @@
 			: undefined
 	);
 
-	let Balance = $derived(
-		display === 'inline'
-			? isTokenIcp(selectedToken)
-				? WalletInlineBalanceIcp
-				: WalletInlineBalanceCycles
-			: isTokenIcp(selectedToken)
-				? WalletBalanceIcp
-				: WalletBalanceCycles
-	);
+	let Balance = $derived(isTokenIcp(selectedToken) ? WalletBalanceIcp : WalletBalanceCycles);
 </script>
 
-<Balance {balance} />
+<Balance {balance} {highlight} />

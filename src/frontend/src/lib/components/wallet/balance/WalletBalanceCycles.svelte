@@ -1,51 +1,21 @@
 <script lang="ts">
-	import { isNullish } from '@dfinity/utils';
-	import { fade } from 'svelte/transition';
-	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
-	import Value from '$lib/components/ui/Value.svelte';
-	import { i18n } from '$lib/stores/app/i18n.store';
+	import WalletBalance from '$lib/components/wallet/balance/WalletBalance.svelte';
+	import { CYCLES, ICP } from '$lib/constants/token.constants';
 	import { formatTCycles } from '$lib/utils/cycles.utils';
 
 	interface Props {
 		balance: bigint | undefined;
 		label?: string;
+		highlight?: boolean;
 	}
 
-	let { balance, label: labelText }: Props = $props();
+	let { balance, label: labelText, highlight }: Props = $props();
 </script>
 
-<Value>
-	{#snippet label()}
-		{labelText ?? $i18n.wallet.balance}
-	{/snippet}
-
-	<p>
-		{#if isNullish(balance)}
-			<span class="skeleton main"><SkeletonText /></span>
-		{:else}
-			<span class="main" in:fade>
-				{formatTCycles(balance ?? 0n)} <small>T Cycles</small>
-			</span>
-		{/if}
-	</p>
-</Value>
-
-<style lang="scss">
-	span {
-		display: block;
-	}
-
-	.main {
-		font-size: var(--font-size-h2);
-		line-height: var(--line-height-title);
-		font-weight: var(--font-weight-bold);
-		color: var(--color-secondary);
-	}
-
-	.skeleton {
-		display: block;
-		padding: var(--padding-0_5x) 0 0;
-		max-width: 350px;
-		min-width: 150px;
-	}
-</style>
+<WalletBalance
+	{balance}
+	format={formatTCycles}
+	{highlight}
+	label={labelText}
+	selectedToken={CYCLES}
+/>

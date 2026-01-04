@@ -566,14 +566,7 @@ export const createMissionControlWizard = async ({
 	...rest
 }: Omit<CreateWizardParams, 'missionControlId' | 'monitoringStrategy'> & {
 	onAttachTextProgress: (text: string) => void;
-}): Promise<
-	| {
-			success: 'ok';
-			canisterId: Principal;
-	  }
-	| { success: 'error'; err?: unknown }
-	| { success: 'warning' }
-> => {
+}): Promise<CreateWizardResult> => {
 	const createConfig: CreateWithConfig = {
 		...(nonNullish(subnetId) && { subnetId: Principal.fromText(subnetId) })
 	};
@@ -587,7 +580,18 @@ export const createMissionControlWizard = async ({
 	const reloadFn: ReloadFn = async ({ identity, canisterId }) => {
 		await Promise.all([
 			reloadAccount({ identity }),
-			loadSegments({ missionControlId: canisterId, reload: true })
+			loadSegments({ missionControlId: canisterId, reload: true }),
+			// Loading settings and user data is required to continue directly in the wizard with enabling monitoring
+			loadSettings({
+				missionControlId: canisterId,
+				identity,
+				reload: true
+			}),
+			loadUserData({
+				missionControlId: canisterId,
+				identity,
+				reload: true
+			})
 		]);
 	};
 

@@ -10,7 +10,6 @@
 	import MonitoringCreateStrategyWithDefault from '$lib/components/monitoring/MonitoringCreateStrategyWithDefault.svelte';
 	import MonitoringSelectSegments from '$lib/components/monitoring/MonitoringSelectSegments.svelte';
 	import ProgressMonitoring from '$lib/components/monitoring/ProgressMonitoring.svelte';
-	import Modal from '$lib/components/ui/Modal.svelte';
 	import { authIdentity } from '$lib/derived/auth.derived';
 	import {
 		applyMonitoringCyclesStrategy,
@@ -18,21 +17,20 @@
 	} from '$lib/services/mission-control/monitoring.services';
 	import { wizardBusy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import type { JunoModalDetail, JunoModalCreateMonitoringStrategyDetail } from '$lib/types/modal';
 	import type { MonitoringStrategyProgress } from '$lib/types/progress-strategy';
 	import type { Option } from '$lib/types/utils';
 	import { metadataEmail } from '$lib/utils/metadata.utils';
+	import type { MissionControlId } from '$lib/types/mission-control';
 
 	interface Props {
-		detail: JunoModalDetail;
+		missionControlId: MissionControlId;
+		settings: MissionControlDid.MissionControlSettings | undefined;
+		user: MissionControlDid.User;
 		onclose: () => void;
+		onback?: () => void;
 	}
 
-	let { detail, onclose }: Props = $props();
-
-	let { settings, user, missionControlId } = $derived(
-		detail as JunoModalCreateMonitoringStrategyDetail
-	);
+	let { settings, user, missionControlId, onclose, onback = $bindable() }: Props = $props();
 
 	// Wizard navigation
 
@@ -173,80 +171,82 @@
 
 		setTimeout(() => reset('ready'), 500);
 	};
+
+	$effect(() => {
+		onback = step === 'mission_control' ? back : undefined;
+	});
 </script>
 
-<Modal onback={step === 'mission_control' ? back : undefined} {onclose}>
-	{#if step === 'ready'}
-		<div class="msg">
-			<p>
-				{$i18n.monitoring.auto_refill_activated}
-			</p>
-			<button onclick={onclose}>{$i18n.core.close}</button>
-		</div>
-	{:else if step === 'in_progress'}
-		<ProgressMonitoring action="create" {progress} withOptions={nonNullish(withOptions)} />
-	{:else if step === 'notifications'}
-		<MonitoringCreateStrategyNotifications
-			onback={back}
-			oncontinue={(email) => {
-				userEmail = email;
-				next('review');
-			}}
-		/>
-	{:else if step === 'review'}
-		<MonitoringCreateStrategyReview
-			{fundCycles}
-			{minCycles}
-			{missionControl}
-			{missionControlFundCycles}
-			{missionControlMinCycles}
-			onback={back}
-			{onsubmit}
-			{reuseStrategy}
-			{saveAsDefaultStrategy}
-			{selectedOrbiters}
-			{selectedSatellites}
-			{userEmail}
-		/>
-	{:else if step === 'mission_control_strategy'}
-		<MonitoringCreateStrategy
-			onback={back}
-			oncontinue={nextReviewOrNotifications}
-			strategy="mission-control"
-			bind:minCycles={missionControlMinCycles}
-			bind:fundCycles={missionControlFundCycles}
-		/>
-	{:else if step === 'mission_control'}
-		<MonitoringCreateStrategyMissionControl
-			{missionControl}
-			onno={() => next('mission_control_strategy')}
-			onyes={nextReviewOrNotifications}
-		/>
-	{:else if step === 'strategy'}
-		<MonitoringCreateStrategyWithDefault
-			{defaultStrategy}
-			onback={back}
-			oncontinue={() => next('mission_control')}
-			strategy="modules"
-			bind:minCycles
-			bind:fundCycles
-			bind:saveAsDefaultStrategy
-		/>
-	{:else if step === 'select_strategy'}
-		<MonitoringCreateSelectStrategy {defaultStrategy} onback={back} oncontinue={onSelectStrategy} />
-	{:else}
-		<MonitoringSelectSegments
-			{missionControlId}
-			oncontinue={() => next('select_strategy')}
-			bind:selectedSatellites
-			bind:selectedOrbiters
-		>
-			<h2>{$i18n.core.getting_started}</h2>
+{#if step === 'ready'}
+	<div class="msg">
+		<p>
+			{$i18n.monitoring.auto_refill_activated}
+		</p>
+		<button onclick={onclose}>{$i18n.core.close}</button>
+	</div>
+{:else if step === 'in_progress'}
+	<ProgressMonitoring action="create" {progress} withOptions={nonNullish(withOptions)} />
+{:else if step === 'notifications'}
+	<MonitoringCreateStrategyNotifications
+		onback={back}
+		oncontinue={(email) => {
+			userEmail = email;
+			next('review');
+		}}
+	/>
+{:else if step === 'review'}
+	<MonitoringCreateStrategyReview
+		{fundCycles}
+		{minCycles}
+		{missionControl}
+		{missionControlFundCycles}
+		{missionControlMinCycles}
+		onback={back}
+		{onsubmit}
+		{reuseStrategy}
+		{saveAsDefaultStrategy}
+		{selectedOrbiters}
+		{selectedSatellites}
+		{userEmail}
+	/>
+{:else if step === 'mission_control_strategy'}
+	<MonitoringCreateStrategy
+		onback={back}
+		oncontinue={nextReviewOrNotifications}
+		strategy="mission-control"
+		bind:minCycles={missionControlMinCycles}
+		bind:fundCycles={missionControlFundCycles}
+	/>
+{:else if step === 'mission_control'}
+	<MonitoringCreateStrategyMissionControl
+		{missionControl}
+		onno={() => next('mission_control_strategy')}
+		onyes={nextReviewOrNotifications}
+	/>
+{:else if step === 'strategy'}
+	<MonitoringCreateStrategyWithDefault
+		{defaultStrategy}
+		onback={back}
+		oncontinue={() => next('mission_control')}
+		strategy="modules"
+		bind:minCycles
+		bind:fundCycles
+		bind:saveAsDefaultStrategy
+	/>
+{:else if step === 'select_strategy'}
+	<MonitoringCreateSelectStrategy {defaultStrategy} onback={back} oncontinue={onSelectStrategy} />
+{:else}
+	<MonitoringSelectSegments
+		{missionControlId}
+		oncontinue={() => next('select_strategy')}
+		bind:selectedSatellites
+		bind:selectedOrbiters
+	>
+		<h2>{$i18n.monitoring.title}</h2>
 
-			<p>{$i18n.monitoring.create_info}</p>
-		</MonitoringSelectSegments>
-	{/if}
-</Modal>
+		<p>{$i18n.monitoring.create_info}</p>
+	</MonitoringSelectSegments>
+{/if}
 
 <style lang="scss">
 	@use '../../../styles/mixins/overlay';

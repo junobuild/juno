@@ -75,7 +75,7 @@
 		{/snippet}
 
 		<Loaders monitoring>
-			<MissionControlGuard notFoundDescription={$i18n.monitoring.requires_mission_control}>
+			<MissionControlGuard>
 				{#if nonNullish($missionControlId)}
 					<MissionControlDataLoader missionControlId={$missionControlId} reload>
 						{#if $store.tabId === $store.tabs[0].id}

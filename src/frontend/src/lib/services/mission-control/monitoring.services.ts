@@ -460,6 +460,50 @@ const buildMissionControlStrategy = ({
 	};
 };
 
+export const assertAndGetForMonitoringWizard = ():
+	| {
+			valid: 'ok';
+			user: MissionControlDid.User;
+			settings: MissionControlDid.MissionControlSettings | undefined;
+	  }
+	| { valid: 'error' } => {
+	const $missionControlSettingsNotLoaded = get(missionControlSettingsNotLoaded);
+
+	if ($missionControlSettingsNotLoaded) {
+		toasts.warn(get(i18n).errors.mission_control_settings_not_loaded);
+		return { valid: 'error' };
+	}
+
+	const user = get(missionControlUserData);
+	if (isNullish(user)) {
+		toasts.warn(get(i18n).errors.mission_control_user_data_not_loaded);
+		return { valid: 'error' };
+	}
+
+	const $satellitesNotLoaded = get(mctrlSatellitesNotLoaded);
+	if ($satellitesNotLoaded) {
+		toasts.warn(get(i18n).errors.satellites_not_loaded);
+		return { valid: 'error' };
+	}
+
+	const $orbiterNotLoaded = get(orbiterNotLoaded);
+	if ($orbiterNotLoaded) {
+		toasts.warn(get(i18n).errors.orbiter_not_loaded);
+		return { valid: 'error' };
+	}
+
+	const $satellitesStore = get(mctrlSatellitesStore);
+	const $orbiterStore = get(orbiterStore);
+	if (($satellitesStore ?? []).length === 0 && isNullish($orbiterStore)) {
+		toasts.warn(get(i18n).errors.monitoring_no_modules);
+		return { valid: 'error' };
+	}
+
+	const settings = get(missionControlSettings);
+
+	return { valid: 'ok', user, settings };
+};
+
 export const openMonitoringModal = ({
 	type,
 	missionControlId
@@ -467,47 +511,21 @@ export const openMonitoringModal = ({
 	type: 'create_monitoring_strategy' | 'stop_monitoring_strategy';
 	missionControlId: MissionControlId;
 }) => {
-	const $missionControlSettingsNotLoaded = get(missionControlSettingsNotLoaded);
+	const result = assertAndGetForMonitoringWizard();
 
-	if ($missionControlSettingsNotLoaded) {
-		toasts.warn(get(i18n).errors.mission_control_settings_not_loaded);
+	if (result.valid === 'error') {
 		return;
 	}
 
-	const $missionControlUserData = get(missionControlUserData);
-	if (isNullish($missionControlUserData)) {
-		toasts.warn(get(i18n).errors.mission_control_user_data_not_loaded);
-		return;
-	}
-
-	const $satellitesNotLoaded = get(mctrlSatellitesNotLoaded);
-	if ($satellitesNotLoaded) {
-		toasts.warn(get(i18n).errors.satellites_not_loaded);
-		return;
-	}
-
-	const $orbiterNotLoaded = get(orbiterNotLoaded);
-	if ($orbiterNotLoaded) {
-		toasts.warn(get(i18n).errors.orbiter_not_loaded);
-		return;
-	}
-
-	const $satellitesStore = get(mctrlSatellitesStore);
-	const $orbiterStore = get(orbiterStore);
-	if (($satellitesStore ?? []).length === 0 && isNullish($orbiterStore)) {
-		toasts.warn(get(i18n).errors.monitoring_no_modules);
-		return;
-	}
-
-	const $missionControlSettings = get(missionControlSettings);
+	const { user, settings } = result;
 
 	emit<JunoModal<JunoModalCreateMonitoringStrategyDetail>>({
 		message: 'junoModal',
 		detail: {
 			type,
 			detail: {
-				settings: $missionControlSettings,
-				user: $missionControlUserData,
+				settings,
+				user,
 				missionControlId
 			}
 		}

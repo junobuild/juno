@@ -470,28 +470,24 @@ export const assertAndGetForMonitoringWizard = ():
 	const $missionControlSettingsNotLoaded = get(missionControlSettingsNotLoaded);
 
 	if ($missionControlSettingsNotLoaded) {
-		console.log('1');
 		toasts.warn(get(i18n).errors.mission_control_settings_not_loaded);
 		return { valid: 'error' };
 	}
 
 	const user = get(missionControlUserData);
 	if (isNullish(user)) {
-		console.log('2');
 		toasts.warn(get(i18n).errors.mission_control_user_data_not_loaded);
 		return { valid: 'error' };
 	}
 
 	const $satellitesNotLoaded = get(mctrlSatellitesNotLoaded);
 	if ($satellitesNotLoaded) {
-		console.log('3');
 		toasts.warn(get(i18n).errors.satellites_not_loaded);
 		return { valid: 'error' };
 	}
 
 	const $orbiterNotLoaded = get(orbiterNotLoaded);
 	if ($orbiterNotLoaded) {
-		console.log('4');
 		toasts.warn(get(i18n).errors.orbiter_not_loaded);
 		return { valid: 'error' };
 	}
@@ -499,7 +495,6 @@ export const assertAndGetForMonitoringWizard = ():
 	const $satellitesStore = get(mctrlSatellitesStore);
 	const $orbiterStore = get(orbiterStore);
 	if (($satellitesStore ?? []).length === 0 && isNullish($orbiterStore)) {
-		console.log('5');
 		toasts.warn(get(i18n).errors.monitoring_no_modules);
 		return { valid: 'error' };
 	}

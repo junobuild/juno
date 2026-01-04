@@ -2,8 +2,8 @@
 	import { nonNullish } from '@dfinity/utils';
 	import type { Snippet } from 'svelte';
 	import Actions from '$lib/components/core/Actions.svelte';
-	import { i18n } from '$lib/stores/app/i18n.store';
 	import IconMore from '$lib/components/icons/IconMore.svelte';
+	import { i18n } from '$lib/stores/app/i18n.store';
 
 	interface Props {
 		visible?: boolean | undefined;

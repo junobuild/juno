@@ -23,18 +23,11 @@
 	} from '$lib/types/tabs.context';
 	import { initTabId } from '$lib/utils/tabs.utils';
 
-	const tabDashboard = {
-		id: Symbol('1'),
-		labelKey: 'core.dashboard'
-	};
-
-	const tabMissionControl = {
-		id: Symbol('3'),
-		labelKey: 'core.service'
-	};
-
-	let tabs: Tab[] = $derived([
-		tabDashboard,
+	let tabs = $derived<Tab[]>([
+		{
+			id: Symbol('1'),
+			labelKey: $hasMissionControlSettings ? 'core.dashboard' : 'monitoring.title'
+		},
 		...($hasMissionControlSettings
 			? [
 					{
@@ -43,7 +36,10 @@
 					}
 				]
 			: []),
-		tabMissionControl
+		{
+			id: Symbol('3'),
+			labelKey: 'core.service'
+		}
 	]);
 
 	const store = writable<TabsData>({
@@ -62,7 +58,7 @@
 		});
 	});
 
-	let TabsCmp = $derived($hasMissionControlSettings ? Tabs : NoTabs);
+	let TabsCmp = $derived(nonNullish($missionControlId) ? Tabs : NoTabs);
 </script>
 
 <IdentityGuard>

@@ -3,7 +3,7 @@
 	import { run } from 'svelte/legacy';
 	import { fade } from 'svelte/transition';
 	import LaunchpadSegments from '$lib/components/launchpad/LaunchpadSegments.svelte';
-	import SatelliteNewLaunchButton from '$lib/components/satellites/SatelliteNewLaunchButton.svelte';
+	import LaunchpadFirstSatellite from '$lib/components/launchpad/LaunchpadFirstSatellite.svelte';
 	import ContainerCentered from '$lib/components/ui/ContainerCentered.svelte';
 	import Message from '$lib/components/ui/Message.svelte';
 	import Spinner from '$lib/components/ui/Spinner.svelte';
@@ -37,7 +37,7 @@
 	{:else}
 		<div in:fade>
 			<ContainerCentered>
-				<SatelliteNewLaunchButton />
+				<LaunchpadFirstSatellite />
 			</ContainerCentered>
 		</div>
 	{/if}

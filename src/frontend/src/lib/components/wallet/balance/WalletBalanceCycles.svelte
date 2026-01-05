@@ -1,6 +1,6 @@
 <script lang="ts">
 	import WalletBalance from '$lib/components/wallet/balance/WalletBalance.svelte';
-	import { CYCLES, ICP } from '$lib/constants/token.constants';
+	import { CYCLES } from '$lib/constants/token.constants';
 	import { formatTCycles } from '$lib/utils/cycles.utils';
 
 	interface Props {

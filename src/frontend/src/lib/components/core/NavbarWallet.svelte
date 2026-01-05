@@ -4,7 +4,6 @@
 	import ButtonIcon from '$lib/components/ui/ButtonIcon.svelte';
 	import Hr from '$lib/components/ui/Hr.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
-	import Value from '$lib/components/ui/Value.svelte';
 	import WalletActions from '$lib/components/wallet/WalletActions.svelte';
 	import WalletIds from '$lib/components/wallet/WalletIds.svelte';
 	import WalletPicker from '$lib/components/wallet/WalletPicker.svelte';

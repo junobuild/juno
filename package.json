@@ -37,7 +37,7 @@
 		"format": "prettier --write './**/*.{ts,js,mjs,json,scss,css,svelte,html,md,toml}' && npm run format-imports",
 		"prebuild": "npm run generate",
 		"bootstrap:ci": "npm ci && npm run prepare",
-		"bootstrap:i": "npm install && npm run prepare",
+		"bootstrap:install": "npm install && npm run prepare",
 		"postinstall:trusted": "node node_modules/@dfinity/pic/postinstall.mjs",
 		"postinstall": "npm run copy:did && npm run postinstall:trusted",
 		"generate": "scripts/did.sh && scripts/did.idl.sh && node scripts/did.update.types.mjs && scripts/did.idl.certified.sh && npm run copy:did && npm run format",

@@ -92,6 +92,7 @@ service : () -> {
   get_openid_certificate : (GetOpenIdCertificateArgs) -> (
       opt OpenIdCertificate,
     );
+  is_openid_monitoring_enabled : () -> (bool);
   list_controllers : () -> (vec record { principal; Controller }) query;
   notify : (NotifyArgs) -> ();
   ping : (NotifyArgs) -> ();

@@ -131,6 +131,7 @@ export interface _SERVICE {
 	del_controllers: ActorMethod<[DeleteControllersArgs], undefined>;
 	get_notify_status: ActorMethod<[GetNotifications], NotifyStatus>;
 	get_openid_certificate: ActorMethod<[GetOpenIdCertificateArgs], [] | [OpenIdCertificate]>;
+	is_openid_monitoring_enabled: ActorMethod<[], boolean>;
 	list_controllers: ActorMethod<[], Array<[Principal, Controller]>>;
 	notify: ActorMethod<[NotifyArgs], undefined>;
 	ping: ActorMethod<[NotifyArgs], undefined>;

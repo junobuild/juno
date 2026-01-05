@@ -2,7 +2,7 @@ use crate::guards::{
     caller_is_admin_controller, caller_is_not_admin_controller, caller_is_not_anonymous,
     increment_openid_certificate_requests,
 };
-use crate::openid::scheduler::{start_openid_scheduler, stop_openid_scheduler};
+use crate::openid::scheduler::{is_openid_scheduler_enabled, start_openid_scheduler, stop_openid_scheduler};
 use crate::store::heap::get_certificate;
 use ic_cdk_macros::update;
 use junobuild_auth::openid::jwkset::types::interface::GetOpenIdCertificateArgs;
@@ -17,6 +17,11 @@ fn start_openid_monitoring() {
 #[update(guard = "caller_is_admin_controller")]
 fn stop_openid_monitoring() {
     stop_openid_scheduler().unwrap_or_trap()
+}
+
+#[update(guard = "caller_is_admin_controller")]
+fn is_openid_monitoring_enabled() -> bool {
+    is_openid_scheduler_enabled()
 }
 
 #[update(guard = "caller_is_not_anonymous")]

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Principal } from '@icp-sdk/core/principal';
 	import type { Snippet } from 'svelte';
-	import { canisterSyncDataUncertifiedStore } from '$lib/stores/ic-mgmt/canister-sync-data.store';
+	import { canisterSyncDataStore } from '$lib/stores/ic-mgmt/canister-sync-data.store';
 	import type { CanisterSyncData } from '$lib/types/canister';
 
 	interface Props {
@@ -13,7 +13,7 @@
 	let { children, canisterId, canister = $bindable(undefined) }: Props = $props();
 
 	$effect(() => {
-		canister = $canisterSyncDataUncertifiedStore?.[canisterId.toText()]?.data;
+		canister = $canisterSyncDataStore?.[canisterId.toText()]?.data;
 	});
 </script>
 

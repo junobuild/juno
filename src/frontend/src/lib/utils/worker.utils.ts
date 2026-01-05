@@ -1,5 +1,6 @@
 import { AuthClientProvider } from '$lib/providers/auth-client.provider';
 import type { Canister } from '$lib/types/canister';
+import type { CertifiedData } from '$lib/types/store';
 import { isNullish, nonNullish } from '@dfinity/utils';
 import type { Identity } from '@icp-sdk/core/agent';
 import { getMany, type UseStore } from 'idb-keyval';
@@ -50,23 +51,25 @@ export const emitSavedCanisters = async <T extends Canister<T>>({
 	const syncedCanisters = [...canistersNeverSynced, ...canisters];
 
 	for (const canister of syncedCanisters) {
-		emitCanister(canister);
+		emitCanister({ data: canister, certified: false });
 	}
 
-	emitCanisters(syncedCanisters);
+	emitCanisters(syncedCanisters.map((canister) => ({ data: canister, certified: false })));
 };
 
+type CertifiedEmitCanister<T> = CertifiedData<Canister<T>>;
+
 // Update ui with one canister information at a time
-export const emitCanister = <T>(canister: Canister<T>) =>
+export const emitCanister = <T>(data: CertifiedEmitCanister<T>) =>
 	postMessage({
 		msg: 'syncCanister',
 		data: {
-			canister
+			canister: data
 		}
 	});
 
 // Update ui with multiple canisters information
-export const emitCanisters = <T>(canisters: Canister<T>[]) =>
+export const emitCanisters = <T>(canisters: CertifiedEmitCanister<T>[]) =>
 	postMessage({
 		msg: 'syncCanisters',
 		data: {

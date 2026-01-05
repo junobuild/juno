@@ -6,7 +6,12 @@ import {
 } from '$lib/api/mission-control.deprecated.api';
 import { SYNC_MONITORING_TIMER_INTERVAL } from '$lib/constants/app.constants';
 import { monitoringIdbStore } from '$lib/stores/app/idb.store';
-import type { CanisterSegment, CanisterSyncMonitoring } from '$lib/types/canister';
+import type {
+	Canister,
+	CanisterMonitoringData,
+	CanisterSegment,
+	CanisterSyncMonitoring
+} from '$lib/types/canister';
 import type { ChartsData, TimeOfDayChartData } from '$lib/types/chart';
 import type {
 	MonitoringHistory,
@@ -338,7 +343,7 @@ const syncMonitoringForSegments = async ({
 	const syncMonitoringPerCanister = async ({
 		canisterId,
 		...rest
-	}: CanisterSegment): Promise<CanisterSyncMonitoring> => {
+	}: CanisterSegment): Promise<Canister<CanisterMonitoringData>> => {
 		try {
 			const loadParams = {
 				identity,
@@ -376,7 +381,7 @@ const syncMonitoringForSegments = async ({
 			});
 
 			// We emit the canister data this way the UI can render asynchronously render the information without waiting for all canisters status to be fetched.
-			emitCanister(canister);
+			emitCanister({ data: canister, certified: false });
 
 			return canister;
 		} catch (err: unknown) {
@@ -397,7 +402,7 @@ const syncMonitoringForSegments = async ({
 	}
 
 	// We also emits all canisters status for syncing the potential errors but also to hold the value in the UI in a stores that gets updated in bulk and lead to less re-render
-	emitCanisters(canisters);
+	emitCanisters(canisters.map((canister) => ({ data: canister, certified: false })));
 };
 
 const mapMonitoringHistory = ({
@@ -412,7 +417,7 @@ const mapMonitoringHistory = ({
 	chartsData: ChartsData[];
 	depositedCyclesChartData: TimeOfDayChartData[];
 	metadata: MonitoringMetadata | undefined;
-}): CanisterSyncMonitoring => ({
+}): Canister<CanisterMonitoringData> => ({
 	id: canisterId,
 	sync: 'synced',
 	data: {

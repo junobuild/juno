@@ -4,8 +4,12 @@ export const testIds = {
 	auth: {
 		signInII: 'btn-sign-in-ii'
 	},
+	launchpad: {
+		launch: 'btn-launch-first-satellite',
+		launchExtraSatellite: 'btn-launch-extra-satellite',
+		actions: 'btn-open-actions'
+	},
 	createSatellite: {
-		launch: 'btn-launch-satellite',
 		create: 'btn-create-satellite',
 		input: 'input-satellite-name',
 		website: 'input-radio-satellite-website',

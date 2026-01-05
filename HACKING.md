@@ -24,7 +24,7 @@ Before you begin developing and contributing to Juno, ensure the following tools
 ```bash
 git clone https://github.com/junobuild/juno
 cd juno
-npm ci
+npm run bootstrap:ci
 ```
 
 ### Running the Development Environment

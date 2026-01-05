@@ -129,6 +129,14 @@ describe('Observatory', () => {
 				CALLER_NOT_CONTROLLER_OBSERVATORY_MSG
 			);
 		});
+
+		it('should throw errors on getting openid enabled', async () => {
+			const { is_openid_monitoring_enabled } = actor;
+
+			await expect(is_openid_monitoring_enabled()).rejects.toThrowError(
+				CALLER_NOT_CONTROLLER_OBSERVATORY_MSG
+			);
+		});
 	};
 
 	describe('anonymous', () => {

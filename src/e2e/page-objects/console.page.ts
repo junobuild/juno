@@ -37,11 +37,9 @@ export class ConsolePage extends IdentityPage {
 	}
 
 	async createSatellite({ kind }: { kind: 'website' | 'application' }): Promise<void> {
-		await expect(this.page.getByTestId(testIds.createSatellite.launch)).toBeVisible(
-			TIMEOUT_AVERAGE
-		);
+		await expect(this.page.getByTestId(testIds.launchpad.launch)).toBeVisible(TIMEOUT_AVERAGE);
 
-		await this.page.getByTestId(testIds.createSatellite.launch).click();
+		await this.page.getByTestId(testIds.launchpad.launch).click();
 
 		await expect(this.page.getByTestId(testIds.createSatellite.create)).toBeVisible();
 
@@ -103,12 +101,16 @@ export class ConsolePage extends IdentityPage {
 		await expect(this.page.getByRole('menu')).toContainText(expected.balance, TIMEOUT_LONG);
 	}
 
-	async openCreateSatelliteWizard(): Promise<void> {
-		await expect(this.page.getByTestId(testIds.createSatellite.launch)).toBeVisible(
+	async openCreateAdditionalSatelliteWizard(): Promise<void> {
+		await expect(this.page.getByTestId(testIds.launchpad.actions)).toBeVisible(TIMEOUT_AVERAGE);
+
+		await this.page.getByTestId(testIds.launchpad.actions).click();
+
+		await expect(this.page.getByTestId(testIds.launchpad.launchExtraSatellite)).toBeVisible(
 			TIMEOUT_AVERAGE
 		);
 
-		await this.page.getByTestId(testIds.createSatellite.launch).click();
+		await this.page.getByTestId(testIds.launchpad.launchExtraSatellite).click();
 	}
 
 	async failedAtCreatingSatellite(): Promise<void> {
@@ -116,8 +118,8 @@ export class ConsolePage extends IdentityPage {
 		await expect(this.page.getByTestId(testIds.createSatellite.create)).not.toBeVisible();
 
 		const expectedText = i18n.satellites.create_satellite_price
-			.replace('{0}', '0.5000 ICP')
-			.replace('{1}', '0.0000 ICP');
+			.replace('{0}', '3.000 T Cycles')
+			.replace('{1}', '0.000 T Cycles');
 
 		await expect(this.page.getByText(expectedText)).toBeVisible();
 	}

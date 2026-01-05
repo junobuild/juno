@@ -12,7 +12,7 @@
 	"bugs": {
 		"url": "https://github.com/junobuild/juno/issues"
 	},
-	"description": "An Open Source Blockchain-as-a-Service",
+	"description": "Build serverless apps with self-hosting control",
 	"scripts": {
 		"build:subnets": "node scripts/cmc.subnets.mjs && npm run format",
 		"build:passkey:aaguids": "node scripts/passkey.aaguids.mjs && npm run format",

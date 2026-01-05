@@ -8,8 +8,8 @@ import {
 } from '$lib/schemas/wallet.schema';
 import type {
 	CanisterSegment,
-	CanisterSyncData,
-	CanisterSyncMonitoring
+	CertifiedCanisterSyncData,
+	UncertifiedCanisterSyncMonitoring
 } from '$lib/types/canister';
 import type { CustomDomain } from '$lib/types/custom-domain';
 import type { CertifiedData } from '$lib/types/store';
@@ -52,19 +52,19 @@ export const PostMessageDataResponseAuthSchema = z.object({
 });
 
 export const PostMessageDataResponseCanisterSyncDataSchema = z.object({
-	canister: z.custom<CanisterSyncData>().optional()
+	canister: z.custom<CertifiedCanisterSyncData>().optional()
 });
 
 export const PostMessageDataResponseCanisterMonitoringSchema = z.object({
-	canister: z.custom<CanisterSyncMonitoring>().optional()
+	canister: z.custom<UncertifiedCanisterSyncMonitoring>().optional()
 });
 
 export const PostMessageDataResponseCanistersSyncDataSchema = z.object({
-	canisters: z.array(z.custom<CanisterSyncData>()).optional()
+	canisters: z.array(z.custom<CertifiedCanisterSyncData>()).optional()
 });
 
 export const PostMessageDataResponseCanistersMonitoringSchema = z.object({
-	canisters: z.array(z.custom<CanisterSyncMonitoring>()).optional()
+	canisters: z.array(z.custom<UncertifiedCanisterSyncMonitoring>()).optional()
 });
 
 export const PostMessageDataResponseHostingSchema = z.object({

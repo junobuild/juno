@@ -12,6 +12,7 @@ export type Satellite = MissionControlDid.Satellite;
 export type SatelliteIdText = string;
 export type SatelliteId = Principal;
 
+// TODO: move
 export interface SegmentWithSyncData<T extends Satellite | MissionControlDid.Orbiter> {
 	segment: T;
 	canister: CanisterSyncData;

@@ -63,7 +63,9 @@ type CertifiedEmitCanister<T> = CertifiedData<Canister<T>>;
 export const emitCanister = <T>(data: CertifiedEmitCanister<T>) =>
 	postMessage({
 		msg: 'syncCanister',
-		data
+		data: {
+			canister: data
+		}
 	});
 
 // Update ui with multiple canisters information

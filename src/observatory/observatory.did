@@ -98,7 +98,7 @@ service : () -> {
   ping : (NotifyArgs) -> ();
   set_controllers : (SetControllersArgs) -> ();
   set_env : (Env) -> ();
+  set_rate_config : (RateKind, RateConfig) -> ();
   start_openid_monitoring : () -> ();
   stop_openid_monitoring : () -> ();
-  update_rate_config : (RateKind, RateConfig) -> ();
 }

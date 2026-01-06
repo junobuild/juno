@@ -135,9 +135,9 @@ export const idlFactory = ({ IDL }) => {
 		ping: IDL.Func([NotifyArgs], [], []),
 		set_controllers: IDL.Func([SetControllersArgs], [], []),
 		set_env: IDL.Func([Env], [], []),
+		set_rate_config: IDL.Func([RateKind, RateConfig], [], []),
 		start_openid_monitoring: IDL.Func([], [], []),
-		stop_openid_monitoring: IDL.Func([], [], []),
-		update_rate_config: IDL.Func([RateKind, RateConfig], [], [])
+		stop_openid_monitoring: IDL.Func([], [], [])
 	});
 };
 

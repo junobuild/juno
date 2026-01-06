@@ -4,7 +4,7 @@
 	import IconSatellite from '$lib/components/icons/IconSatellite.svelte';
 	import NotificationsCanisterAlert from '$lib/components/notifications/NotificationsCanisterAlert.svelte';
 	import NotificationsUpgrade from '$lib/components/notifications/NotificationsUpgrade.svelte';
-	import { satelliteStore } from '$lib/derived/satellite/satellite.derived';
+	import { satelliteStore } from '$lib/derived/satellite.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { CanisterData, CanisterWarning } from '$lib/types/canister';
 	import { overviewLink } from '$lib/utils/nav.utils';

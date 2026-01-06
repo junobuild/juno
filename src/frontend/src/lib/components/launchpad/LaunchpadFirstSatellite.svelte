@@ -15,7 +15,7 @@
 	};
 </script>
 
-<button class="primary" onclick={createSatellite} {...testId(testIds.createSatellite.launch)}>
+<button class="primary" onclick={createSatellite} {...testId(testIds.launchpad.launch)}>
 	{$i18n.satellites.launch}
 	<IconRocket />
 </button>

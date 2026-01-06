@@ -33,7 +33,7 @@
 	let insufficientFunds = $state(true);
 
 	let step: 'init' | 'in_progress' | 'ready' | 'error' = $state('init');
-	let satelliteId: SatelliteId | undefined = undefined;
+	let satelliteId = $state<SatelliteId | undefined>(undefined);
 
 	// Submit
 

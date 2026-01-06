@@ -1,6 +1,6 @@
 use crate::accounts::{get_existing_account, update_mission_control};
 use crate::constants::FREEZING_THRESHOLD_ONE_YEAR;
-use crate::factory::orchestrator::create_canister_with_account;
+use crate::factory::orchestrator::create_segment_with_account;
 use crate::factory::services::payment::{process_payment_cycles, refund_payment_cycles};
 use crate::factory::types::CanisterCreator;
 use crate::factory::utils::controllers::update_mission_control_controllers;
@@ -32,7 +32,7 @@ pub async fn create_mission_control(
 
     let fee = get_factory_fee(&SegmentKind::MissionControl)?.fee_cycles;
 
-    let mission_control_id = create_canister_with_account(
+    let mission_control_id = create_segment_with_account(
         create_mission_control_wasm,
         process_payment_cycles,
         refund_payment_cycles,

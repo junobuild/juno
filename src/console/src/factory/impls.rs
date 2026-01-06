@@ -1,5 +1,5 @@
 use crate::factory::types::CanisterCreator;
-use crate::factory::types::CreateCanisterArgs;
+use crate::factory::types::CreateSegmentArgs;
 use candid::Principal;
 use junobuild_shared::types::interface::{
     CreateMissionControlArgs, CreateOrbiterArgs, CreateSatelliteArgs,
@@ -35,7 +35,7 @@ impl CanisterCreator {
     }
 }
 
-impl From<CreateOrbiterArgs> for CreateCanisterArgs {
+impl From<CreateOrbiterArgs> for CreateSegmentArgs {
     fn from(args: CreateOrbiterArgs) -> Self {
         Self {
             block_index: args.block_index,
@@ -44,7 +44,7 @@ impl From<CreateOrbiterArgs> for CreateCanisterArgs {
     }
 }
 
-impl From<CreateSatelliteArgs> for CreateCanisterArgs {
+impl From<CreateSatelliteArgs> for CreateSegmentArgs {
     fn from(args: CreateSatelliteArgs) -> Self {
         Self {
             block_index: args.block_index,
@@ -53,7 +53,7 @@ impl From<CreateSatelliteArgs> for CreateCanisterArgs {
     }
 }
 
-impl From<CreateMissionControlArgs> for CreateCanisterArgs {
+impl From<CreateMissionControlArgs> for CreateSegmentArgs {
     fn from(args: CreateMissionControlArgs) -> Self {
         Self {
             // Unlike Satellite and Orbiter, Mission Control can only be

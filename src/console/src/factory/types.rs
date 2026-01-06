@@ -8,7 +8,7 @@ pub enum CanisterCreator {
     MissionControl((MissionControlId, UserId)), // The caller is a mission control
 }
 
-pub struct CreateCanisterArgs {
+pub struct CreateSegmentArgs {
     pub block_index: Option<BlockIndex>,
     pub subnet_id: Option<SubnetId>,
 }

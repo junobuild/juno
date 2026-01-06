@@ -17,7 +17,7 @@ import IconUpgradeDock from '$lib/components/icons/IconUpgradeDock.svelte';
 import IconWallet from '$lib/components/icons/IconWallet.svelte';
 import { authNotSignedIn } from '$lib/derived/auth.derived';
 import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
-import { satelliteStore } from '$lib/derived/satellite/satellite.derived';
+import { satelliteStore } from '$lib/derived/satellite.derived';
 import { sortedSatelliteUis } from '$lib/derived/satellites.derived';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { theme } from '$lib/stores/app/theme.store';

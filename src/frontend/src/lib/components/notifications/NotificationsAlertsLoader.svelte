@@ -2,7 +2,7 @@
 	import NotificationsCanisterLoader from '$lib/components/notifications/NotificationsCanisterLoader.svelte';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import { orbiterStore } from '$lib/derived/orbiter.derived';
-	import { satelliteStore } from '$lib/derived/satellite/satellite.derived';
+	import { satelliteStore } from '$lib/derived/satellite.derived';
 	import { versionsLoaded, versionsUpgradeWarning } from '$lib/derived/version.derived';
 	import type { CanisterData, CanisterWarning } from '$lib/types/canister';
 

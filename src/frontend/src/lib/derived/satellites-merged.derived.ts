@@ -1,6 +1,7 @@
 import { sortedSatellites } from '$lib/derived/satellites.derived';
 import { canistersSyncDataStore } from '$lib/stores/ic-mgmt/canister-sync-data.store';
-import type { Satellite, SegmentWithSyncData } from '$lib/types/satellite';
+import type { Satellite } from '$lib/types/satellite';
+import type { SegmentWithSyncData } from '$lib/types/segment';
 import { nonNullish } from '@dfinity/utils';
 import { derived } from 'svelte/store';
 

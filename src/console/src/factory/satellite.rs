@@ -1,5 +1,5 @@
 use crate::constants::FREEZING_THRESHOLD_ONE_YEAR;
-use crate::factory::canister::create_canister;
+use crate::factory::orchestrator::create_segment_workflow;
 use crate::factory::types::CanisterCreator;
 use crate::factory::utils::controllers::remove_console_controller;
 use crate::factory::utils::wasm::satellite_wasm_arg;
@@ -26,7 +26,7 @@ pub async fn create_satellite(
     let storage = args.storage.clone();
     let name = args.name.clone();
 
-    create_canister(
+    create_segment_workflow(
         move |creator, subnet_id| async move {
             create_satellite_wasm(creator, subnet_id, storage).await
         },

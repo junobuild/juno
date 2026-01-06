@@ -1,5 +1,5 @@
 use crate::constants::FREEZING_THRESHOLD_THREE_MONTHS;
-use crate::factory::canister::create_canister;
+use crate::factory::orchestrator::create_segment_workflow;
 use crate::factory::types::CanisterCreator;
 use crate::factory::utils::controllers::remove_console_controller;
 use crate::factory::utils::wasm::orbiter_wasm_arg;
@@ -23,7 +23,7 @@ pub async fn create_orbiter(
     caller: Principal,
     args: CreateOrbiterArgs,
 ) -> Result<Principal, String> {
-    create_canister(
+    create_segment_workflow(
         create_orbiter_wasm,
         &increment_orbiters_rate,
         &get_fee,

@@ -6,3 +6,4 @@ pub mod satellite;
 mod services;
 mod types;
 mod utils;
+pub mod canister;

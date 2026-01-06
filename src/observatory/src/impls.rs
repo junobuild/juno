@@ -136,6 +136,7 @@ impl Notification {
                 "https://console.juno.build/satellite/?s={}",
                 self.segment.id
             ),
+            SegmentKind::Canister => "https://console.juno.build/canister".to_string(),
         }
     }
 

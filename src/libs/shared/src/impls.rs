@@ -20,6 +20,7 @@ impl Display for SegmentKind {
             SegmentKind::Satellite => write!(f, "Satellite"),
             SegmentKind::MissionControl => write!(f, "Mission Control"),
             SegmentKind::Orbiter => write!(f, "Orbiter"),
+            SegmentKind::Canister => write!(f, "Canister"),
         }
     }
 }

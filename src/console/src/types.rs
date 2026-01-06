@@ -150,6 +150,7 @@ pub mod state {
         // For historical reasons, MissionControl is not stored in the segments stable tree
         // but within the Account structure
         Orbiter,
+        Canister,
     }
 }
 

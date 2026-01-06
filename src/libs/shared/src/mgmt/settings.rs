@@ -1,5 +1,5 @@
 use crate::constants::internal::WASM_MEMORY_LIMIT;
-use crate::constants::shared::CREATE_CANISTER_CYCLES;
+use crate::constants::shared::IC_CREATE_CANISTER_CYCLES;
 use crate::mgmt::types::ic::CreateCanisterInitSettingsArg;
 use candid::Nat;
 use ic_cdk::management_canister::CanisterSettings;
@@ -24,5 +24,5 @@ pub fn create_canister_settings(
 }
 
 pub fn create_canister_cycles(cycles: u128) -> u128 {
-    CREATE_CANISTER_CYCLES + cycles
+    IC_CREATE_CANISTER_CYCLES + cycles
 }

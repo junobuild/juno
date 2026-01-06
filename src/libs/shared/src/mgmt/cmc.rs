@@ -19,6 +19,26 @@ use ic_cdk::call::Call;
 use ic_cdk::management_canister::{CanisterId, CanisterInstallMode};
 use ic_ledger_types::{Subaccount, Tokens};
 
+/// Tops up a canister's cycles balance by transferring ICP to the Cycles Minting Canister (CMC).
+///
+/// This function performs a two-step process:
+/// 1. Transfers ICP tokens to the CMC's subaccount for the target canister
+/// 2. Notifies the CMC to convert the ICP into cycles and credit the canister
+///
+/// The function automatically deducts two transaction fees from the amount (one for the transfer,
+/// one for the notification). If the notification fails, the CMC automatically refunds the caller.
+///
+/// # Arguments
+/// - `canister_id`: The ID of the canister to top up
+/// - `amount`: The total ICP amount including transaction fees (minimum: 2 * IC_TRANSACTION_FEE_ICP)
+///
+/// # Returns
+/// - `Ok(())`: On success, the canister has been topped up with cycles
+/// - `Err(String)`: On failure, returns an error message describing what went wrong
+///
+/// # Errors
+/// - Ledger transfer failures (insufficient balance, invalid recipient, etc.)
+/// - CMC notification failures (though CMC will refund in these cases)
 pub async fn top_up_canister(canister_id: &CanisterId, amount: &Tokens) -> Result<(), String> {
     // We need to hold back 1 transaction fee for the 'send' and also 1 for the 'notify'
     let send_amount = Tokens::from_e8s(amount.e8s() - (2 * IC_TRANSACTION_FEE_ICP.e8s()));

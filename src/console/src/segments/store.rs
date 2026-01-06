@@ -1,6 +1,6 @@
 use crate::store::{with_segments, with_segments_mut};
 use crate::types::interface::ListSegmentsArgs;
-use crate::types::state::{Segment, SegmentKey, SegmentType, SegmentsStable};
+use crate::types::state::{Segment, SegmentKey, StorableSegmentKind, SegmentsStable};
 use junobuild_shared::constants::shared::{PRINCIPAL_MAX, PRINCIPAL_MIN};
 use junobuild_shared::data::collect::collect_stable_vec;
 use junobuild_shared::types::state::{Metadata, UserId};
@@ -83,24 +83,24 @@ fn filter_segments_range(
     user: &UserId,
     ListSegmentsArgs {
         segment_id,
-        segment_type,
+        segment_kind,
     }: &ListSegmentsArgs,
 ) -> impl RangeBounds<SegmentKey> {
     let start_key = SegmentKey {
         user: *user,
         // Fallback to first enum
-        segment_type: segment_type.clone().unwrap_or(SegmentType::Satellite),
+        segment_kind: segment_kind.clone().unwrap_or(StorableSegmentKind::Satellite),
         segment_id: segment_id.unwrap_or(PRINCIPAL_MIN),
     };
 
     let end_key = SegmentKey {
         user: *user,
         // Fallback to last enum
-        segment_type: segment_type.clone().unwrap_or(SegmentType::Orbiter),
+        segment_kind: segment_kind.clone().unwrap_or(StorableSegmentKind::Orbiter),
         segment_id: segment_id.unwrap_or(PRINCIPAL_MAX),
     };
 
-    // Inclusive range to ensure filtering by segment_type works correctly.
-    // Exclusive range (start_key..end_key) would be too narrow when start and end have the same segment_type.
+    // Inclusive range to ensure filtering by segment_kind works correctly.
+    // Exclusive range (start_key..end_key) would be too narrow when start and end have the same segment_kind.
     start_key..=end_key
 }

@@ -220,7 +220,7 @@ type ListResults = record {
 };
 type ListSegmentsArgs = record {
   segment_id : opt principal;
-  segment_type : opt SegmentType;
+  segment_kind : opt StorableSegmentKind;
 };
 type Memory = variant { Heap; Stable };
 type OpenId = record { provider : OpenIdProvider; data : OpenIdData };
@@ -297,10 +297,9 @@ type Segment = record {
 type SegmentKey = record {
   user : principal;
   segment_id : principal;
-  segment_type : SegmentType;
+  segment_kind : StorableSegmentKind;
 };
 type SegmentKind = variant { Orbiter; MissionControl; Satellite };
-type SegmentType = variant { Orbiter; Satellite };
 type SegmentsDeploymentOptions = record {
   orbiter : opt text;
   mission_control_version : opt text;
@@ -324,12 +323,12 @@ type SetControllersArgs = record {
 type SetSegmentMetadataArgs = record {
   metadata : vec record { text; text };
   segment_id : principal;
-  segment_type : SegmentType;
+  segment_kind : StorableSegmentKind;
 };
 type SetSegmentsArgs = record {
   metadata : opt vec record { text; text };
   segment_id : principal;
-  segment_type : SegmentType;
+  segment_kind : StorableSegmentKind;
 };
 type SetStorageConfig = record {
   iframe : opt StorageConfigIFrame;
@@ -341,6 +340,7 @@ type SetStorageConfig = record {
   redirects : opt vec record { text; StorageConfigRedirect };
 };
 type SignedDelegation = record { signature : blob; delegation : Delegation };
+type StorableSegmentKind = variant { Orbiter; Satellite };
 type StorageConfig = record {
   iframe : opt StorageConfigIFrame;
   updated_at : opt nat64;
@@ -383,7 +383,7 @@ type TimestampMatcher = variant {
 type Tokens = record { e8s : nat64 };
 type UnsetSegmentsArgs = record {
   segment_id : principal;
-  segment_type : SegmentType;
+  segment_kind : StorableSegmentKind;
 };
 type UploadChunk = record {
   content : blob;

@@ -129,7 +129,7 @@ describe('Console > Factory > Canister', () => {
 		const { list_segments } = actor;
 
 		const segments = await list_segments({
-			segment_type: [title === 'Orbiter' ? { Orbiter: null } : { Satellite: null }],
+			segment_kind: [title === 'Orbiter' ? { Orbiter: null } : { Satellite: null }],
 			segment_id: []
 		});
 

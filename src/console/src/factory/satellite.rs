@@ -8,7 +8,7 @@ use crate::fees::types::FeeKind;
 use crate::segments::add_segment as add_segment_store;
 use crate::store::heap::increment_satellites_rate;
 use crate::types::ledger::Fee;
-use crate::types::state::{Segment, SegmentKey, SegmentType};
+use crate::types::state::{Segment, SegmentKey, StorableSegmentKind};
 use candid::{Nat, Principal};
 use junobuild_shared::constants::shared::CREATE_SATELLITE_CYCLES;
 use junobuild_shared::ic::api::id;
@@ -86,6 +86,6 @@ async fn create_satellite_wasm(
 fn add_segment(user: &UserId, canister_id: &Principal, name: &Option<String>) {
     let metadata = Segment::init_metadata(name);
     let satellite = Segment::new(canister_id, Some(metadata));
-    let key = SegmentKey::from(user, canister_id, SegmentType::Satellite);
+    let key = SegmentKey::from(user, canister_id, StorableSegmentKind::Satellite);
     add_segment_store(&key, &satellite)
 }

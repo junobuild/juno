@@ -53,7 +53,7 @@ describe('Console > Segments', () => {
 
 				await expect(
 					list_segments({
-						segment_type: [],
+						segment_kind: [],
 						segment_id: []
 					})
 				).rejects.toThrowError('User does not have an account.');
@@ -79,7 +79,7 @@ describe('Console > Segments', () => {
 				const { list_segments } = actor;
 
 				const segments = await list_segments({
-					segment_type: [],
+					segment_kind: [],
 					segment_id: []
 				});
 
@@ -96,7 +96,7 @@ describe('Console > Segments', () => {
 				await expect(
 					set_segment_metadata({
 						segment_id: segmentId,
-						segment_type: { Satellite: null },
+						segment_kind: { Satellite: null },
 						metadata
 					})
 				).rejects.toThrowError('User does not have an account.');
@@ -127,7 +127,7 @@ describe('Console > Segments', () => {
 				actor.setIdentity(user);
 				await assertUnknownSegment({
 					segment_id: mockMissionControlId,
-					segment_type: { Satellite: null }
+					segment_kind: { Satellite: null }
 				});
 			});
 
@@ -135,7 +135,7 @@ describe('Console > Segments', () => {
 				actor.setIdentity(user);
 				await assertUnknownSegment({
 					segment_id: segmentId,
-					segment_type: { Orbiter: null }
+					segment_kind: { Orbiter: null }
 				});
 			});
 		});
@@ -149,13 +149,13 @@ describe('Console > Segments', () => {
 				const { set_segment_metadata, list_segments } = actor;
 
 				const [[_, currentSegment]] = await list_segments({
-					segment_type: [{ Satellite: null }],
+					segment_kind: [{ Satellite: null }],
 					segment_id: [segmentId]
 				});
 
 				const updatedSegment = await set_segment_metadata({
 					segment_id: segmentId,
-					segment_type: { Satellite: null },
+					segment_kind: { Satellite: null },
 					metadata
 				});
 
@@ -183,7 +183,7 @@ describe('Console > Segments', () => {
 				await expect(
 					set_segment({
 						segment_id: segmentId,
-						segment_type: { Satellite: null },
+						segment_kind: { Satellite: null },
 						metadata: toNullable(metadata)
 					})
 				).rejects.toThrowError('User does not have an account.');
@@ -208,7 +208,7 @@ describe('Console > Segments', () => {
 
 				payload = {
 					segment_id: segmentId,
-					segment_type: { Satellite: null },
+					segment_kind: { Satellite: null },
 					metadata: toNullable(metadata)
 				};
 
@@ -216,7 +216,7 @@ describe('Console > Segments', () => {
 				const { unset_segment } = actor;
 				await unset_segment({
 					segment_id: segmentId,
-					segment_type: { Satellite: null }
+					segment_kind: { Satellite: null }
 				});
 			});
 
@@ -242,7 +242,7 @@ describe('Console > Segments', () => {
 				await expect(
 					unset_segment({
 						segment_id: segmentId,
-						segment_type: { Satellite: null }
+						segment_kind: { Satellite: null }
 					})
 				).rejects.toThrowError('User does not have an account.');
 			};
@@ -266,7 +266,7 @@ describe('Console > Segments', () => {
 
 				payload = {
 					segment_id: segmentId,
-					segment_type: { Satellite: null }
+					segment_kind: { Satellite: null }
 				};
 			});
 

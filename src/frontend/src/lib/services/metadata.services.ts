@@ -123,7 +123,7 @@ const setMetadataWithConsole = async ({
 
 	const isKeySatellite = (segmentKey: SegmentKey): boolean =>
 		segmentKey.segment_id.toText() === satelliteId.toText() &&
-		'Satellite' in segmentKey.segment_type &&
+		'Satellite' in segmentKey.segment_kind &&
 		segmentKey.user.toText() === identity.getPrincipal().toText();
 
 	const segment = currentState?.find(([segmentKey]) => isKeySatellite(segmentKey));
@@ -136,14 +136,14 @@ const setMetadataWithConsole = async ({
 	try {
 		const updatedSegment = await setSegmentMetadata({
 			segmentId: satelliteId,
-			segmentType: { Satellite: null },
+			segmentKind: { Satellite: null },
 			metadata,
 			identity
 		});
 
 		const updateKey: SegmentKey = {
 			segment_id: satelliteId,
-			segment_type: { Satellite: null },
+			segment_kind: { Satellite: null },
 			user: identity.getPrincipal()
 		};
 

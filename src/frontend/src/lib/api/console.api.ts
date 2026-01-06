@@ -1,5 +1,4 @@
 import type { ConsoleDid } from '$declarations';
-import type { SegmentKind, SegmentType } from '$declarations/console/console.did';
 import type { GetActorParams } from '$lib/api/actors/actor.api';
 import { getConsoleActor } from '$lib/api/actors/actor.juno.api';
 import type { OptionIdentity } from '$lib/types/itentity';
@@ -54,7 +53,7 @@ const getFee = async ({
 	segmentKind
 }: {
 	identity: OptionIdentity;
-	segmentKind: SegmentKind;
+	segmentKind: ConsoleDid.SegmentKind;
 }): Promise<ConsoleDid.FactoryFee> => {
 	const { get_fee } = await getConsoleActor({ identity });
 	return await get_fee(segmentKind);
@@ -62,19 +61,19 @@ const getFee = async ({
 
 export const setSegmentMetadata = async ({
 	segmentId,
-	segmentType,
+	segmentKind,
 	metadata,
 	identity
 }: {
 	segmentId: Principal;
-	segmentType: SegmentType;
+	segmentKind: ConsoleDid.StorableSegmentKind;
 	metadata: Metadata;
 	identity: OptionIdentity;
 }): Promise<ConsoleDid.Segment> => {
 	const { set_segment_metadata } = await getConsoleActor({ identity });
 	return set_segment_metadata({
 		segment_id: segmentId,
-		segment_type: segmentType,
+		segment_kind: segmentKind,
 		metadata
 	});
 };

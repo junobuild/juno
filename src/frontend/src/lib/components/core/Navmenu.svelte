@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { nonNullish, notEmptyString } from '@dfinity/utils';
+	import { isEmptyString, nonNullish, notEmptyString } from '@dfinity/utils';
 	import { circOut, quintOut } from 'svelte/easing';
 	import { slide, fade } from 'svelte/transition';
 	import { page } from '$app/state';
@@ -38,16 +38,81 @@
 
 <Menu>
 	<nav>
-		<a
-			class="link"
-			class:collapsed={$menuCollapsed}
-			class:selected={isRouteSelected({ routeId, path: 'satellite' })}
-			href={`/satellite${satelliteQueryParam}`}
-			role="menuitem"
-		>
-			<IconSatellite size="24px" />
-			<span>{$i18n.satellites.satellite}</span>
-		</a>
+		{#if isEmptyString(canisterId)}
+			<a
+				class="link"
+				class:collapsed={$menuCollapsed}
+				class:selected={isRouteSelected({ routeId, path: 'satellite' })}
+				href={`/satellite${satelliteQueryParam}`}
+				role="menuitem"
+			>
+				<IconSatellite size="24px" />
+				<span>{$i18n.satellites.satellite}</span>
+			</a>
+
+			{#if $isSatelliteRoute}
+				<div
+					class="satellite-features"
+					in:slide={{ delay: 0, duration: 150, easing: quintOut, axis: 'y' }}
+					out:slide={{ delay: 0, duration: 100, easing: circOut, axis: 'y' }}
+				>
+					<a
+						class="link"
+						class:collapsed={$menuCollapsed}
+						class:selected={isRouteSelected({ routeId, path: 'authentication' })}
+						href={`/authentication${satelliteQueryParam}`}
+						role="menuitem"
+					>
+						<IconAuthentication size="24px" />
+						<span>{$i18n.authentication.title}</span>
+					</a>
+
+					<a
+						class="link"
+						class:collapsed={$menuCollapsed}
+						class:selected={isRouteSelected({ routeId, path: 'datastore' })}
+						href={`/datastore${satelliteQueryParam}`}
+						role="menuitem"
+					>
+						<IconDatastore size="24px" />
+						<span>{$i18n.datastore.title}</span>
+					</a>
+
+					<a
+						class="link"
+						class:collapsed={$menuCollapsed}
+						class:selected={isRouteSelected({ routeId, path: 'storage' })}
+						href={`/storage${satelliteQueryParam}`}
+						role="menuitem"
+					>
+						<IconStorage size="24px" />
+						<span>{$i18n.storage.title}</span>
+					</a>
+
+					<a
+						class="link"
+						class:collapsed={$menuCollapsed}
+						class:selected={isRouteSelected({ routeId, path: 'functions' })}
+						href={`/functions${satelliteQueryParam}`}
+						role="menuitem"
+					>
+						<IconFunctions size="24px" />
+						<span>{$i18n.functions.title}</span>
+					</a>
+
+					<a
+						class="link"
+						class:collapsed={$menuCollapsed}
+						class:selected={isRouteSelected({ routeId, path: 'hosting' })}
+						href={`/hosting${satelliteQueryParam}`}
+						role="menuitem"
+					>
+						<IconHosting size="24px" />
+						<span>{$i18n.hosting.title}</span>
+					</a>
+				</div>
+			{/if}
+		{/if}
 
 		{#if notEmptyString(canisterId)}
 			<a
@@ -60,69 +125,6 @@
 				<IconCanister size="24px" />
 				<span>{$i18n.canister.title}</span>
 			</a>
-		{/if}
-
-		{#if $isSatelliteRoute}
-			<div
-				class="satellite-features"
-				in:slide={{ delay: 0, duration: 150, easing: quintOut, axis: 'y' }}
-				out:slide={{ delay: 0, duration: 100, easing: circOut, axis: 'y' }}
-			>
-				<a
-					class="link"
-					class:collapsed={$menuCollapsed}
-					class:selected={isRouteSelected({ routeId, path: 'authentication' })}
-					href={`/authentication${satelliteQueryParam}`}
-					role="menuitem"
-				>
-					<IconAuthentication size="24px" />
-					<span>{$i18n.authentication.title}</span>
-				</a>
-
-				<a
-					class="link"
-					class:collapsed={$menuCollapsed}
-					class:selected={isRouteSelected({ routeId, path: 'datastore' })}
-					href={`/datastore${satelliteQueryParam}`}
-					role="menuitem"
-				>
-					<IconDatastore size="24px" />
-					<span>{$i18n.datastore.title}</span>
-				</a>
-
-				<a
-					class="link"
-					class:collapsed={$menuCollapsed}
-					class:selected={isRouteSelected({ routeId, path: 'storage' })}
-					href={`/storage${satelliteQueryParam}`}
-					role="menuitem"
-				>
-					<IconStorage size="24px" />
-					<span>{$i18n.storage.title}</span>
-				</a>
-
-				<a
-					class="link"
-					class:collapsed={$menuCollapsed}
-					class:selected={isRouteSelected({ routeId, path: 'functions' })}
-					href={`/functions${satelliteQueryParam}`}
-					role="menuitem"
-				>
-					<IconFunctions size="24px" />
-					<span>{$i18n.functions.title}</span>
-				</a>
-
-				<a
-					class="link"
-					class:collapsed={$menuCollapsed}
-					class:selected={isRouteSelected({ routeId, path: 'hosting' })}
-					href={`/hosting${satelliteQueryParam}`}
-					role="menuitem"
-				>
-					<IconHosting size="24px" />
-					<span>{$i18n.hosting.title}</span>
-				</a>
-			</div>
 		{/if}
 
 		<div>

@@ -10,6 +10,7 @@
 	import type { SatelliteUi } from '$lib/types/satellite';
 	import { canisterLink, overviewLink } from '$lib/utils/nav.utils';
 	import type { SegmentCanisterUi } from '$lib/types/segment';
+	import IconCanister from '$lib/components/icons/IconCanister.svelte';
 
 	interface Props {
 		canister: SegmentCanisterUi;
@@ -27,8 +28,6 @@
 
 	let row = $derived($layoutLaunchpad === LaunchpadLayout.LIST);
 
-	// TODO: basically duplicate LaunchpadSatellite except href and satellite_id
-
 	// TODO: make SatelliteEnvironment generic
 	let satellite = $derived(canister as unknown as SatelliteUi);
 </script>
@@ -43,7 +42,7 @@
 	{/snippet}
 
 	{#snippet icon()}
-		<IconSatellite size={row ? '28px' : '48px'} />
+		<IconCanister size={row ? '28px' : '48px'} />
 	{/snippet}
 
 	<Canister {canisterId} {row} />

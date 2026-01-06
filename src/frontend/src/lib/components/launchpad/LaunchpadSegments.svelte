@@ -7,8 +7,8 @@
 	import { satelliteMatchesFilter } from '$lib/utils/satellite.utils';
 	import { sortedCanisterUis } from '$lib/derived/console/canisters.derived';
 	import type { SatelliteUi } from '$lib/types/satellite';
-	import LaunchpadCanister from "$lib/components/launchpad/LaunchpadCanister.svelte";
-	import {segments} from "$lib/derived/console/segments.derived";
+	import LaunchpadCanister from '$lib/components/launchpad/LaunchpadCanister.svelte';
+	import { segments } from '$lib/derived/console/segments.derived';
 
 	let filter = $state('');
 
@@ -22,7 +22,7 @@
 		$sortedCanisterUis.filter((canister) =>
 			// TODO: make generic
 			satelliteMatchesFilter({
-				satellite: canister as unknown as SatelliteUi,
+				satellite: { ...canister, satellite_id: canister.canisterId } as unknown as SatelliteUi,
 				filter: filter.toLowerCase()
 			})
 		)

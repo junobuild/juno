@@ -19,6 +19,7 @@
 	} from '$lib/types/tabs.context';
 	import { initTabId } from '$lib/utils/tabs.utils';
 	import {canisterStore} from "$lib/derived/canister.derived";
+	import CanisterOverview from "$lib/components/canister-segment/CanisterOverview.svelte";
 
 	const tabs: Tab[] = [
 		{
@@ -51,9 +52,7 @@
 
 				{#if nonNullish($canisterStore)}
 					{#if $store.tabId === $store.tabs[0].id}
-						<SatelliteOverview satellite={$satelliteStore} />
-
-						<SatelliteSettings satellite={$satelliteStore} />
+						<CanisterOverview canister={$canisterStore} />
 					{/if}
 				{/if}
 			</Tabs>

@@ -4,6 +4,7 @@ import { toNullable } from '@dfinity/utils';
 import { AnonymousIdentity } from '@icp-sdk/core/agent';
 import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import { inject } from 'vitest';
+import { CONTROLLER_ERROR_MSG } from '../../constants/console-tests.constants';
 import { CONSOLE_WASM_PATH } from '../../utils/setup-tests.utils';
 
 describe('Console > Storage', () => {
@@ -33,8 +34,6 @@ describe('Console > Storage', () => {
 		{ title: 'Anonymous', user: new AnonymousIdentity() },
 		{ title: 'Some identity', user: Ed25519KeyIdentity.generate() }
 	])('$title', ({ user }) => {
-		const ERROR_NOT_ADMIN_CONTROLLER = 'Caller is not a controller of the console.';
-
 		beforeAll(() => {
 			actor.setIdentity(user);
 		});
@@ -52,7 +51,7 @@ describe('Console > Storage', () => {
 					max_memory_size: toNullable(),
 					version: toNullable()
 				})
-			).rejects.toThrowError(ERROR_NOT_ADMIN_CONTROLLER);
+			).rejects.toThrowError(CONTROLLER_ERROR_MSG);
 		});
 
 		it('should throw errors on setting auth config', async () => {
@@ -65,25 +64,25 @@ describe('Console > Storage', () => {
 				version: []
 			};
 
-			await expect(set_auth_config(config)).rejects.toThrowError(ERROR_NOT_ADMIN_CONTROLLER);
+			await expect(set_auth_config(config)).rejects.toThrowError(CONTROLLER_ERROR_MSG);
 		});
 
 		it('should throw errors on getting storage config', async () => {
 			const { get_storage_config } = actor;
 
-			await expect(get_storage_config()).rejects.toThrowError(ERROR_NOT_ADMIN_CONTROLLER);
+			await expect(get_storage_config()).rejects.toThrowError(CONTROLLER_ERROR_MSG);
 		});
 
 		it('should throw errors on getting auth config', async () => {
 			const { get_auth_config } = actor;
 
-			await expect(get_auth_config()).rejects.toThrowError(ERROR_NOT_ADMIN_CONTROLLER);
+			await expect(get_auth_config()).rejects.toThrowError(CONTROLLER_ERROR_MSG);
 		});
 
 		it('should throw errors on getting config', async () => {
 			const { get_config } = actor;
 
-			await expect(get_config()).rejects.toThrowError(ERROR_NOT_ADMIN_CONTROLLER);
+			await expect(get_config()).rejects.toThrowError(CONTROLLER_ERROR_MSG);
 		});
 	});
 });

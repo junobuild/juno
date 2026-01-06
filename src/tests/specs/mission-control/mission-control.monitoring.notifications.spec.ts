@@ -464,7 +464,7 @@ describe('Mission Control > Notifications', () => {
 					templateHtml: FAILED_DEPOSIT_CYCLES_TEMPLATE_HTML,
 					templateTitle: `❗️Cycles Deposit Failed on Your Mission Control`,
 					moduleName: 'Mission Control',
-					url: 'https://console.juno.build/mission-control',
+					url: 'https://console.juno.build/monitoring/?tab=service',
 					expectedIdempotencyKeySegmentId: missionControlId,
 					expectedTimestamp,
 					pic

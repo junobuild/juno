@@ -81,7 +81,7 @@ describe('Observatory > Upgrade', () => {
 			it('should still notify Mission Control with previous interface', async () => {
 				await testDepositedCyclesNotification({
 					kind: { MissionControl: null },
-					url: 'https://console.juno.build/mission-control',
+					url: 'https://console.juno.build/monitoring/?tab=service',
 					moduleName: 'Mission Control',
 					actor,
 					pic,
@@ -236,7 +236,7 @@ describe('Observatory > Upgrade', () => {
 			it('should still notify Mission Control with previous interface', async () => {
 				await testDepositedCyclesNotification({
 					kind: { MissionControl: null },
-					url: 'https://console.juno.build/mission-control',
+					url: 'https://console.juno.build/monitoring/?tab=service',
 					moduleName: 'Mission Control',
 					actor,
 					pic

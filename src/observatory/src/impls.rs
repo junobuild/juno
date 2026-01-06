@@ -129,7 +129,9 @@ impl Notification {
     fn segment_url(&self) -> String {
         match self.segment.kind {
             SegmentKind::Orbiter => "https://console.juno.build/analytics".to_string(),
-            SegmentKind::MissionControl => "https://console.juno.build/mission-control".to_string(),
+            SegmentKind::MissionControl => {
+                "https://console.juno.build/monitoring/?tab=service".to_string()
+            }
             SegmentKind::Satellite => format!(
                 "https://console.juno.build/satellite/?s={}",
                 self.segment.id

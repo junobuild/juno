@@ -112,6 +112,9 @@
 		"custom": "Custom",
 		"launch": "Launch"
 	},
+	"canister": {
+		"create": "Spin up a canister"
+	},
 	"canisters": {
 		"top_up": "Top-up",
 		"topping_up": "Topping-up",

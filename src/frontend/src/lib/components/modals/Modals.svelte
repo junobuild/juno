@@ -30,6 +30,7 @@
 	import SatelliteUpgradeModal from '$lib/components/modals/upgrade/SatelliteUpgradeModal.svelte';
 	import SendTokensModal from '$lib/components/modals/wallet/SendTokensModal.svelte';
 	import type { JunoModal, JunoModalDetail } from '$lib/types/modal';
+	import CanisterCreateModal from "$lib/components/modals/factory/create/CanisterCreateModal.svelte";
 
 	let modal: JunoModal<JunoModalDetail> | undefined = $state(undefined);
 
@@ -48,6 +49,10 @@
 
 {#if modal?.type === 'create_mission_control' && nonNullish(modal.detail)}
 	<MissionControlCreateModal detail={modal.detail} onclose={close} />
+{/if}
+
+{#if modal?.type === 'create_canister' && nonNullish(modal.detail)}
+	<CanisterCreateModal detail={modal.detail} onclose={close} />
 {/if}
 
 {#if modal?.type === 'topup_satellite' && nonNullish(modal.detail)}

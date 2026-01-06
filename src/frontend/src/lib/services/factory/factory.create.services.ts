@@ -1,5 +1,10 @@
 import type { ConsoleDid, MissionControlDid } from '$declarations';
-import { getMissionControlFee, getOrbiterFee, getSatelliteFee } from '$lib/api/console.api';
+import {
+	getCanisterFee,
+	getMissionControlFee,
+	getOrbiterFee,
+	getSatelliteFee
+} from '$lib/api/console.api';
 import { updateAndStartMonitoring } from '$lib/api/mission-control.api';
 import { missionControlMonitored } from '$lib/derived/mission-control/mission-control-settings.derived';
 import { missionControlConfigMonitoring } from '$lib/derived/mission-control/mission-control-user.derived';
@@ -104,6 +109,20 @@ export const initMissionControlWizard = ({
 		modalType: 'create_mission_control'
 	});
 
+export const initCanisterWizard = ({
+	missionControlId,
+	identity
+}: {
+	missionControlId: Option<Principal>;
+	identity: OptionIdentity;
+}): Promise<void> =>
+	initCreateWizard({
+		missionControlId,
+		identity,
+		feeFn: getCreateCanisterFeeBalance,
+		modalType: 'create_canister'
+	});
+
 const initCreateWizard = async ({
 	missionControlId,
 	identity,
@@ -113,7 +132,7 @@ const initCreateWizard = async ({
 	missionControlId: Option<MissionControlId>;
 	identity: OptionIdentity;
 	feeFn: GetFeeBalanceFn;
-	modalType: 'create_satellite' | 'create_orbiter' | 'create_mission_control';
+	modalType: 'create_satellite' | 'create_orbiter' | 'create_mission_control' | 'create_canister';
 }) => {
 	if (missionControlId === undefined) {
 		toasts.warn(get(i18n).errors.mission_control_not_loaded);
@@ -190,7 +209,7 @@ const initCreateWizardWithoutMissionControl = ({
 	modalType
 }: {
 	fee: ConsoleDid.FactoryFee;
-	modalType: 'create_satellite' | 'create_orbiter' | 'create_mission_control';
+	modalType: 'create_satellite' | 'create_orbiter' | 'create_mission_control' | 'create_canister';
 }) => {
 	emit<JunoModal<JunoModalCreateSegmentDetail>>({
 		message: 'junoModal',
@@ -213,6 +232,9 @@ const getCreateOrbiterFeeBalance: GetFeeBalanceFn = async (params): Promise<GetF
 
 const getCreateMissionControlFeeBalance: GetFeeBalanceFn = async (params): Promise<GetFeeBalance> =>
 	await getCreateFeeBalance({ ...params, getFee: getMissionControlFee });
+
+const getCreateCanisterFeeBalance: GetFeeBalanceFn = async (params): Promise<GetFeeBalance> =>
+	await getCreateFeeBalance({ ...params, getFee: getCanisterFee });
 
 const getCreateFeeBalance = async ({
 	identity,

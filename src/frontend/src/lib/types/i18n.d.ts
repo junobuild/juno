@@ -116,6 +116,10 @@ interface I18nCore {
 	launch: string;
 }
 
+interface I18nCanister {
+	create: string;
+}
+
 interface I18nCanisters {
 	top_up: string;
 	topping_up: string;
@@ -1073,6 +1077,7 @@ interface I18nSpotlight {
 interface I18n {
 	lang: Languages;
 	core: I18nCore;
+	canister: I18nCanister;
 	canisters: I18nCanisters;
 	sign_in: I18nSign_in;
 	sign_in_openid: I18nSign_in_openid;

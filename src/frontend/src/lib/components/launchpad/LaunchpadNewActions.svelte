@@ -13,12 +13,14 @@
 	} from '$lib/derived/console/account.mission-control.derived';
 	import { orbiterLoaded, orbiterStore } from '$lib/derived/orbiter.derived';
 	import {
+		initCanisterWizard,
 		initMissionControlWizard,
 		initOrbiterWizard,
 		initSatelliteWizard
 	} from '$lib/services/factory/factory.create.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { testId } from '$lib/utils/test.utils';
+	import IconCanister from '$lib/components/icons/IconCanister.svelte';
 
 	const createSatellite = async () => {
 		close();
@@ -43,6 +45,15 @@
 
 		await initMissionControlWizard({
 			identity: $authIdentity
+		});
+	};
+
+	const createCanister = async () => {
+		close();
+
+		await initCanisterWizard({
+			identity: $authIdentity,
+			missionControlId: $missionControlId
 		});
 	};
 
@@ -73,6 +84,8 @@
 			{...testId(testIds.launchpad.launchExtraSatellite)}
 			><IconSatellite /> {$i18n.satellites.launch}</button
 		>
+
+		<button class="menu" onclick={createCanister}><IconCanister /> {$i18n.canister.create}</button>
 
 		{#if analyticsNotEnabled}
 			<button class="menu" onclick={createAnalytics}

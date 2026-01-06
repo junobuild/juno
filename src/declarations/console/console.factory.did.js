@@ -124,11 +124,12 @@ export const idlFactory = ({ IDL }) => {
 		user: IDL.Principal
 	});
 	const CreateCanisterArgs = IDL.Record({
-		subnet_id: IDL.Opt(IDL.Principal)
+		subnet_id: IDL.Opt(IDL.Principal),
+		name: IDL.Opt(IDL.Text)
 	});
 	const CreateSegmentArgs = IDL.Variant({
 		Orbiter: CreateOrbiterArgs,
-		MissionControl: CreateCanisterArgs,
+		MissionControl: CreateMissionControlArgs,
 		Canister: CreateCanisterArgs,
 		Satellite: CreateSatelliteArgs
 	});

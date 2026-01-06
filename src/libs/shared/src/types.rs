@@ -165,6 +165,7 @@ pub mod interface {
     #[derive(CandidType, Deserialize)]
     pub struct CreateCanisterArgs {
         pub subnet_id: Option<SubnetId>,
+        pub name: Option<String>,
     }
 
     #[derive(CandidType, Deserialize)]

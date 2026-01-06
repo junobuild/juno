@@ -117,7 +117,16 @@ interface I18nCore {
 }
 
 interface I18nCanister {
+	launch: string;
+	initializing: string;
+	attaching: string;
+	start: string;
+	description: string;
+	create_canister_price: string;
+	canister_name: string;
+	enter_name: string;
 	create: string;
+	ready: string;
 }
 
 interface I18nCanisters {
@@ -610,6 +619,8 @@ interface I18nErrors {
 	satellite_metadata_update: string;
 	satellite_missing_name: string;
 	satellites_not_loaded: string;
+	create_canister_name_missing: string;
+	create_canister_unexpected_error: string;
 	canister_stop: string;
 	canister_start: string;
 	canister_delete: string;

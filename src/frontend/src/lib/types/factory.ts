@@ -12,3 +12,6 @@ export interface CreateSatelliteConfig extends CreateWithConfig {
 	name: string;
 	kind: 'website' | 'application';
 }
+export interface CreateCanisterConfig extends CreateWithConfig {
+	name: string;
+}

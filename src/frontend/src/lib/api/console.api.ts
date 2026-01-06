@@ -49,11 +49,10 @@ export const getMissionControlFee = async ({
 	await getFee({ identity, segmentKind: { MissionControl: null } });
 
 export const getCanisterFee = async ({
-																						 identity
-																					 }: {
+	identity
+}: {
 	identity: OptionIdentity;
-}): Promise<ConsoleDid.FactoryFee> =>
-	await getFee({ identity, segmentKind: { Canister: null } });
+}): Promise<ConsoleDid.FactoryFee> => await getFee({ identity, segmentKind: { Canister: null } });
 
 const getFee = async ({
 	identity,

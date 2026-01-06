@@ -12,14 +12,17 @@
 	import { authSignedOut, authIdentity } from '$lib/derived/auth.derived';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
-	import { createSatelliteWizard } from '$lib/services/factory/factory.create.services';
+	import {
+		createCanisterWizard,
+		createSatelliteWizard
+	} from '$lib/services/factory/factory.create.services';
 	import { wizardBusy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { JunoModalDetail } from '$lib/types/modal';
 	import type { FactoryCreateProgress } from '$lib/types/progress-factory-create';
 	import type { SatelliteId } from '$lib/types/satellite';
 	import type { Option } from '$lib/types/utils';
-	import { navigateToSatellite } from '$lib/utils/nav.utils';
+	import { navigateToCanister, navigateToSatellite } from '$lib/utils/nav.utils';
 	import { testId } from '$lib/utils/test.utils';
 	import type { CanisterId } from '$lib/types/canister';
 
@@ -50,14 +53,13 @@
 		wizardBusy.start();
 		step = 'in_progress';
 
-		const result = await createSatelliteWizard({
+		const result = await createCanisterWizard({
 			selectedWallet,
 			identity: $authIdentity,
 			missionControlId: $missionControlId,
 			subnetId,
 			monitoringStrategy,
-			satelliteName,
-			satelliteKind,
+			canisterName,
 			withFee,
 			onProgress
 		});
@@ -75,12 +77,11 @@
 	};
 
 	const navigate = async () => {
-		await navigateToSatellite(canisterId);
+		await navigateToCanister(canisterId);
 		onclose();
 	};
 
-	let satelliteName: string | undefined = $state(undefined);
-	let satelliteKind: 'website' | 'application' | undefined = $state(undefined);
+	let canisterName = $state<string | undefined>(undefined);
 
 	let selectedWallet = $state<SelectedWallet | undefined>(undefined);
 	let subnetId: PrincipalText | undefined = $state();
@@ -94,7 +95,7 @@
 		<Confetti />
 
 		<div class="msg">
-			<p>{$i18n.satellites.ready}</p>
+			<p>{$i18n.canister.ready}</p>
 			<button {...testId(testIds.createSatellite.continue)} onclick={navigate}>
 				{$i18n.core.continue}
 			</button>
@@ -102,22 +103,22 @@
 	{:else if step === 'in_progress'}
 		<FactoryProgressCreate
 			{progress}
-			segment="satellite"
+			segment="canister"
 			withApprove={selectedWallet?.type === 'dev' && nonNullish(withFee)}
 			withAttach={selectedWallet?.type === 'dev' && nonNullish($missionControlId)}
 			withMonitoring={nonNullish(monitoringStrategy)}
 		/>
 	{:else}
-		<h2>{$i18n.satellites.start}</h2>
+		<h2>{$i18n.canister.start}</h2>
 
 		<p>
-			{$i18n.satellites.description}
+			{$i18n.canister.description}
 		</p>
 
 		<FactoryCredits
 			{detail}
 			{onclose}
-			priceLabel={$i18n.satellites.create_satellite_price}
+			priceLabel={$i18n.canister.create_canister_price}
 			{selectedWallet}
 			bind:withFee
 			bind:insufficientFunds
@@ -125,51 +126,19 @@
 			<form onsubmit={onSubmit}>
 				<Value>
 					{#snippet label()}
-						{$i18n.satellites.satellite_name}
+						{$i18n.canister.canister_name}
 					{/snippet}
 					<input
 						name="satellite_name"
 						autocomplete="off"
 						data-1p-ignore
 						{...testId(testIds.createSatellite.input)}
-						placeholder={$i18n.satellites.enter_name}
+						placeholder={$i18n.canister.enter_name}
 						required
 						type="text"
-						bind:value={satelliteName}
+						bind:value={canisterName}
 					/>
 				</Value>
-
-				<div class="building">
-					<Value suffix="?">
-						{#snippet label()}
-							{$i18n.satellites.what_are_you_building}
-						{/snippet}
-
-						<div class="options">
-							<label>
-								<input
-									name="kind"
-									type="radio"
-									{...testId(testIds.createSatellite.website)}
-									value="website"
-									bind:group={satelliteKind}
-								/>
-								{$i18n.satellites.website}
-							</label>
-
-							<label>
-								<input
-									name="kind"
-									type="radio"
-									{...testId(testIds.createSatellite.application)}
-									value="application"
-									bind:group={satelliteKind}
-								/>
-								{$i18n.satellites.application}
-							</label>
-						</div>
-					</Value>
-				</div>
 
 				<FactoryAdvancedOptions
 					{detail}
@@ -183,7 +152,7 @@
 					disabled={$authSignedOut || insufficientFunds}
 					type="submit"
 				>
-					{$i18n.satellites.create}
+					{$i18n.canister.create}
 				</button>
 			</form>
 		</FactoryCredits>
@@ -214,14 +183,5 @@
 
 	button {
 		margin-top: var(--padding-2x);
-	}
-
-	.building {
-		margin: var(--padding-2x) 0 0;
-	}
-
-	.options {
-		display: flex;
-		flex-direction: column;
 	}
 </style>

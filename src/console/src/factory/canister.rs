@@ -25,6 +25,7 @@ pub async fn create_canister(
 ) -> Result<Principal, String> {
     let account = get_existing_account(&caller)?;
 
+    let name = args.name.clone();
     let creator: CanisterCreator = CanisterCreator::User((account.owner, None));
 
     let fee = get_factory_fee(&SegmentKind::Canister)?.fee_cycles;
@@ -41,7 +42,7 @@ pub async fn create_canister(
     )
     .await?;
 
-    add_segment(&account.owner, &canister_id);
+    add_segment(&account.owner, &canister_id, &name);
 
     Ok(canister_id)
 }
@@ -74,8 +75,9 @@ async fn create_raw_canister(
     Ok(mission_control_id)
 }
 
-fn add_segment(user: &UserId, canister_id: &Principal) {
-    let canister = Segment::new(canister_id, None);
+fn add_segment(user: &UserId, canister_id: &Principal, name: &Option<String>) {
+    let metadata = Segment::init_metadata(name);
+    let canister = Segment::new(canister_id, Some(metadata));
     let key = SegmentKey::from(user, canister_id, StorableSegmentKind::Canister);
     add_segment_store(&key, &canister)
 }

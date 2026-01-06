@@ -30,7 +30,7 @@
 	import SatelliteUpgradeModal from '$lib/components/modals/upgrade/SatelliteUpgradeModal.svelte';
 	import SendTokensModal from '$lib/components/modals/wallet/SendTokensModal.svelte';
 	import type { JunoModal, JunoModalDetail } from '$lib/types/modal';
-	import CanisterCreateModal from "$lib/components/modals/factory/create/CanisterCreateModal.svelte";
+	import CanisterCreateModal from '$lib/components/modals/factory/create/CanisterCreateModal.svelte';
 
 	let modal: JunoModal<JunoModalDetail> | undefined = $state(undefined);
 

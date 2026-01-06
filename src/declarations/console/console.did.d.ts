@@ -106,6 +106,7 @@ export interface Controller {
 export type ControllerScope = { Write: null } | { Admin: null } | { Submit: null };
 export interface CreateCanisterArgs {
 	subnet_id: [] | [Principal];
+	name: [] | [string];
 }
 export interface CreateMissionControlArgs {
 	subnet_id: [] | [Principal];
@@ -125,7 +126,7 @@ export interface CreateSatelliteArgs {
 }
 export type CreateSegmentArgs =
 	| { Orbiter: CreateOrbiterArgs }
-	| { MissionControl: CreateCanisterArgs }
+	| { MissionControl: CreateMissionControlArgs }
 	| { Canister: CreateCanisterArgs }
 	| { Satellite: CreateSatelliteArgs };
 export interface CustomDomain {

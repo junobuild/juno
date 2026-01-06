@@ -113,7 +113,16 @@
 		"launch": "Launch"
 	},
 	"canister": {
-		"create": "Spin up a canister"
+		"launch": "Spin up a Canister",
+		"initializing": "Spinning up your Canister...",
+		"attaching": "Sharing Canister with Mission Control...",
+		"start": "Spin up a canister",
+		"description": "A canister is a blank container waiting for your code. Use it to implement your ideas from scratch.",
+		"create_canister_price": "Starting a new Canister requires {0}. Your current balance is {1}.",
+		"canister_name": "Canister name",
+		"enter_name": "Enter a name for your Canister",
+		"create": "Create Canister",
+		"ready": "Your Canister is ready!"
 	},
 	"canisters": {
 		"top_up": "Top-up",
@@ -591,6 +600,8 @@
 		"satellite_metadata_update": "Unexpected error(s) while trying to set the metadata of your Satellite.",
 		"satellite_missing_name": "A name must be provided.",
 		"satellites_not_loaded": "The Satellites data are not yet loaded.",
+		"create_canister_name_missing": "A name for the Canister must be provided.",
+		"create_canister_unexpected_error": "Unexpected error(s) while creating the Canister.",
 		"canister_stop": "Unexpected error(s) while trying to stop the module.",
 		"canister_start": "Unexpected error(s) while trying to start the module.",
 		"canister_delete": "Unexpected error(s) while trying to delete the module.",

@@ -85,7 +85,7 @@
 			><IconSatellite /> {$i18n.satellites.launch}</button
 		>
 
-		<button class="menu" onclick={createCanister}><IconCanister /> {$i18n.canister.create}</button>
+		<button class="menu" onclick={createCanister}><IconCanister /> {$i18n.canister.launch}</button>
 
 		{#if analyticsNotEnabled}
 			<button class="menu" onclick={createAnalytics}

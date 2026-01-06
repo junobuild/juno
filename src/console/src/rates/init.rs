@@ -35,5 +35,12 @@ pub fn init_factory_rates() -> FactoryRates {
                 tokens: tokens.clone(),
             },
         ),
+        (
+            SegmentKind::Canister,
+            FactoryRate {
+                config: DEFAULT_RATE_CONFIG,
+                tokens: tokens.clone(),
+            },
+        ),
     ])
 }

@@ -13,6 +13,7 @@ pub const SATELLITE_CREATION_FEE_CYCLES: CyclesTokens = CyclesTokens::from_e12s(
 pub const ORBITER_CREATION_FEE_CYCLES: CyclesTokens = CyclesTokens::from_e12s(3_000_000_000_000);
 pub const MISSION_CONTROL_CREATION_FEE_CYCLES: CyclesTokens =
     CyclesTokens::from_e12s(3_000_000_000_000);
+pub const CANISTER_CREATION_FEE_CYCLES: CyclesTokens = CyclesTokens::from_e12s(3_000_000_000_000);
 
 // 1 ICP but also the default credit - i.e. a mission control starts with one credit.
 // A credit which can be used to start one satellite or one orbiter.

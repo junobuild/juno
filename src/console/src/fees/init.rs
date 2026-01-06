@@ -1,6 +1,6 @@
 use crate::constants::{
-    MISSION_CONTROL_CREATION_FEE_CYCLES, ORBITER_CREATION_FEE_CYCLES, ORBITER_CREATION_FEE_ICP,
-    SATELLITE_CREATION_FEE_CYCLES, SATELLITE_CREATION_FEE_ICP,
+    CANISTER_CREATION_FEE_CYCLES, MISSION_CONTROL_CREATION_FEE_CYCLES, ORBITER_CREATION_FEE_CYCLES,
+    ORBITER_CREATION_FEE_ICP, SATELLITE_CREATION_FEE_CYCLES, SATELLITE_CREATION_FEE_ICP,
 };
 use crate::types::state::{FactoryFee, FactoryFees};
 use ic_cdk::api::time;
@@ -31,6 +31,14 @@ pub fn init_factory_fees() -> FactoryFees {
             SegmentKind::MissionControl,
             FactoryFee {
                 fee_cycles: MISSION_CONTROL_CREATION_FEE_CYCLES,
+                fee_icp: None,
+                updated_at: now,
+            },
+        ),
+        (
+            SegmentKind::Canister,
+            FactoryFee {
+                fee_cycles: CANISTER_CREATION_FEE_CYCLES,
                 fee_icp: None,
                 updated_at: now,
             },

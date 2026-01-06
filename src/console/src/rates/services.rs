@@ -12,3 +12,7 @@ pub fn increment_mission_controls_rate() -> Result<(), String> {
 pub fn increment_orbiters_rate() -> Result<(), String> {
     increment_rate(&SegmentKind::Orbiter)
 }
+
+pub fn increment_canister_rate() -> Result<(), String> {
+    increment_rate(&SegmentKind::Canister)
+}

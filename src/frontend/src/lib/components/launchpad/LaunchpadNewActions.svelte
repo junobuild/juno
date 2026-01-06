@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { isNullish } from '@dfinity/utils';
 	import IconAnalytics from '$lib/components/icons/IconAnalytics.svelte';
+	import IconCanister from '$lib/components/icons/IconCanister.svelte';
 	import IconRocket from '$lib/components/icons/IconRocket.svelte';
 	import IconSatellite from '$lib/components/icons/IconSatellite.svelte';
 	import IconTelescope from '$lib/components/icons/IconTelescope.svelte';
@@ -13,6 +14,7 @@
 	} from '$lib/derived/console/account.mission-control.derived';
 	import { orbiterLoaded, orbiterStore } from '$lib/derived/orbiter.derived';
 	import {
+		initCanisterWizard,
 		initMissionControlWizard,
 		initOrbiterWizard,
 		initSatelliteWizard
@@ -46,6 +48,15 @@
 		});
 	};
 
+	const createCanister = async () => {
+		close();
+
+		await initCanisterWizard({
+			identity: $authIdentity,
+			missionControlId: $missionControlId
+		});
+	};
+
 	const close = () => (visible = false);
 
 	let visible = $state(false);
@@ -73,6 +84,8 @@
 			{...testId(testIds.launchpad.launchExtraSatellite)}
 			><IconSatellite /> {$i18n.satellites.launch}</button
 		>
+
+		<button class="menu" onclick={createCanister}><IconCanister /> {$i18n.canister.launch}</button>
 
 		{#if analyticsNotEnabled}
 			<button class="menu" onclick={createAnalytics}

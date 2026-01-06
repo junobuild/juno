@@ -78,6 +78,7 @@ type Controller = record {
   expires_at : opt nat64;
 };
 type ControllerScope = variant { Write; Admin; Submit };
+type CreateCanisterArgs = record { subnet_id : opt principal; name : opt text };
 type CreateMissionControlArgs = record { subnet_id : opt principal };
 type CreateOrbiterArgs = record {
   block_index : opt nat64;
@@ -91,6 +92,12 @@ type CreateSatelliteArgs = record {
   storage : opt InitStorageArgs;
   name : opt text;
   user : principal;
+};
+type CreateSegmentArgs = variant {
+  Orbiter : CreateOrbiterArgs;
+  MissionControl : CreateMissionControlArgs;
+  Canister : CreateCanisterArgs;
+  Satellite : CreateSatelliteArgs;
 };
 type CustomDomain = record {
   updated_at : nat64;
@@ -299,7 +306,7 @@ type SegmentKey = record {
   segment_id : principal;
   segment_kind : StorableSegmentKind;
 };
-type SegmentKind = variant { Orbiter; MissionControl; Satellite };
+type SegmentKind = variant { Orbiter; MissionControl; Canister; Satellite };
 type SegmentsDeploymentOptions = record {
   orbiter : opt text;
   mission_control_version : opt text;
@@ -340,7 +347,7 @@ type SetStorageConfig = record {
   redirects : opt vec record { text; StorageConfigRedirect };
 };
 type SignedDelegation = record { signature : blob; delegation : Delegation };
-type StorableSegmentKind = variant { Orbiter; Satellite };
+type StorableSegmentKind = variant { Orbiter; Canister; Satellite };
 type StorageConfig = record {
   iframe : opt StorageConfigIFrame;
   updated_at : opt nat64;
@@ -403,6 +410,7 @@ service : () -> {
   create_mission_control : (CreateMissionControlArgs) -> (principal);
   create_orbiter : (CreateOrbiterArgs) -> (principal);
   create_satellite : (CreateSatelliteArgs) -> (principal);
+  create_segment : (CreateSegmentArgs) -> (principal);
   del_controllers : (DeleteControllersArgs) -> ();
   del_custom_domain : (text) -> ();
   delete_proposal_assets : (DeleteProposalAssets) -> ();

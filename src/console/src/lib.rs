@@ -58,6 +58,7 @@ use junobuild_shared::types::domain::CustomDomains;
 use junobuild_shared::types::interface::CreateMissionControlArgs;
 use junobuild_shared::types::interface::CreateOrbiterArgs;
 use junobuild_shared::types::interface::CreateSatelliteArgs;
+use junobuild_shared::types::interface::CreateSegmentArgs;
 use junobuild_shared::types::interface::{
     AssertMissionControlCenterArgs, DeleteControllersArgs, GetCreateCanisterFeeArgs,
     SetControllersArgs,

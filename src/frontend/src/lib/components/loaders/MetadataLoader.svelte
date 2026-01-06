@@ -9,14 +9,16 @@
 	import { orbiterStore } from '$lib/derived/orbiter.derived';
 	import type { CanisterSegment } from '$lib/types/canister';
 	import type { Satellite } from '$lib/types/satellite';
+	import type { SegmentCanister } from '$lib/types/segment';
 
 	interface Props {
 		children: Snippet;
 		satellites?: Satellite[];
+		canisters?: SegmentCanister[];
 		monitoring?: boolean;
 	}
 
-	let { children, satellites = [], monitoring = false }: Props = $props();
+	let { children, satellites = [], canisters = [], monitoring = false }: Props = $props();
 
 	let segments: CanisterSegment[] = $derived([
 		...(nonNullish($missionControlId)
@@ -38,6 +40,10 @@
 		...satellites.map(({ satellite_id }) => ({
 			canisterId: satellite_id.toText(),
 			segment: 'satellite' as const
+		})),
+		...canisters.map(({ canisterId }) => ({
+			canisterId: canisterId.toText(),
+			segment: 'canister' as const
 		}))
 	]);
 

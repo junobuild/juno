@@ -116,6 +116,23 @@ interface I18nCore {
 	launch: string;
 }
 
+interface I18nCanister {
+	title: string;
+	launch: string;
+	initializing: string;
+	attaching: string;
+	start: string;
+	description: string;
+	create_canister_price: string;
+	canister_name: string;
+	enter_name: string;
+	create: string;
+	ready: string;
+	overview: string;
+	loading_canisters: string;
+	id: string;
+}
+
 interface I18nCanisters {
 	top_up: string;
 	topping_up: string;
@@ -606,6 +623,9 @@ interface I18nErrors {
 	satellite_metadata_update: string;
 	satellite_missing_name: string;
 	satellites_not_loaded: string;
+	create_canister_name_missing: string;
+	create_canister_unexpected_error: string;
+	canister_no_found: string;
 	canister_stop: string;
 	canister_start: string;
 	canister_delete: string;
@@ -1073,6 +1093,7 @@ interface I18nSpotlight {
 interface I18n {
 	lang: Languages;
 	core: I18nCore;
+	canister: I18nCanister;
 	canisters: I18nCanisters;
 	sign_in: I18nSign_in;
 	sign_in_openid: I18nSign_in_openid;

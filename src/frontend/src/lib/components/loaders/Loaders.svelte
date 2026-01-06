@@ -3,6 +3,7 @@
 	import MetadataLoader from '$lib/components/loaders/MetadataLoader.svelte';
 	import SegmentsLoader from '$lib/components/loaders/SegmentsLoader.svelte';
 	import WalletLoader from '$lib/components/loaders/WalletLoader.svelte';
+	import { consoleCanisters } from '$lib/derived/console/segments.derived';
 	import { sortedSatellites } from '$lib/derived/satellites.derived';
 
 	interface Props {
@@ -15,7 +16,7 @@
 
 <WalletLoader>
 	<SegmentsLoader>
-		<MetadataLoader {monitoring} satellites={$sortedSatellites}>
+		<MetadataLoader canisters={$consoleCanisters} {monitoring} satellites={$sortedSatellites}>
 			{@render children()}
 		</MetadataLoader>
 	</SegmentsLoader>

@@ -10,6 +10,7 @@
 	import MissionControlTransferCyclesModal from '$lib/components/modals/cycles/transfer/MissionControlTransferCyclesModal.svelte';
 	import OrbiterTransferCyclesModal from '$lib/components/modals/cycles/transfer/OrbiterTransferCyclesModal.svelte';
 	import SatelliteTransferCyclesModal from '$lib/components/modals/cycles/transfer/SatelliteTransferCyclesModal.svelte';
+	import CanisterCreateModal from '$lib/components/modals/factory/create/CanisterCreateModal.svelte';
 	import MissionControlCreateModal from '$lib/components/modals/factory/create/MissionControlCreateModal.svelte';
 	import OrbiterCreateModal from '$lib/components/modals/factory/create/OrbiterCreateModal.svelte';
 	import SatelliteCreateModal from '$lib/components/modals/factory/create/SatelliteCreateModal.svelte';
@@ -48,6 +49,10 @@
 
 {#if modal?.type === 'create_mission_control' && nonNullish(modal.detail)}
 	<MissionControlCreateModal detail={modal.detail} onclose={close} />
+{/if}
+
+{#if modal?.type === 'create_canister' && nonNullish(modal.detail)}
+	<CanisterCreateModal detail={modal.detail} onclose={close} />
 {/if}
 
 {#if modal?.type === 'topup_satellite' && nonNullish(modal.detail)}

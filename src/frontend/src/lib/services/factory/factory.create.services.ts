@@ -1,5 +1,10 @@
 import type { ConsoleDid, MissionControlDid } from '$declarations';
-import { getMissionControlFee, getOrbiterFee, getSatelliteFee } from '$lib/api/console.api';
+import {
+	getCanisterFee,
+	getMissionControlFee,
+	getOrbiterFee,
+	getSatelliteFee
+} from '$lib/api/console.api';
 import { updateAndStartMonitoring } from '$lib/api/mission-control.api';
 import { missionControlMonitored } from '$lib/derived/mission-control/mission-control-settings.derived';
 import { missionControlConfigMonitoring } from '$lib/derived/mission-control/mission-control-user.derived';
@@ -8,6 +13,7 @@ import type { SelectedWallet } from '$lib/schemas/wallet.schema';
 import { execute } from '$lib/services/_progress.services';
 import { reloadAccount } from '$lib/services/console/account.services';
 import {
+	createCanisterWithConfig as createCanisterWithConsoleAndConfig,
 	createMissionControlWithConfig as createMissionControlWithConsoleAndConfig,
 	createOrbiterWithConfig as createOrbiterWithConsoleAndConfig,
 	createSatelliteWithConfig as createSatelliteWithConsoleAndConfig
@@ -36,6 +42,7 @@ import { busy } from '$lib/stores/app/busy.store';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
 import type {
+	CreateCanisterConfig,
 	CreateSatelliteConfig,
 	CreateWithConfig,
 	CreateWithConfigAndName
@@ -104,6 +111,20 @@ export const initMissionControlWizard = ({
 		modalType: 'create_mission_control'
 	});
 
+export const initCanisterWizard = ({
+	missionControlId,
+	identity
+}: {
+	missionControlId: Option<Principal>;
+	identity: OptionIdentity;
+}): Promise<void> =>
+	initCreateWizard({
+		missionControlId,
+		identity,
+		feeFn: getCreateCanisterFeeBalance,
+		modalType: 'create_canister'
+	});
+
 const initCreateWizard = async ({
 	missionControlId,
 	identity,
@@ -113,7 +134,7 @@ const initCreateWizard = async ({
 	missionControlId: Option<MissionControlId>;
 	identity: OptionIdentity;
 	feeFn: GetFeeBalanceFn;
-	modalType: 'create_satellite' | 'create_orbiter' | 'create_mission_control';
+	modalType: 'create_satellite' | 'create_orbiter' | 'create_mission_control' | 'create_canister';
 }) => {
 	if (missionControlId === undefined) {
 		toasts.warn(get(i18n).errors.mission_control_not_loaded);
@@ -190,7 +211,7 @@ const initCreateWizardWithoutMissionControl = ({
 	modalType
 }: {
 	fee: ConsoleDid.FactoryFee;
-	modalType: 'create_satellite' | 'create_orbiter' | 'create_mission_control';
+	modalType: 'create_satellite' | 'create_orbiter' | 'create_mission_control' | 'create_canister';
 }) => {
 	emit<JunoModal<JunoModalCreateSegmentDetail>>({
 		message: 'junoModal',
@@ -213,6 +234,9 @@ const getCreateOrbiterFeeBalance: GetFeeBalanceFn = async (params): Promise<GetF
 
 const getCreateMissionControlFeeBalance: GetFeeBalanceFn = async (params): Promise<GetFeeBalance> =>
 	await getCreateFeeBalance({ ...params, getFee: getMissionControlFee });
+
+const getCreateCanisterFeeBalance: GetFeeBalanceFn = async (params): Promise<GetFeeBalance> =>
+	await getCreateFeeBalance({ ...params, getFee: getCanisterFee });
 
 const getCreateFeeBalance = async ({
 	identity,
@@ -614,6 +638,130 @@ export const createMissionControlWizard = async ({
 		attachFn,
 		monitoringFn: undefined,
 		errorLabel: 'mission_control_unexpected_error'
+	});
+};
+
+export const createCanisterWizard = async ({
+	missionControlId,
+	onProgress,
+	subnetId,
+	canisterName,
+	monitoringStrategy,
+	...rest
+}: CreateWizardParams & {
+	canisterName: string | undefined;
+}): Promise<CreateWizardResult> => {
+	if (isEmptyString(canisterName)) {
+		toasts.error({
+			text: get(i18n).errors.create_canister_name_missing
+		});
+		return { success: 'error' };
+	}
+
+	const createFn: CreateFn = async ({ identity, selectedWallet: { type: walletType } }) => {
+		if (walletType === 'mission_control') {
+			// TODO:
+			throw new Error('Mission Control wallet not supported');
+		}
+
+		return await createWithConsoleFn({ identity });
+	};
+
+	const createConfig: CreateCanisterConfig = {
+		name: canisterName,
+		...(nonNullish(subnetId) && { subnetId: Principal.fromText(subnetId) })
+	};
+
+	const createWithConsoleFn = async ({ identity }: { identity: Identity }): Promise<SatelliteId> =>
+		await createCanisterWithConsoleAndConfig({
+			identity,
+			config: createConfig
+		});
+
+	const buildAttachFn = (): AttachFn | undefined => {
+		if (isNullish(missionControlId)) {
+			return undefined;
+		}
+
+		const attachFn: AttachFn = async ({
+			identity,
+			canisterId,
+			selectedWallet: { type: walletType }
+		}) => {
+			// Mission Control already knowns the newly created module
+			if (walletType === 'mission_control') {
+				// TODO:
+				// 1. Handle error
+				// 2. Do not show Mission Control wallet in the UI if defined - in the dropdown
+				throw new Error('Mission Control wallet not supported');
+			}
+
+			// Attach the Satellite to the existing Mission Control.
+			// The controller for the Mission Control to the Satellite has been set by the Console backend.
+			// await attachSatelliteToMissionControl({
+			// 	missionControlId,
+			// 	satelliteId: canisterId,
+			// 	identity,
+			// 	satelliteName
+			// });
+
+			// TODO:
+			throw new Error('Attach to Mission Control not yet supported');
+		};
+
+		return attachFn;
+	};
+
+	const attachFn = buildAttachFn();
+
+	const buildMonitoringFn = (): MonitoringFn | undefined => {
+		if (isNullish(monitoringStrategy)) {
+			return undefined;
+		}
+
+		return async ({
+			identity,
+			canisterId
+		}: {
+			identity: Identity;
+			canisterId: Principal;
+		}): Promise<void> => {
+			assertNonNullish(missionControlId);
+
+			// await updateAndStartMonitoring({
+			// 	identity,
+			// 	missionControlId,
+			// 	config: {
+			// 		cycles_config: toNullable({
+			// 			mission_control_strategy: toNullable(),
+			// 			satellites_strategy: toNullable({
+			// 				strategy: monitoringStrategy,
+			// 				ids: [canisterId]
+			// 			}),
+			// 			orbiters_strategy: toNullable()
+			// 		})
+			// 	}
+			// });
+
+			// TODO:
+			throw new Error('Start monitoring not yet supported');
+		};
+	};
+
+	const monitoringFn = buildMonitoringFn();
+
+	const reloadFn: ReloadFn = async () => {
+		await loadSegments({ missionControlId, reload: true, reloadOrbiters: false });
+	};
+
+	return await createWizard({
+		...rest,
+		onProgress,
+		createFn,
+		reloadFn,
+		attachFn,
+		monitoringFn,
+		errorLabel: 'create_canister_unexpected_error'
 	});
 };
 

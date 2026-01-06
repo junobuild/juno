@@ -2,7 +2,7 @@ use crate::factory::types::CanisterCreator;
 use crate::factory::types::CreateSegmentArgs;
 use candid::Principal;
 use junobuild_shared::types::interface::{
-    CreateMissionControlArgs, CreateOrbiterArgs, CreateSatelliteArgs,
+    CreateCanisterArgs, CreateMissionControlArgs, CreateOrbiterArgs, CreateSatelliteArgs,
 };
 use junobuild_shared::types::state::{ControllerId, UserId};
 
@@ -57,6 +57,17 @@ impl From<CreateMissionControlArgs> for CreateSegmentArgs {
     fn from(args: CreateMissionControlArgs) -> Self {
         Self {
             // Unlike Satellite and Orbiter, Mission Control can only be
+            // spin using credits or ICRC-2 transfer from.
+            block_index: None,
+            subnet_id: args.subnet_id,
+        }
+    }
+}
+
+impl From<CreateCanisterArgs> for CreateSegmentArgs {
+    fn from(args: CreateCanisterArgs) -> Self {
+        Self {
+            // Unlike Satellite and Orbiter, or same as Mission Control, Canister can only be
             // spin using credits or ICRC-2 transfer from.
             block_index: None,
             subnet_id: args.subnet_id,

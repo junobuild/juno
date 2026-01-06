@@ -1,11 +1,12 @@
 <script lang="ts">
-	import { notEmptyString } from '@dfinity/utils';
+	import { isEmptyString, nonNullish, notEmptyString } from '@dfinity/utils';
 	import { circOut, quintOut } from 'svelte/easing';
 	import { slide, fade } from 'svelte/transition';
 	import { page } from '$app/state';
 	import NavmenuFooter from '$lib/components/core/NavmenuFooter.svelte';
 	import IconAnalytics from '$lib/components/icons/IconAnalytics.svelte';
 	import IconAuthentication from '$lib/components/icons/IconAuthentication.svelte';
+	import IconCanister from '$lib/components/icons/IconCanister.svelte';
 	import IconDatastore from '$lib/components/icons/IconDatastore.svelte';
 	import IconFunctions from '$lib/components/icons/IconFunctions.svelte';
 	import IconHosting from '$lib/components/icons/IconHosting.svelte';
@@ -16,75 +17,125 @@
 	import IconWallet from '$lib/components/icons/IconWallet.svelte';
 	import Menu from '$lib/components/ui/Menu.svelte';
 	import { menuCollapsed, menuExpanded } from '$lib/derived/app/layout-menu.derived';
-	import { pageSatelliteId } from '$lib/derived/app/page.derived.svelte.js';
+	import { pageId } from '$lib/derived/app/page.derived.svelte.js';
 	import { isSatelliteRoute } from '$lib/derived/app/route.derived.svelte.js';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { isRouteSelected } from '$lib/utils/nav.utils';
 
 	let routeId: string | null = $derived(page.route.id);
 
-	let satelliteId: string = $derived($pageSatelliteId ?? '');
+	let satelliteId = $derived(
+		nonNullish($pageId) && 'satelliteId' in $pageId ? $pageId.satelliteId : undefined
+	);
 
-	let queryParam = $derived(notEmptyString(satelliteId) ? `/?s=${satelliteId}` : '');
+	let canisterId = $derived(
+		nonNullish($pageId) && 'canisterId' in $pageId ? $pageId.canisterId : undefined
+	);
+
+	let satelliteQueryParam = $derived(notEmptyString(satelliteId) ? `/?s=${satelliteId}` : '');
+	let canisterQueryParam = $derived(notEmptyString(canisterId) ? `/?c=${canisterId}` : '');
 </script>
 
 <Menu>
 	<nav>
-		<a
-			class="link"
-			class:collapsed={$menuCollapsed}
-			class:selected={isRouteSelected({ routeId, path: 'satellite' })}
-			href={`/satellite${queryParam}`}
-			role="menuitem"
-		>
-			<IconSatellite size="24px" />
-			<span>{$i18n.satellites.satellite}</span>
-		</a>
+		{#if isEmptyString(canisterId)}
+			<a
+				class="link"
+				class:collapsed={$menuCollapsed}
+				class:selected={isRouteSelected({ routeId, path: 'satellite' })}
+				href={`/satellite${satelliteQueryParam}`}
+				role="menuitem"
+			>
+				<IconSatellite size="24px" />
+				<span>{$i18n.satellites.satellite}</span>
+			</a>
 
-		{#if $isSatelliteRoute}
+			{#if $isSatelliteRoute}
+				<div
+					class="satellite-features"
+					in:slide={{ delay: 0, duration: 150, easing: quintOut, axis: 'y' }}
+					out:slide={{ delay: 0, duration: 100, easing: circOut, axis: 'y' }}
+				>
+					<a
+						class="link"
+						class:collapsed={$menuCollapsed}
+						class:selected={isRouteSelected({ routeId, path: 'authentication' })}
+						href={`/authentication${satelliteQueryParam}`}
+						role="menuitem"
+					>
+						<IconAuthentication size="24px" />
+						<span>{$i18n.authentication.title}</span>
+					</a>
+
+					<a
+						class="link"
+						class:collapsed={$menuCollapsed}
+						class:selected={isRouteSelected({ routeId, path: 'datastore' })}
+						href={`/datastore${satelliteQueryParam}`}
+						role="menuitem"
+					>
+						<IconDatastore size="24px" />
+						<span>{$i18n.datastore.title}</span>
+					</a>
+
+					<a
+						class="link"
+						class:collapsed={$menuCollapsed}
+						class:selected={isRouteSelected({ routeId, path: 'storage' })}
+						href={`/storage${satelliteQueryParam}`}
+						role="menuitem"
+					>
+						<IconStorage size="24px" />
+						<span>{$i18n.storage.title}</span>
+					</a>
+
+					<a
+						class="link"
+						class:collapsed={$menuCollapsed}
+						class:selected={isRouteSelected({ routeId, path: 'functions' })}
+						href={`/functions${satelliteQueryParam}`}
+						role="menuitem"
+					>
+						<IconFunctions size="24px" />
+						<span>{$i18n.functions.title}</span>
+					</a>
+
+					<a
+						class="link"
+						class:collapsed={$menuCollapsed}
+						class:selected={isRouteSelected({ routeId, path: 'hosting' })}
+						href={`/hosting${satelliteQueryParam}`}
+						role="menuitem"
+					>
+						<IconHosting size="24px" />
+						<span>{$i18n.hosting.title}</span>
+					</a>
+				</div>
+			{/if}
+		{/if}
+
+		{#if notEmptyString(canisterId)}
+			<a
+				class="link"
+				class:collapsed={$menuCollapsed}
+				class:selected={isRouteSelected({ routeId, path: 'canister' })}
+				href={`/canister${canisterQueryParam}`}
+				role="menuitem"
+			>
+				<IconCanister size="24px" />
+				<span>{$i18n.canister.title}</span>
+			</a>
+
 			<div
-				class="satellite-features"
+				class="canister-features"
 				in:slide={{ delay: 0, duration: 150, easing: quintOut, axis: 'y' }}
 				out:slide={{ delay: 0, duration: 100, easing: circOut, axis: 'y' }}
 			>
 				<a
 					class="link"
 					class:collapsed={$menuCollapsed}
-					class:selected={isRouteSelected({ routeId, path: 'authentication' })}
-					href={`/authentication${queryParam}`}
-					role="menuitem"
-				>
-					<IconAuthentication size="24px" />
-					<span>{$i18n.authentication.title}</span>
-				</a>
-
-				<a
-					class="link"
-					class:collapsed={$menuCollapsed}
-					class:selected={isRouteSelected({ routeId, path: 'datastore' })}
-					href={`/datastore${queryParam}`}
-					role="menuitem"
-				>
-					<IconDatastore size="24px" />
-					<span>{$i18n.datastore.title}</span>
-				</a>
-
-				<a
-					class="link"
-					class:collapsed={$menuCollapsed}
-					class:selected={isRouteSelected({ routeId, path: 'storage' })}
-					href={`/storage${queryParam}`}
-					role="menuitem"
-				>
-					<IconStorage size="24px" />
-					<span>{$i18n.storage.title}</span>
-				</a>
-
-				<a
-					class="link"
-					class:collapsed={$menuCollapsed}
 					class:selected={isRouteSelected({ routeId, path: 'functions' })}
-					href={`/functions${queryParam}`}
+					href={`/functions${satelliteQueryParam}`}
 					role="menuitem"
 				>
 					<IconFunctions size="24px" />
@@ -95,7 +146,7 @@
 					class="link"
 					class:collapsed={$menuCollapsed}
 					class:selected={isRouteSelected({ routeId, path: 'hosting' })}
-					href={`/hosting${queryParam}`}
+					href={`/hosting${satelliteQueryParam}`}
 					role="menuitem"
 				>
 					<IconHosting size="24px" />
@@ -109,7 +160,7 @@
 				class="link not-themed"
 				class:collapsed={$menuCollapsed}
 				class:selected={isRouteSelected({ routeId, path: 'analytics' })}
-				href={`/analytics${queryParam}`}
+				href={`/analytics${satelliteQueryParam}`}
 				role="menuitem"
 			>
 				<IconAnalytics size="24px" />
@@ -120,7 +171,7 @@
 				class="link not-themed"
 				class:collapsed={$menuCollapsed}
 				class:selected={isRouteSelected({ routeId, path: 'monitoring' })}
-				href={`/monitoring${queryParam}`}
+				href={`/monitoring${satelliteQueryParam}`}
 				role="menuitem"
 			>
 				<IconTelescope />
@@ -131,7 +182,7 @@
 				class="link not-themed"
 				class:collapsed={$menuCollapsed}
 				class:selected={isRouteSelected({ routeId, path: 'wallet' })}
-				href={`/wallet${queryParam}`}
+				href={`/wallet${satelliteQueryParam}`}
 				role="menuitem"
 			>
 				<IconWallet />
@@ -142,7 +193,7 @@
 				class="link not-themed smaller-icon"
 				class:collapsed={$menuCollapsed}
 				class:selected={isRouteSelected({ routeId, path: 'upgrade-dock' })}
-				href={`/upgrade-dock${queryParam}`}
+				href={`/upgrade-dock${satelliteQueryParam}`}
 				role="menuitem"
 			>
 				<IconUpgradeDock size="22px" />
@@ -241,7 +292,8 @@
 		width: 100%;
 	}
 
-	.satellite-features {
+	.satellite-features,
+	.canister-features {
 		margin: 0 0 var(--padding-4x);
 	}
 </style>

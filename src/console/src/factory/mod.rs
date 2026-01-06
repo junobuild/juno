@@ -1,3 +1,4 @@
+pub mod canister;
 mod impls;
 pub mod mission_control;
 pub mod orbiter;

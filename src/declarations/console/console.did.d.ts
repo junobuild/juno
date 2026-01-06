@@ -104,6 +104,10 @@ export interface Controller {
 	expires_at: [] | [bigint];
 }
 export type ControllerScope = { Write: null } | { Admin: null } | { Submit: null };
+export interface CreateCanisterArgs {
+	subnet_id: [] | [Principal];
+	name: [] | [string];
+}
 export interface CreateMissionControlArgs {
 	subnet_id: [] | [Principal];
 }
@@ -120,6 +124,11 @@ export interface CreateSatelliteArgs {
 	name: [] | [string];
 	user: Principal;
 }
+export type CreateSegmentArgs =
+	| { Orbiter: CreateOrbiterArgs }
+	| { MissionControl: CreateMissionControlArgs }
+	| { Canister: CreateCanisterArgs }
+	| { Satellite: CreateSatelliteArgs };
 export interface CustomDomain {
 	updated_at: bigint;
 	created_at: bigint;
@@ -362,7 +371,11 @@ export interface SegmentKey {
 	segment_id: Principal;
 	segment_kind: StorableSegmentKind;
 }
-export type SegmentKind = { Orbiter: null } | { MissionControl: null } | { Satellite: null };
+export type SegmentKind =
+	| { Orbiter: null }
+	| { MissionControl: null }
+	| { Canister: null }
+	| { Satellite: null };
 export interface SegmentsDeploymentOptions {
 	orbiter: [] | [string];
 	mission_control_version: [] | [string];
@@ -406,7 +419,7 @@ export interface SignedDelegation {
 	signature: Uint8Array;
 	delegation: Delegation;
 }
-export type StorableSegmentKind = { Orbiter: null } | { Satellite: null };
+export type StorableSegmentKind = { Orbiter: null } | { Canister: null } | { Satellite: null };
 export interface StorageConfig {
 	iframe: [] | [StorageConfigIFrame];
 	updated_at: [] | [bigint];
@@ -475,6 +488,7 @@ export interface _SERVICE {
 	create_mission_control: ActorMethod<[CreateMissionControlArgs], Principal>;
 	create_orbiter: ActorMethod<[CreateOrbiterArgs], Principal>;
 	create_satellite: ActorMethod<[CreateSatelliteArgs], Principal>;
+	create_segment: ActorMethod<[CreateSegmentArgs], Principal>;
 	del_controllers: ActorMethod<[DeleteControllersArgs], undefined>;
 	del_custom_domain: ActorMethod<[string], undefined>;
 	delete_proposal_assets: ActorMethod<[DeleteProposalAssets], undefined>;

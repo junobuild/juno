@@ -155,6 +155,7 @@ export interface JunoModal<T extends JunoModalDetail> {
 		| 'create_satellite'
 		| 'create_orbiter'
 		| 'create_mission_control'
+		| 'create_canister'
 		| 'delete_satellite'
 		| 'delete_orbiter'
 		| 'transfer_cycles_satellite'

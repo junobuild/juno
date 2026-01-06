@@ -13,7 +13,7 @@
 
 	interface Props {
 		progress: FactoryCreateProgress | undefined;
-		segment: 'satellite' | 'mission_control' | 'orbiter';
+		segment: 'satellite' | 'mission_control' | 'orbiter' | 'canister';
 		withApprove: boolean;
 		withMonitoring?: boolean;
 		withAttach?: boolean;
@@ -61,7 +61,9 @@
 					? $i18n.mission_control.initializing
 					: segment === 'orbiter'
 						? $i18n.analytics.initializing
-						: $i18n.satellites.initializing
+						: segment === 'canister'
+							? $i18n.canister.initializing
+							: $i18n.satellites.initializing
 		},
 		...(withAttach === true && {
 			attaching: {
@@ -72,7 +74,9 @@
 						? (attachProgressText ?? $i18n.mission_control.attaching)
 						: segment === 'orbiter'
 							? $i18n.analytics.attaching
-							: $i18n.satellites.attaching
+							: segment === 'canister'
+								? $i18n.canister.attaching
+								: $i18n.satellites.attaching
 			}
 		}),
 		...(withMonitoring === true && {

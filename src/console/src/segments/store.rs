@@ -98,7 +98,7 @@ fn filter_segments_range(
     let end_key = SegmentKey {
         user: *user,
         // Fallback to last enum
-        segment_kind: segment_kind.clone().unwrap_or(StorableSegmentKind::Orbiter),
+        segment_kind: segment_kind.clone().unwrap_or(StorableSegmentKind::Canister),
         segment_id: segment_id.unwrap_or(PRINCIPAL_MAX),
     };
 

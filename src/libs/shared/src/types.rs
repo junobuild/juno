@@ -77,6 +77,7 @@ pub mod state {
         Satellite,
         MissionControl,
         Orbiter,
+        Canister,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
@@ -132,6 +133,14 @@ pub mod interface {
     use serde::{Deserialize, Serialize};
 
     #[derive(CandidType, Deserialize)]
+    pub enum CreateSegmentArgs {
+        Satellite(CreateSatelliteArgs),
+        MissionControl(CreateMissionControlArgs),
+        Orbiter(CreateOrbiterArgs),
+        Canister(CreateCanisterArgs),
+    }
+
+    #[derive(CandidType, Deserialize)]
     pub struct CreateOrbiterArgs {
         pub user: UserId,
         pub block_index: Option<BlockIndex>,
@@ -150,6 +159,12 @@ pub mod interface {
         pub block_index: Option<BlockIndex>,
         pub subnet_id: Option<SubnetId>,
         pub storage: Option<InitStorageArgs>,
+        pub name: Option<String>,
+    }
+
+    #[derive(CandidType, Deserialize)]
+    pub struct CreateCanisterArgs {
+        pub subnet_id: Option<SubnetId>,
         pub name: Option<String>,
     }
 

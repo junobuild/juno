@@ -1,5 +1,7 @@
 import { getConsoleActor } from '$lib/api/actors/actor.juno.api';
+import type { CanisterId } from '$lib/types/canister';
 import type {
+	CreateCanisterConfig,
 	CreateSatelliteConfig,
 	CreateWithConfig,
 	CreateWithConfigAndName
@@ -84,5 +86,27 @@ export const createOrbiterWithConfig = async ({
 		user: identity.getPrincipal(),
 		name: toNullable(name),
 		subnet_id: toNullable(subnetId)
+	});
+};
+
+export const createCanisterWithConfig = async ({
+	identity,
+	config: { name, subnetId }
+}: {
+	identity: OptionIdentity;
+	config: CreateCanisterConfig;
+}): Promise<CanisterId> => {
+	assertNonNullish(identity);
+
+	const { create_segment } = await getConsoleActor({
+		identity
+	});
+
+	// TODO: duplicate payload
+	return create_segment({
+		Canister: {
+			name: toNullable(name),
+			subnet_id: toNullable(subnetId)
+		}
 	});
 };

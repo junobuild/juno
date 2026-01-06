@@ -41,8 +41,8 @@
 			canisterId: satellite_id.toText(),
 			segment: 'satellite' as const
 		})),
-		...canisters.map(({ segment_id }) => ({
-			canisterId: segment_id.toText(),
+		...canisters.map(({ canisterId }) => ({
+			canisterId: canisterId.toText(),
 			segment: 'canister' as const
 		}))
 	]);

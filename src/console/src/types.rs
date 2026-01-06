@@ -24,6 +24,7 @@ pub mod state {
     pub type IcrcPayments = HashMap<IcrcPaymentKey, IcrcPayment>;
     pub type InvitationCodes = HashMap<InvitationCode, InvitationCodeRedeem>;
     pub type FactoryFees = HashMap<SegmentKind, FactoryFee>;
+    pub type FactoryRates = HashMap<SegmentKind, FactoryRate>;
 
     pub type AccountsStable = StableBTreeMap<UserId, Account, Memory>;
     pub type IcpPaymentsStable = StableBTreeMap<BlockIndex, IcpPayment, Memory>;
@@ -57,8 +58,8 @@ pub mod state {
         pub payments: IcpPayments,
         pub invitation_codes: InvitationCodes,
         pub controllers: Controllers,
-        pub rates: Rates,
         pub factory_fees: Option<FactoryFees>,
+        pub factory_rates: Option<FactoryRates>,
         pub storage: StorageHeapState,
         pub authentication: Option<AuthenticationHeapState>,
         pub releases_metadata: ReleasesMetadata,
@@ -116,16 +117,9 @@ pub mod state {
     }
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
-    pub struct Rate {
+    pub struct FactoryRate {
         pub tokens: RateTokens,
         pub config: RateConfig,
-    }
-
-    #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub struct Rates {
-        pub mission_controls: Rate,
-        pub satellites: Rate,
-        pub orbiters: Rate,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]

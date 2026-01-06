@@ -47,9 +47,9 @@ describe('Console > Auth > Rate', () => {
 	}) => {
 		consoleActor.setIdentity(controller);
 
-		const { update_rate_config } = consoleActor;
+		const { set_rate_config } = consoleActor;
 
-		await update_rate_config(
+		await set_rate_config(
 			{ MissionControl: null },
 			{
 				max_tokens,

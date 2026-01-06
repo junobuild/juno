@@ -416,6 +416,7 @@ service : () -> {
   get_fee : (SegmentKind) -> (FactoryFee) query;
   get_or_init_account : () -> (Account);
   get_proposal : (nat) -> (opt Proposal) query;
+  get_rate_config : (SegmentKind) -> (RateConfig) query;
   get_storage_config : () -> (StorageConfig) query;
   http_request : (HttpRequest) -> (HttpResponse) query;
   http_request_streaming_callback : (StreamingCallbackToken) -> (
@@ -441,11 +442,11 @@ service : () -> {
   set_controllers : (SetControllersArgs) -> ();
   set_custom_domain : (text, opt text) -> ();
   set_fee : (SegmentKind, FeesArgs) -> ();
+  set_rate_config : (SegmentKind, RateConfig) -> ();
   set_segment : (SetSegmentsArgs) -> (Segment);
   set_segment_metadata : (SetSegmentMetadataArgs) -> (Segment);
   set_storage_config : (SetStorageConfig) -> (StorageConfig);
   submit_proposal : (nat) -> (nat, Proposal);
   unset_segment : (UnsetSegmentsArgs) -> ();
-  update_rate_config : (SegmentKind, RateConfig) -> ();
   upload_proposal_asset_chunk : (UploadChunk) -> (UploadChunkResult);
 }

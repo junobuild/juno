@@ -488,6 +488,7 @@ export interface _SERVICE {
 	get_fee: ActorMethod<[SegmentKind], FactoryFee>;
 	get_or_init_account: ActorMethod<[], Account>;
 	get_proposal: ActorMethod<[bigint], [] | [Proposal]>;
+	get_rate_config: ActorMethod<[SegmentKind], RateConfig>;
 	get_storage_config: ActorMethod<[], StorageConfig>;
 	http_request: ActorMethod<[HttpRequest], HttpResponse>;
 	http_request_streaming_callback: ActorMethod<
@@ -513,12 +514,12 @@ export interface _SERVICE {
 	set_controllers: ActorMethod<[SetControllersArgs], undefined>;
 	set_custom_domain: ActorMethod<[string, [] | [string]], undefined>;
 	set_fee: ActorMethod<[SegmentKind, FeesArgs], undefined>;
+	set_rate_config: ActorMethod<[SegmentKind, RateConfig], undefined>;
 	set_segment: ActorMethod<[SetSegmentsArgs], Segment>;
 	set_segment_metadata: ActorMethod<[SetSegmentMetadataArgs], Segment>;
 	set_storage_config: ActorMethod<[SetStorageConfig], StorageConfig>;
 	submit_proposal: ActorMethod<[bigint], [bigint, Proposal]>;
 	unset_segment: ActorMethod<[UnsetSegmentsArgs], undefined>;
-	update_rate_config: ActorMethod<[SegmentKind, RateConfig], undefined>;
 	upload_proposal_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;
 }
 export declare const idlFactory: IDL.InterfaceFactory;

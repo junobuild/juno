@@ -23,8 +23,8 @@ import type { Principal } from '@icp-sdk/core/principal';
 import { MEMORIES } from '../../../constants/satellite-tests.constants';
 import {
 	initUserAccountAndMissionControl,
-	setupConsole,
-	updateRateConfig
+	setRateConfig,
+	setupConsole
 } from '../../../utils/console-tests.utils';
 import { canisterStatus } from '../../../utils/ic-management-tests.utils';
 import { tick } from '../../../utils/pic-tests.utils';
@@ -235,7 +235,7 @@ describe('Console > Factory > Settings', () => {
 			beforeAll(async () => {
 				actor.setIdentity(controller);
 
-				await updateRateConfig({ actor });
+				await setRateConfig({ actor });
 			});
 
 			describe('Settings', () => {

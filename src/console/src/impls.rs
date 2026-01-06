@@ -1,7 +1,7 @@
 use crate::memory::manager::init_stable_state;
 use crate::types::ledger::{Fee, IcpPayment, IcrcPayment, IcrcPaymentKey};
 use crate::types::state::{
-    Account, HeapState, Rate, Rates, Segment, SegmentKey, StorableSegmentKind, State,
+    Account, HeapState, Rate, Rates, Segment, SegmentKey, State, StorableSegmentKind,
 };
 use candid::Principal;
 use ic_cdk::api::time;

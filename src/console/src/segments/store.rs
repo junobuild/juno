@@ -1,6 +1,6 @@
 use crate::store::{with_segments, with_segments_mut};
 use crate::types::interface::ListSegmentsArgs;
-use crate::types::state::{Segment, SegmentKey, StorableSegmentKind, SegmentsStable};
+use crate::types::state::{Segment, SegmentKey, SegmentsStable, StorableSegmentKind};
 use junobuild_shared::constants::shared::{PRINCIPAL_MAX, PRINCIPAL_MIN};
 use junobuild_shared::data::collect::collect_stable_vec;
 use junobuild_shared::types::state::{Metadata, UserId};
@@ -89,7 +89,9 @@ fn filter_segments_range(
     let start_key = SegmentKey {
         user: *user,
         // Fallback to first enum
-        segment_kind: segment_kind.clone().unwrap_or(StorableSegmentKind::Satellite),
+        segment_kind: segment_kind
+            .clone()
+            .unwrap_or(StorableSegmentKind::Satellite),
         segment_id: segment_id.unwrap_or(PRINCIPAL_MIN),
     };
 

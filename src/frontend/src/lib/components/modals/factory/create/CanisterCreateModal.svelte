@@ -21,6 +21,7 @@
 	import type { Option } from '$lib/types/utils';
 	import { navigateToSatellite } from '$lib/utils/nav.utils';
 	import { testId } from '$lib/utils/test.utils';
+	import type { CanisterId } from '$lib/types/canister';
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -33,7 +34,7 @@
 	let insufficientFunds = $state(true);
 
 	let step: 'init' | 'in_progress' | 'ready' | 'error' = $state('init');
-	let satelliteId: SatelliteId | undefined = undefined;
+	let canisterId = $state<CanisterId | undefined>(undefined);
 
 	// Submit
 
@@ -68,13 +69,13 @@
 			return;
 		}
 
-		satelliteId = result.canisterId;
+		canisterId = result.canisterId;
 
 		setTimeout(() => (step = 'ready'), 500);
 	};
 
 	const navigate = async () => {
-		await navigateToSatellite(satelliteId);
+		await navigateToSatellite(canisterId);
 		onclose();
 	};
 

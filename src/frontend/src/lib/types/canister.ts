@@ -1,4 +1,4 @@
-import type { CanisterIdTextSchema } from '$lib/schemas/canister.schema';
+import { CanisterIdSchema, type CanisterIdTextSchema } from '$lib/schemas/canister.schema';
 import type { ChartsData, TimeOfDayChartData } from '$lib/types/chart';
 import type { MonitoringHistory, MonitoringMetadata } from '$lib/types/monitoring';
 import type { CertifiedData } from '$lib/types/store';
@@ -83,6 +83,7 @@ export interface CanisterMonitoringData {
 	charts: CanisterMonitoringCharts;
 }
 
+export type CanisterId = z.infer<typeof CanisterIdSchema>;
 export type CanisterIdText = z.infer<typeof CanisterIdTextSchema>;
 
 export interface Canister<T> {

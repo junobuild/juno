@@ -2,9 +2,9 @@ import type { ObservatoryActor } from '$declarations';
 
 export const updateRateConfigNoLimit = async ({ actor }: { actor: ObservatoryActor }) => {
 	// Allow lots of requests
-	const { update_rate_config } = actor;
+	const { set_rate_config } = actor;
 
-	await update_rate_config(
+	await set_rate_config(
 		{ OpenIdCertificateRequests: null },
 		{
 			max_tokens: 10_000n,

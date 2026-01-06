@@ -2,11 +2,11 @@ use crate::memory::state::services::with_rates_mut;
 use crate::types::state::Rates;
 use junobuild_shared::rate::types::RateConfig;
 
-pub fn update_openid_certificate_requests_rate_config(config: &RateConfig) {
-    with_rates_mut(|rates| update_openid_certificate_requests_rate_config_impl(config, rates))
+pub fn set_openid_certificate_requests_rate_config(config: &RateConfig) {
+    with_rates_mut(|rates| set_openid_certificate_requests_rate_config_impl(config, rates))
 }
 
-fn update_openid_certificate_requests_rate_config_impl(
+fn set_openid_certificate_requests_rate_config_impl(
     config: &RateConfig,
     current_rates: &mut Option<Rates>,
 ) {

@@ -19,7 +19,7 @@ fn list_segments(filter: ListSegmentsArgs) -> Vec<(SegmentKey, Segment)> {
 
 #[update(guard = "caller_has_account")]
 fn set_segment_metadata(args: SetSegmentMetadataArgs) -> Segment {
-    let key = SegmentKey::from(&caller(), &args.segment_id, args.segment_type);
+    let key = SegmentKey::from(&caller(), &args.segment_id, args.segment_kind);
     set_segment_metadata_store(&key, &args.metadata).unwrap_or_trap()
 }
 

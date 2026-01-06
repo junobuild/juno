@@ -1,7 +1,7 @@
 use crate::memory::manager::init_stable_state;
 use crate::types::ledger::{Fee, IcpPayment, IcrcPayment, IcrcPaymentKey};
 use crate::types::state::{
-    Account, HeapState, Rate, Rates, Segment, SegmentKey, SegmentType, State,
+    Account, HeapState, Rate, Rates, Segment, SegmentKey, StorableSegmentKind, State,
 };
 use candid::Principal;
 use ic_cdk::api::time;
@@ -180,10 +180,10 @@ impl Segment {
 }
 
 impl SegmentKey {
-    pub fn from(user: &UserId, segment_id: &SegmentId, segment_type: SegmentType) -> Self {
+    pub fn from(user: &UserId, segment_id: &SegmentId, segment_kind: StorableSegmentKind) -> Self {
         Self {
             user: *user,
-            segment_type,
+            segment_kind,
             segment_id: *segment_id,
         }
     }

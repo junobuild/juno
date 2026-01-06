@@ -8,7 +8,7 @@ use crate::fees::types::FeeKind;
 use crate::segments::add_segment as add_segment_store;
 use crate::store::heap::increment_orbiters_rate;
 use crate::types::ledger::Fee;
-use crate::types::state::{Segment, SegmentKey, SegmentType};
+use crate::types::state::{Segment, SegmentKey, StorableSegmentKind};
 use candid::{Nat, Principal};
 use junobuild_shared::constants::shared::CREATE_ORBITER_CYCLES;
 use junobuild_shared::ic::api::id;
@@ -79,6 +79,6 @@ async fn create_orbiter_wasm(
 
 fn add_segment(user: &UserId, canister_id: &Principal) {
     let orbiter = Segment::new(canister_id, None);
-    let key = SegmentKey::from(user, canister_id, SegmentType::Orbiter);
+    let key = SegmentKey::from(user, canister_id, StorableSegmentKind::Orbiter);
     add_segment_store(&key, &orbiter)
 }

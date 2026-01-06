@@ -273,7 +273,7 @@ export interface ListResults {
 }
 export interface ListSegmentsArgs {
 	segment_id: [] | [Principal];
-	segment_type: [] | [SegmentType];
+	segment_kind: [] | [StorableSegmentKind];
 }
 export type Memory = { Heap: null } | { Stable: null };
 export interface OpenId {
@@ -360,10 +360,9 @@ export interface Segment {
 export interface SegmentKey {
 	user: Principal;
 	segment_id: Principal;
-	segment_type: SegmentType;
+	segment_kind: StorableSegmentKind;
 }
 export type SegmentKind = { Orbiter: null } | { MissionControl: null } | { Satellite: null };
-export type SegmentType = { Orbiter: null } | { Satellite: null };
 export interface SegmentsDeploymentOptions {
 	orbiter: [] | [string];
 	mission_control_version: [] | [string];
@@ -387,12 +386,12 @@ export interface SetControllersArgs {
 export interface SetSegmentMetadataArgs {
 	metadata: Array<[string, string]>;
 	segment_id: Principal;
-	segment_type: SegmentType;
+	segment_kind: StorableSegmentKind;
 }
 export interface SetSegmentsArgs {
 	metadata: [] | [Array<[string, string]>];
 	segment_id: Principal;
-	segment_type: SegmentType;
+	segment_kind: StorableSegmentKind;
 }
 export interface SetStorageConfig {
 	iframe: [] | [StorageConfigIFrame];
@@ -407,6 +406,7 @@ export interface SignedDelegation {
 	signature: Uint8Array;
 	delegation: Delegation;
 }
+export type StorableSegmentKind = { Orbiter: null } | { Satellite: null };
 export interface StorageConfig {
 	iframe: [] | [StorageConfigIFrame];
 	updated_at: [] | [bigint];
@@ -453,7 +453,7 @@ export interface Tokens {
 }
 export interface UnsetSegmentsArgs {
 	segment_id: Principal;
-	segment_type: SegmentType;
+	segment_kind: StorableSegmentKind;
 }
 export interface UploadChunk {
 	content: Uint8Array;

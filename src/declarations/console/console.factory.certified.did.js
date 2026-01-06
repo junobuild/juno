@@ -417,18 +417,18 @@ export const idlFactory = ({ IDL }) => {
 		items: IDL.Vec(IDL.Tuple(ProposalKey, Proposal)),
 		items_length: IDL.Nat64
 	});
-	const SegmentType = IDL.Variant({
+	const StorableSegmentKind = IDL.Variant({
 		Orbiter: IDL.Null,
 		Satellite: IDL.Null
 	});
 	const ListSegmentsArgs = IDL.Record({
 		segment_id: IDL.Opt(IDL.Principal),
-		segment_type: IDL.Opt(SegmentType)
+		segment_kind: IDL.Opt(StorableSegmentKind)
 	});
 	const SegmentKey = IDL.Record({
 		user: IDL.Principal,
 		segment_id: IDL.Principal,
-		segment_type: SegmentType
+		segment_kind: StorableSegmentKind
 	});
 	const Segment = IDL.Record({
 		updated_at: IDL.Nat64,
@@ -458,12 +458,12 @@ export const idlFactory = ({ IDL }) => {
 	const SetSegmentsArgs = IDL.Record({
 		metadata: IDL.Opt(IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))),
 		segment_id: IDL.Principal,
-		segment_type: SegmentType
+		segment_kind: StorableSegmentKind
 	});
 	const SetSegmentMetadataArgs = IDL.Record({
 		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
 		segment_id: IDL.Principal,
-		segment_type: SegmentType
+		segment_kind: StorableSegmentKind
 	});
 	const SetStorageConfig = IDL.Record({
 		iframe: IDL.Opt(StorageConfigIFrame),
@@ -476,7 +476,7 @@ export const idlFactory = ({ IDL }) => {
 	});
 	const UnsetSegmentsArgs = IDL.Record({
 		segment_id: IDL.Principal,
-		segment_type: SegmentType
+		segment_kind: StorableSegmentKind
 	});
 	const RateConfig = IDL.Record({
 		max_tokens: IDL.Nat64,

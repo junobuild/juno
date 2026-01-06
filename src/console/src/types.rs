@@ -146,19 +146,21 @@ pub mod state {
     #[derive(CandidType, Serialize, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
     pub struct SegmentKey {
         pub user: UserId,
-        pub segment_type: SegmentType,
+        pub segment_kind: StorableSegmentKind,
         pub segment_id: SegmentId,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-    pub enum SegmentType {
+    pub enum StorableSegmentKind {
         Satellite,
+        // For historical reasons, MissionControl is not stored in the segments stable tree
+        // but within the Account structure
         Orbiter,
     }
 }
 
 pub mod interface {
-    use crate::types::state::{Account, SegmentType};
+    use crate::types::state::{Account, StorableSegmentKind};
     use candid::CandidType;
     use ic_ledger_types::Tokens;
     use junobuild_auth::delegation::types::{
@@ -209,26 +211,26 @@ pub mod interface {
 
     #[derive(CandidType, Deserialize, Clone)]
     pub struct ListSegmentsArgs {
-        pub segment_type: Option<SegmentType>,
+        pub segment_kind: Option<StorableSegmentKind>,
         pub segment_id: Option<SegmentId>,
     }
 
     #[derive(CandidType, Deserialize)]
     pub struct SetSegmentsArgs {
-        pub segment_type: SegmentType,
+        pub segment_kind: StorableSegmentKind,
         pub segment_id: SegmentId,
         pub metadata: Option<Metadata>,
     }
 
     #[derive(CandidType, Deserialize)]
     pub struct UnsetSegmentsArgs {
-        pub segment_type: SegmentType,
+        pub segment_kind: StorableSegmentKind,
         pub segment_id: SegmentId,
     }
 
     #[derive(CandidType, Deserialize, Clone)]
     pub struct SetSegmentMetadataArgs {
-        pub segment_type: SegmentType,
+        pub segment_kind: StorableSegmentKind,
         pub segment_id: SegmentId,
         pub metadata: Metadata,
     }

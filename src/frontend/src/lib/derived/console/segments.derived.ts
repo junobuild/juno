@@ -10,7 +10,7 @@ export const segments = derived(
 
 export const consoleSatellites = derived([segments], ([$segments]) =>
 	$segments
-		?.filter(([{ segment_type }]) => 'Satellite' in segment_type)
+		?.filter(([{ segment_kind }]) => 'Satellite' in segment_kind)
 		.map<Satellite>(([_, { segment_id, ...rest }]) => ({
 			satellite_id: segment_id,
 			settings: [],
@@ -20,7 +20,7 @@ export const consoleSatellites = derived([segments], ([$segments]) =>
 
 export const consoleOrbiters = derived([segments], ([$segments]) =>
 	$segments
-		?.filter(([{ segment_type }]) => 'Orbiter' in segment_type)
+		?.filter(([{ segment_kind }]) => 'Orbiter' in segment_kind)
 		.map<Orbiter>(([_, { segment_id, ...rest }]) => ({
 			orbiter_id: segment_id,
 			settings: [],

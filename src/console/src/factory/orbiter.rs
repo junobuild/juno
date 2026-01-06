@@ -12,8 +12,8 @@ use crate::types::state::{Segment, SegmentKey, StorableSegmentKind};
 use candid::{Nat, Principal};
 use junobuild_shared::constants::shared::CREATE_ORBITER_CYCLES;
 use junobuild_shared::ic::api::id;
-use junobuild_shared::mgmt::cmc::create_canister_install_code_with_cmc;
-use junobuild_shared::mgmt::ic::create_canister_install_code;
+use junobuild_shared::mgmt::cmc::create_and_install_canister_with_cmc;
+use junobuild_shared::mgmt::ic::create_and_install_canister_with_ic_mgmt;
 use junobuild_shared::mgmt::types::cmc::SubnetId;
 use junobuild_shared::mgmt::types::ic::CreateCanisterInitSettingsArg;
 use junobuild_shared::types::interface::CreateOrbiterArgs;
@@ -57,7 +57,7 @@ async fn create_orbiter_wasm(
     };
 
     let result = if let Some(subnet_id) = subnet_id {
-        create_canister_install_code_with_cmc(
+        create_and_install_canister_with_cmc(
             &create_settings_arg,
             &wasm_arg,
             CREATE_ORBITER_CYCLES,
@@ -65,7 +65,12 @@ async fn create_orbiter_wasm(
         )
         .await
     } else {
-        create_canister_install_code(&create_settings_arg, &wasm_arg, CREATE_ORBITER_CYCLES).await
+        create_and_install_canister_with_ic_mgmt(
+            &create_settings_arg,
+            &wasm_arg,
+            CREATE_ORBITER_CYCLES,
+        )
+        .await
     };
 
     match result {

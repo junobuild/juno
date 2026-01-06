@@ -91,9 +91,37 @@ fn convert_principal_to_sub_account(principal_id: &[u8]) -> Subaccount {
 /// # Returns
 /// - `Ok(Principal)`: On success, returns the `Principal` ID of the newly created canister.
 /// - `Err(String)`: On failure, returns an error message.
-pub async fn create_canister_install_code_with_cmc(
+pub async fn create_and_install_canister_with_cmc(
     create_settings_arg: &CreateCanisterInitSettingsArg,
     wasm_arg: &WasmArg,
+    cycles: u128,
+    subnet_id: &SubnetId,
+) -> Result<Principal, String> {
+    let canister_id = create_canister_with_cmc(create_settings_arg, cycles, subnet_id).await?;
+
+    install_code(canister_id, wasm_arg, CanisterInstallMode::Install)
+        .await
+        .map_err(|_| JUNO_ERROR_CMC_INSTALL_CODE_FAILED.to_string())?;
+
+    Ok(canister_id)
+}
+
+/// Creates a new canister on a specific subnet using the Cycles Minting Canister (CMC).
+///
+/// # Arguments
+/// - `create_settings_arg`: Initial settings for the canister (controllers, compute allocation, etc.)
+/// - `cycles`: The number of cycles to deposit into the new canister
+/// - `subnet_id`: The ID of the subnet where the canister should be created
+///
+/// # Returns
+/// - `Ok(Principal)`: On success, returns the Principal ID of the newly created canister
+/// - `Err(String)`: On failure, returns an error message describing what went wrong
+///
+/// # Errors
+/// - CMC call failures (network issues, invalid arguments, etc.)
+/// - CMC canister creation failures (insufficient cycles, subnet unavailable, etc.)
+pub async fn create_canister_with_cmc(
+    create_settings_arg: &CreateCanisterInitSettingsArg,
     cycles: u128,
     subnet_id: &SubnetId,
 ) -> Result<Principal, String> {
@@ -111,22 +139,12 @@ pub async fn create_canister_install_code_with_cmc(
         .await
         .decode_candid::<CreateCanisterResult>();
 
-    match result {
-        Err(error) => Err(format!(
-            "{} ({})",
-            JUNO_ERROR_CMC_CALL_CREATE_CANISTER_FAILED, &error
-        )),
-        Ok(result) => match result {
-            Err(err) => Err(format!("{JUNO_ERROR_CMC_CREATE_CANISTER_FAILED} ({err})")),
-            Ok(canister_id) => {
-                let install =
-                    install_code(canister_id, wasm_arg, CanisterInstallMode::Install).await;
-
-                match install {
-                    Err(_) => Err(JUNO_ERROR_CMC_INSTALL_CODE_FAILED.to_string()),
-                    Ok(_) => Ok(canister_id),
-                }
-            }
-        },
-    }
+    result
+        .map_err(|error| {
+            format!(
+                "{} ({})",
+                JUNO_ERROR_CMC_CALL_CREATE_CANISTER_FAILED, &error
+            )
+        })?
+        .map_err(|err| format!("{JUNO_ERROR_CMC_CREATE_CANISTER_FAILED} ({err})"))
 }

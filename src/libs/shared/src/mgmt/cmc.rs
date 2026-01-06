@@ -71,7 +71,7 @@ fn convert_principal_to_sub_account(principal_id: &[u8]) -> Subaccount {
 /// # Returns
 /// - `Ok(Principal)`: On success, returns the `Principal` ID of the newly created canister.
 /// - `Err(String)`: On failure, returns an error message.
-pub async fn cmc_create_canister_install_code(
+pub async fn create_canister_install_code_with_cmc(
     create_settings_arg: &CreateCanisterInitSettingsArg,
     wasm_arg: &WasmArg,
     cycles: u128,

@@ -11,7 +11,7 @@ use crate::types::ledger::Fee;
 use candid::{Nat, Principal};
 use junobuild_shared::constants::shared::CREATE_MISSION_CONTROL_CYCLES;
 use junobuild_shared::ic::api::id;
-use junobuild_shared::mgmt::cmc::cmc_create_canister_install_code;
+use junobuild_shared::mgmt::cmc::create_canister_install_code_with_cmc;
 use junobuild_shared::mgmt::ic::create_canister_install_code;
 use junobuild_shared::mgmt::types::cmc::SubnetId;
 use junobuild_shared::mgmt::types::ic::CreateCanisterInitSettingsArg;
@@ -69,7 +69,7 @@ async fn create_mission_control_wasm(
     };
 
     let mission_control_id = if let Some(subnet_id) = subnet_id {
-        cmc_create_canister_install_code(
+        create_canister_install_code_with_cmc(
             &create_settings_arg,
             &wasm_arg,
             CREATE_MISSION_CONTROL_CYCLES,

@@ -4,10 +4,7 @@
 	import { writable } from 'svelte/store';
 	import CanisterGuard from '$lib/components/guards/CanisterGuard.svelte';
 	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
-	import SatelliteGuard from '$lib/components/guards/SatelliteGuard.svelte';
 	import Loaders from '$lib/components/loaders/Loaders.svelte';
-	import SatelliteOverview from '$lib/components/satellites/SatelliteOverview.svelte';
-	import SatelliteSettings from '$lib/components/satellites/setup/SatelliteSettings.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
 	import Warnings from '$lib/components/warning/Warnings.svelte';
 	import { satelliteStore } from '$lib/derived/satellite.derived';
@@ -18,8 +15,9 @@
 		type TabsData
 	} from '$lib/types/tabs.context';
 	import { initTabId } from '$lib/utils/tabs.utils';
-	import {canisterStore} from "$lib/derived/canister.derived";
-	import CanisterOverview from "$lib/components/canister-segment/CanisterOverview.svelte";
+	import { canisterStore } from '$lib/derived/canister.derived';
+	import CanisterOverview from '$lib/components/canister-segment/CanisterOverview.svelte';
+	import CanisterSettings from '$lib/components/canister-segment/CanisterSettings.svelte';
 
 	const tabs: Tab[] = [
 		{
@@ -53,6 +51,8 @@
 				{#if nonNullish($canisterStore)}
 					{#if $store.tabId === $store.tabs[0].id}
 						<CanisterOverview canister={$canisterStore} />
+
+						<CanisterSettings canister={$canisterStore} />
 					{/if}
 				{/if}
 			</Tabs>

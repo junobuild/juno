@@ -1,6 +1,6 @@
 <!-- source: Font Awesome v5.15.4 - David Pro License -->
 <script lang="ts">
-	let width = $derived(`${(24 * 576) / 512}px`);
+	let width = $derived(`${(24 * 384) / 512}px`);
 </script>
 
 <svg

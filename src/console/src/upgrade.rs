@@ -4,11 +4,9 @@ use crate::rates::init::init_factory_rates;
 use crate::rates::set_factory_rate;
 use crate::store::mutate_heap_state;
 use crate::types::interface::FeesArgs;
-use crate::types::state::{FactoryFee, FactoryRate, HeapState};
-use ic_cdk::api::time;
+use crate::types::state::{HeapState};
 use junobuild_shared::ic::api::print;
 use junobuild_shared::rate::constants::DEFAULT_RATE_CONFIG;
-use junobuild_shared::rate::types::RateTokens;
 use junobuild_shared::types::state::SegmentKind;
 
 pub fn upgrade_init_factory_fees_and_rates() {

@@ -1,5 +1,5 @@
 use crate::accounts::{get_optional_account, init_account as init_account_store};
-use crate::store::heap::increment_mission_controls_rate;
+use crate::rates::increment_mission_controls_rate;
 use crate::types::state::Account;
 use junobuild_shared::types::state::UserId;
 

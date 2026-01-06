@@ -6,7 +6,7 @@ use crate::factory::types::CanisterCreator;
 use crate::factory::utils::controllers::update_mission_control_controllers;
 use crate::factory::utils::wasm::mission_control_wasm_arg;
 use crate::fees::get_factory_fee;
-use crate::store::heap::increment_mission_controls_rate;
+use crate::rates::increment_mission_controls_rate;
 use crate::types::ledger::Fee;
 use candid::{Nat, Principal};
 use junobuild_shared::constants::shared::CREATE_MISSION_CONTROL_CYCLES;

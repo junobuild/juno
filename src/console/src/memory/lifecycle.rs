@@ -1,9 +1,9 @@
 use crate::cdn::certified_assets::upgrade::defer_init_certified_assets;
 use crate::cdn::lifecycle::init_cdn_storage_heap_state;
-use crate::fees::init_factory_fees;
-use crate::fees::upgrade::upgrade_init_factory_fees;
+use crate::fees::{init_factory_fees, init_factory_rates};
 use crate::memory::manager::{get_memory_upgrades, init_stable_state, STATE};
-use crate::types::state::{HeapState, Rates, ReleasesMetadata, State};
+use crate::types::state::{HeapState, ReleasesMetadata, State};
+use crate::upgrade::upgrade_init_factory_fees_and_rates;
 use ciborium::{from_reader, into_writer};
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade};
 use junobuild_shared::ic::api::caller;
@@ -20,8 +20,8 @@ fn init() {
         payments: HashMap::new(),
         invitation_codes: HashMap::new(),
         controllers: init_admin_controllers(&[manager]),
-        rates: Rates::default(),
         factory_fees: Some(init_factory_fees()),
+        factory_rates: Some(init_factory_rates()),
         storage: init_cdn_storage_heap_state(),
         authentication: None,
         releases_metadata: ReleasesMetadata::default(),
@@ -58,5 +58,5 @@ fn post_upgrade() {
     defer_init_certified_assets();
 
     // TODO: to be removed, one time upgrade
-    upgrade_init_factory_fees();
+    upgrade_init_factory_fees_and_rates();
 }

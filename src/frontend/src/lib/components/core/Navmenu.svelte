@@ -132,11 +132,11 @@
 				out:slide={{ delay: 0, duration: 100, easing: circOut, axis: 'y' }}
 			>
 				<a
-						class="link"
-						class:collapsed={$menuCollapsed}
-						class:selected={isRouteSelected({ routeId, path: 'functions' })}
-						href={`/functions${satelliteQueryParam}`}
-						role="menuitem"
+					class="link"
+					class:collapsed={$menuCollapsed}
+					class:selected={isRouteSelected({ routeId, path: 'functions' })}
+					href={`/functions${satelliteQueryParam}`}
+					role="menuitem"
 				>
 					<IconFunctions size="24px" />
 					<span>{$i18n.functions.title}</span>
@@ -292,7 +292,8 @@
 		width: 100%;
 	}
 
-	.satellite-features, .canister-features {
+	.satellite-features,
+	.canister-features {
 		margin: 0 0 var(--padding-4x);
 	}
 </style>

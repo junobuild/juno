@@ -2,11 +2,14 @@
 	import { nonNullish } from '@dfinity/utils';
 	import { setContext } from 'svelte';
 	import { writable } from 'svelte/store';
+	import CanisterOverview from '$lib/components/canister-segment/CanisterOverview.svelte';
+	import CanisterSettings from '$lib/components/canister-segment/CanisterSettings.svelte';
 	import CanisterGuard from '$lib/components/guards/CanisterGuard.svelte';
 	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
 	import Loaders from '$lib/components/loaders/Loaders.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
 	import Warnings from '$lib/components/warning/Warnings.svelte';
+	import { canisterStore } from '$lib/derived/canister.derived';
 	import { satelliteStore } from '$lib/derived/satellite.derived';
 	import {
 		type Tab,
@@ -15,9 +18,6 @@
 		type TabsData
 	} from '$lib/types/tabs.context';
 	import { initTabId } from '$lib/utils/tabs.utils';
-	import { canisterStore } from '$lib/derived/canister.derived';
-	import CanisterOverview from '$lib/components/canister-segment/CanisterOverview.svelte';
-	import CanisterSettings from '$lib/components/canister-segment/CanisterSettings.svelte';
 
 	const tabs: Tab[] = [
 		{

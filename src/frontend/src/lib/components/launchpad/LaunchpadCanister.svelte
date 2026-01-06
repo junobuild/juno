@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Canister from '$lib/components/canister/Canister.svelte';
+	import IconCanister from '$lib/components/icons/IconCanister.svelte';
 	import IconSatellite from '$lib/components/icons/IconSatellite.svelte';
 	import LaunchpadArticle from '$lib/components/launchpad/LaunchpadArticle.svelte';
 	import SatelliteEnvironment from '$lib/components/satellites/SatelliteEnvironment.svelte';
@@ -8,9 +9,8 @@
 	import { layoutLaunchpad } from '$lib/stores/app/layout-launchpad.store';
 	import { LaunchpadLayout } from '$lib/types/layout';
 	import type { SatelliteUi } from '$lib/types/satellite';
-	import { canisterLink, overviewLink } from '$lib/utils/nav.utils';
 	import type { SegmentCanisterUi } from '$lib/types/segment';
-	import IconCanister from '$lib/components/icons/IconCanister.svelte';
+	import { canisterLink, overviewLink } from '$lib/utils/nav.utils';
 
 	interface Props {
 		canister: SegmentCanisterUi;

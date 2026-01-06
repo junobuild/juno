@@ -1,14 +1,14 @@
 <script lang="ts">
 	import LaunchpadAnalytics from '$lib/components/launchpad/LaunchpadAnalytics.svelte';
+	import LaunchpadCanister from '$lib/components/launchpad/LaunchpadCanister.svelte';
 	import LaunchpadMonitoring from '$lib/components/launchpad/LaunchpadMonitoring.svelte';
 	import LaunchpadSatellite from '$lib/components/launchpad/LaunchpadSatellite.svelte';
 	import LaunchpadToolbar from '$lib/components/launchpad/LaunchpadToolbar.svelte';
-	import { sortedSatelliteUis } from '$lib/derived/satellites.derived';
-	import { satelliteMatchesFilter } from '$lib/utils/satellite.utils';
 	import { sortedCanisterUis } from '$lib/derived/console/canisters.derived';
-	import type { SatelliteUi } from '$lib/types/satellite';
-	import LaunchpadCanister from '$lib/components/launchpad/LaunchpadCanister.svelte';
 	import { segments } from '$lib/derived/console/segments.derived';
+	import { sortedSatelliteUis } from '$lib/derived/satellites.derived';
+	import type { SatelliteUi } from '$lib/types/satellite';
+	import { satelliteMatchesFilter } from '$lib/utils/satellite.utils';
 
 	let filter = $state('');
 

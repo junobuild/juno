@@ -76,7 +76,7 @@ type Segment = record {
   metadata : opt vec record { text; text };
   kind : SegmentKind;
 };
-type SegmentKind = variant { Orbiter; MissionControl; Satellite };
+type SegmentKind = variant { Orbiter; MissionControl; Canister; Satellite };
 type SetController = record {
   metadata : vec record { text; text };
   scope : ControllerScope;

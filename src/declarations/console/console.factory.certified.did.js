@@ -123,6 +123,15 @@ export const idlFactory = ({ IDL }) => {
 		name: IDL.Opt(IDL.Text),
 		user: IDL.Principal
 	});
+	const CreateCanisterArgs = IDL.Record({
+		subnet_id: IDL.Opt(IDL.Principal)
+	});
+	const CreateSegmentArgs = IDL.Variant({
+		Orbiter: CreateOrbiterArgs,
+		MissionControl: CreateCanisterArgs,
+		Canister: CreateCanisterArgs,
+		Satellite: CreateSatelliteArgs
+	});
 	const DeleteControllersArgs = IDL.Record({
 		controllers: IDL.Vec(IDL.Principal)
 	});
@@ -220,6 +229,7 @@ export const idlFactory = ({ IDL }) => {
 	const SegmentKind = IDL.Variant({
 		Orbiter: IDL.Null,
 		MissionControl: IDL.Null,
+		Canister: IDL.Null,
 		Satellite: IDL.Null
 	});
 	const CyclesTokens = IDL.Record({ e12s: IDL.Nat64 });
@@ -423,6 +433,7 @@ export const idlFactory = ({ IDL }) => {
 	});
 	const StorableSegmentKind = IDL.Variant({
 		Orbiter: IDL.Null,
+		Canister: IDL.Null,
 		Satellite: IDL.Null
 	});
 	const ListSegmentsArgs = IDL.Record({
@@ -501,6 +512,7 @@ export const idlFactory = ({ IDL }) => {
 		create_mission_control: IDL.Func([CreateMissionControlArgs], [IDL.Principal], []),
 		create_orbiter: IDL.Func([CreateOrbiterArgs], [IDL.Principal], []),
 		create_satellite: IDL.Func([CreateSatelliteArgs], [IDL.Principal], []),
+		create_segment: IDL.Func([CreateSegmentArgs], [IDL.Principal], []),
 		del_controllers: IDL.Func([DeleteControllersArgs], [], []),
 		del_custom_domain: IDL.Func([IDL.Text], [], []),
 		delete_proposal_assets: IDL.Func([DeleteProposalAssets], [], []),

@@ -97,6 +97,7 @@ export const idlFactory = ({ IDL }) => {
 	const SegmentKind = IDL.Variant({
 		Orbiter: IDL.Null,
 		MissionControl: IDL.Null,
+		Canister: IDL.Null,
 		Satellite: IDL.Null
 	});
 	const Segment = IDL.Record({

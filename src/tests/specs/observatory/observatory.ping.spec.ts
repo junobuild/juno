@@ -47,7 +47,7 @@ describe('Observatory > Ping', () => {
 		it('should notify Mission Control', async () => {
 			await testDepositedCyclesNotification({
 				kind: { MissionControl: null },
-				url: 'https://console.juno.build/mission-control',
+				url: 'https://console.juno.build/monitoring/?tab=service',
 				moduleName: 'Mission Control',
 				actor,
 				pic
@@ -90,7 +90,7 @@ describe('Observatory > Ping', () => {
 		it('should notify Mission Control', async () => {
 			await testFailedDepositCyclesNotification({
 				kind: { MissionControl: null },
-				url: 'https://console.juno.build/mission-control',
+				url: 'https://console.juno.build/monitoring/?tab=service',
 				moduleName: 'Mission Control',
 				actor,
 				pic

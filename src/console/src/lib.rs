@@ -32,7 +32,6 @@ use crate::types::interface::UnsetSegmentsArgs;
 use crate::types::state::Account;
 use crate::types::state::Accounts;
 use crate::types::state::FactoryFee;
-use crate::types::state::FactoryRate;
 use crate::types::state::IcpPayments;
 use crate::types::state::IcrcPayments;
 use crate::types::state::InvitationCode;

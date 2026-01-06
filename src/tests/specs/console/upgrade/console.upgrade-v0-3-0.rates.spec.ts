@@ -1,14 +1,10 @@
 import {
 	idlFactoryConsole,
 	idlFactoryConsole020,
-	idlFactoryMissionControl,
 	type ConsoleActor,
-	type ConsoleActor020,
-	type MissionControlActor
+	type ConsoleActor020
 } from '$declarations';
 import { PocketIc, type Actor } from '@dfinity/pic';
-import { assertNonNullish, fromNullable } from '@dfinity/utils';
-import type { Identity } from '@icp-sdk/core/agent';
 import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import type { Principal } from '@icp-sdk/core/principal';
 import { inject } from 'vitest';
@@ -28,8 +24,6 @@ describe('Console > Upgrade > Rates > v0.2.0 -> v0.3.0', () => {
 
 	const controller = Ed25519KeyIdentity.generate();
 
-	const user = Ed25519KeyIdentity.generate();
-
 	const upgradeCurrent = async () => {
 		await tick(pic);
 
@@ -38,26 +32,6 @@ describe('Console > Upgrade > Rates > v0.2.0 -> v0.3.0', () => {
 			wasm: CONSOLE_WASM_PATH,
 			sender: controller.getPrincipal()
 		});
-	};
-
-	const createMissionControlAndSatellite = async ({ user }: { user: Identity }) => {
-		actor.setIdentity(user);
-
-		const { init_user_mission_control_center } = actor;
-		const missionControl = await init_user_mission_control_center();
-
-		const missionControlId = fromNullable(missionControl.mission_control_id);
-
-		assertNonNullish(missionControlId);
-
-		const micActor = pic.createActor<MissionControlActor>(
-			idlFactoryMissionControl,
-			missionControlId
-		);
-		micActor.setIdentity(user);
-
-		const { create_satellite } = micActor;
-		await create_satellite('test');
 	};
 
 	beforeEach(async () => {
@@ -75,6 +49,7 @@ describe('Console > Upgrade > Rates > v0.2.0 -> v0.3.0', () => {
 
 		actor = c;
 		canisterId = cId;
+
 		actor.setIdentity(controller);
 	});
 
@@ -88,22 +63,22 @@ describe('Console > Upgrade > Rates > v0.2.0 -> v0.3.0', () => {
 		await upgradeCurrent();
 
 		const newActor = pic.createActor<ConsoleActor>(idlFactoryConsole, canisterId);
-		newActor.setIdentity(user);
+		newActor.setIdentity(controller);
 
 		const { get_rate_config } = newActor;
 
 		await expect(get_rate_config({ Satellite: null })).resolves.toEqual({
-			max_tokens: 100,
-			time_per_token_ns: 600_000_000
+			max_tokens: 100n,
+			time_per_token_ns: 600_000_000n
 		});
 		await expect(get_rate_config({ Orbiter: null })).resolves.toEqual({
-			max_tokens: 100,
-			time_per_token_ns: 600_000_000
+			max_tokens: 100n,
+			time_per_token_ns: 600_000_000n
 		});
 
 		await expect(get_rate_config({ MissionControl: null })).resolves.toEqual({
-			max_tokens: 100,
-			time_per_token_ns: 600_000_000
+			max_tokens: 100n,
+			time_per_token_ns: 600_000_000n
 		});
 	});
 });

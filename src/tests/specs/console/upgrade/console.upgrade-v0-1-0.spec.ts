@@ -18,8 +18,8 @@ import {
 	deploySegments,
 	deprecatedInitMissionControls,
 	testSatelliteExists,
-	setRateConfig,
-	uploadFileWithProposal, updateRateConfig
+	updateRateConfig,
+	uploadFileWithProposal
 } from '../../../utils/console-tests.utils';
 import { tick } from '../../../utils/pic-tests.utils';
 import { controllersInitArgs, downloadConsole } from '../../../utils/setup-tests.utils';

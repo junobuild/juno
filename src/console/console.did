@@ -111,7 +111,6 @@ type FactoryFee = record {
   fee_cycles : CyclesTokens;
   fee_icp : opt Tokens;
 };
-type FactoryRate = record { tokens : RateTokens; config : RateConfig };
 type FeesArgs = record { fee_cycles : CyclesTokens; fee_icp : opt Tokens };
 type GetCreateCanisterFeeArgs = record { user : principal };
 type GetDelegationArgs = variant { OpenId : OpenIdGetDelegationArgs };
@@ -287,7 +286,6 @@ type ProposalType = variant {
 };
 type Provider = variant { InternetIdentity; OpenId : OpenId };
 type RateConfig = record { max_tokens : nat64; time_per_token_ns : nat64 };
-type RateTokens = record { updated_at : nat64; tokens : nat64 };
 type Result = variant { Ok : Authentication; Err : AuthenticationError };
 type Result_1 = variant { Ok : SignedDelegation; Err : GetDelegationError };
 type Segment = record {
@@ -418,7 +416,7 @@ service : () -> {
   get_fee : (SegmentKind) -> (FactoryFee) query;
   get_or_init_account : () -> (Account);
   get_proposal : (nat) -> (opt Proposal) query;
-  get_rate_config : (SegmentKind) -> (FactoryRate) query;
+  get_rate_config : (SegmentKind) -> (RateConfig) query;
   get_storage_config : () -> (StorageConfig) query;
   http_request : (HttpRequest) -> (HttpResponse) query;
   http_request_streaming_callback : (StreamingCallbackToken) -> (

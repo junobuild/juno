@@ -615,13 +615,7 @@ export const updateRateConfig = async ({
 	await update_rate_config({ MissionControl: null }, config);
 };
 
-export const setRateConfig = async ({
-	actor
-}: {
-	actor: Actor<
-		ConsoleActor
-	>;
-}) => {
+export const setRateConfig = async ({ actor }: { actor: Actor<ConsoleActor> }) => {
 	const { set_rate_config } = actor;
 
 	const config = {

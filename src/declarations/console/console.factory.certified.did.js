@@ -258,17 +258,9 @@ export const idlFactory = ({ IDL }) => {
 		version: IDL.Opt(IDL.Nat64),
 		proposal_type: ProposalType
 	});
-	const RateTokens = IDL.Record({
-		updated_at: IDL.Nat64,
-		tokens: IDL.Nat64
-	});
 	const RateConfig = IDL.Record({
 		max_tokens: IDL.Nat64,
 		time_per_token_ns: IDL.Nat64
-	});
-	const FactoryRate = IDL.Record({
-		tokens: RateTokens,
-		config: RateConfig
 	});
 	const HttpRequest = IDL.Record({
 		url: IDL.Text,
@@ -522,7 +514,7 @@ export const idlFactory = ({ IDL }) => {
 		get_fee: IDL.Func([SegmentKind], [FactoryFee], []),
 		get_or_init_account: IDL.Func([], [Account], []),
 		get_proposal: IDL.Func([IDL.Nat], [IDL.Opt(Proposal)], []),
-		get_rate_config: IDL.Func([SegmentKind], [FactoryRate], []),
+		get_rate_config: IDL.Func([SegmentKind], [RateConfig], []),
 		get_storage_config: IDL.Func([], [StorageConfig], []),
 		http_request: IDL.Func([HttpRequest], [HttpResponse], []),
 		http_request_streaming_callback: IDL.Func(

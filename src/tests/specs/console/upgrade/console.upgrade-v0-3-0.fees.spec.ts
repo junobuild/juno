@@ -13,7 +13,7 @@ import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import type { Principal } from '@icp-sdk/core/principal';
 import { inject } from 'vitest';
 import { CONSOLE_ID } from '../../../constants/console-tests.constants';
-import { deploySegments, setRateConfig, updateRateConfig } from '../../../utils/console-tests.utils';
+import { deploySegments, updateRateConfig } from '../../../utils/console-tests.utils';
 import { tick } from '../../../utils/pic-tests.utils';
 import {
 	CONSOLE_WASM_PATH,

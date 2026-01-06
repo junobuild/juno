@@ -12,7 +12,7 @@ import { inject } from 'vitest';
 import {
 	deploySegments,
 	deprecatedInitMissionControls,
-	setRateConfig, updateRateConfig
+	updateRateConfig
 } from '../../../utils/console-tests.utils';
 import { tick } from '../../../utils/pic-tests.utils';
 import {

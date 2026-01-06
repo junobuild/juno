@@ -145,10 +145,6 @@ export interface FactoryFee {
 	fee_cycles: CyclesTokens;
 	fee_icp: [] | [Tokens];
 }
-export interface FactoryRate {
-	tokens: RateTokens;
-	config: RateConfig;
-}
 export interface FeesArgs {
 	fee_cycles: CyclesTokens;
 	fee_icp: [] | [Tokens];
@@ -353,10 +349,6 @@ export interface RateConfig {
 	max_tokens: bigint;
 	time_per_token_ns: bigint;
 }
-export interface RateTokens {
-	updated_at: bigint;
-	tokens: bigint;
-}
 export type Result = { Ok: Authentication } | { Err: AuthenticationError };
 export type Result_1 = { Ok: SignedDelegation } | { Err: GetDelegationError };
 export interface Segment {
@@ -496,7 +488,7 @@ export interface _SERVICE {
 	get_fee: ActorMethod<[SegmentKind], FactoryFee>;
 	get_or_init_account: ActorMethod<[], Account>;
 	get_proposal: ActorMethod<[bigint], [] | [Proposal]>;
-	get_rate_config: ActorMethod<[SegmentKind], FactoryRate>;
+	get_rate_config: ActorMethod<[SegmentKind], RateConfig>;
 	get_storage_config: ActorMethod<[], StorageConfig>;
 	http_request: ActorMethod<[HttpRequest], HttpResponse>;
 	http_request_streaming_callback: ActorMethod<

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { getHours } from 'date-fns';
+	import IconTerminal from '$lib/components/icons/IconTerminal.svelte';
 	import { i18n } from '$lib/stores/app/i18n.store';
 
 	const timedGreeting = (): string => {
@@ -22,7 +23,7 @@
 	let title = $derived(titles[Math.floor(Math.random() * titles.length)]);
 </script>
 
-<p>🖖 {greeting} {title}</p>
+<p><IconTerminal /> {greeting} {title}</p>
 
 <style lang="scss">
 	p {

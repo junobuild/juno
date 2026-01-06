@@ -1,6 +1,6 @@
 use crate::accounts::{get_existing_account, update_mission_control};
 use crate::constants::FREEZING_THRESHOLD_ONE_YEAR;
-use crate::factory::canister::create_canister_with_account;
+use crate::factory::orchestrator::create_canister_with_account;
 use crate::factory::services::payment::{process_payment_cycles, refund_payment_cycles};
 use crate::factory::types::CanisterCreator;
 use crate::factory::utils::controllers::update_mission_control_controllers;

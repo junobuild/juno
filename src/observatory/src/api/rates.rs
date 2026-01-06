@@ -7,8 +7,6 @@ use junobuild_shared::rate::types::RateConfig;
 #[update(guard = "caller_is_admin_controller")]
 fn set_rate_config(kind: RateKind, config: RateConfig) {
     match kind {
-        RateKind::OpenIdCertificateRequests => {
-            set_openid_certificate_requests_rate_config(&config)
-        }
+        RateKind::OpenIdCertificateRequests => set_openid_certificate_requests_rate_config(&config),
     }
 }

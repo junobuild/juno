@@ -19,7 +19,7 @@ use junobuild_shared::types::state::UserId;
 use junobuild_shared::utils::principal_equal;
 use std::future::Future;
 
-pub async fn create_canister<F, Fut>(
+pub async fn create_segment_workflow<F, Fut>(
     create: F,
     increment_rate: &dyn Fn() -> Result<(), String>,
     get_fee: &dyn Fn(FeeKind) -> Result<Fee, String>,

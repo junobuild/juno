@@ -5,12 +5,26 @@
 	import LaunchpadToolbar from '$lib/components/launchpad/LaunchpadToolbar.svelte';
 	import { sortedSatelliteUis } from '$lib/derived/satellites.derived';
 	import { satelliteMatchesFilter } from '$lib/utils/satellite.utils';
+	import { sortedCanisterUis } from '$lib/derived/console/canisters.derived';
+	import type { SatelliteUi } from '$lib/types/satellite';
+	import LaunchpadCanister from "$lib/components/launchpad/LaunchpadCanister.svelte";
+	import {segments} from "$lib/derived/console/segments.derived";
 
 	let filter = $state('');
 
 	let satellites = $derived(
 		$sortedSatelliteUis.filter((satellite) =>
 			satelliteMatchesFilter({ satellite, filter: filter.toLowerCase() })
+		)
+	);
+
+	let canisters = $derived(
+		$sortedCanisterUis.filter((canister) =>
+			// TODO: make generic
+			satelliteMatchesFilter({
+				satellite: canister as unknown as SatelliteUi,
+				filter: filter.toLowerCase()
+			})
 		)
 	);
 </script>
@@ -23,4 +37,8 @@
 
 {#each satellites as satellite (satellite.satellite_id.toText())}
 	<LaunchpadSatellite {satellite} />
+{/each}
+
+{#each canisters as canister (canister.canisterId.toText())}
+	<LaunchpadCanister {canister} />
 {/each}

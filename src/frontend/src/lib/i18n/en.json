@@ -113,6 +113,7 @@
 		"launch": "Launch"
 	},
 	"canister": {
+		"title": "Canister",
 		"launch": "Spin up a Canister",
 		"initializing": "Spinning up your Canister...",
 		"attaching": "Sharing Canister with Mission Control...",
@@ -122,7 +123,10 @@
 		"canister_name": "Canister name",
 		"enter_name": "Enter a name for your Canister",
 		"create": "Create Canister",
-		"ready": "Your Canister is ready!"
+		"ready": "Your Canister is ready!",
+		"overview": "Overview",
+		"loading_canisters": "Loading your Canisters",
+		"id": "Canister ID"
 	},
 	"canisters": {
 		"top_up": "Top-up",
@@ -602,6 +606,7 @@
 		"satellites_not_loaded": "The Satellites data are not yet loaded.",
 		"create_canister_name_missing": "A name for the Canister must be provided.",
 		"create_canister_unexpected_error": "Unexpected error(s) while creating the Canister.",
+		"canister_no_found": "Nothing here. Return to your launchpad to find your Canisters.",
 		"canister_stop": "Unexpected error(s) while trying to stop the module.",
 		"canister_start": "Unexpected error(s) while trying to start the module.",
 		"canister_delete": "Unexpected error(s) while trying to delete the module.",

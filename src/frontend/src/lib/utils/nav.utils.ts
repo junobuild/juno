@@ -5,6 +5,7 @@ import { nonNullish } from '@dfinity/utils';
 import type { Principal } from '@icp-sdk/core/principal';
 import type { LoadEvent } from '@sveltejs/kit';
 
+// TODO: rename to reflect Satellite or use same page for canister?
 export const overviewLink = (satelliteId: Option<Principal>): string =>
 	`/satellite/?s=${satelliteId?.toText() ?? ''}`;
 
@@ -50,6 +51,11 @@ export const back = async ({ pop }: { pop: boolean }) => {
 export interface RouteSatellite {
 	satellite: Option<string>;
 }
+
+export interface RouteCanister {
+	canister: Option<string>;
+}
+
 export interface RouteTab {
 	tab: Option<string>;
 }
@@ -67,6 +73,23 @@ export const loadRouteSatellite = ($event: LoadEvent): RouteSatellite => {
 
 	return {
 		satellite: searchParams?.get('s'),
+		...loadRouteTab($event)
+	};
+};
+
+export const loadRouteCanister = ($event: LoadEvent): RouteCanister => {
+	if (!browser) {
+		return {
+			canister: undefined
+		};
+	}
+
+	const {
+		url: { searchParams }
+	} = $event;
+
+	return {
+		canister: searchParams?.get('c'),
 		...loadRouteTab($event)
 	};
 };

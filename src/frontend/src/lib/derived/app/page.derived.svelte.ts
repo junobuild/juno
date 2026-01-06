@@ -1,17 +1,33 @@
 import { page } from '$app/state';
+import type { CanisterIdText } from '$lib/types/canister';
 import type { SatelliteIdText } from '$lib/types/satellite';
+import { notEmptyString } from '@dfinity/utils';
 import { type Readable, writable } from 'svelte/store';
 
-type PageSatelliteIdStoreData = SatelliteIdText | undefined;
+type PageIdStoreData =
+	| {
+			satelliteId: SatelliteIdText;
+	  }
+	| { canisterId: CanisterIdText }
+	| undefined;
 
-export type PageSatelliteIdStore = Readable<PageSatelliteIdStoreData>;
+export type PageIdStore = Readable<PageIdStoreData>;
 
-const initPageSatelliteIdStore = (): PageSatelliteIdStore => {
-	const { subscribe, set } = writable<PageSatelliteIdStoreData>(undefined);
+const initPageIdStore = (): PageIdStore => {
+	const { subscribe, set } = writable<PageIdStoreData>(undefined);
 
 	$effect.root(() => {
 		$effect(() => {
-			set(page.data?.satellite);
+			const satelliteId = page.data?.satellite;
+			const canisterId = page.data?.canister;
+
+			set(
+				notEmptyString(satelliteId)
+					? { satelliteId }
+					: notEmptyString(canisterId)
+						? { canisterId }
+						: undefined
+			);
 		});
 	});
 
@@ -20,4 +36,4 @@ const initPageSatelliteIdStore = (): PageSatelliteIdStore => {
 	};
 };
 
-export const pageSatelliteId = initPageSatelliteIdStore();
+export const pageId = initPageIdStore();

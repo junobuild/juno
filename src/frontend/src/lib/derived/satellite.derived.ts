@@ -1,4 +1,4 @@
-import { pageSatelliteId } from '$lib/derived/app/page.derived.svelte.js';
+import { pageId } from '$lib/derived/app/page.derived.svelte.js';
 import { satellitesStore } from '$lib/derived/satellites.derived';
 import type { Satellite, SatelliteUi } from '$lib/types/satellite';
 import type { Option } from '$lib/types/utils';
@@ -7,9 +7,13 @@ import { isNullish } from '@dfinity/utils';
 import { derived, type Readable } from 'svelte/store';
 
 export const satelliteStore: Readable<Option<Satellite>> = derived(
-	[satellitesStore, pageSatelliteId],
-	([$satellites, $pageSatelliteId]) => {
-		if (isNullish($pageSatelliteId)) {
+	[satellitesStore, pageId],
+	([$satellites, $pageId]) => {
+		if (isNullish($pageId)) {
+			return null;
+		}
+
+		if (!('satelliteId' in $pageId)) {
 			return null;
 		}
 
@@ -19,7 +23,7 @@ export const satelliteStore: Readable<Option<Satellite>> = derived(
 		}
 
 		const satellite = ($satellites ?? []).find(
-			({ satellite_id }) => satellite_id.toText() === $pageSatelliteId
+			({ satellite_id }) => satellite_id.toText() === $pageId.satelliteId
 		);
 
 		// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing

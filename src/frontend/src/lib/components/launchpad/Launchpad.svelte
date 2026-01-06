@@ -21,6 +21,8 @@
 			loading = true;
 		})();
 	});
+
+	// TODO: handle as one canister but no Satellites
 </script>
 
 {#if loading || ($satellitesStore?.length ?? 0n) === 0}

@@ -18,13 +18,13 @@
 	} from '$lib/services/factory/factory.create.services';
 	import { wizardBusy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
+	import type { CanisterId } from '$lib/types/canister';
 	import type { JunoModalDetail } from '$lib/types/modal';
 	import type { FactoryCreateProgress } from '$lib/types/progress-factory-create';
 	import type { SatelliteId } from '$lib/types/satellite';
 	import type { Option } from '$lib/types/utils';
 	import { navigateToCanister, navigateToSatellite } from '$lib/utils/nav.utils';
 	import { testId } from '$lib/utils/test.utils';
-	import type { CanisterId } from '$lib/types/canister';
 
 	interface Props {
 		detail: JunoModalDetail;

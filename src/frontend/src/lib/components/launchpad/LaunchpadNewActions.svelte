@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { isNullish } from '@dfinity/utils';
 	import IconAnalytics from '$lib/components/icons/IconAnalytics.svelte';
+	import IconCanister from '$lib/components/icons/IconCanister.svelte';
 	import IconRocket from '$lib/components/icons/IconRocket.svelte';
 	import IconSatellite from '$lib/components/icons/IconSatellite.svelte';
 	import IconTelescope from '$lib/components/icons/IconTelescope.svelte';
@@ -20,7 +21,6 @@
 	} from '$lib/services/factory/factory.create.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { testId } from '$lib/utils/test.utils';
-	import IconCanister from '$lib/components/icons/IconCanister.svelte';
 
 	const createSatellite = async () => {
 		close();

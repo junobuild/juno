@@ -10,6 +10,7 @@
 	import MissionControlTransferCyclesModal from '$lib/components/modals/cycles/transfer/MissionControlTransferCyclesModal.svelte';
 	import OrbiterTransferCyclesModal from '$lib/components/modals/cycles/transfer/OrbiterTransferCyclesModal.svelte';
 	import SatelliteTransferCyclesModal from '$lib/components/modals/cycles/transfer/SatelliteTransferCyclesModal.svelte';
+	import CanisterCreateModal from '$lib/components/modals/factory/create/CanisterCreateModal.svelte';
 	import MissionControlCreateModal from '$lib/components/modals/factory/create/MissionControlCreateModal.svelte';
 	import OrbiterCreateModal from '$lib/components/modals/factory/create/OrbiterCreateModal.svelte';
 	import SatelliteCreateModal from '$lib/components/modals/factory/create/SatelliteCreateModal.svelte';
@@ -30,7 +31,6 @@
 	import SatelliteUpgradeModal from '$lib/components/modals/upgrade/SatelliteUpgradeModal.svelte';
 	import SendTokensModal from '$lib/components/modals/wallet/SendTokensModal.svelte';
 	import type { JunoModal, JunoModalDetail } from '$lib/types/modal';
-	import CanisterCreateModal from '$lib/components/modals/factory/create/CanisterCreateModal.svelte';
 
 	let modal: JunoModal<JunoModalDetail> | undefined = $state(undefined);
 

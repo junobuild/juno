@@ -27,12 +27,38 @@ use ic_cdk::management_canister::{
 /// # Returns
 /// - `Ok(Principal)`: On success, returns the `Principal` ID of the newly created canister.
 /// - `Err(String)`: On failure, returns an error message.
-pub async fn create_canister_install_code(
+pub async fn create_and_install_canister_with_ic_mgmt(
     create_settings_arg: &CreateCanisterInitSettingsArg,
     wasm_arg: &WasmArg,
     cycles: u128,
 ) -> Result<Principal, String> {
-    let record = create_canister_with_extra_cycles(
+    let canister_id = create_canister_with_ic_mgmt(create_settings_arg, cycles).await?;
+
+    install_code(canister_id, wasm_arg, CanisterInstallMode::Install)
+        .await
+        .map_err(|_| JUNO_ERROR_CANISTER_INSTALL_CODE_FAILED.to_string())?;
+
+    Ok(canister_id)
+}
+
+/// Creates a new canister using the IC management canister.
+///
+/// # Arguments
+/// - `create_settings_arg`: Initial settings for the canister (controllers, compute allocation, etc.)
+/// - `cycles`: The number of cycles to deposit into the new canister
+///
+/// # Returns
+/// - `Ok(Principal)`: On success, returns the Principal ID of the newly created canister
+/// - `Err(String)`: On failure, returns an error message describing what went wrong
+///
+/// # Errors
+/// - Management canister call failures (network issues, invalid arguments, etc.)
+/// - Canister creation failures (insufficient cycles, etc.)
+pub async fn create_canister_with_ic_mgmt(
+    create_settings_arg: &CreateCanisterInitSettingsArg,
+    cycles: u128,
+) -> Result<Principal, String> {
+    let create_result = create_canister_with_extra_cycles(
         &CreateCanisterArgs {
             settings: create_canister_settings(create_settings_arg),
         },
@@ -40,23 +66,15 @@ pub async fn create_canister_install_code(
     )
     .await;
 
-    match record {
-        Err(err) => Err(format!(
+    let result = create_result.map_err(|err| {
+        format!(
             "{} ({})",
             JUNO_ERROR_CANISTER_CREATE_FAILED,
             &err.to_string()
-        )),
-        Ok(record) => {
-            let canister_id = record.canister_id;
+        )
+    })?;
 
-            let install = install_code(canister_id, wasm_arg, CanisterInstallMode::Install).await;
-
-            match install {
-                Err(_) => Err(JUNO_ERROR_CANISTER_INSTALL_CODE_FAILED.to_string()),
-                Ok(_) => Ok(canister_id),
-            }
-        }
-    }
+    Ok(result.canister_id)
 }
 
 /// Asynchronously installs code on a specified canister.

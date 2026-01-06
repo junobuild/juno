@@ -1,3 +1,4 @@
+use crate::factory::canister::create_canister;
 use crate::factory::mission_control::create_mission_control as create_mission_control_console;
 use crate::factory::orbiter::create_orbiter as create_orbiter_console;
 use crate::factory::satellite::create_satellite as create_satellite_console;
@@ -8,7 +9,6 @@ use junobuild_shared::ic::UnwrapOrTrap;
 use junobuild_shared::types::interface::{
     CreateMissionControlArgs, CreateOrbiterArgs, CreateSatelliteArgs, CreateSegmentArgs,
 };
-use crate::factory::canister::create_canister;
 
 #[update]
 async fn create_mission_control(args: CreateMissionControlArgs) -> Principal {

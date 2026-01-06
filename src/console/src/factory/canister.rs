@@ -1,8 +1,8 @@
 use candid::{Nat, Principal};
 use junobuild_shared::constants::shared::CREATE_MISSION_CONTROL_CYCLES;
 use junobuild_shared::ic::api::id;
-use junobuild_shared::mgmt::cmc::cmc_create_canister_install_code;
-use junobuild_shared::mgmt::ic::create_canister_install_code;
+use junobuild_shared::mgmt::cmc::{cmc_create_canister_install_code, create_canister_with_cmc};
+use junobuild_shared::mgmt::ic::{create_canister_install_code, create_canister_with_ic_mgmt};
 use junobuild_shared::mgmt::types::cmc::SubnetId;
 use junobuild_shared::mgmt::types::ic::CreateCanisterInitSettingsArg;
 use junobuild_shared::types::interface::{CreateCanisterArgs};
@@ -65,17 +65,15 @@ async fn create_raw_canister(
     };
 
     let mission_control_id = if let Some(subnet_id) = subnet_id {
-        cmc_create_canister_install_code(
+        create_canister_with_cmc(
             &create_settings_arg,
-            &wasm_arg,
             CREATE_MISSION_CONTROL_CYCLES,
             &subnet_id,
         )
             .await
     } else {
-        create_canister_install_code(
+        create_canister_with_ic_mgmt(
             &create_settings_arg,
-            &wasm_arg,
             CREATE_MISSION_CONTROL_CYCLES,
         )
             .await

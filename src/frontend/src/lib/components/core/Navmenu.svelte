@@ -125,6 +125,34 @@
 				<IconCanister size="24px" />
 				<span>{$i18n.canister.title}</span>
 			</a>
+
+			<div
+				class="canister-features"
+				in:slide={{ delay: 0, duration: 150, easing: quintOut, axis: 'y' }}
+				out:slide={{ delay: 0, duration: 100, easing: circOut, axis: 'y' }}
+			>
+				<a
+						class="link"
+						class:collapsed={$menuCollapsed}
+						class:selected={isRouteSelected({ routeId, path: 'functions' })}
+						href={`/functions${satelliteQueryParam}`}
+						role="menuitem"
+				>
+					<IconFunctions size="24px" />
+					<span>{$i18n.functions.title}</span>
+				</a>
+
+				<a
+					class="link"
+					class:collapsed={$menuCollapsed}
+					class:selected={isRouteSelected({ routeId, path: 'hosting' })}
+					href={`/hosting${satelliteQueryParam}`}
+					role="menuitem"
+				>
+					<IconHosting size="24px" />
+					<span>{$i18n.hosting.title}</span>
+				</a>
+			</div>
 		{/if}
 
 		<div>
@@ -264,7 +292,7 @@
 		width: 100%;
 	}
 
-	.satellite-features {
+	.satellite-features, .canister-features {
 		margin: 0 0 var(--padding-4x);
 	}
 </style>

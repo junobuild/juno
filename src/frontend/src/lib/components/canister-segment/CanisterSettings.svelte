@@ -3,7 +3,7 @@
 	import SatelliteAccessKeys from '$lib/components/satellites/setup/SatelliteAccessKeys.svelte';
 	import Snapshots from '$lib/components/snapshot/Snapshots.svelte';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import type {SegmentCanister} from "$lib/types/segment";
+	import type { SegmentCanister } from '$lib/types/segment';
 
 	interface Props {
 		canister: SegmentCanister;

@@ -602,16 +602,16 @@ export const updateRateConfig = async ({
 		ConsoleActor008 | ConsoleActor0014 | ConsoleActor015 | ConsoleActor020 | ConsoleActor
 	>;
 }) => {
-	const { update_rate_config } = actor;
+	const { set_rate_config } = actor;
 
 	const config = {
 		max_tokens: 100n,
 		time_per_token_ns: 60n
 	};
 
-	await update_rate_config({ Satellite: null }, config);
-	await update_rate_config({ Orbiter: null }, config);
-	await update_rate_config({ MissionControl: null }, config);
+	await set_rate_config({ Satellite: null }, config);
+	await set_rate_config({ Orbiter: null }, config);
+	await set_rate_config({ MissionControl: null }, config);
 };
 
 export const setupConsole = async ({
@@ -700,9 +700,9 @@ export const configMissionControlRateTokens = async ({
 }) => {
 	actor.setIdentity(controller);
 
-	const { update_rate_config } = actor;
+	const { set_rate_config } = actor;
 
-	await update_rate_config(
+	await set_rate_config(
 		{ MissionControl: null },
 		{
 			max_tokens,

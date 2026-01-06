@@ -1,4 +1,5 @@
-use crate::fees::{init_factory_fees, init_factory_rates};
+use crate::fees::init_factory_fees;
+use crate::rates::init::init_factory_rates;
 use crate::store::mutate_heap_state;
 use crate::types::state::HeapState;
 

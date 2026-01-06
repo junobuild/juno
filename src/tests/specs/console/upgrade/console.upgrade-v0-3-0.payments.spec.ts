@@ -17,7 +17,7 @@ import type { Principal } from '@icp-sdk/core/principal';
 import { inject } from 'vitest';
 import { CONSOLE_ID } from '../../../constants/console-tests.constants';
 import { ICP_LEDGER_ID } from '../../../constants/ledger-tests.contants';
-import { deploySegments, updateRateConfig } from '../../../utils/console-tests.utils';
+import { deploySegments, setRateConfig, updateRateConfig } from '../../../utils/console-tests.utils';
 import { transferToken } from '../../../utils/ledger-tests.utils';
 import { tick } from '../../../utils/pic-tests.utils';
 import {

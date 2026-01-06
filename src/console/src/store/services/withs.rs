@@ -46,6 +46,13 @@ pub fn with_factory_fees_mut<R>(f: impl FnOnce(&mut Option<FactoryFees>) -> R) -
     mutate_heap_state(|state| f(&mut state.factory_fees))
 }
 
+pub fn with_factory_rates<R>(f: impl FnOnce(&Option<FactoryRates>) -> R) -> R {
+    read_heap_state(|state| {
+        let rates = &state.factory_rates;
+        f(rates)
+    })
+}
+
 pub fn with_factory_rates_mut<R>(f: impl FnOnce(&mut Option<FactoryRates>) -> R) -> R {
     mutate_heap_state(|state| f(&mut state.factory_rates))
 }

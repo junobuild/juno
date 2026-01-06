@@ -7,13 +7,13 @@ import {
 	type MissionControlActor
 } from '$declarations';
 import { PocketIc, type Actor } from '@dfinity/pic';
-import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
+import { assertNonNullish, fromNullable } from '@dfinity/utils';
 import type { Identity } from '@icp-sdk/core/agent';
 import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import type { Principal } from '@icp-sdk/core/principal';
 import { inject } from 'vitest';
 import { CONSOLE_ID } from '../../../constants/console-tests.constants';
-import { deploySegments, setRateConfig, updateRateConfig } from '../../../utils/console-tests.utils';
+import { updateRateConfig } from '../../../utils/console-tests.utils';
 import { tick } from '../../../utils/pic-tests.utils';
 import {
 	CONSOLE_WASM_PATH,
@@ -21,7 +21,7 @@ import {
 	downloadConsole
 } from '../../../utils/setup-tests.utils';
 
-describe('Console > Upgrade > Fees > v0.2.0 -> v0.3.0', () => {
+describe('Console > Upgrade > Rates > v0.2.0 -> v0.3.0', () => {
 	let pic: PocketIc;
 	let actor: Actor<ConsoleActor020>;
 	let canisterId: Principal;
@@ -76,53 +76,34 @@ describe('Console > Upgrade > Fees > v0.2.0 -> v0.3.0', () => {
 		actor = c;
 		canisterId = cId;
 		actor.setIdentity(controller);
-
-		await updateRateConfig({ actor });
-
-		await deploySegments({ actor });
-
-		// Consumes starting credits otherwise get_create_fee will return None
-		await createMissionControlAndSatellite({ user });
-
-		// Create mission control requires the user to be a caller of the Console
-		actor.setIdentity(controller);
 	});
 
 	afterEach(async () => {
 		await pic?.tearDown();
 	});
 
-	it('should provide fees with new interfaces and default of new factory_fees', async () => {
-		const { set_fee } = actor;
-
-		await set_fee({ Satellite: null }, { e8s: 40_000_000n });
-		await set_fee({ Orbiter: null }, { e8s: 77_000_000n });
+	it('should provide rates with new interfaces and default of new factory_fees', async () => {
+		await updateRateConfig({ actor });
 
 		await upgradeCurrent();
 
 		const newActor = pic.createActor<ConsoleActor>(idlFactoryConsole, canisterId);
 		newActor.setIdentity(user);
 
-		const { get_fee } = newActor;
+		const { get_rate_config } = newActor;
 
-		await expect(get_fee({ Satellite: null })).resolves.toEqual(
-			expect.objectContaining({
-				fee_icp: toNullable({ e8s: 1_500_000_000n }),
-				fee_cycles: { e12s: 3_000_000_000_000n }
-			})
-		);
-		await expect(get_fee({ Orbiter: null })).resolves.toEqual(
-			expect.objectContaining({
-				fee_icp: toNullable({ e8s: 1_500_000_000n }),
-				fee_cycles: { e12s: 3_000_000_000_000n }
-			})
-		);
+		await expect(get_rate_config({ Satellite: null })).resolves.toEqual({
+			max_tokens: 100,
+			time_per_token_ns: 600_000_000
+		});
+		await expect(get_rate_config({ Orbiter: null })).resolves.toEqual({
+			max_tokens: 100,
+			time_per_token_ns: 600_000_000
+		});
 
-		await expect(get_fee({ MissionControl: null })).resolves.toEqual(
-			expect.objectContaining({
-				fee_icp: toNullable(),
-				fee_cycles: { e12s: 3_000_000_000_000n }
-			})
-		);
+		await expect(get_rate_config({ MissionControl: null })).resolves.toEqual({
+			max_tokens: 100,
+			time_per_token_ns: 600_000_000
+		});
 	});
 });

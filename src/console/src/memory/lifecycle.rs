@@ -1,7 +1,8 @@
 use crate::cdn::certified_assets::upgrade::defer_init_certified_assets;
 use crate::cdn::lifecycle::init_cdn_storage_heap_state;
-use crate::fees::{init_factory_fees, init_factory_rates};
+use crate::fees::init_factory_fees;
 use crate::memory::manager::{get_memory_upgrades, init_stable_state, STATE};
+use crate::rates::init::init_factory_rates;
 use crate::types::state::{HeapState, ReleasesMetadata, State};
 use crate::upgrade::upgrade_init_factory_fees_and_rates;
 use ciborium::{from_reader, into_writer};

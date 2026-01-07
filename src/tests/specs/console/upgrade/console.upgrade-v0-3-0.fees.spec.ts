@@ -107,13 +107,13 @@ describe('Console > Upgrade > Fees > v0.2.0 -> v0.3.0', () => {
 
 		await expect(get_fee({ Satellite: null })).resolves.toEqual(
 			expect.objectContaining({
-				fee_icp: toNullable({ e8s: 1_500_000_000n }),
+				fee_icp: toNullable({ e8s: 150_000_000n }),
 				fee_cycles: { e12s: 3_000_000_000_000n }
 			})
 		);
 		await expect(get_fee({ Orbiter: null })).resolves.toEqual(
 			expect.objectContaining({
-				fee_icp: toNullable({ e8s: 1_500_000_000n }),
+				fee_icp: toNullable({ e8s: 150_000_000n }),
 				fee_cycles: { e12s: 3_000_000_000_000n }
 			})
 		);

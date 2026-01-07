@@ -1,9 +1,8 @@
 pub mod state {
     use crate::types::core::DomainName;
     use crate::types::monitoring::{CyclesBalance, FundingFailure};
+    use candid::CandidType;
     use candid::Principal;
-    use candid::{CandidType, Nat};
-    use ic_cdk::management_canister::CanisterStatusType;
     use serde::{Deserialize, Serialize};
     use std::cmp::Ordering;
     use std::collections::HashMap;
@@ -50,26 +49,6 @@ pub mod state {
         Write,
         Admin,
         Submit,
-    }
-
-    #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub struct SegmentCanisterStatus {
-        pub status: CanisterStatusType,
-        pub settings: SegmentCanisterSettings,
-        pub module_hash: Option<Vec<u8>>,
-        pub memory_size: Nat,
-        pub cycles: Nat,
-        pub idle_cycles_burned_per_day: Nat,
-    }
-
-    // Prevent breaking changes in DefiniteCanisterSettings which we do not use
-    #[deprecated]
-    #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub struct SegmentCanisterSettings {
-        pub controllers: Vec<Principal>,
-        pub compute_allocation: Nat,
-        pub memory_allocation: Nat,
-        pub freezing_threshold: Nat,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Copy, Clone, Debug, PartialEq, Eq, Hash)]

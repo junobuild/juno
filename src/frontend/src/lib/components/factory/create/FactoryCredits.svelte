@@ -2,7 +2,7 @@
 	import { fromNullable, isNullish } from '@dfinity/utils';
 	import type { Snippet } from 'svelte';
 	import FactoryCreditsWithFee from '$lib/components/factory/create/FactoryCreditsWithFee.svelte';
-	import GetICPInfo from '$lib/components/wallet/GetICPInfo.svelte';
+	import FactoryWalletInfo from '$lib/components/factory/create/FactoryWalletInfo.svelte';
 	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
 	import type { JunoModalCreateSegmentDetail, JunoModalDetail } from '$lib/types/modal';
 	import type { Option } from '$lib/types/utils';
@@ -37,7 +37,7 @@
 </script>
 
 {#if isNullish(fee)}
-	<GetICPInfo {onclose} />
+	<FactoryWalletInfo {onclose} />
 {:else}
 	<FactoryCreditsWithFee
 		{fee}

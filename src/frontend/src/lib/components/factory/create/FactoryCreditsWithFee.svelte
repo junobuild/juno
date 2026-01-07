@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
+	import FactoryWalletInfo from '$lib/components/factory/create/FactoryWalletInfo.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
-	import GetICPInfo from '$lib/components/wallet/GetICPInfo.svelte';
 	import { E8S_PER_ICP } from '$lib/constants/app.constants';
 	import { CYCLES, ICP } from '$lib/constants/token.constants';
 	import { creditsOrZero } from '$lib/derived/console/credits.derived';
@@ -89,7 +89,7 @@
 {/if}
 
 {#if insufficientFunds}
-	<GetICPInfo {onclose} />
+	<FactoryWalletInfo {onclose} />
 {:else}
 	{@render children()}
 {/if}

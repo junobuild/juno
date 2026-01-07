@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { fromNullable, nonNullish } from '@dfinity/utils';
-	import { onMount } from 'svelte';
+	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
+	import { onMount, untrack } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import type { SatelliteDid } from '$declarations';
 	import HostingSwitchMemory from '$lib/components/hosting/HostingSwitchMemory.svelte';
@@ -9,6 +9,7 @@
 	import { authIdentity } from '$lib/derived/auth.derived';
 	import { getRuleDapp } from '$lib/services/satellite/collection.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
+	import { versionStore } from '$lib/stores/version.store';
 	import type { Satellite } from '$lib/types/satellite';
 
 	interface Props {
@@ -26,6 +27,10 @@
 	let memory = $derived(fromNullable(rule?.memory ?? []));
 
 	const loadRule = async () => {
+		if (isNullish($authIdentity) || $versionStore?.satellites[satelliteId.toText()] === undefined) {
+			return;
+		}
+
 		const result = await getRuleDapp({ satelliteId, identity: $authIdentity });
 		rule = result?.rule;
 		supportSettings = result?.result === 'success';
@@ -33,8 +38,11 @@
 		loading = false;
 	};
 
-	onMount(() => {
-		loadRule();
+	$effect(() => {
+		$authIdentity;
+		$versionStore;
+
+		untrack(loadRule);
 	});
 </script>
 

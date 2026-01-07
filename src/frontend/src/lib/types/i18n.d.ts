@@ -369,6 +369,7 @@ interface I18nWallet {
 	credits: string;
 	transfer_info: string;
 	documentation: string;
+	information: string;
 	tx_id: string;
 	tx_timestamp: string;
 	tx_from: string;

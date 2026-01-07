@@ -359,6 +359,7 @@
 		"credits": "积分",
 		"transfer_info": "了解如何为您的钱包充值",
 		"documentation": "文档",
+		"information": "在文档中了解更多钱包信息",
 		"tx_id": "交易ID",
 		"tx_timestamp": "时间",
 		"tx_from": "发送方",

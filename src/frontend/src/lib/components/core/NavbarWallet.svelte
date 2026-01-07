@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
+	import IconInfo from '$lib/components/icons/IconInfo.svelte';
 	import IconWallet from '$lib/components/icons/IconWallet.svelte';
 	import ButtonIcon from '$lib/components/ui/ButtonIcon.svelte';
-	import Hr from '$lib/components/ui/Hr.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import WalletActions from '$lib/components/wallet/WalletActions.svelte';
 	import WalletPicker from '$lib/components/wallet/WalletPicker.svelte';
@@ -46,6 +46,16 @@
 
 <Popover anchor={button} direction="rtl" bind:visible>
 	<div class="container">
+		<div class="info">
+			<a
+				aria-label={$i18n.wallet.information}
+				href="https://juno.build/docs/miscellaneous/wallet"
+				rel="noreferrer noopener"
+				tabindex="-1"
+				target="_blank"><IconInfo size="20px" /></a
+			>
+		</div>
+
 		<div>
 			<WalletTotal />
 		</div>
@@ -110,6 +120,17 @@
 		:global(select) {
 			margin: var(--padding-0_5x) 0;
 			width: fit-content;
+		}
+	}
+
+	.info {
+		display: flex;
+		justify-content: flex-end;
+
+		a {
+			display: flex;
+			justify-content: center;
+			align-items: center;
 		}
 	}
 </style>

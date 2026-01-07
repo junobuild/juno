@@ -1331,7 +1331,7 @@ dependencies = [
  "junobuild-collections",
  "junobuild-shared 0.5.0",
  "junobuild-storage",
- "junobuild-utils",
+ "junobuild-utils 0.1.5",
  "rand 0.9.2",
  "regex",
  "serde",
@@ -1403,6 +1403,17 @@ dependencies = [
 [[package]]
 name = "junobuild-utils"
 version = "0.1.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8e2b000b35184e1a7dca271503aa90e5bf688575c5e78bc97e850f1749be62bf"
+dependencies = [
+ "candid",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
+name = "junobuild-utils"
+version = "0.2.0"
 dependencies = [
  "candid",
  "serde",
@@ -1589,7 +1600,7 @@ dependencies = [
  "ic-stable-structures 0.7.2",
  "isbot",
  "junobuild-shared 0.6.0",
- "junobuild-utils",
+ "junobuild-utils 0.2.0",
  "lazy_static",
  "regex",
  "serde",
@@ -2261,7 +2272,7 @@ dependencies = [
  "ic-cdk",
  "junobuild-macros",
  "junobuild-satellite",
- "junobuild-utils",
+ "junobuild-utils 0.2.0",
  "serde",
 ]
 

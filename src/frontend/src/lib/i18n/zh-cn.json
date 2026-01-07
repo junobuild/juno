@@ -305,6 +305,7 @@
 	"satellites": {
 		"title": "所有卫星",
 		"launch": "部署新卫星",
+		"launch_first": "启动您的第一个 Satellite",
 		"create": "创建卫星",
 		"search": "搜索",
 		"satellite": "卫星",

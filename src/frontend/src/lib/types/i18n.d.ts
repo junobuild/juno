@@ -313,6 +313,7 @@ interface I18nLaunchpad {
 interface I18nSatellites {
 	title: string;
 	launch: string;
+	launch_first: string;
 	create: string;
 	search: string;
 	satellite: string;

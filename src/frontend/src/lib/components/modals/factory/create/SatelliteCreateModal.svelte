@@ -229,7 +229,7 @@
 		display: flex;
 		flex-direction: column;
 		gap: var(--padding);
-		padding: var(--padding-0_5x) 0 var(--padding-6x);
+		padding: var(--padding) 0 var(--padding-6x);
 	}
 
 	.option {
@@ -238,7 +238,6 @@
 
 		span:last-child {
 			font-size: var(--font-size-very-small);
-			font-style: italic;
 		}
 	}
 

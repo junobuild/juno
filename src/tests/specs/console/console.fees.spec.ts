@@ -80,7 +80,7 @@ describe('Console > Fees', () => {
 			const { get_fee } = randomIdentityActor;
 
 			const defaultFees = {
-				fee_icp: toNullable({ e8s: 1_500_000_000n }),
+				fee_icp: toNullable({ e8s: 150_000_000n }),
 				fee_cycles: { e12s: 3_000_000_000_000n },
 				updated_at: expect.any(BigInt)
 			};

@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
-	import { decodeIcrcAccount } from '@icp-sdk/canisters/ledger/icrc';
 	import IconWallet from '$lib/components/icons/IconWallet.svelte';
 	import ButtonIcon from '$lib/components/ui/ButtonIcon.svelte';
 	import Hr from '$lib/components/ui/Hr.svelte';
@@ -15,9 +14,8 @@
 	import { testIds } from '$lib/constants/test-ids.constants';
 	import { CYCLES } from '$lib/constants/token.constants';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
-	import { devId } from '$lib/derived/dev.derived';
 	import { devHasIcp } from '$lib/derived/wallet/balance.derived';
-	import type { SelectedToken, SelectedWallet, WalletId } from '$lib/schemas/wallet.schema';
+	import type { SelectedToken, SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { i18n } from '$lib/stores/app/i18n.store';
 
 	let button: HTMLButtonElement | undefined = $state();
@@ -33,11 +31,10 @@
 		receiveVisible = true;
 	};
 
-	let selectedWallet = $derived<SelectedWallet | undefined>(
-		nonNullish($devId)
-			? { type: 'dev', walletId: decodeIcrcAccount($devId.toText()) as WalletId }
-			: undefined
-	);
+	let selectedWallet = $state<SelectedWallet | undefined>(undefined);
+	let selectedToken = $state<SelectedToken>(CYCLES);
+
+	let detailed = $derived(nonNullish($missionControlId) || $devHasIcp);
 </script>
 
 <ButtonIcon {onclick} testId={testIds.navbar.openWallet} bind:button>
@@ -54,14 +51,27 @@
 			<WalletTotal />
 		</div>
 
+		<Hr />
+
+		<div class="picker selected-wallet">
+			<WalletPicker bind:selectedWallet />
+		</div>
+
+		<div class="picker">
+			<WalletTokenPicker {selectedWallet} bind:selectedToken />
+		</div>
+
+		{#if detailed}
+			<div>
+				<WalletBalanceById highlight={false} {selectedToken} {selectedWallet} />
+			</div>
+		{/if}
+
 		{#if nonNullish(selectedWallet)}
+			<WalletIds {selectedWallet} />
+
 			<div class="actions">
-				<WalletActions
-					onreceive={openReceive}
-					onsend={onclose}
-					selectedToken={CYCLES}
-					{selectedWallet}
-				/>
+				<WalletActions onreceive={openReceive} onsend={onclose} {selectedToken} {selectedWallet} />
 			</div>
 		{/if}
 	</div>

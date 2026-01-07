@@ -33,11 +33,11 @@
 			? [
 					{
 						id: Symbol('2'),
-						labelKey: 'core.setup'
+						labelKey: 'core.config'
 					},
 					{
 						id: Symbol('3'),
-						labelKey: 'core.service'
+						labelKey: 'analytics.orbiter'
 					}
 				]
 			: [])

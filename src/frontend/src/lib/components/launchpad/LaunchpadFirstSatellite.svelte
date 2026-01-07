@@ -1,11 +1,12 @@
 <script lang="ts">
 	import IconRocket from '$lib/components/icons/IconRocket.svelte';
+	import LaunchpadButton from '$lib/components/launchpad/LaunchpadButton.svelte';
+	import LaunchpadHeader from '$lib/components/launchpad/LaunchpadHeader.svelte';
 	import { testIds } from '$lib/constants/test-ids.constants';
 	import { authIdentity } from '$lib/derived/auth.derived';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import { initSatelliteWizard } from '$lib/services/factory/factory.create.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import { testId } from '$lib/utils/test.utils';
 
 	const createSatellite = async () => {
 		await initSatelliteWizard({
@@ -15,51 +16,36 @@
 	};
 </script>
 
-<button class="primary" onclick={createSatellite} {...testId(testIds.launchpad.launch)}>
-	{$i18n.satellites.launch}
-	<IconRocket />
-</button>
+<LaunchpadHeader withoutGreetingsReturningLabel />
+
+<LaunchpadButton onclick={createSatellite} testId={testIds.launchpad.launch}>
+	<div class="new">
+		<IconRocket size="48px" />
+
+		<p>{$i18n.satellites.launch_first}</p>
+	</div>
+</LaunchpadButton>
 
 <style lang="scss">
-	button {
+	@use '../../styles/mixins/fonts';
+
+	.new {
 		display: flex;
+		justify-content: center;
+		align-items: center;
 		flex-direction: column;
-		gap: var(--padding-2x);
 
-		aspect-ratio: 1/1;
+		gap: var(--padding-4x);
 
-		max-width: 160px;
-		max-height: 160px;
-
-		padding: var(--padding);
-
-		border-radius: 50%;
-
-		box-shadow: 3px 3px var(--color-card-contrast);
-
-		animation: push ease-in 750ms 2 forwards;
-
-		&:active {
-			box-shadow: none;
-			transform: translateX(3px) translateY(3px);
-		}
+		height: 100%;
 	}
 
-	/* -global- */
-	@keyframes -global-push {
-		0% {
-			box-shadow: 3px 3px var(--color-card-contrast);
-			transform: none;
-		}
+	p {
+		@include fonts.bold(true);
 
-		50% {
-			box-shadow: none;
-			transform: translateX(3px) translateY(3px);
-		}
+		max-width: 150px;
+		text-align: center;
 
-		100% {
-			box-shadow: 3px 3px var(--color-card-contrast);
-			transform: none;
-		}
+		margin: 0;
 	}
 </style>

@@ -305,6 +305,7 @@
 	"satellites": {
 		"title": "Satellites",
 		"launch": "Launch a new Satellite",
+		"launch_first": "Launch your first Satellite",
 		"create": "Create Satellite",
 		"search": "Search",
 		"satellite": "Satellite",

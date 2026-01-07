@@ -5,7 +5,6 @@
 	import Hr from '$lib/components/ui/Hr.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import WalletActions from '$lib/components/wallet/WalletActions.svelte';
-	import WalletIds from '$lib/components/wallet/WalletIds.svelte';
 	import WalletPicker from '$lib/components/wallet/WalletPicker.svelte';
 	import WalletTokenPicker from '$lib/components/wallet/WalletTokenPicker.svelte';
 	import WalletBalanceById from '$lib/components/wallet/balance/WalletBalanceById.svelte';
@@ -51,13 +50,11 @@
 			<WalletTotal />
 		</div>
 
-		<Hr />
-
 		<div class="picker selected-wallet">
 			<WalletPicker bind:selectedWallet />
 		</div>
 
-		<div class="picker">
+		<div class="picker token-selector">
 			<WalletTokenPicker {selectedWallet} bind:selectedToken />
 		</div>
 
@@ -68,8 +65,6 @@
 		{/if}
 
 		{#if nonNullish(selectedWallet)}
-			<WalletIds {selectedWallet} />
-
 			<div class="actions">
 				<WalletActions onreceive={openReceive} onsend={onclose} {selectedToken} {selectedWallet} />
 			</div>
@@ -103,6 +98,12 @@
 
 	.selected-wallet {
 		padding: var(--padding-0_5x) 0 0;
+	}
+
+	.token-selector {
+		:global(div.picker) {
+			margin: 0 0 var(--padding-0_5x);
+		}
 	}
 
 	.picker {

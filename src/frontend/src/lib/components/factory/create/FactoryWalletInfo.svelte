@@ -12,7 +12,7 @@
 </script>
 
 <p>
-	{$i18n.wallet.transfer_icp_info}
+	{$i18n.wallet.transfer_info}
 	<ExternalLink href="https://juno.build/docs/miscellaneous/wallet" underline
 		>{$i18n.wallet.documentation}</ExternalLink
 	>.
@@ -21,9 +21,3 @@
 <button onclick={onclose} {...testId(testIds.wizard.closeInsufficientFunds)}
 	>{$i18n.core.close}</button
 >
-
-<style lang="scss">
-	.account-identifier {
-		margin: 0;
-	}
-</style>

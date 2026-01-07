@@ -357,7 +357,7 @@
 		"account_identifier": "账户",
 		"balance": "余额",
 		"credits": "积分",
-		"transfer_icp_info": "了解如何为您的钱包充值",
+		"transfer_info": "了解如何为您的钱包充值",
 		"documentation": "文档",
 		"tx_id": "交易ID",
 		"tx_timestamp": "时间",

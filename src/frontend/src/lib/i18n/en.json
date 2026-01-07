@@ -357,7 +357,7 @@
 		"account_identifier": "Account identifier",
 		"balance": "Balance",
 		"credits": "Credits",
-		"transfer_icp_info": "Learn how to provision your wallet in the",
+		"transfer_info": "Learn how to provision your wallet in the",
 		"documentation": "documentation",
 		"tx_id": "ID",
 		"tx_timestamp": "Timestamp",

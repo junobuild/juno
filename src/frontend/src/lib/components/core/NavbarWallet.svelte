@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
+	import IconInfo from '$lib/components/icons/IconInfo.svelte';
 	import IconWallet from '$lib/components/icons/IconWallet.svelte';
 	import ButtonIcon from '$lib/components/ui/ButtonIcon.svelte';
-	import Hr from '$lib/components/ui/Hr.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import WalletActions from '$lib/components/wallet/WalletActions.svelte';
 	import WalletPicker from '$lib/components/wallet/WalletPicker.svelte';
@@ -16,7 +16,6 @@
 	import { devHasIcp } from '$lib/derived/wallet/balance.derived';
 	import type { SelectedToken, SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import IconInfo from '$lib/components/icons/IconInfo.svelte';
 
 	let button: HTMLButtonElement | undefined = $state();
 	let visible: boolean = $state(false);

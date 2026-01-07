@@ -5,7 +5,6 @@
 	import Hr from '$lib/components/ui/Hr.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import WalletActions from '$lib/components/wallet/WalletActions.svelte';
-	import WalletIds from '$lib/components/wallet/WalletIds.svelte';
 	import WalletPicker from '$lib/components/wallet/WalletPicker.svelte';
 	import WalletTokenPicker from '$lib/components/wallet/WalletTokenPicker.svelte';
 	import WalletBalanceById from '$lib/components/wallet/balance/WalletBalanceById.svelte';
@@ -68,8 +67,6 @@
 		{/if}
 
 		{#if nonNullish(selectedWallet)}
-			<WalletIds {selectedWallet} />
-
 			<div class="actions">
 				<WalletActions onreceive={openReceive} onsend={onclose} {selectedToken} {selectedWallet} />
 			</div>

@@ -54,7 +54,7 @@
 			<WalletPicker bind:selectedWallet />
 		</div>
 
-		<div class="picker">
+		<div class="picker token-selector">
 			<WalletTokenPicker {selectedWallet} bind:selectedToken />
 		</div>
 
@@ -98,6 +98,12 @@
 
 	.selected-wallet {
 		padding: var(--padding-0_5x) 0 0;
+	}
+
+	.token-selector {
+		:global(div.picker) {
+			margin: 0 0 var(--padding-0_5x);
+		}
 	}
 
 	.picker {

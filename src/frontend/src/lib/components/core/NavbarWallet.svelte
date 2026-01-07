@@ -16,6 +16,7 @@
 	import { devHasIcp } from '$lib/derived/wallet/balance.derived';
 	import type { SelectedToken, SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { i18n } from '$lib/stores/app/i18n.store';
+	import IconInfo from '$lib/components/icons/IconInfo.svelte';
 
 	let button: HTMLButtonElement | undefined = $state();
 	let visible: boolean = $state(false);
@@ -46,6 +47,16 @@
 
 <Popover anchor={button} direction="rtl" bind:visible>
 	<div class="container">
+		<div class="info">
+			<a
+				aria-label={$i18n.wallet.information}
+				href="https://juno.build/docs/miscellaneous/wallet"
+				rel="noreferrer noopener"
+				tabindex="-1"
+				target="_blank"><IconInfo size="20px" /></a
+			>
+		</div>
+
 		<div>
 			<WalletTotal />
 		</div>
@@ -110,6 +121,17 @@
 		:global(select) {
 			margin: var(--padding-0_5x) 0;
 			width: fit-content;
+		}
+	}
+
+	.info {
+		display: flex;
+		justify-content: flex-end;
+
+		a {
+			display: flex;
+			justify-content: center;
+			align-items: center;
 		}
 	}
 </style>

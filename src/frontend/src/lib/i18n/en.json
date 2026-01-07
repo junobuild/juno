@@ -359,6 +359,7 @@
 		"credits": "Credits",
 		"transfer_icp_info": "Learn how to provision your wallet in the",
 		"documentation": "documentation",
+		"information": "Learn about the wallet in the documentation",
 		"tx_id": "ID",
 		"tx_timestamp": "Timestamp",
 		"tx_from": "From",

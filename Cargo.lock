@@ -260,7 +260,7 @@ dependencies = [
  "ic-stable-structures 0.7.2",
  "icrc-ledger-types",
  "junobuild-auth 0.2.0",
- "junobuild-cdn",
+ "junobuild-cdn 0.5.0",
  "junobuild-collections 0.3.0",
  "junobuild-shared 0.6.0",
  "junobuild-storage 0.5.0",
@@ -1281,6 +1281,8 @@ dependencies = [
 [[package]]
 name = "junobuild-cdn"
 version = "0.4.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "178cb4bf4d836fe9ef1991242778ea8f01d2f6c47a5e4f49df05114e105bb9d7"
 dependencies = [
  "candid",
  "hex",
@@ -1289,6 +1291,21 @@ dependencies = [
  "junobuild-collections 0.2.6",
  "junobuild-shared 0.5.0",
  "junobuild-storage 0.4.1",
+ "serde",
+ "sha2",
+]
+
+[[package]]
+name = "junobuild-cdn"
+version = "0.5.0"
+dependencies = [
+ "candid",
+ "hex",
+ "ic-cdk",
+ "ic-stable-structures 0.7.2",
+ "junobuild-collections 0.3.0",
+ "junobuild-shared 0.6.0",
+ "junobuild-storage 0.5.0",
  "serde",
  "sha2",
 ]
@@ -1339,7 +1356,7 @@ dependencies = [
  "ic-certification",
  "ic-stable-structures 0.7.2",
  "junobuild-auth 0.1.1",
- "junobuild-cdn",
+ "junobuild-cdn 0.4.1",
  "junobuild-collections 0.2.6",
  "junobuild-shared 0.5.0",
  "junobuild-storage 0.4.1",

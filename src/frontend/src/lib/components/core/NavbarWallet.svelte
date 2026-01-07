@@ -50,8 +50,6 @@
 			<WalletTotal />
 		</div>
 
-		<Hr />
-
 		<div class="picker selected-wallet">
 			<WalletPicker bind:selectedWallet />
 		</div>

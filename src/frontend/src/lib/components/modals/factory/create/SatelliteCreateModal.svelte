@@ -78,7 +78,7 @@
 		setTimeout(onclose, 650);
 	};
 
-	let satelliteName  = $state<string | undefined>(undefined);
+	let satelliteName = $state<string | undefined>(undefined);
 	let satelliteKind = $state<'website' | 'application' | undefined>(undefined);
 
 	let selectedWallet = $state<SelectedWallet | undefined>(undefined);
@@ -155,7 +155,7 @@
 								/>
 								<span class="option">
 									<span>{$i18n.satellites.website}</span>
-									<span>{$i18n.satellites.website_description}</span>
+									<span>({$i18n.satellites.website_description})</span>
 								</span>
 							</label>
 
@@ -169,7 +169,7 @@
 								/>
 								<span class="option">
 									<span>{$i18n.satellites.application}</span>
-									<span>{$i18n.satellites.application_description}</span>
+									<span>({$i18n.satellites.application_description})</span>
 								</span>
 							</label>
 						</div>
@@ -228,20 +228,16 @@
 	.options {
 		display: flex;
 		flex-direction: column;
-		gap: var(--padding-1_5x);
 		padding: var(--padding) 0 var(--padding-6x);
 	}
 
 	.option {
-		display: inline-flex;
-		flex-direction: column;
-
 		span:last-child {
 			font-size: var(--font-size-very-small);
 		}
 	}
 
 	input {
-		vertical-align: text-top;
+		vertical-align: middle;
 	}
 </style>

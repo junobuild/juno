@@ -73,13 +73,13 @@
 		setTimeout(() => (step = 'ready'), 500);
 	};
 
-	const navigate = async () => {
-		await navigateToSatellite(satelliteId);
-		onclose();
+	const navigate = () => {
+		navigateToSatellite(satelliteId);
+		setTimeout(onclose, 650);
 	};
 
-	let satelliteName: string | undefined = $state(undefined);
-	let satelliteKind: 'website' | 'application' | undefined = $state(undefined);
+	let satelliteName  = $state<string | undefined>(undefined);
+	let satelliteKind = $state<'website' | 'application' | undefined>(undefined);
 
 	let selectedWallet = $state<SelectedWallet | undefined>(undefined);
 	let subnetId: PrincipalText | undefined = $state();
@@ -228,7 +228,7 @@
 	.options {
 		display: flex;
 		flex-direction: column;
-		gap: var(--padding);
+		gap: var(--padding-1_5x);
 		padding: var(--padding) 0 var(--padding-6x);
 	}
 

@@ -153,7 +153,10 @@
 									value="website"
 									bind:group={satelliteKind}
 								/>
-								{$i18n.satellites.website}
+								<span class="option">
+									<span>{$i18n.satellites.website}</span>
+									<span>{$i18n.satellites.website_description}</span>
+								</span>
 							</label>
 
 							<label>
@@ -164,7 +167,10 @@
 									value="application"
 									bind:group={satelliteKind}
 								/>
-								{$i18n.satellites.application}
+								<span class="option">
+									<span>{$i18n.satellites.application}</span>
+									<span>{$i18n.satellites.application_description}</span>
+								</span>
 							</label>
 						</div>
 					</Value>
@@ -222,5 +228,21 @@
 	.options {
 		display: flex;
 		flex-direction: column;
+		gap: var(--padding);
+		padding: var(--padding-0_5x) 0 var(--padding-6x);
+	}
+
+	.option {
+		display: inline-flex;
+		flex-direction: column;
+
+		span:last-child {
+			font-size: var(--font-size-very-small);
+			font-style: italic;
+		}
+	}
+
+	input {
+		vertical-align: text-top;
 	}
 </style>

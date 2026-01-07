@@ -324,7 +324,9 @@ interface I18nSatellites {
 	satellite_name: string;
 	what_are_you_building: string;
 	website: string;
+	website_description: string;
 	application: string;
+	application_description: string;
 	environment: string;
 	tags: string;
 	tags_placeholder: string;

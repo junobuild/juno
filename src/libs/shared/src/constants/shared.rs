@@ -13,7 +13,7 @@ pub const IC_TRANSACTION_FEE_CYCLES: CyclesTokens = CyclesTokens::from_e12s(100_
 // Cost for creating a canister have been increased by 400% in November 2024:
 // - https://forum.dfinity.org/t/evaluating-compute-pricing-in-response-to-increased-demand-on-the-internet-computer-protocol/36565
 // - https://nns.ic0.app/proposal/?u=qoctq-giaaa-aaaaa-aaaea-cai&proposal=134032
-pub const CREATE_CANISTER_CYCLES: u128 = 500_000_000_000u128;
+pub const IC_CREATE_CANISTER_CYCLES: u128 = 500_000_000_000u128;
 
 // Additional cycles allocated for creating different types of canisters to ensure operation beyond the minimum requirement.
 pub const CREATE_SATELLITE_CYCLES: u128 = 1_000_000_000_000;

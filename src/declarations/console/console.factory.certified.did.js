@@ -258,6 +258,10 @@ export const idlFactory = ({ IDL }) => {
 		version: IDL.Opt(IDL.Nat64),
 		proposal_type: ProposalType
 	});
+	const RateConfig = IDL.Record({
+		max_tokens: IDL.Nat64,
+		time_per_token_ns: IDL.Nat64
+	});
 	const HttpRequest = IDL.Record({
 		url: IDL.Text,
 		method: IDL.Text,
@@ -417,18 +421,18 @@ export const idlFactory = ({ IDL }) => {
 		items: IDL.Vec(IDL.Tuple(ProposalKey, Proposal)),
 		items_length: IDL.Nat64
 	});
-	const SegmentType = IDL.Variant({
+	const StorableSegmentKind = IDL.Variant({
 		Orbiter: IDL.Null,
 		Satellite: IDL.Null
 	});
 	const ListSegmentsArgs = IDL.Record({
 		segment_id: IDL.Opt(IDL.Principal),
-		segment_type: IDL.Opt(SegmentType)
+		segment_kind: IDL.Opt(StorableSegmentKind)
 	});
 	const SegmentKey = IDL.Record({
 		user: IDL.Principal,
 		segment_id: IDL.Principal,
-		segment_type: SegmentType
+		segment_kind: StorableSegmentKind
 	});
 	const Segment = IDL.Record({
 		updated_at: IDL.Nat64,
@@ -458,12 +462,12 @@ export const idlFactory = ({ IDL }) => {
 	const SetSegmentsArgs = IDL.Record({
 		metadata: IDL.Opt(IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))),
 		segment_id: IDL.Principal,
-		segment_type: SegmentType
+		segment_kind: StorableSegmentKind
 	});
 	const SetSegmentMetadataArgs = IDL.Record({
 		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
 		segment_id: IDL.Principal,
-		segment_type: SegmentType
+		segment_kind: StorableSegmentKind
 	});
 	const SetStorageConfig = IDL.Record({
 		iframe: IDL.Opt(StorageConfigIFrame),
@@ -476,11 +480,7 @@ export const idlFactory = ({ IDL }) => {
 	});
 	const UnsetSegmentsArgs = IDL.Record({
 		segment_id: IDL.Principal,
-		segment_type: SegmentType
-	});
-	const RateConfig = IDL.Record({
-		max_tokens: IDL.Nat64,
-		time_per_token_ns: IDL.Nat64
+		segment_kind: StorableSegmentKind
 	});
 	const UploadChunk = IDL.Record({
 		content: IDL.Vec(IDL.Nat8),
@@ -514,6 +514,7 @@ export const idlFactory = ({ IDL }) => {
 		get_fee: IDL.Func([SegmentKind], [FactoryFee], []),
 		get_or_init_account: IDL.Func([], [Account], []),
 		get_proposal: IDL.Func([IDL.Nat], [IDL.Opt(Proposal)], []),
+		get_rate_config: IDL.Func([SegmentKind], [RateConfig], []),
 		get_storage_config: IDL.Func([], [StorageConfig], []),
 		http_request: IDL.Func([HttpRequest], [HttpResponse], []),
 		http_request_streaming_callback: IDL.Func(
@@ -541,12 +542,12 @@ export const idlFactory = ({ IDL }) => {
 		set_controllers: IDL.Func([SetControllersArgs], [], []),
 		set_custom_domain: IDL.Func([IDL.Text, IDL.Opt(IDL.Text)], [], []),
 		set_fee: IDL.Func([SegmentKind, FeesArgs], [], []),
+		set_rate_config: IDL.Func([SegmentKind, RateConfig], [], []),
 		set_segment: IDL.Func([SetSegmentsArgs], [Segment], []),
 		set_segment_metadata: IDL.Func([SetSegmentMetadataArgs], [Segment], []),
 		set_storage_config: IDL.Func([SetStorageConfig], [StorageConfig], []),
 		submit_proposal: IDL.Func([IDL.Nat], [IDL.Nat, Proposal], []),
 		unset_segment: IDL.Func([UnsetSegmentsArgs], [], []),
-		update_rate_config: IDL.Func([SegmentKind, RateConfig], [], []),
 		upload_proposal_asset_chunk: IDL.Func([UploadChunk], [UploadChunkResult], [])
 	});
 };

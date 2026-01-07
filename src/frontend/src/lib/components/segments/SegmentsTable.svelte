@@ -8,8 +8,8 @@
 	import Checkbox from '$lib/components/ui/Checkbox.svelte';
 	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
 	import {
-		canistersSyncDataUncertifiedCount,
-		canistersSyncDataUncertifiedNotSynced
+		canistersSyncDataCount,
+		canistersSyncDataNotSynced
 	} from '$lib/derived/ic-mgmt/canisters.derived';
 	import { orbiterWithSyncData } from '$lib/derived/orbiter/orbiter-merged.derived';
 	import { orbiterStore } from '$lib/derived/orbiter.derived';
@@ -85,8 +85,8 @@
 
 		const result = await waitReady({
 			isDisabled: () =>
-				$canistersSyncDataUncertifiedNotSynced ||
-				$canistersSyncDataUncertifiedCount < countModules + (isNullish(missionControlId) ? 0 : 1)
+				$canistersSyncDataNotSynced ||
+				$canistersSyncDataCount < countModules + (isNullish(missionControlId) ? 0 : 1)
 		});
 
 		if (result === 'timeout') {

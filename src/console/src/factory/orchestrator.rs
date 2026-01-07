@@ -5,7 +5,7 @@ use crate::accounts::{
 use crate::factory::services::payment::{
     process_payment_cycles, process_payment_icp, refund_payment_cycles, refund_payment_icp,
 };
-use crate::factory::types::{CanisterCreator, CreateCanisterArgs};
+use crate::factory::types::{CanisterCreator, CreateSegmentArgs};
 use crate::fees::types::FeeKind;
 use crate::payments::{
     insert_new_icrc_payment, update_icrc_payment_completed, update_icrc_payment_refunded,
@@ -19,14 +19,14 @@ use junobuild_shared::types::state::UserId;
 use junobuild_shared::utils::principal_equal;
 use std::future::Future;
 
-pub async fn create_canister<F, Fut>(
+pub async fn create_segment_workflow<F, Fut>(
     create: F,
     increment_rate: &dyn Fn() -> Result<(), String>,
     get_fee: &dyn Fn(FeeKind) -> Result<Fee, String>,
     add_segment: &dyn Fn(&UserId, &Principal),
     caller: Principal,
     user: UserId,
-    args: CreateCanisterArgs,
+    args: CreateSegmentArgs,
 ) -> Result<Principal, String>
 where
     F: FnOnce(CanisterCreator, Option<SubnetId>) -> Fut,
@@ -39,7 +39,7 @@ where
         let creator: CanisterCreator =
             CanisterCreator::User((account.owner, account.mission_control_id));
 
-        let canister_id = create_canister_with_account(
+        let canister_id = create_segment_with_account(
             create,
             process_payment_cycles,
             refund_payment_cycles,
@@ -65,7 +65,7 @@ where
         let creator: CanisterCreator =
             CanisterCreator::MissionControl((mission_control_id, account.owner));
 
-        let canister_id = create_canister_with_account(
+        let canister_id = create_segment_with_account(
             create,
             process_payment_icp,
             refund_payment_icp,
@@ -85,7 +85,7 @@ where
     Err("Unknown caller".to_string())
 }
 
-pub async fn create_canister_with_account<F, Fut, P, Pay, R, Refund>(
+pub async fn create_segment_with_account<F, Fut, P, Pay, R, Refund>(
     create: F,
     process_payment: P,
     refund_payment: R,
@@ -93,7 +93,7 @@ pub async fn create_canister_with_account<F, Fut, P, Pay, R, Refund>(
     fee: Fee,
     account: &Account,
     creator: CanisterCreator,
-    args: CreateCanisterArgs,
+    args: CreateSegmentArgs,
 ) -> Result<Principal, String>
 where
     F: FnOnce(CanisterCreator, Option<SubnetId>) -> Fut,
@@ -107,16 +107,16 @@ where
         // Guard too many requests
         increment_rate()?;
 
-        return create_canister_with_credits(create, creator, args).await;
+        return create_segment_with_credits(create, creator, args).await;
     }
 
-    create_canister_with_payment(create, process_payment, refund_payment, creator, args, fee).await
+    create_segment_with_payment(create, process_payment, refund_payment, creator, args, fee).await
 }
 
-async fn create_canister_with_credits<F, Fut>(
+async fn create_segment_with_credits<F, Fut>(
     create: F,
     creator: CanisterCreator,
-    CreateCanisterArgs { subnet_id, .. }: CreateCanisterArgs,
+    CreateSegmentArgs { subnet_id, .. }: CreateSegmentArgs,
 ) -> Result<Principal, String>
 where
     F: FnOnce(CanisterCreator, Option<SubnetId>) -> Fut,
@@ -124,10 +124,10 @@ where
 {
     let account_owner = *creator.account_owner();
 
-    // Create the satellite
-    let create_canister_result = create(creator, subnet_id).await;
+    // Effectively create the Satellite, Mission control, Orbiter etc.
+    let create_segment_result = create(creator, subnet_id).await;
 
-    match create_canister_result {
+    match create_segment_result {
         Err(_) => Err("Segment creation with credits failed.".to_string()),
         Ok(satellite_id) => {
             // Satellite or orbiter is created we can use the credits
@@ -141,7 +141,7 @@ where
     }
 }
 
-async fn refund_canister_creation<R, Refund>(
+async fn refund_segment_creation<R, Refund>(
     refund_payment: R,
     purchaser: &Principal,
     payment_key: &IcrcPaymentKey,
@@ -158,15 +158,15 @@ where
         .map_err(|e| format!("Insert refund transaction error {e:?}"))
 }
 
-async fn create_canister_with_payment<F, Fut, P, Pay, R, Refund>(
+async fn create_segment_with_payment<F, Fut, P, Pay, R, Refund>(
     create: F,
     process_payment: P,
     refund_payment: R,
     creator: CanisterCreator,
-    CreateCanisterArgs {
+    CreateSegmentArgs {
         block_index,
         subnet_id,
-    }: CreateCanisterArgs,
+    }: CreateSegmentArgs,
     fee: Fee,
 ) -> Result<Principal, String>
 where
@@ -192,9 +192,9 @@ where
 
     match create_canister_result {
         Err(error) => {
-            refund_canister_creation(refund_payment, &purchaser, &payment_key, fee).await?;
+            refund_segment_creation(refund_payment, &purchaser, &payment_key, fee).await?;
 
-            Err(["Canister creation failed. Buyer has been refunded.", &error].join(" - "))
+            Err(["Segment creation failed. Buyer has been refunded.", &error].join(" - "))
         }
         Ok(satellite_id) => {
             // Satellite or orbiter is created, we can update the payment has being processed

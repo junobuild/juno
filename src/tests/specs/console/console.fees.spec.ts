@@ -4,7 +4,7 @@ import { toNullable } from '@dfinity/utils';
 import { AnonymousIdentity, type Identity } from '@icp-sdk/core/agent';
 import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import type { Principal } from '@icp-sdk/core/principal';
-import { TEST_FEES } from '../../constants/console-tests.constants';
+import { CONTROLLER_ERROR_MSG, TEST_FEES } from '../../constants/console-tests.constants';
 import { setupConsole } from '../../utils/console-tests.utils';
 
 describe('Console > Fees', () => {
@@ -45,7 +45,7 @@ describe('Console > Fees', () => {
 			const { set_fee } = newActor;
 
 			await expect(set_fee({ Satellite: null }, TEST_FEES)).rejects.toThrowError(
-				'Caller is not a controller of the console.'
+				CONTROLLER_ERROR_MSG
 			);
 		};
 
@@ -72,7 +72,7 @@ describe('Console > Fees', () => {
 			const { set_fee } = randomIdentityActor;
 
 			await expect(set_fee({ Satellite: null }, TEST_FEES)).rejects.toThrowError(
-				'Caller is not a controller of the console.'
+				CONTROLLER_ERROR_MSG
 			);
 		});
 

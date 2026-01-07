@@ -17,7 +17,7 @@
 	import { authIdentity } from '$lib/derived/auth.derived';
 	import { orbiterFeatures } from '$lib/derived/orbiter/orbiter-satellites.derived';
 	import { orbitersStore, orbiterStore } from '$lib/derived/orbiter.derived';
-	import { satelliteStore } from '$lib/derived/satellite/satellite.derived';
+	import { satelliteStore } from '$lib/derived/satellite.derived';
 	import { getAnalyticsPageViewsForPeriods } from '$lib/services/orbiter/orbiter.pagination.page-views.services';
 	import { getAnalyticsPerformanceMetricsForPeriods } from '$lib/services/orbiter/orbiter.pagination.performance-metrics.services';
 	import { getAnalyticsTrackEventsForPeriods } from '$lib/services/orbiter/orbiter.pagination.track-events.services';

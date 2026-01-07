@@ -52,15 +52,15 @@ describe('Mission Control > Notifications', () => {
 		consoleActor = c;
 		consoleActor.setIdentity(controller);
 
-		const { update_rate_config } = consoleActor;
+		const { set_rate_config } = consoleActor;
 
 		const config = {
 			max_tokens: 1_000n,
 			time_per_token_ns: 60_000_000_000n / 1000n // 60ns per token
 		};
 
-		await update_rate_config({ Satellite: null }, config);
-		await update_rate_config({ MissionControl: null }, config);
+		await set_rate_config({ Satellite: null }, config);
+		await set_rate_config({ MissionControl: null }, config);
 
 		await deploySegments({ actor: consoleActor });
 
@@ -464,7 +464,7 @@ describe('Mission Control > Notifications', () => {
 					templateHtml: FAILED_DEPOSIT_CYCLES_TEMPLATE_HTML,
 					templateTitle: `❗️Cycles Deposit Failed on Your Mission Control`,
 					moduleName: 'Mission Control',
-					url: 'https://console.juno.build/mission-control',
+					url: 'https://console.juno.build/monitoring/?tab=service',
 					expectedIdempotencyKeySegmentId: missionControlId,
 					expectedTimestamp,
 					pic

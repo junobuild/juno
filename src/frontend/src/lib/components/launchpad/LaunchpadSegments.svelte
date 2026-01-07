@@ -1,5 +1,6 @@
 <script lang="ts">
 	import LaunchpadAnalytics from '$lib/components/launchpad/LaunchpadAnalytics.svelte';
+	import LaunchpadHeader from '$lib/components/launchpad/LaunchpadHeader.svelte';
 	import LaunchpadMonitoring from '$lib/components/launchpad/LaunchpadMonitoring.svelte';
 	import LaunchpadSatellite from '$lib/components/launchpad/LaunchpadSatellite.svelte';
 	import LaunchpadToolbar from '$lib/components/launchpad/LaunchpadToolbar.svelte';
@@ -15,7 +16,9 @@
 	);
 </script>
 
-<LaunchpadToolbar bind:filter />
+<LaunchpadHeader>
+	<LaunchpadToolbar bind:filter />
+</LaunchpadHeader>
 
 <LaunchpadMonitoring />
 

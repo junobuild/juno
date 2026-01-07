@@ -58,9 +58,9 @@ describe('Observatory > OpenId > Rate', async () => {
 	};
 
 	const setRateConfig = async (customActor?: ObservatoryActor) => {
-		const { update_rate_config } = customActor ?? actor;
+		const { set_rate_config } = customActor ?? actor;
 
-		await update_rate_config(
+		await set_rate_config(
 			{ OpenIdCertificateRequests: null },
 			{
 				max_tokens: 1n,

@@ -2,7 +2,7 @@
 	import { nonNullish } from '@dfinity/utils';
 	import { onMount, type Snippet } from 'svelte';
 	import IconAuthentication from '$lib/components/icons/IconAuthentication.svelte';
-	import { satelliteStore } from '$lib/derived/satellite/satellite.derived';
+	import { satelliteStore } from '$lib/derived/satellite.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { layoutNavigation } from '$lib/stores/app/layout-navigation.store';
 	import { Color } from '$lib/types/theme';

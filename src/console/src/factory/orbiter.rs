@@ -1,19 +1,19 @@
 use crate::constants::FREEZING_THRESHOLD_THREE_MONTHS;
-use crate::factory::canister::create_canister;
+use crate::factory::orchestrator::create_segment_workflow;
 use crate::factory::types::CanisterCreator;
 use crate::factory::utils::controllers::remove_console_controller;
 use crate::factory::utils::wasm::orbiter_wasm_arg;
 use crate::fees::get_factory_fee_for_kind;
 use crate::fees::types::FeeKind;
+use crate::rates::increment_orbiters_rate;
 use crate::segments::add_segment as add_segment_store;
-use crate::store::heap::increment_orbiters_rate;
 use crate::types::ledger::Fee;
-use crate::types::state::{Segment, SegmentKey, SegmentType};
+use crate::types::state::{Segment, SegmentKey, StorableSegmentKind};
 use candid::{Nat, Principal};
 use junobuild_shared::constants::shared::CREATE_ORBITER_CYCLES;
 use junobuild_shared::ic::api::id;
-use junobuild_shared::mgmt::cmc::cmc_create_canister_install_code;
-use junobuild_shared::mgmt::ic::create_canister_install_code;
+use junobuild_shared::mgmt::cmc::create_and_install_canister_with_cmc;
+use junobuild_shared::mgmt::ic::create_and_install_canister_with_ic_mgmt;
 use junobuild_shared::mgmt::types::cmc::SubnetId;
 use junobuild_shared::mgmt::types::ic::CreateCanisterInitSettingsArg;
 use junobuild_shared::types::interface::CreateOrbiterArgs;
@@ -23,7 +23,7 @@ pub async fn create_orbiter(
     caller: Principal,
     args: CreateOrbiterArgs,
 ) -> Result<Principal, String> {
-    create_canister(
+    create_segment_workflow(
         create_orbiter_wasm,
         &increment_orbiters_rate,
         &get_fee,
@@ -57,7 +57,7 @@ async fn create_orbiter_wasm(
     };
 
     let result = if let Some(subnet_id) = subnet_id {
-        cmc_create_canister_install_code(
+        create_and_install_canister_with_cmc(
             &create_settings_arg,
             &wasm_arg,
             CREATE_ORBITER_CYCLES,
@@ -65,7 +65,12 @@ async fn create_orbiter_wasm(
         )
         .await
     } else {
-        create_canister_install_code(&create_settings_arg, &wasm_arg, CREATE_ORBITER_CYCLES).await
+        create_and_install_canister_with_ic_mgmt(
+            &create_settings_arg,
+            &wasm_arg,
+            CREATE_ORBITER_CYCLES,
+        )
+        .await
     };
 
     match result {
@@ -79,6 +84,6 @@ async fn create_orbiter_wasm(
 
 fn add_segment(user: &UserId, canister_id: &Principal) {
     let orbiter = Segment::new(canister_id, None);
-    let key = SegmentKey::from(user, canister_id, SegmentType::Orbiter);
+    let key = SegmentKey::from(user, canister_id, StorableSegmentKind::Orbiter);
     add_segment_store(&key, &orbiter)
 }

@@ -4,9 +4,9 @@ import { observatoryActorIC, observatoryActorLocal } from './actor.mjs';
 import { targetMainnet } from './utils.mjs';
 
 const setRateConfig = async (mainnet) => {
-	const { update_rate_config } = await (mainnet ? observatoryActorIC() : observatoryActorLocal());
+	const { set_rate_config } = await (mainnet ? observatoryActorIC() : observatoryActorLocal());
 
-	await update_rate_config(
+	await set_rate_config(
 		{ OpenIdCertificateRequests: null },
 		{
 			max_tokens: 300, // allow up to 300 requests

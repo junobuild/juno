@@ -1,12 +1,9 @@
-import { initBulkCanistersStore, initPerCanisterStore } from '$lib/stores/_canister.store';
+import {
+	initBulkCertifiedCanistersStore,
+	initPerCertifiedCanisterStore
+} from '$lib/stores/_certified-canister.store';
 import type { CanisterSyncData } from '$lib/types/canister';
-import type { CertifiedData } from '$lib/types/store';
 
-export type UncertifiedCanisterSyncData = CertifiedData<CanisterSyncData>;
+export const canisterSyncDataStore = initPerCertifiedCanisterStore<CanisterSyncData>();
 
-// TODO: Uncertified because memory is not yet called with an update
-export const canisterSyncDataUncertifiedStore = initPerCanisterStore<UncertifiedCanisterSyncData>();
-
-// TODO: Uncertified because memory is not yet called with an update
-export const canistersSyncDataUncertifiedStore =
-	initBulkCanistersStore<UncertifiedCanisterSyncData>();
+export const canistersSyncDataStore = initBulkCertifiedCanistersStore<CanisterSyncData>();

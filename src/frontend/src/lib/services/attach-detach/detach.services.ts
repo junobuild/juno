@@ -70,7 +70,7 @@ const detachWithConsole = async ({
 		identity,
 		args: {
 			segment_id,
-			segment_type: segment === 'orbiter' ? { Orbiter: null } : { Satellite: null }
+			segment_kind: segment === 'orbiter' ? { Orbiter: null } : { Satellite: null }
 		}
 	});
 };

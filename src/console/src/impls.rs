@@ -1,8 +1,6 @@
 use crate::memory::manager::init_stable_state;
 use crate::types::ledger::{Fee, IcpPayment, IcrcPayment, IcrcPaymentKey};
-use crate::types::state::{
-    Account, HeapState, Rate, Rates, Segment, SegmentKey, SegmentType, State,
-};
+use crate::types::state::{Account, HeapState, Segment, SegmentKey, State, StorableSegmentKind};
 use candid::Principal;
 use ic_cdk::api::time;
 use ic_ledger_types::{BlockIndex, Tokens};
@@ -12,8 +10,6 @@ use junobuild_shared::ledger::types::cycles::CyclesTokens;
 use junobuild_shared::memory::serializers::{
     deserialize_from_bytes, serialize_into_bytes, serialize_to_bytes,
 };
-use junobuild_shared::rate::constants::DEFAULT_RATE_CONFIG;
-use junobuild_shared::rate::types::RateTokens;
 use junobuild_shared::types::state::{Metadata, SegmentId, Timestamp, UserId};
 use std::borrow::Cow;
 use std::collections::HashMap;
@@ -23,32 +19,6 @@ impl Default for State {
         Self {
             stable: init_stable_state(),
             heap: HeapState::default(),
-        }
-    }
-}
-
-impl Default for Rates {
-    fn default() -> Self {
-        let now = time();
-
-        let tokens: RateTokens = RateTokens {
-            tokens: 1,
-            updated_at: now,
-        };
-
-        Rates {
-            satellites: Rate {
-                config: DEFAULT_RATE_CONFIG,
-                tokens: tokens.clone(),
-            },
-            mission_controls: Rate {
-                config: DEFAULT_RATE_CONFIG,
-                tokens: tokens.clone(),
-            },
-            orbiters: Rate {
-                config: DEFAULT_RATE_CONFIG,
-                tokens,
-            },
         }
     }
 }
@@ -180,10 +150,10 @@ impl Segment {
 }
 
 impl SegmentKey {
-    pub fn from(user: &UserId, segment_id: &SegmentId, segment_type: SegmentType) -> Self {
+    pub fn from(user: &UserId, segment_id: &SegmentId, segment_kind: StorableSegmentKind) -> Self {
         Self {
             user: *user,
-            segment_type,
+            segment_kind,
             segment_id: *segment_id,
         }
     }

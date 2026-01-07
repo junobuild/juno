@@ -1,21 +1,20 @@
-import { canistersSyncDataUncertifiedStore } from '$lib/stores/ic-mgmt/canister-sync-data.store';
+import { canistersSyncDataStore } from '$lib/stores/ic-mgmt/canister-sync-data.store';
 import { derived } from 'svelte/store';
 
-export const canistersSyncDataUncertifiedSynced = derived(
-	[canistersSyncDataUncertifiedStore],
-	([$canistersSyncDataUncertifiedStore]) =>
-		Object.values($canistersSyncDataUncertifiedStore ?? {}).find(
+export const canistersSyncDataSynced = derived(
+	[canistersSyncDataStore],
+	([$canistersSyncDataStore]) =>
+		Object.values($canistersSyncDataStore ?? {}).find(
 			(canister) => !['synced', 'error'].includes(canister?.data.sync ?? 'loading')
 		) === undefined
 );
 
-export const canistersSyncDataUncertifiedNotSynced = derived(
-	[canistersSyncDataUncertifiedSynced],
-	([$canistersSyncDataUncertifiedSynced]) => !$canistersSyncDataUncertifiedSynced
+export const canistersSyncDataNotSynced = derived(
+	[canistersSyncDataSynced],
+	([$canistersSyncDataSynced]) => !$canistersSyncDataSynced
 );
 
-export const canistersSyncDataUncertifiedCount = derived(
-	[canistersSyncDataUncertifiedStore],
-	([$canistersSyncDataUncertifiedStore]) =>
-		Object.values($canistersSyncDataUncertifiedStore ?? {}).length
+export const canistersSyncDataCount = derived(
+	[canistersSyncDataStore],
+	([$canistersSyncDataStore]) => Object.values($canistersSyncDataStore ?? {}).length
 );

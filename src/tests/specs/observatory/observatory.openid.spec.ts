@@ -53,6 +53,12 @@ describe('Observatory > OpenId', async () => {
 			await assertOpenIdHttpsOutcalls({ pic, jwks: mockJwks });
 		});
 
+		it('should get openid monitoring enabled', async () => {
+			const { is_openid_monitoring_enabled } = actor;
+
+			await expect(is_openid_monitoring_enabled()).resolves.toBeTruthy();
+		});
+
 		it('should provide certificate', async () => {
 			await assertGetCertificate({ version: 1n, actor, jwks: mockJwks });
 		});
@@ -87,6 +93,12 @@ describe('Observatory > OpenId', async () => {
 			const { stop_openid_monitoring } = actor;
 
 			await expect(stop_openid_monitoring()).resolves.toBeNull();
+		});
+
+		it('should get openid monitoring disabled', async () => {
+			const { is_openid_monitoring_enabled } = actor;
+
+			await expect(is_openid_monitoring_enabled()).resolves.toBeFalsy();
 		});
 
 		it('should still provide certificate', async () => {

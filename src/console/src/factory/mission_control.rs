@@ -1,18 +1,18 @@
 use crate::accounts::{get_existing_account, update_mission_control};
 use crate::constants::FREEZING_THRESHOLD_ONE_YEAR;
-use crate::factory::canister::create_canister_with_account;
+use crate::factory::orchestrator::create_segment_with_account;
 use crate::factory::services::payment::{process_payment_cycles, refund_payment_cycles};
 use crate::factory::types::CanisterCreator;
 use crate::factory::utils::controllers::update_mission_control_controllers;
 use crate::factory::utils::wasm::mission_control_wasm_arg;
 use crate::fees::get_factory_fee;
-use crate::store::heap::increment_mission_controls_rate;
+use crate::rates::increment_mission_controls_rate;
 use crate::types::ledger::Fee;
 use candid::{Nat, Principal};
 use junobuild_shared::constants::shared::CREATE_MISSION_CONTROL_CYCLES;
 use junobuild_shared::ic::api::id;
-use junobuild_shared::mgmt::cmc::cmc_create_canister_install_code;
-use junobuild_shared::mgmt::ic::create_canister_install_code;
+use junobuild_shared::mgmt::cmc::create_and_install_canister_with_cmc;
+use junobuild_shared::mgmt::ic::create_and_install_canister_with_ic_mgmt;
 use junobuild_shared::mgmt::types::cmc::SubnetId;
 use junobuild_shared::mgmt::types::ic::CreateCanisterInitSettingsArg;
 use junobuild_shared::types::interface::CreateMissionControlArgs;
@@ -32,7 +32,7 @@ pub async fn create_mission_control(
 
     let fee = get_factory_fee(&SegmentKind::MissionControl)?.fee_cycles;
 
-    let mission_control_id = create_canister_with_account(
+    let mission_control_id = create_segment_with_account(
         create_mission_control_wasm,
         process_payment_cycles,
         refund_payment_cycles,
@@ -69,7 +69,7 @@ async fn create_mission_control_wasm(
     };
 
     let mission_control_id = if let Some(subnet_id) = subnet_id {
-        cmc_create_canister_install_code(
+        create_and_install_canister_with_cmc(
             &create_settings_arg,
             &wasm_arg,
             CREATE_MISSION_CONTROL_CYCLES,
@@ -77,7 +77,7 @@ async fn create_mission_control_wasm(
         )
         .await
     } else {
-        create_canister_install_code(
+        create_and_install_canister_with_ic_mgmt(
             &create_settings_arg,
             &wasm_arg,
             CREATE_MISSION_CONTROL_CYCLES,

@@ -305,6 +305,7 @@
 	"satellites": {
 		"title": "所有卫星",
 		"launch": "部署新卫星",
+		"launch_first": "启动您的第一个 Satellite",
 		"create": "创建卫星",
 		"search": "搜索",
 		"satellite": "卫星",
@@ -316,7 +317,9 @@
 		"satellite_name": "卫星名称",
 		"what_are_you_building": "您正在构建什么",
 		"website": "网站",
+		"website_description": "落地页、博客、作品集",
 		"application": "应用程序",
+		"application_description": "数据存储、用户管理、无服务器函数",
 		"environment": "运行环境",
 		"tags": "标签",
 		"tags_placeholder": "逗号分隔或每行一个，留空则不添加标签。",

@@ -1,19 +1,19 @@
 use crate::constants::FREEZING_THRESHOLD_ONE_YEAR;
-use crate::factory::canister::create_canister;
+use crate::factory::orchestrator::create_segment_workflow;
 use crate::factory::types::CanisterCreator;
 use crate::factory::utils::controllers::remove_console_controller;
 use crate::factory::utils::wasm::satellite_wasm_arg;
 use crate::fees::get_factory_fee_for_kind;
 use crate::fees::types::FeeKind;
+use crate::rates::increment_satellites_rate;
 use crate::segments::add_segment as add_segment_store;
-use crate::store::heap::increment_satellites_rate;
 use crate::types::ledger::Fee;
-use crate::types::state::{Segment, SegmentKey, SegmentType};
+use crate::types::state::{Segment, SegmentKey, StorableSegmentKind};
 use candid::{Nat, Principal};
 use junobuild_shared::constants::shared::CREATE_SATELLITE_CYCLES;
 use junobuild_shared::ic::api::id;
-use junobuild_shared::mgmt::cmc::cmc_create_canister_install_code;
-use junobuild_shared::mgmt::ic::create_canister_install_code;
+use junobuild_shared::mgmt::cmc::create_and_install_canister_with_cmc;
+use junobuild_shared::mgmt::ic::create_and_install_canister_with_ic_mgmt;
 use junobuild_shared::mgmt::types::cmc::SubnetId;
 use junobuild_shared::mgmt::types::ic::CreateCanisterInitSettingsArg;
 use junobuild_shared::types::interface::{CreateSatelliteArgs, InitStorageArgs};
@@ -26,7 +26,7 @@ pub async fn create_satellite(
     let storage = args.storage.clone();
     let name = args.name.clone();
 
-    create_canister(
+    create_segment_workflow(
         move |creator, subnet_id| async move {
             create_satellite_wasm(creator, subnet_id, storage).await
         },
@@ -63,7 +63,7 @@ async fn create_satellite_wasm(
     };
 
     let result = if let Some(subnet_id) = subnet_id {
-        cmc_create_canister_install_code(
+        create_and_install_canister_with_cmc(
             &create_settings_arg,
             &wasm_arg,
             CREATE_SATELLITE_CYCLES,
@@ -71,7 +71,12 @@ async fn create_satellite_wasm(
         )
         .await
     } else {
-        create_canister_install_code(&create_settings_arg, &wasm_arg, CREATE_SATELLITE_CYCLES).await
+        create_and_install_canister_with_ic_mgmt(
+            &create_settings_arg,
+            &wasm_arg,
+            CREATE_SATELLITE_CYCLES,
+        )
+        .await
     };
 
     match result {
@@ -86,6 +91,6 @@ async fn create_satellite_wasm(
 fn add_segment(user: &UserId, canister_id: &Principal, name: &Option<String>) {
     let metadata = Segment::init_metadata(name);
     let satellite = Segment::new(canister_id, Some(metadata));
-    let key = SegmentKey::from(user, canister_id, SegmentType::Satellite);
+    let key = SegmentKey::from(user, canister_id, StorableSegmentKind::Satellite);
     add_segment_store(&key, &satellite)
 }

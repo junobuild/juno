@@ -273,7 +273,7 @@ export interface ListResults {
 }
 export interface ListSegmentsArgs {
 	segment_id: [] | [Principal];
-	segment_type: [] | [SegmentType];
+	segment_kind: [] | [StorableSegmentKind];
 }
 export type Memory = { Heap: null } | { Stable: null };
 export interface OpenId {
@@ -360,10 +360,9 @@ export interface Segment {
 export interface SegmentKey {
 	user: Principal;
 	segment_id: Principal;
-	segment_type: SegmentType;
+	segment_kind: StorableSegmentKind;
 }
 export type SegmentKind = { Orbiter: null } | { MissionControl: null } | { Satellite: null };
-export type SegmentType = { Orbiter: null } | { Satellite: null };
 export interface SegmentsDeploymentOptions {
 	orbiter: [] | [string];
 	mission_control_version: [] | [string];
@@ -387,12 +386,12 @@ export interface SetControllersArgs {
 export interface SetSegmentMetadataArgs {
 	metadata: Array<[string, string]>;
 	segment_id: Principal;
-	segment_type: SegmentType;
+	segment_kind: StorableSegmentKind;
 }
 export interface SetSegmentsArgs {
 	metadata: [] | [Array<[string, string]>];
 	segment_id: Principal;
-	segment_type: SegmentType;
+	segment_kind: StorableSegmentKind;
 }
 export interface SetStorageConfig {
 	iframe: [] | [StorageConfigIFrame];
@@ -407,6 +406,7 @@ export interface SignedDelegation {
 	signature: Uint8Array;
 	delegation: Delegation;
 }
+export type StorableSegmentKind = { Orbiter: null } | { Satellite: null };
 export interface StorageConfig {
 	iframe: [] | [StorageConfigIFrame];
 	updated_at: [] | [bigint];
@@ -453,7 +453,7 @@ export interface Tokens {
 }
 export interface UnsetSegmentsArgs {
 	segment_id: Principal;
-	segment_type: SegmentType;
+	segment_kind: StorableSegmentKind;
 }
 export interface UploadChunk {
 	content: Uint8Array;
@@ -488,6 +488,7 @@ export interface _SERVICE {
 	get_fee: ActorMethod<[SegmentKind], FactoryFee>;
 	get_or_init_account: ActorMethod<[], Account>;
 	get_proposal: ActorMethod<[bigint], [] | [Proposal]>;
+	get_rate_config: ActorMethod<[SegmentKind], RateConfig>;
 	get_storage_config: ActorMethod<[], StorageConfig>;
 	http_request: ActorMethod<[HttpRequest], HttpResponse>;
 	http_request_streaming_callback: ActorMethod<
@@ -513,12 +514,12 @@ export interface _SERVICE {
 	set_controllers: ActorMethod<[SetControllersArgs], undefined>;
 	set_custom_domain: ActorMethod<[string, [] | [string]], undefined>;
 	set_fee: ActorMethod<[SegmentKind, FeesArgs], undefined>;
+	set_rate_config: ActorMethod<[SegmentKind, RateConfig], undefined>;
 	set_segment: ActorMethod<[SetSegmentsArgs], Segment>;
 	set_segment_metadata: ActorMethod<[SetSegmentMetadataArgs], Segment>;
 	set_storage_config: ActorMethod<[SetStorageConfig], StorageConfig>;
 	submit_proposal: ActorMethod<[bigint], [bigint, Proposal]>;
 	unset_segment: ActorMethod<[UnsetSegmentsArgs], undefined>;
-	update_rate_config: ActorMethod<[SegmentKind, RateConfig], undefined>;
 	upload_proposal_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;
 }
 export declare const idlFactory: IDL.InterfaceFactory;

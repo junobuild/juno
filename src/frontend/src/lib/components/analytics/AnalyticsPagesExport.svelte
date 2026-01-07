@@ -2,7 +2,7 @@
 	import { isNullish } from '@dfinity/utils';
 	import type { MissionControlDid } from '$declarations';
 	import { authIdentity } from '$lib/derived/auth.derived';
-	import { satelliteStore } from '$lib/derived/satellite/satellite.derived';
+	import { satelliteStore } from '$lib/derived/satellite.derived';
 	import { exportPageViews } from '$lib/services/orbiter/orbiter.export.services';
 	import { busy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';

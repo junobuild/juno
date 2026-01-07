@@ -1,6 +1,13 @@
 <script lang="ts">
 	import { getHours } from 'date-fns';
+	import IconTerminal from '$lib/components/icons/IconTerminal.svelte';
 	import { i18n } from '$lib/stores/app/i18n.store';
+
+	interface Props {
+		withoutReturningLabel?: boolean;
+	}
+
+	let { withoutReturningLabel = false }: Props = $props();
 
 	const timedGreeting = (): string => {
 		const hour = getHours(new Date());
@@ -12,7 +19,10 @@
 				: $i18n.launchpad.good_evening;
 	};
 
-	const genericGreetings = [$i18n.launchpad.welcome_back, $i18n.launchpad.greetings];
+	let genericGreetings = $derived([
+		...(withoutReturningLabel ? [] : [$i18n.launchpad.welcome_back]),
+		$i18n.launchpad.greetings
+	]);
 
 	let greetings = $derived([...genericGreetings, timedGreeting()]);
 
@@ -22,7 +32,7 @@
 	let title = $derived(titles[Math.floor(Math.random() * titles.length)]);
 </script>
 
-<p>🖖 {greeting} {title}</p>
+<p><IconTerminal /> {greeting} {title}</p>
 
 <style lang="scss">
 	p {

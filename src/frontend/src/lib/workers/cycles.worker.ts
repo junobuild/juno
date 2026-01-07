@@ -1,3 +1,9 @@
+import {
+	queryAndUpdate,
+	type QueryAndUpdateOnCertifiedError,
+	type QueryAndUpdateOnResponse,
+	type QueryAndUpdateRequestParams
+} from '$lib/api/call/query.api';
 import { canisterStatus } from '$lib/api/ic.api';
 import {
 	CYCLES_WARNING,
@@ -8,12 +14,8 @@ import { ONE_YEAR, THREE_MONTHS } from '$lib/constants/canister.constants';
 import { cyclesIdbStore } from '$lib/stores/app/idb.store';
 import type { CanisterInfo, CanisterSegment, CanisterSyncData, Segment } from '$lib/types/canister';
 import type { PostMessageDataRequest, PostMessageRequest } from '$lib/types/post-message';
-import {
-	emitCanister,
-	emitCanisters,
-	emitSavedCanisters,
-	loadIdentity
-} from '$lib/utils/worker.utils';
+import { emitCanisters, emitSavedCanisters, loadIdentity } from '$lib/utils/worker.utils';
+import { CanistersStore } from '$lib/workers/_stores/canisters.store';
 import { isNullish } from '@dfinity/utils';
 import type { Identity } from '@icp-sdk/core/agent';
 import { set } from 'idb-keyval';
@@ -101,37 +103,63 @@ const syncIcStatusCanisters = async ({
 	identity: Identity;
 	segments: CanisterSegment[];
 }) => {
+	const canistersStore = new CanistersStore();
+
 	const syncStatusAndMemoryPerCanister = async ({
 		canisterId,
 		segment
-	}: CanisterSegment): Promise<CanisterSyncData> => {
-		try {
-			const canisterInfo = await canisterStatus({ canisterId, identity });
+	}: CanisterSegment): Promise<void> => {
+		const request = ({
+			identity: _,
+			certified
+		}: QueryAndUpdateRequestParams): Promise<CanisterInfo> =>
+			canisterStatus({ canisterId, identity, certified });
 
+		const onLoad: QueryAndUpdateOnResponse<CanisterInfo> = ({
+			certified,
+			response: canisterInfo
+		}) => {
 			const canister = mapCanisterSyncData({
 				canisterInfo,
-				canisterId: canisterInfo.canisterId,
+				canisterId,
 				segment
 			});
 
-			// We emit the canister data this way the UI can render asynchronously render the information without waiting for all canisters status to be fetched.
-			emitCanister(canister);
+			canistersStore.sync({ canisterId, data: { data: canister, certified } });
+		};
 
-			return canister;
-		} catch (err: unknown) {
-			console.error(err);
+		const onCertifiedError: QueryAndUpdateOnCertifiedError = ({ error }) => {
+			console.error(error);
 
-			return {
-				id: canisterId,
-				sync: 'error'
-			};
-		}
+			canistersStore.set({
+				canisterId,
+				data: {
+					data: {
+						id: canisterId,
+						sync: 'error'
+					},
+					certified: false
+				}
+			});
+		};
+
+		await queryAndUpdate<CanisterInfo>({
+			request,
+			onLoad,
+			onCertifiedError,
+			identity,
+			resolution: 'all_settled'
+		});
 	};
 
-	const canisters = await Promise.all(segments.map(syncStatusAndMemoryPerCanister));
+	await Promise.all(segments.map(syncStatusAndMemoryPerCanister));
+
+	const canisters = canistersStore.getValues();
 
 	// Save information in indexed-db as well to load previous values on navigation and refresh
-	for (const { id, ...rest } of canisters.filter(({ sync }) => sync !== 'error')) {
+	for (const {
+		data: { id, ...rest }
+	} of canisters.filter(({ data: { sync } }) => sync !== 'error')) {
 		await set(id, { id, ...rest }, cyclesIdbStore);
 	}
 

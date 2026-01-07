@@ -220,7 +220,7 @@ type ListResults = record {
 };
 type ListSegmentsArgs = record {
   segment_id : opt principal;
-  segment_type : opt SegmentType;
+  segment_kind : opt StorableSegmentKind;
 };
 type Memory = variant { Heap; Stable };
 type OpenId = record { provider : OpenIdProvider; data : OpenIdData };
@@ -297,10 +297,9 @@ type Segment = record {
 type SegmentKey = record {
   user : principal;
   segment_id : principal;
-  segment_type : SegmentType;
+  segment_kind : StorableSegmentKind;
 };
 type SegmentKind = variant { Orbiter; MissionControl; Satellite };
-type SegmentType = variant { Orbiter; Satellite };
 type SegmentsDeploymentOptions = record {
   orbiter : opt text;
   mission_control_version : opt text;
@@ -324,12 +323,12 @@ type SetControllersArgs = record {
 type SetSegmentMetadataArgs = record {
   metadata : vec record { text; text };
   segment_id : principal;
-  segment_type : SegmentType;
+  segment_kind : StorableSegmentKind;
 };
 type SetSegmentsArgs = record {
   metadata : opt vec record { text; text };
   segment_id : principal;
-  segment_type : SegmentType;
+  segment_kind : StorableSegmentKind;
 };
 type SetStorageConfig = record {
   iframe : opt StorageConfigIFrame;
@@ -341,6 +340,7 @@ type SetStorageConfig = record {
   redirects : opt vec record { text; StorageConfigRedirect };
 };
 type SignedDelegation = record { signature : blob; delegation : Delegation };
+type StorableSegmentKind = variant { Orbiter; Satellite };
 type StorageConfig = record {
   iframe : opt StorageConfigIFrame;
   updated_at : opt nat64;
@@ -383,7 +383,7 @@ type TimestampMatcher = variant {
 type Tokens = record { e8s : nat64 };
 type UnsetSegmentsArgs = record {
   segment_id : principal;
-  segment_type : SegmentType;
+  segment_kind : StorableSegmentKind;
 };
 type UploadChunk = record {
   content : blob;
@@ -416,6 +416,7 @@ service : () -> {
   get_fee : (SegmentKind) -> (FactoryFee) query;
   get_or_init_account : () -> (Account);
   get_proposal : (nat) -> (opt Proposal) query;
+  get_rate_config : (SegmentKind) -> (RateConfig) query;
   get_storage_config : () -> (StorageConfig) query;
   http_request : (HttpRequest) -> (HttpResponse) query;
   http_request_streaming_callback : (StreamingCallbackToken) -> (
@@ -441,11 +442,11 @@ service : () -> {
   set_controllers : (SetControllersArgs) -> ();
   set_custom_domain : (text, opt text) -> ();
   set_fee : (SegmentKind, FeesArgs) -> ();
+  set_rate_config : (SegmentKind, RateConfig) -> ();
   set_segment : (SetSegmentsArgs) -> (Segment);
   set_segment_metadata : (SetSegmentMetadataArgs) -> (Segment);
   set_storage_config : (SetStorageConfig) -> (StorageConfig);
   submit_proposal : (nat) -> (nat, Proposal);
   unset_segment : (UnsetSegmentsArgs) -> ();
-  update_rate_config : (SegmentKind, RateConfig) -> ();
   upload_proposal_asset_chunk : (UploadChunk) -> (UploadChunkResult);
 }

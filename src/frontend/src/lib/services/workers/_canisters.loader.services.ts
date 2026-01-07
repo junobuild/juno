@@ -1,14 +1,14 @@
 import type { CanisterStoreData } from '$lib/stores/_canister.store';
+import type { CertifiedCanisterStoreData } from '$lib/stores/_certified-canister.store';
 import {
-	canistersSyncDataUncertifiedStore,
-	canisterSyncDataUncertifiedStore,
-	type UncertifiedCanisterSyncData
+	canistersSyncDataStore,
+	canisterSyncDataStore
 } from '$lib/stores/ic-mgmt/canister-sync-data.store';
 import {
 	canisterMonitoringUncertifiedStore,
-	canistersMonitoringUncertifiedStore,
-	type UncertifiedCanisterSyncMonitoring
+	canistersMonitoringUncertifiedStore
 } from '$lib/stores/mission-control/canister-monitoring.store';
+import type { CanisterSyncData, UncertifiedCanisterSyncMonitoring } from '$lib/types/canister';
 import type {
 	PostMessageDataResponseCanisterMonitoring,
 	PostMessageDataResponseCanistersMonitoring,
@@ -22,12 +22,13 @@ export const syncCanisterMonitoring = ({ canister }: PostMessageDataResponseCani
 		return;
 	}
 
+	const {
+		data: { id: canisterId }
+	} = canister;
+
 	canisterMonitoringUncertifiedStore.set({
-		canisterId: canister.id,
-		data: {
-			data: canister,
-			certified: false
-		}
+		canisterId,
+		data: canister
 	});
 };
 
@@ -41,10 +42,7 @@ export const syncCanistersMonitoring = ({
 	const state = canisters.reduce<CanisterStoreData<UncertifiedCanisterSyncMonitoring>>(
 		(acc, canister) => ({
 			...acc,
-			[canister.id]: {
-				data: canister,
-				certified: false
-			}
+			[canister.data.id]: canister
 		}),
 		{}
 	);
@@ -57,12 +55,13 @@ export const syncCanisterSyncData = ({ canister }: PostMessageDataResponseCanist
 		return;
 	}
 
-	canisterSyncDataUncertifiedStore.set({
-		canisterId: canister.id,
-		data: {
-			data: canister,
-			certified: false
-		}
+	const {
+		data: { id: canisterId }
+	} = canister;
+
+	canisterSyncDataStore.set({
+		canisterId,
+		data: canister
 	});
 };
 
@@ -71,16 +70,13 @@ export const syncCanistersSyncData = ({ canisters }: PostMessageDataResponseCani
 		return;
 	}
 
-	const state = canisters.reduce<CanisterStoreData<UncertifiedCanisterSyncData>>(
+	const state = canisters.reduce<CertifiedCanisterStoreData<CanisterSyncData>>(
 		(acc, canister) => ({
 			...acc,
-			[canister.id]: {
-				data: canister,
-				certified: false
-			}
+			[canister.data.id]: canister
 		}),
 		{}
 	);
 
-	canistersSyncDataUncertifiedStore.setAll(state);
+	canistersSyncDataStore.setAll(state);
 };

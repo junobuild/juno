@@ -2,9 +2,8 @@
 	import { nonNullish } from '@dfinity/utils';
 	import { run } from 'svelte/legacy';
 	import { fade } from 'svelte/transition';
+	import LaunchpadFirstSatellite from '$lib/components/launchpad/LaunchpadFirstSatellite.svelte';
 	import LaunchpadSegments from '$lib/components/launchpad/LaunchpadSegments.svelte';
-	import SatelliteNewLaunchButton from '$lib/components/satellites/SatelliteNewLaunchButton.svelte';
-	import ContainerCentered from '$lib/components/ui/ContainerCentered.svelte';
 	import Message from '$lib/components/ui/Message.svelte';
 	import Spinner from '$lib/components/ui/Spinner.svelte';
 	import { satellitesStore } from '$lib/derived/satellites.derived';
@@ -35,11 +34,9 @@
 			</Message>
 		</div>
 	{:else}
-		<div in:fade>
-			<ContainerCentered>
-				<SatelliteNewLaunchButton />
-			</ContainerCentered>
-		</div>
+		<section in:fade>
+			<LaunchpadFirstSatellite />
+		</section>
 	{/if}
 {:else if ($satellitesStore?.length ?? 0) >= 1}
 	<section in:fade>

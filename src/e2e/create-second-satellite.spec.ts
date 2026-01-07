@@ -13,7 +13,7 @@ testWithII('should not allow creating a second satellite', async () => {
 	await consolePage.goto();
 
 	// Open Create Satellite wizard again
-	await consolePage.openCreateSatelliteWizard();
+	await consolePage.openCreateAdditionalSatelliteWizard();
 
 	// Assert no create button is available
 	await consolePage.failedAtCreatingSatellite();

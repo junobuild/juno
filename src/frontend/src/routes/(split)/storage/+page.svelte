@@ -7,7 +7,7 @@
 	import Loaders from '$lib/components/loaders/Loaders.svelte';
 	import Storage from '$lib/components/storage/Storage.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
-	import { satelliteStore } from '$lib/derived/satellite/satellite.derived';
+	import { satelliteStore } from '$lib/derived/satellite.derived';
 	import {
 		type Tab,
 		type TabsContext,

@@ -19,6 +19,26 @@ use ic_cdk::call::Call;
 use ic_cdk::management_canister::{CanisterId, CanisterInstallMode};
 use ic_ledger_types::{Subaccount, Tokens};
 
+/// Tops up a canister's cycles balance by transferring ICP to the Cycles Minting Canister (CMC).
+///
+/// This function performs a two-step process:
+/// 1. Transfers ICP tokens to the CMC's subaccount for the target canister
+/// 2. Notifies the CMC to convert the ICP into cycles and credit the canister
+///
+/// The function automatically deducts two transaction fees from the amount (one for the transfer,
+/// one for the notification). If the notification fails, the CMC automatically refunds the caller.
+///
+/// # Arguments
+/// - `canister_id`: The ID of the canister to top up
+/// - `amount`: The total ICP amount including transaction fees (minimum: 2 * IC_TRANSACTION_FEE_ICP)
+///
+/// # Returns
+/// - `Ok(())`: On success, the canister has been topped up with cycles
+/// - `Err(String)`: On failure, returns an error message describing what went wrong
+///
+/// # Errors
+/// - Ledger transfer failures (insufficient balance, invalid recipient, etc.)
+/// - CMC notification failures (though CMC will refund in these cases)
 pub async fn top_up_canister(canister_id: &CanisterId, amount: &Tokens) -> Result<(), String> {
     // We need to hold back 1 transaction fee for the 'send' and also 1 for the 'notify'
     let send_amount = Tokens::from_e8s(amount.e8s() - (2 * IC_TRANSACTION_FEE_ICP.e8s()));
@@ -71,9 +91,37 @@ fn convert_principal_to_sub_account(principal_id: &[u8]) -> Subaccount {
 /// # Returns
 /// - `Ok(Principal)`: On success, returns the `Principal` ID of the newly created canister.
 /// - `Err(String)`: On failure, returns an error message.
-pub async fn cmc_create_canister_install_code(
+pub async fn create_and_install_canister_with_cmc(
     create_settings_arg: &CreateCanisterInitSettingsArg,
     wasm_arg: &WasmArg,
+    cycles: u128,
+    subnet_id: &SubnetId,
+) -> Result<Principal, String> {
+    let canister_id = create_canister_with_cmc(create_settings_arg, cycles, subnet_id).await?;
+
+    install_code(canister_id, wasm_arg, CanisterInstallMode::Install)
+        .await
+        .map_err(|_| JUNO_ERROR_CMC_INSTALL_CODE_FAILED.to_string())?;
+
+    Ok(canister_id)
+}
+
+/// Creates a new canister on a specific subnet using the Cycles Minting Canister (CMC).
+///
+/// # Arguments
+/// - `create_settings_arg`: Initial settings for the canister (controllers, compute allocation, etc.)
+/// - `cycles`: The number of cycles to deposit into the new canister
+/// - `subnet_id`: The ID of the subnet where the canister should be created
+///
+/// # Returns
+/// - `Ok(Principal)`: On success, returns the Principal ID of the newly created canister
+/// - `Err(String)`: On failure, returns an error message describing what went wrong
+///
+/// # Errors
+/// - CMC call failures (network issues, invalid arguments, etc.)
+/// - CMC canister creation failures (insufficient cycles, subnet unavailable, etc.)
+pub async fn create_canister_with_cmc(
+    create_settings_arg: &CreateCanisterInitSettingsArg,
     cycles: u128,
     subnet_id: &SubnetId,
 ) -> Result<Principal, String> {
@@ -91,22 +139,12 @@ pub async fn cmc_create_canister_install_code(
         .await
         .decode_candid::<CreateCanisterResult>();
 
-    match result {
-        Err(error) => Err(format!(
-            "{} ({})",
-            JUNO_ERROR_CMC_CALL_CREATE_CANISTER_FAILED, &error
-        )),
-        Ok(result) => match result {
-            Err(err) => Err(format!("{JUNO_ERROR_CMC_CREATE_CANISTER_FAILED} ({err})")),
-            Ok(canister_id) => {
-                let install =
-                    install_code(canister_id, wasm_arg, CanisterInstallMode::Install).await;
-
-                match install {
-                    Err(_) => Err(JUNO_ERROR_CMC_INSTALL_CODE_FAILED.to_string()),
-                    Ok(_) => Ok(canister_id),
-                }
-            }
-        },
-    }
+    result
+        .map_err(|error| {
+            format!(
+                "{} ({})",
+                JUNO_ERROR_CMC_CALL_CREATE_CANISTER_FAILED, &error
+            )
+        })?
+        .map_err(|err| format!("{JUNO_ERROR_CMC_CREATE_CANISTER_FAILED} ({err})"))
 }

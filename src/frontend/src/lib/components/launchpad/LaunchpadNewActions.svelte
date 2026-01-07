@@ -59,7 +59,7 @@
 	bind:this={button}
 	class="primary"
 	onclick={() => (visible = true)}
-	{...testId(testIds.createSatellite.launch)}
+	{...testId(testIds.launchpad.actions)}
 >
 	<span>{$i18n.core.launch}&nbsp;</span>
 	<IconRocket size="16px" />
@@ -67,7 +67,10 @@
 
 <Popover anchor={button} direction="rtl" bind:visible>
 	<div class="container">
-		<button class="menu" onclick={createSatellite}
+		<button
+			class="menu"
+			onclick={createSatellite}
+			{...testId(testIds.launchpad.launchExtraSatellite)}
 			><IconSatellite /> {$i18n.satellites.launch}</button
 		>
 

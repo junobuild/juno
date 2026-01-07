@@ -26,7 +26,7 @@ export const loadConsoleSegments = async ({
 
 		return await list_segments({
 			segment_id: toNullable(),
-			segment_type: toNullable()
+			segment_kind: toNullable()
 		});
 	};
 

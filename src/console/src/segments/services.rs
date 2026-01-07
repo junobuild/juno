@@ -4,7 +4,7 @@ use crate::types::state::{Segment, SegmentKey};
 use junobuild_shared::ic::api::caller;
 
 pub fn attach_segment(args: SetSegmentsArgs) -> Result<Segment, String> {
-    let key = SegmentKey::from(&caller(), &args.segment_id, args.segment_type);
+    let key = SegmentKey::from(&caller(), &args.segment_id, args.segment_kind);
     let segment = Segment::new(&args.segment_id, args.metadata);
 
     try_add_segment(&key, &segment)?;
@@ -13,7 +13,7 @@ pub fn attach_segment(args: SetSegmentsArgs) -> Result<Segment, String> {
 }
 
 pub fn detach_segment(args: UnsetSegmentsArgs) -> Result<(), String> {
-    let key = SegmentKey::from(&caller(), &args.segment_id, args.segment_type);
+    let key = SegmentKey::from(&caller(), &args.segment_id, args.segment_kind);
 
     unset_segment(&key)
 }

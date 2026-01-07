@@ -23,6 +23,10 @@ pub fn disable_scheduler(provider: &OpenIdProvider) -> Result<(), String> {
     with_openid_mut(|openid| disable_scheduler_impl(provider, openid))
 }
 
+pub fn is_scheduler_enabled(provider: &OpenIdProvider) -> bool {
+    with_openid(|openid| scheduler_enabled(openid, provider))
+}
+
 pub fn set_openid_certificate(provider: &OpenIdProvider, jwks: &Jwks) {
     with_openid_mut(|openid| set_openid_certificate_impl(provider, jwks, openid))
 }

@@ -947,7 +947,7 @@
 		"default_description": "Use your previously saved default strategy.",
 		"warn_monitoring_enabled": "Please disable monitoring before proceeding.",
 		"runtime": "Runtime",
-		"requires_mission_control": "Monitoring ensures your modules always have enough cycles by automatically tracking their levels and topping them up when needed. It requires Mission Control to operate.",
+		"requires_mission_control": "Monitoring ensures your modules always have enough cycles by automatically tracking their levels and topping them up when needed. Enabling this feature requires spinning up the Mission Control service.",
 		"create": "Set up monitoring"
 	},
 	"preferences": {

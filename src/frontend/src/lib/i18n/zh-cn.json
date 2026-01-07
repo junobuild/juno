@@ -948,7 +948,7 @@
 		"default_description": "使用您之前保存的默认策略。",
 		"warn_monitoring_enabled": "请先禁用监控再继续操作。",
 		"runtime": "运行时",
-		"requires_mission_control": "监控功能通过自动跟踪和补充 Cycles，确保您的模块始终有足够的资源运行。它需要 Mission Control 才能运行。",
+		"requires_mission_control": "监控功能通过自动跟踪模块的 Cycles 水平并在需要时为其充值，确保您的模块始终有足够的 Cycles。启用此功能需要启动 Mission Control 服务。",
 		"create": "设置监控"
 	},
 	"preferences": {

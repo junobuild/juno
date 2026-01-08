@@ -110,7 +110,8 @@
 		"two_years": "两年",
 		"five_years": "五年",
 		"custom": "自定义",
-		"launch": "启动"
+		"launch": "启动",
+		"redirecting": "正在跳转..."
 	},
 	"canisters": {
 		"top_up": "充值",

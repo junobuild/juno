@@ -113,6 +113,7 @@ interface I18nCore {
 	five_years: string;
 	custom: string;
 	launch: string;
+	redirecting: string;
 }
 
 interface I18nCanisters {

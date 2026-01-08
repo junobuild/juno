@@ -2,7 +2,7 @@
 	import type { IcrcAccount } from '@dfinity/oisy-wallet-signer';
 	import { IcrcWallet } from '@dfinity/oisy-wallet-signer/icrc-wallet';
 	import { isNullish, nonNullish, toNullable } from '@dfinity/utils';
-	import type { Icrc1TransferRequest } from '@icp-sdk/canisters/ledger/icp';
+	import type { TransferParams } from '@icp-sdk/canisters/ledger/icrc';
 	import Confetti from '$lib/components/ui/Confetti.svelte';
 	import Spinner from '$lib/components/ui/Spinner.svelte';
 	import ReceiveTokensSignerForm from '$lib/components/wallet/tokens/ReceiveTokensSignerForm.svelte';
@@ -12,7 +12,6 @@
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
 	import { assertAndConvertAmountToToken } from '$lib/utils/token.utils';
-	import type { TransferParams } from '@icp-sdk/canisters/ledger/icrc';
 
 	interface Props {
 		walletId: WalletId;
@@ -138,7 +137,7 @@
 		<button onclick={() => (visible = false)}>{$i18n.core.close}</button>
 	</div>
 {:else if step === 'form' && nonNullish(account)}
-	<ReceiveTokensSignerForm {account} {selectedToken} {back} receive={onsubmit} />
+	<ReceiveTokensSignerForm {account} {back} receive={onsubmit} {selectedToken} />
 {:else}
 	<div class="spinner">
 		<Spinner inline />

@@ -2,23 +2,26 @@
 	import type { IcrcAccount } from '@dfinity/oisy-wallet-signer';
 	import { base64ToUint8Array, nonNullish } from '@dfinity/utils';
 	import { Principal } from '@icp-sdk/core/principal';
-	import { getBalance } from '$lib/api/icp-index.api';
+	import { getUncertifiedBalance } from '$lib/api/icrc-index.api';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
+	import TokenSymbol from '$lib/components/wallet/tokens/TokenSymbol.svelte';
 	import { authIdentity } from '$lib/derived/auth.derived';
+	import type { SelectedToken } from '$lib/schemas/wallet.schema';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
-	import { formatICP } from '$lib/utils/icp.utils';
+	import { formatToken } from '$lib/utils/token.utils';
 
 	interface Props {
 		account: IcrcAccount;
+		selectedToken: SelectedToken;
 		back: () => void;
 		receive: (params: { balance: bigint | undefined; amount: string }) => Promise<void>;
 	}
 
-	let { account, back, receive }: Props = $props();
+	let { account, selectedToken, back, receive }: Props = $props();
 
 	let balance: bigint | undefined = $state(undefined);
 	let amount = $state('');
@@ -30,7 +33,11 @@
 				? base64ToUint8Array(account.subaccount)
 				: undefined;
 
-			balance = await getBalance({ account: { owner, subaccount }, identity: $authIdentity });
+			balance = await getUncertifiedBalance({
+				account: { owner, subaccount },
+				identity: $authIdentity,
+				indexId: Principal.fromText(selectedToken.indexId)
+			});
 		} catch (err: unknown) {
 			toasts.error({
 				text: $i18n.errors.wallet_load_balance,
@@ -71,7 +78,10 @@
 				{$i18n.wallet.balance}
 			{/snippet}
 			{#if nonNullish(balance)}
-				{formatICP(balance)} <small>ICP</small>
+				<span
+					>{formatToken({ selectedToken, amount: balance })}
+					<TokenSymbol {selectedToken} /></span
+				>
 			{:else}
 				<SkeletonText />
 			{/if}

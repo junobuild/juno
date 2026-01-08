@@ -1,14 +1,13 @@
 <script lang="ts">
 	import type { IcrcAccount } from '@dfinity/oisy-wallet-signer';
-	import { IcpWallet } from '@dfinity/oisy-wallet-signer/icp-wallet';
-	import { ICPToken, isNullish, nonNullish, toNullable } from '@dfinity/utils';
-	import type { Icrc1TransferRequest } from '@icp-sdk/canisters/ledger/icp';
+	import { IcrcWallet } from '@dfinity/oisy-wallet-signer/icrc-wallet';
+	import { isNullish, nonNullish, toNullable } from '@dfinity/utils';
+	import type { TransferParams } from '@icp-sdk/canisters/ledger/icrc';
 	import Confetti from '$lib/components/ui/Confetti.svelte';
 	import Spinner from '$lib/components/ui/Spinner.svelte';
 	import ReceiveTokensSignerForm from '$lib/components/wallet/tokens/ReceiveTokensSignerForm.svelte';
-	import { ICP } from '$lib/constants/token.constants';
 	import { OISY_WALLET_OPTIONS } from '$lib/constants/wallet.constants';
-	import type { WalletId } from '$lib/schemas/wallet.schema';
+	import type { SelectedToken, WalletId } from '$lib/schemas/wallet.schema';
 	import { wizardBusy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
@@ -16,20 +15,21 @@
 
 	interface Props {
 		walletId: WalletId;
+		selectedToken: SelectedToken;
 		back: () => void;
 		visible?: boolean;
 	}
 
-	let { back, walletId, visible = $bindable() }: Props = $props();
+	let { back, walletId, selectedToken, visible = $bindable() }: Props = $props();
 
 	let step: 'connecting' | 'receiving' | 'form' | 'success' = $state('connecting');
 	let account: IcrcAccount | undefined = $state(undefined);
 
 	const init = async () => {
-		let wallet: IcpWallet | undefined;
+		let wallet: IcrcWallet | undefined;
 
 		try {
-			wallet = await IcpWallet.connect({
+			wallet = await IcrcWallet.connect({
 				...OISY_WALLET_OPTIONS,
 				onDisconnect: () => {
 					if (nonNullish(account)) {
@@ -73,8 +73,8 @@
 		const { valid, tokenAmount } = assertAndConvertAmountToToken({
 			amount,
 			balance,
-			token: ICPToken,
-			fee: ICP.fees.transaction
+			token: selectedToken.token,
+			fee: selectedToken.fees.transaction
 		});
 
 		if (!valid || isNullish(tokenAmount)) {
@@ -92,24 +92,25 @@
 
 		step = 'receiving';
 
-		let wallet: IcpWallet | undefined;
+		let wallet: IcrcWallet | undefined;
 
 		try {
-			wallet = await IcpWallet.connect(OISY_WALLET_OPTIONS);
+			wallet = await IcrcWallet.connect(OISY_WALLET_OPTIONS);
 
 			const { owner, subaccount } = walletId;
 
-			const request: Icrc1TransferRequest = {
+			const params: TransferParams = {
 				to: {
 					owner,
 					subaccount: toNullable(subaccount)
 				},
-				amount: tokenAmount.toE8s()
+				amount: tokenAmount.toUlps()
 			};
 
-			await wallet.icrc1Transfer({
+			await wallet.transfer({
 				owner: account.owner,
-				request
+				params,
+				ledgerCanisterId: selectedToken.ledgerId
 			});
 
 			step = 'success';
@@ -136,7 +137,7 @@
 		<button onclick={() => (visible = false)}>{$i18n.core.close}</button>
 	</div>
 {:else if step === 'form' && nonNullish(account)}
-	<ReceiveTokensSignerForm {account} {back} receive={onsubmit} />
+	<ReceiveTokensSignerForm {account} {back} receive={onsubmit} {selectedToken} />
 {:else}
 	<div class="spinner">
 		<Spinner inline />

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
-	import { onMount, untrack } from 'svelte';
+	import { untrack } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import type { SatelliteDid } from '$declarations';
 	import HostingSwitchMemory from '$lib/components/hosting/HostingSwitchMemory.svelte';

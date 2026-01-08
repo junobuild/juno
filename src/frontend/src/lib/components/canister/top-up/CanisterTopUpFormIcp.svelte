@@ -7,12 +7,7 @@
 	import Value from '$lib/components/ui/Value.svelte';
 	import { ICP_TOP_UP_FEE } from '$lib/constants/token.constants';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import {
-		formatTCycles,
-		icpE8sToCycles,
-		icpNumberToCycles,
-		icpToCycles
-	} from '$lib/utils/cycles.utils';
+	import { formatTCycles, icpNumberToCycles } from '$lib/utils/cycles.utils';
 
 	interface Props {
 		balance: bigint;
@@ -40,8 +35,6 @@
 			? `${formatTCycles(BigInt(convertedCycles ?? 0))}`
 			: undefined;
 	});
-
-	$inspect(amount, displayTCycles, convertedCycles);
 </script>
 
 <div class="group-cycles">

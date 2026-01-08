@@ -3,6 +3,7 @@
 	import type { PrincipalText } from '@dfinity/zod-schemas';
 	import type { MissionControlDid } from '$declarations';
 	import FactoryAdvancedOptions from '$lib/components/factory/create/FactoryAdvancedOptions.svelte';
+	import FactoryContinue from '$lib/components/factory/create/FactoryContinue.svelte';
 	import FactoryCredits from '$lib/components/factory/create/FactoryCredits.svelte';
 	import FactoryProgressCreate from '$lib/components/factory/create/FactoryProgressCreate.svelte';
 	import Confetti from '$lib/components/ui/Confetti.svelte';
@@ -77,8 +78,6 @@
 		if ($isLaunchpadRoute) {
 			await navigateToAnalytics(null);
 		}
-
-		onclose();
 	};
 </script>
 
@@ -86,13 +85,9 @@
 	{#if step === 'ready'}
 		<Confetti />
 
-		<div class="msg">
-			<p>{$i18n.analytics.ready}</p>
-
-			<button onclick={navigate} {...testId(testIds.createAnalytics.close)}
-				>{$isLaunchpadRoute ? $i18n.core.continue : $i18n.core.close}</button
-			>
-		</div>
+		<FactoryContinue {navigate} {onclose} testId={testIds.createAnalytics.close}>
+			{$i18n.analytics.ready}
+		</FactoryContinue>
 	{:else if step === 'in_progress'}
 		<FactoryProgressCreate
 			{progress}
@@ -141,13 +136,5 @@
 
 	h2 {
 		@include overlay.title;
-	}
-
-	.msg {
-		@include overlay.message;
-
-		p {
-			margin: var(--padding-8x) 0 0;
-		}
 	}
 </style>

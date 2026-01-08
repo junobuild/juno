@@ -3,6 +3,7 @@
 	import type { PrincipalText } from '@dfinity/zod-schemas';
 	import type { MissionControlDid } from '$declarations';
 	import FactoryAdvancedOptions from '$lib/components/factory/create/FactoryAdvancedOptions.svelte';
+	import FactoryContinue from '$lib/components/factory/create/FactoryContinue.svelte';
 	import FactoryCredits from '$lib/components/factory/create/FactoryCredits.svelte';
 	import FactoryProgressCreate from '$lib/components/factory/create/FactoryProgressCreate.svelte';
 	import Confetti from '$lib/components/ui/Confetti.svelte';
@@ -73,9 +74,8 @@
 		setTimeout(() => (step = 'ready'), 500);
 	};
 
-	const navigate = () => {
-		navigateToSatellite(satelliteId);
-		setTimeout(onclose, 650);
+	const navigate = async () => {
+		await navigateToSatellite(satelliteId);
 	};
 
 	let satelliteName = $state<string | undefined>(undefined);
@@ -92,12 +92,9 @@
 	{#if step === 'ready'}
 		<Confetti />
 
-		<div class="msg">
-			<p>{$i18n.satellites.ready}</p>
-			<button {...testId(testIds.createSatellite.continue)} onclick={navigate}>
-				{$i18n.core.continue}
-			</button>
-		</div>
+		<FactoryContinue {navigate} {onclose} testId={testIds.createSatellite.continue}>
+			{$i18n.satellites.ready}
+		</FactoryContinue>
 	{:else if step === 'in_progress'}
 		<FactoryProgressCreate
 			{progress}
@@ -200,14 +197,6 @@
 
 	h2 {
 		@include overlay.title;
-	}
-
-	.msg {
-		@include overlay.message;
-
-		p {
-			margin: var(--padding-8x) 0 0;
-		}
 	}
 
 	form {

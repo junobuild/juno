@@ -35,6 +35,14 @@ export const icpToCycles = ({
 	trillionRatio: bigint;
 }): bigint => icp * trillionRatio;
 
+export const icpNumberToCycles = ({
+	icp,
+	trillionRatio
+}: {
+	icp: number;
+	trillionRatio: bigint;
+}): bigint => BigInt(Math.trunc(icp * Number(trillionRatio)));
+
 export const formatCyclesToHTML = ({ e12s, bold }: { e12s: bigint; bold: boolean }): string => {
 	const tag = bold ? 'strong' : 'span';
 	return `<${tag}>${formatTCycles(e12s)} <small>T Cycles</small></${tag}>`;

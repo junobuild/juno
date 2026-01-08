@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 
-import { ICManagementCanister } from '@icp-sdk/canisters/ic-management';
+import { IcManagementCanister } from '@icp-sdk/canisters/ic-management';
 import { icAgent, localAgent } from './actor.mjs';
 import { OBSERVATORY_ID } from './constants.mjs';
 import { targetMainnet } from './utils.mjs';
 
 const fnAgent = targetMainnet() ? icAgent : localAgent;
 
-const { fetchCanisterLogs } = ICManagementCanister.create({
+const { fetchCanisterLogs } = IcManagementCanister.create({
 	agent: await fnAgent()
 });
 

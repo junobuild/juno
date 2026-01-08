@@ -67,7 +67,7 @@ pub fn build_asset_response(
                                     }
                                 }
                                 None => {
-                                    error_response(
+                                    return error_response(
                                         RESPONSE_STATUS_CODE_500,
                                         "No chunks found.".to_string(),
                                     );
@@ -106,14 +106,19 @@ pub fn build_redirect_response(
         iframe,
         &certificate_version,
         certificate.get_pruned_labeled_sigs_root_hash_tree(),
-    )
-    .unwrap();
+    );
 
-    HttpResponse {
-        body: Vec::new().clone(),
-        headers: headers.clone(),
-        status_code: redirect.status_code,
-        streaming_strategy: None,
+    match headers {
+        Ok(headers) => HttpResponse {
+            body: Vec::new(),
+            headers,
+            status_code: redirect.status_code,
+            streaming_strategy: None,
+        },
+        Err(err) => error_response(
+            RESPONSE_STATUS_CODE_406,
+            ["Permission denied. Invalid headers. ", err].join(""),
+        ),
     }
 }
 

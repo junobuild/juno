@@ -7,9 +7,10 @@
 	import ReceiveTokensQRCode from '$lib/components/wallet/tokens/ReceiveTokensQRCode.svelte';
 	import ReceiveTokensSigner from '$lib/components/wallet/tokens/ReceiveTokensSigner.svelte';
 	import { isNotSkylab } from '$lib/env/app.env';
-	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
+	import type { SelectedToken, SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toAccountIdentifier } from '$lib/utils/icp-icrc-account.utils';
+	import { CYCLES, ICP } from '$lib/constants/token.constants';
 
 	interface Props {
 		selectedWallet: SelectedWallet;
@@ -22,6 +23,10 @@
 
 	let walletIdText = $derived(encodeIcrcAccount(walletId));
 	let accountIdentifier = $derived(toAccountIdentifier(walletId));
+
+	let selectedToken = $derived<SelectedToken>(
+		selectedWallet?.type === 'mission_control' ? ICP : CYCLES
+	);
 
 	let step: 'options' | 'wallet_id' | 'account_identifier' | 'signer' = $state('options');
 
@@ -53,7 +58,12 @@
 			</div>
 		{:else if step === 'signer'}
 			<div in:fade>
-				<ReceiveTokensSigner back={() => (step = 'options')} {walletId} bind:visible />
+				<ReceiveTokensSigner
+					back={() => (step = 'options')}
+					{walletId}
+					{selectedToken}
+					bind:visible
+				/>
 			</div>
 		{:else}
 			<div class="options">

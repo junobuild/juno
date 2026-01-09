@@ -17,6 +17,7 @@ import IconUpgradeDock from '$lib/components/icons/IconUpgradeDock.svelte';
 import IconWallet from '$lib/components/icons/IconWallet.svelte';
 import { authNotSignedIn } from '$lib/derived/auth.derived';
 import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
+import { orbiterStore } from '$lib/derived/orbiter.derived';
 import { satelliteStore } from '$lib/derived/satellite.derived';
 import { sortedSatelliteUis } from '$lib/derived/satellites.derived';
 import { i18n } from '$lib/stores/app/i18n.store';
@@ -46,17 +47,9 @@ const withMissionControlItems: Readable<SpotlightItems> = derived(
 						type: 'nav' as const,
 						icon: IconMissionControl,
 						text: $i18n.mission_control.title,
-						href: '/monitoring/?tab=service',
+						href: '/monitoring/?tab=mission+control',
 						filter: ({ signedIn, query }: SpotlightItemFilterParams) =>
 							signedIn && $i18n.mission_control.title.toLowerCase().includes(query)
-					},
-					{
-						type: 'nav' as const,
-						icon: IconWallet,
-						text: $i18n.wallet.title,
-						href: '/wallet',
-						filter: ({ signedIn, query }: SpotlightItemFilterParams) =>
-							signedIn && $i18n.wallet.title.toLowerCase().includes(query)
 					},
 					{
 						type: 'nav' as const,
@@ -65,17 +58,28 @@ const withMissionControlItems: Readable<SpotlightItems> = derived(
 						href: '/monitoring',
 						filter: ({ signedIn, query }: SpotlightItemFilterParams) =>
 							signedIn && $i18n.monitoring.title.toLowerCase().includes(query)
-					},
-					{
-						type: 'nav' as const,
-						icon: IconUpgradeDock,
-						text: $i18n.upgrade.title,
-						href: upgradeDockLink(),
-						filter: ({ signedIn, query }: SpotlightItemFilterParams) =>
-							signedIn && $i18n.upgrade.title.toLowerCase().includes(query)
 					}
 				]
 );
+
+const managementItems: Readable<SpotlightItems> = derived([i18n], ([$i18n]) => [
+	{
+		type: 'nav' as const,
+		icon: IconWallet,
+		text: $i18n.wallet.title,
+		href: '/wallet',
+		filter: ({ signedIn, query }: SpotlightItemFilterParams) =>
+			signedIn && $i18n.wallet.title.toLowerCase().includes(query)
+	},
+	{
+		type: 'nav' as const,
+		icon: IconUpgradeDock,
+		text: $i18n.upgrade.title,
+		href: upgradeDockLink(),
+		filter: ({ signedIn, query }: SpotlightItemFilterParams) =>
+			signedIn && $i18n.upgrade.title.toLowerCase().includes(query)
+	}
+]);
 
 const preferenceItem: Readable<SpotlightNavItem> = derived([i18n], ([$i18n]) => ({
 	type: 'nav' as const,
@@ -115,19 +119,33 @@ const themeItem: Readable<SpotlightActionItem> = derived([i18n, theme], ([$i18n,
 	};
 });
 
-const analyticsItem: Readable<SpotlightNavItem | undefined> = derived(
-	[i18n, authNotSignedIn],
-	([$i18n, $authNotSignedIn]) =>
+const analyticsItems: Readable<SpotlightItems> = derived(
+	[i18n, authNotSignedIn, orbiterStore],
+	([$i18n, $authNotSignedIn, $orbiterStore]) =>
 		$authNotSignedIn
-			? undefined
-			: {
-					type: 'nav' as const,
-					icon: IconAnalytics,
-					text: $i18n.analytics.title,
-					href: analyticsLink(),
-					filter: ({ query }: SpotlightItemFilterParams) =>
-						$i18n.analytics.title.toLowerCase().includes(query)
-				}
+			? []
+			: [
+					{
+						type: 'nav' as const,
+						icon: IconAnalytics,
+						text: $i18n.analytics.title,
+						href: analyticsLink(),
+						filter: ({ query }: SpotlightItemFilterParams) =>
+							$i18n.analytics.title.toLowerCase().includes(query)
+					},
+					...(nonNullish($orbiterStore)
+						? [
+								{
+									type: 'nav' as const,
+									icon: IconAnalytics,
+									text: $i18n.analytics.orbiter,
+									href: '/analytics/?tab=orbiter',
+									filter: ({ query }: SpotlightItemFilterParams) =>
+										$i18n.analytics.orbiter.toLowerCase().includes(query)
+								}
+							]
+						: [])
+				]
 );
 
 const externalItems: Readable<SpotlightItems> = derived([i18n], ([$i18n]) => [
@@ -231,7 +249,8 @@ export const spotlightItems: Readable<SpotlightItems> = derived(
 		themeItem,
 		externalItems,
 		withMissionControlItems,
-		analyticsItem,
+		managementItems,
+		analyticsItems,
 		satellitesItems,
 		preferenceItem
 	],
@@ -240,14 +259,16 @@ export const spotlightItems: Readable<SpotlightItems> = derived(
 		$themeItem,
 		$externalItems,
 		$missionControlItems,
-		$analyticsItem,
+		$managementItems,
+		$analyticsItems,
 		$satellitesItems,
 		$preferenceItem
 	]) => [
 		$homeItem,
 		...$missionControlItems,
+		...$managementItems,
 		...$satellitesItems,
-		...(nonNullish($analyticsItem) ? [$analyticsItem] : []),
+		...$analyticsItems,
 		$preferenceItem,
 		$themeItem,
 		...$externalItems

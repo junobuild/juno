@@ -6,7 +6,7 @@ export const MEMO_CANISTER_CREATE = BigInt(0x41455243); // == 'CREA'
 export const MEMO_CANISTER_APPROVE = BigInt(0x4150524f); // == 'APRO'
 
 /// At least for topup, it has to be exactly the memo used by the IC
-export const MEMO_CANISTER_TOP_UP = BigInt(0x50555054); // == 'TPUP'
+export const MEMO_CMC_TOP_UP = BigInt(0x50555054); // == 'TPUP'
 
 // eslint-disable-next-line no-loss-of-precision
 export const MEMO_SATELLITE_CREATE_REFUND = BigInt(0x44464552544153); // == 'SATREFD'

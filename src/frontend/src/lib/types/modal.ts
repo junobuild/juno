@@ -129,6 +129,8 @@ export interface JunoModalWalletDetail {
 	selectedToken: SelectedToken;
 }
 
+export type JunoModalConvertIcpToCyclesDetails = Pick<JunoModalWalletDetail, "selectedWallet">
+
 export type JunoModalDetail =
 	| JunoModalUpgradeSatelliteDetail
 	| JunoModalUpgradeDetail
@@ -180,6 +182,7 @@ export interface JunoModal<T extends JunoModalDetail> {
 		| 'show_user_details'
 		| 'apply_change'
 		| 'reject_change'
-		| 'upgrade_satellite_with_cdn';
+		| 'upgrade_satellite_with_cdn'
+		| 'convert_icp_to_cycles';
 	detail?: T;
 }

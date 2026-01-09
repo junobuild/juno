@@ -104,6 +104,10 @@ export interface Controller {
 	expires_at: [] | [bigint];
 }
 export type ControllerScope = { Write: null } | { Admin: null } | { Submit: null };
+export interface ConvertIcpToCyclesArgs {
+	from: Account_1;
+	amount: bigint;
+}
 export interface CreateMissionControlArgs {
 	subnet_id: [] | [Principal];
 }
@@ -471,6 +475,7 @@ export interface _SERVICE {
 	commit_proposal: ActorMethod<[CommitProposal], null>;
 	commit_proposal_asset_upload: ActorMethod<[CommitBatch], undefined>;
 	commit_proposal_many_assets_upload: ActorMethod<[Array<CommitBatch>], undefined>;
+	convert_icp_to_cycles: ActorMethod<[ConvertIcpToCyclesArgs], undefined>;
 	count_proposals: ActorMethod<[], bigint>;
 	create_mission_control: ActorMethod<[CreateMissionControlArgs], Principal>;
 	create_orbiter: ActorMethod<[CreateOrbiterArgs], Principal>;

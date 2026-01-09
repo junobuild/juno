@@ -81,7 +81,7 @@
 	{:else}
 		<ConvertIcpForm
 			onreview={() => (step = 'review')}
-			bind:selectedWallet
+			{selectedWallet}
 			bind:balance
 			bind:amount
 			bind:displayTCycles

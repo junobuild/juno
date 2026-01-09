@@ -381,6 +381,7 @@ interface I18nWallet {
 	memo_refund_satellite: string;
 	memo_refund_orbiter: string;
 	memo_refund_top_up: string;
+	memo_convert_icp_to_cycles: string;
 	memo_received: string;
 	memo_sent: string;
 	export_title: string;

@@ -372,6 +372,7 @@
 		"memo_refund_satellite": "卫星退款",
 		"memo_refund_orbiter": "轨道器退款",
 		"memo_refund_top_up": "模块充值",
+		"memo_convert_icp_to_cycles": "ICP 兑换为 Cycles",
 		"memo_received": "已接收",
 		"memo_sent": "已发送",
 		"export_title": "导出为CSV",

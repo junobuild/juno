@@ -371,6 +371,7 @@
 		"memo_refund_satellite": "Satellite refund",
 		"memo_refund_orbiter": "Orbiter refund",
 		"memo_refund_top_up": "Top-up module",
+		"memo_convert_icp_to_cycles": "ICP to Cycles",
 		"memo_received": "Received",
 		"memo_sent": "Sent",
 		"export_title": "Export to CSV",

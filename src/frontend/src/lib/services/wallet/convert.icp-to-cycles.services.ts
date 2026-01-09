@@ -44,13 +44,19 @@ export const convertIcpToCycles = async ({
 		return { success: 'error' };
 	}
 
+	if (selectedWallet.type === 'mission_control') {
+		toasts.error({
+			text: get(i18n).errors.convert_icp_to_cycles_not_supported
+		});
+		return { success: 'error' };
+	}
+
 	try {
 		assertNonNullish(identity, get(i18n).core.not_logged_in);
 
-		const { type: walletType, walletId } = selectedWallet;
-
 		// Transfer ICP
-		const send = async () => await sendIcpToCmc({
+		const send = async () =>
+			await sendIcpToCmc({
 				subAccount: identity.getPrincipal(),
 				identity,
 				memo: MEMO_CMC_MINT_CYCLES,

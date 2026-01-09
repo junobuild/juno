@@ -703,6 +703,7 @@ interface I18nErrors {
 	invalid_metadata: string;
 	empty_amount: string;
 	cycles_transfer_not_supported: string;
+	convert_icp_to_cycles_not_supported: string;
 	invalid_amount: string;
 	empty_balance: string;
 	wallet_not_selected: string;

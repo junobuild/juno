@@ -12,7 +12,7 @@
 
 	let { onconvert, selectedWallet, selectedToken }: Props = $props();
 
-	const openConvertIcpToCycles = async () => {
+	const openConvertIcpToCycles = () => {
 		onconvert?.();
 
 		emit({

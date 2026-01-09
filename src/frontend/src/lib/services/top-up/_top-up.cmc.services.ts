@@ -22,7 +22,7 @@ export const topUpWithCmc = async ({
 	...rest
 }: TopUpWithCmcParams): Promise<void> => {
 	const blockHeight = await sendIcpToCmc({
-		canisterId,
+		subAccount: canisterId,
 		identity,
 		memo: MEMO_CMC_TOP_UP,
 		...rest

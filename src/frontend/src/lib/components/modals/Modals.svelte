@@ -30,7 +30,7 @@
 	import SatelliteUpgradeModal from '$lib/components/modals/upgrade/SatelliteUpgradeModal.svelte';
 	import SendTokensModal from '$lib/components/modals/wallet/SendTokensModal.svelte';
 	import type { JunoModal, JunoModalDetail } from '$lib/types/modal';
-	import ConvertIcpToCyclesModal from "$lib/components/modals/cycles/convert/ConvertIcpToCyclesModal.svelte";
+	import ConvertIcpModal from "$lib/components/modals/wallet/ConvertIcpModal.svelte";
 
 	let modal: JunoModal<JunoModalDetail> | undefined = $state(undefined);
 
@@ -156,5 +156,5 @@
 {/if}
 
 {#if modal?.type === 'convert_icp_to_cycles' && nonNullish(modal.detail)}
-	<ConvertIcpToCyclesModal detail={modal.detail} onclose={close} />
+	<ConvertIcpModal detail={modal.detail} onclose={close} />
 {/if}

@@ -4,7 +4,7 @@
 	import WalletReceive from '$lib/components/wallet/WalletReceive.svelte';
 	import WalletSend from '$lib/components/wallet/WalletSend.svelte';
 	import type { SelectedToken, SelectedWallet } from '$lib/schemas/wallet.schema';
-	import ConvertIcp from "$lib/components/wallet/ConvertIcp.svelte";
+	import ConvertIcp from "$lib/components/wallet/convert/ConvertIcp.svelte";
 
 	interface Props {
 		selectedWallet: SelectedWallet;

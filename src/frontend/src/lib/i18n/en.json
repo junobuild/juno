@@ -397,7 +397,16 @@
 		"approving_canister_fee": "Authorizing fee...",
 		"dev": "Developer",
 		"total": "Total",
-		"resource": "Resource"
+		"resource": "Resource",
+		"convert": "Convert",
+		"converting": "Converting",
+		"convert_title": "Convert ICP to Cycles",
+		"convert_description": "Your <strong>{0}</strong> wallet currently holds <strong>{1}</strong>.",
+		"convert_review_and_confirm": "Review the details below and confirm to proceed with the conversion.",
+		"convert_preparing": "Preparing conversion...",
+		"convert_transferring": "Transferring ICP...",
+		"convert_minting": "Converting ICP to Cycles...",
+		"convert_done": "Your Cycles have been converted to ICP."
 	},
 	"authentication": {
 		"title": "Authentication",

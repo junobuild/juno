@@ -408,6 +408,15 @@ interface I18nWallet {
 	dev: string;
 	total: string;
 	resource: string;
+	convert: string;
+	converting: string;
+	convert_title: string;
+	convert_description: string;
+	convert_review_and_confirm: string;
+	convert_preparing: string;
+	convert_transferring: string;
+	convert_minting: string;
+	convert_done: string;
 }
 
 interface I18nAuthentication {

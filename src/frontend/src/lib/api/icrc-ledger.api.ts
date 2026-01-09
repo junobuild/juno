@@ -1,10 +1,11 @@
 import { getAgent } from '$lib/api/_agent/_agent.api';
-import type { LedgerId } from '$lib/schemas/wallet.schema';
+import type { LedgerId, LedgerIds } from '$lib/schemas/wallet.schema';
 import type { OptionIdentity } from '$lib/types/itentity';
 import { assertNonNullish, nowInBigIntNanoSeconds } from '@dfinity/utils';
 import {
 	IcrcLedgerCanister,
 	type ApproveParams,
+	type IcrcAccount,
 	type IcrcLedgerDid,
 	type TransferParams
 } from '@icp-sdk/canisters/ledger/icrc';
@@ -61,5 +62,28 @@ const icrcLedgerCanister = async ({
 	return IcrcLedgerCanister.create({
 		agent,
 		canisterId: ledgerId
+	});
+};
+
+export const getUncertifiedBalance = async ({
+	account,
+	identity,
+	ledgerId
+}: {
+	account: IcrcAccount;
+	identity: OptionIdentity;
+} & Pick<LedgerIds, 'ledgerId'>): Promise<bigint> => {
+	assertNonNullish(identity, 'No internet identity to initialize the ICRC Index actor.');
+
+	const agent = await getAgent({ identity });
+
+	const { balance } = IcrcLedgerCanister.create({
+		agent,
+		canisterId: ledgerId
+	});
+
+	return balance({
+		...account,
+		certified: false
 	});
 };

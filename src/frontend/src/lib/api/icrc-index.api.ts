@@ -8,29 +8,6 @@ import {
 	type IcrcIndexDid
 } from '@icp-sdk/canisters/ledger/icrc';
 
-export const getUncertifiedBalance = async ({
-	account,
-	identity,
-	indexId
-}: {
-	account: IcrcAccount;
-	identity: OptionIdentity;
-} & Pick<LedgerIds, 'indexId'>): Promise<bigint> => {
-	assertNonNullish(identity, 'No internet identity to initialize the ICRC Index actor.');
-
-	const agent = await getAgent({ identity });
-
-	const { balance } = IcrcIndexCanister.create({
-		agent,
-		canisterId: indexId
-	});
-
-	return balance({
-		...account,
-		certified: false
-	});
-};
-
 export const getIcrcTransactions = async ({
 	account,
 	indexId,

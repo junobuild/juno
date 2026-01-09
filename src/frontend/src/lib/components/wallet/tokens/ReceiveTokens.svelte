@@ -24,7 +24,8 @@
 	let walletIdText = $derived(encodeIcrcAccount(walletId));
 	let accountIdentifier = $derived(toAccountIdentifier(walletId));
 
-	let selectedToken = $derived<SelectedToken>(
+	// svelte-ignore state_referenced_locally
+	let selectedToken = $state<SelectedToken>(
 		selectedWallet?.type === 'mission_control' ? ICP : CYCLES
 	);
 
@@ -60,9 +61,9 @@
 			<div in:fade>
 				<ReceiveTokensSigner
 					back={() => (step = 'options')}
-					{selectedToken}
-					{walletId}
+					{selectedWallet}
 					bind:visible
+					bind:selectedToken
 				/>
 			</div>
 		{:else}

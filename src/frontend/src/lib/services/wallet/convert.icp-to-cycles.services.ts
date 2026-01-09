@@ -1,16 +1,16 @@
+import { ICP } from '$lib/constants/token.constants';
+import { MEMO_CMC_MINT_CYCLES } from '$lib/constants/wallet.constants';
 import type { SelectedWallet } from '$lib/schemas/wallet.schema';
+import { execute } from '$lib/services/_progress.services';
+import { sendIcpToCmc } from '$lib/services/cmc.services';
+import { i18n } from '$lib/stores/app/i18n.store';
+import { toasts } from '$lib/stores/app/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
 import { type ConvertIcpProgress, ConvertIcpProgressStep } from '$lib/types/progress-convert-icp';
-import { assertNonNullish, isEmptyString, isNullish } from '@dfinity/utils';
-import { toasts } from '$lib/stores/app/toasts.store';
-import { get } from 'svelte/store';
-import { i18n } from '$lib/stores/app/i18n.store';
 import { assertAndConvertAmountToToken } from '$lib/utils/token.utils';
-import { ICP } from '$lib/constants/token.constants';
-import { emit } from '$lib/utils/events.utils';
 import { waitAndRestartWallet } from '$lib/utils/wallet.utils';
-import { execute } from '$lib/services/_progress.services';
-import { TopUpProgressStep } from '$lib/types/progress-topup';
+import { assertNonNullish, isEmptyString, isNullish } from '@dfinity/utils';
+import { get } from 'svelte/store';
 
 export const convertIcpToCycles = async ({
 	identity,
@@ -49,7 +49,15 @@ export const convertIcpToCycles = async ({
 		const { type: walletType, walletId } = selectedWallet;
 
 		// Transfer ICP
-
+		const send = async () => {
+			return await sendIcpToCmc({
+				subAccount: identity.getPrincipal(),
+				identity,
+				memo: MEMO_CMC_MINT_CYCLES,
+				tokenAmount
+			});
+		};
+		await execute({ fn: send, onProgress, step: ConvertIcpProgressStep.Transfer });
 
 		// Notify CMC
 

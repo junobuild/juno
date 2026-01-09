@@ -14,19 +14,19 @@ import {
 import { Principal } from '@icp-sdk/core/principal';
 
 interface SendIcpToCmcParams {
-	canisterId: Principal;
+	subAccount: Principal;
 	identity: OptionIdentity;
 	tokenAmount: TokenAmountV2;
 	memo: bigint;
 }
 
 export const sendIcpToCmc = async ({
-	canisterId,
+	subAccount,
 	tokenAmount,
 	memo,
 	...rest
 }: SendIcpToCmcParams): Promise<BlockHeight> => {
-	const toSubAccount = principalToSubAccount(canisterId);
+	const toSubAccount = principalToSubAccount(subAccount);
 
 	const to = AccountIdentifier.fromPrincipal({
 		principal: Principal.fromText(CMC_CANISTER_ID),

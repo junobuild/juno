@@ -16,13 +16,13 @@ interface TopUpWithCmcParams {
 	tokenAmount: TokenAmountV2;
 }
 
-export const topUpWithCmc = async ({
+export const convertIcpWithCmc = async ({
 	canisterId,
 	identity,
 	...rest
 }: TopUpWithCmcParams): Promise<void> => {
 	const blockHeight = await sendIcpToCmc({
-		subAccount: canisterId,
+		canisterId,
 		identity,
 		memo: MEMO_CANISTER_TOP_UP,
 		...rest

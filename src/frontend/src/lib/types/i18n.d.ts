@@ -666,6 +666,7 @@ interface I18nErrors {
 	upgrade_requires_iterative_version: string;
 	top_up_error: string;
 	top_up_timeout: string;
+	convert_icp_to_cycles_error: string;
 	analytics_load_error: string;
 	analytics_tracked_events_export: string;
 	analytics_page_views_export: string;
@@ -686,6 +687,7 @@ interface I18nErrors {
 	invalid_amount_to_top_up: string;
 	invalid_cycles_to_transfer: string;
 	invalid_cycles_destination: string;
+	invalid_amount_to_convert_icp_to_cycles: string;
 	transfer_cycles: string;
 	cannot_fetch_logs: string;
 	authentication_config_loading: string;

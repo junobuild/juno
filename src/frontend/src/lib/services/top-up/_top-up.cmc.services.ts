@@ -1,21 +1,12 @@
 import { notifyTopUp } from '$lib/api/cmc.api';
-import { icpTransfer as icpTransferWithDev } from '$lib/api/icp-ledger.api';
-import { CMC_CANISTER_ID } from '$lib/constants/app.constants';
-import { ICP_TOP_UP_FEE, ICP_TRANSACTION_FEE } from '$lib/constants/token.constants';
 import { MEMO_CANISTER_TOP_UP } from '$lib/constants/wallet.constants';
+import { pollNotifyCmc, sendIcpToCmc } from '$lib/services/cmc.services';
 import { i18n } from '$lib/stores/app/i18n.store';
 import type { OptionIdentity } from '$lib/types/itentity';
-import { nowInBigIntNanoSeconds } from '$lib/utils/date.utils';
 import { i18nFormat } from '$lib/utils/i18n.utils';
-import { waitForMilliseconds } from '$lib/utils/timeout.utils';
-import { principalToSubAccount, type TokenAmountV2 } from '@dfinity/utils';
+import { type TokenAmountV2 } from '@dfinity/utils';
 import { ProcessingError } from '@icp-sdk/canisters/cmc';
-import {
-	AccountIdentifier,
-	SubAccount,
-	type BlockHeight,
-	type TransferRequest
-} from '@icp-sdk/canisters/ledger/icp';
+import { type BlockHeight } from '@icp-sdk/canisters/ledger/icp';
 import { Principal } from '@icp-sdk/core/principal';
 import { get } from 'svelte/store';
 
@@ -33,10 +24,19 @@ export const topUpWithCmc = async ({
 	const blockHeight = await sendIcpToCmc({
 		canisterId,
 		identity,
+		memo: MEMO_CANISTER_TOP_UP,
 		...rest
 	});
 
-	const result = await pollNotifyTopUp({ blockHeight, canisterId, identity });
+	const callNotify = async () => {
+		return await callNotifyTopUp({
+			blockHeight,
+			canisterId,
+			identity
+		});
+	};
+
+	const result = await pollNotifyCmc({ callNotify });
 
 	if (result.result === 'timeout') {
 		throw new Error(
@@ -56,35 +56,6 @@ export const topUpWithCmc = async ({
 	if (result.result === 'error') {
 		throw result.err;
 	}
-};
-
-export const sendIcpToCmc = async ({
-	canisterId,
-	tokenAmount,
-	...rest
-}: TopUpWithCmcParams): Promise<BlockHeight> => {
-	const toSubAccount = principalToSubAccount(canisterId);
-
-	const to = AccountIdentifier.fromPrincipal({
-		principal: Principal.fromText(CMC_CANISTER_ID),
-		subAccount: SubAccount.fromBytes(toSubAccount)
-	});
-
-	// We need to hold back 1 transaction fee for the 'send' and also 1 for the 'notify'
-	const sendAmount = tokenAmount.toE8s() - ICP_TOP_UP_FEE;
-
-	const request: TransferRequest = {
-		to,
-		amount: sendAmount,
-		fee: ICP_TRANSACTION_FEE,
-		createdAt: nowInBigIntNanoSeconds(),
-		memo: MEMO_CANISTER_TOP_UP
-	};
-
-	return await icpTransferWithDev({
-		request,
-		...rest
-	});
 };
 
 const callNotifyTopUp = async ({
@@ -113,32 +84,4 @@ const callNotifyTopUp = async ({
 
 		return { result: 'error', err };
 	}
-};
-
-const pollNotifyTopUp = async ({
-	// 15 tries with a delay of 1_000ms each = max 10 seconds
-	retries = 15,
-	intervalInMs = 1_000,
-	...rest
-}: Omit<TopUpWithCmcParams, 'tokenAmount'> & {
-	blockHeight: BlockHeight;
-} & {
-	retries?: number;
-	intervalInMs?: number;
-}): Promise<{ result: 'success' } | { result: 'timeout' } | { result: 'error'; err: unknown }> => {
-	const result = await callNotifyTopUp(rest);
-
-	if (result.result !== 'processing_error') {
-		return result;
-	}
-
-	const remainingRetries = retries - 1;
-
-	if (remainingRetries === 0) {
-		return { result: 'timeout' };
-	}
-
-	await waitForMilliseconds(intervalInMs);
-
-	return pollNotifyTopUp({ retries: remainingRetries, intervalInMs, ...rest });
 };

@@ -6,21 +6,27 @@
 	import Confetti from '$lib/components/ui/Confetti.svelte';
 	import Spinner from '$lib/components/ui/Spinner.svelte';
 	import ReceiveTokensSignerForm from '$lib/components/wallet/tokens/ReceiveTokensSignerForm.svelte';
+	import { CYCLES } from '$lib/constants/token.constants';
 	import { OISY_WALLET_OPTIONS } from '$lib/constants/wallet.constants';
-	import type { SelectedToken, WalletId } from '$lib/schemas/wallet.schema';
+	import type { SelectedToken, SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { wizardBusy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
 	import { assertAndConvertAmountToToken } from '$lib/utils/token.utils';
 
 	interface Props {
-		walletId: WalletId;
+		selectedWallet: SelectedWallet;
 		selectedToken: SelectedToken;
 		back: () => void;
 		visible?: boolean;
 	}
 
-	let { back, walletId, selectedToken, visible = $bindable() }: Props = $props();
+	let {
+		back,
+		selectedWallet,
+		selectedToken = $bindable(CYCLES),
+		visible = $bindable()
+	}: Props = $props();
 
 	let step: 'connecting' | 'receiving' | 'form' | 'success' = $state('connecting');
 	let account: IcrcAccount | undefined = $state(undefined);
@@ -97,7 +103,9 @@
 		try {
 			wallet = await IcrcWallet.connect(OISY_WALLET_OPTIONS);
 
-			const { owner, subaccount } = walletId;
+			const {
+				walletId: { owner, subaccount }
+			} = selectedWallet;
 
 			const params: TransferParams = {
 				to: {
@@ -137,7 +145,13 @@
 		<button onclick={() => (visible = false)}>{$i18n.core.close}</button>
 	</div>
 {:else if step === 'form' && nonNullish(account)}
-	<ReceiveTokensSignerForm {account} {back} receive={onsubmit} {selectedToken} />
+	<ReceiveTokensSignerForm
+		{account}
+		{back}
+		receive={onsubmit}
+		{selectedWallet}
+		bind:selectedToken
+	/>
 {:else}
 	<div class="spinner">
 		<Spinner inline />

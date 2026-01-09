@@ -381,6 +381,7 @@ interface I18nWallet {
 	memo_refund_satellite: string;
 	memo_refund_orbiter: string;
 	memo_refund_top_up: string;
+	memo_convert_icp_to_cycles: string;
 	memo_received: string;
 	memo_sent: string;
 	export_title: string;
@@ -408,6 +409,15 @@ interface I18nWallet {
 	dev: string;
 	total: string;
 	resource: string;
+	convert: string;
+	converting: string;
+	convert_title: string;
+	convert_description: string;
+	convert_review_and_confirm: string;
+	convert_preparing: string;
+	convert_transferring: string;
+	convert_minting: string;
+	convert_done: string;
 }
 
 interface I18nAuthentication {
@@ -657,6 +667,8 @@ interface I18nErrors {
 	upgrade_requires_iterative_version: string;
 	top_up_error: string;
 	top_up_timeout: string;
+	convert_icp_to_cycles_error: string;
+	convert_icp_to_cycles_timeout: string;
 	analytics_load_error: string;
 	analytics_tracked_events_export: string;
 	analytics_page_views_export: string;
@@ -677,6 +689,7 @@ interface I18nErrors {
 	invalid_amount_to_top_up: string;
 	invalid_cycles_to_transfer: string;
 	invalid_cycles_destination: string;
+	invalid_amount_to_convert_icp_to_cycles: string;
 	transfer_cycles: string;
 	cannot_fetch_logs: string;
 	authentication_config_loading: string;
@@ -691,6 +704,7 @@ interface I18nErrors {
 	invalid_metadata: string;
 	empty_amount: string;
 	cycles_transfer_not_supported: string;
+	convert_icp_to_cycles_not_supported: string;
 	invalid_amount: string;
 	empty_balance: string;
 	wallet_not_selected: string;

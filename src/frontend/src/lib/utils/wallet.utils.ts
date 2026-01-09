@@ -2,6 +2,7 @@ import {
 	INDEX_RELOAD_DELAY,
 	MEMO_CANISTER_APPROVE,
 	MEMO_CANISTER_CREATE,
+	MEMO_CMC_MINT_CYCLES,
 	MEMO_CMC_TOP_UP,
 	MEMO_ORBITER_CREATE_REFUND,
 	MEMO_SATELLITE_CREATE_REFUND
@@ -50,6 +51,8 @@ export const transactionMemo = ({
 			return labels.wallet.memo_refund_orbiter;
 		case MEMO_CMC_TOP_UP:
 			return labels.wallet.memo_refund_top_up;
+		case MEMO_CMC_MINT_CYCLES:
+			return labels.wallet.memo_convert_icp_to_cycles;
 		default: {
 			// TODO: likely not performant to encode on each matching transaction...
 			const walletIdText = encodeIcrcAccount(walletId);

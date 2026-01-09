@@ -76,7 +76,13 @@
 
 		{#if nonNullish(selectedWallet)}
 			<div class="actions">
-				<WalletActions onreceive={openReceive} onsend={onclose} {selectedToken} {selectedWallet} />
+				<WalletActions
+					onconvert={onclose}
+					onreceive={openReceive}
+					onsend={onclose}
+					{selectedToken}
+					{selectedWallet}
+				/>
 			</div>
 		{/if}
 	</div>

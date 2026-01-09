@@ -28,6 +28,7 @@
 	import MissionControlUpgradeModal from '$lib/components/modals/upgrade/MissionControlUpgradeModal.svelte';
 	import OrbiterUpgradeModal from '$lib/components/modals/upgrade/OrbiterUpgradeModal.svelte';
 	import SatelliteUpgradeModal from '$lib/components/modals/upgrade/SatelliteUpgradeModal.svelte';
+	import ConvertIcpModal from '$lib/components/modals/wallet/ConvertIcpModal.svelte';
 	import SendTokensModal from '$lib/components/modals/wallet/SendTokensModal.svelte';
 	import type { JunoModal, JunoModalDetail } from '$lib/types/modal';
 
@@ -152,4 +153,8 @@
 
 {#if modal?.type === 'upgrade_satellite_with_cdn' && nonNullish(modal.detail)}
 	<CdnUpgradeModal detail={modal.detail} onclose={close} />
+{/if}
+
+{#if modal?.type === 'convert_icp_to_cycles' && nonNullish(modal.detail)}
+	<ConvertIcpModal detail={modal.detail} onclose={close} />
 {/if}

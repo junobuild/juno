@@ -1,8 +1,8 @@
 <script lang="ts">
-	import type { SelectedToken, SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { fade } from 'svelte/transition';
-	import { isTokenIcp } from '$lib/utils/token.utils';
+	import type { SelectedToken, SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { emit } from '$lib/utils/events.utils';
+	import { isTokenIcp } from '$lib/utils/token.utils';
 
 	interface Props {
 		onconvert?: () => void;

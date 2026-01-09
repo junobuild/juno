@@ -28,7 +28,8 @@ export const topUpWithCmc = async ({
 		...rest
 	});
 
-	const callNotify = async () => await callNotifyTopUp({
+	const callNotify = async () =>
+		await callNotifyTopUp({
 			blockHeight,
 			canisterId,
 			identity

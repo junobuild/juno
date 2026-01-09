@@ -129,7 +129,7 @@ export interface JunoModalWalletDetail {
 	selectedToken: SelectedToken;
 }
 
-export type JunoModalConvertIcpToCyclesDetails = Pick<JunoModalWalletDetail, "selectedWallet">
+export type JunoModalConvertIcpToCyclesDetails = Pick<JunoModalWalletDetail, 'selectedWallet'>;
 
 export type JunoModalDetail =
 	| JunoModalUpgradeSatelliteDetail

@@ -1,18 +1,15 @@
 <script lang="ts">
 	import { fade } from 'svelte/transition';
-	import { i18n } from '$lib/stores/app/i18n.store';
 	import Modal from '$lib/components/ui/Modal.svelte';
-	import { authIdentity } from '$lib/derived/auth.derived';
-	import type {
-		JunoModalConvertIcpToCyclesDetails,
-		JunoModalDetail,
-	} from '$lib/types/modal';
 	import ConvertIcpForm from '$lib/components/wallet/convert/ConvertIcpForm.svelte';
-	import { wizardBusy } from '$lib/stores/app/busy.store';
-	import type { ConvertIcpProgress } from '$lib/types/progress-convert-icp';
 	import ConvertIcpReview from '$lib/components/wallet/convert/ConvertIcpReview.svelte';
 	import ProgressConvertIcp from '$lib/components/wallet/convert/ProgressConvertIcp.svelte';
+	import { authIdentity } from '$lib/derived/auth.derived';
 	import { convertIcpToCycles } from '$lib/services/wallet/convert.icp-to-cycles.services';
+	import { wizardBusy } from '$lib/stores/app/busy.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
+	import type { JunoModalConvertIcpToCyclesDetails, JunoModalDetail } from '$lib/types/modal';
+	import type { ConvertIcpProgress } from '$lib/types/progress-convert-icp';
 
 	interface Props {
 		detail: JunoModalDetail;

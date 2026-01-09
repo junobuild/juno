@@ -28,9 +28,9 @@
 	import MissionControlUpgradeModal from '$lib/components/modals/upgrade/MissionControlUpgradeModal.svelte';
 	import OrbiterUpgradeModal from '$lib/components/modals/upgrade/OrbiterUpgradeModal.svelte';
 	import SatelliteUpgradeModal from '$lib/components/modals/upgrade/SatelliteUpgradeModal.svelte';
+	import ConvertIcpModal from '$lib/components/modals/wallet/ConvertIcpModal.svelte';
 	import SendTokensModal from '$lib/components/modals/wallet/SendTokensModal.svelte';
 	import type { JunoModal, JunoModalDetail } from '$lib/types/modal';
-	import ConvertIcpModal from "$lib/components/modals/wallet/ConvertIcpModal.svelte";
 
 	let modal: JunoModal<JunoModalDetail> | undefined = $state(undefined);
 

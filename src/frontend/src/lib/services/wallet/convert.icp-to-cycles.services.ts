@@ -50,14 +50,12 @@ export const convertIcpToCycles = async ({
 		const { type: walletType, walletId } = selectedWallet;
 
 		// Transfer ICP
-		const send = async () => {
-			return await sendIcpToCmc({
+		const send = async () => await sendIcpToCmc({
 				subAccount: identity.getPrincipal(),
 				identity,
 				memo: MEMO_CMC_MINT_CYCLES,
 				tokenAmount
 			});
-		};
 		const blockHeight = await execute({
 			fn: send,
 			onProgress,

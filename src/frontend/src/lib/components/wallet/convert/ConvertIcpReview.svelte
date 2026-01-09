@@ -1,19 +1,19 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
+	import { encodeIcrcAccount } from '@icp-sdk/canisters/ledger/icrc';
 	import { Principal } from '@icp-sdk/core/principal';
 	import Segment from '$lib/components/segments/Segment.svelte';
 	import GridArrow from '$lib/components/ui/GridArrow.svelte';
+	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import WalletSendFrom from '$lib/components/wallet/WalletSendFrom.svelte';
 	import SendTokensAmount from '$lib/components/wallet/tokens/SendTokensAmount.svelte';
 	import TokenSymbol from '$lib/components/wallet/tokens/TokenSymbol.svelte';
+	import { ICP } from '$lib/constants/token.constants';
 	import type { SelectedToken, SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { CanisterSegmentWithLabel } from '$lib/types/canister';
 	import { amountToToken, formatToken, isTokenIcp } from '$lib/utils/token.utils';
-	import { ICP } from '$lib/constants/token.constants';
-	import Identifier from '$lib/components/ui/Identifier.svelte';
-	import { encodeIcrcAccount } from '@icp-sdk/canisters/ledger/icrc';
 
 	interface Props {
 		selectedWallet: SelectedWallet;

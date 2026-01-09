@@ -4,10 +4,10 @@ import { pollNotifyCmc, sendIcpToCmc } from '$lib/services/cmc.services';
 import { i18n } from '$lib/stores/app/i18n.store';
 import type { OptionIdentity } from '$lib/types/itentity';
 import { i18nFormat } from '$lib/utils/i18n.utils';
-import { type TokenAmountV2 } from '@dfinity/utils';
+import type { TokenAmountV2 } from '@dfinity/utils';
 import { ProcessingError } from '@icp-sdk/canisters/cmc';
-import { type BlockHeight } from '@icp-sdk/canisters/ledger/icp';
-import { Principal } from '@icp-sdk/core/principal';
+import type { BlockHeight } from '@icp-sdk/canisters/ledger/icp';
+import type { Principal } from '@icp-sdk/core/principal';
 import { get } from 'svelte/store';
 
 interface TopUpWithCmcParams {
@@ -28,13 +28,11 @@ export const topUpWithCmc = async ({
 		...rest
 	});
 
-	const callNotify = async () => {
-		return await callNotifyTopUp({
+	const callNotify = async () => await callNotifyTopUp({
 			blockHeight,
 			canisterId,
 			identity
 		});
-	};
 
 	const result = await pollNotifyCmc({ callNotify });
 

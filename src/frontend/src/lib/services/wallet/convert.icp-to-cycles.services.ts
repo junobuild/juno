@@ -3,6 +3,7 @@ import { MEMO_CMC_MINT_CYCLES } from '$lib/constants/wallet.constants';
 import type { SelectedWallet } from '$lib/schemas/wallet.schema';
 import { execute } from '$lib/services/_progress.services';
 import { sendIcpToCmc } from '$lib/services/cmc.services';
+import { convertIcpWithCmc } from '$lib/services/wallet/_convert.cmc.services';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
@@ -57,9 +58,20 @@ export const convertIcpToCycles = async ({
 				tokenAmount
 			});
 		};
-		await execute({ fn: send, onProgress, step: ConvertIcpProgressStep.Transfer });
+		const blockHeight = await execute({
+			fn: send,
+			onProgress,
+			step: ConvertIcpProgressStep.Transfer
+		});
 
 		// Notify CMC
+		const notify = async () => {
+			await convertIcpWithCmc({
+				blockHeight,
+				identity
+			});
+		};
+		await execute({ fn: notify, onProgress, step: ConvertIcpProgressStep.Mint });
 
 		// Reload
 		const reload = async () => {

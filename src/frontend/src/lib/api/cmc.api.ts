@@ -38,6 +38,17 @@ export const notifyTopUp = async ({
 	return await notifyTopUp(request);
 };
 
+export const notifyMintCycles = async ({
+	identity,
+	request
+}: {
+	identity: OptionIdentity;
+	request: CmcDid.NotifyMintCyclesArg;
+}): Promise<CmcDid.NotifyMintCyclesSuccess> => {
+	const { notifyMintCycles } = await cmcCanister({ identity });
+	return await notifyMintCycles(request);
+};
+
 const cmcCanister = async ({ identity }: { identity: OptionIdentity }): Promise<CmcCanister> => {
 	assertNonNullish(identity, 'No internet identity to initialize the Cmc actor.');
 

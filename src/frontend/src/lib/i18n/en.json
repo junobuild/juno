@@ -649,6 +649,7 @@
 		"top_up_error": "Error while topping up the module.",
 		"top_up_timeout": "Failed to process top-up. Please contact Juno support with block index {0} and transaction ID {1}.",
 		"convert_icp_to_cycles_error": "Error while converting ICP to Cycles.",
+		"convert_icp_to_cycles_timeout": "Failed to process the ICP to Cycles conversion. Please contact Juno support with block index {0}.",
 		"analytics_load_error": "Error while loading the analytics data.",
 		"analytics_tracked_events_export": "Unexpected error(s) while exporting the tracked events.",
 		"analytics_page_views_export": "Unexpected error(s) while exporting the page views.",

@@ -1,36 +1,24 @@
-import { notifyTopUp } from '$lib/api/cmc.api';
-import { MEMO_CANISTER_TOP_UP } from '$lib/constants/wallet.constants';
-import { pollNotifyCmc, sendIcpToCmc } from '$lib/services/cmc.services';
+import { notifyMintCycles } from '$lib/api/cmc.api';
+import { pollNotifyCmc } from '$lib/services/cmc.services';
 import { i18n } from '$lib/stores/app/i18n.store';
 import type { OptionIdentity } from '$lib/types/itentity';
 import { i18nFormat } from '$lib/utils/i18n.utils';
-import type { TokenAmountV2 } from '@dfinity/utils';
+import { toNullable } from '@dfinity/utils';
 import { ProcessingError } from '@icp-sdk/canisters/cmc';
-import type { BlockHeight } from '@icp-sdk/canisters/ledger/icp';
-import type { Principal } from '@icp-sdk/core/principal';
 import { get } from 'svelte/store';
 
-interface TopUpWithCmcParams {
-	canisterId: Principal;
+interface ConvertIcpWithCmcParams {
 	identity: OptionIdentity;
-	tokenAmount: TokenAmountV2;
+	blockHeight: bigint;
 }
 
 export const convertIcpWithCmc = async ({
-	canisterId,
 	identity,
-	...rest
-}: TopUpWithCmcParams): Promise<void> => {
-	const blockHeight = await sendIcpToCmc({
-		canisterId,
-		identity,
-		memo: MEMO_CANISTER_TOP_UP,
-		...rest
-	});
-
-	const callNotify = async () => await callNotifyTopUp({
+	blockHeight
+}: ConvertIcpWithCmcParams): Promise<void> => {
+	const callNotify = async () =>
+		await callNotifyMint({
 			blockHeight,
-			canisterId,
 			identity
 		});
 
@@ -38,14 +26,10 @@ export const convertIcpWithCmc = async ({
 
 	if (result.result === 'timeout') {
 		throw new Error(
-			i18nFormat(get(i18n).errors.top_up_timeout, [
+			i18nFormat(get(i18n).errors.convert_icp_to_cycles_timeout, [
 				{
 					placeholder: '{0}',
 					value: `${blockHeight}`
-				},
-				{
-					placeholder: '{1}',
-					value: canisterId.toText()
 				}
 			])
 		);
@@ -56,21 +40,19 @@ export const convertIcpWithCmc = async ({
 	}
 };
 
-const callNotifyTopUp = async ({
+const callNotifyMint = async ({
 	blockHeight: block_index,
-	identity,
-	canisterId: canister_id
-}: Omit<TopUpWithCmcParams, 'tokenAmount'> & {
-	blockHeight: BlockHeight;
-}): Promise<
+	identity
+}: Omit<ConvertIcpWithCmcParams, 'tokenAmount'>): Promise<
 	{ result: 'success' } | { result: 'processing_error' } | { result: 'error'; err: unknown }
 > => {
 	try {
-		await notifyTopUp({
+		await notifyMintCycles({
 			identity,
 			request: {
-				canister_id,
-				block_index
+				block_index,
+				deposit_memo: toNullable(),
+				to_subaccount: toNullable()
 			}
 		});
 

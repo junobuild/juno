@@ -1,5 +1,5 @@
 import { notifyTopUp } from '$lib/api/cmc.api';
-import { MEMO_CANISTER_TOP_UP } from '$lib/constants/wallet.constants';
+import { MEMO_CMC_TOP_UP } from '$lib/constants/wallet.constants';
 import { pollNotifyCmc, sendIcpToCmc } from '$lib/services/cmc.services';
 import { i18n } from '$lib/stores/app/i18n.store';
 import type { OptionIdentity } from '$lib/types/itentity';
@@ -24,7 +24,7 @@ export const topUpWithCmc = async ({
 	const blockHeight = await sendIcpToCmc({
 		subAccount: canisterId,
 		identity,
-		memo: MEMO_CANISTER_TOP_UP,
+		memo: MEMO_CMC_TOP_UP,
 		...rest
 	});
 

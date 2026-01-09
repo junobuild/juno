@@ -155,9 +155,8 @@ pub mod state {
 
 pub mod interface {
     use crate::types::state::{Account, StorableSegmentKind};
-    use candid::{CandidType, Nat};
+    use candid::CandidType;
     use ic_ledger_types::Tokens;
-    use icrc_ledger_types::icrc1::account::Account as IcrcAccount;
     use junobuild_auth::delegation::types::{
         OpenIdGetDelegationArgs, OpenIdPrepareDelegationArgs, PrepareDelegationError,
         PreparedDelegation,
@@ -234,12 +233,6 @@ pub mod interface {
     pub struct FeesArgs {
         pub fee_cycles: CyclesTokens,
         pub fee_icp: Option<Tokens>,
-    }
-
-    #[derive(CandidType, Deserialize)]
-    pub struct ConvertIcpToCyclesArgs {
-        pub from: IcrcAccount,
-        pub amount: Nat,
     }
 }
 

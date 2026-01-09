@@ -3,7 +3,6 @@ mod auth;
 mod cdn;
 mod config;
 mod controllers;
-mod cycles;
 mod economy;
 mod factory;
 mod http;

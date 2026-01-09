@@ -39,7 +39,7 @@ use ic_ledger_types::{Subaccount, Tokens};
 /// # Errors
 /// - Ledger transfer failures (insufficient balance, invalid recipient, etc.)
 /// - CMC notification failures (though CMC will refund in these cases)
-pub async fn top_up_canister(canister_id: &CanisterId, amount: &Tokens) -> Result<Cycles, String> {
+pub async fn top_up_canister(canister_id: &CanisterId, amount: &Tokens) -> Result<(), String> {
     // We need to hold back 1 transaction fee for the 'send' and also 1 for the 'notify'
     let send_amount = Tokens::from_e8s(amount.e8s() - (2 * IC_TRANSACTION_FEE_ICP.e8s()));
 
@@ -65,13 +65,12 @@ pub async fn top_up_canister(canister_id: &CanisterId, amount: &Tokens) -> Resul
 
     // If the topup fails in the Cmc canister, it refunds the caller.
     // let was_refunded = matches!(error, NotifyError::Refunded { .. });
-    let cycles = Call::unbounded_wait(cmc, "notify_top_up")
+    let _ = Call::unbounded_wait(cmc, "notify_top_up")
         .with_arg(args)
         .await
-        .decode_candid::<Result<Cycles, NotifyError>>()?
-        .map_err(|_| JUNO_ERROR_CMC_LEDGER_TRANSFER_FAILED)?;
-    
-    Ok(cycles)
+        .decode_candid::<Result<Cycles, NotifyError>>()?;
+
+    Ok(())
 }
 
 fn convert_principal_to_sub_account(principal_id: &[u8]) -> Subaccount {

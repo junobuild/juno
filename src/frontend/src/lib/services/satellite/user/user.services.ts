@@ -107,7 +107,7 @@ const loadUserUsages = async ({
 			: listRules0022({ satelliteId, type: DbCollectionType, identity }),
 		newestListRules
 			? modernListRules(StorageCollectionType)
-			: listRules0022({ satelliteId, type: DbCollectionType, identity })
+			: listRules0022({ satelliteId, type: StorageCollectionType, identity })
 	]);
 
 	const loadUsage = async ({

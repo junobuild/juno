@@ -100,14 +100,6 @@ export const idlFactory = ({ IDL }) => {
 		headers: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
 		chunk_ids: IDL.Vec(IDL.Nat)
 	});
-	const Account_1 = IDL.Record({
-		owner: IDL.Principal,
-		subaccount: IDL.Opt(IDL.Vec(IDL.Nat8))
-	});
-	const ConvertIcpToCyclesArgs = IDL.Record({
-		from: Account_1,
-		amount: IDL.Nat
-	});
 	const CreateMissionControlArgs = IDL.Record({
 		subnet_id: IDL.Opt(IDL.Principal)
 	});
@@ -403,6 +395,10 @@ export const idlFactory = ({ IDL }) => {
 		block_index: IDL.Nat64,
 		ledger_id: IDL.Principal
 	});
+	const Account_1 = IDL.Record({
+		owner: IDL.Principal,
+		subaccount: IDL.Opt(IDL.Vec(IDL.Nat8))
+	});
 	const IcrcPayment = IDL.Record({
 		status: PaymentStatus,
 		updated_at: IDL.Nat64,
@@ -501,7 +497,6 @@ export const idlFactory = ({ IDL }) => {
 		commit_proposal: IDL.Func([CommitProposal], [IDL.Null], []),
 		commit_proposal_asset_upload: IDL.Func([CommitBatch], [], []),
 		commit_proposal_many_assets_upload: IDL.Func([IDL.Vec(CommitBatch)], [], []),
-		convert_icp_to_cycles: IDL.Func([ConvertIcpToCyclesArgs], [], []),
 		count_proposals: IDL.Func([], [IDL.Nat64], ['query']),
 		create_mission_control: IDL.Func([CreateMissionControlArgs], [IDL.Principal], []),
 		create_orbiter: IDL.Func([CreateOrbiterArgs], [IDL.Principal], []),

@@ -1,5 +1,12 @@
 import type { ConsoleDid, MissionControlDid } from '$declarations';
-import { getMissionControlFee, getOrbiterFee, getSatelliteFee } from '$lib/api/console.api';
+import {
+	createMissionControlWithConfig as createMissionControlWithConsoleAndConfig,
+	createOrbiterWithConfig as createOrbiterWithConsoleAndConfig,
+	createSatelliteWithConfig as createSatelliteWithConsoleAndConfig,
+	getMissionControlFee,
+	getOrbiterFee,
+	getSatelliteFee
+} from '$lib/api/console.api';
 import { updateAndStartMonitoring } from '$lib/api/mission-control.api';
 import { missionControlMonitored } from '$lib/derived/mission-control/mission-control-settings.derived';
 import { missionControlConfigMonitoring } from '$lib/derived/mission-control/mission-control-user.derived';
@@ -7,11 +14,6 @@ import { isSkylab } from '$lib/env/app.env';
 import type { SelectedWallet } from '$lib/schemas/wallet.schema';
 import { execute } from '$lib/services/_progress.services';
 import { reloadAccount } from '$lib/services/console/account.services';
-import {
-	createMissionControlWithConfig as createMissionControlWithConsoleAndConfig,
-	createOrbiterWithConfig as createOrbiterWithConsoleAndConfig,
-	createSatelliteWithConfig as createSatelliteWithConsoleAndConfig
-} from '$lib/services/console/console.factory.services';
 import { loadCredits } from '$lib/services/console/credits.services';
 import { unsafeSetEmulatorControllerForSatellite } from '$lib/services/emulator.services';
 import {

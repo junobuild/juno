@@ -20,11 +20,7 @@ import { ICP_LEDGER_ID } from '../../../constants/ledger-tests.contants';
 import { deploySegments, updateRateConfig } from '../../../utils/console-tests.utils';
 import { transferToken } from '../../../utils/ledger-tests.utils';
 import { tick } from '../../../utils/pic-tests.utils';
-import {
-	CONSOLE_WASM_PATH,
-	controllersInitArgs,
-	downloadConsole
-} from '../../../utils/setup-tests.utils';
+import { controllersInitArgs, downloadConsole } from '../../../utils/setup-tests.utils';
 
 describe('Console > Upgrade > Payments > v0.2.0 -> v0.3.0', () => {
 	let pic: PocketIc;
@@ -37,12 +33,14 @@ describe('Console > Upgrade > Payments > v0.2.0 -> v0.3.0', () => {
 
 	let missionControlId: MissionControlId;
 
-	const upgradeCurrent = async () => {
+	const upgrade = async () => {
 		await tick(pic);
+
+		const destination = await downloadConsole({ junoVersion: '0.0.64', version: '0.3.0' });
 
 		await pic.upgradeCanister({
 			canisterId,
-			wasm: CONSOLE_WASM_PATH,
+			wasm: destination,
 			sender: controller.getPrincipal()
 		});
 	};
@@ -158,7 +156,7 @@ describe('Console > Upgrade > Payments > v0.2.0 -> v0.3.0', () => {
 
 		assertPayments(payments);
 
-		await upgradeCurrent();
+		await upgrade();
 
 		const newActor = pic.createActor<ConsoleActor>(idlFactoryConsole, canisterId);
 		newActor.setIdentity(controller);

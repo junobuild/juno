@@ -4,7 +4,6 @@ use crate::fees::init_factory_fees;
 use crate::memory::manager::{get_memory_upgrades, init_stable_state, STATE};
 use crate::rates::init::init_factory_rates;
 use crate::types::state::{HeapState, ReleasesMetadata, State};
-use crate::upgrade::upgrade_init_factory_fees_and_rates;
 use ciborium::{from_reader, into_writer};
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade};
 use junobuild_shared::ic::api::caller;
@@ -57,7 +56,4 @@ fn post_upgrade() {
     STATE.with(|s| *s.borrow_mut() = state);
 
     defer_init_certified_assets();
-
-    // TODO: to be removed, one time upgrade
-    upgrade_init_factory_fees_and_rates();
 }

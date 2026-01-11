@@ -15,11 +15,7 @@ import { inject } from 'vitest';
 import { CONSOLE_ID } from '../../../constants/console-tests.constants';
 import { deploySegments, updateRateConfig } from '../../../utils/console-tests.utils';
 import { tick } from '../../../utils/pic-tests.utils';
-import {
-	CONSOLE_WASM_PATH,
-	controllersInitArgs,
-	downloadConsole
-} from '../../../utils/setup-tests.utils';
+import { controllersInitArgs, downloadConsole } from '../../../utils/setup-tests.utils';
 
 describe('Console > Upgrade > Fees > v0.2.0 -> v0.3.0', () => {
 	let pic: PocketIc;
@@ -30,12 +26,14 @@ describe('Console > Upgrade > Fees > v0.2.0 -> v0.3.0', () => {
 
 	const user = Ed25519KeyIdentity.generate();
 
-	const upgradeCurrent = async () => {
+	const upgrade = async () => {
 		await tick(pic);
+
+		const destination = await downloadConsole({ junoVersion: '0.0.64', version: '0.3.0' });
 
 		await pic.upgradeCanister({
 			canisterId,
-			wasm: CONSOLE_WASM_PATH,
+			wasm: destination,
 			sender: controller.getPrincipal()
 		});
 	};
@@ -98,7 +96,7 @@ describe('Console > Upgrade > Fees > v0.2.0 -> v0.3.0', () => {
 		await set_fee({ Satellite: null }, { e8s: 40_000_000n });
 		await set_fee({ Orbiter: null }, { e8s: 77_000_000n });
 
-		await upgradeCurrent();
+		await upgrade();
 
 		const newActor = pic.createActor<ConsoleActor>(idlFactoryConsole, canisterId);
 		newActor.setIdentity(user);

@@ -8,6 +8,7 @@
 	import IconRaygun from '$lib/components/icons/IconRaygun.svelte';
 	import IconSignOut from '$lib/components/icons/IconSignOut.svelte';
 	import IconUser from '$lib/components/icons/IconUser.svelte';
+	import IconWallet from '$lib/components/icons/IconWallet.svelte';
 	import Avatar from '$lib/components/ui/Avatar.svelte';
 	import ButtonIcon from '$lib/components/ui/ButtonIcon.svelte';
 	import Hr from '$lib/components/ui/Hr.svelte';
@@ -15,7 +16,6 @@
 	import { APP_VERSION } from '$lib/constants/app.constants';
 	import { signOut } from '$lib/services/console/auth/auth.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import IconWallet from '$lib/components/icons/IconWallet.svelte';
 
 	interface Props {
 		provider?: ConsoleDid.Provider;

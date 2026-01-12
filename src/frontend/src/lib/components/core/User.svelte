@@ -15,6 +15,7 @@
 	import { APP_VERSION } from '$lib/constants/app.constants';
 	import { signOut } from '$lib/services/console/auth/auth.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
+	import IconWallet from '$lib/components/icons/IconWallet.svelte';
 
 	interface Props {
 		provider?: ConsoleDid.Provider;
@@ -38,6 +39,7 @@
 	};
 
 	let preferences = $derived(page.route.id === '/(single)/preferences');
+	let wallet = $derived(page.route.id === '/(single)/wallet');
 
 	let openId = $derived<ConsoleDid.OpenId | undefined>(
 		nonNullish(provider) && 'OpenId' in provider ? provider.OpenId : undefined
@@ -67,7 +69,16 @@
 				<IconRaygun />
 				<span>{$i18n.preferences.title}</span>
 			</a>
+		{/if}
 
+		{#if !wallet}
+			<a class="menu" aria-haspopup="menu" href="/wallet" onclick={close} role="menuitem">
+				<IconWallet />
+				<span>{$i18n.wallet.title}</span>
+			</a>
+		{/if}
+
+		{#if !preferences || !wallet}
 			<Hr />
 		{/if}
 

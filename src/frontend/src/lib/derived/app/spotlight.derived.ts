@@ -17,8 +17,8 @@ import IconUpgradeDock from '$lib/components/icons/IconUpgradeDock.svelte';
 import IconWallet from '$lib/components/icons/IconWallet.svelte';
 import { authNotSignedIn } from '$lib/derived/auth.derived';
 import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
-import { orbiterStore } from '$lib/derived/orbiter.derived';
-import { satelliteStore } from '$lib/derived/satellite.derived';
+import { orbiter } from '$lib/derived/orbiter.derived';
+import { satellite } from '$lib/derived/satellite.derived';
 import { sortedSatelliteUis } from '$lib/derived/satellites.derived';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { theme } from '$lib/stores/app/theme.store';
@@ -120,8 +120,8 @@ const themeItem: Readable<SpotlightActionItem> = derived([i18n, theme], ([$i18n,
 });
 
 const analyticsItems: Readable<SpotlightItems> = derived(
-	[i18n, authNotSignedIn, orbiterStore],
-	([$i18n, $authNotSignedIn, $orbiterStore]) =>
+	[i18n, authNotSignedIn, orbiter],
+	([$i18n, $authNotSignedIn, $orbiter]) =>
 		$authNotSignedIn
 			? []
 			: [
@@ -133,7 +133,7 @@ const analyticsItems: Readable<SpotlightItems> = derived(
 						filter: ({ query }: SpotlightItemFilterParams) =>
 							$i18n.analytics.title.toLowerCase().includes(query)
 					},
-					...(nonNullish($orbiterStore)
+					...(nonNullish($orbiter)
 						? [
 								{
 									type: 'nav' as const,
@@ -169,8 +169,8 @@ const externalItems: Readable<SpotlightItems> = derived([i18n], ([$i18n]) => [
 ]);
 
 const satellitesItems: Readable<SpotlightItems> = derived(
-	[i18n, sortedSatelliteUis, satelliteStore],
-	([$i18n, $sortedSatelliteUis, $satelliteStore]) => {
+	[i18n, sortedSatelliteUis, satellite],
+	([$i18n, $sortedSatelliteUis, $satellite]) => {
 		const mapSatelliteNav = (satellite: SatelliteUi): SpotlightNavItem[] => {
 			const {
 				satellite_id,
@@ -185,7 +185,7 @@ const satellitesItems: Readable<SpotlightItems> = derived(
 
 			const queryParam = `/?s=${satelliteId}`;
 
-			const isSelected = $satelliteStore?.satellite_id.toText() === satelliteId;
+			const isSelected = $satellite?.satellite_id.toText() === satelliteId;
 
 			const filter =
 				(section: string): SpotlightItemFilterFn =>

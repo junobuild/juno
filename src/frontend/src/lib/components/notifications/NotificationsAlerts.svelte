@@ -4,7 +4,7 @@
 	import IconSatellite from '$lib/components/icons/IconSatellite.svelte';
 	import NotificationsCanisterAlert from '$lib/components/notifications/NotificationsCanisterAlert.svelte';
 	import NotificationsUpgrade from '$lib/components/notifications/NotificationsUpgrade.svelte';
-	import { satelliteStore } from '$lib/derived/satellite.derived';
+	import { satellite } from '$lib/derived/satellite.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { CanisterData, CanisterWarning } from '$lib/types/canister';
 	import { overviewLink } from '$lib/utils/nav.utils';
@@ -64,7 +64,7 @@
 			{close}
 			cyclesIcon={IconSatellite}
 			data={satelliteCanisterData}
-			href={overviewLink($satelliteStore?.satellite_id)}
+			href={overviewLink($satellite?.satellite_id)}
 			segment="satellite"
 			warnings={satelliteWarnings}
 		/>

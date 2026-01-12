@@ -6,11 +6,11 @@
 	import SatellitesSwitcher from '$lib/components/satellites/SatellitesSwitcher.svelte';
 	import { layoutTitle } from '$lib/derived/app/layout-title.derived';
 	import { authSignedIn } from '$lib/derived/auth.derived';
-	import { satelliteStore, satelliteUi } from '$lib/derived/satellite.derived';
+	import { satellite, satelliteUi } from '$lib/derived/satellite.derived';
 	import { layoutNavigation } from '$lib/stores/app/layout-navigation.store';
 	import { satelliteName } from '$lib/utils/satellite.utils';
 
-	let label = $derived(nonNullish($satelliteStore) ? satelliteName($satelliteStore) : undefined);
+	let label = $derived(nonNullish($satellite) ? satelliteName($satellite) : undefined);
 
 	let subNavigation = $derived(
 		notEmptyString($layoutTitle) && $layoutNavigation?.data.satellite?.useInPageTitle === false

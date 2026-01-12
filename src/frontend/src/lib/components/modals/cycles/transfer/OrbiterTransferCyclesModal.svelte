@@ -4,7 +4,7 @@
 	import { depositCycles } from '$lib/api/orbiter.api';
 	import CanisterTransferCyclesModal from '$lib/components/modals/cycles/transfer/CanisterTransferCyclesModal.svelte';
 	import { authIdentity } from '$lib/derived/auth.derived';
-	import { orbiterStore } from '$lib/derived/orbiter.derived';
+	import { orbiter } from '$lib/derived/orbiter.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { JunoModalCycles, JunoModalDetail } from '$lib/types/modal';
 
@@ -25,19 +25,19 @@
 					// TODO: resolve no-non-null-assertion
 					// We know for sure that the orbiter is defined at this point.
 					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-					orbiterId: $orbiterStore!.orbiter_id,
+					orbiterId: $orbiter!.orbiter_id,
 					identity: $authIdentity
 				})
 		);
 </script>
 
-{#if nonNullish($orbiterStore)}
+{#if nonNullish($orbiter)}
 	<CanisterTransferCyclesModal
 		{currentCycles}
 		{onclose}
 		segment={{
 			segment: 'orbiter',
-			canisterId: $orbiterStore.orbiter_id.toText(),
+			canisterId: $orbiter.orbiter_id.toText(),
 			label: $i18n.analytics.orbiter
 		}}
 		{transferFn}

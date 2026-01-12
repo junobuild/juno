@@ -5,7 +5,7 @@
 	import GridArrow from '$lib/components/ui/GridArrow.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
-	import { orbiterStore } from '$lib/derived/orbiter.derived';
+	import { orbiter } from '$lib/derived/orbiter.derived';
 	import { sortedSatellites } from '$lib/derived/satellites.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { formatTCycles } from '$lib/utils/cycles.utils';
@@ -63,7 +63,7 @@
 							<Segment id={Principal.fromText(destinationId)}>
 								{$i18n.mission_control.title}
 							</Segment>
-						{:else if nonNullish($orbiterStore) && $orbiterStore.orbiter_id.toText() === destinationId}
+						{:else if nonNullish($orbiter) && $orbiter.orbiter_id.toText() === destinationId}
 							<Segment id={Principal.fromText(destinationId)}>
 								{$i18n.analytics.title}
 							</Segment>

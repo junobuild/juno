@@ -3,7 +3,7 @@
 	import Canister from '$lib/components/canister/Canister.svelte';
 	import IconAnalytics from '$lib/components/icons/IconAnalytics.svelte';
 	import LaunchpadArticle from '$lib/components/launchpad/LaunchpadArticle.svelte';
-	import { orbiterStore } from '$lib/derived/orbiter.derived.js';
+	import { orbiter } from '$lib/derived/orbiter.derived.js';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { layoutLaunchpad } from '$lib/stores/app/layout-launchpad.store';
 	import { LaunchpadLayout } from '$lib/types/layout';
@@ -11,7 +11,7 @@
 	let row = $derived($layoutLaunchpad === LaunchpadLayout.LIST);
 </script>
 
-{#if nonNullish($orbiterStore)}
+{#if nonNullish($orbiter)}
 	<LaunchpadArticle ariaLabel={`${$i18n.core.open}: ${$i18n.analytics.title}`} href="/analytics">
 		{#snippet description()}
 			{$i18n.analytics.title}
@@ -22,7 +22,7 @@
 		{/snippet}
 
 		<div class="canister" class:row>
-			<Canister canisterId={$orbiterStore.orbiter_id} displayMemoryTotal={false} {row} />
+			<Canister canisterId={$orbiter.orbiter_id} displayMemoryTotal={false} {row} />
 		</div>
 	</LaunchpadArticle>
 {/if}

@@ -2,12 +2,12 @@ import { satellitesUncertifiedStore } from '$lib/stores/mission-control/satellit
 import { satelliteName } from '$lib/utils/satellite.utils';
 import { derived } from 'svelte/store';
 
-export const mctrlSatellitesStore = derived(
+export const mctrlSatellites = derived(
 	[satellitesUncertifiedStore],
 	([$satellitesDataStore]) => $satellitesDataStore?.data
 );
 
-export const mctrlSortedSatellites = derived([mctrlSatellitesStore], ([$mctrlSatellitesStore]) =>
+export const mctrlSortedSatellites = derived([mctrlSatellites], ([$mctrlSatellitesStore]) =>
 	($mctrlSatellitesStore ?? []).sort((a, b) => satelliteName(a).localeCompare(satelliteName(b)))
 );
 

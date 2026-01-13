@@ -11,7 +11,7 @@
 		missionControlId,
 		missionControlIdLoaded
 	} from '$lib/derived/console/account.mission-control.derived';
-	import { orbiterLoaded, orbiterStore } from '$lib/derived/orbiter.derived';
+	import { orbiterLoaded, orbiter } from '$lib/derived/orbiter.derived';
 	import {
 		initMissionControlWizard,
 		initOrbiterWizard,
@@ -51,7 +51,7 @@
 	let visible = $state(false);
 	let button = $state<HTMLButtonElement | undefined>();
 
-	let analyticsNotEnabled = $derived(isNullish($orbiterStore) && $orbiterLoaded);
+	let analyticsNotEnabled = $derived(isNullish($orbiter) && $orbiterLoaded);
 	let missionControlNotEnabled = $derived(isNullish($missionControlId) && missionControlIdLoaded);
 </script>
 

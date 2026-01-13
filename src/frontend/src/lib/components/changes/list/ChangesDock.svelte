@@ -5,7 +5,7 @@
 	import ChangesFilter from '$lib/components/changes/list/ChangesFilter.svelte';
 	import ChangesMore from '$lib/components/changes/list/ChangesMore.svelte';
 	import { openSatellitesProposals } from '$lib/derived/satellite/proposals.derived';
-	import { satelliteStore } from '$lib/derived/satellite.derived';
+	import { satellite } from '$lib/derived/satellite.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { satelliteName } from '$lib/utils/satellite.utils';
 
@@ -13,7 +13,7 @@
 
 	let colspan = $derived(innerWidth >= 768 ? 5 : innerWidth >= 576 ? 4 : 3);
 
-	let satelliteId = $derived($satelliteStore?.satellite_id.toText());
+	let satelliteId = $derived($satellite?.satellite_id.toText());
 
 	let proposals = $derived(
 		nonNullish(satelliteId) ? $openSatellitesProposals[satelliteId] : undefined
@@ -30,9 +30,9 @@
 					<th {colspan}>
 						<div class="actions">
 							<ChangesFilter />
-							{#if nonNullish($satelliteStore)}
-								<ChangesMore satelliteId={$satelliteStore.satellite_id} />
-								{satelliteName($satelliteStore)} ({$satelliteStore.satellite_id.toText()})
+							{#if nonNullish($satellite)}
+								<ChangesMore satelliteId={$satellite.satellite_id} />
+								{satelliteName($satellite)} ({$satellite.satellite_id.toText()})
 							{/if}
 						</div>
 					</th>
@@ -47,9 +47,9 @@
 			</thead>
 
 			<tbody>
-				{#if nonNullish($satelliteStore)}
+				{#if nonNullish($satellite)}
 					{#each proposals ?? [] as proposal (proposal[0])}
-						<Change {proposal} satellite={$satelliteStore} />
+						<Change {proposal} satellite={$satellite} />
 					{/each}
 				{/if}
 

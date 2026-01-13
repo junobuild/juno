@@ -2,7 +2,7 @@
 	import { nonNullish } from '@dfinity/utils';
 	import FactoryDeleteWizard from '$lib/components/factory/delete/FactoryDeleteWizard.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
-	import { orbiterStore } from '$lib/derived/orbiter.derived';
+	import { orbiter } from '$lib/derived/orbiter.derived';
 	import type { JunoModalDeleteSegmentDetail, JunoModalDetail } from '$lib/types/modal';
 
 	interface Props {
@@ -19,10 +19,10 @@
 	// TODO: resolve no-non-null-assertion
 	// We know for sure that the orbiter is defined at this point.
 	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-	let segmentId = $derived($orbiterStore!.orbiter_id);
+	let segmentId = $derived($orbiter!.orbiter_id);
 </script>
 
-{#if nonNullish($orbiterStore)}
+{#if nonNullish($orbiter)}
 	<Modal {onclose}>
 		<FactoryDeleteWizard
 			{currentCycles}

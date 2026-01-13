@@ -9,7 +9,7 @@
 	import SatelliteSettings from '$lib/components/satellites/setup/SatelliteSettings.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
 	import Warnings from '$lib/components/warning/Warnings.svelte';
-	import { satelliteStore } from '$lib/derived/satellite.derived';
+	import { satellite } from '$lib/derived/satellite.derived';
 	import {
 		type Tab,
 		TABS_CONTEXT_KEY,
@@ -44,16 +44,16 @@
 		<SatelliteGuard>
 			<Tabs>
 				{#snippet info()}
-					{#if nonNullish($satelliteStore)}
-						<Warnings satellite={$satelliteStore} />
+					{#if nonNullish($satellite)}
+						<Warnings satellite={$satellite} />
 					{/if}
 				{/snippet}
 
-				{#if nonNullish($satelliteStore)}
+				{#if nonNullish($satellite)}
 					{#if $store.tabId === $store.tabs[0].id}
-						<SatelliteOverview satellite={$satelliteStore} />
+						<SatelliteOverview satellite={$satellite} />
 					{:else if $store.tabId === $store.tabs[1].id}
-						<SatelliteSettings satellite={$satelliteStore} />
+						<SatelliteSettings satellite={$satellite} />
 					{/if}
 				{/if}
 			</Tabs>

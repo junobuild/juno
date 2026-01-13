@@ -8,7 +8,7 @@
 	import type { IgnoreCanUpgradeErrorFn } from '$lib/components/upgrade/wizard/SelectUpgradeVersion.svelte';
 	import { ORBITER_v0_0_8, ORBITER_v0_2_0 } from '$lib/constants/version.constants';
 	import { authIdentity } from '$lib/derived/auth.derived';
-	import { orbiterStore } from '$lib/derived/orbiter.derived';
+	import { orbiter } from '$lib/derived/orbiter.derived';
 	import { reloadOrbiterVersion } from '$lib/services/version/version.orbiter.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { JunoModalDetail, JunoModalUpgradeDetail } from '$lib/types/modal';
@@ -30,7 +30,7 @@
 				// TODO: resolve no-non-null-assertion
 				// We know for sure that the orbiter is defined at this point.
 				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-				orbiterId: $orbiterStore!.orbiter_id.toText(),
+				orbiterId: $orbiter!.orbiter_id.toText(),
 				identity: $authIdentity ?? new AnonymousIdentity(),
 				...container()
 			},
@@ -39,7 +39,7 @@
 
 	const reloadVersion = async () => {
 		await reloadOrbiterVersion({
-			orbiterId: $orbiterStore?.orbiter_id
+			orbiterId: $orbiter?.orbiter_id
 		});
 	};
 
@@ -50,9 +50,9 @@
 		compare(currentVersion, ORBITER_v0_0_8) === 0 && compare(selectedVersion, ORBITER_v0_2_0) === 0;
 </script>
 
-{#if nonNullish($orbiterStore)}
+{#if nonNullish($orbiter)}
 	<CanisterUpgradeModal
-		canisterId={$orbiterStore.orbiter_id}
+		canisterId={$orbiter.orbiter_id}
 		{currentVersion}
 		{ignoreCanUpgradeError}
 		{newerReleases}

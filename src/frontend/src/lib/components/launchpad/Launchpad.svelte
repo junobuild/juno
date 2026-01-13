@@ -6,13 +6,13 @@
 	import LaunchpadSegments from '$lib/components/launchpad/LaunchpadSegments.svelte';
 	import Message from '$lib/components/ui/Message.svelte';
 	import Spinner from '$lib/components/ui/Spinner.svelte';
-	import { satellitesStore } from '$lib/derived/satellites.derived';
+	import { satellites } from '$lib/derived/satellites.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
 
 	let loading = $state(true);
 	run(() => {
 		(() => {
-			if (nonNullish($satellitesStore)) {
+			if (nonNullish($satellites)) {
 				setTimeout(() => (loading = false), 500);
 				return;
 			}
@@ -22,7 +22,7 @@
 	});
 </script>
 
-{#if loading || ($satellitesStore?.length ?? 0n) === 0}
+{#if loading || ($satellites?.length ?? 0n) === 0}
 	{#if loading}
 		<div class="spinner">
 			<Message>
@@ -38,7 +38,7 @@
 			<LaunchpadFirstSatellite />
 		</section>
 	{/if}
-{:else if ($satellitesStore?.length ?? 0) >= 1}
+{:else if ($satellites?.length ?? 0) >= 1}
 	<section in:fade>
 		<LaunchpadSegments />
 	</section>

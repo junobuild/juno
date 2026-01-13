@@ -7,15 +7,15 @@ import {
 } from '$lib/api/mission-control.api';
 import { METADATA_KEY_EMAIL } from '$lib/constants/metadata.constants';
 import {
-	mctrlSatellitesNotLoaded,
-	mctrlSatellitesStore
+	mctrlSatellites,
+	mctrlSatellitesNotLoaded
 } from '$lib/derived/mission-control/mission-control-satellites.derived';
 import {
 	missionControlSettings,
 	missionControlSettingsNotLoaded
 } from '$lib/derived/mission-control/mission-control-settings.derived';
 import { missionControlUserData } from '$lib/derived/mission-control/mission-control-user.derived';
-import { orbiterNotLoaded, orbiterStore } from '$lib/derived/orbiter.derived';
+import { orbiter, orbiterNotLoaded } from '$lib/derived/orbiter.derived';
 import { execute } from '$lib/services/_progress.services';
 import { loadOrbiters } from '$lib/services/mission-control/mission-control.orbiters.services';
 import { loadSatellites } from '$lib/services/mission-control/mission-control.satellites.services';
@@ -492,8 +492,8 @@ export const assertAndGetForMonitoringWizard = ():
 		return { valid: 'error' };
 	}
 
-	const $satellitesStore = get(mctrlSatellitesStore);
-	const $orbiterStore = get(orbiterStore);
+	const $satellitesStore = get(mctrlSatellites);
+	const $orbiterStore = get(orbiter);
 	if (($satellitesStore ?? []).length === 0 && isNullish($orbiterStore)) {
 		toasts.warn(get(i18n).errors.monitoring_no_modules);
 		return { valid: 'error' };

@@ -6,8 +6,8 @@
 		type SatellitePickerProps
 	} from '$lib/components/satellites/SatellitesPicker.svelte';
 	import PopoverApply from '$lib/components/ui/PopoverApply.svelte';
-	import { satelliteStore } from '$lib/derived/satellite.derived';
-	import { satellitesStore } from '$lib/derived/satellites.derived';
+	import { satellite } from '$lib/derived/satellite.derived';
+	import { satellites } from '$lib/derived/satellites.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { navigateToChangesDock } from '$lib/utils/nav.utils';
 	import { satelliteName } from '$lib/utils/satellite.utils';
@@ -17,7 +17,7 @@
 	let satelliteId = $state<Principal | undefined>(undefined);
 
 	onMount(() => {
-		satelliteId = $satelliteStore?.satellite_id;
+		satelliteId = $satellite?.satellite_id;
 	});
 
 	const apply = async () => {
@@ -26,8 +26,8 @@
 		await navigateToChangesDock(satelliteId);
 	};
 
-	let satellites = $derived(
-		($satellitesStore ?? []).reduce<SatellitePickerProps['satellites']>(
+	let satellitesWithNames = $derived(
+		($satellites ?? []).reduce<SatellitePickerProps['satellites']>(
 			(acc, satellite) => [
 				...acc,
 				{
@@ -48,7 +48,7 @@
 	<label for="modules">{$i18n.satellites.title}</label>
 
 	<div id="modules">
-		<SatellitesPicker onChange={(id) => (satelliteId = id)} {satellites} />
+		<SatellitesPicker onChange={(id) => (satelliteId = id)} satellites={satellitesWithNames} />
 	</div>
 </PopoverApply>
 

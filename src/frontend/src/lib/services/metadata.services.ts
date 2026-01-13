@@ -8,7 +8,7 @@ import {
 	METADATA_KEY_TAGS
 } from '$lib/constants/metadata.constants';
 import { segments } from '$lib/derived/console/segments.derived';
-import { mctrlSatellitesStore } from '$lib/derived/mission-control/mission-control-satellites.derived';
+import { mctrlSatellites } from '$lib/derived/mission-control/mission-control-satellites.derived';
 import {
 	SatelliteUiMetadataSchema,
 	SatelliteUiMetadataSerializer
@@ -175,7 +175,7 @@ const setMetadataWithMissionControl = async ({
 	metadata: Metadata;
 	identity: Identity;
 }): Promise<{ result: 'success' | 'warn' | 'error' }> => {
-	const currentState = get(mctrlSatellitesStore);
+	const currentState = get(mctrlSatellites);
 	const satellite = currentState?.find(
 		({ satellite_id }) => satellite_id.toText() === satelliteId.toText()
 	);
@@ -193,7 +193,7 @@ const setMetadataWithMissionControl = async ({
 			...rest
 		});
 
-		const updateState = get(mctrlSatellitesStore);
+		const updateState = get(mctrlSatellites);
 		satellitesUncertifiedStore.set([
 			...(updateState ?? []).filter(
 				({ satellite_id }) => updatedSatellite.satellite_id.toText() !== satellite_id.toText()

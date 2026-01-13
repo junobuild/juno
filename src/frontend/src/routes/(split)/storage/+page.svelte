@@ -7,7 +7,7 @@
 	import Loaders from '$lib/components/loaders/Loaders.svelte';
 	import Storage from '$lib/components/storage/Storage.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
-	import { satelliteStore } from '$lib/derived/satellite.derived';
+	import { satellite } from '$lib/derived/satellite.derived';
 	import {
 		type Tab,
 		type TabsContext,
@@ -41,8 +41,8 @@
 	<Loaders>
 		<SatelliteGuard>
 			<Tabs>
-				{#if nonNullish($satelliteStore)}
-					<Storage satelliteId={$satelliteStore?.satellite_id} />
+				{#if nonNullish($satellite)}
+					<Storage satelliteId={$satellite?.satellite_id} />
 				{/if}
 			</Tabs>
 		</SatelliteGuard>

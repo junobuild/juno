@@ -1,4 +1,4 @@
-import { satellitesStore } from '$lib/derived/satellites.derived';
+import { satellites } from '$lib/derived/satellites.derived';
 import { versionStore } from '$lib/stores/version.store';
 import type { SatelliteIdText } from '$lib/types/satellite';
 import type { Option } from '$lib/types/utils';
@@ -79,7 +79,7 @@ export const orbiterVersionNotLoaded = derived(
 );
 
 export const satellitesVersionLoaded = derived(
-	[satellitesStore, satellitesVersion],
+	[satellites, satellitesVersion],
 	([$satellitesStore, $satellitesVersion]) =>
 		nonNullish($satellitesStore) &&
 		$satellitesStore.every(

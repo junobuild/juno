@@ -12,7 +12,7 @@
 		canistersSyncDataNotSynced
 	} from '$lib/derived/ic-mgmt/canisters.derived';
 	import { orbiterWithSyncData } from '$lib/derived/orbiter/orbiter-merged.derived';
-	import { orbiterStore } from '$lib/derived/orbiter.derived';
+	import { orbiter } from '$lib/derived/orbiter.derived';
 	import { satellitesWithSyncData } from '$lib/derived/satellites-merged.derived';
 	import { sortedSatellites } from '$lib/derived/satellites.derived';
 	import { loadSegments as loadSegmentsServices } from '$lib/services/segments.services';
@@ -73,7 +73,7 @@
 			return;
 		}
 
-		const countModules = $sortedSatellites.length + (isNullish($orbiterStore) ? 0 : 1);
+		const countModules = $sortedSatellites.length + (isNullish($orbiter) ? 0 : 1);
 
 		if (countModules === 0) {
 			satellites = [];

@@ -1,8 +1,8 @@
 <script lang="ts">
 	import NotificationsCanisterLoader from '$lib/components/notifications/NotificationsCanisterLoader.svelte';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
-	import { orbiterStore } from '$lib/derived/orbiter.derived';
-	import { satelliteStore } from '$lib/derived/satellite.derived';
+	import { orbiter } from '$lib/derived/orbiter.derived';
+	import { satellite } from '$lib/derived/satellite.derived';
 	import { versionsLoaded, versionsUpgradeWarning } from '$lib/derived/version.derived';
 	import type { CanisterData, CanisterWarning } from '$lib/types/canister';
 
@@ -57,13 +57,13 @@
 />
 
 <NotificationsCanisterLoader
-	canisterId={$orbiterStore?.orbiter_id}
+	canisterId={$orbiter?.orbiter_id}
 	bind:warnings={orbiterWarnings}
 	bind:data={orbiterCanisterData}
 />
 
 <NotificationsCanisterLoader
-	canisterId={$satelliteStore?.satellite_id}
+	canisterId={$satellite?.satellite_id}
 	bind:warnings={satelliteWarnings}
 	bind:data={satelliteCanisterData}
 />

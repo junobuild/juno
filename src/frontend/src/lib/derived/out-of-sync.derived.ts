@@ -20,15 +20,16 @@ export const outOfSyncSatellites = derived(
 			return false;
 		}
 
-		return (
+		const inSync =
 			$consoleSatellites?.length === $mctrlSatellites.length &&
 			($consoleSatellites ?? []).every(
 				({ satellite_id: segment_id }) =>
 					$mctrlSatellites.find(
 						({ satellite_id }) => satellite_id.toText() === segment_id.toText()
 					) !== undefined
-			)
-		);
+			);
+
+		return !inSync;
 	}
 );
 
@@ -49,13 +50,14 @@ export const outOfSyncOrbiters = derived(
 			return false;
 		}
 
-		return (
+		const inSync =
 			$consoleOrbiters?.length === $mctrlOrbiters.length &&
 			($consoleOrbiters ?? []).every(
 				({ orbiter_id: segment_id }) =>
 					$mctrlOrbiters.find(({ orbiter_id }) => orbiter_id.toText() === segment_id.toText()) !==
 					undefined
-			)
-		);
+			);
+
+		return !inSync;
 	}
 );

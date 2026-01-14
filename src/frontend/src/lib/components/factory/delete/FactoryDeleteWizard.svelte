@@ -13,10 +13,11 @@
 		ONE_TRILLION,
 		DEFAULT_TCYCLES_TO_RETAIN_ON_DELETION
 	} from '$lib/constants/app.constants';
+	import { isBusy } from '$lib/derived/app/busy.derived';
 	import { authIdentity } from '$lib/derived/auth.derived';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import { deleteSegmentWizard } from '$lib/services/factory/factory.delete.services';
-	import { isBusy, wizardBusy } from '$lib/stores/app/busy.store';
+	import { wizardBusy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
 	import type { FactoryDeleteProgress } from '$lib/types/progress-factory-delete';

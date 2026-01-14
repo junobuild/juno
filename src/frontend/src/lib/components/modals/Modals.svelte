@@ -31,6 +31,7 @@
 	import ConvertIcpModal from '$lib/components/modals/wallet/ConvertIcpModal.svelte';
 	import SendTokensModal from '$lib/components/modals/wallet/SendTokensModal.svelte';
 	import type { JunoModal, JunoModalDetail } from '$lib/types/modal';
+	import OutOfSyncSegmentsModal from '$lib/components/modals/out-of-sync/OutOfSyncSegmentsModal.svelte';
 
 	let modal: JunoModal<JunoModalDetail> | undefined = $state(undefined);
 
@@ -157,4 +158,8 @@
 
 {#if modal?.type === 'convert_icp_to_cycles' && nonNullish(modal.detail)}
 	<ConvertIcpModal detail={modal.detail} onclose={close} />
+{/if}
+
+{#if modal?.type === 'reconcile_out_of_sync_segments'}
+	<OutOfSyncSegmentsModal onclose={close} />
 {/if}

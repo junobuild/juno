@@ -1089,6 +1089,12 @@ interface I18nSpotlight {
 	search_placeholder: string;
 }
 
+interface I18nOut_of_sync {
+	title: string;
+	description: string;
+	console: string;
+}
+
 interface I18n {
 	lang: Languages;
 	core: I18nCore;
@@ -1124,4 +1130,5 @@ interface I18n {
 	notifications: I18nNotifications;
 	not_found: I18nNot_found;
 	spotlight: I18nSpotlight;
+	out_of_sync: I18nOut_of_sync;
 }

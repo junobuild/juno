@@ -1038,7 +1038,8 @@
 		"heap": "Your {0} requires action: Heap memory is approaching 1 GB.",
 		"upgrade_available": "New upgrades available. Visit the Upgrade Dock to check them out.",
 		"short_freezing_threshold": "Short freezing threshold detected. We recommend a longer grace period to give you more time if cycles run out.",
-		"learn_more": "Learn more"
+		"learn_more": "Learn more",
+		"out_of_sync": "Your satellites and orbiters are out of sync. Reconcile them now."
 	},
 	"not_found": {
 		"title": "Oops! You got lost in space.",

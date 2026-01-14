@@ -1072,6 +1072,7 @@ interface I18nNotifications {
 	upgrade_available: string;
 	short_freezing_threshold: string;
 	learn_more: string;
+	out_of_sync: string;
 }
 
 interface I18nNot_found {

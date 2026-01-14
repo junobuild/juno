@@ -1040,7 +1040,8 @@
 		"heap": "您的{0}需要采取行动：堆内存接近1 GB。",
 		"upgrade_available": "有新版本可用，请前往升级中心查看。",
 		"short_freezing_threshold": "检测到冻结阈值过短，建议设置更长宽限期以便在cycles耗尽时为您争取更多时间。",
-		"learn_more": "了解更多"
+		"learn_more": "了解更多",
+		"out_of_sync": "您的卫星和轨道器不同步。请立即协调它们。"
 	},
 	"not_found": {
 		"title": "抱歉！您在太空中迷路了。",

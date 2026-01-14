@@ -8,6 +8,7 @@
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { CanisterData, CanisterWarning } from '$lib/types/canister';
 	import { overviewLink } from '$lib/utils/nav.utils';
+	import NotificationsOutOfSyncAlert from '$lib/components/notifications/NotificationsOutOfSyncAlert.svelte';
 
 	interface Props {
 		missionControlCanisterData: CanisterData | undefined;
@@ -68,6 +69,10 @@
 			segment="satellite"
 			warnings={satelliteWarnings}
 		/>
+	{/if}
+
+	{#if outOfSyncWarnings}
+		<NotificationsOutOfSyncAlert {close} />
 	{/if}
 
 	{#if upgradeWarning}

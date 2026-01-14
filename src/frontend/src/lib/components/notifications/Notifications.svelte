@@ -37,6 +37,7 @@
 	let upgradeWarning = $state(false);
 	let canisterWarnings = $state(false);
 	let canisterNotifications = $state(false);
+	let outOfSyncWarnings = $state(false);
 
 	let hasAlerts = $state(false);
 	let hasNotifications = $derived(canisterNotifications);
@@ -100,6 +101,7 @@
 	bind:alerts={hasAlerts}
 	bind:upgradeWarning
 	bind:canisterWarnings
+	bind:outOfSyncWarnings
 />
 
 <NotificationsInboxLoader {missionControlCanisterData} bind:canisterNotifications />
@@ -116,6 +118,7 @@
 					{missionControlWarnings}
 					{orbiterCanisterData}
 					{orbiterWarnings}
+					{outOfSyncWarnings}
 					{satelliteCanisterData}
 					{satelliteWarnings}
 					{upgradeWarning}

@@ -3,7 +3,7 @@ import { mctrlOrbiters } from '$lib/derived/mission-control/mission-control-orbi
 import { mctrlSatellites } from '$lib/derived/mission-control/mission-control-satellites.derived';
 import { derived } from 'svelte/store';
 
-export const divergentSatellites = derived(
+export const outOfSyncSatellites = derived(
 	[consoleSatellites, mctrlSatellites],
 	([$consoleSatellites, $mctrlSatellites]): boolean | undefined => {
 		// Not yet fully loaded
@@ -32,7 +32,7 @@ export const divergentSatellites = derived(
 	}
 );
 
-export const divergentOrbiters = derived(
+export const outOfSyncOrbiters = derived(
 	[consoleOrbiters, mctrlOrbiters],
 	([$consoleOrbiters, $mctrlOrbiters]): boolean | undefined => {
 		// Not yet fully loaded

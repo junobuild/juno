@@ -1,7 +1,9 @@
 <script lang="ts">
+	import { nonNullish } from '@dfinity/utils';
 	import NotificationsCanisterLoader from '$lib/components/notifications/NotificationsCanisterLoader.svelte';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import { orbiter } from '$lib/derived/orbiter.derived';
+	import { outOfSyncOrbiters, outOfSyncSatellites } from '$lib/derived/out-of-sync.derived';
 	import { satellite } from '$lib/derived/satellite.derived';
 	import { versionsLoaded, versionsUpgradeWarning } from '$lib/derived/version.derived';
 	import type { CanisterData, CanisterWarning } from '$lib/types/canister';
@@ -16,6 +18,7 @@
 		alerts: boolean;
 		upgradeWarning: boolean;
 		canisterWarnings: boolean;
+		outOfSyncWarnings: boolean;
 	}
 
 	let {
@@ -27,7 +30,8 @@
 		satelliteWarnings = $bindable(undefined),
 		alerts = $bindable(false),
 		upgradeWarning = $bindable(false),
-		canisterWarnings = $bindable(false)
+		canisterWarnings = $bindable(false),
+		outOfSyncWarnings = $bindable(false)
 	}: Props = $props();
 
 	const hasWarnings = (warnings: CanisterWarning | undefined): boolean =>
@@ -41,12 +45,15 @@
 
 	let hasUpgradeWarning = $derived($versionsLoaded && $versionsUpgradeWarning);
 
-	let hasNotifications = $derived(hasCanisterWarnings || hasUpgradeWarning);
+	let hasOutOfSyncWarning = $derived($outOfSyncSatellites === true || $outOfSyncOrbiters === true);
+
+	let hasNotifications = $derived(hasCanisterWarnings || hasUpgradeWarning || hasOutOfSyncWarning);
 
 	$effect(() => {
 		alerts = hasNotifications;
 		upgradeWarning = hasUpgradeWarning;
 		canisterWarnings = hasCanisterWarnings;
+		outOfSyncWarnings = hasOutOfSyncWarning;
 	});
 </script>
 

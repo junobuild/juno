@@ -20,6 +20,7 @@
 		alerts: boolean;
 		upgradeWarning: boolean;
 		canisterWarnings: boolean;
+		outOfSyncWarnings: boolean;
 	}
 
 	let {
@@ -32,15 +33,14 @@
 		close,
 		alerts,
 		upgradeWarning,
-		canisterWarnings
+		canisterWarnings,
+		outOfSyncWarnings
 	}: Props = $props();
 
 	let noAlerts = $derived(!alerts);
 </script>
 
-{#if noAlerts}
-	{$i18n.notifications.no_alerts}
-{:else}
+{#snippet warnings()}
 	{#if canisterWarnings}
 		<NotificationsCanisterAlert
 			{close}
@@ -73,4 +73,10 @@
 	{#if upgradeWarning}
 		<NotificationsUpgrade {close} />
 	{/if}
+{/snippet}
+
+{#if noAlerts}
+	{$i18n.notifications.no_alerts}
+{:else}
+	{@render warnings()}
 {/if}

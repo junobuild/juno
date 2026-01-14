@@ -5,6 +5,7 @@
 	import Html from '$lib/components/ui/Html.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import Warning from '$lib/components/ui/Warning.svelte';
+	import { isBusy } from '$lib/derived/app/busy.derived';
 	import { authIdentity } from '$lib/derived/auth.derived';
 	import { restoreSnapshot } from '$lib/services/ic-mgmt/snapshots.services';
 	import { wizardBusy } from '$lib/stores/app/busy.store';
@@ -13,7 +14,6 @@
 	import type { SnapshotProgress } from '$lib/types/progress-snapshot';
 	import { formatToDate } from '$lib/utils/date.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
-	import { isBusy } from '$lib/derived/app/busy.derived';
 
 	interface Props {
 		detail: JunoModalDetail;

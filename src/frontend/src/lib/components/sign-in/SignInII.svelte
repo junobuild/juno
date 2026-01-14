@@ -1,10 +1,10 @@
 <script lang="ts">
 	import IconIc from '$lib/components/icons/IconIC.svelte';
 	import { testIds } from '$lib/constants/test-ids.constants';
+	import { isBusy } from '$lib/derived/app/busy.derived';
 	import { signInWithII } from '$lib/services/console/auth/auth.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { testId } from '$lib/utils/test.utils';
-	import { isBusy } from '$lib/derived/app/busy.derived';
 </script>
 
 <button

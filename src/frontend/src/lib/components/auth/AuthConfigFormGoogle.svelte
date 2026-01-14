@@ -20,10 +20,10 @@
 		TWO_HOURS_NS,
 		TWO_WEEKS_NS
 	} from '$lib/constants/auth.constants';
+	import { isBusy } from '$lib/derived/app/busy.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { Satellite } from '$lib/types/satellite';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
-	import { isBusy } from '$lib/derived/app/busy.derived';
 
 	interface Props {
 		satellite: Satellite;

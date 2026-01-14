@@ -4,6 +4,7 @@
 	import type { Principal } from '@icp-sdk/core/principal';
 	import type { ICDid } from '$declarations';
 	import Popover from '$lib/components/ui/Popover.svelte';
+	import { isBusy } from '$lib/derived/app/busy.derived';
 	import { authIdentity } from '$lib/derived/auth.derived';
 	import { deleteSnapshot } from '$lib/services/ic-mgmt/snapshots.services';
 	import { busy } from '$lib/stores/app/busy.store';
@@ -11,7 +12,6 @@
 	import { toasts } from '$lib/stores/app/toasts.store';
 	import { shortenWithMiddleEllipsis } from '$lib/utils/format.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
-	import { isBusy } from '$lib/derived/app/busy.derived';
 
 	interface Props {
 		visible?: boolean;

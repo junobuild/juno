@@ -4,8 +4,8 @@
 	import IconUpload from '$lib/components/icons/IconUpload.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
-	import { i18n } from '$lib/stores/app/i18n.store';
 	import { isBusy } from '$lib/derived/app/busy.derived';
+	import { i18n } from '$lib/stores/app/i18n.store';
 
 	interface Props {
 		disabled?: boolean;

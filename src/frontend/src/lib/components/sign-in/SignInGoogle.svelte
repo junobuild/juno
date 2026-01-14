@@ -2,9 +2,9 @@
 	import { nonNullish } from '@dfinity/utils';
 	import IconGoogle from '$lib/components/icons/IconGoogle.svelte';
 	import { GOOGLE_CLIENT_ID } from '$lib/constants/app.constants';
+	import { isBusy } from '$lib/derived/app/busy.derived';
 	import { signInWithGoogle } from '$lib/services/console/auth/auth.openid.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import { isBusy } from '$lib/derived/app/busy.derived';
 </script>
 
 {#if nonNullish(GOOGLE_CLIENT_ID)}

@@ -3,6 +3,7 @@
 	import type { Snippet } from 'svelte';
 	import InputCanisterId from '$lib/components/core/InputCanisterId.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
+	import { isBusy } from '$lib/derived/app/busy.derived';
 	import { authIdentity } from '$lib/derived/auth.derived';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import { attachSegment } from '$lib/services/attach-detach/attach.services';
@@ -10,7 +11,6 @@
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
 	import { i18nCapitalize, i18nFormat } from '$lib/utils/i18n.utils';
-	import { isBusy } from '$lib/derived/app/busy.derived';
 
 	interface Props {
 		segment: 'satellite' | 'orbiter';

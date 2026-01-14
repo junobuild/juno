@@ -13,6 +13,7 @@
 		ONE_TRILLION,
 		DEFAULT_TCYCLES_TO_RETAIN_ON_DELETION
 	} from '$lib/constants/app.constants';
+	import { isBusy } from '$lib/derived/app/busy.derived';
 	import { authIdentity } from '$lib/derived/auth.derived';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import { deleteSegmentWizard } from '$lib/services/factory/factory.delete.services';
@@ -22,7 +23,6 @@
 	import type { FactoryDeleteProgress } from '$lib/types/progress-factory-delete';
 	import { formatTCycles } from '$lib/utils/cycles.utils';
 	import { i18nCapitalize, i18nFormat } from '$lib/utils/i18n.utils';
-	import { isBusy } from '$lib/derived/app/busy.derived';
 
 	interface Props {
 		segmentName?: string;

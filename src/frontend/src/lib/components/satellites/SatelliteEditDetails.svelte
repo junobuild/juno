@@ -3,6 +3,7 @@
 	import IconEdit from '$lib/components/icons/IconEdit.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
+	import { isBusy } from '$lib/derived/app/busy.derived';
 	import { authIdentity } from '$lib/derived/auth.derived';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import { setSatelliteMetadata } from '$lib/services/metadata.services';
@@ -11,7 +12,6 @@
 	import { toasts } from '$lib/stores/app/toasts.store';
 	import type { Satellite, SatelliteUiTags } from '$lib/types/satellite';
 	import { satelliteEnvironment, satelliteName, satelliteTags } from '$lib/utils/satellite.utils';
-	import { isBusy } from '$lib/derived/app/busy.derived';
 
 	interface Props {
 		satellite: Satellite;

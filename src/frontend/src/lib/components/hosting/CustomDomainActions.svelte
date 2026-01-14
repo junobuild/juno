@@ -8,6 +8,7 @@
 	import Checkbox from '$lib/components/ui/Checkbox.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
+	import { isBusy } from '$lib/derived/app/busy.derived';
 	import { authIdentity } from '$lib/derived/auth.derived';
 	import { deleteCustomDomain as deleteCustomDomainService } from '$lib/services/satellite/custom-domain.services';
 	import { busy } from '$lib/stores/app/busy.store';
@@ -20,7 +21,6 @@
 	import { buildDeleteAuthenticationConfig } from '$lib/utils/auth.config.utils';
 	import { emit } from '$lib/utils/events.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
-	import { isBusy } from '$lib/derived/app/busy.derived';
 
 	interface Props {
 		satellite: Satellite;

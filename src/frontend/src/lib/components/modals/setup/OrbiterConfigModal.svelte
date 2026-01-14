@@ -10,6 +10,7 @@
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import { DEFAULT_FEATURES } from '$lib/constants/analytics.constants';
 	import { ORBITER_v0_0_8 } from '$lib/constants/version.constants';
+	import { isBusy } from '$lib/derived/app/busy.derived';
 	import { authIdentity } from '$lib/derived/auth.derived';
 	import { setOrbiterSatelliteConfigs } from '$lib/services/orbiter/orbiters.services';
 	import { wizardBusy } from '$lib/stores/app/busy.store';
@@ -18,7 +19,6 @@
 	import { orbitersConfigsStore } from '$lib/stores/orbiter/orbiter-configs.store';
 	import { versionStore } from '$lib/stores/version.store';
 	import type { JunoModalDetail, JunoModalEditOrbiterConfigDetail } from '$lib/types/modal';
-	import { isBusy } from '$lib/derived/app/busy.derived';
 
 	interface Props {
 		detail: JunoModalDetail;

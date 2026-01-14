@@ -15,6 +15,7 @@
 		THREE_MONTHS,
 		TWO_YEARS
 	} from '$lib/constants/canister.constants';
+	import { isBusy } from '$lib/derived/app/busy.derived';
 	import { authIdentity } from '$lib/derived/auth.derived';
 	import { updateSettings as updateSettingsServices } from '$lib/services/ic-mgmt/settings.services';
 	import { wizardBusy } from '$lib/stores/app/busy.store';
@@ -24,7 +25,6 @@
 	import { formatTCycles } from '$lib/utils/cycles.utils';
 	import { emit } from '$lib/utils/events.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
-	import { isBusy } from '$lib/derived/app/busy.derived';
 
 	interface Props {
 		detail: JunoModalDetail;

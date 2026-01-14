@@ -546,11 +546,13 @@ export const idlFactory = ({ IDL }) => {
 		set_controllers: IDL.Func([SetControllersArgs], [], []),
 		set_custom_domain: IDL.Func([IDL.Text, IDL.Opt(IDL.Text)], [], []),
 		set_fee: IDL.Func([SegmentKind, FeesArgs], [], []),
+		set_many_segments: IDL.Func([IDL.Vec(SetSegmentsArgs)], [IDL.Vec(Segment)], []),
 		set_rate_config: IDL.Func([SegmentKind, RateConfig], [], []),
 		set_segment: IDL.Func([SetSegmentsArgs], [Segment], []),
 		set_segment_metadata: IDL.Func([SetSegmentMetadataArgs], [Segment], []),
 		set_storage_config: IDL.Func([SetStorageConfig], [StorageConfig], []),
 		submit_proposal: IDL.Func([IDL.Nat], [IDL.Nat, Proposal], []),
+		unset_many_segments: IDL.Func([IDL.Vec(UnsetSegmentsArgs)], [], []),
 		unset_segment: IDL.Func([UnsetSegmentsArgs], [], []),
 		upload_proposal_asset_chunk: IDL.Func([UploadChunk], [UploadChunkResult], [])
 	});

@@ -18,9 +18,7 @@
 	let { label, satellites, orbiter }: Props = $props();
 </script>
 
-<div class="card-container with-title from">
-	<span class="title">{@render label()}</span>
-
+{#snippet withSegments()}
 	<ul class="content">
 		{#each satellites as satellite (satellite.satellite_id.toText())}
 			<li>
@@ -40,13 +38,30 @@
 			</li>
 		{/if}
 	</ul>
+{/snippet}
+
+{#snippet withoutSegments()}
+	<p>{$i18n.out_of_sync.no_segments}</p>
+{/snippet}
+
+<div class="card-container with-title from">
+	<span class="title">{@render label()}</span>
+
+	{#if satellites.length > 0 || nonNullish(orbiter)}
+		{@render withSegments()}
+	{:else}
+		{@render withoutSegments()}
+	{/if}
 </div>
 
 <style lang="scss">
-	ul {
-		padding: var(--padding-0_25x) 0;
+	ul,
+	p {
 		margin: 0 var(--padding-2x);
+	}
 
+	p {
+		padding: var(--padding-2x) 0;
 	}
 
 	li {

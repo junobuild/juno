@@ -1056,6 +1056,7 @@
 	"out_of_sync": {
 		"title": "Configuration Mismatch",
 		"description": "The configuration of the Console doesn't match your Mission Control. Review the differences below and sync to keep everything consistent.",
-		"console": "Console"
+		"console": "Console",
+		"no_segments": "No modules found"
 	}
 }

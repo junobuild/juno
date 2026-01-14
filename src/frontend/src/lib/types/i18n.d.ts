@@ -1093,6 +1093,7 @@ interface I18nOut_of_sync {
 	title: string;
 	description: string;
 	console: string;
+	no_segments: string;
 }
 
 interface I18n {

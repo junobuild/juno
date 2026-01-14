@@ -17,13 +17,14 @@
 	} from '$lib/constants/canister.constants';
 	import { authIdentity } from '$lib/derived/auth.derived';
 	import { updateSettings as updateSettingsServices } from '$lib/services/ic-mgmt/settings.services';
-	import { isBusy, wizardBusy } from '$lib/stores/app/busy.store';
+	import { wizardBusy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { CanisterLogVisibility } from '$lib/types/canister';
 	import type { JunoModalDetail, JunoModalEditCanisterSettingsDetail } from '$lib/types/modal';
 	import { formatTCycles } from '$lib/utils/cycles.utils';
 	import { emit } from '$lib/utils/events.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
+	import { isBusy } from '$lib/derived/app/busy.derived';
 
 	interface Props {
 		detail: JunoModalDetail;

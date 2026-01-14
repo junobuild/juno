@@ -7,12 +7,13 @@
 	import Warning from '$lib/components/ui/Warning.svelte';
 	import { authIdentity } from '$lib/derived/auth.derived';
 	import { restoreSnapshot } from '$lib/services/ic-mgmt/snapshots.services';
-	import { isBusy, wizardBusy } from '$lib/stores/app/busy.store';
+	import { wizardBusy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { JunoModalDetail, JunoModalRestoreSnapshotDetail } from '$lib/types/modal';
 	import type { SnapshotProgress } from '$lib/types/progress-snapshot';
 	import { formatToDate } from '$lib/utils/date.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
+	import { isBusy } from '$lib/derived/app/busy.derived';
 
 	interface Props {
 		detail: JunoModalDetail;

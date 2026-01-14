@@ -6,11 +6,11 @@
 	import Html from '$lib/components/ui/Html.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
-	import { isBusy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { CanisterSegmentWithLabel } from '$lib/types/canister';
 	import { formatTCycles, tCyclesToCycles } from '$lib/utils/cycles.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
+	import { isBusy } from '$lib/derived/app/busy.derived';
 
 	interface Props {
 		segment: CanisterSegmentWithLabel;

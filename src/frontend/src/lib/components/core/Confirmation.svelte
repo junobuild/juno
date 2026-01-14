@@ -2,8 +2,8 @@
 	import { createEventDispatcher, type Snippet } from 'svelte';
 	import { stopPropagation } from 'svelte/legacy';
 	import Popover from '$lib/components/ui/Popover.svelte';
-	import { isBusy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
+	import { isBusy } from '$lib/derived/app/busy.derived';
 
 	interface Props {
 		visible?: boolean;

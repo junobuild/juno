@@ -14,8 +14,9 @@
 		missionControlUserDataLoaded
 	} from '$lib/derived/mission-control/mission-control-user.derived';
 	import { setMetadataEmail } from '$lib/services/mission-control/mission-control.services';
-	import { busy, isBusy } from '$lib/stores/app/busy.store';
+	import { busy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
+	import { isBusy } from '$lib/derived/app/busy.derived';
 
 	let email = $state('');
 	let visible: boolean = $state(false);

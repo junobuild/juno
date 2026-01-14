@@ -4,9 +4,9 @@
 	import { fade } from 'svelte/transition';
 	import type { MissionControlDid } from '$declarations';
 	import SegmentsTable from '$lib/components/segments/SegmentsTable.svelte';
-	import { isBusy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { MissionControlId } from '$lib/types/mission-control';
+	import { isBusy } from '$lib/derived/app/busy.derived';
 
 	interface Props {
 		missionControlId: MissionControlId;

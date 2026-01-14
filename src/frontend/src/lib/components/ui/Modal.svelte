@@ -6,9 +6,9 @@
 	import IconBack from '$lib/components/icons/IconBack.svelte';
 	import IconClose from '$lib/components/icons/IconClose.svelte';
 	import ButtonIcon from '$lib/components/ui/ButtonIcon.svelte';
-	import { isBusy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { handleKeyPress } from '$lib/utils/keyboard.utils';
+	import { isBusy } from '$lib/derived/app/busy.derived';
 
 	interface Props {
 		onback?: () => void;

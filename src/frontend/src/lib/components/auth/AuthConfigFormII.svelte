@@ -6,11 +6,11 @@
 	import Value from '$lib/components/ui/Value.svelte';
 	import Warning from '$lib/components/ui/Warning.svelte';
 	import { sortedSatelliteCustomDomains } from '$lib/derived/satellite/satellite-custom-domains.derived';
-	import { isBusy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { Satellite } from '$lib/types/satellite';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { satelliteUrl as satelliteUrlUtils } from '$lib/utils/satellite.utils';
+	import { isBusy } from '$lib/derived/app/busy.derived';
 
 	interface Props {
 		config: SatelliteDid.AuthenticationConfig | undefined;

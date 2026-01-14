@@ -8,13 +8,14 @@
 	import Warning from '$lib/components/ui/Warning.svelte';
 	import { authIdentity } from '$lib/derived/auth.derived';
 	import { createSnapshot } from '$lib/services/ic-mgmt/snapshots.services';
-	import { isBusy, wizardBusy } from '$lib/stores/app/busy.store';
+	import { wizardBusy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
 	import { snapshotStore } from '$lib/stores/ic-mgmt/snapshot.store';
 	import type { JunoModalDetail, JunoModalSegmentDetail } from '$lib/types/modal';
 	import type { SnapshotProgress } from '$lib/types/progress-snapshot';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
+	import { isBusy } from '$lib/derived/app/busy.derived';
 
 	interface Props {
 		detail: JunoModalDetail;

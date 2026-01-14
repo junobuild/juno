@@ -1,14 +1,22 @@
 <script lang="ts">
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import OutOfSyncSegments from '$lib/components/out-of-sync/OutOfSyncSegments.svelte';
-    import IconEqualNot from "$lib/components/icons/IconEqualNot.svelte";
-	import GridEqualNot from "$lib/components/ui/GridEqualNot.svelte";
+	import GridEqualNot from '$lib/components/ui/GridEqualNot.svelte';
+	import { mctrlSortedSatellites } from '$lib/derived/mission-control/mission-control-satellites.derived';
+	import {
+		consoleOrbiter,
+		consoleSatellites,
+		consoleSortedSatellites
+	} from '$lib/derived/console/segments.derived';
+	import { mctrlOrbiter } from '$lib/derived/mission-control/mission-control-orbiters.derived';
 
 	interface Props {
 		onsubmit: ($event: SubmitEvent) => Promise<void>;
 	}
 
 	let { onsubmit }: Props = $props();
+
+	$inspect($consoleSortedSatellites, $mctrlSortedSatellites)
 </script>
 
 <h2>{$i18n.out_of_sync.title}</h2>
@@ -17,7 +25,7 @@
 
 <form {onsubmit}>
 	<div class="columns">
-		<OutOfSyncSegments>
+		<OutOfSyncSegments satellites={$consoleSortedSatellites} orbiter={$consoleOrbiter}>
 			{#snippet label()}
 				{$i18n.out_of_sync.console}
 			{/snippet}
@@ -25,7 +33,7 @@
 
 		<GridEqualNot small />
 
-		<OutOfSyncSegments>
+		<OutOfSyncSegments satellites={$mctrlSortedSatellites} orbiter={$mctrlOrbiter}>
 			{#snippet label()}
 				{$i18n.mission_control.title}
 			{/snippet}

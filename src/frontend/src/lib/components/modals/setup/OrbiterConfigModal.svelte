@@ -10,9 +10,10 @@
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import { DEFAULT_FEATURES } from '$lib/constants/analytics.constants';
 	import { ORBITER_v0_0_8 } from '$lib/constants/version.constants';
+	import { isBusy } from '$lib/derived/app/busy.derived';
 	import { authIdentity } from '$lib/derived/auth.derived';
 	import { setOrbiterSatelliteConfigs } from '$lib/services/orbiter/orbiters.services';
-	import { isBusy, wizardBusy } from '$lib/stores/app/busy.store';
+	import { wizardBusy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
 	import { orbitersConfigsStore } from '$lib/stores/orbiter/orbiter-configs.store';

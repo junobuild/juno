@@ -3,10 +3,11 @@
 	import IconEdit from '$lib/components/icons/IconEdit.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
+	import { isBusy } from '$lib/derived/app/busy.derived';
 	import { authIdentity } from '$lib/derived/auth.derived';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import { setSatelliteMetadata } from '$lib/services/metadata.services';
-	import { busy, isBusy } from '$lib/stores/app/busy.store';
+	import { busy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
 	import type { Satellite, SatelliteUiTags } from '$lib/types/satellite';

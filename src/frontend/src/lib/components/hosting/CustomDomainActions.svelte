@@ -8,9 +8,10 @@
 	import Checkbox from '$lib/components/ui/Checkbox.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
+	import { isBusy } from '$lib/derived/app/busy.derived';
 	import { authIdentity } from '$lib/derived/auth.derived';
 	import { deleteCustomDomain as deleteCustomDomainService } from '$lib/services/satellite/custom-domain.services';
-	import { busy, isBusy } from '$lib/stores/app/busy.store';
+	import { busy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
 	import type { CustomDomain } from '$lib/types/custom-domain';

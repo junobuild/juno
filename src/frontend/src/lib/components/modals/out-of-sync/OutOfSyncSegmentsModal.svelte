@@ -1,6 +1,14 @@
 <script lang="ts">
 	import Modal from '$lib/components/ui/Modal.svelte';
-	import OutOfSyncForm from "$lib/components/out-of-sync/OutOfSyncForm.svelte";
+	import OutOfSyncForm from '$lib/components/out-of-sync/OutOfSyncForm.svelte';
+	import { fade } from 'svelte/transition';
+	import type { OutOfSyncProgress } from '$lib/types/progress-out-of-sync';
+	import { wizardBusy } from '$lib/stores/app/busy.store';
+	import { reconcileSegments } from '$lib/services/attach-detach/out-of-sync.services';
+	import { i18n } from '$lib/stores/app/i18n.store';
+	import ProgressOutOfSync from '$lib/components/out-of-sync/ProgressOutOfSync.svelte';
+	import {authIdentity} from "$lib/derived/auth.derived";
+	import {missionControlId} from "$lib/derived/console/account.mission-control.derived";
 
 	interface Props {
 		onclose: () => void;
@@ -10,18 +18,46 @@
 
 	let step = $state<'init' | 'in_progress' | 'ready' | 'error'>('init');
 
+	let progress = $state<OutOfSyncProgress | undefined>(undefined);
+	const onProgress = (outOfSyncProgress: OutOfSyncProgress | undefined) =>
+		(progress = outOfSyncProgress);
+
 	const onsubmit = async ($event: SubmitEvent) => {
 		$event.preventDefault();
+
+		$event.preventDefault();
+
+		onProgress(undefined);
+
+		wizardBusy.start();
+		step = 'in_progress';
+
+		const { result } = await reconcileSegments({
+			identity: $authIdentity,
+			missionControlId: $missionControlId
+		});
+
+		wizardBusy.stop();
+
+		if (result !== 'ok') {
+			step = 'error';
+			return;
+		}
+
+		step = 'ready';
 	};
 </script>
 
 <Modal {onclose}>
 	{#if step === 'ready'}
-		ready
+		<div class="msg" in:fade>
+			<p>{$i18n.out_of_sync.modules_synced}</p>
+			<button onclick={onclose}>{$i18n.core.close}</button>
+		</div>
 	{:else if step === 'in_progress'}
-		in progress
+		<ProgressOutOfSync {progress} />
 	{:else}
-		<OutOfSyncForm {onclose} />
+		<OutOfSyncForm {onsubmit} />
 	{/if}
 </Modal>
 

@@ -730,6 +730,7 @@ interface I18nErrors {
 	auth_external_alternative_origins: string;
 	auth_invalid_google_client_id: string;
 	mission_control_not_loaded: string;
+	mission_control_not_found: string;
 	mission_control_settings_not_loaded: string;
 	mission_control_user_data_not_loaded: string;
 	mission_control_unexpected_error: string;
@@ -760,6 +761,7 @@ interface I18nErrors {
 	invalid_juno_package: string;
 	missing_satellite_version: string;
 	invalid_version_cannot_downgrade: string;
+	reconcile_out_of_sync_error: string;
 }
 
 interface I18nDocument {
@@ -1094,6 +1096,8 @@ interface I18nOut_of_sync {
 	description: string;
 	console: string;
 	no_segments: string;
+	modules_synced: string;
+	syncing_modules: string;
 }
 
 interface I18n {

@@ -5,7 +5,6 @@
 	import { mctrlSortedSatellites } from '$lib/derived/mission-control/mission-control-satellites.derived';
 	import {
 		consoleOrbiter,
-		consoleSatellites,
 		consoleSortedSatellites
 	} from '$lib/derived/console/segments.derived';
 	import { mctrlOrbiter } from '$lib/derived/mission-control/mission-control-orbiters.derived';
@@ -39,6 +38,10 @@
 			{/snippet}
 		</OutOfSyncSegments>
 	</div>
+
+	<button class="action" type="submit">
+		{$i18n.core.submit}
+	</button>
 </form>
 
 <style lang="scss">

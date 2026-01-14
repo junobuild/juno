@@ -1,30 +1,30 @@
 import { consoleOrbiters, consoleSatellites } from '$lib/derived/console/segments.derived';
 import { mctrlOrbiters } from '$lib/derived/mission-control/mission-control-orbiters.derived';
-import { mctrlSatellitesStore } from '$lib/derived/mission-control/mission-control-satellites.derived';
+import { mctrlSatellites } from '$lib/derived/mission-control/mission-control-satellites.derived';
 import { derived } from 'svelte/store';
 
 export const divergentSatellites = derived(
-	[consoleSatellites, mctrlSatellitesStore],
-	([$consoleSatellites, $mctrlSatellitesStore]): boolean | undefined => {
+	[consoleSatellites, mctrlSatellites],
+	([$consoleSatellites, $mctrlSatellites]): boolean | undefined => {
 		// Not yet fully loaded
-		if ($consoleSatellites === undefined || $mctrlSatellitesStore === undefined) {
+		if ($consoleSatellites === undefined || $mctrlSatellites === undefined) {
 			return undefined;
 		}
 
 		// No mission control
-		if ($mctrlSatellitesStore === null) {
+		if ($mctrlSatellites === null) {
 			return false;
 		}
 
-		if ($consoleSatellites?.length === 0 && $mctrlSatellitesStore.length === 0) {
+		if ($consoleSatellites?.length === 0 && $mctrlSatellites.length === 0) {
 			return false;
 		}
 
 		return (
-			$consoleSatellites?.length === $mctrlSatellitesStore.length &&
+			$consoleSatellites?.length === $mctrlSatellites.length &&
 			($consoleSatellites ?? []).every(
 				({ satellite_id: segment_id }) =>
-					$mctrlSatellitesStore.find(
+					$mctrlSatellites.find(
 						({ satellite_id }) => satellite_id.toText() === segment_id.toText()
 					) !== undefined
 			)

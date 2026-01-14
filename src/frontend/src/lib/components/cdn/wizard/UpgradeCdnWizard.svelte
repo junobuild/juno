@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
+	import { fromNullable, isNullish } from '@dfinity/utils';
 	import { AnonymousIdentity } from '@icp-sdk/core/agent';
 	import { Principal } from '@icp-sdk/core/principal';
 	import { type UpgradeCodeParams, upgradeSatellite } from '@junobuild/admin';
@@ -12,7 +12,6 @@
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import CanisterUpgradeOptions from '$lib/components/upgrade/wizard/CanisterUpgradeOptions.svelte';
 	import { authIdentity } from '$lib/derived/auth.derived';
-	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import { prepareWasmUpgrade } from '$lib/services/upgrade/upgrade.cdn.services';
 	import { reloadSatelliteVersion } from '$lib/services/version/version.satellite.services';
 	import { wizardBusy } from '$lib/stores/app/busy.store';
@@ -56,7 +55,6 @@
 				...container()
 			},
 			...params,
-			...(nonNullish($missionControlId) && { missionControlId: $missionControlId }),
 			// TODO: option to be removed
 			deprecated: false, // Proposals supported > SATELLITE_v0_0_7,
 			deprecatedNoScope: false // Proposals supported >  SATELLITE_v0_0_9

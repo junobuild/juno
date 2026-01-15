@@ -1067,8 +1067,8 @@
 		"modules_synced": "模块已同步！",
 		"syncing_modules": "正在同步模块",
 		"syncing_satellites_to_console": "正在将卫星同步到控制台...",
-		"syncing_satellites_to_mctrl": "正在将卫星同步到任务控制中心 ({0})...",
+		"syncing_satellites_to_mctrl": "正在将卫星同步到任务控制中心... ({0})",
 		"syncing_orbiters_to_console": "正在将轨道器同步到控制台...",
-		"syncing_orbiters_to_mctrl": "正在将轨道器同步到任务控制中心 ({0})..."
+		"syncing_orbiters_to_mctrl": "正在将轨道器同步到任务控制中心... ({0})"
 	}
 }

@@ -4,14 +4,18 @@ import { mctrlOrbiters } from '$lib/derived/mission-control/mission-control-orbi
 import { mctrlSatellites } from '$lib/derived/mission-control/mission-control-satellites.derived';
 import { outOfSyncOrbiters, outOfSyncSatellites } from '$lib/derived/out-of-sync.derived';
 import { execute } from '$lib/services/_progress.services';
-import { attachWithMissionControl as attachWithMissionControlService } from '$lib/services/attach-detach/_attach.mission-control.services';
+import {
+	setMissionControlAsControllerAndAttachOrbiter,
+	setMissionControlAsControllerAndAttachSatellite
+} from '$lib/services/factory/_factory.attach.services';
 import { loadSegments } from '$lib/services/segments.services';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
-import type { Metadata } from '$lib/types/metadata';
 import type { MissionControlId } from '$lib/types/mission-control';
+import type { Orbiter } from '$lib/types/orbiter';
 import { type OutOfSyncProgress, OutOfSyncProgressStep } from '$lib/types/progress-out-of-sync';
+import type { Satellite } from '$lib/types/satellite';
 import type { Option } from '$lib/types/utils';
 import { isNullish, toNullable } from '@dfinity/utils';
 import type { Identity } from '@icp-sdk/core/agent';
@@ -121,14 +125,27 @@ const reconcileSatellites = async ({
 			) === undefined
 	);
 
-	await attachWithMissionControl({
-		missionControlId,
-		identity,
+	type SegmentWithoutId = Omit<Satellite, 'satellite_id'>;
+
+	const attachFn: AttachFn<SegmentWithoutId> = async ({ segment: { segmentId, ...rest } }) => {
+		await setMissionControlAsControllerAndAttachSatellite({
+			missionControlId,
+			identity,
+			satellite: {
+				satellite_id: segmentId,
+				...rest
+			}
+		});
+	};
+
+	await attachWithMissionControl<SegmentWithoutId>({
 		onTextProgress,
 		segmentType: 'satellite',
-		segments: attachMctrlSatellites.map(({ satellite_id: segmentId }) => ({
+		segments: attachMctrlSatellites.map(({ satellite_id: segmentId, ...rest }) => ({
+			...rest,
 			segmentId
-		}))
+		})),
+		attachFn
 	});
 
 	await attachWithConsole({
@@ -162,15 +179,27 @@ const reconcileOrbiters = async ({
 			undefined
 	);
 
-	await attachWithMissionControl({
-		missionControlId,
-		identity,
+	type SegmentWithoutId = Omit<Orbiter, 'orbiter_id'>;
+
+	const attachFn: AttachFn<SegmentWithoutId> = async ({ segment: { segmentId, ...rest } }) => {
+		await setMissionControlAsControllerAndAttachOrbiter({
+			missionControlId,
+			identity,
+			orbiter: {
+				orbiter_id: segmentId,
+				...rest
+			}
+		});
+	};
+
+	await attachWithMissionControl<SegmentWithoutId>({
 		onTextProgress,
 		segmentType: 'satellite',
-		segments: attachMctrlOrbiters.map(({ orbiter_id: segmentId }) => ({
-			segmentId,
-			segment: 'orbiter'
-		}))
+		segments: attachMctrlOrbiters.map(({ orbiter_id: segmentId, ...rest }) => ({
+			...rest,
+			segmentId
+		})),
+		attachFn
 	});
 
 	await attachWithConsole({
@@ -184,25 +213,30 @@ const reconcileOrbiters = async ({
 	});
 };
 
-interface AttachSegment {
+type SegmentWithoutId = Omit<Satellite, 'satellite_id'> | Omit<Orbiter, 'orbiter_id'>;
+
+type AttachSegment<T extends SegmentWithoutId> = {
 	segmentId: Principal;
-	metadata: Metadata;
-}
+} & T;
 
 interface AttachWithMissionControlProgressStats {
 	index: number;
 	total: number;
 }
 
-const attachWithMissionControl = async ({
-	identity,
-	missionControlId,
+type AttachFn<T extends SegmentWithoutId> = (params: {
+	segment: AttachSegment<T>;
+}) => Promise<void>;
+
+const attachWithMissionControl = async <T extends SegmentWithoutId>({
 	onTextProgress,
 	segments,
-	segmentType
-}: ReconcileParams & {
-	segments: Omit<AttachSegment, 'metadata'>[];
+	segmentType,
+	attachFn
+}: Pick<ReconcileParams, 'onTextProgress'> & {
+	segments: AttachSegment<T>[];
 	segmentType: 'satellite' | 'orbiter';
+	attachFn: AttachFn<T>;
 }) => {
 	// We do the check for the lengths here. Not really graceful but,
 	// avoid to duplicate the assertions for both Satellites and Orbiters
@@ -229,25 +263,20 @@ const attachWithMissionControl = async ({
 		onTextProgress(text.replace('{0}', `${progress.index} / ${progress.total}`));
 	};
 
-	for (const { segmentId } of segments) {
+	for (const segment of segments) {
 		incrementProgress();
 
-		await attachWithMissionControlService({
-			segment: segmentType,
-			segmentId,
-			missionControlId,
-			identity
-		});
+		await attachFn({ segment });
 	}
 };
 
-const attachWithConsole = async ({
+const attachWithConsole = async <T extends SegmentWithoutId>({
 	identity,
 	onTextProgress,
 	segments,
 	segmentType
 }: {
-	segments: Omit<AttachSegment, 'segment'>[];
+	segments: Pick<AttachSegment<T>, 'segmentId' | 'metadata'>[];
 	segmentType: 'satellite' | 'orbiter';
 } & Pick<ReconcileParams, 'identity' | 'onTextProgress'>) => {
 	// We do the check for the lengths here. Not really graceful but,

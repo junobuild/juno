@@ -1,5 +1,5 @@
 import { setSegment } from '$lib/api/console.api';
-import { attachWithMissionControl } from '$lib/services/attach-detach/_attach.mission-control.services';
+import { setOrbiter, setSatellite } from '$lib/api/mission-control.api';
 import { loadSegments } from '$lib/services/segments.services';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
@@ -19,6 +19,12 @@ interface AttachParams {
 	missionControlId: Option<MissionControlId>;
 	segment: 'satellite' | 'orbiter';
 	segmentId: Principal;
+}
+
+interface AttachWithMissionControlParams {
+	missionControlId: MissionControlId;
+	canisterId: Principal;
+	identity: OptionIdentity;
 }
 
 export const attachSegment = async ({
@@ -127,5 +133,35 @@ const attachWithConsole = async ({
 			segment_kind: segment === 'orbiter' ? { Orbiter: null } : { Satellite: null },
 			metadata: toNullable()
 		}
+	});
+};
+
+const attachWithMissionControl = async ({
+	segment,
+	segmentId,
+	...rest
+}: {
+	missionControlId: MissionControlId;
+	identity: Identity;
+	segment: 'satellite' | 'orbiter';
+	segmentId: Principal;
+}) => {
+	const attachOrbiter = async ({ canisterId, ...rest }: AttachWithMissionControlParams) => {
+		await setOrbiter({ ...rest, orbiterId: canisterId });
+	};
+
+	const attachSatellite = async ({
+		canisterId,
+		missionControlId,
+		identity
+	}: AttachWithMissionControlParams) => {
+		await setSatellite({ missionControlId, satelliteId: canisterId, identity });
+	};
+
+	const fn = segment === 'orbiter' ? attachOrbiter : attachSatellite;
+
+	await fn({
+		...rest,
+		canisterId: segmentId
 	});
 };

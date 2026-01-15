@@ -4,7 +4,7 @@ import { mctrlOrbiters } from '$lib/derived/mission-control/mission-control-orbi
 import { mctrlSatellites } from '$lib/derived/mission-control/mission-control-satellites.derived';
 import { outOfSyncOrbiters, outOfSyncSatellites } from '$lib/derived/out-of-sync.derived';
 import { execute } from '$lib/services/_progress.services';
-import { attachWithMissionControl } from '$lib/services/attach-detach/_attach.mission-control.services';
+import { attachWithMissionControl as attachWithMissionControlService } from '$lib/services/attach-detach/_attach.mission-control.services';
 import { loadSegments } from '$lib/services/segments.services';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
@@ -21,11 +21,13 @@ import { get } from 'svelte/store';
 export const reconcileSegments = async ({
 	identity,
 	missionControlId,
-	onProgress
+	onProgress,
+	onSyncTextProgress
 }: {
 	identity: OptionIdentity;
 	missionControlId: Option<MissionControlId>;
 	onProgress: (progress: OutOfSyncProgress | undefined) => void;
+	onSyncTextProgress: (text: string) => void;
 }): Promise<{ result: 'ok' } | { result: 'error'; err?: unknown }> => {
 	// TODO: duplicate code
 	if (missionControlId === undefined) {
@@ -57,7 +59,8 @@ export const reconcileSegments = async ({
 		const reconcile = async () => {
 			await reconcileAllSegments({
 				identity,
-				missionControlId
+				missionControlId,
+				onTextProgress: onSyncTextProgress
 			});
 		};
 		await execute({ fn: reconcile, onProgress, step: OutOfSyncProgressStep.Sync });
@@ -84,31 +87,23 @@ export const reconcileSegments = async ({
 	}
 };
 
-const reconcileAllSegments = async ({
-	identity,
-	missionControlId
-}: {
+interface ReconcileParams {
 	identity: Identity;
 	missionControlId: Principal;
-}) => {
-	await reconcileSatellites({
-		identity,
-		missionControlId
-	});
+	onTextProgress: (text: string) => void;
+}
 
-	await reconcileOrbiters({
-		identity,
-		missionControlId
-	});
+const reconcileAllSegments = async (params: ReconcileParams) => {
+	await reconcileSatellites(params);
+
+	await reconcileOrbiters(params);
 };
 
 const reconcileSatellites = async ({
 	identity,
-	missionControlId
-}: {
-	identity: Identity;
-	missionControlId: Principal;
-}) => {
+	missionControlId,
+	onTextProgress
+}: ReconcileParams) => {
 	const consoleSats = get(consoleSatellites);
 	const mctrlSats = get(mctrlSatellites);
 
@@ -126,15 +121,22 @@ const reconcileSatellites = async ({
 			) === undefined
 	);
 
-	for (const { satellite_id: segmentId } of attachMctrlSatellites) {
-		await attachWithMissionControl({ segment: 'satellite', segmentId, missionControlId, identity });
-	}
+	await attachWithMissionControl({
+		missionControlId,
+		identity,
+		onTextProgress,
+		segmentType: 'satellite',
+		segments: attachMctrlSatellites.map(({ satellite_id: segmentId }) => ({
+			segmentId
+		}))
+	});
 
 	await attachWithConsole({
 		identity,
+		onTextProgress,
+		segmentType: 'satellite',
 		segments: attachConsoleSatellites.map(({ satellite_id, metadata }) => ({
 			segmentId: satellite_id,
-			segment: 'satellite',
 			metadata
 		}))
 	});
@@ -142,11 +144,9 @@ const reconcileSatellites = async ({
 
 const reconcileOrbiters = async ({
 	identity,
-	missionControlId
-}: {
-	identity: Identity;
-	missionControlId: Principal;
-}) => {
+	missionControlId,
+	onTextProgress
+}: ReconcileParams) => {
 	const consoleOrbs = get(consoleOrbiters);
 	const mctrlOrbs = get(mctrlOrbiters);
 
@@ -162,32 +162,47 @@ const reconcileOrbiters = async ({
 			undefined
 	);
 
-	for (const { orbiter_id: segmentId } of attachMctrlOrbiters) {
-		await attachWithMissionControl({ segment: 'orbiter', segmentId, missionControlId, identity });
-	}
+	await attachWithMissionControl({
+		missionControlId,
+		identity,
+		onTextProgress,
+		segmentType: 'satellite',
+		segments: attachMctrlOrbiters.map(({ orbiter_id: segmentId }) => ({
+			segmentId,
+			segment: 'orbiter'
+		}))
+	});
 
 	await attachWithConsole({
 		identity,
+		onTextProgress,
+		segmentType: 'orbiter',
 		segments: attachConsoleOrbiters.map(({ orbiter_id, metadata }) => ({
 			segmentId: orbiter_id,
-			segment: 'orbiter',
 			metadata
 		}))
 	});
 };
 
-interface AttachSegmentWithConsole {
-	segment: 'satellite' | 'orbiter';
+interface AttachSegment {
 	segmentId: Principal;
 	metadata: Metadata;
 }
 
-const attachWithConsole = async ({
+interface AttachWithMissionControlProgressStats {
+	index: number;
+	total: number;
+}
+
+const attachWithMissionControl = async ({
 	identity,
-	segments
-}: {
-	identity: Identity;
-	segments: AttachSegmentWithConsole[];
+	missionControlId,
+	onTextProgress,
+	segments,
+	segmentType
+}: ReconcileParams & {
+	segments: Omit<AttachSegment, 'metadata'>[];
+	segmentType: 'satellite' | 'orbiter';
 }) => {
 	// We do the check for the lengths here. Not really graceful but,
 	// avoid to duplicate the assertions for both Satellites and Orbiters
@@ -195,11 +210,64 @@ const attachWithConsole = async ({
 		return;
 	}
 
+	let progress: AttachWithMissionControlProgressStats = {
+		index: 0,
+		total: segments.length
+	};
+
+	const incrementProgress = () => {
+		progress = {
+			...progress,
+			index: progress.index + 1
+		};
+
+		const text =
+			segmentType === 'orbiter'
+				? get(i18n).out_of_sync.syncing_orbiters_to_mctrl
+				: get(i18n).out_of_sync.syncing_satellites_to_mctrl;
+
+		onTextProgress(text.replace('{0}', `${progress.index} / ${progress.total}`));
+	};
+
+	for (const { segmentId } of segments) {
+		incrementProgress();
+
+		await attachWithMissionControlService({
+			segment: segmentType,
+			segmentId,
+			missionControlId,
+			identity
+		});
+	}
+};
+
+const attachWithConsole = async ({
+	identity,
+	onTextProgress,
+	segments,
+	segmentType
+}: {
+	segments: Omit<AttachSegment, 'segment'>[];
+	segmentType: 'satellite' | 'orbiter';
+} & Pick<ReconcileParams, 'identity' | 'onTextProgress'>) => {
+	// We do the check for the lengths here. Not really graceful but,
+	// avoid to duplicate the assertions for both Satellites and Orbiters
+	if (segments.length === 0) {
+		return;
+	}
+
+	const text =
+		segmentType === 'orbiter'
+			? get(i18n).out_of_sync.syncing_orbiters_to_console
+			: get(i18n).out_of_sync.syncing_satellites_to_console;
+
+	onTextProgress(text);
+
 	await setManySegments({
 		identity,
-		args: segments.map(({ segmentId: segment_id, segment, metadata }) => ({
+		args: segments.map(({ segmentId: segment_id, metadata }) => ({
 			segment_id,
-			segment_kind: segment === 'orbiter' ? { Orbiter: null } : { Satellite: null },
+			segment_kind: segmentType === 'orbiter' ? { Orbiter: null } : { Satellite: null },
 			metadata: toNullable(metadata)
 		}))
 	});

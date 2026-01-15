@@ -1100,6 +1100,10 @@ interface I18nOut_of_sync {
 	no_segments: string;
 	modules_synced: string;
 	syncing_modules: string;
+	syncing_satellites_to_console: string;
+	syncing_satellites_to_mctrl: string;
+	syncing_orbiters_to_console: string;
+	syncing_orbiters_to_mctrl: string;
 }
 
 interface I18n {

@@ -1063,6 +1063,10 @@
 		"console": "Console",
 		"no_segments": "No modules found",
 		"modules_synced": "Modules synced!",
-		"syncing_modules": "Syncing modules..."
+		"syncing_modules": "Syncing modules",
+		"syncing_satellites_to_console": "Syncing Satellites to Console...",
+		"syncing_satellites_to_mctrl": "Syncing Satellites to Mission Control... ({0})",
+		"syncing_orbiters_to_console": "Syncing Orbiters to Console...",
+		"syncing_orbiters_to_mctrl": "Syncing Orbiters to Mission Control... ({0})"
 	}
 }

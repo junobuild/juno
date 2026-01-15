@@ -169,7 +169,7 @@ const attachSatellites = async ({
 	for (const satellite of satellites) {
 		incrementProgress();
 
-		const result = await attachSatellite({
+		const result = await setMissionControlAsControllerAndAttachSatellite({
 			satellite,
 			missionControlId,
 			identity
@@ -201,7 +201,7 @@ const attachOrbiters = async ({
 	for (const orbiter of orbiters) {
 		incrementProgress();
 
-		const result = await attachOrbiter({
+		const result = await setMissionControlAsControllerAndAttachOrbiter({
 			orbiter,
 			missionControlId,
 			identity
@@ -217,7 +217,7 @@ const attachOrbiters = async ({
 	return canisterIds;
 };
 
-const attachSatellite = async ({
+export const setMissionControlAsControllerAndAttachSatellite = async ({
 	satellite,
 	missionControlId,
 	identity
@@ -255,7 +255,7 @@ const attachSatellite = async ({
 	});
 };
 
-const attachOrbiter = async ({
+export const setMissionControlAsControllerAndAttachOrbiter = async ({
 	orbiter,
 	missionControlId,
 	identity

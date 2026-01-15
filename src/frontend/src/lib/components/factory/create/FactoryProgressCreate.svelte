@@ -39,6 +39,8 @@
 		reload: ProgressStep;
 	}
 
+	let defaultAttachProgressText = $derived(`${$i18n.mission_control.attaching}...`);
+
 	// svelte-ignore state_referenced_locally
 	let steps = $state<Steps>({
 		preparing: {
@@ -69,7 +71,7 @@
 				step: 'attaching',
 				text:
 					segment === 'mission_control'
-						? (attachProgressText ?? $i18n.mission_control.attaching)
+						? (attachProgressText ?? defaultAttachProgressText)
 						: segment === 'orbiter'
 							? $i18n.analytics.attaching
 							: $i18n.satellites.attaching
@@ -166,6 +168,7 @@
 
 	$effect(() => {
 		attachProgressText;
+		defaultAttachProgressText;
 
 		untrack(() => {
 			const { attaching, monitoring, finalizing, reload, ...rest } = steps;
@@ -175,7 +178,7 @@
 				...(nonNullish(attaching) && {
 					attaching: {
 						...attaching,
-						text: attachProgressText ?? $i18n.mission_control.attaching
+						text: attachProgressText ?? defaultAttachProgressText
 					}
 				}),
 				...(nonNullish(monitoring) && {

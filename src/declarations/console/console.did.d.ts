@@ -514,11 +514,13 @@ export interface _SERVICE {
 	set_controllers: ActorMethod<[SetControllersArgs], undefined>;
 	set_custom_domain: ActorMethod<[string, [] | [string]], undefined>;
 	set_fee: ActorMethod<[SegmentKind, FeesArgs], undefined>;
+	set_many_segments: ActorMethod<[Array<SetSegmentsArgs>], Array<Segment>>;
 	set_rate_config: ActorMethod<[SegmentKind, RateConfig], undefined>;
 	set_segment: ActorMethod<[SetSegmentsArgs], Segment>;
 	set_segment_metadata: ActorMethod<[SetSegmentMetadataArgs], Segment>;
 	set_storage_config: ActorMethod<[SetStorageConfig], StorageConfig>;
 	submit_proposal: ActorMethod<[bigint], [bigint, Proposal]>;
+	unset_many_segments: ActorMethod<[Array<UnsetSegmentsArgs>], undefined>;
 	unset_segment: ActorMethod<[UnsetSegmentsArgs], undefined>;
 	upload_proposal_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;
 }

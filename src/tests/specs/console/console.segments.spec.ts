@@ -6,12 +6,16 @@ import { AnonymousIdentity, type Identity } from '@icp-sdk/core/agent';
 import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import type { Principal } from '@icp-sdk/core/principal';
 import { mockMissionControlId } from '../../../frontend/tests/mocks/modules.mock';
-import { createSatelliteWithConsole } from '../../utils/console-factory-tests.utils';
+import {
+	createOrbiterWithConsole,
+	createSatelliteWithConsole
+} from '../../utils/console-factory-tests.utils';
 import { setupConsole } from '../../utils/console-tests.utils';
 
 describe('Console > Segments', () => {
 	let pic: PocketIc;
 	let actor: Actor<ConsoleActor>;
+	let controller: Ed25519KeyIdentity;
 
 	let user: Identity;
 	let segmentId: Principal;
@@ -22,7 +26,11 @@ describe('Console > Segments', () => {
 	];
 
 	beforeAll(async () => {
-		const { pic: p, actor: c } = await setupConsole({
+		const {
+			pic: p,
+			actor: c,
+			controller: cO
+		} = await setupConsole({
 			withApplyRateTokens: true,
 			withLedger: true,
 			withSegments: true,
@@ -30,8 +38,8 @@ describe('Console > Segments', () => {
 		});
 
 		pic = p;
-
 		actor = c;
+		controller = cO;
 
 		user = Ed25519KeyIdentity.generate();
 		actor.setIdentity(user);
@@ -280,6 +288,176 @@ describe('Console > Segments', () => {
 				const { unset_segment } = actor;
 
 				await expect(unset_segment(payload)).rejects.toThrowError('Segment not found.');
+			});
+		});
+	});
+
+	describe('Many segments', () => {
+		let anotherSegmentId: Principal;
+
+		beforeAll(async () => {
+			actor.setIdentity(controller);
+
+			const { add_credits } = actor;
+			await add_credits(user.getPrincipal(), { e8s: 100_000_000n });
+
+			anotherSegmentId = await createOrbiterWithConsole({ user, actor });
+
+			actor.setIdentity(user);
+
+			// Otherwise we cannot test set as we just created the module and want to attach it
+			const { unset_segment } = actor;
+			await unset_segment({
+				segment_id: anotherSegmentId,
+				segment_kind: { Orbiter: null }
+			});
+		});
+
+		describe('Set many segments', () => {
+			describe('Unknown identity', () => {
+				const assertNoAccountGuard = async () => {
+					const { set_many_segments } = actor;
+
+					await expect(
+						set_many_segments([
+							{
+								segment_id: segmentId,
+								segment_kind: { Satellite: null },
+								metadata: toNullable(metadata)
+							}
+						])
+					).rejects.toThrowError('User does not have an account.');
+				};
+
+				it('should not set many segments if anonymous', async () => {
+					actor.setIdentity(new AnonymousIdentity());
+					await assertNoAccountGuard();
+				});
+
+				it('should not set many segments for some identity', async () => {
+					actor.setIdentity(Ed25519KeyIdentity.generate());
+					await assertNoAccountGuard();
+				});
+			});
+
+			describe('User', () => {
+				let payload: ConsoleDid.SetSegmentsArgs[];
+
+				beforeAll(async () => {
+					actor.setIdentity(user);
+
+					payload = [
+						{
+							segment_id: segmentId,
+							segment_kind: { Satellite: null },
+							metadata: toNullable(metadata)
+						},
+						{
+							segment_id: anotherSegmentId,
+							segment_kind: { Orbiter: null },
+							metadata: toNullable(metadata)
+						}
+					];
+				});
+
+				it('should set many segments', async () => {
+					const { set_many_segments, list_segments } = actor;
+
+					await expect(set_many_segments(payload)).resolves.not.toThrowError();
+
+					const segments = await list_segments({
+						segment_kind: [],
+						segment_id: []
+					});
+
+					expect(segments).toHaveLength(2);
+
+					const attachedSegment = segments.find(
+						([key]) => key.segment_id.toText() === segmentId.toText()
+					);
+					const attachedAnotherSegment = segments.find(
+						([key]) => key.segment_id.toText() === anotherSegmentId.toText()
+					);
+
+					expect(attachedSegment).not.toBeUndefined();
+					expect(attachedAnotherSegment).not.toBeUndefined();
+
+					expect(attachedSegment?.[1].metadata).toEqual(metadata);
+					expect(attachedAnotherSegment?.[1].metadata).toEqual(metadata);
+				});
+
+				it('should not set segment if already exists', async () => {
+					const { set_many_segments } = actor;
+
+					await expect(set_many_segments(payload)).rejects.toThrowError(
+						'Segment already attached.'
+					);
+				});
+			});
+		});
+
+		describe('Unset many segments', () => {
+			describe('Unknown identity', () => {
+				const assertNoAccountGuard = async () => {
+					const { unset_many_segments } = actor;
+
+					await expect(
+						unset_many_segments([
+							{
+								segment_id: segmentId,
+								segment_kind: { Satellite: null }
+							}
+						])
+					).rejects.toThrowError('User does not have an account.');
+				};
+
+				it('should not unset many segments if anonymous', async () => {
+					actor.setIdentity(new AnonymousIdentity());
+					await assertNoAccountGuard();
+				});
+
+				it('should not unset many segments for some identity', async () => {
+					actor.setIdentity(Ed25519KeyIdentity.generate());
+					await assertNoAccountGuard();
+				});
+			});
+
+			describe('User', () => {
+				let payload: ConsoleDid.UnsetSegmentsArgs[];
+
+				beforeAll(() => {
+					actor.setIdentity(user);
+
+					payload = [
+						{
+							segment_id: segmentId,
+							segment_kind: { Satellite: null }
+						},
+						{
+							segment_id: anotherSegmentId,
+							segment_kind: { Orbiter: null }
+						}
+					];
+				});
+
+				it('should unset segment', async () => {
+					const { unset_many_segments, list_segments } = actor;
+
+					await expect(unset_many_segments(payload)).resolves.not.toThrowError();
+
+					const segments = await list_segments({
+						segment_kind: [],
+						segment_id: []
+					});
+
+					expect(segments).toHaveLength(0);
+				});
+
+				it('should not unset segment if already detached', async () => {
+					const { unset_many_segments } = actor;
+
+					await expect(unset_many_segments(payload)).rejects.toThrowError('Segment not found.');
+				});
 			});
 		});
 	});

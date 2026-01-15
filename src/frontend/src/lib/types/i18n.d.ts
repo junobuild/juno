@@ -17,6 +17,7 @@ interface I18nCore {
 	light_off: string;
 	light_on: string;
 	submit: string;
+	sync: string;
 	home: string;
 	docs: string;
 	changelog: string;
@@ -730,6 +731,7 @@ interface I18nErrors {
 	auth_external_alternative_origins: string;
 	auth_invalid_google_client_id: string;
 	mission_control_not_loaded: string;
+	mission_control_not_found: string;
 	mission_control_settings_not_loaded: string;
 	mission_control_user_data_not_loaded: string;
 	mission_control_unexpected_error: string;
@@ -760,6 +762,8 @@ interface I18nErrors {
 	invalid_juno_package: string;
 	missing_satellite_version: string;
 	invalid_version_cannot_downgrade: string;
+	reconcile_out_of_sync_error: string;
+	reconcile_no_divergence: string;
 }
 
 interface I18nDocument {
@@ -1072,6 +1076,7 @@ interface I18nNotifications {
 	upgrade_available: string;
 	short_freezing_threshold: string;
 	learn_more: string;
+	out_of_sync: string;
 }
 
 interface I18nNot_found {
@@ -1086,6 +1091,15 @@ interface I18nNot_found {
 interface I18nSpotlight {
 	search_title: string;
 	search_placeholder: string;
+}
+
+interface I18nOut_of_sync {
+	title: string;
+	description: string;
+	console: string;
+	no_segments: string;
+	modules_synced: string;
+	syncing_modules: string;
 }
 
 interface I18n {
@@ -1123,4 +1137,5 @@ interface I18n {
 	notifications: I18nNotifications;
 	not_found: I18nNot_found;
 	spotlight: I18nSpotlight;
+	out_of_sync: I18nOut_of_sync;
 }

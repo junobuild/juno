@@ -14,6 +14,7 @@
 		"light_off": "深色模式",
 		"light_on": "浅色模式",
 		"submit": "提交",
+		"sync": "同步",
 		"home": "首页",
 		"docs": "文档",
 		"changelog": "版本日志",
@@ -714,6 +715,7 @@
 		"auth_external_alternative_origins": "外部备用源格式错误，请提供不含协议的合法域名。",
 		"auth_invalid_google_client_id": "检测到无效的 Google 客户端 ID 格式。",
 		"mission_control_not_loaded": "任务控制中心未加载。",
+		"mission_control_not_found": "您没有任务控制中心。",
 		"mission_control_settings_not_loaded": "任务控制中心设置未加载。",
 		"mission_control_user_data_not_loaded": "您的任务控制中心数据（元数据、配置等）未加载。",
 		"mission_control_unexpected_error": "创建 Mission Control 时发生意外错误。",
@@ -743,7 +745,9 @@
 		"missing_juno_package": "缺失Juno元数据，WASM未包含有效的juno.package.json在公共部分。",
 		"invalid_juno_package": "Juno元数据无效，无法从juno.package.json解析模块信息。",
 		"missing_satellite_version": "无法确定当前卫星版本。",
-		"invalid_version_cannot_downgrade": "无法降级默认函数，所选版本低于当前卫星版本。"
+		"invalid_version_cannot_downgrade": "无法降级默认函数，所选版本低于当前卫星版本。",
+		"reconcile_out_of_sync_error": "在控制台和您的任务控制中心之间同步模块时发生意外错误。",
+		"reconcile_no_divergence": "未检测到配置不匹配。无需同步。"
 	},
 	"document": {
 		"owner": "所有者",
@@ -1054,5 +1058,13 @@
 	"spotlight": {
 		"search_title": "快速访问",
 		"search_placeholder": "导航或执行操作..."
+	},
+	"out_of_sync": {
+		"title": "配置不匹配",
+		"description": "控制台的配置与您的任务控制中心不匹配。请查看以下差异并同步以保持一致性。",
+		"console": "控制台",
+		"no_segments": "未找到模块",
+		"modules_synced": "模块已同步！",
+		"syncing_modules": "正在同步模块..."
 	}
 }

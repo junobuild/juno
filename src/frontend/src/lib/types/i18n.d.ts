@@ -17,6 +17,7 @@ interface I18nCore {
 	light_off: string;
 	light_on: string;
 	submit: string;
+	sync: string;
 	home: string;
 	docs: string;
 	changelog: string;

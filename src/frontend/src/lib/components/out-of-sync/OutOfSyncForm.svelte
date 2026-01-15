@@ -35,7 +35,7 @@
 	</div>
 
 	<button class="action" type="submit">
-		{$i18n.core.submit}
+		{$i18n.core.sync}
 	</button>
 </form>
 

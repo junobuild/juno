@@ -743,7 +743,8 @@
 		"invalid_juno_package": "Invalid Juno metadata. Unable to parse module information from juno.package.json.",
 		"missing_satellite_version": "Unable to determine the current Satellite version.",
 		"invalid_version_cannot_downgrade": "Cannot downgrade the default functions. The selected version is older than the current Satellite version.",
-		"reconcile_out_of_sync_error": "Unexpected error while syncing the modules between the Console and your Mission Control."
+		"reconcile_out_of_sync_error": "Unexpected error while syncing the modules between the Console and your Mission Control.",
+		"reconcile_no_divergence": "No configuration mismatch detected. Nothing to sync."
 	},
 	"document": {
 		"owner": "Owner",

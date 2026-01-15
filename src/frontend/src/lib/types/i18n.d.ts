@@ -762,6 +762,7 @@ interface I18nErrors {
 	missing_satellite_version: string;
 	invalid_version_cannot_downgrade: string;
 	reconcile_out_of_sync_error: string;
+	reconcile_no_divergence: string;
 }
 
 interface I18nDocument {

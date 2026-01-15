@@ -107,6 +107,17 @@ export const setSegment = async ({
 	return set_segment(args);
 };
 
+export const setManySegments = async ({
+	args,
+	identity
+}: {
+	args: ConsoleDid.SetSegmentsArgs[];
+	identity: OptionIdentity;
+}): Promise<ConsoleDid.Segment[]> => {
+	const { set_many_segments } = await getConsoleActor({ identity });
+	return set_many_segments(args);
+};
+
 export const createMissionControlWithConfig = async ({
 	identity,
 	config: { subnetId }

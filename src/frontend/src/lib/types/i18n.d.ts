@@ -85,7 +85,8 @@ interface I18nCore {
 	getting_started: string;
 	dashboard: string;
 	icp_amount: string;
-	cycles_amount: string;
+	canister_cycles_amount: string;
+	token_cycles_amount: string;
 	amount: string;
 	fee: string;
 	preparing: string;

@@ -128,17 +128,6 @@
 			</a>
 
 			<a
-				class="link not-themed"
-				class:collapsed={$menuCollapsed}
-				class:selected={isRouteSelected({ routeId, path: 'wallet' })}
-				href={`/wallet${queryParam}`}
-				role="menuitem"
-			>
-				<IconWallet />
-				<span>{$i18n.wallet.title}</span>
-			</a>
-
-			<a
 				class="link not-themed smaller-icon"
 				class:collapsed={$menuCollapsed}
 				class:selected={isRouteSelected({ routeId, path: 'upgrade-dock' })}

@@ -8,6 +8,7 @@
 	import IconRaygun from '$lib/components/icons/IconRaygun.svelte';
 	import IconSignOut from '$lib/components/icons/IconSignOut.svelte';
 	import IconUser from '$lib/components/icons/IconUser.svelte';
+	import IconWallet from '$lib/components/icons/IconWallet.svelte';
 	import Avatar from '$lib/components/ui/Avatar.svelte';
 	import ButtonIcon from '$lib/components/ui/ButtonIcon.svelte';
 	import Hr from '$lib/components/ui/Hr.svelte';
@@ -38,6 +39,7 @@
 	};
 
 	let preferences = $derived(page.route.id === '/(single)/preferences');
+	let wallet = $derived(page.route.id === '/(single)/wallet');
 
 	let openId = $derived<ConsoleDid.OpenId | undefined>(
 		nonNullish(provider) && 'OpenId' in provider ? provider.OpenId : undefined
@@ -67,7 +69,16 @@
 				<IconRaygun />
 				<span>{$i18n.preferences.title}</span>
 			</a>
+		{/if}
 
+		{#if !wallet}
+			<a class="menu" aria-haspopup="menu" href="/wallet" onclick={close} role="menuitem">
+				<IconWallet />
+				<span>{$i18n.wallet.title}</span>
+			</a>
+		{/if}
+
+		{#if !preferences || !wallet}
 			<Hr />
 		{/if}
 

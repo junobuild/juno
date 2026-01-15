@@ -1,5 +1,6 @@
 <script lang="ts">
 	import CanisterValue from '$lib/components/canister/CanisterValue.svelte';
+	import CanisterTCycles from '$lib/components/canister/display/CanisterTCycles.svelte';
 	import IconCheckCircle from '$lib/components/icons/IconCheckCircle.svelte';
 	import IconError from '$lib/components/icons/IconError.svelte';
 	import InlineWarning from '$lib/components/ui/InlineWarning.svelte';
@@ -10,7 +11,6 @@
 	import { secondsToDuration } from '$lib/utils/date.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { formatNumber } from '$lib/utils/number.utils';
-	import CanisterTCycles from '$lib/components/canister/display/CanisterTCycles.svelte';
 
 	interface Props {
 		canister: CanisterDataInfo | undefined;

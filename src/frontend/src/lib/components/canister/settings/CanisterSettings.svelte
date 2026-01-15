@@ -3,6 +3,7 @@
 	import type { Principal } from '@icp-sdk/core/principal';
 	import Canister from '$lib/components/canister/Canister.svelte';
 	import CanisterValue from '$lib/components/canister/CanisterValue.svelte';
+	import CanisterTCycles from '$lib/components/canister/display/CanisterTCycles.svelte';
 	import {
 		FIVE_YEARS,
 		ONE_MONTH,
@@ -24,7 +25,6 @@
 	import { secondsToDuration } from '$lib/utils/date.utils';
 	import { emit } from '$lib/utils/events.utils';
 	import { formatBytes } from '$lib/utils/number.utils';
-	import CanisterTCycles from '$lib/components/canister/display/CanisterTCycles.svelte';
 
 	interface Props {
 		canisterId: Principal;

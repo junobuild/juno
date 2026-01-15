@@ -1,5 +1,6 @@
 <script lang="ts">
 	import CanisterValue from '$lib/components/canister/CanisterValue.svelte';
+	import CanisterTCycles from '$lib/components/canister/display/CanisterTCycles.svelte';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { CanisterDataInfo, CanisterSyncStatus } from '$lib/types/canister';
 	import { formatTCycles } from '$lib/utils/cycles.utils';
@@ -20,7 +21,7 @@
 			{$i18n.canisters.available_cycles}
 		{/snippet}
 		<span>
-			{formatTCycles(cycles ?? 0n)}T <small>cycles</small>
+			<CanisterTCycles {cycles} />
 		</span>
 	</CanisterValue>
 </div>

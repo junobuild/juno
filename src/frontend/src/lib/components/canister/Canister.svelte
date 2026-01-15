@@ -49,6 +49,8 @@
 			warning: false
 		}
 	);
+
+	let cycles = $derived(data?.canister?.cycles);
 </script>
 
 <CanisterSyncData {canisterId} bind:canister />
@@ -59,7 +61,7 @@
 			<p class="status"><CanisterIndicator {data} /><span>{status ?? '???'}</span></p>
 			{#if displayCycles}
 				<p class="cycles">
-					<CanisterTCycles {data} />
+					<CanisterTCycles {cycles} noFallbackToZero />
 				</p>
 			{/if}
 			{#if displayMemoryTotal}

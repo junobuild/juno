@@ -1,5 +1,6 @@
 <script lang="ts">
 	import CanisterValue from '$lib/components/canister/CanisterValue.svelte';
+	import CanisterTCycles from '$lib/components/canister/display/CanisterTCycles.svelte';
 	import IconCheckCircle from '$lib/components/icons/IconCheckCircle.svelte';
 	import IconError from '$lib/components/icons/IconError.svelte';
 	import InlineWarning from '$lib/components/ui/InlineWarning.svelte';
@@ -66,7 +67,7 @@
 				<div style={`width: ${progressionReserve}%`} class="progress-bar"></div>
 			</div>
 			<span id="cycles-needed" class="progress-bar-value"
-				>{formatTCycles(cyclesNeeded ?? 0n)}T <small>cycles</small></span
+				><CanisterTCycles cycles={cyclesNeeded} /></span
 			>
 
 			<label class="progress-bar-label" for="current-balance"
@@ -80,7 +81,7 @@
 				></div>
 			</div>
 			<span id="current-balance" class="progress-bar-value"
-				>{formatTCycles(cyclesBalance ?? 0n)}T <small>cycles</small></span
+				><CanisterTCycles cycles={cyclesBalance} /></span
 			>
 
 			<p class="space">

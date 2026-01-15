@@ -3,6 +3,7 @@
 	import type { Principal } from '@icp-sdk/core/principal';
 	import Canister from '$lib/components/canister/Canister.svelte';
 	import CanisterValue from '$lib/components/canister/CanisterValue.svelte';
+	import CanisterTCycles from '$lib/components/canister/display/CanisterTCycles.svelte';
 	import {
 		FIVE_YEARS,
 		ONE_MONTH,
@@ -116,7 +117,7 @@
 				{#snippet label()}
 					{$i18n.canisters.reserved_cycles_limit}
 				{/snippet}
-				<p>{formatTCycles(reservedCyclesLimit ?? 0n)}T <small>cycles</small></p>
+				<p><CanisterTCycles cycles={reservedCyclesLimit} /></p>
 			</CanisterValue>
 
 			<CanisterValue {sync}>

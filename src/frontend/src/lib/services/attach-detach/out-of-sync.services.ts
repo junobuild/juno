@@ -127,8 +127,6 @@ const reconcileSatellites = async ({
 	);
 
 	for (const { satellite_id: segmentId } of attachMctrlSatellites) {
-		// TODO: remove console log
-		console.log('-> mctrl sat', segmentId.toText());
 		await attachWithMissionControl({ segment: 'satellite', segmentId, missionControlId, identity });
 	}
 
@@ -196,12 +194,6 @@ const attachWithConsole = async ({
 	if (segments.length === 0) {
 		return;
 	}
-
-	// TODO: remove console log
-	console.log(
-		'console segments',
-		segments.map(({ segmentId }) => segmentId.toText())
-	);
 
 	await setManySegments({
 		identity,

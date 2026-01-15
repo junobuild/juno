@@ -13,7 +13,6 @@
 	import IconStorage from '$lib/components/icons/IconStorage.svelte';
 	import IconTelescope from '$lib/components/icons/IconTelescope.svelte';
 	import IconUpgradeDock from '$lib/components/icons/IconUpgradeDock.svelte';
-	import IconWallet from '$lib/components/icons/IconWallet.svelte';
 	import Menu from '$lib/components/ui/Menu.svelte';
 	import { menuCollapsed, menuExpanded } from '$lib/derived/app/layout-menu.derived';
 	import { pageSatelliteId } from '$lib/derived/app/page.derived.svelte.js';

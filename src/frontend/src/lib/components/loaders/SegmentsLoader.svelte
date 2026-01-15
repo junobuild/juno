@@ -1,9 +1,8 @@
 <script lang="ts">
-	import type { Principal } from '@icp-sdk/core/principal';
 	import type { Snippet } from 'svelte';
-	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
+	import { missionControlCertifiedId } from '$lib/derived/console/account.mission-control.derived';
 	import { loadSegments } from '$lib/services/segments.services';
-	import type { Option } from '$lib/types/utils';
+	import type { MissionControlCertifiedId } from '$lib/types/mission-control';
 
 	interface Props {
 		children: Snippet;
@@ -11,12 +10,25 @@
 
 	let { children }: Props = $props();
 
-	const load = async (missionControlId: Option<Principal>) => {
+	const load = async (missionControlCertifiedId: MissionControlCertifiedId) => {
+		// Not yet loaded
+		if (missionControlCertifiedId === undefined) {
+			return;
+		}
+
+		const { data: missionControlId, certified } = missionControlCertifiedId;
+
+		// TODO(#767): load segments with query+update
+		// For now skips certified account to avoid duplicate load at boot time.
+		if (certified) {
+			return;
+		}
+
 		await loadSegments({ missionControlId });
 	};
 
 	$effect(() => {
-		load($missionControlId);
+		load($missionControlCertifiedId);
 	});
 </script>
 

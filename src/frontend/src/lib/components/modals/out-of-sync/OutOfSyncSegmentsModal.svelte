@@ -18,6 +18,9 @@
 
 	let step = $state<'init' | 'in_progress' | 'ready' | 'error'>('init');
 
+	let syncProgressText = $state(`${$i18n.out_of_sync.syncing_modules}...`);
+	const onSyncTextProgress = (text: string) => (syncProgressText = text);
+
 	let progress = $state<OutOfSyncProgress | undefined>(undefined);
 	const onProgress = (outOfSyncProgress: OutOfSyncProgress | undefined) =>
 		(progress = outOfSyncProgress);
@@ -35,7 +38,8 @@
 		const { result } = await reconcileSegments({
 			identity: $authIdentity,
 			missionControlId: $missionControlId,
-			onProgress
+			onProgress,
+			onSyncTextProgress
 		});
 
 		wizardBusy.stop();
@@ -56,7 +60,7 @@
 			<button onclick={onclose}>{$i18n.core.close}</button>
 		</div>
 	{:else if step === 'in_progress'}
-		<ProgressOutOfSync {progress} />
+		<ProgressOutOfSync {progress} {syncProgressText} />
 	{:else}
 		<OutOfSyncForm {onsubmit} />
 	{/if}

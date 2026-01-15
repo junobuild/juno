@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { isNullish } from '@dfinity/utils';
+	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { untrack } from 'svelte';
 	import WizardProgressSteps from '$lib/components/ui/WizardProgressSteps.svelte';
 	import { i18n } from '$lib/stores/app/i18n.store';
@@ -9,9 +9,10 @@
 
 	interface Props {
 		progress: OutOfSyncProgress | undefined;
+		syncProgressText?: string;
 	}
 
-	let { progress }: Props = $props();
+	let { progress, syncProgressText }: Props = $props();
 
 	interface Steps {
 		preparing: ProgressStep;
@@ -19,6 +20,9 @@
 		reload: ProgressStep;
 	}
 
+	let defaultSyncProgressText = $derived(`${$i18n.out_of_sync.syncing_modules}...`);
+
+	// svelte-ignore state_referenced_locally
 	let steps: Steps = $state({
 		preparing: {
 			state: 'in_progress',
@@ -28,7 +32,7 @@
 		sync: {
 			state: 'next',
 			step: 'sync',
-			text: $i18n.out_of_sync.syncing_modules
+			text: syncProgressText ?? defaultSyncProgressText
 		},
 		reload: {
 			state: 'next',
@@ -64,6 +68,23 @@
 							? mapProgressState(progress?.state)
 							: reload.state
 				}
+			};
+		});
+	});
+
+	$effect(() => {
+		syncProgressText;
+
+		untrack(() => {
+			const { preparing, sync, reload } = steps;
+
+			steps = {
+				preparing,
+				sync: {
+					...sync,
+					text: syncProgressText ?? defaultSyncProgressText
+				},
+				reload
 			};
 		});
 	});

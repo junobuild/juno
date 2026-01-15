@@ -232,7 +232,12 @@ const attachWithMissionControl = async ({
 	for (const { segmentId } of segments) {
 		incrementProgress();
 
-		await attachWithMissionControlService({ segment: segmentType, segmentId, missionControlId, identity });
+		await attachWithMissionControlService({
+			segment: segmentType,
+			segmentId,
+			missionControlId,
+			identity
+		});
 	}
 };
 

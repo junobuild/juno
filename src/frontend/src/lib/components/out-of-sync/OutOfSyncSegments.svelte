@@ -1,13 +1,13 @@
 <script lang="ts">
-	import type { Snippet } from 'svelte';
-	import type { Satellite } from '$lib/types/satellite';
-	import type { Orbiter } from '$lib/types/orbiter';
-	import { satelliteName } from '$lib/utils/satellite.utils';
-	import Segment from '$lib/components/segments/Segment.svelte';
 	import { isEmptyString, nonNullish } from '@dfinity/utils';
-	import { orbiterName } from '$lib/utils/orbiter.utils';
+	import type { Snippet } from 'svelte';
+	import Segment from '$lib/components/segments/Segment.svelte';
 	import { i18n } from '$lib/stores/app/i18n.store';
+	import type { Orbiter } from '$lib/types/orbiter';
+	import type { Satellite } from '$lib/types/satellite';
 	import type { Option } from '$lib/types/utils';
+	import { orbiterName } from '$lib/utils/orbiter.utils';
+	import { satelliteName } from '$lib/utils/satellite.utils';
 
 	interface Props {
 		label: Snippet;

@@ -1,7 +1,7 @@
 import { segmentsUncertifiedStore } from '$lib/stores/console/segments.store';
 import type { Orbiter } from '$lib/types/orbiter';
 import type { Satellite } from '$lib/types/satellite';
-import { satelliteName, sortSatellites } from '$lib/utils/satellite.utils';
+import { sortSatellites } from '$lib/utils/satellite.utils';
 import { derived } from 'svelte/store';
 
 export const segments = derived(

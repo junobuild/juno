@@ -1,14 +1,14 @@
 <script lang="ts">
-	import Modal from '$lib/components/ui/Modal.svelte';
-	import OutOfSyncForm from '$lib/components/out-of-sync/OutOfSyncForm.svelte';
 	import { fade } from 'svelte/transition';
-	import type { OutOfSyncProgress } from '$lib/types/progress-out-of-sync';
-	import { wizardBusy } from '$lib/stores/app/busy.store';
-	import { reconcileSegments } from '$lib/services/attach-detach/out-of-sync.services';
-	import { i18n } from '$lib/stores/app/i18n.store';
+	import OutOfSyncForm from '$lib/components/out-of-sync/OutOfSyncForm.svelte';
 	import ProgressOutOfSync from '$lib/components/out-of-sync/ProgressOutOfSync.svelte';
-	import {authIdentity} from "$lib/derived/auth.derived";
-	import {missionControlId} from "$lib/derived/console/account.mission-control.derived";
+	import Modal from '$lib/components/ui/Modal.svelte';
+	import { authIdentity } from '$lib/derived/auth.derived';
+	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
+	import { reconcileSegments } from '$lib/services/attach-detach/out-of-sync.services';
+	import { wizardBusy } from '$lib/stores/app/busy.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
+	import type { OutOfSyncProgress } from '$lib/types/progress-out-of-sync';
 
 	interface Props {
 		onclose: () => void;

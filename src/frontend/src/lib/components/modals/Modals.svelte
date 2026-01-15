@@ -19,6 +19,7 @@
 	import MonitoringDetailsModal from '$lib/components/modals/monitoring/MonitoringDetailsModal.svelte';
 	import MonitoringStrategyCreateModal from '$lib/components/modals/monitoring/MonitoringStrategyCreateModal.svelte';
 	import StopMonitoringStrategyModal from '$lib/components/modals/monitoring/StopMonitoringStrategyModal.svelte';
+	import OutOfSyncSegmentsModal from '$lib/components/modals/out-of-sync/OutOfSyncSegmentsModal.svelte';
 	import AccessKeyCreateModal from '$lib/components/modals/setup/AccessKeyCreateModal.svelte';
 	import CanisterEditSettingsModal from '$lib/components/modals/setup/CanisterEditSettingsModal.svelte';
 	import OrbiterConfigModal from '$lib/components/modals/setup/OrbiterConfigModal.svelte';
@@ -31,7 +32,6 @@
 	import ConvertIcpModal from '$lib/components/modals/wallet/ConvertIcpModal.svelte';
 	import SendTokensModal from '$lib/components/modals/wallet/SendTokensModal.svelte';
 	import type { JunoModal, JunoModalDetail } from '$lib/types/modal';
-	import OutOfSyncSegmentsModal from '$lib/components/modals/out-of-sync/OutOfSyncSegmentsModal.svelte';
 
 	let modal: JunoModal<JunoModalDetail> | undefined = $state(undefined);
 

@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { nonNullish } from '@dfinity/utils';
 	import NotificationsCanisterLoader from '$lib/components/notifications/NotificationsCanisterLoader.svelte';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import { orbiter } from '$lib/derived/orbiter.derived';

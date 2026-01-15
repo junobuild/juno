@@ -15,10 +15,11 @@
 	interface Props {
 		balance: bigint | undefined;
 		amount: string | undefined;
+		amountLabel?: 'canister' | 'token';
 		fee?: bigint;
 	}
 
-	let { amount = $bindable(), balance, fee }: Props = $props();
+	let { amount = $bindable(), balance, fee, amountLabel = 'canister' }: Props = $props();
 
 	let token: TokenAmountV2 | undefined = $derived(amountToToken({ amount, token: CyclesToken }));
 
@@ -50,7 +51,7 @@
 <div class="input-cycles">
 	<Value>
 		{#snippet label()}
-			{$i18n.core.cycles_amount}
+			{amountLabel === 'token' ? $i18n.core.token_cycles_amount : $i18n.core.canister_cycles_amount}
 		{/snippet}
 
 		<Input

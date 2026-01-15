@@ -111,7 +111,7 @@
 		</Value>
 	</div>
 
-	<InputAmount {balance} bind:amount />
+	<InputAmount {balance} bind:amount amountLabel="token" />
 
 	<button class="action" type="submit">
 		{$i18n.core.review}

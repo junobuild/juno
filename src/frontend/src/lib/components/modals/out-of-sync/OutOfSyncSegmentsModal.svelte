@@ -34,7 +34,8 @@
 
 		const { result } = await reconcileSegments({
 			identity: $authIdentity,
-			missionControlId: $missionControlId
+			missionControlId: $missionControlId,
+			onProgress
 		});
 
 		wizardBusy.stop();

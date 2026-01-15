@@ -1,9 +1,9 @@
 <script lang="ts">
+	import { debounce } from '@dfinity/utils';
 	import { type Snippet, untrack } from 'svelte';
 	import { missionControlCertifiedId } from '$lib/derived/console/account.mission-control.derived';
 	import { loadSegments } from '$lib/services/segments.services';
 	import type { MissionControlCertifiedId } from '$lib/types/mission-control';
-	import { debounce } from '@dfinity/utils';
 
 	interface Props {
 		children: Snippet;

@@ -341,7 +341,6 @@ interface I18nSatellites {
 	stock_version: string;
 	extended_version: string;
 	build: string;
-	see_all_satellites: string;
 	attaching: string;
 }
 

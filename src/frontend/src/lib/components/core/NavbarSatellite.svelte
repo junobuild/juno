@@ -3,7 +3,6 @@
 	import { fade } from 'svelte/transition';
 	import IconSatellite from '$lib/components/icons/IconSatellite.svelte';
 	import SatelliteEnvironment from '$lib/components/satellites/SatelliteEnvironment.svelte';
-	import SatellitesSwitcher from '$lib/components/satellites/SatellitesSwitcher.svelte';
 	import { layoutTitle } from '$lib/derived/app/layout-title.derived';
 	import { authSignedIn } from '$lib/derived/auth.derived';
 	import { satellite, satelliteUi } from '$lib/derived/satellite.derived';
@@ -32,8 +31,6 @@
 
 			<span class="text current"><span>{label}</span>{@render currentEnvironment()}</span>
 		</span>
-
-		<SatellitesSwitcher />
 
 		{#if subNavigation && nonNullish(Icon)}
 			<span class="sub-navigation">

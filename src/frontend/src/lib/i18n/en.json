@@ -14,6 +14,7 @@
 		"light_off": "Light off",
 		"light_on": "Light on",
 		"submit": "Submit",
+		"sync": "Sync",
 		"home": "Home",
 		"docs": "Docs",
 		"changelog": "Changelog",
@@ -712,6 +713,7 @@
 		"auth_external_alternative_origins": "External alternative origins are malformed. Please provide a valid domain without a protocol.",
 		"auth_invalid_google_client_id": "Invalid Google client ID pattern detected.",
 		"mission_control_not_loaded": "Your Mission Control is not yet loaded.",
+		"mission_control_not_found": "You don't have a Mission Control.",
 		"mission_control_settings_not_loaded": "The settings for the Mission Control are not yet loaded.",
 		"mission_control_user_data_not_loaded": "Your data (metadata, config, etc) for the Mission Control are not yet loaded.",
 		"mission_control_unexpected_error": "Unexpected error(s) while creating the Mission Control.",
@@ -741,7 +743,9 @@
 		"missing_juno_package": "Missing Juno metadata. The WASM does not contain a valid juno.package.json encoded in its public section.",
 		"invalid_juno_package": "Invalid Juno metadata. Unable to parse module information from juno.package.json.",
 		"missing_satellite_version": "Unable to determine the current Satellite version.",
-		"invalid_version_cannot_downgrade": "Cannot downgrade the default functions. The selected version is older than the current Satellite version."
+		"invalid_version_cannot_downgrade": "Cannot downgrade the default functions. The selected version is older than the current Satellite version.",
+		"reconcile_out_of_sync_error": "Unexpected error while syncing the modules between the Console and your Mission Control.",
+		"reconcile_no_divergence": "No configuration mismatch detected. Nothing to sync."
 	},
 	"document": {
 		"owner": "Owner",
@@ -1038,7 +1042,8 @@
 		"heap": "Your {0} requires action: Heap memory is approaching 1 GB.",
 		"upgrade_available": "New upgrades available. Visit the Upgrade Dock to check them out.",
 		"short_freezing_threshold": "Short freezing threshold detected. We recommend a longer grace period to give you more time if cycles run out.",
-		"learn_more": "Learn more"
+		"learn_more": "Learn more",
+		"out_of_sync": "Your satellites and orbiters are out of sync. Reconcile them now."
 	},
 	"not_found": {
 		"title": "Oops! You got lost in space.",
@@ -1051,5 +1056,13 @@
 	"spotlight": {
 		"search_title": "Quick access",
 		"search_placeholder": "Navigate or run an action..."
+	},
+	"out_of_sync": {
+		"title": "Configuration Mismatch",
+		"description": "The configuration of the Console doesn't match your Mission Control. Review the differences below and sync to keep everything consistent.",
+		"console": "Console",
+		"no_segments": "No modules found",
+		"modules_synced": "Modules synced!",
+		"syncing_modules": "Syncing modules..."
 	}
 }

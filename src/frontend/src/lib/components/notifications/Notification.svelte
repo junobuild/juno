@@ -24,13 +24,14 @@
 <style lang="scss">
 	.notification {
 		display: flex;
+		align-items: center;
 		gap: var(--padding-2x);
 	}
 
 	.icon {
 		position: relative;
 
-		padding: var(--padding) var(--padding-0_5x) var(--padding-0_5x);
+		padding: var(--padding) var(--padding) var(--padding-0_5x);
 
 		align-self: flex-start;
 

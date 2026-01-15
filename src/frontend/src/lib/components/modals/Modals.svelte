@@ -19,6 +19,7 @@
 	import MonitoringDetailsModal from '$lib/components/modals/monitoring/MonitoringDetailsModal.svelte';
 	import MonitoringStrategyCreateModal from '$lib/components/modals/monitoring/MonitoringStrategyCreateModal.svelte';
 	import StopMonitoringStrategyModal from '$lib/components/modals/monitoring/StopMonitoringStrategyModal.svelte';
+	import OutOfSyncSegmentsModal from '$lib/components/modals/out-of-sync/OutOfSyncSegmentsModal.svelte';
 	import AccessKeyCreateModal from '$lib/components/modals/setup/AccessKeyCreateModal.svelte';
 	import CanisterEditSettingsModal from '$lib/components/modals/setup/CanisterEditSettingsModal.svelte';
 	import OrbiterConfigModal from '$lib/components/modals/setup/OrbiterConfigModal.svelte';
@@ -157,4 +158,8 @@
 
 {#if modal?.type === 'convert_icp_to_cycles' && nonNullish(modal.detail)}
 	<ConvertIcpModal detail={modal.detail} onclose={close} />
+{/if}
+
+{#if modal?.type === 'reconcile_out_of_sync_segments'}
+	<OutOfSyncSegmentsModal onclose={close} />
 {/if}

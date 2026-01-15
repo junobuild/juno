@@ -5,14 +5,15 @@
 	import { formatTCycles } from '$lib/utils/cycles.utils';
 
 	interface Props {
-		data?: CanisterData | undefined;
+		cycles: bigint | undefined;
+		noFallbackToZero?: boolean;
 	}
 
-	let { data = undefined }: Props = $props();
+	let { cycles, noFallbackToZero = false }: Props = $props();
 
-	let cycles: bigint | undefined = $derived(data?.canister?.cycles);
+	let displayCycles = $derived(noFallbackToZero ? cycles : (cycles ?? 0n));
 </script>
 
-{#if nonNullish(cycles)}
-	<span in:fade>{formatTCycles(cycles)}T <small>Cycles</small></span>
+{#if nonNullish(displayCycles)}
+	<span in:fade>{formatTCycles(displayCycles)}T <small>Cycles</small></span>
 {/if}

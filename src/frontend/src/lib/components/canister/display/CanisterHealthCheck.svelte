@@ -10,6 +10,7 @@
 	import { secondsToDuration } from '$lib/utils/date.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { formatNumber } from '$lib/utils/number.utils';
+	import CanisterTCycles from '$lib/components/canister/display/CanisterTCycles.svelte';
 
 	interface Props {
 		canister: CanisterDataInfo | undefined;
@@ -66,7 +67,7 @@
 				<div style={`width: ${progressionReserve}%`} class="progress-bar"></div>
 			</div>
 			<span id="cycles-needed" class="progress-bar-value"
-				>{formatTCycles(cyclesNeeded ?? 0n)}T <small>cycles</small></span
+				><CanisterTCycles cycles={cyclesNeeded} /></span
 			>
 
 			<label class="progress-bar-label" for="current-balance"
@@ -80,7 +81,7 @@
 				></div>
 			</div>
 			<span id="current-balance" class="progress-bar-value"
-				>{formatTCycles(cyclesBalance ?? 0n)}T <small>cycles</small></span
+				><CanisterTCycles cycles={cyclesBalance} /></span
 			>
 
 			<p class="space">

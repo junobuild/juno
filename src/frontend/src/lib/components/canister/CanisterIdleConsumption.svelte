@@ -3,6 +3,7 @@
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { CanisterDataInfo, CanisterSyncStatus } from '$lib/types/canister';
 	import { formatTCycles } from '$lib/utils/cycles.utils';
+	import CanisterTCycles from '$lib/components/canister/display/CanisterTCycles.svelte';
 
 	interface Props {
 		canister: CanisterDataInfo | undefined;
@@ -20,7 +21,7 @@
 			{$i18n.canisters.daily_consumption}
 		{/snippet}
 		<span>
-			{formatTCycles(idleCyclesBurnedPerDay ?? 0n)}T <small>cycles</small>
+			<CanisterTCycles cycles={idleCyclesBurnedPerDay} />
 		</span>
 	</CanisterValue>
 </div>

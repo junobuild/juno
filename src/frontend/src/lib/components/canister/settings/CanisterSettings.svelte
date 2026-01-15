@@ -24,6 +24,7 @@
 	import { secondsToDuration } from '$lib/utils/date.utils';
 	import { emit } from '$lib/utils/events.utils';
 	import { formatBytes } from '$lib/utils/number.utils';
+	import CanisterTCycles from '$lib/components/canister/display/CanisterTCycles.svelte';
 
 	interface Props {
 		canisterId: Principal;
@@ -116,7 +117,7 @@
 				{#snippet label()}
 					{$i18n.canisters.reserved_cycles_limit}
 				{/snippet}
-				<p>{formatTCycles(reservedCyclesLimit ?? 0n)}T <small>cycles</small></p>
+				<p><CanisterTCycles cycles={reservedCyclesLimit} /></p>
 			</CanisterValue>
 
 			<CanisterValue {sync}>

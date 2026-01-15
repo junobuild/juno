@@ -333,7 +333,6 @@
 		"stock_version": "Stock version",
 		"extended_version": "Extended version",
 		"build": "Build",
-		"see_all_satellites": "See all Satellites",
 		"attaching": "Sharing Satellite with Mission Control..."
 	},
 	"mission_control": {

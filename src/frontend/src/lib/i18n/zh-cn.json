@@ -334,7 +334,6 @@
 		"stock_version": "标准版",
 		"extended_version": "增强版",
 		"build": "构建",
-		"see_all_satellites": "查看全部卫星",
 		"attaching": "正在与任务控制中心共享卫星..."
 	},
 	"mission_control": {

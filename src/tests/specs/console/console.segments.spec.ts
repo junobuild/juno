@@ -343,7 +343,7 @@ describe('Console > Segments', () => {
 			describe('User', () => {
 				let payload: ConsoleDid.SetSegmentsArgs[];
 
-				beforeAll(async () => {
+				beforeAll(() => {
 					actor.setIdentity(user);
 
 					payload = [

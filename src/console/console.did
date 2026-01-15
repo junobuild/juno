@@ -442,11 +442,13 @@ service : () -> {
   set_controllers : (SetControllersArgs) -> ();
   set_custom_domain : (text, opt text) -> ();
   set_fee : (SegmentKind, FeesArgs) -> ();
+  set_many_segments : (vec SetSegmentsArgs) -> (vec Segment);
   set_rate_config : (SegmentKind, RateConfig) -> ();
   set_segment : (SetSegmentsArgs) -> (Segment);
   set_segment_metadata : (SetSegmentMetadataArgs) -> (Segment);
   set_storage_config : (SetStorageConfig) -> (StorageConfig);
   submit_proposal : (nat) -> (nat, Proposal);
+  unset_many_segments : (vec UnsetSegmentsArgs) -> ();
   unset_segment : (UnsetSegmentsArgs) -> ();
   upload_proposal_asset_chunk : (UploadChunk) -> (UploadChunkResult);
 }

@@ -51,7 +51,7 @@ install_tool() {
   fi
 }
 
-install_tool ic-wasm 0.8.5
+install_tool ic-wasm 0.9.10
 install_tool wasi2ic 0.2.16
 install_tool candid-extractor 0.1.6
 

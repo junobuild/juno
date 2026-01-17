@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import type { Principal } from '@icp-sdk/core/principal';
-	import { getContext, setContext, untrack } from 'svelte';
+	import { getContext, untrack } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import type { SatelliteDid } from '$declarations';
 	import { deleteDocs } from '$lib/api/satellites.api';
@@ -14,14 +14,9 @@
 	import Html from '$lib/components/ui/Html.svelte';
 	import { authIdentity } from '$lib/derived/auth.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import { initListParamsContext } from '$lib/stores/app/list-params.context.store';
 	import { versionStore } from '$lib/stores/version.store';
 	import { DATA_CONTEXT_KEY, type DataContext } from '$lib/types/data.context';
-	import {
-		type ListParamsContext,
-		LIST_PARAMS_CONTEXT_KEY,
-		ListParamsKey
-	} from '$lib/types/list-params.context';
+	import { type ListParamsContext, LIST_PARAMS_CONTEXT_KEY } from '$lib/types/list-params.context';
 	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 	import { emit } from '$lib/utils/events.utils';
@@ -43,8 +38,6 @@
 
 	const { store: docsStore, resetData }: DataContext<SatelliteDid.Doc> =
 		getContext<DataContext<SatelliteDid.Doc>>(DATA_CONTEXT_KEY);
-
-	setContext<ListParamsContext>(LIST_PARAMS_CONTEXT_KEY, initListParamsContext(ListParamsKey.DOCS));
 
 	const { listParams } = getContext<ListParamsContext>(LIST_PARAMS_CONTEXT_KEY);
 

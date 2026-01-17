@@ -231,6 +231,7 @@ type OpenIdData = record {
   email : opt text;
   picture : opt text;
   given_name : opt text;
+  preferred_username : opt text;
 };
 type OpenIdGetDelegationArgs = record {
   jwt : text;

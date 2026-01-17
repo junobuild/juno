@@ -7,6 +7,7 @@ pub trait OpenIdProfile {
     fn name(&self) -> Option<&str>;
     fn given_name(&self) -> Option<&str>;
     fn family_name(&self) -> Option<&str>;
+    fn preferred_username(&self) -> Option<&str>;
     fn picture(&self) -> Option<&str>;
     fn locale(&self) -> Option<&str>;
 }

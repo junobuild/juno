@@ -7,7 +7,7 @@ import { targetMainnet } from './utils.mjs';
 
 const fromBigIntNanoSeconds = (nanoseconds) => new Date(Number(nanoseconds / 1_000_000n));
 
-const getGoogleCertificate = async ({mainnet, provider: cmdProvider}) => {
+const getGoogleCertificate = async ({ mainnet, provider: cmdProvider }) => {
 	const { get_openid_certificate } = await (mainnet
 		? observatoryActorIC()
 		: observatoryActorLocal());
@@ -36,4 +36,4 @@ if (!['google', 'github'].includes(provider)) {
 	process.exit(1);
 }
 
-await getGoogleCertificate({mainnet, provider});
+await getGoogleCertificate({ mainnet, provider });

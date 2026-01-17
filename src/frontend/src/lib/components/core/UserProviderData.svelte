@@ -16,18 +16,23 @@
 	let openIdData = $derived<ConsoleDid.OpenIdData | undefined>(openId?.data);
 	let openIdPicture = $derived<string | undefined>(fromNullable(openIdData?.picture ?? []));
 	let openIdGivenName = $derived<string | undefined>(fromNullable(openIdData?.given_name ?? []));
+	let openIdPreferredUsername = $derived<string | undefined>(
+		fromNullable(openIdData?.preferred_username ?? [])
+	);
 	let openIdEmail = $derived<string | undefined>(fromNullable(openIdData?.email ?? []));
+
+	let displayName = $derived(openIdPreferredUsername ?? openIdGivenName);
 </script>
 
-{#if notEmptyString(openIdGivenName) || notEmptyString(openIdEmail)}
+{#if notEmptyString(displayName) || notEmptyString(openIdEmail)}
 	<div class="container">
 		{#if notEmptyString(openIdPicture)}
 			<Avatar alt={$i18n.sign_in_openid.avatar} size="32px" src={openIdPicture} />
 		{/if}
 
 		<div class="meta">
-			{#if notEmptyString(openIdGivenName)}
-				<span class="name">{openIdGivenName}</span>
+			{#if notEmptyString(displayName)}
+				<span class="name">{displayName}</span>
 			{/if}
 
 			{#if notEmptyString(openIdEmail)}

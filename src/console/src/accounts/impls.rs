@@ -18,7 +18,9 @@ impl OpenIdProfile for OpenIdData {
     fn family_name(&self) -> Option<&str> {
         self.family_name.as_deref()
     }
-    fn preferred_username(&self) -> Option<&str> { self.preferred_username.as_deref() }
+    fn preferred_username(&self) -> Option<&str> {
+        self.preferred_username.as_deref()
+    }
     fn picture(&self) -> Option<&str> {
         self.picture.as_deref()
     }

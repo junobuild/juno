@@ -10,4 +10,4 @@ export type SignInWithAuthClient = (params: {
 }) => Promise<SignedInIdentity>;
 export type SignInWithNewAuthClient = () => Promise<void>;
 
-export type SignInOpenIdProvider = "google" | "github";
+export type SignInOpenIdProvider = 'google' | 'github';

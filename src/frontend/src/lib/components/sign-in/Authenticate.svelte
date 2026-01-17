@@ -8,18 +8,18 @@
 	import { getAndClearAuthNavOrigin } from '$lib/services/console/auth/_auth.nav.services';
 	import { handleRedirectCallback } from '$lib/services/console/auth/auth.openid.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import type {SignInOpenIdProvider} from "$lib/types/auth";
+	import type { SignInOpenIdProvider } from '$lib/types/auth';
 
 	interface Props {
-		provider: SignInOpenIdProvider
+		provider: SignInOpenIdProvider;
 	}
 
-	let {provider}: Props = $props();
+	let { provider }: Props = $props();
 
 	let state = $state<'loading' | 'ok' | 'error'>('loading');
 
 	const signIn = async () => {
-		const { result } = await handleRedirectCallback({provider});
+		const { result } = await handleRedirectCallback({ provider });
 		state = result;
 
 		if (result !== 'ok') {

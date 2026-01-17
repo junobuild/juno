@@ -118,8 +118,8 @@ export class ConsolePage extends IdentityPage {
 		await expect(this.page.getByTestId(testIds.createSatellite.create)).not.toBeVisible();
 
 		const expectedText = i18n.satellites.create_satellite_price
-			.replace('{0}', '3.000 T Cycles')
-			.replace('{1}', '0.000 T Cycles');
+			.replace('{0}', '3.000 TCycles')
+			.replace('{1}', '0.000 TCycles');
 
 		await expect(this.page.getByText(expectedText)).toBeVisible();
 	}

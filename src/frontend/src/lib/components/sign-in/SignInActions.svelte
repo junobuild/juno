@@ -1,7 +1,7 @@
 <script lang="ts">
+	import SignInGitHub from '$lib/components/sign-in/SignInGitHub.svelte';
 	import SignInGoogle from '$lib/components/sign-in/SignInGoogle.svelte';
 	import SignInII from '$lib/components/sign-in/SignInII.svelte';
-	import SignInGitHub from '$lib/components/sign-in/SignInGitHub.svelte';
 </script>
 
 <div class="sign-in">

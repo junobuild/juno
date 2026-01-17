@@ -29,7 +29,7 @@ export const signInWithGitHub = async () => {
 	});
 };
 
-type SignInWithOpenIdParams = { provider: SignInOpenIdProvider; clientId: string | undefined };
+interface SignInWithOpenIdParams { provider: SignInOpenIdProvider; clientId: string | undefined }
 
 const signInWithOpenId = async (params: SignInWithOpenIdParams) => {
 	try {

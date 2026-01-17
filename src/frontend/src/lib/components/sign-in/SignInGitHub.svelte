@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { isBusy } from '$lib/derived/app/busy.derived';
-	import { i18n } from '$lib/stores/app/i18n.store';
 	import IconGitHub from '$lib/components/icons/IconGitHub.svelte';
+	import { isBusy } from '$lib/derived/app/busy.derived';
 	import { signInWithGitHub } from '$lib/services/console/auth/auth.openid.services';
+	import { i18n } from '$lib/stores/app/i18n.store';
 </script>
 
 <button disabled={$isBusy} onclick={signInWithGitHub}

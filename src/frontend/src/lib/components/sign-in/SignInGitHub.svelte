@@ -6,7 +6,7 @@
 </script>
 
 <button disabled={$isBusy} onclick={signInWithGitHub}
-	><IconGitHub size="20px" />
+	><IconGitHub size="23px" />
 	<span>{$i18n.sign_in.github}</span></button
 >
 

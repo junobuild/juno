@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { isNullish, nonNullish } from '@dfinity/utils';
+	import { isNullish } from '@dfinity/utils';
 	import { untrack } from 'svelte';
 	import WizardProgressSteps from '$lib/components/ui/WizardProgressSteps.svelte';
 	import { i18n } from '$lib/stores/app/i18n.store';

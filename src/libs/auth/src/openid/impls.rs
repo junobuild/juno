@@ -36,7 +36,7 @@ impl OpenIdProvider {
     pub fn jwks_url(&self) -> &'static str {
         match self {
             Self::Google => "https://www.googleapis.com/oauth2/v3/certs",
-            Self::GitHub => "http://localhost:3000/v1/auth/certs",
+            Self::GitHub => "http://host.docker.internal:3000/v1/auth/certs",
         }
     }
 

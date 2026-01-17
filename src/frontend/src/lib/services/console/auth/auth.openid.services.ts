@@ -7,6 +7,7 @@ import {
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
 import { authStore } from '$lib/stores/auth.store';
+import type { SignInOpenIdProvider } from '$lib/types/auth';
 import { SignInInitError } from '$lib/types/errors';
 import { container } from '$lib/utils/juno.utils';
 import { isNullish } from '@dfinity/utils';
@@ -14,10 +15,27 @@ import { authenticate, requestJwt } from '@junobuild/auth';
 import { get } from 'svelte/store';
 
 export const signInWithGoogle = async () => {
+	await signInWithOpenId({
+		clientId: GOOGLE_CLIENT_ID,
+		provider: 'google'
+	});
+};
+
+// TODO: extract client ID to juno.config
+export const signInWithGitHub = async () => {
+	await signInWithOpenId({
+		clientId: 'Ov23li92ijrrPEfwUrqW',
+		provider: 'github'
+	});
+};
+
+type SignInWithOpenIdParams = { provider: SignInOpenIdProvider; clientId: string | undefined };
+
+const signInWithOpenId = async (params: SignInWithOpenIdParams) => {
 	try {
 		saveAuthNavOrigin();
 
-		await signInWithGoogleFn();
+		await signInWithOpenIdFn(params);
 	} catch (err: unknown) {
 		clearAuthNavOrigin();
 
@@ -28,10 +46,10 @@ export const signInWithGoogle = async () => {
 	}
 };
 
-const signInWithGoogleFn = async () => {
-	if (isNullish(GOOGLE_CLIENT_ID)) {
+const signInWithOpenIdFn = async ({ clientId, provider }: SignInWithOpenIdParams) => {
+	if (isNullish(clientId)) {
 		throw new SignInInitError(
-			'Google sign-in cannot be initialized because GOOGLE_CLIENT_ID is not configured.'
+			'Sign-in cannot be initialized because the associated client ID is not configured.'
 		);
 	}
 
@@ -39,20 +57,26 @@ const signInWithGoogleFn = async () => {
 		location: { origin }
 	} = window;
 
-	await requestJwt({
-		google: {
-			redirect: {
-				clientId: GOOGLE_CLIENT_ID,
-				redirectUrl: `${origin}/auth/callback/google`
-			}
+	const payload = {
+		redirect: {
+			clientId,
+			redirectUrl: `${origin}/auth/callback/${provider}`
 		}
-	});
+	};
+
+	await requestJwt(
+		provider === 'github'
+			? {
+					github: payload
+				}
+			: {
+					google: payload
+				}
+	);
 };
 
-const authenticateWithOpenID = async () => {
-	const {
-		identity: { delegationChain, sessionKey }
-	} = await authenticate({
+const authenticateWithOpenID = async ({ provider }: { provider: SignInOpenIdProvider }) => {
+	const payload = {
 		redirect: null,
 		auth: {
 			console: {
@@ -60,7 +84,19 @@ const authenticateWithOpenID = async () => {
 				...container()
 			}
 		}
-	});
+	};
+
+	const {
+		identity: { delegationChain, sessionKey }
+	} = await authenticate(
+		provider === 'github'
+			? {
+					github: payload
+				}
+			: {
+					google: payload
+				}
+	);
 
 	await AuthClientProvider.getInstance().setAuthClientStorage({
 		delegationChain,
@@ -68,12 +104,18 @@ const authenticateWithOpenID = async () => {
 	});
 };
 
-export const handleRedirectCallback = async (): Promise<{
+export const handleRedirectCallback = async ({
+	provider
+}: {
+	provider: SignInOpenIdProvider;
+}): Promise<{
 	result: 'ok' | 'error';
 	err?: unknown;
 }> => {
 	try {
-		await authStore.signInWithOpenId({ signInFn: authenticateWithOpenID });
+		const signInFn = async () => await authenticateWithOpenID({ provider });
+
+		await authStore.signInWithOpenId({ signInFn });
 
 		return { result: 'ok' };
 	} catch (err: unknown) {

@@ -22,8 +22,8 @@ pub fn verify_openid_jwt(
     // 2) Find matching RSA key
     let jwk = pick_key(&kid, jwks).ok_or(JwtVerifyError::NoKeyForKid)?;
 
-    // 3) Extract RSA components - We support only Google at the moment
-    // which always uses RSA keys.
+    // 3) Extract RSA components - We support only Google at the moment,
+    // which always uses RSA keys, and we also did so for GitHub.
     let (n, e) = match (&jwk.kty, &jwk.params) {
         (JwkType::Rsa, JwkParams::Rsa(params)) => (&params.n, &params.e),
         _ => return Err(JwtVerifyError::WrongKeyType),

@@ -282,7 +282,8 @@
 		"quote_10": "Universe: endless exploration awaits.",
 		"internet_identity": "Continue with Internet Identity",
 		"internet_identity_short": "Continue with Identity",
-		"google": "Continue with Google"
+		"google": "Continue with Google",
+		"github": "Continue with GitHub"
 	},
 	"sign_in_openid": {
 		"in_progress": "Stand by, docking your identity...",

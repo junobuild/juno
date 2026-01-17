@@ -18,7 +18,7 @@ pub mod state {
         #[serde(rename = "webauthn")]
         WebAuthn,
         Google,
-        // TODO: support for GitHub
+        GitHub,
     }
 
     #[derive(Serialize, Deserialize, Clone)]

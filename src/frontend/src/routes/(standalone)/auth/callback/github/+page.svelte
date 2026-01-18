@@ -2,4 +2,4 @@
 	import AuthenticateCallback from '$lib/components/sign-in/AuthenticateCallback.svelte';
 </script>
 
-<AuthenticateCallback provider="google" />
+<AuthenticateCallback provider="github" />

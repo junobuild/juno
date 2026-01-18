@@ -21,10 +21,10 @@ pub async fn openid_authenticate(
     let prepared_delegation = delegation::openid_prepare_delegation(args, &providers).await;
 
     let result = match prepared_delegation {
-        Ok((delegation, credential)) => {
+        Ok((delegation, provider, credential)) => {
             let key = &delegation.user_key;
 
-            register_user(key, &credential)
+            register_user(key, &provider, &credential)
                 .map(|doc| Authentication { delegation, doc })
                 .map_err(AuthenticationError::RegisterUser)
         }

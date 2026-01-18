@@ -288,6 +288,7 @@ interface I18nSign_in {
 	internet_identity: string;
 	internet_identity_short: string;
 	google: string;
+	github: string;
 }
 
 interface I18nSign_in_openid {

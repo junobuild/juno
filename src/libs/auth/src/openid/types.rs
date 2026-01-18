@@ -12,6 +12,7 @@ pub mod interface {
         pub name: Option<String>,
         pub given_name: Option<String>,
         pub family_name: Option<String>,
+        pub preferred_username: Option<String>,
         pub picture: Option<String>,
         pub locale: Option<String>,
     }
@@ -43,6 +44,7 @@ pub mod provider {
     )]
     pub enum OpenIdProvider {
         Google,
+        GitHub,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]

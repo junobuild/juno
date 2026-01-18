@@ -283,7 +283,8 @@
 		"quote_10": "宇宙无垠，探索不止。",
 		"internet_identity": "继续使用Internet Identity",
 		"internet_identity_short": "继续使用Identity",
-		"google": "继续使用Google"
+		"google": "继续使用Google",
+		"github": "继续使用GitHub"
 	},
 	"sign_in_openid": {
 		"in_progress": "请稍候，正在对接您的身份...",

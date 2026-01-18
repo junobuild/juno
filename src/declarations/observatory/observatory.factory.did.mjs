@@ -20,7 +20,10 @@ export const idlFactory = ({ IDL }) => {
 		sent: IDL.Nat64,
 		failed: IDL.Nat64
 	});
-	const OpenIdProvider = IDL.Variant({ Google: IDL.Null });
+	const OpenIdProvider = IDL.Variant({
+		GitHub: IDL.Null,
+		Google: IDL.Null
+	});
 	const GetOpenIdCertificateArgs = IDL.Record({ provider: OpenIdProvider });
 	const JwkType = IDL.Variant({
 		EC: IDL.Null,
@@ -129,15 +132,15 @@ export const idlFactory = ({ IDL }) => {
 		del_controllers: IDL.Func([DeleteControllersArgs], [], []),
 		get_notify_status: IDL.Func([GetNotifications], [NotifyStatus], ['query']),
 		get_openid_certificate: IDL.Func([GetOpenIdCertificateArgs], [IDL.Opt(OpenIdCertificate)], []),
-		is_openid_monitoring_enabled: IDL.Func([], [IDL.Bool], []),
+		is_openid_monitoring_enabled: IDL.Func([OpenIdProvider], [IDL.Bool], []),
 		list_controllers: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Principal, Controller))], ['query']),
 		notify: IDL.Func([NotifyArgs], [], []),
 		ping: IDL.Func([NotifyArgs], [], []),
 		set_controllers: IDL.Func([SetControllersArgs], [], []),
 		set_env: IDL.Func([Env], [], []),
 		set_rate_config: IDL.Func([RateKind, RateConfig], [], []),
-		start_openid_monitoring: IDL.Func([], [], []),
-		stop_openid_monitoring: IDL.Func([], [], [])
+		start_openid_monitoring: IDL.Func([OpenIdProvider], [], []),
+		stop_openid_monitoring: IDL.Func([OpenIdProvider], [], [])
 	});
 };
 

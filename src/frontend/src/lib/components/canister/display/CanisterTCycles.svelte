@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
-	import type { CanisterData } from '$lib/types/canister';
 	import { formatTCycles } from '$lib/utils/cycles.utils';
 
 	interface Props {

@@ -1,7 +1,7 @@
-use candid::Principal;
 use crate::segments::store::{try_add_segment, unset_segment};
 use crate::types::interface::{SetSegmentsArgs, UnsetSegmentsArgs};
 use crate::types::state::{Segment, SegmentKey};
+use candid::Principal;
 use junobuild_shared::ic::api::caller;
 
 pub fn attach_many_segments(args: Vec<SetSegmentsArgs>) -> Result<Vec<Segment>, String> {

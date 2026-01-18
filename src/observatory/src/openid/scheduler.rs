@@ -8,8 +8,13 @@ use junobuild_auth::openid::types::provider::OpenIdProvider;
 use std::time::Duration;
 
 pub fn defer_restart_monitoring() {
-    // Early spare one timer if not enabled.
-    if assert_scheduler_running(&OpenIdProvider::Google).is_err() {
+    // Early spare one timer if no scheduler is enabled.
+    let enabled_count = [OpenIdProvider::Google, OpenIdProvider::GitHub]
+        .into_iter()
+        .filter(|provider| is_scheduler_enabled(provider))
+        .count();
+
+    if enabled_count == 0 {
         return;
     }
 
@@ -19,31 +24,27 @@ pub fn defer_restart_monitoring() {
 }
 
 async fn restart_monitoring() {
-    schedule_certificate_update(OpenIdProvider::Google, None);
+    for provider in [OpenIdProvider::Google, OpenIdProvider::GitHub] {
+        schedule_certificate_update(provider, None);
+    }
 }
 
-pub fn start_openid_scheduler() -> Result<(), String> {
-    let provider = OpenIdProvider::Google;
-
+pub fn start_openid_scheduler(provider: OpenIdProvider) -> Result<(), String> {
     assert_scheduler_stopped(&provider)?;
 
     enable_scheduler(&provider);
 
-    schedule_certificate_update(OpenIdProvider::Google, None);
+    schedule_certificate_update(provider, None);
 
     Ok(())
 }
 
-pub fn stop_openid_scheduler() -> Result<(), String> {
-    let provider = OpenIdProvider::Google;
-
+pub fn stop_openid_scheduler(provider: OpenIdProvider) -> Result<(), String> {
     assert_scheduler_running(&provider)?;
 
     disable_scheduler(&provider)
 }
 
-pub fn is_openid_scheduler_enabled() -> bool {
-    let provider = OpenIdProvider::Google;
-
+pub fn is_openid_scheduler_enabled(provider: OpenIdProvider) -> bool {
     is_scheduler_enabled(&provider)
 }

@@ -5,11 +5,12 @@ use junobuild_auth::delegation::types::{
     PrepareDelegationError, PreparedDelegation,
 };
 use junobuild_auth::openid::types::interface::OpenIdCredential;
+use junobuild_auth::openid::types::provider::OpenIdProvider;
 use junobuild_auth::state::types::config::OpenIdProviders;
 use junobuild_auth::{delegation, openid};
 
 pub type OpenIdPrepareDelegationResult =
-    Result<(PreparedDelegation, OpenIdCredential), PrepareDelegationError>;
+    Result<(PreparedDelegation, OpenIdProvider, OpenIdCredential), PrepareDelegationError>;
 
 pub async fn openid_prepare_delegation(
     args: &OpenIdPrepareDelegationArgs,
@@ -32,7 +33,7 @@ pub async fn openid_prepare_delegation(
         &AuthCertificate,
     );
 
-    result.map(|prepared_delegation| (prepared_delegation, credential))
+    result.map(|prepared_delegation| (prepared_delegation, provider, credential))
 }
 
 pub fn openid_get_delegation(

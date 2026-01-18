@@ -38,35 +38,58 @@ const buildConfig = async () => {
 		process.exit(1);
 	}
 
+	const googleProviderConfig = [
+		{ Google: null },
+		{
+			client_id: google.clientId,
+			delegation: isNullish(google.delegation)
+				? []
+				: [
+						{
+							targets:
+								google.delegation.allowedTargets === null
+									? []
+									: [
+											(google.delegation.allowedTargets ?? [])?.map((target) =>
+												Principal.fromText(target)
+											)
+										],
+							max_time_to_live: toNullable(google.delegation.sessionDuration)
+						}
+					]
+		}
+	];
+
+	// TODO: juno.config and client id and delegation and targets and maxe_tim_to_live
+	const githubProviderConfig = [
+		{ GitHub: null },
+		{
+			client_id: 'Ov23li92ijrrPEfwUrqW',
+			delegation: isNullish(google.delegation)
+				? []
+				: [
+						{
+							targets:
+								google.delegation.allowedTargets === null
+									? []
+									: [
+											(google.delegation.allowedTargets ?? [])?.map((target) =>
+												Principal.fromText(target)
+											)
+										],
+							max_time_to_live: toNullable(google.delegation.sessionDuration)
+						}
+					]
+		}
+	];
+
 	return {
 		internet_identity: [],
 		rules: [],
 		version: [],
 		openid: [
 			{
-				providers: [
-					[
-						{ Google: null },
-						{
-							client_id: google.clientId,
-							delegation: isNullish(google.delegation)
-								? []
-								: [
-										{
-											targets:
-												google.delegation.allowedTargets === null
-													? []
-													: [
-															(google.delegation.allowedTargets ?? [])?.map((target) =>
-																Principal.fromText(target)
-															)
-														],
-											max_time_to_live: toNullable(google.delegation.sessionDuration)
-										}
-									]
-						}
-					]
-				],
+				providers: [googleProviderConfig, githubProviderConfig],
 				observatory_id: []
 			}
 		]

@@ -9,3 +9,5 @@ export type SignInWithAuthClient = (params: {
 	authClient: AuthClient;
 }) => Promise<SignedInIdentity>;
 export type SignInWithNewAuthClient = () => Promise<void>;
+
+export type SignInOpenIdProvider = 'google' | 'github';

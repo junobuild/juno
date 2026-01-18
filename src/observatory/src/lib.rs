@@ -19,6 +19,7 @@ use crate::types::state::Env;
 use ic_cdk_macros::export_candid;
 use junobuild_auth::openid::jwkset::types::interface::GetOpenIdCertificateArgs;
 use junobuild_auth::openid::types::provider::OpenIdCertificate;
+use junobuild_auth::openid::types::provider::OpenIdProvider;
 use junobuild_shared::rate::types::RateConfig;
 use junobuild_shared::types::interface::NotifyArgs;
 use junobuild_shared::types::interface::{DeleteControllersArgs, SetControllersArgs};

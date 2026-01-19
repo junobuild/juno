@@ -155,6 +155,7 @@ mod verify_tests {
             name: None,
             given_name: None,
             family_name: None,
+            preferred_username: None,
             picture: None,
             nonce: nonce.map(|s| s.into()),
             locale: None,
@@ -497,6 +498,7 @@ mod verify_tests {
             name: Some("World".into()),
             given_name: Some("Hello".into()),
             family_name: Some("World".into()),
+            preferred_username: Some("hello_world".into()),
             picture: Some("https://example.com/world.png".into()),
             nonce: Some(NONCE_OK.into()),
             locale: Some("fr-CH".into()),
@@ -518,6 +520,7 @@ mod verify_tests {
         assert_eq!(claims.name.as_deref(), Some("World")); // unicode/emoji
         assert_eq!(claims.given_name.as_deref(), Some("Hello"));
         assert_eq!(claims.family_name.as_deref(), Some("World"));
+        assert_eq!(claims.preferred_username.as_deref(), Some("hello_world"));
         assert_eq!(
             claims.picture.as_deref(),
             Some("https://example.com/world.png")

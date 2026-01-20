@@ -2,6 +2,7 @@ import { idlFactoryObservatory, type ObservatoryActor } from '$declarations';
 import { type Actor, PocketIc } from '@dfinity/pic';
 import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import { inject } from 'vitest';
+import { GOOGLE_OPEN_ID_PROVIDER } from '../../constants/auth-tests.constants';
 import { mockCertificateDate, mockClientId } from '../../mocks/jwt.mocks';
 import { FETCH_CERTIFICATE_INTERVAL } from '../../mocks/observatory.mocks';
 import { makeMockGoogleOpenIdJwt } from '../../utils/jwt-tests.utils';
@@ -48,7 +49,7 @@ describe('Observatory > OpenId', async () => {
 		it('should start openid monitoring', async () => {
 			const { start_openid_monitoring } = actor;
 
-			await start_openid_monitoring();
+			await start_openid_monitoring(GOOGLE_OPEN_ID_PROVIDER);
 
 			await assertOpenIdHttpsOutcalls({ pic, jwks: mockJwks });
 		});
@@ -56,7 +57,7 @@ describe('Observatory > OpenId', async () => {
 		it('should get openid monitoring enabled', async () => {
 			const { is_openid_monitoring_enabled } = actor;
 
-			await expect(is_openid_monitoring_enabled()).resolves.toBeTruthy();
+			await expect(is_openid_monitoring_enabled(GOOGLE_OPEN_ID_PROVIDER)).resolves.toBeTruthy();
 		});
 
 		it('should provide certificate', async () => {
@@ -66,7 +67,7 @@ describe('Observatory > OpenId', async () => {
 		it('should throw error if openid scheduler is already running', async () => {
 			const { start_openid_monitoring } = actor;
 
-			await expect(start_openid_monitoring()).rejects.toThrowError(
+			await expect(start_openid_monitoring(GOOGLE_OPEN_ID_PROVIDER)).rejects.toThrowError(
 				'OpenID scheduler for Google already running'
 			);
 		});
@@ -92,13 +93,13 @@ describe('Observatory > OpenId', async () => {
 
 			const { stop_openid_monitoring } = actor;
 
-			await expect(stop_openid_monitoring()).resolves.toBeNull();
+			await expect(stop_openid_monitoring(GOOGLE_OPEN_ID_PROVIDER)).resolves.toBeNull();
 		});
 
 		it('should get openid monitoring disabled', async () => {
 			const { is_openid_monitoring_enabled } = actor;
 
-			await expect(is_openid_monitoring_enabled()).resolves.toBeFalsy();
+			await expect(is_openid_monitoring_enabled(GOOGLE_OPEN_ID_PROVIDER)).resolves.toBeFalsy();
 		});
 
 		it('should still provide certificate', async () => {
@@ -124,7 +125,7 @@ describe('Observatory > OpenId', async () => {
 		it('should throw error if openid scheduler is already stopped', async () => {
 			const { stop_openid_monitoring } = actor;
 
-			await expect(stop_openid_monitoring()).rejects.toThrowError(
+			await expect(stop_openid_monitoring(GOOGLE_OPEN_ID_PROVIDER)).rejects.toThrowError(
 				'OpenID scheduler for Google is not running'
 			);
 		});
@@ -132,7 +133,7 @@ describe('Observatory > OpenId', async () => {
 		it('should restart monitoring', async () => {
 			const { start_openid_monitoring } = actor;
 
-			await start_openid_monitoring();
+			await start_openid_monitoring(GOOGLE_OPEN_ID_PROVIDER);
 
 			await assertOpenIdHttpsOutcalls({ pic, jwks: mockJwks });
 		});

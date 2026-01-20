@@ -9,6 +9,7 @@ import type { _SERVICE as TestSatelliteActor } from '$test-declarations/test_sat
 import type { Actor, PocketIc } from '@dfinity/pic';
 import { ECDSAKeyIdentity, Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import type { Principal } from '@icp-sdk/core/principal';
+import { GOOGLE_OPEN_ID_PROVIDER } from '../constants/auth-tests.constants';
 import { OBSERVATORY_ID } from '../constants/observatory-tests.constants';
 import { mockCertificateDate, mockClientId } from '../mocks/jwt.mocks';
 import { generateNonce } from './auth-nonce-tests.utils';
@@ -160,7 +161,7 @@ const setupAuth = async ({
 
 	// Start fetching OpenID Jwts in Observatory
 	const { start_openid_monitoring } = observatoryActor;
-	await start_openid_monitoring();
+	await start_openid_monitoring(GOOGLE_OPEN_ID_PROVIDER);
 
 	await updateRateConfigNoLimit({ actor: observatoryActor });
 

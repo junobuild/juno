@@ -9,6 +9,7 @@ import type { Actor, PocketIc } from '@dfinity/pic';
 import { toNullable } from '@dfinity/utils';
 import { ECDSAKeyIdentity, Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import type { Principal } from '@icp-sdk/core/principal';
+import { GOOGLE_OPEN_ID_PROVIDER } from '../constants/auth-tests.constants';
 import { mockClientId } from '../mocks/jwt.mocks';
 import { generateNonce } from './auth-nonce-tests.utils';
 import { makeMockGoogleOpenIdJwt } from './jwt-tests.utils';
@@ -93,7 +94,7 @@ export const testAuthConfigObservatory = ({
 			observatoryActor.setIdentity(controller);
 
 			const { start_openid_monitoring } = observatoryActor;
-			await start_openid_monitoring();
+			await start_openid_monitoring(GOOGLE_OPEN_ID_PROVIDER);
 
 			await pic.advanceTime(1000 * 60 * 15); // Observatory refresh every 15min
 			await tick(pic);

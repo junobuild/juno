@@ -5,3 +5,5 @@ export const EXTERNAL_ALTERNATIVE_ORIGINS_URLS = EXTERNAL_ALTERNATIVE_ORIGINS.ma
 
 export const LOG_SALT_INITIALIZED = 'Authentication salt initialized.';
 export const LOG_SALT_ALREADY_INITIALIZED = 'Authentication salt exists. Skipping initialization.';
+
+export const GOOGLE_OPEN_ID_PROVIDER = { Google: null };

@@ -131,15 +131,15 @@ export interface _SERVICE {
 	del_controllers: ActorMethod<[DeleteControllersArgs], undefined>;
 	get_notify_status: ActorMethod<[GetNotifications], NotifyStatus>;
 	get_openid_certificate: ActorMethod<[GetOpenIdCertificateArgs], [] | [OpenIdCertificate]>;
-	is_openid_monitoring_enabled: ActorMethod<[], boolean>;
+	is_openid_monitoring_enabled: ActorMethod<[OpenIdProvider], boolean>;
 	list_controllers: ActorMethod<[], Array<[Principal, Controller]>>;
 	notify: ActorMethod<[NotifyArgs], undefined>;
 	ping: ActorMethod<[NotifyArgs], undefined>;
 	set_controllers: ActorMethod<[SetControllersArgs], undefined>;
 	set_env: ActorMethod<[Env], undefined>;
 	set_rate_config: ActorMethod<[RateKind, RateConfig], undefined>;
-	start_openid_monitoring: ActorMethod<[], undefined>;
-	stop_openid_monitoring: ActorMethod<[], undefined>;
+	start_openid_monitoring: ActorMethod<[OpenIdProvider], undefined>;
+	stop_openid_monitoring: ActorMethod<[OpenIdProvider], undefined>;
 }
 export declare const idlFactory: IDL.InterfaceFactory;
 export declare const init: (args: { IDL: typeof IDL }) => IDL.Type[];

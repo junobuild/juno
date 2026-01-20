@@ -287,6 +287,7 @@ export interface OpenIdData {
 	email: [] | [string];
 	picture: [] | [string];
 	given_name: [] | [string];
+	preferred_username: [] | [string];
 }
 export interface OpenIdGetDelegationArgs {
 	jwt: string;

@@ -17,6 +17,7 @@ impl From<TokenData<Claims>> for OpenIdCredential {
             name: token.claims.name,
             given_name: token.claims.given_name,
             family_name: token.claims.family_name,
+            preferred_username: token.claims.preferred_username,
             picture: token.claims.picture,
             locale: token.claims.locale,
         }

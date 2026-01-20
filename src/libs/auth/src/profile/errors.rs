@@ -10,6 +10,9 @@ pub const JUNO_AUTH_ERROR_PROFILE_GIVEN_NAME_INVALID_LENGTH: &str =
 // A family name must not be longer than 100 characters
 pub const JUNO_AUTH_ERROR_PROFILE_FAMILY_NAME_INVALID_LENGTH: &str =
     "juno.auth.error.profile.data.family_name_invalid_length";
+// A preferred_username (e.g. GitHub login) name must not be longer than 100 characters
+pub const JUNO_AUTH_ERROR_PROFILE_PREFERRED_USERNAME_INVALID_LENGTH: &str =
+    "juno.auth.error.profile.data.preferred_username_invalid_length";
 // Locale must not be longer than 35 characters
 pub const JUNO_AUTH_ERROR_PROFILE_LOCALE_INVALID_LENGTH: &str =
     "juno.auth.error.profile.data.locale_invalid_length";

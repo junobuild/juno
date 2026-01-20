@@ -7,6 +7,7 @@ use crate::profile::errors::{
     JUNO_AUTH_ERROR_PROFILE_GIVEN_NAME_INVALID_LENGTH,
     JUNO_AUTH_ERROR_PROFILE_LOCALE_INVALID_LENGTH, JUNO_AUTH_ERROR_PROFILE_NAME_INVALID_LENGTH,
     JUNO_AUTH_ERROR_PROFILE_PICTURE_INVALID_SCHEME, JUNO_AUTH_ERROR_PROFILE_PICTURE_INVALID_URL,
+    JUNO_AUTH_ERROR_PROFILE_PREFERRED_USERNAME_INVALID_LENGTH,
 };
 use crate::profile::types::{OpenIdProfile, Validated};
 use url::Url;
@@ -34,6 +35,12 @@ impl<T: OpenIdProfile> Validated for T {
         if let Some(family_name) = self.family_name().as_ref() {
             if family_name.chars().count() > SHORT_NAME_MAX_LENGTH {
                 return Err(JUNO_AUTH_ERROR_PROFILE_FAMILY_NAME_INVALID_LENGTH.to_string());
+            }
+        }
+
+        if let Some(preferred_username) = self.preferred_username().as_ref() {
+            if preferred_username.chars().count() > SHORT_NAME_MAX_LENGTH {
+                return Err(JUNO_AUTH_ERROR_PROFILE_PREFERRED_USERNAME_INVALID_LENGTH.to_string());
             }
         }
 
@@ -65,6 +72,7 @@ mod tests {
         pub name: Option<String>,
         pub given_name: Option<String>,
         pub family_name: Option<String>,
+        pub preferred_username: Option<String>,
         pub picture: Option<String>,
         pub locale: Option<String>,
     }
@@ -82,6 +90,9 @@ mod tests {
         fn family_name(&self) -> Option<&str> {
             self.family_name.as_deref()
         }
+        fn preferred_username(&self) -> Option<&str> {
+            self.preferred_username.as_deref()
+        }
         fn picture(&self) -> Option<&str> {
             self.picture.as_deref()
         }
@@ -97,6 +108,7 @@ mod tests {
             name: Some("Ada Lovelace".to_string()),
             given_name: Some("Ada".to_string()),
             family_name: Some("Lovelace".to_string()),
+            preferred_username: None,
             picture: Some("https://example.com/avatar.png".to_string()),
             locale: Some("en".to_string()),
         };
@@ -112,6 +124,7 @@ mod tests {
             name: None,
             given_name: None,
             family_name: None,
+            preferred_username: None,
             picture: None,
             locale: None,
         };
@@ -125,6 +138,7 @@ mod tests {
             name: None,
             given_name: None,
             family_name: None,
+            preferred_username: None,
             picture: Some("not-a-valid-url".to_string()),
             locale: None,
         };
@@ -138,6 +152,7 @@ mod tests {
             name: None,
             given_name: None,
             family_name: None,
+            preferred_username: None,
             picture: Some("http://example.com/avatar.png".to_string()),
             locale: None,
         };
@@ -151,6 +166,7 @@ mod tests {
             name: Some("a".repeat(NAME_MAX_LENGTH + 1)),
             given_name: None,
             family_name: None,
+            preferred_username: None,
             picture: None,
             locale: None,
         };
@@ -164,6 +180,7 @@ mod tests {
             name: None,
             given_name: Some("a".repeat(SHORT_NAME_MAX_LENGTH + 1)),
             family_name: None,
+            preferred_username: None,
             picture: None,
             locale: None,
         };
@@ -177,6 +194,7 @@ mod tests {
             name: None,
             given_name: None,
             family_name: Some("a".repeat(SHORT_NAME_MAX_LENGTH + 1)),
+            preferred_username: None,
             picture: None,
             locale: None,
         };
@@ -190,9 +208,39 @@ mod tests {
             name: None,
             given_name: None,
             family_name: None,
+            preferred_username: None,
             picture: None,
             locale: Some("a".repeat(LOCALE_MAX_LENGTH + 1)),
         };
         assert!(data.validate().is_err());
+    }
+
+    #[test]
+    fn test_invalid_preferred_username_length() {
+        let data = OpenIdDataTest {
+            email: None,
+            name: None,
+            given_name: None,
+            family_name: None,
+            preferred_username: Some("a".repeat(SHORT_NAME_MAX_LENGTH + 1)),
+            picture: None,
+            locale: None,
+        };
+        assert!(data.validate().is_err());
+    }
+
+    #[test]
+    fn test_valid_data_containing_preferred_username() {
+        let data = OpenIdDataTest {
+            email: Some("user@example.com".to_string()),
+            name: Some("Peter Peter Parker".to_string()),
+            given_name: None,
+            family_name: None,
+            preferred_username: Some("peterpeterparker".to_string()),
+            picture: Some("https://avatars.githubusercontent.com/u/16886711".to_string()),
+            locale: None,
+        };
+
+        assert!(data.validate().is_ok());
     }
 }

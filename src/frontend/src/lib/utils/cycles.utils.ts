@@ -45,5 +45,5 @@ export const icpNumberToCycles = ({
 
 export const formatCyclesToHTML = ({ e12s, bold }: { e12s: bigint; bold: boolean }): string => {
 	const tag = bold ? 'strong' : 'span';
-	return `<${tag}>${formatTCycles(e12s)} <small>T Cycles</small></${tag}>`;
+	return `<${tag}>${formatTCycles(e12s)} <small>TCycles</small></${tag}>`;
 };

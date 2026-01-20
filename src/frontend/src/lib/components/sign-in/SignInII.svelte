@@ -12,7 +12,7 @@
 	aria-label={$i18n.sign_in.internet_identity}
 	disabled={$isBusy}
 	onclick={signInWithII}
-	><IconIc size="22px" />
+	><IconIc size="20px" />
 	<span>{$i18n.sign_in.internet_identity_short}</span></button
 >
 

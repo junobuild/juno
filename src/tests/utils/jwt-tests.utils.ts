@@ -38,6 +38,7 @@ export const makeMockGoogleOpenIdJwt = async ({
 		name: 'Hello World',
 		given_name: 'Hello',
 		family_name: 'World',
+		preferred_username: 'helloworld',
 		aud: clientId,
 		iat: timestamp - 10,
 		exp: timestamp + 3600,

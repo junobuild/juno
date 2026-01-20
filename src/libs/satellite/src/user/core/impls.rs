@@ -40,6 +40,9 @@ impl OpenIdProfile for OpenIdData {
     fn family_name(&self) -> Option<&str> {
         self.family_name.as_deref()
     }
+    fn preferred_username(&self) -> Option<&str> {
+        self.preferred_username.as_deref()
+    }
     fn picture(&self) -> Option<&str> {
         self.picture.as_deref()
     }
@@ -131,6 +134,10 @@ impl OpenIdData {
                 .family_name
                 .clone()
                 .or(existing.family_name.clone()),
+            preferred_username: credential
+                .preferred_username
+                .clone()
+                .or(existing.preferred_username.clone()),
             picture: credential.picture.clone().or(existing.picture.clone()),
             locale: credential.locale.clone().or(existing.locale.clone()),
         }
@@ -144,6 +151,7 @@ impl From<&OpenIdCredential> for OpenIdData {
             name: credential.name.clone(),
             given_name: credential.given_name.clone(),
             family_name: credential.family_name.clone(),
+            preferred_username: credential.preferred_username.clone(),
             picture: credential.picture.clone(),
             locale: credential.locale.clone(),
         }
@@ -211,6 +219,7 @@ mod tests {
             name: Some("User".to_string()),
             given_name: None,
             family_name: None,
+            preferred_username: None,
             picture: Some("https://example.com/avatar.png".to_string()),
             locale: Some("en".to_string()),
         });
@@ -231,6 +240,7 @@ mod tests {
             name: Some("User".to_string()),
             given_name: None,
             family_name: None,
+            preferred_username: None,
             picture: Some("http://example.com/avatar.png".to_string()),
             locale: Some("en".to_string()),
         });

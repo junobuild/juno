@@ -23,6 +23,7 @@ describe('Satellite > Auth > Mission Control', () => {
 		name: toNullable('Hello World'),
 		given_name: toNullable('Hello'),
 		family_name: toNullable('World'),
+		preferred_username: toNullable('helloworld'),
 		picture: toNullable(),
 		locale: toNullable()
 	};

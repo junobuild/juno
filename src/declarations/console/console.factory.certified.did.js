@@ -31,7 +31,8 @@ export const idlFactory = ({ IDL }) => {
 		family_name: IDL.Opt(IDL.Text),
 		email: IDL.Opt(IDL.Text),
 		picture: IDL.Opt(IDL.Text),
-		given_name: IDL.Opt(IDL.Text)
+		given_name: IDL.Opt(IDL.Text),
+		preferred_username: IDL.Opt(IDL.Text)
 	});
 	const OpenId = IDL.Record({
 		provider: OpenIdProvider,

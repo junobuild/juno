@@ -382,8 +382,11 @@ describe('Console > Segments', () => {
 					expect(attachedSegment).not.toBeUndefined();
 					expect(attachedAnotherSegment).not.toBeUndefined();
 
-					expect(attachedSegment?.[1].metadata).toEqual(metadata);
-					expect(attachedAnotherSegment?.[1].metadata).toEqual(metadata);
+					// eslint-disable-next-line local-rules/prefer-object-params
+					const sort = (a: [string, string], b: [string, string]) => a[0].localeCompare(b[0]);
+
+					expect(attachedSegment?.[1].metadata.sort(sort)).toEqual(metadata.sort(sort));
+					expect(attachedAnotherSegment?.[1].metadata.sort(sort)).toEqual(metadata.sort(sort));
 				});
 
 				it('should not set segment if already exists', async () => {

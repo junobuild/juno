@@ -27,6 +27,7 @@ describe('Satellite > Auth > User', () => {
 				name: 'Hello World',
 				givenName: 'Hello',
 				familyName: 'World',
+				preferredUsername: 'helloworld',
 				picture: null,
 				locale: null
 			}

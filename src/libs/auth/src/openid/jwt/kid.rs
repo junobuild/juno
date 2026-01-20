@@ -58,6 +58,7 @@ mod unsafe_find_kid_tests {
             name: None,
             given_name: None,
             family_name: None,
+            preferred_username: None,
             picture: None,
             nonce: None,
             locale: None,

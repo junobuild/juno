@@ -9,6 +9,7 @@ import type { Actor, PocketIc } from '@dfinity/pic';
 import { ECDSAKeyIdentity, Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import { JUNO_AUTH_ERROR_NOT_CONFIGURED, JUNO_AUTH_ERROR_OPENID_DISABLED } from '@junobuild/errors';
 import { nanoid } from 'nanoid';
+import { GOOGLE_OPEN_ID_PROVIDER } from '../constants/auth-tests.constants';
 import { OBSERVATORY_ID } from '../constants/observatory-tests.constants';
 import { mockCertificateDate, mockClientId } from '../mocks/jwt.mocks';
 import { generateNonce } from './auth-nonce-tests.utils';
@@ -317,7 +318,7 @@ export const testAuthPrepareDelegation = ({
 
 					const { start_openid_monitoring } = observatoryActor;
 
-					await start_openid_monitoring();
+					await start_openid_monitoring(GOOGLE_OPEN_ID_PROVIDER);
 
 					actor.setIdentity(user);
 				});

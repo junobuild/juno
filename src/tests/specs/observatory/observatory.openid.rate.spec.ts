@@ -3,6 +3,7 @@ import { type Actor, PocketIc } from '@dfinity/pic';
 import { AnonymousIdentity } from '@icp-sdk/core/agent';
 import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import { inject } from 'vitest';
+import { GOOGLE_OPEN_ID_PROVIDER } from '../../constants/auth-tests.constants';
 import { CALLER_NOT_CONTROLLER_OBSERVATORY_MSG } from '../../constants/observatory-tests.constants';
 import { mockCertificateDate, mockClientId } from '../../mocks/jwt.mocks';
 import { makeMockGoogleOpenIdJwt } from '../../utils/jwt-tests.utils';
@@ -48,13 +49,13 @@ describe('Observatory > OpenId > Rate', async () => {
 	const loadCertificate = async () => {
 		const { start_openid_monitoring, stop_openid_monitoring } = actor;
 
-		await start_openid_monitoring();
+		await start_openid_monitoring(GOOGLE_OPEN_ID_PROVIDER);
 
 		await assertOpenIdHttpsOutcalls({ pic, jwks: mockJwks });
 
 		// We do not need to always fetch a new certificate for this suite
 		// We are interested in the guards
-		await stop_openid_monitoring();
+		await stop_openid_monitoring(GOOGLE_OPEN_ID_PROVIDER);
 	};
 
 	const setRateConfig = async (customActor?: ObservatoryActor) => {

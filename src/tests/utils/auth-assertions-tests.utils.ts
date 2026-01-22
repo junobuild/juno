@@ -1,4 +1,5 @@
 import type { ConsoleActor, SatelliteActor, SatelliteDid } from '$declarations';
+import type { OpenIdProvider, OpenIdProviderConfig } from '$declarations/satellite/satellite.did';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import { fromNullable, nonNullish, toNullable } from '@dfinity/utils';
 import type { Identity } from '@icp-sdk/core/agent';
@@ -10,7 +11,7 @@ import {
 	LOG_SALT_ALREADY_INITIALIZED,
 	LOG_SALT_INITIALIZED
 } from '../constants/auth-tests.constants';
-import { mockClientId } from '../mocks/jwt.mocks';
+import { mockClientId, mockGitHubClientId } from '../mocks/jwt.mocks';
 import { fetchLogs } from './mgmt-tests.utils';
 
 /* eslint-disable vitest/require-top-level-describe */
@@ -311,7 +312,7 @@ export const testReturnAuthConfig = ({
 	});
 };
 
-export const testAuthGoogleConfig = ({
+export const testAuthOpenIdConfig = ({
 	actor,
 	version,
 	pic,
@@ -324,6 +325,22 @@ export const testAuthGoogleConfig = ({
 	controller: () => Identity;
 	version: bigint;
 }) => {
+	const googleConfig: [OpenIdProvider, OpenIdProviderConfig] = [
+		{ Google: null },
+		{
+			client_id: mockClientId,
+			delegation: []
+		}
+	];
+
+	const githubConfig: [OpenIdProvider, OpenIdProviderConfig] = [
+		{ GitHub: null },
+		{
+			client_id: mockGitHubClientId,
+			delegation: []
+		}
+	] as const;
+
 	const assertLog = async (logMessage: string) => {
 		const logs = await fetchLogs({
 			pic: pic(),
@@ -344,15 +361,7 @@ export const testAuthGoogleConfig = ({
 			rules: [],
 			openid: [
 				{
-					providers: [
-						[
-							{ Google: null },
-							{
-								client_id: mockClientId,
-								delegation: []
-							}
-						]
-					],
+					providers: [googleConfig],
 					observatory_id: []
 				}
 			],
@@ -401,15 +410,7 @@ export const testAuthGoogleConfig = ({
 			rules: [],
 			openid: [
 				{
-					providers: [
-						[
-							{ Google: null },
-							{
-								client_id: mockClientId,
-								delegation: []
-							}
-						]
-					],
+					providers: [googleConfig],
 					observatory_id: []
 				}
 			],
@@ -419,5 +420,31 @@ export const testAuthGoogleConfig = ({
 		await set_auth_config(config);
 
 		await assertLog(LOG_SALT_ALREADY_INITIALIZED);
+	});
+
+	it('should set github client id as well', async () => {
+		const { set_auth_config, get_auth_config } = actor();
+
+		const config: SatelliteDid.SetAuthenticationConfig = {
+			internet_identity: [],
+			rules: [],
+			openid: [
+				{
+					providers: [googleConfig, githubConfig],
+					observatory_id: []
+				}
+			],
+			version: [version + 1n]
+		};
+
+		await set_auth_config(config);
+
+		const updatedConfig = await get_auth_config();
+
+		const github = fromNullable(fromNullable(updatedConfig)?.openid ?? [])?.providers.find(
+			([key]) => 'GitHub' in key
+		);
+
+		expect(github).toBeUndefined();
 	});
 };

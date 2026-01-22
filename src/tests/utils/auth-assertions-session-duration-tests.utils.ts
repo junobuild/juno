@@ -7,7 +7,7 @@ import type {
 	DelegationIdentity,
 	Ed25519KeyIdentity
 } from '@icp-sdk/core/identity';
-import { mockClientId } from '../mocks/jwt.mocks';
+import { mockGoogleClientId } from '../mocks/jwt.mocks';
 import { assertIdentity, authenticateAndMakeIdentity } from './auth-identity-tests.utils';
 import type { TestSession } from './auth-tests.utils';
 import { tick } from './pic-tests.utils';
@@ -66,7 +66,7 @@ export const testAuthSessionDuration = ({
 							[
 								{ Google: null },
 								{
-									client_id: mockClientId,
+									client_id: mockGoogleClientId,
 									delegation: [
 										{
 											targets: toNullable(),

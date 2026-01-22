@@ -5,7 +5,7 @@ import type { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import type { Principal } from '@icp-sdk/core/principal';
 import { OBSERVATORY_ID } from '../constants/observatory-tests.constants';
 import { SATELLITE_ID } from '../constants/satellite-tests.constants';
-import { mockClientId } from '../mocks/jwt.mocks';
+import { mockGoogleClientId } from '../mocks/jwt.mocks';
 import { authenticateAndMakeIdentity } from './auth-identity-tests.utils';
 import type { TestSession } from './auth-tests.utils';
 
@@ -60,7 +60,7 @@ export const testAuthTargets = ({
 							[
 								{ Google: null },
 								{
-									client_id: mockClientId,
+									client_id: mockGoogleClientId,
 									delegation: [
 										{
 											targets,

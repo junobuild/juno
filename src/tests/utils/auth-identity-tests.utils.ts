@@ -10,7 +10,7 @@ import {
 	type ECDSAKeyIdentity,
 	type SignedDelegation
 } from '@icp-sdk/core/identity';
-import { mockClientId } from '../mocks/jwt.mocks';
+import { mockGoogleClientId } from '../mocks/jwt.mocks';
 import type { TestSession } from './auth-tests.utils';
 import { makeMockGoogleOpenIdJwt, type MockOpenIdJwt } from './jwt-tests.utils';
 import { assertOpenIdHttpsOutcalls } from './observatory-openid-tests.utils';
@@ -40,7 +40,7 @@ export const authenticateAndMakeIdentity = async <R>({
 	const now = await pic.getTime();
 
 	const mockJwt = await makeMockGoogleOpenIdJwt({
-		clientId: mockClientId,
+		clientId: mockGoogleClientId,
 		date: new Date(now),
 		nonce
 	});

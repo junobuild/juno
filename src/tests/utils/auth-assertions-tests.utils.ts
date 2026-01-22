@@ -10,7 +10,7 @@ import {
 	LOG_SALT_ALREADY_INITIALIZED,
 	LOG_SALT_INITIALIZED
 } from '../constants/auth-tests.constants';
-import { mockClientId } from '../mocks/jwt.mocks';
+import { mockGoogleClientId } from '../mocks/jwt.mocks';
 import { fetchLogs } from './mgmt-tests.utils';
 
 /* eslint-disable vitest/require-top-level-describe */
@@ -348,7 +348,7 @@ export const testAuthGoogleConfig = ({
 						[
 							{ Google: null },
 							{
-								client_id: mockClientId,
+								client_id: mockGoogleClientId,
 								delegation: []
 							}
 						]
@@ -367,7 +367,7 @@ export const testAuthGoogleConfig = ({
 			([key]) => 'Google' in key
 		)?.[1];
 
-		expect(google?.client_id).toEqual(mockClientId);
+		expect(google?.client_id).toEqual(mockGoogleClientId);
 
 		await assertLog(LOG_SALT_INITIALIZED);
 	});
@@ -405,7 +405,7 @@ export const testAuthGoogleConfig = ({
 						[
 							{ Google: null },
 							{
-								client_id: mockClientId,
+								client_id: mockGoogleClientId,
 								delegation: []
 							}
 						]

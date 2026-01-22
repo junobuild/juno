@@ -11,7 +11,7 @@ import { ECDSAKeyIdentity, Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import { JUNO_AUTH_ERROR_NOT_CONFIGURED, JUNO_AUTH_ERROR_OPENID_DISABLED } from '@junobuild/errors';
 import { GOOGLE_OPEN_ID_PROVIDER } from '../constants/auth-tests.constants';
 import { OBSERVATORY_ID } from '../constants/observatory-tests.constants';
-import { mockCertificateDate, mockClientId } from '../mocks/jwt.mocks';
+import { mockCertificateDate, mockGoogleClientId } from '../mocks/jwt.mocks';
 import { generateNonce } from './auth-nonce-tests.utils';
 import { assembleJwt } from './jwt-assemble-tests.utils';
 import { makeMockGoogleOpenIdJwt, type MockOpenIdJwt } from './jwt-tests.utils';
@@ -66,7 +66,7 @@ export const testAuthGetDelegation = ({
 
 		describe('should fail without configuration', async () => {
 			const { jwt } = await makeMockGoogleOpenIdJwt({
-				clientId: mockClientId,
+				clientId: mockGoogleClientId,
 				date: mockCertificateDate,
 				nonce
 			});
@@ -128,7 +128,7 @@ export const testAuthGetDelegation = ({
 								[
 									{ Google: null },
 									{
-										client_id: mockClientId,
+										client_id: mockGoogleClientId,
 										delegation: []
 									}
 								]
@@ -151,7 +151,7 @@ export const testAuthGetDelegation = ({
 				it('get_delegation returns GetCachedJwks if JWKS not cached yet', async () => {
 					const now = await pic.getTime();
 					const { jwt } = await makeMockGoogleOpenIdJwt({
-						clientId: mockClientId,
+						clientId: mockGoogleClientId,
 						date: new Date(now),
 						nonce
 					});
@@ -188,7 +188,7 @@ export const testAuthGetDelegation = ({
 					const now = await pic.getTime();
 
 					const { jwks, jwt } = await makeMockGoogleOpenIdJwt({
-						clientId: mockClientId,
+						clientId: mockGoogleClientId,
 						date: new Date(now),
 						nonce
 					});
@@ -222,7 +222,7 @@ export const testAuthGetDelegation = ({
 
 					const now = await pic.getTime();
 					const minted = await makeMockGoogleOpenIdJwt({
-						clientId: mockClientId,
+						clientId: mockGoogleClientId,
 						date: new Date(now),
 						nonce
 					});
@@ -356,7 +356,7 @@ export const testAuthGetDelegation = ({
 				it('should map MissingKid (bad header) in get_delegation', async () => {
 					const now = await pic.getTime();
 					const { payload } = await makeMockGoogleOpenIdJwt({
-						clientId: mockClientId,
+						clientId: mockGoogleClientId,
 						date: new Date(now),
 						nonce
 					});

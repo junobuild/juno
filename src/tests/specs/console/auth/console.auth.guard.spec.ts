@@ -3,7 +3,7 @@ import type { Actor, PocketIc } from '@dfinity/pic';
 import { AnonymousIdentity } from '@icp-sdk/core/agent';
 import { ECDSAKeyIdentity, Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import { ANONYMOUS_ERROR_MSG } from '../../../constants/console-tests.constants';
-import { mockClientId } from '../../../mocks/jwt.mocks';
+import { mockGoogleClientId } from '../../../mocks/jwt.mocks';
 import { generateNonce } from '../../../utils/auth-nonce-tests.utils';
 import { setupConsole } from '../../../utils/console-tests.utils';
 import { makeMockGoogleOpenIdJwt } from '../../../utils/jwt-tests.utils';
@@ -36,7 +36,7 @@ describe('Console > Authentication > Guard', () => {
 		const generateJwt = async (): Promise<string> => {
 			const now = await pic.getTime();
 			const { jwt } = await makeMockGoogleOpenIdJwt({
-				clientId: mockClientId,
+				clientId: mockGoogleClientId,
 				date: new Date(now),
 				nonce
 			});

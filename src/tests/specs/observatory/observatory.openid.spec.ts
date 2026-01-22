@@ -3,7 +3,7 @@ import { type Actor, PocketIc } from '@dfinity/pic';
 import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import { inject } from 'vitest';
 import { GOOGLE_OPEN_ID_PROVIDER } from '../../constants/auth-tests.constants';
-import { mockCertificateDate, mockClientId } from '../../mocks/jwt.mocks';
+import { mockCertificateDate, mockGoogleClientId } from '../../mocks/jwt.mocks';
 import { FETCH_CERTIFICATE_INTERVAL } from '../../mocks/observatory.mocks';
 import { makeMockGoogleOpenIdJwt } from '../../utils/jwt-tests.utils';
 import {
@@ -22,7 +22,7 @@ describe('Observatory > OpenId', async () => {
 	const controller = Ed25519KeyIdentity.generate();
 
 	const { jwks: mockJwks } = await makeMockGoogleOpenIdJwt({
-		clientId: mockClientId,
+		clientId: mockGoogleClientId,
 		date: mockCertificateDate
 	});
 

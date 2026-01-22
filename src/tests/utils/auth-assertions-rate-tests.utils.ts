@@ -1,7 +1,7 @@
 import type { ConsoleActor, SatelliteActor } from '$declarations';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import { ECDSAKeyIdentity, Ed25519KeyIdentity } from '@icp-sdk/core/identity';
-import { mockClientId } from '../mocks/jwt.mocks';
+import { mockGoogleClientId } from '../mocks/jwt.mocks';
 import { generateNonce } from './auth-nonce-tests.utils';
 import { makeMockGoogleOpenIdJwt } from './jwt-tests.utils';
 import { assertOpenIdHttpsOutcalls } from './observatory-openid-tests.utils';
@@ -48,7 +48,7 @@ export const testAuthRate = ({
 			const now = await pic.getTime();
 
 			const { jwks, jwt } = await makeMockGoogleOpenIdJwt({
-				clientId: mockClientId,
+				clientId: mockGoogleClientId,
 				date: new Date(now),
 				nonce,
 				kid

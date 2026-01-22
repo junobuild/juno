@@ -434,17 +434,19 @@ export const testAuthOpenIdConfig = ({
 					observatory_id: []
 				}
 			],
-			version: [version + 1n]
+			version: [version + 3n]
 		};
 
 		await set_auth_config(config);
 
 		const updatedConfig = await get_auth_config();
 
+		expect(fromNullable(fromNullable(updatedConfig)?.openid ?? [])?.providers).toHaveLength(2);
+
 		const github = fromNullable(fromNullable(updatedConfig)?.openid ?? [])?.providers.find(
 			([key]) => 'GitHub' in key
-		);
+		)?.[1];
 
-		expect(github).toBeUndefined();
+		expect(github?.client_id).toEqual(mockGitHubClientId);
 	});
 };

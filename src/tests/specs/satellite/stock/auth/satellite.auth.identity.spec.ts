@@ -21,7 +21,7 @@ describe('Satellite > Auth > Delegation identity', () => {
 			satellite: { actor },
 			testSatellite: { actor: tActor },
 			session: s
-		} = await setupSatelliteAuth();
+		} = await setupSatelliteAuth({ withGitHub: true });
 
 		pic = p;
 		satelliteActor = actor;
@@ -45,5 +45,38 @@ describe('Satellite > Auth > Delegation identity', () => {
 			testSatelliteActor,
 			identity
 		});
+	});
+
+	it('should authenticate with GitHub, get delegation and use identity to perform a call', async () => {
+		const { identity } = await authenticateAndMakeIdentity({
+			pic,
+			session,
+			actor: satelliteActor,
+			method: 'github'
+		});
+
+		await assertIdentity({
+			testSatelliteActor,
+			identity
+		});
+	});
+
+	it('should authenticate with different identities', async () => {
+		const { identity: googleIdentity } = await authenticateAndMakeIdentity({
+			pic,
+			session,
+			actor: satelliteActor
+		});
+
+		const { identity: githubIdentity } = await authenticateAndMakeIdentity({
+			pic,
+			session,
+			actor: satelliteActor,
+			method: 'github'
+		});
+
+		expect(googleIdentity.getPrincipal().toText()).not.equal(
+			githubIdentity.getPrincipal().toText()
+		);
 	});
 });

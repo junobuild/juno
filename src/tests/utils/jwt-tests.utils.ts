@@ -12,22 +12,15 @@ export interface MockOpenIdJwt {
 
 export const makeMockGoogleOpenIdJwt = async ({
 	clientId,
-	date,
 	nonce,
-	kid
+	date,
+	...rest
 }: {
 	clientId: string;
 	date: Date;
 	nonce?: string;
 	kid?: string;
 }): Promise<MockOpenIdJwt> => {
-	const { publicKey, privateKey } = await generateKeyPair('RS256');
-
-	const pubJwk = await exportJWK(publicKey);
-	pubJwk.kty = 'RSA';
-	pubJwk.alg = 'RS256';
-	pubJwk.kid = kid ?? nanoid();
-
 	const timestamp = Math.floor(date.getTime() / 1000);
 
 	const payload = {
@@ -38,12 +31,62 @@ export const makeMockGoogleOpenIdJwt = async ({
 		name: 'Hello World',
 		given_name: 'Hello',
 		family_name: 'World',
+		aud: clientId,
+		iat: timestamp - 10,
+		exp: timestamp + 3600,
+		nonce
+	} as const;
+
+	return await makeMockOpenIdJwt({
+		payload,
+		...rest
+	});
+};
+
+export const makeMockGitHubOpenIdJwt = async ({
+	clientId,
+	nonce,
+	date,
+	...rest
+}: {
+	clientId: string;
+	date: Date;
+	nonce?: string;
+	kid?: string;
+}): Promise<MockOpenIdJwt> => {
+	const timestamp = Math.floor(date.getTime() / 1000);
+
+	const payload = {
+		iss: 'https://api.juno.build/auth/github',
+		sub: '44445678901555578901',
+		email: 'user@example.com',
+		name: 'Hello World',
 		preferred_username: 'helloworld',
 		aud: clientId,
 		iat: timestamp - 10,
 		exp: timestamp + 3600,
 		nonce
 	} as const;
+
+	return await makeMockOpenIdJwt({
+		payload,
+		...rest
+	});
+};
+
+const makeMockOpenIdJwt = async ({
+	kid,
+	payload
+}: {
+	kid?: string;
+	payload: Required<Omit<JWTPayload, 'jti' | 'nbf'>>;
+}): Promise<MockOpenIdJwt> => {
+	const { publicKey, privateKey } = await generateKeyPair('RS256');
+
+	const pubJwk = await exportJWK(publicKey);
+	pubJwk.kty = 'RSA';
+	pubJwk.alg = 'RS256';
+	pubJwk.kid = kid ?? nanoid();
 
 	const jwt = await makeJwt({
 		privateKey,

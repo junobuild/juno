@@ -10,7 +10,7 @@ import { toNullable } from '@dfinity/utils';
 import { ECDSAKeyIdentity, Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import type { Principal } from '@icp-sdk/core/principal';
 import { GOOGLE_OPEN_ID_PROVIDER } from '../constants/auth-tests.constants';
-import { mockClientId } from '../mocks/jwt.mocks';
+import { mockGoogleClientId } from '../mocks/jwt.mocks';
 import { generateNonce } from './auth-nonce-tests.utils';
 import { makeMockGoogleOpenIdJwt } from './jwt-tests.utils';
 import { assertOpenIdHttpsOutcalls } from './observatory-openid-tests.utils';
@@ -61,7 +61,7 @@ export const testAuthConfigObservatory = ({
 							[
 								{ Google: null },
 								{
-									client_id: mockClientId,
+									client_id: mockGoogleClientId,
 									delegation: []
 								}
 							]
@@ -102,7 +102,7 @@ export const testAuthConfigObservatory = ({
 			const now = await pic.getTime();
 
 			const { jwks, jwt } = await makeMockGoogleOpenIdJwt({
-				clientId: mockClientId,
+				clientId: mockGoogleClientId,
 				date: new Date(now),
 				nonce
 			});

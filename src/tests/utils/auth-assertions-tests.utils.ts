@@ -11,7 +11,7 @@ import {
 	LOG_SALT_ALREADY_INITIALIZED,
 	LOG_SALT_INITIALIZED
 } from '../constants/auth-tests.constants';
-import { mockClientId, mockGitHubClientId } from '../mocks/jwt.mocks';
+import { mockGitHubClientId, mockGoogleClientId } from '../mocks/jwt.mocks';
 import { fetchLogs } from './mgmt-tests.utils';
 
 /* eslint-disable vitest/require-top-level-describe */
@@ -328,7 +328,7 @@ export const testAuthOpenIdConfig = ({
 	const googleConfig: [OpenIdProvider, OpenIdProviderConfig] = [
 		{ Google: null },
 		{
-			client_id: mockClientId,
+			client_id: mockGoogleClientId,
 			delegation: []
 		}
 	];
@@ -376,7 +376,7 @@ export const testAuthOpenIdConfig = ({
 			([key]) => 'Google' in key
 		)?.[1];
 
-		expect(google?.client_id).toEqual(mockClientId);
+		expect(google?.client_id).toEqual(mockGoogleClientId);
 
 		await assertLog(LOG_SALT_INITIALIZED);
 	});

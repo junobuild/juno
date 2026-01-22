@@ -11,7 +11,7 @@ import { ECDSAKeyIdentity, Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import type { Principal } from '@icp-sdk/core/principal';
 import { GOOGLE_OPEN_ID_PROVIDER } from '../constants/auth-tests.constants';
 import { OBSERVATORY_ID } from '../constants/observatory-tests.constants';
-import { mockCertificateDate, mockClientId } from '../mocks/jwt.mocks';
+import { mockCertificateDate, mockGoogleClientId } from '../mocks/jwt.mocks';
 import { generateNonce } from './auth-nonce-tests.utils';
 import { deploySegments, setupConsole } from './console-tests.utils';
 import { setupTestSatellite } from './fixtures-tests.utils';
@@ -149,7 +149,7 @@ const setupAuth = async ({
 		rules: [],
 		openid: [
 			{
-				providers: [[{ Google: null }, { client_id: mockClientId, delegation: [] }]],
+				providers: [[{ Google: null }, { client_id: mockGoogleClientId, delegation: [] }]],
 				observatory_id: []
 			}
 		],

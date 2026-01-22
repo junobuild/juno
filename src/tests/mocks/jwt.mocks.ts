@@ -1,4 +1,4 @@
-export const mockClientId =
+export const mockGoogleClientId =
 	'974645666757-ebfaaau4cesdddqahu83e1qqmmmmdrod.apps.googleusercontent.com';
 
 export const mockGitHubClientId = 'Ov99li11ijaaPCfwVrqW';

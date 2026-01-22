@@ -5,7 +5,7 @@ import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import { inject } from 'vitest';
 import { GOOGLE_OPEN_ID_PROVIDER } from '../../constants/auth-tests.constants';
 import { CALLER_NOT_CONTROLLER_OBSERVATORY_MSG } from '../../constants/observatory-tests.constants';
-import { mockCertificateDate, mockClientId } from '../../mocks/jwt.mocks';
+import { mockCertificateDate, mockGoogleClientId } from '../../mocks/jwt.mocks';
 import { makeMockGoogleOpenIdJwt } from '../../utils/jwt-tests.utils';
 import {
 	assertGetCertificate,
@@ -21,7 +21,7 @@ describe('Observatory > OpenId > Rate', async () => {
 	const controller = Ed25519KeyIdentity.generate();
 
 	const { jwks: mockJwks } = await makeMockGoogleOpenIdJwt({
-		clientId: mockClientId,
+		clientId: mockGoogleClientId,
 		date: mockCertificateDate
 	});
 

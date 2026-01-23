@@ -18,6 +18,8 @@ pub mod state {
         #[serde(rename = "webauthn")]
         WebAuthn,
         Google,
+        #[serde(rename = "github")]
+        GitHub,
     }
 
     #[derive(Serialize, Deserialize, Clone)]

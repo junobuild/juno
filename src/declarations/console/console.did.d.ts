@@ -300,7 +300,7 @@ export interface OpenIdPrepareDelegationArgs {
 	session_key: Uint8Array;
 	salt: Uint8Array;
 }
-export type OpenIdProvider = { Google: null };
+export type OpenIdProvider = { GitHub: null } | { Google: null };
 export interface OpenIdProviderConfig {
 	delegation: [] | [OpenIdProviderDelegationConfig];
 	client_id: string;

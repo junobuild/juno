@@ -18,7 +18,7 @@ describe('Satellite > Auth > User', () => {
 	let mockJwt: MockOpenIdJwt;
 	let mockIdentity: DelegationIdentity;
 
-	const mockUserData = {
+	const mockGoogleUserData = {
 		provider: 'google',
 		banned: null,
 		providerData: {
@@ -27,6 +27,22 @@ describe('Satellite > Auth > User', () => {
 				name: 'Hello World',
 				givenName: 'Hello',
 				familyName: 'World',
+				preferredUsername: null,
+				picture: null,
+				locale: null
+			}
+		}
+	};
+
+	const mockGitHubUserData = {
+		provider: 'github',
+		banned: null,
+		providerData: {
+			openid: {
+				email: 'user@example.com',
+				name: 'Hello World',
+				givenName: null,
+				familyName: null,
 				preferredUsername: 'helloworld',
 				picture: null,
 				locale: null
@@ -39,7 +55,9 @@ describe('Satellite > Auth > User', () => {
 			pic: p,
 			satellite: { actor },
 			session: s
-		} = await setupSatelliteAuth();
+		} = await setupSatelliteAuth({
+			withGitHub: true
+		});
 
 		pic = p;
 		satelliteActor = actor;
@@ -51,107 +69,119 @@ describe('Satellite > Auth > User', () => {
 		await pic?.tearDown();
 	});
 
-	it('should register a new user', async () => {
-		const {
-			identity,
-			doc: user,
-			jwt
-		} = await authenticateAndMakeIdentity<{ doc: Doc }>({
-			pic,
-			session,
-			actor: satelliteActor
-		});
-
-		mockJwt = jwt;
-		mockIdentity = identity;
-
-		expect(user.owner.toText()).toEqual(identity.getPrincipal().toText());
-
-		const data = await fromArray(user.data);
-
-		expect(data).toEqual(mockUserData);
-	});
-
-	it('should return same user', async () => {
-		await pic.advanceTime(1000 * 30); // 30s for cooldown guard
-		await tick(pic);
-
-		const { authenticate } = satelliteActor;
-
-		const result = await authenticate({
-			OpenId: {
-				jwt: mockJwt.jwt,
-				session_key: session.publicKey,
-				salt: session.salt
-			}
-		});
-
-		if (!('Ok' in result)) {
-			expect(true).toBeFalsy();
-
-			return;
+	describe.each([
+		{
+			method: 'google',
+			userData: mockGoogleUserData
+		},
+		{
+			method: 'github',
+			userData: mockGitHubUserData
 		}
+	])('With method $method', ({ method, userData }) => {
+		it('should register a new user', async () => {
+			const {
+				identity,
+				doc: user,
+				jwt
+			} = await authenticateAndMakeIdentity<{ doc: Doc }>({
+				pic,
+				session,
+				actor: satelliteActor,
+				method: method as 'google' | 'github'
+			});
 
-		const { doc: user } = result.Ok;
+			mockJwt = jwt;
+			mockIdentity = identity;
 
-		expect(user.owner.toText()).toEqual(mockIdentity.getPrincipal().toText());
+			expect(user.owner.toText()).toEqual(identity.getPrincipal().toText());
 
-		const data = await fromArray(user.data);
+			const data = await fromArray(user.data);
 
-		expect(data).toEqual(mockUserData);
-	});
-
-	it('should update user data', async () => {
-		await pic.advanceTime(1000 * 30); // 30s for cooldown guard
-		await tick(pic);
-
-		const updatePayload = {
-			...mockJwt.payload,
-			name: 'Super Duper',
-			given_name: 'Super',
-			family_name: 'Duper',
-			email: 'test@test1.com'
-		};
-
-		const newJwt = await makeJwt({
-			payload: updatePayload,
-			pubJwk: mockJwt.pubJwk,
-			privateKey: mockJwt.privateKey
+			expect(data).toEqual(userData);
 		});
 
-		const { authenticate } = satelliteActor;
+		it('should return same user', async () => {
+			await pic.advanceTime(1000 * 30); // 30s for cooldown guard
+			await tick(pic);
 
-		const result = await authenticate({
-			OpenId: {
-				jwt: newJwt,
-				session_key: session.publicKey,
-				salt: session.salt
-			}
-		});
+			const { authenticate } = satelliteActor;
 
-		if (!('Ok' in result)) {
-			expect(true).toBeFalsy();
-
-			return;
-		}
-
-		const { doc: user } = result.Ok;
-
-		expect(user.owner.toText()).toEqual(mockIdentity.getPrincipal().toText());
-
-		const data = await fromArray(user.data);
-
-		expect(data).toEqual({
-			...mockUserData,
-			providerData: {
-				openid: {
-					...mockUserData.providerData.openid,
-					name: updatePayload.name,
-					givenName: updatePayload.given_name,
-					familyName: updatePayload.family_name,
-					email: updatePayload.email
+			const result = await authenticate({
+				OpenId: {
+					jwt: mockJwt.jwt,
+					session_key: session.publicKey,
+					salt: session.salt
 				}
+			});
+
+			if (!('Ok' in result)) {
+				expect(true).toBeFalsy();
+
+				return;
 			}
+
+			const { doc: user } = result.Ok;
+
+			expect(user.owner.toText()).toEqual(mockIdentity.getPrincipal().toText());
+
+			const data = await fromArray(user.data);
+
+			expect(data).toEqual(userData);
+		});
+
+		it('should update user data', async () => {
+			await pic.advanceTime(1000 * 30); // 30s for cooldown guard
+			await tick(pic);
+
+			const updatePayload = {
+				...mockJwt.payload,
+				name: 'Super Duper',
+				given_name: 'Super',
+				family_name: 'Duper',
+				email: 'test@test1.com'
+			};
+
+			const newJwt = await makeJwt({
+				payload: updatePayload,
+				pubJwk: mockJwt.pubJwk,
+				privateKey: mockJwt.privateKey
+			});
+
+			const { authenticate } = satelliteActor;
+
+			const result = await authenticate({
+				OpenId: {
+					jwt: newJwt,
+					session_key: session.publicKey,
+					salt: session.salt
+				}
+			});
+
+			if (!('Ok' in result)) {
+				expect(true).toBeFalsy();
+
+				return;
+			}
+
+			const { doc: user } = result.Ok;
+
+			expect(user.owner.toText()).toEqual(mockIdentity.getPrincipal().toText());
+
+			const data = await fromArray(user.data);
+
+			expect(data).toEqual({
+				...userData,
+				providerData: {
+					openid: {
+						...userData.providerData.openid,
+						name: updatePayload.name,
+						givenName: updatePayload.given_name,
+						familyName: updatePayload.family_name,
+						email: updatePayload.email
+					}
+				}
+			});
 		});
 	});
 });

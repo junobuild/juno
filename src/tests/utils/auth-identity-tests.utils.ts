@@ -10,9 +10,13 @@ import {
 	type ECDSAKeyIdentity,
 	type SignedDelegation
 } from '@icp-sdk/core/identity';
-import { mockGoogleClientId } from '../mocks/jwt.mocks';
+import { mockGitHubClientId, mockGoogleClientId } from '../mocks/jwt.mocks';
 import type { TestSession } from './auth-tests.utils';
-import { makeMockGoogleOpenIdJwt, type MockOpenIdJwt } from './jwt-tests.utils';
+import {
+	makeMockGitHubOpenIdJwt,
+	makeMockGoogleOpenIdJwt,
+	type MockOpenIdJwt
+} from './jwt-tests.utils';
 import { assertOpenIdHttpsOutcalls } from './observatory-openid-tests.utils';
 import { tick } from './pic-tests.utils';
 
@@ -22,11 +26,13 @@ type Delegations = [UserKey, SignedDelegation[]];
 export const authenticateAndMakeIdentity = async <R>({
 	pic,
 	session: { sessionKey, nonce, publicKey, salt },
-	actor
+	actor,
+	method = 'google'
 }: {
 	pic: PocketIc;
 	session: TestSession;
 	actor: Actor<SatelliteActor | ConsoleActor>;
+	method?: 'google' | 'github';
 }): Promise<
 	{
 		identity: DelegationIdentity;
@@ -39,15 +45,17 @@ export const authenticateAndMakeIdentity = async <R>({
 
 	const now = await pic.getTime();
 
-	const mockJwt = await makeMockGoogleOpenIdJwt({
-		clientId: mockGoogleClientId,
+	const fn = method === 'github' ? makeMockGitHubOpenIdJwt : makeMockGoogleOpenIdJwt;
+
+	const mockJwt = await fn({
+		clientId: method === 'github' ? mockGitHubClientId : mockGoogleClientId,
 		date: new Date(now),
 		nonce
 	});
 
 	const { jwks, jwt } = mockJwt;
 
-	await assertOpenIdHttpsOutcalls({ pic, jwks });
+	await assertOpenIdHttpsOutcalls({ pic, jwks, method });
 
 	const { authenticate, get_delegation } = actor;
 

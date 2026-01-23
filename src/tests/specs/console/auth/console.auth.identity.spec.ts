@@ -21,7 +21,10 @@ describe('Satellite > Auth > Delegation identity', () => {
 			console: { actor },
 			testSatellite: { actor: tActor },
 			session: s
-		} = await setupConsoleAuth();
+		} = await setupConsoleAuth({
+			withApplyRateTokens: true,
+			withGitHub: true
+		});
 
 		pic = p;
 		consoleActor = actor;
@@ -34,7 +37,7 @@ describe('Satellite > Auth > Delegation identity', () => {
 		await pic?.tearDown();
 	});
 
-	it('should authenticate, get delegation and use identity to perform a call', async () => {
+	it('should authenticate with Google, get delegation and use identity to perform a call', async () => {
 		const { identity } = await authenticateAndMakeIdentity({
 			pic,
 			session,
@@ -45,5 +48,38 @@ describe('Satellite > Auth > Delegation identity', () => {
 			testSatelliteActor,
 			identity
 		});
+	});
+
+	it('should authenticate with GitHub, get delegation and use identity to perform a call', async () => {
+		const { identity } = await authenticateAndMakeIdentity({
+			pic,
+			session,
+			actor: consoleActor,
+			method: 'github'
+		});
+
+		await assertIdentity({
+			testSatelliteActor,
+			identity
+		});
+	});
+
+	it('should authenticate with different identities', async () => {
+		const { identity: googleIdentity } = await authenticateAndMakeIdentity({
+			pic,
+			session,
+			actor: consoleActor
+		});
+
+		const { identity: githubIdentity } = await authenticateAndMakeIdentity({
+			pic,
+			session,
+			actor: consoleActor,
+			method: 'github'
+		});
+
+		expect(googleIdentity.getPrincipal().toText()).not.equal(
+			githubIdentity.getPrincipal().toText()
+		);
 	});
 });

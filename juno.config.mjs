@@ -25,5 +25,10 @@ export default defineConsoleConfig(({ mode }) => ({
 				delegation
 			}
 		}
+	}),
+	...(mode === 'development' && {
+		api: {
+			url: 'http://localhost:3000'
+		}
 	})
 }));

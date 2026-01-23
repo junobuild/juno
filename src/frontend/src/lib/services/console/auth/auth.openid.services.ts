@@ -14,8 +14,13 @@ import { authStore } from '$lib/stores/auth.store';
 import type { SignInOpenIdProvider } from '$lib/types/auth';
 import { SignInInitError } from '$lib/types/errors';
 import { container } from '$lib/utils/juno.utils';
-import { isNullish } from '@dfinity/utils';
-import { authenticate, requestJwt } from '@junobuild/auth';
+import { isNullish, nonNullish } from '@dfinity/utils';
+import {
+	authenticate,
+	type AuthenticationGitHubRedirect,
+	type RequestGitHubJwtRedirect,
+	requestJwt
+} from '@junobuild/auth';
 import { get } from 'svelte/store';
 
 export const signInWithGoogle = async () => {
@@ -26,18 +31,26 @@ export const signInWithGoogle = async () => {
 };
 
 export const signInWithGitHub = async () => {
-	await signInWithOpenId({
+	const JUNO_API_URL = import.meta.env.VITE_JUNO_API_URL;
+
+	await signInWithOpenId<Pick<RequestGitHubJwtRedirect, 'initUrl'>>({
 		clientId: GITHUB_CLIENT_ID,
-		provider: 'github'
+		provider: 'github',
+		...(nonNullish(JUNO_API_URL) && {
+			extraArgs: {
+				initUrl: `${JUNO_API_URL}/v1/auth/init/github`
+			}
+		})
 	});
 };
 
-interface SignInWithOpenIdParams {
-	provider: SignInOpenIdProvider;
+interface SignInWithOpenIdParams<T> {
 	clientId: string | undefined;
+	provider: SignInOpenIdProvider;
+	extraArgs?: T;
 }
 
-const signInWithOpenId = async (params: SignInWithOpenIdParams) => {
+const signInWithOpenId = async <T>(params: SignInWithOpenIdParams<T>) => {
 	try {
 		saveAuthNavOrigin();
 
@@ -52,7 +65,11 @@ const signInWithOpenId = async (params: SignInWithOpenIdParams) => {
 	}
 };
 
-const signInWithOpenIdFn = async ({ clientId, provider }: SignInWithOpenIdParams) => {
+const signInWithOpenIdFn = async <T>({
+	clientId,
+	provider,
+	extraArgs
+}: SignInWithOpenIdParams<T>) => {
 	if (isNullish(clientId)) {
 		throw new SignInInitError(
 			'Sign-in cannot be initialized because the associated client ID is not configured.'
@@ -66,7 +83,8 @@ const signInWithOpenIdFn = async ({ clientId, provider }: SignInWithOpenIdParams
 	const payload = {
 		redirect: {
 			clientId,
-			redirectUrl: `${origin}/auth/callback/${provider}`
+			redirectUrl: `${origin}/auth/callback/${provider}`,
+			...(extraArgs ?? {})
 		}
 	};
 
@@ -81,9 +99,12 @@ const signInWithOpenIdFn = async ({ clientId, provider }: SignInWithOpenIdParams
 	);
 };
 
-const authenticateWithOpenID = async ({ provider }: { provider: SignInOpenIdProvider }) => {
+type AuthenticateWithOpenIdRedirectParams =
+	| { github: AuthenticationGitHubRedirect | null }
+	| { google: null };
+
+const authenticateWithOpenID = async (params: AuthenticateWithOpenIdRedirectParams) => {
 	const payload = {
-		redirect: null,
 		auth: {
 			console: {
 				consoleId: CONSOLE_CANISTER_ID,
@@ -95,12 +116,18 @@ const authenticateWithOpenID = async ({ provider }: { provider: SignInOpenIdProv
 	const {
 		identity: { delegationChain, sessionKey }
 	} = await authenticate(
-		provider === 'github'
+		'github' in params
 			? {
-					github: payload
+					github: {
+						redirect: params.github,
+						...payload
+					}
 				}
 			: {
-					google: payload
+					google: {
+						redirect: null,
+						...payload
+					}
 				}
 	);
 
@@ -119,7 +146,23 @@ export const handleRedirectCallback = async ({
 	err?: unknown;
 }> => {
 	try {
-		const signInFn = async () => await authenticateWithOpenID({ provider });
+		const buildRedirect = (): AuthenticateWithOpenIdRedirectParams => {
+			if (provider === 'google') {
+				return { google: null };
+			}
+
+			const JUNO_API_URL = import.meta.env.VITE_JUNO_API_URL;
+
+			return {
+				github: nonNullish(JUNO_API_URL)
+					? {
+							finalizeUrl: `${JUNO_API_URL}/v1/auth/finalize/github`
+						}
+					: null
+			};
+		};
+
+		const signInFn = async () => await authenticateWithOpenID(buildRedirect());
 
 		await authStore.signInWithOpenId({ signInFn });
 

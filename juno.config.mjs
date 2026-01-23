@@ -21,7 +21,7 @@ export default defineConsoleConfig(({ mode }) => ({
 				delegation
 			},
 			github: {
-				clientId: mode === 'production' ? 'Ov23liIUalBLa1J9uj4d' : 'Ov23li92ijrrPEfwUrqW',
+				clientId: mode === 'production' ? 'Iv23lic7FAv9q1Zc5o47' : 'Iv23libmVo4gQakcmYDv',
 				delegation
 			}
 		}

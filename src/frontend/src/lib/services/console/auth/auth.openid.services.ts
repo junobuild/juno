@@ -1,4 +1,8 @@
-import { CONSOLE_CANISTER_ID, GOOGLE_CLIENT_ID } from '$lib/constants/app.constants';
+import {
+	CONSOLE_CANISTER_ID,
+	GITHUB_CLIENT_ID,
+	GOOGLE_CLIENT_ID
+} from '$lib/constants/app.constants';
 import { AuthClientProvider } from '$lib/providers/auth-client.provider';
 import {
 	clearAuthNavOrigin,
@@ -7,17 +11,50 @@ import {
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
 import { authStore } from '$lib/stores/auth.store';
+import type { SignInOpenIdProvider } from '$lib/types/auth';
 import { SignInInitError } from '$lib/types/errors';
 import { container } from '$lib/utils/juno.utils';
-import { isNullish } from '@dfinity/utils';
-import { authenticate, requestJwt } from '@junobuild/auth';
+import { isNullish, nonNullish } from '@dfinity/utils';
+import {
+	authenticate,
+	type AuthenticationGitHubRedirect,
+	type RequestGitHubJwtRedirect,
+	requestJwt
+} from '@junobuild/auth';
 import { get } from 'svelte/store';
 
 export const signInWithGoogle = async () => {
+	await signInWithOpenId({
+		clientId: GOOGLE_CLIENT_ID,
+		provider: 'google'
+	});
+};
+
+export const signInWithGitHub = async () => {
+	const JUNO_API_URL = import.meta.env.VITE_JUNO_API_URL;
+
+	await signInWithOpenId<Pick<RequestGitHubJwtRedirect, 'initUrl'>>({
+		clientId: GITHUB_CLIENT_ID,
+		provider: 'github',
+		...(nonNullish(JUNO_API_URL) && {
+			extraArgs: {
+				initUrl: `${JUNO_API_URL}/v1/auth/init/github`
+			}
+		})
+	});
+};
+
+interface SignInWithOpenIdParams<T> {
+	clientId: string | undefined;
+	provider: SignInOpenIdProvider;
+	extraArgs?: T;
+}
+
+const signInWithOpenId = async <T>(params: SignInWithOpenIdParams<T>) => {
 	try {
 		saveAuthNavOrigin();
 
-		await signInWithGoogleFn();
+		await signInWithOpenIdFn(params);
 	} catch (err: unknown) {
 		clearAuthNavOrigin();
 
@@ -28,10 +65,14 @@ export const signInWithGoogle = async () => {
 	}
 };
 
-const signInWithGoogleFn = async () => {
-	if (isNullish(GOOGLE_CLIENT_ID)) {
+const signInWithOpenIdFn = async <T>({
+	clientId,
+	provider,
+	extraArgs
+}: SignInWithOpenIdParams<T>) => {
+	if (isNullish(clientId)) {
 		throw new SignInInitError(
-			'Google sign-in cannot be initialized because GOOGLE_CLIENT_ID is not configured.'
+			'Sign-in cannot be initialized because the associated client ID is not configured.'
 		);
 	}
 
@@ -39,30 +80,56 @@ const signInWithGoogleFn = async () => {
 		location: { origin }
 	} = window;
 
-	await requestJwt({
-		google: {
-			redirect: {
-				clientId: GOOGLE_CLIENT_ID,
-				redirectUrl: `${origin}/auth/callback/google`
-			}
+	const payload = {
+		redirect: {
+			clientId,
+			redirectUrl: `${origin}/auth/callback/${provider}`,
+			...(extraArgs ?? {})
 		}
-	});
+	};
+
+	await requestJwt(
+		provider === 'github'
+			? {
+					github: payload
+				}
+			: {
+					google: payload
+				}
+	);
 };
 
-const authenticateWithOpenID = async () => {
-	const {
-		identity: { delegationChain, sessionKey }
-	} = await authenticate({
-		google: {
-			redirect: null,
-			auth: {
-				console: {
-					consoleId: CONSOLE_CANISTER_ID,
-					...container()
-				}
+type AuthenticateWithOpenIdRedirectParams =
+	| { github: AuthenticationGitHubRedirect | null }
+	| { google: null };
+
+const authenticateWithOpenID = async (params: AuthenticateWithOpenIdRedirectParams) => {
+	const payload = {
+		auth: {
+			console: {
+				consoleId: CONSOLE_CANISTER_ID,
+				...container()
 			}
 		}
-	});
+	};
+
+	const {
+		identity: { delegationChain, sessionKey }
+	} = await authenticate(
+		'github' in params
+			? {
+					github: {
+						redirect: params.github,
+						...payload
+					}
+				}
+			: {
+					google: {
+						redirect: null,
+						...payload
+					}
+				}
+	);
 
 	await AuthClientProvider.getInstance().setAuthClientStorage({
 		delegationChain,
@@ -70,12 +137,34 @@ const authenticateWithOpenID = async () => {
 	});
 };
 
-export const handleRedirectCallback = async (): Promise<{
+export const handleRedirectCallback = async ({
+	provider
+}: {
+	provider: SignInOpenIdProvider;
+}): Promise<{
 	result: 'ok' | 'error';
 	err?: unknown;
 }> => {
 	try {
-		await authStore.signInWithOpenId({ signInFn: authenticateWithOpenID });
+		const buildRedirect = (): AuthenticateWithOpenIdRedirectParams => {
+			if (provider === 'google') {
+				return { google: null };
+			}
+
+			const JUNO_API_URL = import.meta.env.VITE_JUNO_API_URL;
+
+			return {
+				github: nonNullish(JUNO_API_URL)
+					? {
+							finalizeUrl: `${JUNO_API_URL}/v1/auth/finalize/github`
+						}
+					: null
+			};
+		};
+
+		const signInFn = async () => await authenticateWithOpenID(buildRedirect());
+
+		await authStore.signInWithOpenId({ signInFn });
 
 		return { result: 'ok' };
 	} catch (err: unknown) {

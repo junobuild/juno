@@ -43,6 +43,8 @@ export const CYCLES_INDEX_CANISTER_ID = 'ul4oc-4iaaa-aaaaq-qaabq-cai';
 export const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 export const GITHUB_CLIENT_ID = import.meta.env.VITE_GITHUB_CLIENT_ID;
 
+export const JUNO_API_URL = import.meta.env.VITE_JUNO_API_URL;
+
 /**
  * Revoked principals that must not be used.
  *

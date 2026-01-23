@@ -73,7 +73,7 @@ const buildConfig = async () => {
 					}
 				];
 
-	const providers = [...buildGoogleProviderConfig(), ...buildGitHubProviderConfig()];
+	const providers = [buildGoogleProviderConfig(), buildGitHubProviderConfig()];
 
 	return {
 		internet_identity: [],

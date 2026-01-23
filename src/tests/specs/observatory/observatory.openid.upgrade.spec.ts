@@ -4,7 +4,10 @@ import { fromNullable } from '@dfinity/utils';
 import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import type { Principal } from '@icp-sdk/core/principal';
 import { inject } from 'vitest';
-import { GOOGLE_OPEN_ID_PROVIDER } from '../../constants/auth-tests.constants';
+import {
+	GITHUB_OPEN_ID_PROVIDER,
+	GOOGLE_OPEN_ID_PROVIDER
+} from '../../constants/auth-tests.constants';
 import { mockCertificateDate, mockGoogleClientId } from '../../mocks/jwt.mocks';
 import { FETCH_CERTIFICATE_INTERVAL } from '../../mocks/observatory.mocks';
 import { makeMockGoogleOpenIdJwt } from '../../utils/jwt-tests.utils';
@@ -67,7 +70,16 @@ describe('Observatory > OpenId > Upgrade', async () => {
 		expect(fromNullable(cert)).toBeUndefined();
 	};
 
-	describe('Google certificate', () => {
+	describe.each([
+		{
+			title: 'Google',
+			provider: GOOGLE_OPEN_ID_PROVIDER
+		},
+		{
+			title: 'Github',
+			provider: GITHUB_OPEN_ID_PROVIDER
+		}
+	])('$title', ({ provider }) => {
 		it('should not start monitoring after upgrade if never stopped', async () => {
 			await upgradeCurrent();
 
@@ -79,7 +91,7 @@ describe('Observatory > OpenId > Upgrade', async () => {
 		it('should not start monitoring after upgrade if stopped', async () => {
 			const { start_openid_monitoring, stop_openid_monitoring } = actor;
 
-			await start_openid_monitoring(GOOGLE_OPEN_ID_PROVIDER);
+			await start_openid_monitoring(provider);
 
 			// HTTPs outcalls after stat
 			await assertOpenIdHttpsOutcalls({ pic, jwks: mockJwks });
@@ -87,7 +99,7 @@ describe('Observatory > OpenId > Upgrade', async () => {
 			await pic.advanceTime(1000);
 			await tick(pic);
 
-			await stop_openid_monitoring(GOOGLE_OPEN_ID_PROVIDER);
+			await stop_openid_monitoring(provider);
 
 			await pic.advanceTime(FETCH_CERTIFICATE_INTERVAL + 1000);
 
@@ -106,7 +118,7 @@ describe('Observatory > OpenId > Upgrade', async () => {
 		it('should still hold certificate after upgrade', async () => {
 			const { start_openid_monitoring } = actor;
 
-			await start_openid_monitoring(GOOGLE_OPEN_ID_PROVIDER);
+			await start_openid_monitoring(provider);
 
 			// HTTPs outcalls after stat
 			await assertOpenIdHttpsOutcalls({ pic, jwks: mockJwks });
@@ -125,7 +137,7 @@ describe('Observatory > OpenId > Upgrade', async () => {
 		it('should restart monitoring after upgrade if running', async () => {
 			const { start_openid_monitoring } = actor;
 
-			await start_openid_monitoring(GOOGLE_OPEN_ID_PROVIDER);
+			await start_openid_monitoring(provider);
 
 			// HTTPs outcalls after stat
 			await assertOpenIdHttpsOutcalls({ pic, jwks: mockJwks });

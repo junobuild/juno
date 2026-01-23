@@ -30,69 +30,63 @@ const buildConfig = async () => {
 	}
 
 	const {
-		authentication: { google }
+		authentication: { google, github }
 	} = config;
 
-	if (isNullish(google)) {
-		console.error('No Google authentication configuration found.');
+	if (isNullish(google) && isNullish(github)) {
+		console.error('No Google or GitHub authentication configuration found.');
 		process.exit(1);
 	}
 
-	const googleProviderConfig = [
-		{ Google: null },
-		{
-			client_id: google.clientId,
-			delegation: isNullish(google.delegation)
-				? []
-				: [
-						{
-							targets:
-								google.delegation.allowedTargets === null
-									? []
-									: [
-											(google.delegation.allowedTargets ?? [])?.map((target) =>
-												Principal.fromText(target)
-											)
-										],
-							max_time_to_live: toNullable(google.delegation.sessionDuration)
-						}
-					]
-		}
-	];
+	const buildDelegation = (delegation) =>
+		isNullish(delegation)
+			? []
+			: [
+					{
+						targets:
+							delegation.allowedTargets === null
+								? []
+								: [(delegation.allowedTargets ?? [])?.map((target) => Principal.fromText(target))],
+						max_time_to_live: toNullable(delegation.sessionDuration)
+					}
+				];
 
-	// TODO: juno.config and client id and delegation and targets and maxe_tim_to_live
-	const githubProviderConfig = [
-		{ GitHub: null },
-		{
-			client_id: 'Ov23li92ijrrPEfwUrqW',
-			delegation: isNullish(google.delegation)
-				? []
-				: [
-						{
-							targets:
-								google.delegation.allowedTargets === null
-									? []
-									: [
-											(google.delegation.allowedTargets ?? [])?.map((target) =>
-												Principal.fromText(target)
-											)
-										],
-							max_time_to_live: toNullable(google.delegation.sessionDuration)
-						}
-					]
-		}
-	];
+	const buildGoogleProviderConfig = () =>
+		isNullish(google)
+			? []
+			: [
+					{ Google: null },
+					{
+						client_id: google.clientId,
+						delegation: buildDelegation(google.delegation)
+					}
+				];
+
+	const buildGitHubProviderConfig = () =>
+		isNullish(github)
+			? []
+			: [
+					{ GitHub: null },
+					{
+						client_id: github.clientId,
+						delegation: buildDelegation(github.delegation)
+					}
+				];
+
+	const providers = [...buildGoogleProviderConfig(), ...buildGitHubProviderConfig()];
 
 	return {
 		internet_identity: [],
 		rules: [],
 		version: [],
-		openid: [
-			{
-				providers: [googleProviderConfig, githubProviderConfig],
-				observatory_id: []
-			}
-		]
+		openid: providers.length
+			? [
+					{
+						providers,
+						observatory_id: []
+					}
+				]
+			: []
 	};
 };
 

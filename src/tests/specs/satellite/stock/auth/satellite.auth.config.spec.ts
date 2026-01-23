@@ -11,7 +11,7 @@ import {
 } from '../../../../constants/auth-tests.constants';
 import {
 	testAuthConfig,
-	testAuthGoogleConfig,
+	testAuthOpenIdConfig,
 	testReturnAuthConfig
 } from '../../../../utils/auth-assertions-tests.utils';
 import { setupSatelliteStock } from '../../../../utils/satellite-tests.utils';
@@ -330,7 +330,7 @@ describe('Satellite > Authentication > Configuration', () => {
 			version: 11n
 		});
 
-		testAuthGoogleConfig({
+		testAuthOpenIdConfig({
 			actor: () => actor,
 			pic: () => pic,
 			canisterId: () => canisterId,

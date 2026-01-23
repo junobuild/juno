@@ -223,7 +223,7 @@ type OpenIdPrepareDelegationArgs = record {
   session_key : blob;
   salt : blob;
 };
-type OpenIdProvider = variant { Google };
+type OpenIdProvider = variant { GitHub; Google };
 type OpenIdProviderConfig = record {
   delegation : opt OpenIdProviderDelegationConfig;
   client_id : text;

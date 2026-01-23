@@ -44,6 +44,7 @@ pub mod provider {
     )]
     pub enum OpenIdProvider {
         Google,
+        GitHub,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]

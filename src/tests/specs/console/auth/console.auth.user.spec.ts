@@ -8,7 +8,7 @@ import { createSatelliteWithConsole } from '../../../utils/console-factory-tests
 import { makeJwt, type MockOpenIdJwt } from '../../../utils/jwt-tests.utils';
 import { tick } from '../../../utils/pic-tests.utils';
 
-describe('Satellite > Auth > Mission Control', () => {
+describe('Satellite > Auth > User', () => {
 	let pic: PocketIc;
 
 	let consoleActor: Actor<ConsoleActor>;

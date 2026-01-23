@@ -53,11 +53,13 @@ const authenticateWithOpenID = async () => {
 	const {
 		identity: { delegationChain, sessionKey }
 	} = await authenticate({
-		redirect: null,
-		auth: {
-			console: {
-				consoleId: CONSOLE_CANISTER_ID,
-				...container()
+		google: {
+			redirect: null,
+			auth: {
+				console: {
+					consoleId: CONSOLE_CANISTER_ID,
+					...container()
+				}
 			}
 		}
 	});

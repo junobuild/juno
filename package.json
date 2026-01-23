@@ -123,7 +123,7 @@
 		"@icp-sdk/canisters": "^3.4.0",
 		"@icp-sdk/core": "5.0.0",
 		"@junobuild/admin": "^4.0.1",
-		"@junobuild/auth": "^3.0.0",
+		"@junobuild/auth": "^3.0.1",
 		"@junobuild/cdn": "^2.2.1",
 		"@junobuild/core": "^4.0.0",
 		"@junobuild/ic-client": "^7.1.1",

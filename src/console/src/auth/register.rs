@@ -8,6 +8,7 @@ use junobuild_auth::openid::types::provider::OpenIdProvider;
 
 pub async fn register_account(
     public_key: &UserKey,
+    provider: &OpenIdProvider,
     credential: &OpenIdCredential,
 ) -> Result<Account, String> {
     let user_id = Principal::self_authenticating(public_key);
@@ -41,7 +42,7 @@ pub async fn register_account(
     };
 
     let provider = Provider::OpenId(OpenId {
-        provider: OpenIdProvider::Google,
+        provider: provider.clone(),
         data: provider_data,
     });
 

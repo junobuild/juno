@@ -1,6 +1,6 @@
 import type { ObservatoryActor, ObservatoryDid } from '$declarations';
 import { type Actor, type PocketIc, CanisterHttpMethod } from '@dfinity/pic';
-import { assertNonNullish, fromNullable } from '@dfinity/utils';
+import { fromNullable } from '@dfinity/utils';
 import type { Principal } from '@icp-sdk/core/principal';
 import type { MockOpenIdJwt } from './jwt-tests.utils';
 import { toBodyJson } from './orbiter-tests.utils';
@@ -8,33 +8,46 @@ import { tick } from './pic-tests.utils';
 
 export const assertOpenIdHttpsOutcalls = async ({
 	pic,
-	jwks
+	jwks,
+	method = 'google'
 }: {
 	pic: PocketIc;
 	jwks: MockOpenIdJwt['jwks'];
+	method?: 'google' | 'github';
 }) => {
 	await tick(pic);
 
-	const [pendingHttpOutCall] = await pic.getPendingHttpsOutcalls();
+	const pendingHttpOutCalls = await pic.getPendingHttpsOutcalls();
 
-	assertNonNullish(pendingHttpOutCall);
-
-	const { requestId, subnetId, url, headers: headersArray, body, httpMethod } = pendingHttpOutCall;
-
-	expect(httpMethod).toEqual(CanisterHttpMethod.GET);
-
-	expect(url).toEqual('https://www.googleapis.com/oauth2/v3/certs');
-
-	const headers = headersArray.reduce<Record<string, string>>(
-		(acc, [key, value]) => ({ ...acc, [key]: value }),
-		{}
+	// We assert that the expected GitHub or Google certificate was requested
+	const pendingRequestedHttpOutCall = pendingHttpOutCalls.find(
+		({ url }) =>
+			url ===
+			(method === 'github'
+				? 'https://api.juno.build/v1/auth/certs'
+				: 'https://www.googleapis.com/oauth2/v3/certs')
 	);
 
-	expect(headers['Accept']).toEqual('application/json');
+	expect(pendingRequestedHttpOutCall).not.toBeUndefined();
 
-	expect(body).toHaveLength(0);
+	// For simplicity reasons - to integrate the GitHub test within the existing suite - we resolve
+	// all pending certificate calls
+	for (const pendingHttpOutCall of pendingHttpOutCalls) {
+		const { requestId, subnetId, headers: headersArray, body, httpMethod } = pendingHttpOutCall;
 
-	await finalizeOpenIdHttpsOutCall({ subnetId, requestId, pic, jwks });
+		expect(httpMethod).toEqual(CanisterHttpMethod.GET);
+
+		const headers = headersArray.reduce<Record<string, string>>(
+			(acc, [key, value]) => ({ ...acc, [key]: value }),
+			{}
+		);
+
+		expect(headers['Accept']).toEqual('application/json');
+
+		expect(body).toHaveLength(0);
+
+		await finalizeOpenIdHttpsOutCall({ subnetId, requestId, pic, jwks });
+	}
 };
 
 export const failOpenIdHttpsOutCall = async ({

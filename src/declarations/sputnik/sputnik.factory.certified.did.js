@@ -158,7 +158,10 @@ export const idlFactory = ({ IDL }) => {
 		created_at: IDL.Nat64,
 		version: IDL.Opt(IDL.Nat64)
 	});
-	const OpenIdProvider = IDL.Variant({ Google: IDL.Null });
+	const OpenIdProvider = IDL.Variant({
+		GitHub: IDL.Null,
+		Google: IDL.Null
+	});
 	const OpenIdProviderDelegationConfig = IDL.Record({
 		targets: IDL.Opt(IDL.Vec(IDL.Principal)),
 		max_time_to_live: IDL.Opt(IDL.Nat64)

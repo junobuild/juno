@@ -24,7 +24,10 @@ export const idlFactory = ({ IDL }) => {
 		user_key: IDL.Vec(IDL.Nat8),
 		expiration: IDL.Nat64
 	});
-	const OpenIdProvider = IDL.Variant({ Google: IDL.Null });
+	const OpenIdProvider = IDL.Variant({
+		GitHub: IDL.Null,
+		Google: IDL.Null
+	});
 	const OpenIdData = IDL.Record({
 		name: IDL.Opt(IDL.Text),
 		locale: IDL.Opt(IDL.Text),

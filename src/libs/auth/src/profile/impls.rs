@@ -216,7 +216,7 @@ mod tests {
     }
 
     #[test]
-    fn test_invalid_preferred_username_length() {
+    fn test_github_invalid_preferred_username_length() {
         let data = OpenIdDataTest {
             email: None,
             name: None,
@@ -230,7 +230,7 @@ mod tests {
     }
 
     #[test]
-    fn test_valid_data_containing_preferred_username() {
+    fn test_github_valid_data() {
         let data = OpenIdDataTest {
             email: Some("user@example.com".to_string()),
             name: Some("Peter Peter Parker".to_string()),

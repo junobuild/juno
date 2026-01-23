@@ -10,6 +10,7 @@ use crate::user::core::types::state::{
 };
 use crate::{Doc, SetDoc};
 use junobuild_auth::openid::types::interface::OpenIdCredential;
+use junobuild_auth::openid::types::provider::OpenIdProvider;
 use junobuild_auth::profile::types::{OpenIdProfile, Validated};
 use junobuild_utils::encode_doc_data;
 
@@ -64,6 +65,7 @@ impl ProviderData {
         match (self, provider) {
             (ProviderData::WebAuthn(_), &AuthProvider::WebAuthn) => true,
             (ProviderData::OpenId(_), &AuthProvider::Google) => true,
+            (ProviderData::OpenId(_), &AuthProvider::GitHub) => true,
             _ => false,
         }
     }
@@ -83,12 +85,12 @@ impl UserData {
 
                 provider_data.validate()
             }
-            Some(AuthProvider::Google) => {
+            Some(ref provider @ (AuthProvider::Google | AuthProvider::GitHub)) => {
                 let provider_data = self.provider_data.as_ref().ok_or_else(|| {
                     JUNO_DATASTORE_ERROR_USER_REGISTER_PROVIDER_INVALID_DATA.to_string()
                 })?;
 
-                if !provider_data.matches_provider(&AuthProvider::Google) {
+                if !provider_data.matches_provider(&provider) {
                     return Err(JUNO_DATASTORE_ERROR_USER_PROVIDER_INVALID_DATA.to_string());
                 }
 
@@ -154,6 +156,15 @@ impl From<&OpenIdCredential> for OpenIdData {
             preferred_username: credential.preferred_username.clone(),
             picture: credential.picture.clone(),
             locale: credential.locale.clone(),
+        }
+    }
+}
+
+impl From<&OpenIdProvider> for AuthProvider {
+    fn from(provider: &OpenIdProvider) -> Self {
+        match provider {
+            OpenIdProvider::Google => AuthProvider::Google,
+            OpenIdProvider::GitHub => AuthProvider::GitHub,
         }
     }
 }
@@ -272,5 +283,69 @@ mod tests {
             provider_data: Some(ProviderData::WebAuthn(WebAuthnData { aaguid: None })),
         };
         assert!(user.assert_provider_data().is_err());
+    }
+
+    #[test]
+    fn test_userdata_github_valid() {
+        let provider_data = ProviderData::OpenId(OpenIdData {
+            email: Some("user@example.com".to_string()),
+            name: Some("Peter Peter Parker".to_string()),
+            given_name: None,
+            family_name: None,
+            preferred_username: Some("peterpeterparker".to_string()),
+            picture: Some("https://avatars.githubusercontent.com/u/16886711".to_string()),
+            locale: None,
+        });
+
+        let user = UserData {
+            provider: Some(AuthProvider::GitHub),
+            banned: None,
+            provider_data: Some(provider_data),
+        };
+
+        assert!(user.assert_provider_data().is_ok());
+    }
+
+    #[test]
+    fn test_userdata_github_missing_data() {
+        let user = UserData {
+            provider: Some(AuthProvider::GitHub),
+            banned: None,
+            provider_data: None,
+        };
+        assert!(user.assert_provider_data().is_err());
+    }
+
+    #[test]
+    fn test_userdata_github_invalid_picture_scheme() {
+        let provider_data = ProviderData::OpenId(OpenIdData {
+            email: Some("user@example.com".to_string()),
+            name: None,
+            given_name: None,
+            family_name: None,
+            preferred_username: Some("octocat".to_string()),
+            picture: Some("http://example.com/avatar.png".to_string()), // https is required
+            locale: None,
+        });
+
+        let user = UserData {
+            provider: Some(AuthProvider::GitHub),
+            banned: None,
+            provider_data: Some(provider_data),
+        };
+
+        assert!(user.assert_provider_data().is_err());
+    }
+
+    #[test]
+    fn test_openid_provider_to_auth_provider() {
+        assert!(matches!(
+            AuthProvider::from(&OpenIdProvider::Google),
+            AuthProvider::Google
+        ));
+        assert!(matches!(
+            AuthProvider::from(&OpenIdProvider::GitHub),
+            AuthProvider::GitHub
+        ));
     }
 }

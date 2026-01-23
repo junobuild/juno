@@ -1,4 +1,8 @@
-import { CONSOLE_CANISTER_ID, GOOGLE_CLIENT_ID } from '$lib/constants/app.constants';
+import {
+	CONSOLE_CANISTER_ID,
+	GITHUB_CLIENT_ID,
+	GOOGLE_CLIENT_ID
+} from '$lib/constants/app.constants';
 import { AuthClientProvider } from '$lib/providers/auth-client.provider';
 import {
 	clearAuthNavOrigin,
@@ -21,10 +25,9 @@ export const signInWithGoogle = async () => {
 	});
 };
 
-// TODO: extract client ID to juno.config
 export const signInWithGitHub = async () => {
 	await signInWithOpenId({
-		clientId: 'Ov23li92ijrrPEfwUrqW',
+		clientId: GITHUB_CLIENT_ID,
 		provider: 'github'
 	});
 };

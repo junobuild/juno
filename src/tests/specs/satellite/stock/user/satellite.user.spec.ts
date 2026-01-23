@@ -689,7 +689,7 @@ describe('Satellite > User', () => {
 				})
 			).rejects.toThrowError(
 				new RegExp(
-					`${JUNO_DATASTORE_ERROR_USER_INVALID_DATA}: unknown variant \`unknown\`, expected one of \`internet_identity\`, \`nfid\`, \`webauthn\`, \`google\`, \`git_hub\` at line 1 column 21.`,
+					`${JUNO_DATASTORE_ERROR_USER_INVALID_DATA}: unknown variant \`unknown\`, expected one of \`internet_identity\`, \`nfid\`, \`webauthn\`, \`google\`, \`github\` at line 1 column 21.`,
 					'i'
 				)
 			);

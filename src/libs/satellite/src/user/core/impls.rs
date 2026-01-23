@@ -10,6 +10,7 @@ use crate::user::core::types::state::{
 };
 use crate::{Doc, SetDoc};
 use junobuild_auth::openid::types::interface::OpenIdCredential;
+use junobuild_auth::openid::types::provider::OpenIdProvider;
 use junobuild_auth::profile::types::{OpenIdProfile, Validated};
 use junobuild_utils::encode_doc_data;
 
@@ -154,6 +155,14 @@ impl From<&OpenIdCredential> for OpenIdData {
             preferred_username: credential.preferred_username.clone(),
             picture: credential.picture.clone(),
             locale: credential.locale.clone(),
+        }
+    }
+}
+
+impl From<&OpenIdProvider> for AuthProvider {
+    fn from(provider: &OpenIdProvider) -> Self {
+        match provider {
+            OpenIdProvider::Google => AuthProvider::Google,
         }
     }
 }

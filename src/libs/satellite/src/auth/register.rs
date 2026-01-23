@@ -3,17 +3,22 @@ use crate::db::store::internal_set_doc_store;
 use crate::db::types::store::AssertSetDocOptions;
 use crate::errors::user::JUNO_DATASTORE_ERROR_USER_REGISTER_PROVIDER_INVALID_DATA;
 use crate::rules::store::get_rule_db;
-use crate::user::core::types::state::{AuthProvider, OpenIdData, ProviderData, UserData};
+use crate::user::core::types::state::{OpenIdData, ProviderData, UserData};
 use crate::Doc;
 use candid::Principal;
 use junobuild_auth::delegation::types::UserKey;
 use junobuild_auth::openid::types::interface::OpenIdCredential;
+use junobuild_auth::openid::types::provider::OpenIdProvider;
 use junobuild_collections::constants::db::COLLECTION_USER_KEY;
 use junobuild_collections::msg::msg_db_collection_not_found;
 use junobuild_shared::ic::api::id;
 use junobuild_utils::decode_doc_data;
 
-pub fn register_user(public_key: &UserKey, credential: &OpenIdCredential) -> Result<Doc, String> {
+pub fn register_user(
+    public_key: &UserKey,
+    provider: &OpenIdProvider,
+    credential: &OpenIdCredential,
+) -> Result<Doc, String> {
     let user_collection = COLLECTION_USER_KEY.to_string();
 
     let rule = get_rule_db(&user_collection)
@@ -78,7 +83,7 @@ pub fn register_user(public_key: &UserKey, credential: &OpenIdCredential) -> Res
     // Create or update the user.
     let user_data: UserData = UserData {
         banned,
-        provider: Some(AuthProvider::Google),
+        provider: Some(provider.into()),
         provider_data: Some(ProviderData::OpenId(provider_data)),
     };
 

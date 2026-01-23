@@ -56,7 +56,7 @@ describe('Satellite > Auth > User', () => {
 			satellite: { actor },
 			session: s
 		} = await setupSatelliteAuth({
-			withGitHub: true,
+			withGitHub: true
 		});
 
 		pic = p;

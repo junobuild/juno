@@ -248,7 +248,7 @@ dependencies = [
 
 [[package]]
 name = "console"
-version = "0.3.1"
+version = "0.3.2"
 dependencies = [
  "candid",
  "ciborium",
@@ -1518,7 +1518,7 @@ dependencies = [
 
 [[package]]
 name = "observatory"
-version = "0.3.0"
+version = "0.4.0"
 dependencies = [
  "candid",
  "ciborium",

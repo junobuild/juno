@@ -21,7 +21,6 @@
 		CanisterSyncStatus,
 		Segment
 	} from '$lib/types/canister';
-	import { formatTCycles } from '$lib/utils/cycles.utils';
 	import { secondsToDuration } from '$lib/utils/date.utils';
 	import { emit } from '$lib/utils/events.utils';
 	import { formatBytes } from '$lib/utils/number.utils';

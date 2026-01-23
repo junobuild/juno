@@ -7,7 +7,6 @@
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { CanisterDataInfo, CanisterSyncStatus } from '$lib/types/canister';
 	import { cyclesNeededForFreezingThreshold } from '$lib/utils/canister.utils';
-	import { formatTCycles } from '$lib/utils/cycles.utils';
 	import { secondsToDuration } from '$lib/utils/date.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { formatNumber } from '$lib/utils/number.utils';

@@ -3,7 +3,6 @@
 	import CanisterTCycles from '$lib/components/canister/display/CanisterTCycles.svelte';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { CanisterDataInfo, CanisterSyncStatus } from '$lib/types/canister';
-	import { formatTCycles } from '$lib/utils/cycles.utils';
 
 	interface Props {
 		canister: CanisterDataInfo | undefined;

@@ -72,14 +72,14 @@ describe('Observatory > OpenId > Upgrade', async () => {
 
 	describe.each([
 		{
-			title: 'Google',
+			method: 'google',
 			provider: GOOGLE_OPEN_ID_PROVIDER
 		},
 		{
-			title: 'Github',
+			method: 'github',
 			provider: GITHUB_OPEN_ID_PROVIDER
 		}
-	])('$title', ({ provider }) => {
+	])('$method', ({ method, provider }) => {
 		it('should not start monitoring after upgrade if never stopped', async () => {
 			await upgradeCurrent();
 
@@ -94,7 +94,11 @@ describe('Observatory > OpenId > Upgrade', async () => {
 			await start_openid_monitoring(provider);
 
 			// HTTPs outcalls after stat
-			await assertOpenIdHttpsOutcalls({ pic, jwks: mockJwks });
+			await assertOpenIdHttpsOutcalls({
+				pic,
+				jwks: mockJwks,
+				method: method as 'google' | 'github'
+			});
 
 			await pic.advanceTime(1000);
 			await tick(pic);
@@ -104,7 +108,11 @@ describe('Observatory > OpenId > Upgrade', async () => {
 			await pic.advanceTime(FETCH_CERTIFICATE_INTERVAL + 1000);
 
 			// Delayed HTTPs outcalls which happens after stop
-			await assertOpenIdHttpsOutcalls({ pic, jwks: mockJwks });
+			await assertOpenIdHttpsOutcalls({
+				pic,
+				jwks: mockJwks,
+				method: method as 'google' | 'github'
+			});
 
 			await expect(pic.getPendingHttpsOutcalls()).resolves.toHaveLength(0);
 
@@ -121,14 +129,18 @@ describe('Observatory > OpenId > Upgrade', async () => {
 			await start_openid_monitoring(provider);
 
 			// HTTPs outcalls after stat
-			await assertOpenIdHttpsOutcalls({ pic, jwks: mockJwks });
+			await assertOpenIdHttpsOutcalls({
+				pic,
+				jwks: mockJwks,
+				method: method as 'google' | 'github'
+			});
 
 			await upgradeCurrent();
 
 			const { get_openid_certificate } = actor;
 
 			const cert = await get_openid_certificate({
-				provider: { Google: null }
+				provider
 			});
 
 			expect(fromNullable(cert)).not.toBeUndefined();
@@ -140,7 +152,11 @@ describe('Observatory > OpenId > Upgrade', async () => {
 			await start_openid_monitoring(provider);
 
 			// HTTPs outcalls after stat
-			await assertOpenIdHttpsOutcalls({ pic, jwks: mockJwks });
+			await assertOpenIdHttpsOutcalls({
+				pic,
+				jwks: mockJwks,
+				method: method as 'google' | 'github'
+			});
 
 			await upgradeCurrent();
 
@@ -150,7 +166,11 @@ describe('Observatory > OpenId > Upgrade', async () => {
 			await expect(pic.getPendingHttpsOutcalls()).resolves.toHaveLength(1);
 
 			// HTTPs outcalls after restat
-			await assertOpenIdHttpsOutcalls({ pic, jwks: mockJwks });
+			await assertOpenIdHttpsOutcalls({
+				pic,
+				jwks: mockJwks,
+				method: method as 'google' | 'github'
+			});
 		});
 	});
 });

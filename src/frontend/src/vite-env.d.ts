@@ -9,6 +9,7 @@ interface ImportMetaEnv {
 	// juno.config.mjs
 	readonly VITE_CONSOLE_ID: string;
 	readonly VITE_GOOGLE_CLIENT_ID: string | undefined;
+	readonly VITE_GITHUB_CLIENT_ID: string | undefined;
 
 	// .env
 	readonly VITE_BN_REGISTRATIONS_URL: string | '' | undefined;

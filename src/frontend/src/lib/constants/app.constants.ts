@@ -41,6 +41,7 @@ export const CYCLES_LEDGER_CANISTER_ID = 'um5iw-rqaaa-aaaaq-qaaba-cai';
 export const CYCLES_INDEX_CANISTER_ID = 'ul4oc-4iaaa-aaaaq-qaabq-cai';
 
 export const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+export const GITHUB_CLIENT_ID = import.meta.env.VITE_GITHUB_CLIENT_ID;
 
 /**
  * Revoked principals that must not be used.

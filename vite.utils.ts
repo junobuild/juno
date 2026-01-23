@@ -30,11 +30,15 @@ const defineJunoEnv = async ({
 	assertNonNullish(consoleId, 'Console ID not defined.');
 
 	const googleClientId = authentication?.google?.clientId;
+	const githubClientId = authentication?.github?.clientId;
 
 	return {
 		VITE_CONSOLE_ID: JSON.stringify(consoleId),
 		VITE_GOOGLE_CLIENT_ID: notEmptyString(googleClientId)
 			? JSON.stringify(googleClientId)
+			: undefined,
+		VITE_GITHUB_CLIENT_ID: notEmptyString(githubClientId)
+			? JSON.stringify(githubClientId)
 			: undefined
 	};
 };
@@ -52,6 +56,7 @@ const defineAppVersion = (): Pick<ViteReplacements, 'VITE_APP_VERSION'> => {
 interface ViteReplacements {
 	VITE_CONSOLE_ID: string;
 	VITE_GOOGLE_CLIENT_ID: string | undefined;
+	VITE_GITHUB_CLIENT_ID: string | undefined;
 	VITE_APP_VERSION: string;
 }
 

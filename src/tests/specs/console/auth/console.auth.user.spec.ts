@@ -18,7 +18,7 @@ describe('Satellite > Auth > User', () => {
 	let mockJwt: MockOpenIdJwt;
 	let mockIdentity: DelegationIdentity;
 
-	const mockUserData = {
+	const mockGoogleUserData = {
 		email: toNullable('user@example.com'),
 		name: toNullable('Hello World'),
 		given_name: toNullable('Hello'),
@@ -28,12 +28,25 @@ describe('Satellite > Auth > User', () => {
 		locale: toNullable()
 	};
 
+	const mockGitHubUserData = {
+		email: toNullable('user@example.com'),
+		name: toNullable('Hello World'),
+		given_name: toNullable(),
+		family_name: toNullable(),
+		preferred_username: toNullable('helloworld'),
+		picture: toNullable(),
+		locale: toNullable()
+	};
+
 	beforeAll(async () => {
 		const {
 			pic: p,
 			console: { actor },
 			session: s
-		} = await setupConsoleAuth();
+		} = await setupConsoleAuth({
+			withApplyRateTokens: true,
+			withGitHub: true
+		});
 
 		pic = p;
 		consoleActor = actor;
@@ -45,146 +58,158 @@ describe('Satellite > Auth > User', () => {
 		await pic?.tearDown();
 	});
 
-	it('should register a new user', async () => {
-		const { identity, account, jwt } = await authenticateAndMakeIdentity<{
-			account: ConsoleDid.Account;
-		}>({
-			pic,
-			session,
-			actor: consoleActor
-		});
-
-		mockJwt = jwt;
-		mockIdentity = identity;
-
-		expect(account.owner.toText()).toEqual(identity.getPrincipal().toText());
-
-		const provider = fromNullable(account.provider);
-
-		assertNonNullish(provider);
-
-		if ('InternetIdentity' in provider) {
-			expect(true).toBeFalsy();
-
-			return;
+	describe.each([
+		{
+			method: 'Google',
+			userData: mockGoogleUserData
+		},
+		{
+			method: 'GitHub',
+			userData: mockGitHubUserData
 		}
+	])('With method $method', ({ method, userData }) => {
+		it('should register a new user', async () => {
+			const { identity, account, jwt } = await authenticateAndMakeIdentity<{
+				account: ConsoleDid.Account;
+			}>({
+				pic,
+				session,
+				actor: consoleActor,
+				method: method.toLowerCase() as 'google' | 'github'
+			});
 
-		const {
-			OpenId: { data, provider: provider_name }
-		} = provider;
+			mockJwt = jwt;
+			mockIdentity = identity;
 
-		expect('Google' in provider_name).toBeTruthy();
+			expect(account.owner.toText()).toEqual(identity.getPrincipal().toText());
 
-		expect(data).toEqual(mockUserData);
+			const provider = fromNullable(account.provider);
 
-		const missionControlId = fromNullable(account.mission_control_id);
+			assertNonNullish(provider);
 
-		expect(missionControlId).toBeUndefined();
-	});
+			if ('InternetIdentity' in provider) {
+				expect(true).toBeFalsy();
 
-	it('should return same user', async () => {
-		await pic.advanceTime(1000 * 30); // 30s for cooldown guard
-		await tick(pic);
-
-		const { authenticate } = consoleActor;
-
-		const result = await authenticate({
-			OpenId: {
-				jwt: mockJwt.jwt,
-				session_key: session.publicKey,
-				salt: session.salt
+				return;
 			}
+
+			const {
+				OpenId: { data, provider: provider_name }
+			} = provider;
+
+			expect(method in provider_name).toBeTruthy();
+
+			expect(data).toEqual(userData);
+
+			const missionControlId = fromNullable(account.mission_control_id);
+
+			expect(missionControlId).toBeUndefined();
 		});
 
-		if (!('Ok' in result)) {
-			expect(true).toBeFalsy();
+		it('should return same user', async () => {
+			await pic.advanceTime(1000 * 30); // 30s for cooldown guard
+			await tick(pic);
 
-			return;
-		}
+			const { authenticate } = consoleActor;
 
-		const { account } = result.Ok;
+			const result = await authenticate({
+				OpenId: {
+					jwt: mockJwt.jwt,
+					session_key: session.publicKey,
+					salt: session.salt
+				}
+			});
 
-		expect(account.owner.toText()).toEqual(mockIdentity.getPrincipal().toText());
+			if (!('Ok' in result)) {
+				expect(true).toBeFalsy();
 
-		const provider = fromNullable(account.provider);
-
-		assertNonNullish(provider);
-
-		if ('InternetIdentity' in provider) {
-			expect(true).toBeFalsy();
-
-			return;
-		}
-
-		const {
-			OpenId: { data, provider: provider_name }
-		} = provider;
-
-		expect('Google' in provider_name).toBeTruthy();
-
-		expect(data).toEqual(mockUserData);
-	});
-
-	it('should update user data', async () => {
-		await pic.advanceTime(1000 * 30); // 30s for cooldown guard
-		await tick(pic);
-
-		const updatePayload = {
-			...mockJwt.payload,
-			name: 'Super Duper',
-			given_name: 'Super',
-			family_name: 'Duper',
-			email: 'test@test1.com'
-		};
-
-		const newJwt = await makeJwt({
-			payload: updatePayload,
-			pubJwk: mockJwt.pubJwk,
-			privateKey: mockJwt.privateKey
-		});
-
-		const { authenticate } = consoleActor;
-
-		const result = await authenticate({
-			OpenId: {
-				jwt: newJwt,
-				session_key: session.publicKey,
-				salt: session.salt
+				return;
 			}
+
+			const { account } = result.Ok;
+
+			expect(account.owner.toText()).toEqual(mockIdentity.getPrincipal().toText());
+
+			const provider = fromNullable(account.provider);
+
+			assertNonNullish(provider);
+
+			if ('InternetIdentity' in provider) {
+				expect(true).toBeFalsy();
+
+				return;
+			}
+
+			const {
+				OpenId: { data, provider: provider_name }
+			} = provider;
+
+			expect(method in provider_name).toBeTruthy();
+
+			expect(data).toEqual(userData);
 		});
 
-		if (!('Ok' in result)) {
-			expect(true).toBeFalsy();
+		it('should update user data', async () => {
+			await pic.advanceTime(1000 * 30); // 30s for cooldown guard
+			await tick(pic);
 
-			return;
-		}
+			const updatePayload = {
+				...mockJwt.payload,
+				name: 'Super Duper',
+				given_name: 'Super',
+				family_name: 'Duper',
+				email: 'test@test1.com'
+			};
 
-		const { account } = result.Ok;
+			const newJwt = await makeJwt({
+				payload: updatePayload,
+				pubJwk: mockJwt.pubJwk,
+				privateKey: mockJwt.privateKey
+			});
 
-		expect(account.owner.toText()).toEqual(mockIdentity.getPrincipal().toText());
+			const { authenticate } = consoleActor;
 
-		const provider = fromNullable(account.provider);
+			const result = await authenticate({
+				OpenId: {
+					jwt: newJwt,
+					session_key: session.publicKey,
+					salt: session.salt
+				}
+			});
 
-		assertNonNullish(provider);
+			if (!('Ok' in result)) {
+				expect(true).toBeFalsy();
 
-		if ('InternetIdentity' in provider) {
-			expect(true).toBeFalsy();
+				return;
+			}
 
-			return;
-		}
+			const { account } = result.Ok;
 
-		const {
-			OpenId: { data, provider: provider_name }
-		} = provider;
+			expect(account.owner.toText()).toEqual(mockIdentity.getPrincipal().toText());
 
-		expect('Google' in provider_name).toBeTruthy();
+			const provider = fromNullable(account.provider);
 
-		expect(data).toEqual({
-			...mockUserData,
-			name: toNullable(updatePayload.name),
-			given_name: toNullable(updatePayload.given_name),
-			family_name: toNullable(updatePayload.family_name),
-			email: toNullable(updatePayload.email)
+			assertNonNullish(provider);
+
+			if ('InternetIdentity' in provider) {
+				expect(true).toBeFalsy();
+
+				return;
+			}
+
+			const {
+				OpenId: { data, provider: provider_name }
+			} = provider;
+
+			expect(method in provider_name).toBeTruthy();
+
+			expect(data).toEqual({
+				...userData,
+				name: toNullable(updatePayload.name),
+				given_name: toNullable(updatePayload.given_name),
+				family_name: toNullable(updatePayload.family_name),
+				email: toNullable(updatePayload.email)
+			});
 		});
 	});
 

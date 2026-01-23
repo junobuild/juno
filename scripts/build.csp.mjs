@@ -183,7 +183,7 @@ const updateCSP = (indexHtml) => {
         http-equiv="Content-Security-Policy"
         content="default-src 'none';
         connect-src 'self' https://ic0.app https://icp0.io https://icp-api.io https://*.icp0.io ${JUNO_CDN} ${JUNO_API};
-        img-src 'self' data: https://*.googleusercontent.com;;
+        img-src 'self' data: https://*.googleusercontent.com https://avatars.githubusercontent.com;
         child-src 'self';
         manifest-src 'self';
         script-src 'wasm-unsafe-eval' 'strict-dynamic' ${indexHashes.join(' ')} ${JUNO_CDN};

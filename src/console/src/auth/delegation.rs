@@ -4,8 +4,8 @@ use junobuild_auth::delegation::types::{
     GetDelegationError, GetDelegationResult, OpenIdGetDelegationArgs, OpenIdPrepareDelegationArgs,
     PrepareDelegationError, PreparedDelegation,
 };
-use junobuild_auth::openid::types::interface::OpenIdCredential;
 use junobuild_auth::openid::types::provider::OpenIdProvider;
+use junobuild_auth::openid::user::types::interface::OpenIdCredential;
 use junobuild_auth::state::types::config::OpenIdProviders;
 use junobuild_auth::{delegation, openid};
 
@@ -16,7 +16,7 @@ pub async fn openid_prepare_delegation(
     args: &OpenIdPrepareDelegationArgs,
     providers: &OpenIdProviders,
 ) -> OpenIdPrepareDelegationResult {
-    let (credential, provider) = match openid::verify_user_openid_credentials_with_jwks_renewal(
+    let (credential, provider) = match openid::user::verify_openid_credentials_with_jwks_renewal(
         &args.jwt, &args.salt, providers, &AuthHeap,
     )
     .await
@@ -40,7 +40,7 @@ pub fn openid_get_delegation(
     args: &OpenIdGetDelegationArgs,
     providers: &OpenIdProviders,
 ) -> GetDelegationResult {
-    let (credential, provider) = match openid::verify_user_openid_credentials_with_cached_jwks(
+    let (credential, provider) = match openid::user::verify_openid_credentials_with_cached_jwks(
         &args.jwt, &args.salt, providers, &AuthHeap,
     ) {
         Ok(value) => value,

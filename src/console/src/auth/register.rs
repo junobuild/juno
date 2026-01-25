@@ -1,6 +1,6 @@
 use crate::accounts::{get_optional_account, init_account, update_provider};
-use crate::types::state::OpenId;
 use crate::types::state::{Account, OpenIdData, Provider};
+use crate::types::state::{OpenId, OpenIdAuthProvider};
 use candid::Principal;
 use junobuild_auth::delegation::types::UserKey;
 use junobuild_auth::openid::types::interface::OpenIdCredential;
@@ -42,7 +42,7 @@ pub async fn register_account(
     };
 
     let provider = Provider::OpenId(OpenId {
-        provider: provider.clone(),
+        provider: OpenIdAuthProvider::from(provider),
         data: provider_data,
     });
 

@@ -16,7 +16,7 @@ pub async fn openid_prepare_delegation(
     args: &OpenIdPrepareDelegationArgs,
     providers: &OpenIdProviders,
 ) -> OpenIdPrepareDelegationResult {
-    let (credential, provider) = match openid::verify_openid_credentials_with_jwks_renewal(
+    let (credential, provider) = match openid::verify_user_openid_credentials_with_jwks_renewal(
         &args.jwt, &args.salt, providers, &AuthHeap,
     )
     .await
@@ -40,7 +40,7 @@ pub fn openid_get_delegation(
     args: &OpenIdGetDelegationArgs,
     providers: &OpenIdProviders,
 ) -> GetDelegationResult {
-    let (credential, provider) = match openid::verify_openid_credentials_with_cached_jwks(
+    let (credential, provider) = match openid::verify_user_openid_credentials_with_cached_jwks(
         &args.jwt, &args.salt, providers, &AuthHeap,
     ) {
         Ok(value) => value,

@@ -164,7 +164,7 @@ impl From<&OpenIdProvider> for AuthProvider {
     fn from(provider: &OpenIdProvider) -> Self {
         match provider {
             OpenIdProvider::Google => AuthProvider::Google,
-            OpenIdProvider::GitHub => AuthProvider::GitHub,
+            OpenIdProvider::GitHubProxy => AuthProvider::GitHub,
         }
     }
 }
@@ -344,7 +344,7 @@ mod tests {
             AuthProvider::Google
         ));
         assert!(matches!(
-            AuthProvider::from(&OpenIdProvider::GitHub),
+            AuthProvider::from(&OpenIdProvider::GitHubProxy),
             AuthProvider::GitHub
         ));
     }

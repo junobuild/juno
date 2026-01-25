@@ -1,11 +1,14 @@
 use crate::memory::manager::init_stable_state;
 use crate::types::ledger::{Fee, IcpPayment, IcrcPayment, IcrcPaymentKey};
-use crate::types::state::{Account, HeapState, Segment, SegmentKey, State, StorableSegmentKind};
+use crate::types::state::{
+    Account, HeapState, OpenIdAuthProvider, Segment, SegmentKey, State, StorableSegmentKind,
+};
 use candid::Principal;
 use ic_cdk::api::time;
 use ic_ledger_types::{BlockIndex, Tokens};
 use ic_stable_structures::storable::Bound;
 use ic_stable_structures::Storable;
+use junobuild_auth::openid::types::provider::OpenIdProvider;
 use junobuild_shared::ledger::types::cycles::CyclesTokens;
 use junobuild_shared::memory::serializers::{
     deserialize_from_bytes, serialize_into_bytes, serialize_to_bytes,
@@ -187,6 +190,15 @@ impl Fee {
         match self {
             Fee::Cycles(cycles) => Ok(cycles.clone()),
             Fee::ICP(_) => Err("Expected Cycles fee but got ICP fee".to_string()),
+        }
+    }
+}
+
+impl From<&OpenIdProvider> for OpenIdAuthProvider {
+    fn from(provider: &OpenIdProvider) -> Self {
+        match provider {
+            OpenIdProvider::Google => OpenIdAuthProvider::Google,
+            OpenIdProvider::GitHubProxy => OpenIdAuthProvider::GitHub,
         }
     }
 }

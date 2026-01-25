@@ -39,14 +39,14 @@ impl OpenIdProvider {
             Self::Google => "https://www.googleapis.com/oauth2/v3/certs",
             // Swap for local development with the Juno API:
             // http://host.docker.internal:3000/v1/auth/certs
-            Self::GitHub => "https://api.juno.build/v1/auth/certs",
+            Self::GitHubProxy => "https://api.juno.build/v1/auth/certs",
         }
     }
 
     pub fn issuers(&self) -> &[&'static str] {
         match self {
             OpenIdProvider::Google => &["https://accounts.google.com", "accounts.google.com"],
-            OpenIdProvider::GitHub => &["https://api.juno.build/auth/github"],
+            OpenIdProvider::GitHubProxy => &["https://api.juno.build/auth/github"],
         }
     }
 }
@@ -93,7 +93,7 @@ impl Display for OpenIdProvider {
     fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
         match self {
             OpenIdProvider::Google => write!(f, "Google"),
-            OpenIdProvider::GitHub => write!(f, "GitHub"),
+            OpenIdProvider::GitHubProxy => write!(f, "GitHub"),
         }
     }
 }

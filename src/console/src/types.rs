@@ -4,7 +4,6 @@ pub mod state {
     use candid::CandidType;
     use ic_ledger_types::{BlockIndex, Tokens};
     use ic_stable_structures::StableBTreeMap;
-    use junobuild_auth::openid::types::provider::OpenIdProvider;
     use junobuild_auth::state::types::state::AuthenticationHeapState;
     use junobuild_cdn::proposals::{ProposalsStable, SegmentDeploymentVersion};
     use junobuild_cdn::storage::{ProposalAssetsStable, ProposalContentChunksStable};
@@ -83,8 +82,14 @@ pub mod state {
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct OpenId {
-        pub provider: OpenIdProvider,
+        pub provider: OpenIdAuthProvider,
         pub data: OpenIdData,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub enum OpenIdAuthProvider {
+        Google,
+        GitHub,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone, Eq, PartialEq)]

@@ -4,12 +4,10 @@ use crate::openid::jwt::types::errors::JwtVerifyError;
 use crate::openid::jwt::types::token::Claims;
 use crate::openid::jwt::verify_openid_jwt;
 use crate::openid::types::provider::OpenIdProvider;
-use crate::openid::user::types::interface::OpenIdCredential;
 use crate::openid::workload::types::errors::VerifyOpenidWorkloadCredentialsError;
 use crate::strategies::AuthHeapStrategy;
 
-type VerifyOpenIdWorkloadCredentialsResult =
-    Result<(OpenIdCredential, OpenIdProvider), VerifyOpenidWorkloadCredentialsError>;
+type VerifyOpenIdWorkloadCredentialsResult = Result<(), VerifyOpenidWorkloadCredentialsError>;
 
 pub async fn verify_openid_credentials_with_jwks_renewal(
     jwt: &str,
@@ -50,7 +48,7 @@ fn verify_openid_credentials(
         Ok(())
     };
 
-    let token = verify_openid_jwt(
+    verify_openid_jwt(
         jwt,
         provider.issuers(),
         &jwks.keys,
@@ -59,7 +57,5 @@ fn verify_openid_credentials(
     )
     .map_err(VerifyOpenidWorkloadCredentialsError::JwtVerify)?;
 
-    let credential = OpenIdCredential::from(token);
-
-    Ok((credential, provider.clone()))
+    Ok(())
 }

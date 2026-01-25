@@ -1,4 +1,4 @@
-mod types;
+pub mod types;
 mod verify;
 
 pub use verify::*;

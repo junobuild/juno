@@ -1,4 +1,6 @@
 use candid::{CandidType, Deserialize};
+use junobuild_auth::delegation::types::PrepareDelegationError;
+use junobuild_auth::openid::workload::types::errors::VerifyOpenidWorkloadCredentialsError;
 use junobuild_shared::types::state::Metadata;
 use serde::Serialize;
 
@@ -19,4 +21,9 @@ pub struct OpenIdAuthenticateControllerArgs {
 pub enum GrantableScope {
     Write,
     Submit,
+}
+
+#[derive(CandidType, Serialize, Deserialize)]
+pub enum AuthenticateControllerError {
+    VerifyOpenIdCredentials(VerifyOpenidWorkloadCredentialsError),
 }

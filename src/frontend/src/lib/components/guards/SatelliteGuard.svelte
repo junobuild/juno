@@ -6,20 +6,21 @@
 	import { satellite } from '$lib/derived/satellite.derived';
 	import { satellites } from '$lib/derived/satellites.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
+	import type { Satellite } from '$lib/types/satellite';
 
 	interface Props {
-		children: Snippet;
+		content: Snippet<[Satellite]>;
 	}
 
-	let { children }: Props = $props();
+	let { content }: Props = $props();
 </script>
 
-{#if $satellites === undefined}
+{#if $satellites === undefined || $satellite === undefined}
 	<SpinnerParagraph>{$i18n.satellites.loading_satellites}</SpinnerParagraph>
 {:else if $satellite === null}
 	<div in:fade>
 		<NotFound warnText={$i18n.errors.satellite_no_found} />
 	</div>
 {:else}
-	{@render children()}
+	{@render content($satellite)}
 {/if}

@@ -71,21 +71,21 @@
 
 		<Loaders monitoring>
 			<MissionControlGuard>
-				{#if nonNullish($missionControlId)}
-					<MissionControlDataLoader missionControlId={$missionControlId} reload>
+				{#snippet content(missionControlId)}
+					<MissionControlDataLoader {missionControlId} reload>
 						{#if $store.tabId === $store.tabs[0].id}
-							<MonitoringDashboard missionControlId={$missionControlId} />
+							<MonitoringDashboard {missionControlId} />
 						{:else if $hasMissionControlSettings}
 							{#if $store.tabId === $store.tabs[1].id}
-								<MonitoringSettings missionControlId={$missionControlId} />
+								<MonitoringSettings {missionControlId} />
 							{:else if $store.tabId === $store.tabs[2].id}
-								<MissionControl missionControlId={$missionControlId} />
+								<MissionControl {missionControlId} />
 							{/if}
 						{:else if $store.tabId === $store.tabs[1].id}
-							<MissionControl missionControlId={$missionControlId} />
+							<MissionControl {missionControlId} />
 						{/if}
 					</MissionControlDataLoader>
-				{/if}
+				{/snippet}
 			</MissionControlGuard>
 		</Loaders>
 	</TabsCmp>

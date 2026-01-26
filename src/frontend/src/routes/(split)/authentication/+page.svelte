@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { nonNullish } from '@dfinity/utils';
 	import { setContext } from 'svelte';
 	import { writable } from 'svelte/store';
 	import AuthSettings from '$lib/components/auth/AuthSettings.svelte';
@@ -8,7 +7,6 @@
 	import SatelliteGuard from '$lib/components/guards/SatelliteGuard.svelte';
 	import Loaders from '$lib/components/loaders/Loaders.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
-	import { satellite } from '$lib/derived/satellite.derived';
 	import {
 		type Tab,
 		type TabsContext,
@@ -41,15 +39,15 @@
 <IdentityGuard>
 	<Loaders>
 		<SatelliteGuard>
-			<Tabs>
-				{#if nonNullish($satellite)}
+			{#snippet content(satellite)}
+				<Tabs>
 					{#if $store.tabId === $store.tabs[0].id}
-						<Users satelliteId={$satellite.satellite_id} />
+						<Users satelliteId={satellite.satellite_id} />
 					{:else if $store.tabId === $store.tabs[1].id}
-						<AuthSettings satellite={$satellite} />
+						<AuthSettings {satellite} />
 					{/if}
-				{/if}
-			</Tabs>
+				</Tabs>
+			{/snippet}
 		</SatelliteGuard>
 	</Loaders>
 </IdentityGuard>

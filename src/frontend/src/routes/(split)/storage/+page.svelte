@@ -40,11 +40,11 @@
 <IdentityGuard>
 	<Loaders>
 		<SatelliteGuard>
-			<Tabs>
-				{#if nonNullish($satellite)}
-					<Storage satelliteId={$satellite?.satellite_id} />
-				{/if}
-			</Tabs>
+			{#snippet content(satellite)}
+				<Tabs>
+					<Storage satelliteId={satellite.satellite_id} />
+				</Tabs>
+			{/snippet}
 		</SatelliteGuard>
 	</Loaders>
 </IdentityGuard>

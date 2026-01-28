@@ -69,7 +69,7 @@ export interface AuthenticationConfigInternetIdentity {
 }
 export interface AuthenticationConfigOpenId {
 	observatory_id: [] | [Principal];
-	providers: Array<[OpenIdProvider, OpenIdProviderConfig]>;
+	providers: Array<[OpenIdDelegationProvider, OpenIdProviderConfig]>;
 }
 export type AuthenticationError =
 	| {
@@ -277,7 +277,7 @@ export interface ListSegmentsArgs {
 }
 export type Memory = { Heap: null } | { Stable: null };
 export interface OpenId {
-	provider: OpenIdProvider;
+	provider: OpenIdDelegationProvider;
 	data: OpenIdData;
 }
 export interface OpenIdData {
@@ -289,6 +289,7 @@ export interface OpenIdData {
 	given_name: [] | [string];
 	preferred_username: [] | [string];
 }
+export type OpenIdDelegationProvider = { GitHub: null } | { Google: null };
 export interface OpenIdGetDelegationArgs {
 	jwt: string;
 	session_key: Uint8Array;
@@ -300,7 +301,6 @@ export interface OpenIdPrepareDelegationArgs {
 	session_key: Uint8Array;
 	salt: Uint8Array;
 }
-export type OpenIdProvider = { GitHub: null } | { Google: null };
 export interface OpenIdProviderConfig {
 	delegation: [] | [OpenIdProviderDelegationConfig];
 	client_id: string;

@@ -40,7 +40,7 @@ type AuthenticationConfigInternetIdentity = record {
 };
 type AuthenticationConfigOpenId = record {
   observatory_id : opt principal;
-  providers : vec record { OpenIdProvider; OpenIdProviderConfig };
+  providers : vec record { OpenIdDelegationProvider; OpenIdProviderConfig };
 };
 type AuthenticationError = variant {
   PrepareDelegation : PrepareDelegationError;
@@ -210,6 +210,7 @@ type ListRulesResults = record {
 };
 type Memory = variant { Heap; Stable };
 type MemorySize = record { stable : nat64; heap : nat64 };
+type OpenIdDelegationProvider = variant { GitHub; Google };
 type OpenIdGetDelegationArgs = record {
   jwt : text;
   session_key : blob;
@@ -221,7 +222,6 @@ type OpenIdPrepareDelegationArgs = record {
   session_key : blob;
   salt : blob;
 };
-type OpenIdProvider = variant { GitHub; Google };
 type OpenIdProviderConfig = record {
   delegation : opt OpenIdProviderDelegationConfig;
   client_id : text;

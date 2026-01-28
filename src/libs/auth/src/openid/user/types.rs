@@ -1,3 +1,6 @@
+use candid::{CandidType, Deserialize};
+use serde::Serialize;
+
 pub mod interface {
     pub struct OpenIdCredentialKey<'a> {
         pub iss: &'a String,
@@ -34,5 +37,14 @@ pub(crate) mod errors {
 }
 
 pub mod provider {
+    use candid::{CandidType, Deserialize};
+    use serde::Serialize;
 
+    #[derive(
+        CandidType, Serialize, Deserialize, Clone, Hash, PartialEq, Eq, PartialOrd, Ord, Debug,
+    )]
+    pub enum OpenIdDelegationProvider {
+        Google,
+        GitHub,
+    }
 }

@@ -1,5 +1,7 @@
 use crate::openid::jwt::types::token::Claims;
+use crate::openid::types::provider::OpenIdProvider;
 use crate::openid::user::types::interface::{OpenIdCredential, OpenIdCredentialKey};
+use crate::openid::user::types::provider::OpenIdDelegationProvider;
 use jsonwebtoken::TokenData;
 
 impl From<TokenData<Claims>> for OpenIdCredential {
@@ -23,6 +25,46 @@ impl<'a> From<&'a OpenIdCredential> for OpenIdCredentialKey<'a> {
         Self {
             sub: &credential.sub,
             iss: &credential.iss,
+        }
+    }
+}
+
+impl TryFrom<&OpenIdProvider> for OpenIdDelegationProvider {
+    type Error = String;
+
+    fn try_from(provider: &OpenIdProvider) -> Result<Self, Self::Error> {
+        match provider {
+            OpenIdProvider::Google => Ok(OpenIdDelegationProvider::Google),
+            OpenIdProvider::GitHubProxy => Ok(OpenIdDelegationProvider::GitHub),
+            _ => Err(format!(
+                "{:?} is not supported for user authentication",
+                provider
+            )),
+        }
+    }
+}
+
+impl From<&OpenIdDelegationProvider> for OpenIdProvider {
+    fn from(auth_provider: &OpenIdDelegationProvider) -> Self {
+        match auth_provider {
+            OpenIdDelegationProvider::Google => OpenIdProvider::Google,
+            OpenIdDelegationProvider::GitHub => OpenIdProvider::GitHubProxy,
+        }
+    }
+}
+
+impl OpenIdDelegationProvider {
+    pub fn jwks_url(&self) -> &'static str {
+        match self {
+            Self::Google => OpenIdProvider::Google.jwks_url(),
+            Self::GitHub => OpenIdProvider::GitHubProxy.jwks_url(),
+        }
+    }
+
+    pub fn issuers(&self) -> &[&'static str] {
+        match self {
+            Self::Google => OpenIdProvider::Google.issuers(),
+            Self::GitHub => OpenIdProvider::GitHubProxy.issuers(),
         }
     }
 }

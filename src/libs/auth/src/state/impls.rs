@@ -1,5 +1,5 @@
-use crate::openid::types::provider::{OpenIdCertificate, OpenIdProvider};
-use crate::state::types::config::{AuthenticationConfig, OpenIdAuthProvider};
+use crate::openid::types::provider::OpenIdCertificate;
+use crate::state::types::config::AuthenticationConfig;
 use crate::state::types::interface::SetAuthenticationConfig;
 use crate::state::types::state::{OpenIdCachedCertificate, OpenIdLastFetchAttempt};
 use ic_cdk::api::time;
@@ -72,46 +72,5 @@ impl OpenIdCachedCertificate {
     pub fn update_certificate(&mut self, certificate: &OpenIdCertificate) {
         self.certificate = Some(certificate.clone());
         self.last_fetch_attempt.streak_count = 0;
-    }
-}
-
-
-impl TryFrom<&OpenIdProvider> for OpenIdAuthProvider {
-    type Error = String;
-
-    fn try_from(provider: &OpenIdProvider) -> Result<Self, Self::Error> {
-        match provider {
-            OpenIdProvider::Google => Ok(OpenIdAuthProvider::Google),
-            OpenIdProvider::GitHubProxy => Ok(OpenIdAuthProvider::GitHub),
-            _ => Err(format!(
-                "{:?} is not supported for user authentication",
-                provider
-            )),
-        }
-    }
-}
-
-impl From<&OpenIdAuthProvider> for OpenIdProvider {
-    fn from(auth_provider: &OpenIdAuthProvider) -> Self {
-        match auth_provider {
-            OpenIdAuthProvider::Google => OpenIdProvider::Google,
-            OpenIdAuthProvider::GitHub => OpenIdProvider::GitHubProxy,
-        }
-    }
-}
-
-impl OpenIdAuthProvider {
-    pub fn jwks_url(&self) -> &'static str {
-        match self {
-            Self::Google => OpenIdProvider::Google.jwks_url(),
-            Self::GitHub => OpenIdProvider::GitHubProxy.jwks_url(),
-        }
-    }
-
-    pub fn issuers(&self) -> &[&'static str] {
-        match self {
-            Self::Google => OpenIdProvider::Google.issuers(),
-            Self::GitHub => OpenIdProvider::GitHubProxy.issuers(),
-        }
     }
 }

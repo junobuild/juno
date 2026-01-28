@@ -6,8 +6,8 @@ use crate::delegation::utils::duration::build_expiration;
 use crate::delegation::utils::seed::calculate_seed;
 use crate::delegation::utils::signature::{build_signature_inputs, build_signature_msg};
 use crate::delegation::utils::targets::build_targets;
-use crate::state::types::config::OpenIdAuthProvider;
 use crate::openid::user::types::interface::{OpenIdCredential, OpenIdCredentialKey};
+use crate::openid::user::types::provider::OpenIdDelegationProvider;
 use crate::state::get_salt;
 use crate::state::services::mutate_state;
 use crate::strategies::{AuthCertificateStrategy, AuthHeapStrategy};
@@ -18,7 +18,7 @@ use serde_bytes::ByteBuf;
 pub fn openid_prepare_delegation(
     session_key: &SessionKey,
     credential: &OpenIdCredential,
-    provider: &OpenIdAuthProvider,
+    provider: &OpenIdDelegationProvider,
     auth_heap: &impl AuthHeapStrategy,
     certificate: &impl AuthCertificateStrategy,
 ) -> PrepareDelegationResult {
@@ -36,7 +36,7 @@ pub fn openid_prepare_delegation(
 fn prepare_delegation(
     session_key: &SessionKey,
     key: &OpenIdCredentialKey,
-    provider: &OpenIdAuthProvider,
+    provider: &OpenIdDelegationProvider,
     auth_heap: &impl AuthHeapStrategy,
     certificate: &impl AuthCertificateStrategy,
 ) -> PrepareDelegationResult {
@@ -60,7 +60,7 @@ fn prepare_delegation(
 fn add_delegation_signature(
     session_key: &PublicKey,
     expiration: Timestamp,
-    provider: &OpenIdAuthProvider,
+    provider: &OpenIdDelegationProvider,
     seed: &[u8],
     auth_heap: &impl AuthHeapStrategy,
 ) {

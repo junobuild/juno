@@ -1,8 +1,6 @@
 use crate::memory::manager::init_stable_state;
 use crate::types::ledger::{Fee, IcpPayment, IcrcPayment, IcrcPaymentKey};
-use crate::types::state::{
-    Account, HeapState, Segment, SegmentKey, State, StorableSegmentKind,
-};
+use crate::types::state::{Account, HeapState, Segment, SegmentKey, State, StorableSegmentKind};
 use candid::Principal;
 use ic_cdk::api::time;
 use ic_ledger_types::{BlockIndex, Tokens};

@@ -6,13 +6,14 @@ use crate::openid::jwt::{unsafe_find_jwt_auth_provider, verify_openid_jwt};
 use crate::openid::types::provider::OpenIdProvider;
 use crate::openid::user::types::errors::VerifyOpenidCredentialsError;
 use crate::openid::user::types::interface::OpenIdCredential;
+use crate::openid::user::types::provider::OpenIdDelegationProvider;
 use crate::openid::utils::build_nonce;
-use crate::state::types::config::{OpenIdAuthProvider, OpenIdAuthProviderClientId, OpenIdAuthProviders};
+use crate::state::types::config::{OpenIdAuthProviderClientId, OpenIdAuthProviders};
 use crate::state::types::state::Salt;
 use crate::strategies::AuthHeapStrategy;
 
 type VerifyOpenIdCredentialsResult =
-    Result<(OpenIdCredential, OpenIdAuthProvider), VerifyOpenidCredentialsError>;
+    Result<(OpenIdCredential, OpenIdDelegationProvider), VerifyOpenidCredentialsError>;
 
 pub async fn verify_openid_credentials_with_jwks_renewal(
     jwt: &str,
@@ -51,7 +52,7 @@ pub fn verify_openid_credentials_with_cached_jwks(
 fn verify_openid_credentials(
     jwt: &str,
     jwks: &Jwks,
-    provider: &OpenIdAuthProvider,
+    provider: &OpenIdDelegationProvider,
     client_id: &OpenIdAuthProviderClientId,
     salt: &Salt,
 ) -> VerifyOpenIdCredentialsResult {

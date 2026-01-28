@@ -1,7 +1,8 @@
 use crate::openid::jwt::header::decode_jwt_header;
 use crate::openid::jwt::types::errors::JwtFindProviderError;
 use crate::openid::jwt::types::token::UnsafeClaims;
-use crate::state::types::config::{OpenIdProviderAuthConfig, OpenIdAuthProviders, OpenIdAuthProvider};
+use crate::openid::user::types::provider::OpenIdDelegationProvider;
+use crate::state::types::config::{OpenIdAuthProviders, OpenIdProviderAuthConfig};
 use jsonwebtoken::dangerous;
 
 /// ⚠️ **Warning:** This function decodes the JWT payload *without verifying its signature*.
@@ -9,7 +10,7 @@ use jsonwebtoken::dangerous;
 pub fn unsafe_find_jwt_auth_provider<'a>(
     providers: &'a OpenIdAuthProviders,
     jwt: &str,
-) -> Result<(OpenIdAuthProvider, &'a OpenIdProviderAuthConfig), JwtFindProviderError> {
+) -> Result<(OpenIdDelegationProvider, &'a OpenIdProviderAuthConfig), JwtFindProviderError> {
     // 1) Header sanity check
     decode_jwt_header(jwt).map_err(JwtFindProviderError::from)?;
 
@@ -34,8 +35,8 @@ pub fn unsafe_find_jwt_auth_provider<'a>(
 mod tests {
     use super::unsafe_find_jwt_auth_provider;
     use crate::openid::jwt::types::errors::JwtFindProviderError;
-    use crate::openid::types::provider::OpenIdProvider;
-    use crate::state::types::config::{OpenIdProviderAuthConfig, OpenIdAuthProviders, OpenIdAuthProvider};
+    use crate::openid::user::types::provider::OpenIdDelegationProvider;
+    use crate::state::types::config::{OpenIdAuthProviders, OpenIdProviderAuthConfig};
     use base64::engine::general_purpose::URL_SAFE_NO_PAD;
     use base64::Engine;
     use serde_json::json;
@@ -53,7 +54,7 @@ mod tests {
     fn providers_with_google() -> OpenIdAuthProviders {
         let mut map = BTreeMap::new();
         map.insert(
-            OpenIdAuthProvider::Google,
+            OpenIdDelegationProvider::Google,
             OpenIdProviderAuthConfig {
                 client_id: "client-123".into(),
                 delegation: None,
@@ -72,7 +73,7 @@ mod tests {
         let (provider, cfg) =
             unsafe_find_jwt_auth_provider(&provs, &jwt).expect("should match provider");
 
-        assert_eq!(provider, OpenIdAuthProvider::Google);
+        assert_eq!(provider, OpenIdDelegationProvider::Google);
         assert_eq!(cfg.client_id, "client-123");
     }
 
@@ -84,7 +85,7 @@ mod tests {
         let provs = providers_with_google();
         let (provider, _) =
             unsafe_find_jwt_auth_provider(&provs, &jwt).expect("should match even without typ");
-        assert_eq!(provider, OpenIdAuthProvider::Google);
+        assert_eq!(provider, OpenIdDelegationProvider::Google);
     }
 
     #[test]

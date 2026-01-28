@@ -53,6 +53,7 @@ pub(crate) mod runtime_state {
 
 pub mod config {
     use crate::delegation::types::DelegationTargets;
+    use crate::openid::user::types::provider::OpenIdDelegationProvider;
     use candid::{CandidType, Deserialize, Principal};
     use junobuild_shared::types::core::DomainName;
     use junobuild_shared::types::state::{Timestamp, Version};
@@ -86,15 +87,7 @@ pub mod config {
         pub allowed_callers: Vec<Principal>,
     }
 
-    #[derive(
-        CandidType, Serialize, Deserialize, Clone, Hash, PartialEq, Eq, PartialOrd, Ord, Debug,
-    )]
-    pub enum OpenIdAuthProvider {
-        Google,
-        GitHub,
-    }
-
-    pub type OpenIdAuthProviders = BTreeMap<OpenIdAuthProvider, OpenIdProviderAuthConfig>;
+    pub type OpenIdAuthProviders = BTreeMap<OpenIdDelegationProvider, OpenIdProviderAuthConfig>;
 
     pub type OpenIdAuthProviderClientId = String;
 

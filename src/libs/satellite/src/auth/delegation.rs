@@ -4,13 +4,19 @@ use junobuild_auth::delegation::types::{
     GetDelegationError, GetDelegationResult, OpenIdGetDelegationArgs, OpenIdPrepareDelegationArgs,
     PrepareDelegationError, PreparedDelegation,
 };
-use junobuild_auth::openid::types::provider::OpenIdProvider;
 use junobuild_auth::openid::user::types::interface::OpenIdCredential;
-use junobuild_auth::state::types::config::{OpenIdAuthProvider, OpenIdAuthProviders};
+use junobuild_auth::openid::user::types::provider::OpenIdDelegationProvider;
+use junobuild_auth::state::types::config::OpenIdAuthProviders;
 use junobuild_auth::{delegation, openid};
 
-pub type OpenIdPrepareDelegationResult =
-    Result<(PreparedDelegation, OpenIdAuthProvider, OpenIdCredential), PrepareDelegationError>;
+pub type OpenIdPrepareDelegationResult = Result<
+    (
+        PreparedDelegation,
+        OpenIdDelegationProvider,
+        OpenIdCredential,
+    ),
+    PrepareDelegationError,
+>;
 
 pub async fn openid_prepare_delegation(
     args: &OpenIdPrepareDelegationArgs,

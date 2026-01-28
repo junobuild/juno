@@ -1,14 +1,14 @@
 use crate::accounts::{get_optional_account, init_account, update_provider};
+use crate::types::state::OpenId;
 use crate::types::state::{Account, OpenIdData, Provider};
-use crate::types::state::{OpenId};
 use candid::Principal;
 use junobuild_auth::delegation::types::UserKey;
 use junobuild_auth::openid::user::types::interface::OpenIdCredential;
-use junobuild_auth::state::types::config::OpenIdAuthProvider;
+use junobuild_auth::openid::user::types::provider::OpenIdDelegationProvider;
 
 pub async fn register_account(
     public_key: &UserKey,
-    provider: &OpenIdAuthProvider,
+    provider: &OpenIdDelegationProvider,
     credential: &OpenIdCredential,
 ) -> Result<Account, String> {
     let user_id = Principal::self_authenticating(public_key);

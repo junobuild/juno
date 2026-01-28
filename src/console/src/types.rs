@@ -4,6 +4,7 @@ pub mod state {
     use candid::CandidType;
     use ic_ledger_types::{BlockIndex, Tokens};
     use ic_stable_structures::StableBTreeMap;
+    use junobuild_auth::openid::user::types::provider::OpenIdDelegationProvider;
     use junobuild_auth::state::types::state::AuthenticationHeapState;
     use junobuild_cdn::proposals::{ProposalsStable, SegmentDeploymentVersion};
     use junobuild_cdn::storage::{ProposalAssetsStable, ProposalContentChunksStable};
@@ -17,7 +18,6 @@ pub mod state {
     use junobuild_storage::types::state::StorageHeapState;
     use serde::{Deserialize, Serialize};
     use std::collections::{HashMap, HashSet};
-    use junobuild_auth::state::types::config::OpenIdAuthProvider;
 
     pub type Accounts = HashMap<UserId, Account>;
     pub type IcpPayments = HashMap<BlockIndex, IcpPayment>;
@@ -83,7 +83,7 @@ pub mod state {
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct OpenId {
-        pub provider: OpenIdAuthProvider,
+        pub provider: OpenIdDelegationProvider,
         pub data: OpenIdData,
     }
 

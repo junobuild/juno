@@ -11,8 +11,8 @@ use crate::user::core::types::state::{
 use crate::{Doc, SetDoc};
 use junobuild_auth::openid::types::provider::OpenIdProvider;
 use junobuild_auth::openid::user::types::interface::OpenIdCredential;
+use junobuild_auth::openid::user::types::provider::OpenIdDelegationProvider;
 use junobuild_auth::profile::types::{OpenIdProfile, Validated};
-use junobuild_auth::state::types::config::OpenIdAuthProvider;
 use junobuild_utils::encode_doc_data;
 
 impl Validated for WebAuthnData {
@@ -161,11 +161,11 @@ impl From<&OpenIdCredential> for OpenIdData {
     }
 }
 
-impl From<&OpenIdAuthProvider> for AuthProvider {
-    fn from(auth_provider: &OpenIdAuthProvider) -> Self {
+impl From<&OpenIdDelegationProvider> for AuthProvider {
+    fn from(auth_provider: &OpenIdDelegationProvider) -> Self {
         match auth_provider {
-            OpenIdAuthProvider::Google => AuthProvider::Google,
-            OpenIdAuthProvider::GitHub => AuthProvider::GitHub,
+            OpenIdDelegationProvider::Google => AuthProvider::Google,
+            OpenIdDelegationProvider::GitHub => AuthProvider::GitHub,
         }
     }
 }

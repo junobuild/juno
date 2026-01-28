@@ -46,7 +46,7 @@ pub fn openid_get_delegation(
     args: &OpenIdGetDelegationArgs,
     providers: &OpenIdProviders,
 ) -> GetDelegationResult {
-    let (credential, provider) = match openid::verify_openid_credentials_with_cached_jwks(
+    let (credential, provider) = match openid::delegation::verify_openid_credentials_with_cached_jwks(
         &args.jwt, &args.salt, providers, &AuthHeap,
     ) {
         Ok(value) => value,

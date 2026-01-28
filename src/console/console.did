@@ -52,7 +52,7 @@ type AuthenticationConfigInternetIdentity = record {
 };
 type AuthenticationConfigOpenId = record {
   observatory_id : opt principal;
-  providers : vec record { OpenIdProvider; OpenIdProviderConfig };
+  providers : vec record { OpenIdDelegationProvider; OpenIdProviderAuthConfig };
 };
 type AuthenticationError = variant {
   PrepareDelegation : PrepareDelegationError;
@@ -223,8 +223,11 @@ type ListSegmentsArgs = record {
   segment_kind : opt StorableSegmentKind;
 };
 type Memory = variant { Heap; Stable };
-type OpenId = record { provider : OpenIdAuthProvider; data : OpenIdData };
-type OpenIdAuthProvider = variant { GitHub; Google };
+type OpenId = record { provider : OpenIdDelegationProvider; data : OpenIdData };
+type OpenIdAuthProviderDelegationConfig = record {
+  targets : opt vec principal;
+  max_time_to_live : opt nat64;
+};
 type OpenIdData = record {
   name : opt text;
   locale : opt text;
@@ -234,6 +237,7 @@ type OpenIdData = record {
   given_name : opt text;
   preferred_username : opt text;
 };
+type OpenIdDelegationProvider = variant { GitHub; Google };
 type OpenIdGetDelegationArgs = record {
   jwt : text;
   session_key : blob;
@@ -245,14 +249,9 @@ type OpenIdPrepareDelegationArgs = record {
   session_key : blob;
   salt : blob;
 };
-type OpenIdProvider = variant { GitHubActions; Google; GitHubProxy };
-type OpenIdProviderConfig = record {
-  delegation : opt OpenIdProviderDelegationConfig;
+type OpenIdProviderAuthConfig = record {
+  delegation : opt OpenIdAuthProviderDelegationConfig;
   client_id : text;
-};
-type OpenIdProviderDelegationConfig = record {
-  targets : opt vec principal;
-  max_time_to_live : opt nat64;
 };
 type PaymentStatus = variant { Refunded; Acknowledged; Completed };
 type PrepareDelegationError = variant {

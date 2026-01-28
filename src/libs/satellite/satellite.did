@@ -20,6 +20,13 @@ type AssetNoContent = record {
   version : opt nat64;
 };
 type AssetsUpgradeOptions = record { clear_existing_assets : opt bool };
+type AuthenticateControllerArgs = variant {
+  OpenId : OpenIdAuthenticateControllerArgs;
+};
+type AuthenticateControllerResultResponse = variant {
+  Ok;
+  Err : AuthenticationControllerError;
+};
 type AuthenticateResultResponse = variant {
   Ok : Authentication;
   Err : AuthenticationError;
@@ -40,13 +47,18 @@ type AuthenticationConfigInternetIdentity = record {
 };
 type AuthenticationConfigOpenId = record {
   observatory_id : opt principal;
-  providers : vec record { OpenIdProvider; OpenIdProviderConfig };
+  providers : vec record { OpenIdDelegationProvider; OpenIdProviderAuthConfig };
+};
+type AuthenticationControllerError = variant {
+  RegisterController : text;
+  VerifyOpenIdCredentials : VerifyOpenidAutomationCredentialsError;
 };
 type AuthenticationError = variant {
   PrepareDelegation : PrepareDelegationError;
   RegisterUser : text;
 };
 type AuthenticationRules = record { allowed_callers : vec principal };
+type AutomationScope = variant { Write; Submit };
 type CollectionType = variant { Db; Storage };
 type CommitBatch = record {
   batch_id : nat;
@@ -210,6 +222,18 @@ type ListRulesResults = record {
 };
 type Memory = variant { Heap; Stable };
 type MemorySize = record { stable : nat64; heap : nat64 };
+type OpenIdAuthProviderDelegationConfig = record {
+  targets : opt vec principal;
+  max_time_to_live : opt nat64;
+};
+type OpenIdAuthenticateControllerArgs = record {
+  jwt : text;
+  metadata : vec record { text; text };
+  scope : AutomationScope;
+  max_time_to_live : opt nat64;
+  controller_id : principal;
+};
+type OpenIdDelegationProvider = variant { GitHub; Google };
 type OpenIdGetDelegationArgs = record {
   jwt : text;
   session_key : blob;
@@ -221,14 +245,9 @@ type OpenIdPrepareDelegationArgs = record {
   session_key : blob;
   salt : blob;
 };
-type OpenIdProvider = variant { GitHubActions; Google; GitHubProxy };
-type OpenIdProviderConfig = record {
-  delegation : opt OpenIdProviderDelegationConfig;
+type OpenIdProviderAuthConfig = record {
+  delegation : opt OpenIdAuthProviderDelegationConfig;
   client_id : text;
-};
-type OpenIdProviderDelegationConfig = record {
-  targets : opt vec principal;
-  max_time_to_live : opt nat64;
 };
 type Permission = variant { Controllers; Private; Public; Managed };
 type PrepareDelegationError = variant {
@@ -371,8 +390,16 @@ type UploadChunk = record {
   order_id : opt nat;
 };
 type UploadChunkResult = record { chunk_id : nat };
+type VerifyOpenidAutomationCredentialsError = variant {
+  GetCachedJwks;
+  JwtVerify : JwtVerifyError;
+  GetOrFetchJwks : GetOrRefreshJwksError;
+};
 service : (InitSatelliteArgs) -> {
   authenticate : (AuthenticationArgs) -> (AuthenticateResultResponse);
+  authenticate_controller : (AuthenticateControllerArgs) -> (
+      AuthenticateControllerResultResponse,
+    );
   commit_asset_upload : (CommitBatch) -> ();
   commit_proposal : (CommitProposal) -> (null);
   commit_proposal_asset_upload : (CommitBatch) -> ();

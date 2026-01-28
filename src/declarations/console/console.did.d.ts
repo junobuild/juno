@@ -69,7 +69,7 @@ export interface AuthenticationConfigInternetIdentity {
 }
 export interface AuthenticationConfigOpenId {
 	observatory_id: [] | [Principal];
-	providers: Array<[OpenIdProvider, OpenIdProviderConfig]>;
+	providers: Array<[OpenIdDelegationProvider, OpenIdProviderAuthConfig]>;
 }
 export type AuthenticationError =
 	| {
@@ -277,10 +277,13 @@ export interface ListSegmentsArgs {
 }
 export type Memory = { Heap: null } | { Stable: null };
 export interface OpenId {
-	provider: OpenIdAuthProvider;
+	provider: OpenIdDelegationProvider;
 	data: OpenIdData;
 }
-export type OpenIdAuthProvider = { GitHub: null } | { Google: null };
+export interface OpenIdAuthProviderDelegationConfig {
+	targets: [] | [Array<Principal>];
+	max_time_to_live: [] | [bigint];
+}
 export interface OpenIdData {
 	name: [] | [string];
 	locale: [] | [string];
@@ -290,6 +293,7 @@ export interface OpenIdData {
 	given_name: [] | [string];
 	preferred_username: [] | [string];
 }
+export type OpenIdDelegationProvider = { GitHub: null } | { Google: null };
 export interface OpenIdGetDelegationArgs {
 	jwt: string;
 	session_key: Uint8Array;
@@ -301,14 +305,9 @@ export interface OpenIdPrepareDelegationArgs {
 	session_key: Uint8Array;
 	salt: Uint8Array;
 }
-export type OpenIdProvider = { GitHubActions: null } | { Google: null } | { GitHubProxy: null };
-export interface OpenIdProviderConfig {
-	delegation: [] | [OpenIdProviderDelegationConfig];
+export interface OpenIdProviderAuthConfig {
+	delegation: [] | [OpenIdAuthProviderDelegationConfig];
 	client_id: string;
-}
-export interface OpenIdProviderDelegationConfig {
-	targets: [] | [Array<Principal>];
-	max_time_to_live: [] | [bigint];
 }
 export type PaymentStatus = { Refunded: null } | { Acknowledged: null } | { Completed: null };
 export type PrepareDelegationError =

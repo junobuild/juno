@@ -1,11 +1,11 @@
-use crate::controllers::types::GrantableScope;
+use crate::controllers::types::AutomationScope;
 use junobuild_shared::types::state::ControllerScope;
 
-impl From<GrantableScope> for ControllerScope {
-    fn from(scope: GrantableScope) -> Self {
+impl From<AutomationScope> for ControllerScope {
+    fn from(scope: AutomationScope) -> Self {
         match scope {
-            GrantableScope::Write => ControllerScope::Write,
-            GrantableScope::Submit => ControllerScope::Submit,
+            AutomationScope::Write => ControllerScope::Write,
+            AutomationScope::Submit => ControllerScope::Submit,
         }
     }
 }

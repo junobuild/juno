@@ -11,7 +11,6 @@ use crate::user::core::types::state::{
 use crate::{Doc, SetDoc};
 use junobuild_auth::openid::delegation::types::interface::OpenIdCredential;
 use junobuild_auth::openid::delegation::types::provider::OpenIdDelegationProvider;
-use junobuild_auth::openid::types::provider::OpenIdProvider;
 use junobuild_auth::profile::types::{OpenIdProfile, Validated};
 use junobuild_utils::encode_doc_data;
 
@@ -176,6 +175,7 @@ mod tests {
     use crate::user::core::types::state::{
         AuthProvider, OpenIdData, ProviderData, UserData, WebAuthnData,
     };
+    use junobuild_auth::openid::types::provider::OpenIdProvider;
 
     // ------------------------
     // WebAuthnData

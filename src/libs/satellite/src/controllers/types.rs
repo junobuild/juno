@@ -12,13 +12,13 @@ pub enum AuthenticateControllerArgs {
 pub struct OpenIdAuthenticateControllerArgs {
     pub jwt: String,
     pub controller_id: ControllerId,
-    pub scope: GrantableScope,
+    pub scope: AutomationScope,
     pub metadata: Metadata,
     pub max_time_to_live: Option<u64>,
 }
 
 #[derive(CandidType, Serialize, Deserialize, Clone)]
-pub enum GrantableScope {
+pub enum AutomationScope {
     Write,
     Submit,
 }

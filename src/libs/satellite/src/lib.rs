@@ -233,6 +233,7 @@ pub fn list_controllers() -> Controllers {
 }
 
 #[doc(hidden)]
+#[update]
 pub async fn authenticate_controller(
     args: AuthenticateControllerArgs,
 ) -> AuthenticateControllerResultResponse {

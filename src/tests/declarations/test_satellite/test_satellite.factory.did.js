@@ -75,6 +75,33 @@ export const idlFactory = ({ IDL }) => {
 		Ok: Authentication,
 		Err: AuthenticationError
 	});
+	const AutomationScope = IDL.Variant({
+		Write: IDL.Null,
+		Submit: IDL.Null
+	});
+	const OpenIdAuthenticateControllerArgs = IDL.Record({
+		jwt: IDL.Text,
+		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
+		scope: AutomationScope,
+		max_time_to_live: IDL.Opt(IDL.Nat64),
+		controller_id: IDL.Principal
+	});
+	const AuthenticateControllerArgs = IDL.Variant({
+		OpenId: OpenIdAuthenticateControllerArgs
+	});
+	const VerifyOpenidAutomationCredentialsError = IDL.Variant({
+		GetCachedJwks: IDL.Null,
+		JwtVerify: JwtVerifyError,
+		GetOrFetchJwks: GetOrRefreshJwksError
+	});
+	const AuthenticationControllerError = IDL.Variant({
+		RegisterController: IDL.Text,
+		VerifyOpenIdCredentials: VerifyOpenidAutomationCredentialsError
+	});
+	const AuthenticateControllerResultResponse = IDL.Variant({
+		Ok: IDL.Null,
+		Err: AuthenticationControllerError
+	});
 	const CommitBatch = IDL.Record({
 		batch_id: IDL.Nat,
 		headers: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
@@ -158,22 +185,21 @@ export const idlFactory = ({ IDL }) => {
 		created_at: IDL.Nat64,
 		version: IDL.Opt(IDL.Nat64)
 	});
-	const OpenIdProvider = IDL.Variant({
-		GitHubActions: IDL.Null,
-		Google: IDL.Null,
-		GitHubProxy: IDL.Null
+	const OpenIdDelegationProvider = IDL.Variant({
+		GitHub: IDL.Null,
+		Google: IDL.Null
 	});
-	const OpenIdProviderDelegationConfig = IDL.Record({
+	const OpenIdAuthProviderDelegationConfig = IDL.Record({
 		targets: IDL.Opt(IDL.Vec(IDL.Principal)),
 		max_time_to_live: IDL.Opt(IDL.Nat64)
 	});
-	const OpenIdProviderConfig = IDL.Record({
-		delegation: IDL.Opt(OpenIdProviderDelegationConfig),
+	const OpenIdProviderAuthConfig = IDL.Record({
+		delegation: IDL.Opt(OpenIdAuthProviderDelegationConfig),
 		client_id: IDL.Text
 	});
 	const AuthenticationConfigOpenId = IDL.Record({
 		observatory_id: IDL.Opt(IDL.Principal),
-		providers: IDL.Vec(IDL.Tuple(OpenIdProvider, OpenIdProviderConfig))
+		providers: IDL.Vec(IDL.Tuple(OpenIdDelegationProvider, OpenIdProviderAuthConfig))
 	});
 	const AuthenticationConfigInternetIdentity = IDL.Record({
 		derivation_origin: IDL.Opt(IDL.Text),
@@ -448,6 +474,11 @@ export const idlFactory = ({ IDL }) => {
 
 	return IDL.Service({
 		authenticate: IDL.Func([AuthenticationArgs], [AuthenticateResultResponse], []),
+		authenticate_controller: IDL.Func(
+			[AuthenticateControllerArgs],
+			[AuthenticateControllerResultResponse],
+			[]
+		),
 		commit_asset_upload: IDL.Func([CommitBatch], [], []),
 		commit_proposal: IDL.Func([CommitProposal], [IDL.Null], []),
 		commit_proposal_asset_upload: IDL.Func([CommitBatch], [], []),

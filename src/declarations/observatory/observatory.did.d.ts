@@ -106,7 +106,7 @@ export interface OpenIdCertificate {
 	created_at: bigint;
 	version: [] | [bigint];
 }
-export type OpenIdProvider = { GitHub: null } | { Google: null };
+export type OpenIdProvider = { GitHubActions: null } | { Google: null } | { GitHubProxy: null };
 export interface RateConfig {
 	max_tokens: bigint;
 	time_per_token_ns: bigint;

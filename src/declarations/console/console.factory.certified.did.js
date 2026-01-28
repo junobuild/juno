@@ -24,7 +24,7 @@ export const idlFactory = ({ IDL }) => {
 		user_key: IDL.Vec(IDL.Nat8),
 		expiration: IDL.Nat64
 	});
-	const OpenIdProvider = IDL.Variant({
+	const OpenIdAuthProvider = IDL.Variant({
 		GitHub: IDL.Null,
 		Google: IDL.Null
 	});
@@ -38,7 +38,7 @@ export const idlFactory = ({ IDL }) => {
 		preferred_username: IDL.Opt(IDL.Text)
 	});
 	const OpenId = IDL.Record({
-		provider: OpenIdProvider,
+		provider: OpenIdAuthProvider,
 		data: OpenIdData
 	});
 	const Provider = IDL.Variant({
@@ -132,6 +132,11 @@ export const idlFactory = ({ IDL }) => {
 	});
 	const DeleteProposalAssets = IDL.Record({
 		proposal_ids: IDL.Vec(IDL.Nat)
+	});
+	const OpenIdProvider = IDL.Variant({
+		GitHubActions: IDL.Null,
+		Google: IDL.Null,
+		GitHubProxy: IDL.Null
 	});
 	const OpenIdProviderDelegationConfig = IDL.Record({
 		targets: IDL.Opt(IDL.Vec(IDL.Principal)),

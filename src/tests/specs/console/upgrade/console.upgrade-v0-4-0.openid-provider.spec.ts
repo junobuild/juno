@@ -162,8 +162,7 @@ describe('Console > Upgrade > OpenIdProvider > v0.3.3 -> v0.4.0', () => {
 		await pic?.tearDown();
 	});
 
-	it('should migrate OpenIdProvider.GitHub to OpenIdProvider.GitHubAuth', async () => {
-		// await expect(upgradeCurrent()).not.toThrowError();
-		expect(true).toBeTruthy();
+	it('should migrate OpenIdState.certificates to OpenIdProvider.GitHubAuth', async () => {
+		await expect(upgradeCurrent()).not.toThrowError();
 	});
 });

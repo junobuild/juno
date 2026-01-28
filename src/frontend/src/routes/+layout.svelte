@@ -1,15 +1,13 @@
 <script lang="ts">
 	import { debounce } from '@dfinity/utils';
-	import { onMount, type Snippet } from 'svelte';
+	import type { Snippet } from 'svelte';
 	import { onNavigate } from '$app/navigation';
 	import Overlays from '$lib/components/core/Overlays.svelte';
 	import AuthBroadcastGuard from '$lib/components/guards/AuthBroadcastGuard.svelte';
+	import AppLoader from '$lib/components/loaders/AppLoader.svelte';
 	import AuthLoader from '$lib/components/loaders/AuthLoader.svelte';
 	import AuthWorkerLoader from '$lib/components/loaders/AuthWorkerLoader.svelte';
 	import { layoutNavigationTitle } from '$lib/derived/app/layout-navigation.derived';
-	import { syncSnapshots } from '$lib/services/ic-mgmt/snapshots.services';
-	import { syncSubnets } from '$lib/services/ic-mgmt/subnets.services';
-	import { i18n } from '$lib/stores/app/i18n.store';
 	import { authStore, type AuthStoreData } from '$lib/stores/auth.store';
 	import '$lib/styles/global.scss';
 
@@ -18,14 +16,6 @@
 	}
 
 	let { children }: Props = $props();
-
-	/**
-	 * App init
-	 */
-
-	const init = async () => await Promise.all([i18n.init(), syncSubnets(), syncSnapshots()]);
-
-	onMount(init);
 
 	/**
 	 * Navigation title
@@ -73,12 +63,14 @@
 	});
 </script>
 
-<AuthLoader>
-	<AuthWorkerLoader>
-		<AuthBroadcastGuard>
-			{@render children()}
+<AppLoader>
+	<AuthLoader>
+		<AuthWorkerLoader>
+			<AuthBroadcastGuard>
+				{@render children()}
 
-			<Overlays />
-		</AuthBroadcastGuard>
-	</AuthWorkerLoader>
-</AuthLoader>
+				<Overlays />
+			</AuthBroadcastGuard>
+		</AuthWorkerLoader>
+	</AuthLoader>
+</AppLoader>

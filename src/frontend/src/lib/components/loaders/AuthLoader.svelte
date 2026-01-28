@@ -1,9 +1,9 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import { browser } from '$app/environment';
-	import { authStore } from '$lib/stores/auth.store';
-	import { displayAndCleanLogoutMsg } from '$lib/services/console/auth/auth.services';
 	import { initAccount } from '$lib/services/console/account.services';
+	import { displayAndCleanLogoutMsg } from '$lib/services/console/auth/auth.services';
+	import { authStore } from '$lib/stores/auth.store';
 
 	interface Props {
 		children: Snippet;

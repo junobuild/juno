@@ -1,7 +1,7 @@
 use crate::constants::E8S_PER_ICP;
 use crate::types::state::{Account, OpenIdData, Provider};
 use ic_cdk::api::time;
-use junobuild_auth::openid::user::types::interface::OpenIdCredential;
+use junobuild_auth::openid::delegation::types::interface::OpenIdCredential;
 use junobuild_auth::profile::types::OpenIdProfile;
 use junobuild_shared::types::state::{MissionControlId, UserId};
 

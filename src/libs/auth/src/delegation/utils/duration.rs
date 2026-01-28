@@ -1,5 +1,5 @@
 use crate::delegation::constants::{DEFAULT_EXPIRATION_PERIOD_NS, MAX_EXPIRATION_PERIOD_NS};
-use crate::openid::user::types::provider::OpenIdDelegationProvider;
+use crate::openid::delegation::types::provider::OpenIdDelegationProvider;
 use crate::state::get_config;
 use crate::strategies::AuthHeapStrategy;
 use ic_cdk::api::time;

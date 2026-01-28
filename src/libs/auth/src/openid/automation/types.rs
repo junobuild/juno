@@ -5,7 +5,7 @@ pub mod errors {
     use serde::Serialize;
 
     #[derive(CandidType, Serialize, Deserialize, Debug)]
-    pub enum VerifyOpenidWorkloadCredentialsError {
+    pub enum VerifyOpenidAutomationCredentialsError {
         GetOrFetchJwks(GetOrRefreshJwksError),
         GetCachedJwks,
         JwtVerify(JwtVerifyError),

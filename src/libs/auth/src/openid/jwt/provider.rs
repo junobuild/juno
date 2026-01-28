@@ -1,7 +1,7 @@
+use crate::openid::delegation::types::provider::OpenIdDelegationProvider;
 use crate::openid::jwt::header::decode_jwt_header;
 use crate::openid::jwt::types::errors::JwtFindProviderError;
 use crate::openid::jwt::types::token::UnsafeClaims;
-use crate::openid::user::types::provider::OpenIdDelegationProvider;
 use crate::state::types::config::{OpenIdAuthProviders, OpenIdProviderAuthConfig};
 use jsonwebtoken::dangerous;
 
@@ -34,8 +34,8 @@ pub fn unsafe_find_jwt_auth_provider<'a>(
 #[cfg(test)]
 mod tests {
     use super::unsafe_find_jwt_auth_provider;
+    use crate::openid::delegation::types::provider::OpenIdDelegationProvider;
     use crate::openid::jwt::types::errors::JwtFindProviderError;
-    use crate::openid::user::types::provider::OpenIdDelegationProvider;
     use crate::state::types::config::{OpenIdAuthProviders, OpenIdProviderAuthConfig};
     use base64::engine::general_purpose::URL_SAFE_NO_PAD;
     use base64::Engine;

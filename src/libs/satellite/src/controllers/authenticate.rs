@@ -16,7 +16,7 @@ use std::cmp::min;
 pub async fn openid_authenticate_controller(
     args: &OpenIdAuthenticateControllerArgs,
 ) -> OpenIdAuthenticateControllerResult {
-    match openid::workload::verify_openid_credentials_with_jwks_renewal(
+    match openid::automation::verify_openid_credentials_with_jwks_renewal(
         &args.jwt,
         &OpenIdProvider::GitHubActions,
         &AuthHeap,

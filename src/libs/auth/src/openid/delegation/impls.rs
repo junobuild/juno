@@ -8,10 +8,6 @@ impl TryFrom<&OpenIdProvider> for OpenIdDelegationProvider {
         match provider {
             OpenIdProvider::Google => Ok(OpenIdDelegationProvider::Google),
             OpenIdProvider::GitHubAuth => Ok(OpenIdDelegationProvider::GitHub),
-            _ => Err(format!(
-                "{:?} is not supported for delegation authentication",
-                provider
-            )),
         }
     }
 }

@@ -1,5 +1,5 @@
 import type { SatelliteDid } from '$declarations';
-import type { OpenIdProviderDelegationConfig } from '$declarations/satellite/satellite.did';
+import type { OpenIdAuthProviderDelegationConfig } from '$declarations/satellite/satellite.did';
 import { getAuthConfig as getAuthConfigApi, setAuthConfig, setRule } from '$lib/api/satellites.api';
 import {
 	AUTH_DEFAULT_MAX_SESSION_TIME_TO_LIVE,
@@ -326,7 +326,7 @@ const updateConfigGoogle = async ({
 		return { result: 'skip' };
 	}
 
-	const updateDelegation: OpenIdProviderDelegationConfig | undefined = nonNullish(
+	const updateDelegation: OpenIdAuthProviderDelegationConfig | undefined = nonNullish(
 		updateMaxTimeToLive
 	)
 		? {

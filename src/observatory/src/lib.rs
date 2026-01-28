@@ -11,7 +11,6 @@ mod random;
 mod store;
 mod templates;
 mod types;
-mod upgrade;
 
 use crate::types::interface::GetNotifications;
 use crate::types::interface::NotifyStatus;

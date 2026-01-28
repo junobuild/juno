@@ -72,7 +72,7 @@ pub mod config {
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
     pub struct AuthenticationConfigOpenId {
-        pub providers: OpenIdProviders,
+        pub providers: OpenIdAuthProviders,
         pub observatory_id: Option<Principal>,
     }
 
@@ -87,18 +87,18 @@ pub mod config {
         pub allowed_callers: Vec<Principal>,
     }
 
-    pub type OpenIdProviders = BTreeMap<OpenIdDelegationProvider, OpenIdProviderConfig>;
+    pub type OpenIdAuthProviders = BTreeMap<OpenIdDelegationProvider, OpenIdProviderAuthConfig>;
 
-    pub type OpenIdProviderClientId = String;
+    pub type OpenIdAuthProviderClientId = String;
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone, Debug)]
-    pub struct OpenIdProviderConfig {
-        pub client_id: OpenIdProviderClientId,
-        pub delegation: Option<OpenIdProviderDelegationConfig>,
+    pub struct OpenIdProviderAuthConfig {
+        pub client_id: OpenIdAuthProviderClientId,
+        pub delegation: Option<OpenIdAuthProviderDelegationConfig>,
     }
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone, Debug)]
-    pub struct OpenIdProviderDelegationConfig {
+    pub struct OpenIdAuthProviderDelegationConfig {
         pub targets: Option<DelegationTargets>,
         pub max_time_to_live: Option<u64>,
     }

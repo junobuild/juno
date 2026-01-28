@@ -6,7 +6,7 @@ use crate::openid::jwt::types::cert::Jwks;
 use crate::openid::jwt::{unsafe_find_jwt_provider, verify_openid_jwt};
 use crate::openid::types::provider::OpenIdProvider;
 use crate::openid::utils::build_nonce;
-use crate::state::types::config::{OpenIdProviderClientId, OpenIdProviders};
+use crate::state::types::config::{OpenIdAuthProviderClientId, OpenIdAuthProviders};
 use crate::state::types::state::Salt;
 use crate::strategies::AuthHeapStrategy;
 
@@ -16,7 +16,7 @@ type VerifyOpenIdCredentialsResult =
 pub async fn verify_openid_credentials_with_jwks_renewal(
     jwt: &str,
     salt: &Salt,
-    providers: &OpenIdProviders,
+    providers: &OpenIdAuthProviders,
     auth_heap: &impl AuthHeapStrategy,
 ) -> VerifyOpenIdCredentialsResult {
     let (delegation_provider, config) = unsafe_find_jwt_provider(providers, jwt)
@@ -34,7 +34,7 @@ pub async fn verify_openid_credentials_with_jwks_renewal(
 pub fn verify_openid_credentials_with_cached_jwks(
     jwt: &str,
     salt: &Salt,
-    providers: &OpenIdProviders,
+    providers: &OpenIdAuthProviders,
     auth_heap: &impl AuthHeapStrategy,
 ) -> VerifyOpenIdCredentialsResult {
     let (delegation_provider, config) = unsafe_find_jwt_provider(providers, jwt)
@@ -51,7 +51,7 @@ fn verify_openid_credentials(
     jwt: &str,
     jwks: &Jwks,
     provider: &OpenIdDelegationProvider,
-    client_id: &OpenIdProviderClientId,
+    client_id: &OpenIdAuthProviderClientId,
     salt: &Salt,
 ) -> VerifyOpenIdCredentialsResult {
     let nonce = build_nonce(salt);

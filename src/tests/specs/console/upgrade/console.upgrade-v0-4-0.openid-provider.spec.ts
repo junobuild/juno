@@ -9,7 +9,6 @@ import {
 	type ObservatoryActor040,
 	type SatelliteDid
 } from '$declarations';
-import type { OpenIdProviderConfig } from '$declarations/satellite/satellite.did';
 import { PocketIc, type Actor } from '@dfinity/pic';
 import { assertNonNullish, fromNullable } from '@dfinity/utils';
 import type { Identity } from '@icp-sdk/core/agent';
@@ -98,7 +97,7 @@ describe('Console > Upgrade > OpenIdProvider > v0.3.3 -> v0.4.0', () => {
 					providers: [
 						[{ GitHub: null }, { client_id: mockGitHubClientId, delegation: [] }] as [
 							ConsoleDid033.OpenIdProvider,
-							OpenIdProviderConfig
+							ConsoleDid033.OpenIdProviderConfig
 						]
 					],
 					observatory_id: []

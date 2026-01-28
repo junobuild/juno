@@ -1,3 +1,5 @@
 mod impls;
 pub mod types;
-pub mod verify;
+mod verify;
+
+pub use verify::*;

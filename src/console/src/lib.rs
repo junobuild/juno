@@ -17,6 +17,7 @@ mod rates;
 mod segments;
 mod store;
 mod types;
+mod upgrade;
 
 use crate::types::interface::AuthenticationArgs;
 use crate::types::interface::AuthenticationResult;

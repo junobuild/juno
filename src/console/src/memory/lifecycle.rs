@@ -10,6 +10,7 @@ use junobuild_shared::ic::api::caller;
 use junobuild_shared::memory::upgrade::{read_post_upgrade, write_pre_upgrade};
 use junobuild_shared::segments::controllers::init_admin_controllers;
 use std::collections::HashMap;
+use crate::upgrade::types::upgrade::UpgradeState;
 
 #[init]
 fn init() {
@@ -50,8 +51,11 @@ fn post_upgrade() {
     let memory = get_memory_upgrades();
     let state_bytes = read_post_upgrade(&memory);
 
-    let state: State = from_reader(&*state_bytes)
+    // TODO: remove once stable memory introduced on mainnet
+    let upgrade_state: UpgradeState = from_reader(&*state_bytes)
         .expect("Failed to decode the state of the console in post_upgrade hook.");
+
+    let state: State = upgrade_state.into();
 
     STATE.with(|s| *s.borrow_mut() = state);
 

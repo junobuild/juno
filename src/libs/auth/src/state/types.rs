@@ -87,12 +87,12 @@ pub mod config {
         pub allowed_callers: Vec<Principal>,
     }
 
-    pub type OpenIdAuthProviders = BTreeMap<OpenIdDelegationProvider, OpenIdProviderAuthConfig>;
+    pub type OpenIdAuthProviders = BTreeMap<OpenIdDelegationProvider, OpenIdAuthProviderConfig>;
 
     pub type OpenIdAuthProviderClientId = String;
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone, Debug)]
-    pub struct OpenIdProviderAuthConfig {
+    pub struct OpenIdAuthProviderConfig {
         pub client_id: OpenIdAuthProviderClientId,
         pub delegation: Option<OpenIdAuthProviderDelegationConfig>,
     }

@@ -15,25 +15,21 @@ use std::cmp::min;
 
 pub async fn openid_authenticate_controller(
     args: &OpenIdAuthenticateControllerArgs,
-) -> Result<OpenIdAuthenticateControllerResult, String> {
-    let result = match openid::workload::verify_openid_credentials_with_jwks_renewal(
+) -> OpenIdAuthenticateControllerResult {
+    match openid::workload::verify_openid_credentials_with_jwks_renewal(
         &args.jwt,
         &OpenIdProvider::GitHubActions,
         &AuthHeap,
     )
     .await
     {
-        Ok(_) => {
-            authenticate_controller(args)?;
-            Ok(())
-        }
+        Ok(_) => register_controller(args)
+            .map_err(|err| AuthenticateControllerError::RegisterController(err.to_string())),
         Err(err) => Err(AuthenticateControllerError::VerifyOpenIdCredentials(err)),
-    };
-
-    Ok(result)
+    }
 }
 
-fn authenticate_controller(args: &OpenIdAuthenticateControllerArgs) -> Result<(), String> {
+fn register_controller(args: &OpenIdAuthenticateControllerArgs) -> Result<(), String> {
     let controllers: [ControllerId; 1] = [args.controller_id.clone()];
 
     assert_controllers(&controllers)?;

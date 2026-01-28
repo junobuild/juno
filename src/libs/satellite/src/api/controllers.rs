@@ -56,8 +56,6 @@ pub async fn authenticate_controller(
     args: AuthenticateControllerArgs,
 ) -> OpenIdAuthenticateControllerResult {
     match args {
-        AuthenticateControllerArgs::OpenId(args) => {
-            openid_authenticate_controller(&args).await.unwrap_or_trap()
-        }
+        AuthenticateControllerArgs::OpenId(args) => openid_authenticate_controller(&args).await,
     }
 }

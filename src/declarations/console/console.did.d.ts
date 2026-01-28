@@ -69,7 +69,7 @@ export interface AuthenticationConfigInternetIdentity {
 }
 export interface AuthenticationConfigOpenId {
 	observatory_id: [] | [Principal];
-	providers: Array<[OpenIdDelegationProvider, OpenIdProviderConfig]>;
+	providers: Array<[OpenIdDelegationProvider, OpenIdProviderAuthConfig]>;
 }
 export type AuthenticationError =
 	| {
@@ -280,6 +280,10 @@ export interface OpenId {
 	provider: OpenIdDelegationProvider;
 	data: OpenIdData;
 }
+export interface OpenIdAuthProviderDelegationConfig {
+	targets: [] | [Array<Principal>];
+	max_time_to_live: [] | [bigint];
+}
 export interface OpenIdData {
 	name: [] | [string];
 	locale: [] | [string];
@@ -301,13 +305,9 @@ export interface OpenIdPrepareDelegationArgs {
 	session_key: Uint8Array;
 	salt: Uint8Array;
 }
-export interface OpenIdProviderConfig {
-	delegation: [] | [OpenIdProviderDelegationConfig];
+export interface OpenIdProviderAuthConfig {
+	delegation: [] | [OpenIdAuthProviderDelegationConfig];
 	client_id: string;
-}
-export interface OpenIdProviderDelegationConfig {
-	targets: [] | [Array<Principal>];
-	max_time_to_live: [] | [bigint];
 }
 export type PaymentStatus = { Refunded: null } | { Acknowledged: null } | { Completed: null };
 export type PrepareDelegationError =

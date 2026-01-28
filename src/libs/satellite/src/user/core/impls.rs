@@ -175,7 +175,6 @@ mod tests {
     use crate::user::core::types::state::{
         AuthProvider, OpenIdData, ProviderData, UserData, WebAuthnData,
     };
-    use junobuild_auth::openid::types::provider::OpenIdProvider;
 
     // ------------------------
     // WebAuthnData
@@ -341,12 +340,12 @@ mod tests {
     #[test]
     fn test_openid_provider_to_auth_provider() {
         assert!(matches!(
-            AuthProvider::try_from(&OpenIdProvider::Google),
-            Ok(AuthProvider::Google)
+            AuthProvider::from(&OpenIdDelegationProvider::Google),
+            AuthProvider::Google
         ));
         assert!(matches!(
-            AuthProvider::try_from(&OpenIdProvider::GitHubAuth),
-            Ok(AuthProvider::GitHub)
+            AuthProvider::from(&OpenIdDelegationProvider::GitHub),
+            AuthProvider::GitHub
         ));
     }
 }

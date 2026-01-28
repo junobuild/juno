@@ -7,13 +7,13 @@ import { inject } from 'vitest';
 import {
 	GITHUB_OPEN_ID_PROVIDER,
 	GOOGLE_OPEN_ID_PROVIDER
-} from '../../constants/auth-tests.constants';
-import { mockCertificateDate, mockGoogleClientId } from '../../mocks/jwt.mocks';
-import { FETCH_CERTIFICATE_INTERVAL } from '../../mocks/observatory.mocks';
-import { makeMockGoogleOpenIdJwt } from '../../utils/jwt-tests.utils';
-import { assertOpenIdHttpsOutcalls } from '../../utils/observatory-openid-tests.utils';
-import { tick } from '../../utils/pic-tests.utils';
-import { OBSERVATORY_WASM_PATH } from '../../utils/setup-tests.utils';
+} from '../../../constants/auth-tests.constants';
+import { mockCertificateDate, mockGoogleClientId } from '../../../mocks/jwt.mocks';
+import { FETCH_CERTIFICATE_INTERVAL } from '../../../mocks/observatory.mocks';
+import { makeMockGoogleOpenIdJwt } from '../../../utils/jwt-tests.utils';
+import { assertOpenIdHttpsOutcalls } from '../../../utils/observatory-openid-tests.utils';
+import { tick } from '../../../utils/pic-tests.utils';
+import { OBSERVATORY_WASM_PATH } from '../../../utils/setup-tests.utils';
 
 // TODO: reactivate once OpenIdProvider migrated on mainnet
 describe.todo('Observatory > OpenId > Upgrade', async () => {

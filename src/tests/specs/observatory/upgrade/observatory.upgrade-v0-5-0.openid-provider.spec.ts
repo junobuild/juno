@@ -9,14 +9,14 @@ import { fromNullable } from '@dfinity/utils';
 import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import type { Principal } from '@icp-sdk/core/principal';
 import { inject } from 'vitest';
-import { GITHUB_OPEN_ID_PROVIDER } from '../../constants/auth-tests.constants';
-import { OBSERVATORY_ID } from '../../constants/observatory-tests.constants';
-import { mockGitHubClientId } from '../../mocks/jwt.mocks';
-import { generateNonce } from '../../utils/auth-nonce-tests.utils';
-import { makeMockGitHubOpenIdJwt } from '../../utils/jwt-tests.utils';
-import { assertOpenIdHttpsOutcalls } from '../../utils/observatory-openid-tests.utils';
-import { tick } from '../../utils/pic-tests.utils';
-import { downloadObservatory, OBSERVATORY_WASM_PATH } from '../../utils/setup-tests.utils';
+import { GITHUB_OPEN_ID_PROVIDER } from '../../../constants/auth-tests.constants';
+import { OBSERVATORY_ID } from '../../../constants/observatory-tests.constants';
+import { mockGitHubClientId } from '../../../mocks/jwt.mocks';
+import { generateNonce } from '../../../utils/auth-nonce-tests.utils';
+import { makeMockGitHubOpenIdJwt } from '../../../utils/jwt-tests.utils';
+import { assertOpenIdHttpsOutcalls } from '../../../utils/observatory-openid-tests.utils';
+import { tick } from '../../../utils/pic-tests.utils';
+import { downloadObservatory, OBSERVATORY_WASM_PATH } from '../../../utils/setup-tests.utils';
 
 describe('Observatory > Upgrade', () => {
 	let pic: PocketIc;

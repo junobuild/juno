@@ -9,14 +9,14 @@ import { assertNonNullish } from '@dfinity/utils';
 import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import type { Principal } from '@icp-sdk/core/principal';
 import { inject } from 'vitest';
-import { mockMissionControlId } from '../../../frontend/tests/mocks/modules.mock';
-import { missionControlUserInitArgs } from '../../utils/mission-control-tests.utils';
+import { mockMissionControlId } from '../../../../frontend/tests/mocks/modules.mock';
+import { missionControlUserInitArgs } from '../../../utils/mission-control-tests.utils';
 import {
 	mockObservatoryProxyBearerKey,
 	testDepositedCyclesNotification
-} from '../../utils/observatory-tests.utils';
-import { tick } from '../../utils/pic-tests.utils';
-import { downloadObservatory, OBSERVATORY_WASM_PATH } from '../../utils/setup-tests.utils';
+} from '../../../utils/observatory-tests.utils';
+import { tick } from '../../../utils/pic-tests.utils';
+import { downloadObservatory, OBSERVATORY_WASM_PATH } from '../../../utils/setup-tests.utils';
 
 describe('Observatory > Upgrade', () => {
 	let pic: PocketIc;

@@ -3,14 +3,14 @@ import type { NotifyArgs } from '$declarations/observatory/observatory.did';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import { AnonymousIdentity } from '@icp-sdk/core/agent';
 import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
-import { mockMissionControlId } from '../../../frontend/tests/mocks/modules.mock';
-import { NO_ACCOUNT_ERROR_MSG } from '../../constants/console-tests.constants';
+import { mockMissionControlId } from '../../../../frontend/tests/mocks/modules.mock';
+import { NO_ACCOUNT_ERROR_MSG } from '../../../constants/console-tests.constants';
 import {
 	CALLER_NOT_ANONYMOUS_MSG,
 	OBSERVATORY_ID
-} from '../../constants/observatory-tests.constants';
-import { initMissionControls, setupConsole } from '../../utils/console-tests.utils';
-import { OBSERVATORY_WASM_PATH } from '../../utils/setup-tests.utils';
+} from '../../../constants/observatory-tests.constants';
+import { initMissionControls, setupConsole } from '../../../utils/console-tests.utils';
+import { OBSERVATORY_WASM_PATH } from '../../../utils/setup-tests.utils';
 
 describe('Observatory > Notify', () => {
 	let pic: PocketIc;

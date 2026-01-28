@@ -3,16 +3,16 @@ import { type Actor, PocketIc } from '@dfinity/pic';
 import { AnonymousIdentity } from '@icp-sdk/core/agent';
 import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import { inject } from 'vitest';
-import { GOOGLE_OPEN_ID_PROVIDER } from '../../constants/auth-tests.constants';
-import { CALLER_NOT_CONTROLLER_OBSERVATORY_MSG } from '../../constants/observatory-tests.constants';
-import { mockCertificateDate, mockGoogleClientId } from '../../mocks/jwt.mocks';
-import { makeMockGoogleOpenIdJwt } from '../../utils/jwt-tests.utils';
+import { GOOGLE_OPEN_ID_PROVIDER } from '../../../constants/auth-tests.constants';
+import { CALLER_NOT_CONTROLLER_OBSERVATORY_MSG } from '../../../constants/observatory-tests.constants';
+import { mockCertificateDate, mockGoogleClientId } from '../../../mocks/jwt.mocks';
+import { makeMockGoogleOpenIdJwt } from '../../../utils/jwt-tests.utils';
 import {
 	assertGetCertificate,
 	assertOpenIdHttpsOutcalls
-} from '../../utils/observatory-openid-tests.utils';
-import { tick } from '../../utils/pic-tests.utils';
-import { OBSERVATORY_WASM_PATH } from '../../utils/setup-tests.utils';
+} from '../../../utils/observatory-openid-tests.utils';
+import { tick } from '../../../utils/pic-tests.utils';
+import { OBSERVATORY_WASM_PATH } from '../../../utils/setup-tests.utils';
 
 describe('Observatory > OpenId > Rate', async () => {
 	let pic: PocketIc;

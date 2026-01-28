@@ -2,14 +2,14 @@ import { idlFactoryObservatory, type ObservatoryActor } from '$declarations';
 import { type Actor, PocketIc } from '@dfinity/pic';
 import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import { inject } from 'vitest';
-import { mockMissionControlId } from '../../../frontend/tests/mocks/modules.mock';
+import { mockMissionControlId } from '../../../../frontend/tests/mocks/modules.mock';
 import {
 	mockObservatoryProxyBearerKey,
 	testDepositedCyclesNotification,
 	testFailedDepositCyclesNotification
-} from '../../utils/observatory-tests.utils';
-import { tick } from '../../utils/pic-tests.utils';
-import { OBSERVATORY_WASM_PATH } from '../../utils/setup-tests.utils';
+} from '../../../utils/observatory-tests.utils';
+import { tick } from '../../../utils/pic-tests.utils';
+import { OBSERVATORY_WASM_PATH } from '../../../utils/setup-tests.utils';
 
 describe('Observatory > Ping', () => {
 	let pic: PocketIc;

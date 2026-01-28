@@ -36,8 +36,6 @@ describe('Console > Upgrade > OpenIdProvider > v0.3.3 -> v0.4.0', () => {
 
 	const controller = Ed25519KeyIdentity.generate();
 
-	const user = Ed25519KeyIdentity.generate();
-
 	const upgradeCurrent = async () => {
 		await tick(pic);
 
@@ -49,6 +47,8 @@ describe('Console > Upgrade > OpenIdProvider > v0.3.3 -> v0.4.0', () => {
 	};
 
 	const registerUser = async ({ session }: { session: TestSession }) => {
+		actor.setIdentity(session.user);
+
 		const { account } = await authenticateAndMakeIdentity<{
 			account: ConsoleDid.Account;
 		}>({
@@ -124,6 +124,9 @@ describe('Console > Upgrade > OpenIdProvider > v0.3.3 -> v0.4.0', () => {
 	beforeEach(async () => {
 		pic = await PocketIc.create(inject('PIC_URL'));
 
+		const currentDate = new Date(2021, 6, 10, 0, 0, 0, 0);
+		await pic.setTime(currentDate.getTime());
+
 		const destination = await downloadConsole({ junoVersion: '0.0.66', version: '0.3.2' });
 
 		const { actor: c, canisterId: cId } = await pic.setupCanister<ConsoleActor033>({
@@ -150,6 +153,9 @@ describe('Console > Upgrade > OpenIdProvider > v0.3.3 -> v0.4.0', () => {
 		await registerUser({
 			session
 		});
+
+		// Register set the user as identity
+		actor.setIdentity(controller);
 	});
 
 	afterEach(async () => {

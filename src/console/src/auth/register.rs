@@ -42,7 +42,7 @@ pub async fn register_account(
     };
 
     let provider = Provider::OpenId(OpenId {
-        provider: OpenIdAuthProvider::from(provider),
+        provider: OpenIdAuthProvider::try_from(provider)?,
         data: provider_data,
     });
 

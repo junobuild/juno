@@ -160,11 +160,17 @@ impl From<&OpenIdCredential> for OpenIdData {
     }
 }
 
-impl From<&OpenIdProvider> for AuthProvider {
-    fn from(provider: &OpenIdProvider) -> Self {
+impl TryFrom<&OpenIdProvider> for AuthProvider {
+    type Error = String;
+
+    fn try_from(provider: &OpenIdProvider) -> Result<Self, Self::Error> {
         match provider {
-            OpenIdProvider::Google => AuthProvider::Google,
-            OpenIdProvider::GitHubProxy => AuthProvider::GitHub,
+            OpenIdProvider::Google => Ok(AuthProvider::Google),
+            OpenIdProvider::GitHubProxy => Ok(AuthProvider::GitHub),
+            _ => Err(format!(
+                "{:?} is not supported for user authentication",
+                provider
+            )),
         }
     }
 }
@@ -340,12 +346,13 @@ mod tests {
     #[test]
     fn test_openid_provider_to_auth_provider() {
         assert!(matches!(
-            AuthProvider::from(&OpenIdProvider::Google),
-            AuthProvider::Google
+            AuthProvider::try_from(&OpenIdProvider::Google),
+            Ok(AuthProvider::Google)
         ));
         assert!(matches!(
-            AuthProvider::from(&OpenIdProvider::GitHubProxy),
-            AuthProvider::GitHub
+            AuthProvider::try_from(&OpenIdProvider::GitHubProxy),
+            Ok(AuthProvider::GitHub)
         ));
+        assert!(AuthProvider::try_from(&OpenIdProvider::GitHubActions).is_err());
     }
 }

@@ -83,7 +83,7 @@ pub fn register_user(
     // Create or update the user.
     let user_data: UserData = UserData {
         banned,
-        provider: Some(provider.into()),
+        provider: Some(provider.try_into()?),
         provider_data: Some(ProviderData::OpenId(provider_data)),
     };
 

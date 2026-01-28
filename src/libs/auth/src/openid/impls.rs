@@ -12,6 +12,7 @@ impl OpenIdProvider {
             // Swap for local development with the Juno API:
             // http://host.docker.internal:3000/v1/auth/certs
             Self::GitHubProxy => "https://api.juno.build/v1/auth/certs",
+            Self::GitHubActions => "https://token.actions.githubusercontent.com/.well-known/jwks",
         }
     }
 
@@ -19,6 +20,7 @@ impl OpenIdProvider {
         match self {
             OpenIdProvider::Google => &["https://accounts.google.com", "accounts.google.com"],
             OpenIdProvider::GitHubProxy => &["https://api.juno.build/auth/github"],
+            OpenIdProvider::GitHubActions => &["https://token.actions.githubusercontent.com"],
         }
     }
 }
@@ -65,7 +67,8 @@ impl Display for OpenIdProvider {
     fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
         match self {
             OpenIdProvider::Google => write!(f, "Google"),
-            OpenIdProvider::GitHubProxy => write!(f, "GitHub"),
+            OpenIdProvider::GitHubProxy => write!(f, "GitHub Proxy"),
+            OpenIdProvider::GitHubActions => write!(f, "GitHub Actions"),
         }
     }
 }

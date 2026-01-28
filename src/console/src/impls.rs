@@ -194,11 +194,17 @@ impl Fee {
     }
 }
 
-impl From<&OpenIdProvider> for OpenIdAuthProvider {
-    fn from(provider: &OpenIdProvider) -> Self {
+impl TryFrom<&OpenIdProvider> for OpenIdAuthProvider {
+    type Error = String;
+
+    fn try_from(provider: &OpenIdProvider) -> Result<Self, Self::Error> {
         match provider {
-            OpenIdProvider::Google => OpenIdAuthProvider::Google,
-            OpenIdProvider::GitHubProxy => OpenIdAuthProvider::GitHub,
+            OpenIdProvider::Google => Ok(OpenIdAuthProvider::Google),
+            OpenIdProvider::GitHubProxy => Ok(OpenIdAuthProvider::GitHub),
+            _ => Err(format!(
+                "{:?} is not supported for user authentication",
+                provider
+            )),
         }
     }
 }

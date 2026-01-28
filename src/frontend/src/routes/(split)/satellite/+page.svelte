@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { nonNullish } from '@dfinity/utils';
 	import { setContext } from 'svelte';
 	import { writable } from 'svelte/store';
 	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
@@ -9,7 +8,6 @@
 	import SatelliteSettings from '$lib/components/satellites/setup/SatelliteSettings.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
 	import Warnings from '$lib/components/warning/Warnings.svelte';
-	import { satellite } from '$lib/derived/satellite.derived';
 	import {
 		type Tab,
 		TABS_CONTEXT_KEY,
@@ -42,21 +40,19 @@
 <IdentityGuard>
 	<Loaders monitoring>
 		<SatelliteGuard>
-			<Tabs>
-				{#snippet info()}
-					{#if nonNullish($satellite)}
-						<Warnings satellite={$satellite} />
-					{/if}
-				{/snippet}
+			{#snippet content(satellite)}
+				<Tabs>
+					{#snippet info()}
+						<Warnings {satellite} />
+					{/snippet}
 
-				{#if nonNullish($satellite)}
 					{#if $store.tabId === $store.tabs[0].id}
-						<SatelliteOverview satellite={$satellite} />
+						<SatelliteOverview {satellite} />
 					{:else if $store.tabId === $store.tabs[1].id}
-						<SatelliteSettings satellite={$satellite} />
+						<SatelliteSettings {satellite} />
 					{/if}
-				{/if}
-			</Tabs>
+				</Tabs>
+			{/snippet}
 		</SatelliteGuard>
 	</Loaders>
 </IdentityGuard>

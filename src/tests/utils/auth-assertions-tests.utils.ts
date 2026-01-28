@@ -1,7 +1,7 @@
 import type { ConsoleActor, SatelliteActor, SatelliteDid } from '$declarations';
 import type {
-	OpenIdDelegationProvider,
-	OpenIdProviderAuthConfig
+	OpenIdAuthProviderConfig,
+	OpenIdDelegationProvider
 } from '$declarations/satellite/satellite.did';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import { fromNullable, nonNullish, toNullable } from '@dfinity/utils';
@@ -328,7 +328,7 @@ export const testAuthOpenIdConfig = ({
 	controller: () => Identity;
 	version: bigint;
 }) => {
-	const googleConfig: [OpenIdDelegationProvider, OpenIdProviderAuthConfig] = [
+	const googleConfig: [OpenIdDelegationProvider, OpenIdAuthProviderConfig] = [
 		{ Google: null },
 		{
 			client_id: mockGoogleClientId,
@@ -336,7 +336,7 @@ export const testAuthOpenIdConfig = ({
 		}
 	];
 
-	const githubConfig: [OpenIdDelegationProvider, OpenIdProviderAuthConfig] = [
+	const githubConfig: [OpenIdDelegationProvider, OpenIdAuthProviderConfig] = [
 		{ GitHub: null },
 		{
 			client_id: mockGitHubClientId,

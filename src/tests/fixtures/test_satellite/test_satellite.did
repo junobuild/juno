@@ -42,7 +42,7 @@ type AuthenticationConfigInternetIdentity = record {
 };
 type AuthenticationConfigOpenId = record {
   observatory_id : opt principal;
-  providers : vec record { OpenIdDelegationProvider; OpenIdProviderAuthConfig };
+  providers : vec record { OpenIdDelegationProvider; OpenIdAuthProviderConfig };
 };
 type AuthenticationError = variant {
   PrepareDelegation : PrepareDelegationError;
@@ -212,6 +212,10 @@ type ListRulesResults = record {
 };
 type Memory = variant { Heap; Stable };
 type MemorySize = record { stable : nat64; heap : nat64 };
+type OpenIdAuthProviderConfig = record {
+  delegation : opt OpenIdAuthProviderDelegationConfig;
+  client_id : text;
+};
 type OpenIdAuthProviderDelegationConfig = record {
   targets : opt vec principal;
   max_time_to_live : opt nat64;
@@ -227,10 +231,6 @@ type OpenIdPrepareDelegationArgs = record {
   jwt : text;
   session_key : blob;
   salt : blob;
-};
-type OpenIdProviderAuthConfig = record {
-  delegation : opt OpenIdAuthProviderDelegationConfig;
-  client_id : text;
 };
 type Permission = variant { Controllers; Private; Public; Managed };
 type PrepareDelegationError = variant {

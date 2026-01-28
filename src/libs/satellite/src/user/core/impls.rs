@@ -12,6 +12,7 @@ use crate::{Doc, SetDoc};
 use junobuild_auth::openid::types::provider::OpenIdProvider;
 use junobuild_auth::openid::user::types::interface::OpenIdCredential;
 use junobuild_auth::profile::types::{OpenIdProfile, Validated};
+use junobuild_auth::state::types::config::OpenIdAuthProvider;
 use junobuild_utils::encode_doc_data;
 
 impl Validated for WebAuthnData {
@@ -160,17 +161,11 @@ impl From<&OpenIdCredential> for OpenIdData {
     }
 }
 
-impl TryFrom<&OpenIdProvider> for AuthProvider {
-    type Error = String;
-
-    fn try_from(provider: &OpenIdProvider) -> Result<Self, Self::Error> {
-        match provider {
-            OpenIdProvider::Google => Ok(AuthProvider::Google),
-            OpenIdProvider::GitHubProxy => Ok(AuthProvider::GitHub),
-            _ => Err(format!(
-                "{:?} is not supported for user authentication",
-                provider
-            )),
+impl From<&OpenIdAuthProvider> for AuthProvider {
+    fn from(auth_provider: &OpenIdAuthProvider) -> Self {
+        match auth_provider {
+            OpenIdAuthProvider::Google => AuthProvider::Google,
+            OpenIdAuthProvider::GitHub => AuthProvider::GitHub,
         }
     }
 }

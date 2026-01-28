@@ -9,6 +9,7 @@ use candid::Principal;
 use junobuild_auth::delegation::types::UserKey;
 use junobuild_auth::openid::types::provider::OpenIdProvider;
 use junobuild_auth::openid::user::types::interface::OpenIdCredential;
+use junobuild_auth::state::types::config::OpenIdAuthProvider;
 use junobuild_collections::constants::db::COLLECTION_USER_KEY;
 use junobuild_collections::msg::msg_db_collection_not_found;
 use junobuild_shared::ic::api::id;
@@ -16,7 +17,7 @@ use junobuild_utils::decode_doc_data;
 
 pub fn register_user(
     public_key: &UserKey,
-    provider: &OpenIdProvider,
+    provider: &OpenIdAuthProvider,
     credential: &OpenIdCredential,
 ) -> Result<Doc, String> {
     let user_collection = COLLECTION_USER_KEY.to_string();
@@ -83,7 +84,7 @@ pub fn register_user(
     // Create or update the user.
     let user_data: UserData = UserData {
         banned,
-        provider: Some(provider.try_into()?),
+        provider: Some(provider.into()),
         provider_data: Some(ProviderData::OpenId(provider_data)),
     };
 

@@ -32,3 +32,7 @@ pub(crate) mod errors {
         JwtVerify(JwtVerifyError),
     }
 }
+
+pub mod provider {
+
+}

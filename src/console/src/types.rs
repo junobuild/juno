@@ -17,6 +17,7 @@ pub mod state {
     use junobuild_storage::types::state::StorageHeapState;
     use serde::{Deserialize, Serialize};
     use std::collections::{HashMap, HashSet};
+    use junobuild_auth::state::types::config::OpenIdAuthProvider;
 
     pub type Accounts = HashMap<UserId, Account>;
     pub type IcpPayments = HashMap<BlockIndex, IcpPayment>;
@@ -84,12 +85,6 @@ pub mod state {
     pub struct OpenId {
         pub provider: OpenIdAuthProvider,
         pub data: OpenIdData,
-    }
-
-    #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub enum OpenIdAuthProvider {
-        Google,
-        GitHub,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone, Eq, PartialEq)]

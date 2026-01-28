@@ -1,6 +1,8 @@
 import {
+	idlFactoryConsole,
 	idlFactoryConsole033,
 	idlFactoryObservatory040,
+	type ConsoleActor,
 	type ConsoleActor033,
 	type ConsoleDid,
 	type ConsoleDid033,
@@ -10,6 +12,7 @@ import {
 import type { OpenIdProviderConfig } from '$declarations/satellite/satellite.did';
 import { PocketIc, type Actor } from '@dfinity/pic';
 import { assertNonNullish, fromNullable } from '@dfinity/utils';
+import type { Identity } from '@icp-sdk/core/agent';
 import { ECDSAKeyIdentity, Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import type { Principal } from '@icp-sdk/core/principal';
 import { inject } from 'vitest';
@@ -33,6 +36,7 @@ describe('Console > Upgrade > OpenIdProvider > v0.3.3 -> v0.4.0', () => {
 	let pic: PocketIc;
 	let actor: Actor<ConsoleActor033>;
 	let canisterId: Principal;
+	let userIdentity: Identity;
 
 	const controller = Ed25519KeyIdentity.generate();
 
@@ -49,7 +53,7 @@ describe('Console > Upgrade > OpenIdProvider > v0.3.3 -> v0.4.0', () => {
 	const registerUser = async ({ session }: { session: TestSession }) => {
 		actor.setIdentity(session.user);
 
-		const { account } = await authenticateAndMakeIdentity<{
+		const { account, identity } = await authenticateAndMakeIdentity<{
 			account: ConsoleDid.Account;
 		}>({
 			pic,
@@ -63,6 +67,8 @@ describe('Console > Upgrade > OpenIdProvider > v0.3.3 -> v0.4.0', () => {
 		assertNonNullish(provider);
 
 		expect('OpenId' in provider).toBeTruthy();
+
+		userIdentity = identity;
 	};
 
 	const setupAuth = async (): Promise<{ session: TestSession }> => {
@@ -121,7 +127,7 @@ describe('Console > Upgrade > OpenIdProvider > v0.3.3 -> v0.4.0', () => {
 		};
 	};
 
-	beforeEach(async () => {
+	beforeAll(async () => {
 		pic = await PocketIc.create(inject('PIC_URL'));
 
 		const currentDate = new Date(2021, 6, 10, 0, 0, 0, 0);
@@ -158,11 +164,23 @@ describe('Console > Upgrade > OpenIdProvider > v0.3.3 -> v0.4.0', () => {
 		actor.setIdentity(controller);
 	});
 
-	afterEach(async () => {
+	afterAll(async () => {
 		await pic?.tearDown();
 	});
 
 	it('should migrate OpenIdState.certificates to OpenIdProvider.GitHubAuth', async () => {
 		await expect(upgradeCurrent()).resolves.not.toThrowError();
+	});
+
+	it('should still list the user', async () => {
+		const newActor = pic.createActor<ConsoleActor>(idlFactoryConsole, canisterId);
+		newActor.setIdentity(controller);
+
+		const { list_accounts } = newActor;
+
+		const users = await list_accounts();
+
+		expect(users).toHaveLength(1);
+		expect(userIdentity.getPrincipal().toText()).toEqual(users[0][0].toText());
 	});
 });

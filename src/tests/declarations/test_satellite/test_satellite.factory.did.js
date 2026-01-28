@@ -158,7 +158,7 @@ export const idlFactory = ({ IDL }) => {
 		created_at: IDL.Nat64,
 		version: IDL.Opt(IDL.Nat64)
 	});
-	const OpenIdProvider = IDL.Variant({
+	const OpenIdDelegationProvider = IDL.Variant({
 		GitHub: IDL.Null,
 		Google: IDL.Null
 	});
@@ -172,7 +172,7 @@ export const idlFactory = ({ IDL }) => {
 	});
 	const AuthenticationConfigOpenId = IDL.Record({
 		observatory_id: IDL.Opt(IDL.Principal),
-		providers: IDL.Vec(IDL.Tuple(OpenIdProvider, OpenIdProviderConfig))
+		providers: IDL.Vec(IDL.Tuple(OpenIdDelegationProvider, OpenIdProviderConfig))
 	});
 	const AuthenticationConfigInternetIdentity = IDL.Record({
 		derivation_origin: IDL.Opt(IDL.Text),

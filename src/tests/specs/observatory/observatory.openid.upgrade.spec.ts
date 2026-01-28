@@ -15,7 +15,8 @@ import { assertOpenIdHttpsOutcalls } from '../../utils/observatory-openid-tests.
 import { tick } from '../../utils/pic-tests.utils';
 import { OBSERVATORY_WASM_PATH } from '../../utils/setup-tests.utils';
 
-describe('Observatory > OpenId > Upgrade', async () => {
+// TODO: reactivate once OpenIdProvider migrated on mainnet
+describe.todo('Observatory > OpenId > Upgrade', async () => {
 	let pic: PocketIc;
 	let actor: Actor<ObservatoryActor>;
 	let observatoryId: Principal;

@@ -9,8 +9,8 @@ use crate::user::core::types::state::{
     AuthProvider, OpenIdData, ProviderData, UserData, WebAuthnData,
 };
 use crate::{Doc, SetDoc};
+use junobuild_auth::openid::delegation::types::provider::OpenIdDelegationProvider;
 use junobuild_auth::openid::types::interface::OpenIdCredential;
-use junobuild_auth::openid::types::provider::OpenIdProvider;
 use junobuild_auth::profile::types::{OpenIdProfile, Validated};
 use junobuild_utils::encode_doc_data;
 
@@ -160,11 +160,11 @@ impl From<&OpenIdCredential> for OpenIdData {
     }
 }
 
-impl From<&OpenIdProvider> for AuthProvider {
-    fn from(provider: &OpenIdProvider) -> Self {
+impl From<&OpenIdDelegationProvider> for AuthProvider {
+    fn from(provider: &OpenIdDelegationProvider) -> Self {
         match provider {
-            OpenIdProvider::Google => AuthProvider::Google,
-            OpenIdProvider::GitHub => AuthProvider::GitHub,
+            OpenIdDelegationProvider::Google => AuthProvider::Google,
+            OpenIdDelegationProvider::GitHub => AuthProvider::GitHub,
         }
     }
 }
@@ -340,11 +340,11 @@ mod tests {
     #[test]
     fn test_openid_provider_to_auth_provider() {
         assert!(matches!(
-            AuthProvider::from(&OpenIdProvider::Google),
+            AuthProvider::from(&OpenIdDelegationProvider::Google),
             AuthProvider::Google
         ));
         assert!(matches!(
-            AuthProvider::from(&OpenIdProvider::GitHub),
+            AuthProvider::from(&OpenIdDelegationProvider::GitHub),
             AuthProvider::GitHub
         ));
     }

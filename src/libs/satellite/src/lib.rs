@@ -561,7 +561,7 @@ macro_rules! include_satellite {
             post_upgrade, pre_upgrade, reject_proposal, set_asset_token, set_auth_config,
             set_controllers, set_custom_domain, set_db_config, set_doc, set_many_docs, set_rule,
             set_storage_config, submit_proposal, switch_storage_system_memory, upload_asset_chunk,
-            upload_proposal_asset_chunk,
+            upload_proposal_asset_chunk, authenticate_controller,
         };
 
         ic_cdk::export_candid!();

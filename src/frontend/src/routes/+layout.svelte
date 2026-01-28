@@ -1,16 +1,14 @@
 <script lang="ts">
 	import { debounce } from '@dfinity/utils';
-	import { onDestroy, onMount, type Snippet } from 'svelte';
-	import { browser } from '$app/environment';
+	import { onMount, type Snippet } from 'svelte';
 	import { onNavigate } from '$app/navigation';
 	import Overlays from '$lib/components/core/Overlays.svelte';
 	import AuthBroadcastGuard from '$lib/components/guards/AuthBroadcastGuard.svelte';
+	import AuthLoader from '$lib/components/loaders/AuthLoader.svelte';
+	import AuthWorkerLoader from '$lib/components/loaders/AuthWorkerLoader.svelte';
 	import { layoutNavigationTitle } from '$lib/derived/app/layout-navigation.derived';
-	import { initAccount } from '$lib/services/console/account.services';
-	import { displayAndCleanLogoutMsg } from '$lib/services/console/auth/auth.services';
 	import { syncSnapshots } from '$lib/services/ic-mgmt/snapshots.services';
 	import { syncSubnets } from '$lib/services/ic-mgmt/subnets.services';
-	import { AuthWorker } from '$lib/services/workers/worker.auth.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { authStore, type AuthStoreData } from '$lib/stores/auth.store';
 	import '$lib/styles/global.scss';
@@ -28,48 +26,6 @@
 	const init = async () => await Promise.all([i18n.init(), syncSubnets(), syncSnapshots()]);
 
 	onMount(init);
-
-	/**
-	 * App sync
-	 */
-
-	const syncAuthStore = async () => {
-		if (!browser) {
-			return;
-		}
-
-		try {
-			await authStore.sync();
-		} catch (err: unknown) {
-			console.error(err);
-		}
-
-		displayAndCleanLogoutMsg();
-	};
-
-	const sync = async () => {
-		await syncAuthStore();
-	};
-
-	$effect(() => {
-		initAccount($authStore);
-	});
-
-	/**
-	 * Auth worker
-	 */
-
-	let worker = $state<AuthWorker | undefined>();
-
-	onMount(async () => (worker = await AuthWorker.init()));
-	onDestroy(() => worker?.terminate());
-
-	$effect(() => {
-		worker;
-		$authStore;
-
-		worker?.syncAuthIdle($authStore);
-	});
 
 	/**
 	 * Navigation title
@@ -117,14 +73,12 @@
 	});
 </script>
 
-<svelte:window onstorage={syncAuthStore} />
+<AuthLoader>
+	<AuthWorkerLoader>
+		<AuthBroadcastGuard>
+			{@render children()}
 
-{#await sync()}
-	<!-- No animation as initializing the auth should be fast -->
-{:then _}
-	<AuthBroadcastGuard>
-		{@render children()}
-
-		<Overlays />
-	</AuthBroadcastGuard>
-{/await}
+			<Overlays />
+		</AuthBroadcastGuard>
+	</AuthWorkerLoader>
+</AuthLoader>

@@ -9,10 +9,14 @@ use std::time::Duration;
 
 pub fn defer_restart_monitoring() {
     // Early spare one timer if no scheduler is enabled.
-    let enabled_count = [OpenIdProvider::Google, OpenIdProvider::GitHubProxy]
-        .into_iter()
-        .filter(|provider| is_scheduler_enabled(provider))
-        .count();
+    let enabled_count = [
+        OpenIdProvider::Google,
+        OpenIdProvider::GitHubProxy,
+        OpenIdProvider::GitHubActions,
+    ]
+    .into_iter()
+    .filter(|provider| is_scheduler_enabled(provider))
+    .count();
 
     if enabled_count == 0 {
         return;
@@ -24,7 +28,11 @@ pub fn defer_restart_monitoring() {
 }
 
 async fn restart_monitoring() {
-    for provider in [OpenIdProvider::Google, OpenIdProvider::GitHubProxy] {
+    for provider in [
+        OpenIdProvider::Google,
+        OpenIdProvider::GitHubProxy,
+        OpenIdProvider::GitHubActions,
+    ] {
         schedule_certificate_update(provider, None);
     }
 }

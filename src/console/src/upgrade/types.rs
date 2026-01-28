@@ -1,13 +1,16 @@
 pub mod upgrade {
-    use std::collections::HashMap;
+    use crate::memory::manager::init_stable_state;
+    use crate::types::state::{
+        Accounts, FactoryFees, FactoryRates, IcpPayments, InvitationCodes, ReleasesMetadata,
+        StableState,
+    };
     use candid::{CandidType, Deserialize};
-    use serde::Serialize;
     use junobuild_auth::state::types::config::AuthenticationConfig;
     use junobuild_auth::state::types::state::{OpenIdCachedCertificate, Salt};
     use junobuild_shared::types::state::Controllers;
     use junobuild_storage::types::state::StorageHeapState;
-    use crate::types::state::{Accounts, FactoryFees, FactoryRates, IcpPayments, InvitationCodes, ReleasesMetadata, StableState};
-    use crate::memory::manager::init_stable_state;
+    use serde::Serialize;
+    use std::collections::HashMap;
 
     #[derive(Serialize, Deserialize)]
     pub struct UpgradeState {

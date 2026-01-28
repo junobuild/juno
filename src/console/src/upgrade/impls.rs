@@ -1,7 +1,9 @@
+use crate::types::state::{HeapState, State};
+use crate::upgrade::types::upgrade::{
+    UpgradeAuthenticationHeapState, UpgradeHeapState, UpgradeOpenIdProvider, UpgradeState,
+};
 use junobuild_auth::openid::types::provider::OpenIdProvider;
 use junobuild_auth::state::types::state::{AuthenticationHeapState, OpenIdState};
-use crate::types::state::{HeapState, State};
-use crate::upgrade::types::upgrade::{UpgradeAuthenticationHeapState, UpgradeHeapState, UpgradeOpenIdProvider, UpgradeState};
 
 impl From<UpgradeState> for State {
     fn from(upgrade: UpgradeState) -> Self {
@@ -33,13 +35,12 @@ impl From<UpgradeAuthenticationHeapState> for AuthenticationHeapState {
         AuthenticationHeapState {
             config: upgrade.config,
             salt: upgrade.salt,
-            openid: upgrade.openid.map(|openid_state| {
-                OpenIdState {
-                    certificates: openid_state.certificates
-                        .into_iter()
-                        .map(|(provider, cert)| (provider.into(), cert))
-                        .collect()
-                }
+            openid: upgrade.openid.map(|openid_state| OpenIdState {
+                certificates: openid_state
+                    .certificates
+                    .into_iter()
+                    .map(|(provider, cert)| (provider.into(), cert))
+                    .collect(),
             }),
         }
     }

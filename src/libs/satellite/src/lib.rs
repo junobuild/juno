@@ -562,7 +562,7 @@ macro_rules! include_satellite {
             set_storage_config, submit_proposal, switch_storage_system_memory, upload_asset_chunk,
             upload_proposal_asset_chunk,
         };
+
+        ic_cdk::export_candid!();
     };
 }
-
-ic_cdk::export_candid!();

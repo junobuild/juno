@@ -1,6 +1,6 @@
 use candid::{CandidType, Deserialize};
 use junobuild_auth::openid::workload::types::errors::VerifyOpenidWorkloadCredentialsError;
-use junobuild_shared::types::state::Metadata;
+use junobuild_shared::types::state::{ControllerId, Metadata};
 use serde::Serialize;
 
 #[derive(CandidType, Serialize, Deserialize)]
@@ -11,9 +11,10 @@ pub enum AuthenticateControllerArgs {
 #[derive(CandidType, Serialize, Deserialize)]
 pub struct OpenIdAuthenticateControllerArgs {
     pub jwt: String,
+    pub controller_id: ControllerId,
+    pub scope: GrantableScope,
     pub metadata: Metadata,
     pub max_time_to_live: Option<u64>,
-    pub scope: GrantableScope,
 }
 
 #[derive(CandidType, Serialize, Deserialize, Clone)]

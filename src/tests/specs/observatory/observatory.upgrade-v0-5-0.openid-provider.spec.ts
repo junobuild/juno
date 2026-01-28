@@ -1,8 +1,15 @@
-import { idlFactoryObservatory040, type ObservatoryActor040 } from '$declarations';
+import {
+	idlFactoryObservatory,
+	idlFactoryObservatory040,
+	type ObservatoryActor,
+	type ObservatoryActor040
+} from '$declarations';
 import { PocketIc, type Actor } from '@dfinity/pic';
+import { fromNullable } from '@dfinity/utils';
 import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import type { Principal } from '@icp-sdk/core/principal';
 import { inject } from 'vitest';
+import { GITHUB_OPEN_ID_PROVIDER } from '../../constants/auth-tests.constants';
 import { OBSERVATORY_ID } from '../../constants/observatory-tests.constants';
 import { mockGitHubClientId } from '../../mocks/jwt.mocks';
 import { generateNonce } from '../../utils/auth-nonce-tests.utils';
@@ -72,7 +79,20 @@ describe('Observatory > Upgrade', () => {
 		await pic?.tearDown();
 	});
 
-	it('should migrate heap OpenIdState.certificates to OpenIdProvider.GitHubAuth', async () => {
+	it('should migrate heap OpenId.certificates and OpenId.Schedulers to OpenIdProvider.GitHubAuth', async () => {
 		await expect(upgradeCurrent()).resolves.not.toThrowError();
+	});
+
+	it('should still return certificate', async () => {
+		const newActor = pic.createActor<ObservatoryActor>(idlFactoryObservatory, observatoryId);
+		newActor.setIdentity(controller);
+
+		const { get_openid_certificate } = newActor;
+
+		const cert = await get_openid_certificate({
+			provider: GITHUB_OPEN_ID_PROVIDER
+		});
+
+		expect(fromNullable(cert)).not.toBeUndefined();
 	});
 });

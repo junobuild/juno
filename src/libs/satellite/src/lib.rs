@@ -23,8 +23,8 @@ use crate::guards::{
     caller_is_admin_controller, caller_is_controller, caller_is_controller_with_write,
 };
 use crate::types::interface::{
-    AuthenticateResultResponse, AuthenticationArgs, Config, DeleteProposalAssets,
-    GetDelegationArgs, GetDelegationResultResponse,
+    AuthenticateControllerResultResponse, AuthenticateResultResponse, AuthenticationArgs, Config,
+    DeleteProposalAssets, GetDelegationArgs, GetDelegationResultResponse,
 };
 use crate::types::state::CollectionType;
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
@@ -63,11 +63,11 @@ use memory::lifecycle;
 // ============================================================================================
 // These types are made available for use in Serverless Functions.
 // ============================================================================================
+use crate::controllers::types::AuthenticateControllerArgs;
 use crate::db::types::interface::SetDbConfig;
 use junobuild_auth::state::types::interface::SetAuthenticationConfig;
 pub use sdk::core::*;
 pub use sdk::internal;
-
 // ---------------------------------------------------------
 // Init and Upgrade
 // ---------------------------------------------------------
@@ -230,6 +230,13 @@ pub fn del_controllers(args: DeleteControllersArgs) -> Controllers {
 #[query(guard = "caller_is_admin_controller")]
 pub fn list_controllers() -> Controllers {
     api::controllers::list_controllers()
+}
+
+#[doc(hidden)]
+pub async fn authenticate_controller(
+    args: AuthenticateControllerArgs,
+) -> AuthenticateControllerResultResponse {
+    api::controllers::authenticate_controller(args).await.into()
 }
 
 // ---------------------------------------------------------
@@ -555,7 +562,7 @@ macro_rules! include_satellite {
             set_storage_config, submit_proposal, switch_storage_system_memory, upload_asset_chunk,
             upload_proposal_asset_chunk,
         };
-
-        ic_cdk::export_candid!();
     };
 }
+
+ic_cdk::export_candid!();

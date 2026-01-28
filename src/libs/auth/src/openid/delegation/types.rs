@@ -1,6 +1,3 @@
-use candid::{CandidType, Deserialize};
-use serde::Serialize;
-
 pub mod interface {
     pub struct OpenIdCredentialKey<'a> {
         pub iss: &'a String,

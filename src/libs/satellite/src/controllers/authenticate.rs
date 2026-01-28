@@ -2,8 +2,7 @@ use crate::auth::strategy_impls::AuthHeap;
 use crate::controllers::constants::{DEFAULT_CONTROLLER_DURATION_NS, MAX_CONTROLLER_DURATION_NS};
 use crate::controllers::store::set_controllers;
 use crate::controllers::types::{
-    AuthenticateControllerError, OpenIdAuthenticateControllerArgs,
-    OpenIdAuthenticateControllerResult,
+    AuthenticateControllerResult, AuthenticationControllerError, OpenIdAuthenticateControllerArgs,
 };
 use ic_cdk::api::time;
 use junobuild_auth::openid;
@@ -15,7 +14,7 @@ use std::cmp::min;
 
 pub async fn openid_authenticate_controller(
     args: &OpenIdAuthenticateControllerArgs,
-) -> OpenIdAuthenticateControllerResult {
+) -> AuthenticateControllerResult {
     match openid::automation::verify_openid_credentials_with_jwks_renewal(
         &args.jwt,
         &OpenIdProvider::GitHubActions,
@@ -24,8 +23,8 @@ pub async fn openid_authenticate_controller(
     .await
     {
         Ok(_) => register_controller(args)
-            .map_err(|err| AuthenticateControllerError::RegisterController(err.to_string())),
-        Err(err) => Err(AuthenticateControllerError::VerifyOpenIdCredentials(err)),
+            .map_err(|err| AuthenticationControllerError::RegisterController(err.to_string())),
+        Err(err) => Err(AuthenticationControllerError::VerifyOpenIdCredentials(err)),
     }
 }
 

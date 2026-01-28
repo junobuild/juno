@@ -24,9 +24,9 @@ pub enum GrantableScope {
 }
 
 #[derive(CandidType, Serialize, Deserialize)]
-pub enum AuthenticateControllerError {
+pub enum AuthenticationControllerError {
     VerifyOpenIdCredentials(VerifyOpenidAutomationCredentialsError),
     RegisterController(String),
 }
 
-pub type OpenIdAuthenticateControllerResult = Result<(), AuthenticateControllerError>;
+pub type AuthenticateControllerResult = Result<(), AuthenticationControllerError>;

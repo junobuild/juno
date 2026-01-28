@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { onMount, type Snippet } from 'svelte';
+	import { authNotSignedIn } from '$lib/derived/auth.derived';
 	import { syncSnapshots } from '$lib/services/ic-mgmt/snapshots.services';
 	import { syncSubnets } from '$lib/services/ic-mgmt/subnets.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import { authNotSignedIn } from '$lib/derived/auth.derived';
 
 	interface Props {
 		children: Snippet;

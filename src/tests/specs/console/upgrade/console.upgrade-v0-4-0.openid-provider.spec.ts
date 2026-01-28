@@ -168,8 +168,25 @@ describe('Console > Upgrade > OpenIdProvider > v0.3.3 -> v0.4.0', () => {
 		await pic?.tearDown();
 	});
 
-	it('should migrate OpenIdState.certificates to OpenIdProvider.GitHubAuth', async () => {
+	it('should migrate heap OpenIdState.certificates to OpenIdProvider.GitHubAuth', async () => {
 		await expect(upgradeCurrent()).resolves.not.toThrowError();
+	});
+
+	it('should still be configured with GitHub respectively newly OpenIdDelegationProvider.GitHub', async () => {
+		const newActor = pic.createActor<ConsoleActor>(idlFactoryConsole, canisterId);
+		newActor.setIdentity(controller);
+
+		const { get_auth_config } = newActor;
+
+		const config = fromNullable(await get_auth_config());
+
+		assertNonNullish(config);
+
+		const openid = fromNullable(config.openid);
+
+		assertNonNullish(openid);
+
+		expect('GitHub' in openid.providers[0][0]).toBeTruthy();
 	});
 
 	it('should still list the user', async () => {

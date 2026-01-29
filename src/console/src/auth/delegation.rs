@@ -7,7 +7,7 @@ use junobuild_auth::delegation::types::{
 };
 use junobuild_auth::openid::credentials;
 use junobuild_auth::openid::credentials::delegation::types::interface::OpenIdCredential;
-use junobuild_auth::openid::credentials::delegation::types::provider::OpenIdDelegationProvider;
+use junobuild_auth::openid::types::provider::OpenIdDelegationProvider;
 use junobuild_auth::state::types::config::OpenIdAuthProviders;
 
 pub type OpenIdPrepareDelegationResult = Result<

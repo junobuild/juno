@@ -23,6 +23,7 @@ fn insert_config_impl(config: &AuthenticationConfig, state: &mut Option<Authenti
         None => {
             *state = Some(AuthenticationHeapState {
                 config: config.clone(),
+                automation: None,
                 salt: None,
                 openid: None,
             })
@@ -48,6 +49,7 @@ fn insert_salt_impl(salt: &Salt, state: &mut Option<AuthenticationHeapState>) {
         None => {
             *state = Some(AuthenticationHeapState {
                 config: AuthenticationConfig::default(),
+                automation: None,
                 salt: Some(*salt),
                 openid: None,
             })

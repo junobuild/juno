@@ -1,4 +1,4 @@
-pub mod delegation;
+pub mod credentials;
 mod impls;
 pub mod jwkset;
 pub mod jwt;

@@ -29,17 +29,6 @@ impl<'a> From<&'a OpenIdCredential> for OpenIdCredentialKey<'a> {
     }
 }
 
-impl TryFrom<&OpenIdProvider> for OpenIdDelegationProvider {
-    type Error = String;
-
-    fn try_from(provider: &OpenIdProvider) -> Result<Self, Self::Error> {
-        match provider {
-            OpenIdProvider::Google => Ok(OpenIdDelegationProvider::Google),
-            OpenIdProvider::GitHubAuth => Ok(OpenIdDelegationProvider::GitHub),
-        }
-    }
-}
-
 impl From<&OpenIdDelegationProvider> for OpenIdProvider {
     fn from(delegation_provider: &OpenIdDelegationProvider) -> Self {
         match delegation_provider {

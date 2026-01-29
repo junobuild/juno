@@ -13,6 +13,14 @@ pub mod provider {
         GitHubActions,
     }
 
+    #[derive(
+        CandidType, Serialize, Deserialize, Clone, Hash, PartialEq, Eq, PartialOrd, Ord, Debug,
+    )]
+    pub enum OpenIdDelegationProvider {
+        Google,
+        GitHub,
+    }
+
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct OpenIdCertificate {
         pub jwks: Jwks,

@@ -1,7 +1,6 @@
 use crate::openid::credentials::delegation::types::interface::{
     OpenIdCredential, OpenIdCredentialKey,
 };
-use crate::openid::credentials::delegation::types::provider::OpenIdDelegationProvider;
 use crate::openid::jwt::types::token::Claims;
 use crate::openid::types::provider::OpenIdProvider;
 use jsonwebtoken::TokenData;
@@ -27,31 +26,6 @@ impl<'a> From<&'a OpenIdCredential> for OpenIdCredentialKey<'a> {
         Self {
             sub: &credential.sub,
             iss: &credential.iss,
-        }
-    }
-}
-
-impl From<&OpenIdDelegationProvider> for OpenIdProvider {
-    fn from(delegation_provider: &OpenIdDelegationProvider) -> Self {
-        match delegation_provider {
-            OpenIdDelegationProvider::Google => OpenIdProvider::Google,
-            OpenIdDelegationProvider::GitHub => OpenIdProvider::GitHubAuth,
-        }
-    }
-}
-
-impl OpenIdDelegationProvider {
-    pub fn jwks_url(&self) -> &'static str {
-        match self {
-            Self::Google => OpenIdProvider::Google.jwks_url(),
-            Self::GitHub => OpenIdProvider::GitHubAuth.jwks_url(),
-        }
-    }
-
-    pub fn issuers(&self) -> &[&'static str] {
-        match self {
-            Self::Google => OpenIdProvider::Google.issuers(),
-            Self::GitHub => OpenIdProvider::GitHubAuth.issuers(),
         }
     }
 }

@@ -193,3 +193,9 @@ pub(crate) mod errors {
         BadClaim(String),
     }
 }
+
+pub mod provider {
+    pub trait JwtIssuers {
+        fn issuers(&self) -> &[&'static str];
+    }
+}

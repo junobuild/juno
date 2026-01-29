@@ -1,11 +1,10 @@
 use crate::openid::jwt::types::cert::Jwks;
-use crate::openid::types::provider::{
-    OpenIdAutomationProvider, OpenIdCertificate, OpenIdDelegationProvider, OpenIdProvider,
-};
+use crate::openid::types::provider::{OpenIdAutomationProvider, OpenIdCertificate, OpenIdDelegationProvider, OpenIdProvider};
 use ic_cdk::api::time;
 use junobuild_shared::data::version::next_version;
 use junobuild_shared::types::state::{Version, Versioned};
 use std::fmt::{Display, Formatter, Result as FmtResult};
+use crate::openid::jwt::types::provider::JwtIssuers;
 
 impl OpenIdProvider {
     pub fn jwks_url(&self) -> &'static str {
@@ -71,6 +70,18 @@ impl OpenIdAutomationProvider {
         match self {
             Self::GitHub => OpenIdProvider::GitHubActions.issuers(),
         }
+    }
+}
+
+impl JwtIssuers for OpenIdDelegationProvider {
+    fn issuers(&self) -> &[&'static str] {
+        self.issuers() 
+    }
+}
+
+impl JwtIssuers for OpenIdAutomationProvider {
+    fn issuers(&self) -> &[&'static str] {
+        self.issuers()
     }
 }
 

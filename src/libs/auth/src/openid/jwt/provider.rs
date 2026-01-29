@@ -1,16 +1,19 @@
+use std::collections::BTreeMap;
 use crate::openid::jwt::header::decode_jwt_header;
 use crate::openid::jwt::types::errors::JwtFindProviderError;
 use crate::openid::jwt::types::token::UnsafeClaims;
-use crate::openid::types::provider::OpenIdDelegationProvider;
-use crate::state::types::config::{OpenIdAuthProviderConfig, OpenIdAuthProviders};
 use jsonwebtoken::dangerous;
+use crate::openid::jwt::types::provider::JwtIssuers;
 
 /// ⚠️ **Warning:** This function decodes the JWT payload *without verifying its signature*.
 /// Use only to inspect claims (e.g., `iss`) before performing a verified decode.
-pub fn unsafe_find_jwt_delegation_provider<'a>(
-    providers: &'a OpenIdAuthProviders,
+pub fn unsafe_find_jwt_provider<'a, Provider, Config>(
+    providers: &'a BTreeMap<Provider, Config>,
     jwt: &str,
-) -> Result<(OpenIdDelegationProvider, &'a OpenIdAuthProviderConfig), JwtFindProviderError> {
+) -> Result<(Provider, &'a Config), JwtFindProviderError>
+where
+    Provider: Clone + JwtIssuers,
+{
     // 1) Header sanity check
     decode_jwt_header(jwt).map_err(JwtFindProviderError::from)?;
 
@@ -33,7 +36,7 @@ pub fn unsafe_find_jwt_delegation_provider<'a>(
 
 #[cfg(test)]
 mod tests {
-    use super::unsafe_find_jwt_delegation_provider;
+    use super::unsafe_find_jwt_provider;
     use crate::openid::jwt::types::errors::JwtFindProviderError;
     use crate::openid::types::provider::OpenIdDelegationProvider;
     use crate::state::types::config::{OpenIdAuthProviderConfig, OpenIdAuthProviders};
@@ -71,7 +74,7 @@ mod tests {
 
         let provs = providers_with_google();
         let (provider, cfg) =
-            unsafe_find_jwt_delegation_provider(&provs, &jwt).expect("should match provider");
+            unsafe_find_jwt_provider(&provs, &jwt).expect("should match provider");
 
         assert_eq!(provider, OpenIdDelegationProvider::Google);
         assert_eq!(cfg.client_id, "client-123");
@@ -83,7 +86,7 @@ mod tests {
         let jwt = jwt_with(json!({"alg":"RS256"}), json!({"iss": iss}));
 
         let provs = providers_with_google();
-        let (provider, _) = unsafe_find_jwt_delegation_provider(&provs, &jwt)
+        let (provider, _) = unsafe_find_jwt_provider(&provs, &jwt)
             .expect("should match even without typ");
         assert_eq!(provider, OpenIdDelegationProvider::Google);
     }
@@ -94,7 +97,7 @@ mod tests {
         let jwt = jwt_with(json!({"alg":"HS256","typ":"JWT"}), json!({"iss": iss}));
 
         let provs = providers_with_google();
-        let err = unsafe_find_jwt_delegation_provider(&provs, &jwt).unwrap_err();
+        let err = unsafe_find_jwt_provider(&provs, &jwt).unwrap_err();
 
         match err {
             JwtFindProviderError::BadClaim(f) => assert_eq!(f, "alg"),
@@ -111,7 +114,7 @@ mod tests {
         );
 
         let provs = providers_with_google();
-        let err = unsafe_find_jwt_delegation_provider(&provs, &jwt).unwrap_err();
+        let err = unsafe_find_jwt_provider(&provs, &jwt).unwrap_err();
 
         match err {
             JwtFindProviderError::BadClaim(f) => assert_eq!(f, "typ"),
@@ -123,7 +126,7 @@ mod tests {
     fn returns_no_matching_provider_when_issuer_missing() {
         let jwt = jwt_with(json!({"alg":"RS256","typ":"JWT"}), json!({}));
         let provs = providers_with_google();
-        let err = unsafe_find_jwt_delegation_provider(&provs, &jwt).unwrap_err();
+        let err = unsafe_find_jwt_provider(&provs, &jwt).unwrap_err();
         assert!(matches!(err, JwtFindProviderError::NoMatchingProvider));
     }
 
@@ -134,7 +137,7 @@ mod tests {
             json!({"iss":"https://unknown.example.com"}),
         );
         let provs = providers_with_google();
-        let err = unsafe_find_jwt_delegation_provider(&provs, &jwt).unwrap_err();
+        let err = unsafe_find_jwt_provider(&provs, &jwt).unwrap_err();
         assert!(matches!(err, JwtFindProviderError::NoMatchingProvider));
     }
 
@@ -142,7 +145,7 @@ mod tests {
     fn malformed_token_is_badsig() {
         let jwt = "definitely-not-a-jwt";
         let provs = providers_with_google();
-        let err = unsafe_find_jwt_delegation_provider(&provs, jwt).unwrap_err();
+        let err = unsafe_find_jwt_provider(&provs, jwt).unwrap_err();
         assert!(matches!(err, JwtFindProviderError::BadSig(_)));
     }
 
@@ -155,7 +158,7 @@ mod tests {
         let jwt = format!("{h}.{p}.{s}");
 
         let provs = providers_with_google();
-        let err = unsafe_find_jwt_delegation_provider(&provs, &jwt).unwrap_err();
+        let err = unsafe_find_jwt_provider(&provs, &jwt).unwrap_err();
         assert!(matches!(err, JwtFindProviderError::BadSig(_)));
     }
 
@@ -163,7 +166,7 @@ mod tests {
     fn empty_iss_is_no_match() {
         let jwt = jwt_with(json!({"alg":"RS256","typ":"JWT"}), json!({"iss": ""}));
         let provs = providers_with_google();
-        let err = unsafe_find_jwt_delegation_provider(&provs, &jwt).unwrap_err();
+        let err = unsafe_find_jwt_provider(&provs, &jwt).unwrap_err();
         assert!(matches!(err, JwtFindProviderError::NoMatchingProvider));
     }
 }

@@ -1,5 +1,5 @@
 use crate::delegation::types::{GetDelegationError, PrepareDelegationError};
-use crate::openid::credentials::delegation::types::errors::VerifyOpenidCredentialsError;
+use crate::openid::credentials::types::errors::VerifyOpenidCredentialsError;
 
 impl From<VerifyOpenidCredentialsError> for GetDelegationError {
     fn from(e: VerifyOpenidCredentialsError) -> Self {

@@ -1,5 +1,5 @@
-use crate::openid::credentials::delegation::types::errors::VerifyOpenidCredentialsError;
 use crate::openid::credentials::delegation::types::interface::OpenIdCredential;
+use crate::openid::credentials::types::errors::VerifyOpenidCredentialsError;
 use crate::openid::jwkset::{get_jwks, get_or_refresh_jwks};
 use crate::openid::jwt::types::cert::Jwks;
 use crate::openid::jwt::{unsafe_find_jwt_provider, verify_openid_jwt};

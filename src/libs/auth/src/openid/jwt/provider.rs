@@ -34,7 +34,6 @@ where
     Err(JwtFindProviderError::NoMatchingProvider)
 }
 
-
 #[cfg(test)]
 mod tests {
     use super::unsafe_find_jwt_provider;

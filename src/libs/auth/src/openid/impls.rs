@@ -1,5 +1,5 @@
 use crate::openid::jwt::types::cert::Jwks;
-use crate::openid::types::provider::{OpenIdCertificate, OpenIdProvider};
+use crate::openid::types::provider::{OpenIdCertificate, OpenIdDelegationProvider, OpenIdProvider};
 use ic_cdk::api::time;
 use junobuild_shared::data::version::next_version;
 use junobuild_shared::types::state::{Version, Versioned};
@@ -19,6 +19,31 @@ impl OpenIdProvider {
         match self {
             OpenIdProvider::Google => &["https://accounts.google.com", "accounts.google.com"],
             OpenIdProvider::GitHubAuth => &["https://api.juno.build/auth/github"],
+        }
+    }
+}
+
+impl From<&OpenIdDelegationProvider> for OpenIdProvider {
+    fn from(delegation_provider: &OpenIdDelegationProvider) -> Self {
+        match delegation_provider {
+            OpenIdDelegationProvider::Google => OpenIdProvider::Google,
+            OpenIdDelegationProvider::GitHub => OpenIdProvider::GitHubAuth,
+        }
+    }
+}
+
+impl OpenIdDelegationProvider {
+    pub fn jwks_url(&self) -> &'static str {
+        match self {
+            Self::Google => OpenIdProvider::Google.jwks_url(),
+            Self::GitHub => OpenIdProvider::GitHubAuth.jwks_url(),
+        }
+    }
+
+    pub fn issuers(&self) -> &[&'static str] {
+        match self {
+            Self::Google => OpenIdProvider::Google.issuers(),
+            Self::GitHub => OpenIdProvider::GitHubAuth.issuers(),
         }
     }
 }

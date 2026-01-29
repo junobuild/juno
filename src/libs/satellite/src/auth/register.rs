@@ -8,7 +8,7 @@ use crate::Doc;
 use candid::Principal;
 use junobuild_auth::delegation::types::UserKey;
 use junobuild_auth::openid::credentials::delegation::types::interface::OpenIdCredential;
-use junobuild_auth::openid::credentials::delegation::types::provider::OpenIdDelegationProvider;
+use junobuild_auth::openid::types::provider::OpenIdDelegationProvider;
 use junobuild_collections::constants::db::COLLECTION_USER_KEY;
 use junobuild_collections::msg::msg_db_collection_not_found;
 use junobuild_shared::ic::api::id;

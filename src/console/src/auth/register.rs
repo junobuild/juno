@@ -4,7 +4,7 @@ use crate::types::state::{Account, OpenIdData, Provider};
 use candid::Principal;
 use junobuild_auth::delegation::types::UserKey;
 use junobuild_auth::openid::credentials::delegation::types::interface::OpenIdCredential;
-use junobuild_auth::openid::credentials::delegation::types::provider::OpenIdDelegationProvider;
+use junobuild_auth::openid::types::provider::OpenIdDelegationProvider;
 
 pub async fn register_account(
     public_key: &UserKey,

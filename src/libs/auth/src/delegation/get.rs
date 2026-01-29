@@ -7,7 +7,7 @@ use crate::delegation::utils::targets::build_targets;
 use crate::openid::credentials::delegation::types::interface::{
     OpenIdCredential, OpenIdCredentialKey,
 };
-use crate::openid::credentials::delegation::types::provider::OpenIdDelegationProvider;
+use crate::openid::types::provider::OpenIdDelegationProvider;
 use crate::state::get_salt;
 use crate::state::services::read_state;
 use crate::strategies::{AuthCertificateStrategy, AuthHeapStrategy};

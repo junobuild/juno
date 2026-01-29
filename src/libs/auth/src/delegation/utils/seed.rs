@@ -1,9 +1,12 @@
-use crate::openid::credentials::delegation::types::interface::OpenIdCredentialKey;
+use crate::openid::credentials::delegation::types::interface::OpenIdDelegationCredentialKey;
 use crate::state::types::state::Salt;
 use ic_certification::Hash;
 use sha2::{Digest, Sha256};
 
-pub fn calculate_seed(key: &OpenIdCredentialKey, salt: &Option<Salt>) -> Result<Hash, String> {
+pub fn calculate_seed(
+    key: &OpenIdDelegationCredentialKey,
+    salt: &Option<Salt>,
+) -> Result<Hash, String> {
     let salt =
         salt.ok_or("The salt has not been initialized. A seed cannot be calculated.".to_string())?;
 
@@ -30,7 +33,7 @@ fn hash_bytes(value: impl AsRef<[u8]>) -> Hash {
 #[cfg(test)]
 mod tests {
     use super::calculate_seed;
-    use crate::openid::credentials::delegation::types::interface::OpenIdCredentialKey;
+    use crate::openid::credentials::delegation::types::interface::OpenIdDelegationCredentialKey;
     use crate::state::types::state::Salt;
     use ic_certification::Hash;
     use sha2::{Digest, Sha256};
@@ -39,11 +42,11 @@ mod tests {
         [bytes; 32]
     }
 
-    fn key<'a>(iss: &'a String, sub: &'a String) -> OpenIdCredentialKey<'a> {
-        OpenIdCredentialKey { iss, sub }
+    fn key<'a>(iss: &'a String, sub: &'a String) -> OpenIdDelegationCredentialKey<'a> {
+        OpenIdDelegationCredentialKey { iss, sub }
     }
 
-    fn build_blob(key: &OpenIdCredentialKey, salt: &Salt) -> Vec<u8> {
+    fn build_blob(key: &OpenIdDelegationCredentialKey, salt: &Salt) -> Vec<u8> {
         let mut blob: Vec<u8> = vec![];
 
         blob.push(salt.len() as u8);

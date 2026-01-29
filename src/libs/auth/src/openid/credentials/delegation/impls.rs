@@ -1,10 +1,10 @@
 use crate::openid::credentials::delegation::types::interface::{
-    OpenIdCredential, OpenIdCredentialKey,
+    OpenIdDelegationCredential, OpenIdDelegationCredentialKey,
 };
 use crate::openid::jwt::types::token::Claims;
 use jsonwebtoken::TokenData;
 
-impl From<TokenData<Claims>> for OpenIdCredential {
+impl From<TokenData<Claims>> for OpenIdDelegationCredential {
     fn from(token: TokenData<Claims>) -> Self {
         Self {
             sub: token.claims.sub,
@@ -20,8 +20,8 @@ impl From<TokenData<Claims>> for OpenIdCredential {
     }
 }
 
-impl<'a> From<&'a OpenIdCredential> for OpenIdCredentialKey<'a> {
-    fn from(credential: &'a OpenIdCredential) -> Self {
+impl<'a> From<&'a OpenIdDelegationCredential> for OpenIdDelegationCredentialKey<'a> {
+    fn from(credential: &'a OpenIdDelegationCredential) -> Self {
         Self {
             sub: &credential.sub,
             iss: &credential.iss,

@@ -7,7 +7,7 @@ use crate::user::core::types::state::{OpenIdData, ProviderData, UserData};
 use crate::Doc;
 use candid::Principal;
 use junobuild_auth::delegation::types::UserKey;
-use junobuild_auth::openid::credentials::delegation::types::interface::OpenIdCredential;
+use junobuild_auth::openid::credentials::delegation::types::interface::OpenIdDelegationCredential;
 use junobuild_auth::openid::types::provider::OpenIdDelegationProvider;
 use junobuild_collections::constants::db::COLLECTION_USER_KEY;
 use junobuild_collections::msg::msg_db_collection_not_found;
@@ -17,7 +17,7 @@ use junobuild_utils::decode_doc_data;
 pub fn register_user(
     public_key: &UserKey,
     provider: &OpenIdDelegationProvider,
-    credential: &OpenIdCredential,
+    credential: &OpenIdDelegationCredential,
 ) -> Result<Doc, String> {
     let user_collection = COLLECTION_USER_KEY.to_string();
 

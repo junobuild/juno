@@ -78,7 +78,7 @@ describe('Console > Upgrade > OpenIdProvider > v0.3.3 -> v0.4.0', () => {
 		const publicKey = new Uint8Array(sessionKey.getPublicKey().toDer());
 		const { nonce, salt } = await generateNonce({ caller: user });
 
-		const destination = await downloadObservatory({ junoVersion: '0.0.67', version: '0.5.0' });
+		const destination = await downloadObservatory({ junoVersion: '0.0.66', version: '0.4.0' });
 
 		const { actor: obsA } = await pic.setupCanister<ObservatoryActor040>({
 			idlFactory: idlFactoryObservatory040,

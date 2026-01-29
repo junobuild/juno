@@ -46,7 +46,9 @@ pub async fn init_salt(auth_heap: &impl AuthHeapStrategy) -> Result<(), String> 
     Ok(())
 }
 
-pub fn get_providers(auth_heap: &impl AuthHeapStrategy) -> Result<OpenIdAuthProviders, String> {
+pub fn get_auth_providers(
+    auth_heap: &impl AuthHeapStrategy,
+) -> Result<OpenIdAuthProviders, String> {
     let config = get_config(auth_heap).ok_or(JUNO_AUTH_ERROR_NOT_CONFIGURED.to_string())?;
     let openid = config
         .openid

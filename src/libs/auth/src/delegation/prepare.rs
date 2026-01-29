@@ -6,8 +6,10 @@ use crate::delegation::utils::duration::build_expiration;
 use crate::delegation::utils::seed::calculate_seed;
 use crate::delegation::utils::signature::{build_signature_inputs, build_signature_msg};
 use crate::delegation::utils::targets::build_targets;
-use crate::openid::delegation::types::interface::{OpenIdCredential, OpenIdCredentialKey};
-use crate::openid::delegation::types::provider::OpenIdDelegationProvider;
+use crate::openid::credentials::delegation::types::interface::{
+    OpenIdCredential, OpenIdCredentialKey,
+};
+use crate::openid::credentials::delegation::types::provider::OpenIdDelegationProvider;
 use crate::state::get_salt;
 use crate::state::services::mutate_state;
 use crate::strategies::{AuthCertificateStrategy, AuthHeapStrategy};

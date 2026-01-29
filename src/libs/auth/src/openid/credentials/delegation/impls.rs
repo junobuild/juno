@@ -1,5 +1,7 @@
-use crate::openid::delegation::types::interface::{OpenIdCredential, OpenIdCredentialKey};
-use crate::openid::delegation::types::provider::OpenIdDelegationProvider;
+use crate::openid::credentials::delegation::types::interface::{
+    OpenIdCredential, OpenIdCredentialKey,
+};
+use crate::openid::credentials::delegation::types::provider::OpenIdDelegationProvider;
 use crate::openid::jwt::types::token::Claims;
 use crate::openid::types::provider::OpenIdProvider;
 use jsonwebtoken::TokenData;

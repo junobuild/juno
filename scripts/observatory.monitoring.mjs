@@ -9,7 +9,7 @@ const toggleOpenIdMonitoring = async ({ mainnet, provider, start }) => {
 		? observatoryActorIC()
 		: observatoryActorLocal());
 
-	const args = provider === 'github' ? { GitHub: null } : { Google: null };
+	const args = provider === 'github_auth' ? { GitHubAuth: null } : { Google: null };
 
 	if (start) {
 		await start_openid_monitoring(args);
@@ -39,7 +39,7 @@ if (start === true && stop === true) {
 
 const provider = nextArg({ args, option: '-p' }) ?? nextArg({ args, option: '--provider' });
 
-if (!['google', 'github'].includes(provider)) {
+if (!['google', 'github_auth'].includes(provider)) {
 	console.log(`Provider ${provider} is not supported`);
 	process.exit(1);
 }

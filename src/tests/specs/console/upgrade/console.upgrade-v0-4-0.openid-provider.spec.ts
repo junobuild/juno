@@ -25,7 +25,6 @@ import { deploySegments } from '../../../utils/console-tests.utils';
 import { tick } from '../../../utils/pic-tests.utils';
 import { updateRateConfigNoLimit } from '../../../utils/rate.tests.utils';
 import {
-	CONSOLE_WASM_PATH,
 	controllersInitArgs,
 	downloadConsole,
 	downloadObservatory
@@ -39,12 +38,14 @@ describe('Console > Upgrade > OpenIdProvider > v0.3.3 -> v0.4.0', () => {
 
 	const controller = Ed25519KeyIdentity.generate();
 
-	const upgradeCurrent = async () => {
+	const upgrade = async () => {
 		await tick(pic);
+
+		const destination = await downloadConsole({ junoVersion: '0.0.67', version: '0.4.0' });
 
 		await pic.upgradeCanister({
 			canisterId,
-			wasm: CONSOLE_WASM_PATH,
+			wasm: destination,
 			sender: controller.getPrincipal()
 		});
 	};
@@ -168,7 +169,7 @@ describe('Console > Upgrade > OpenIdProvider > v0.3.3 -> v0.4.0', () => {
 	});
 
 	it('should migrate heap OpenIdState.certificates to OpenIdProvider.GitHubAuth', async () => {
-		await expect(upgradeCurrent()).resolves.not.toThrowError();
+		await expect(upgrade()).resolves.not.toThrowError();
 	});
 
 	it('should still be configured with GitHub respectively newly OpenIdDelegationProvider.GitHub', async () => {

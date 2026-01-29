@@ -90,7 +90,7 @@ impl UserData {
                     JUNO_DATASTORE_ERROR_USER_REGISTER_PROVIDER_INVALID_DATA.to_string()
                 })?;
 
-                if !provider_data.matches_provider(&provider) {
+                if !provider_data.matches_provider(provider) {
                     return Err(JUNO_DATASTORE_ERROR_USER_PROVIDER_INVALID_DATA.to_string());
                 }
 

@@ -16,7 +16,7 @@ import { generateNonce } from '../../../utils/auth-nonce-tests.utils';
 import { makeMockGitHubOpenIdJwt } from '../../../utils/jwt-tests.utils';
 import { assertOpenIdHttpsOutcalls } from '../../../utils/observatory-openid-tests.utils';
 import { tick } from '../../../utils/pic-tests.utils';
-import { downloadObservatory, OBSERVATORY_WASM_PATH } from '../../../utils/setup-tests.utils';
+import { downloadObservatory } from '../../../utils/setup-tests.utils';
 
 describe('Observatory > Upgrade', () => {
 	let pic: PocketIc;
@@ -25,12 +25,14 @@ describe('Observatory > Upgrade', () => {
 
 	const controller = Ed25519KeyIdentity.generate();
 
-	const upgradeCurrent = async () => {
+	const upgrade = async () => {
 		await tick(pic);
+
+		const destination = await downloadObservatory({ junoVersion: '0.0.67', version: '0.5.0' });
 
 		await pic.upgradeCanister({
 			canisterId: observatoryId,
-			wasm: OBSERVATORY_WASM_PATH,
+			wasm: destination,
 			sender: controller.getPrincipal()
 		});
 	};
@@ -80,7 +82,7 @@ describe('Observatory > Upgrade', () => {
 	});
 
 	it('should migrate heap OpenId.certificates and OpenId.Schedulers to OpenIdProvider.GitHubAuth', async () => {
-		await expect(upgradeCurrent()).resolves.not.toThrowError();
+		await expect(upgrade()).resolves.not.toThrowError();
 	});
 
 	it('should still return certificate', async () => {

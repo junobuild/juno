@@ -1,5 +1,7 @@
 use crate::openid::jwt::types::cert::Jwks;
-use crate::openid::types::provider::{OpenIdAutomationProvider, OpenIdCertificate, OpenIdDelegationProvider, OpenIdProvider};
+use crate::openid::types::provider::{
+    OpenIdAutomationProvider, OpenIdCertificate, OpenIdDelegationProvider, OpenIdProvider,
+};
 use ic_cdk::api::time;
 use junobuild_shared::data::version::next_version;
 use junobuild_shared::types::state::{Version, Versioned};
@@ -242,6 +244,9 @@ mod tests {
     fn test_openid_provider_display() {
         assert_eq!(format!("{}", OpenIdProvider::Google), "Google");
         assert_eq!(format!("{}", OpenIdProvider::GitHubAuth), "GitHub Proxy");
-        assert_eq!(format!("{}", OpenIdProvider::GitHubActions), "GitHub Actions");
+        assert_eq!(
+            format!("{}", OpenIdProvider::GitHubActions),
+            "GitHub Actions"
+        );
     }
 }

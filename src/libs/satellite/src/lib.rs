@@ -18,14 +18,15 @@ mod sdk;
 mod types;
 mod user;
 
+use crate::controllers::types::AuthenticateControllerArgs;
 use crate::db::types::config::DbConfig;
 use crate::db::types::interface::SetDbConfig;
 use crate::guards::{
     caller_is_admin_controller, caller_is_controller, caller_is_controller_with_write,
 };
 use crate::types::interface::{
-    AuthenticateResultResponse, AuthenticationArgs, Config, DeleteProposalAssets,
-    GetDelegationArgs, GetDelegationResultResponse,
+    AuthenticateControllerResultResponse, AuthenticateResultResponse, AuthenticationArgs, Config,
+    DeleteProposalAssets, GetDelegationArgs, GetDelegationResultResponse,
 };
 use crate::types::state::CollectionType;
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
@@ -230,6 +231,14 @@ pub fn del_controllers(args: DeleteControllersArgs) -> Controllers {
 #[query(guard = "caller_is_admin_controller")]
 pub fn list_controllers() -> Controllers {
     api::controllers::list_controllers()
+}
+
+#[doc(hidden)]
+#[update]
+pub async fn authenticate_controller(
+    args: AuthenticateControllerArgs,
+) -> AuthenticateControllerResultResponse {
+    api::controllers::authenticate_controller(args).await.into()
 }
 
 // ---------------------------------------------------------
@@ -540,10 +549,10 @@ pub fn memory_size() -> MemorySize {
 macro_rules! include_satellite {
     () => {
         use junobuild_satellite::{
-            authenticate, commit_asset_upload, commit_proposal, commit_proposal_asset_upload,
-            commit_proposal_many_assets_upload, count_assets, count_collection_assets,
-            count_collection_docs, count_docs, count_proposals, del_asset, del_assets,
-            del_controllers, del_custom_domain, del_doc, del_docs, del_filtered_assets,
+            authenticate, authenticate_controller, commit_asset_upload, commit_proposal,
+            commit_proposal_asset_upload, commit_proposal_many_assets_upload, count_assets,
+            count_collection_assets, count_collection_docs, count_docs, count_proposals, del_asset,
+            del_assets, del_controllers, del_custom_domain, del_doc, del_docs, del_filtered_assets,
             del_filtered_docs, del_many_assets, del_many_docs, del_rule, delete_proposal_assets,
             deposit_cycles, get_asset, get_auth_config, get_config, get_db_config, get_delegation,
             get_doc, get_many_assets, get_many_docs, get_proposal, get_storage_config,

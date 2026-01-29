@@ -12,7 +12,6 @@ use crate::state::types::config::{OpenIdAuthProviderClientId, OpenIdAuthProvider
 use crate::state::types::state::Salt;
 use crate::strategies::AuthHeapStrategy;
 
-
 type VerifyOpenIdDelegationCredentialsResult =
     Result<(OpenIdCredential, OpenIdDelegationProvider), VerifyOpenidCredentialsError>;
 

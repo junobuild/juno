@@ -1,4 +1,3 @@
-pub mod automation;
 pub mod credentials;
 mod impls;
 pub mod jwkset;

@@ -1,5 +1,5 @@
 use candid::{CandidType, Deserialize};
-use junobuild_auth::openid::automation::types::errors::VerifyOpenidAutomationCredentialsError;
+use junobuild_auth::openid::credentials::automation::types::errors::VerifyOpenidAutomationCredentialsError;
 use junobuild_shared::types::state::{ControllerId, Metadata};
 use serde::Serialize;
 

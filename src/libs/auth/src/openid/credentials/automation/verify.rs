@@ -1,4 +1,4 @@
-use crate::openid::automation::types::errors::VerifyOpenidAutomationCredentialsError;
+use crate::openid::credentials::automation::types::errors::VerifyOpenidAutomationCredentialsError;
 use crate::openid::jwkset::get_or_refresh_jwks;
 use crate::openid::jwt::types::cert::Jwks;
 use crate::openid::jwt::types::errors::JwtVerifyError;

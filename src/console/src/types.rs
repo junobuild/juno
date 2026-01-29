@@ -4,7 +4,7 @@ pub mod state {
     use candid::CandidType;
     use ic_ledger_types::{BlockIndex, Tokens};
     use ic_stable_structures::StableBTreeMap;
-    use junobuild_auth::openid::delegation::types::provider::OpenIdDelegationProvider;
+    use junobuild_auth::openid::types::provider::OpenIdDelegationProvider;
     use junobuild_auth::state::types::state::AuthenticationHeapState;
     use junobuild_cdn::proposals::{ProposalsStable, SegmentDeploymentVersion};
     use junobuild_cdn::storage::{ProposalAssetsStable, ProposalContentChunksStable};

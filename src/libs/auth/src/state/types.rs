@@ -53,7 +53,7 @@ pub(crate) mod runtime_state {
 
 pub mod config {
     use crate::delegation::types::DelegationTargets;
-    use crate::openid::delegation::types::provider::OpenIdDelegationProvider;
+    use crate::openid::types::provider::OpenIdDelegationProvider;
     use candid::{CandidType, Deserialize, Principal};
     use junobuild_shared::types::core::DomainName;
     use junobuild_shared::types::state::{Timestamp, Version};

@@ -1,5 +1,5 @@
 use crate::delegation::types::DelegationTargets;
-use crate::openid::delegation::types::provider::OpenIdDelegationProvider;
+use crate::openid::types::provider::OpenIdDelegationProvider;
 use crate::state::get_config;
 use crate::strategies::AuthHeapStrategy;
 use junobuild_shared::ic::api::id;

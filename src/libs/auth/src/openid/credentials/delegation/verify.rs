@@ -1,9 +1,9 @@
-use crate::openid::delegation::types::errors::VerifyOpenidCredentialsError;
-use crate::openid::delegation::types::interface::OpenIdCredential;
-use crate::openid::delegation::types::provider::OpenIdDelegationProvider;
+use crate::openid::credentials::delegation::types::errors::VerifyOpenidCredentialsError;
+use crate::openid::credentials::delegation::types::interface::OpenIdCredential;
 use crate::openid::jwkset::{get_jwks, get_or_refresh_jwks};
 use crate::openid::jwt::types::cert::Jwks;
-use crate::openid::jwt::{unsafe_find_jwt_provider, verify_openid_jwt};
+use crate::openid::jwt::{unsafe_find_jwt_delegation_provider, verify_openid_jwt};
+use crate::openid::types::provider::OpenIdDelegationProvider;
 use crate::openid::types::provider::OpenIdProvider;
 use crate::openid::utils::build_nonce;
 use crate::state::types::config::{OpenIdAuthProviderClientId, OpenIdAuthProviders};
@@ -19,7 +19,7 @@ pub async fn verify_openid_credentials_with_jwks_renewal(
     providers: &OpenIdAuthProviders,
     auth_heap: &impl AuthHeapStrategy,
 ) -> VerifyOpenIdCredentialsResult {
-    let (delegation_provider, config) = unsafe_find_jwt_provider(providers, jwt)
+    let (delegation_provider, config) = unsafe_find_jwt_delegation_provider(providers, jwt)
         .map_err(VerifyOpenidCredentialsError::JwtFindProvider)?;
 
     let provider: OpenIdProvider = (&delegation_provider).into();
@@ -37,7 +37,7 @@ pub fn verify_openid_credentials_with_cached_jwks(
     providers: &OpenIdAuthProviders,
     auth_heap: &impl AuthHeapStrategy,
 ) -> VerifyOpenIdCredentialsResult {
-    let (delegation_provider, config) = unsafe_find_jwt_provider(providers, jwt)
+    let (delegation_provider, config) = unsafe_find_jwt_delegation_provider(providers, jwt)
         .map_err(VerifyOpenidCredentialsError::JwtFindProvider)?;
 
     let provider: OpenIdProvider = (&delegation_provider).into();

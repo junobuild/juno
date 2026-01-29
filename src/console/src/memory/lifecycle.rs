@@ -4,7 +4,6 @@ use crate::fees::init_factory_fees;
 use crate::memory::manager::{get_memory_upgrades, init_stable_state, STATE};
 use crate::rates::init::init_factory_rates;
 use crate::types::state::{HeapState, ReleasesMetadata, State};
-use crate::upgrade::types::upgrade::UpgradeState;
 use ciborium::{from_reader, into_writer};
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade};
 use junobuild_shared::ic::api::caller;
@@ -51,11 +50,8 @@ fn post_upgrade() {
     let memory = get_memory_upgrades();
     let state_bytes = read_post_upgrade(&memory);
 
-    // TODO: remove once OpenIdProvider migrated on mainnet
-    let upgrade_state: UpgradeState = from_reader(&*state_bytes)
+    let state: State = from_reader(&*state_bytes)
         .expect("Failed to decode the state of the console in post_upgrade hook.");
-
-    let state: State = upgrade_state.into();
 
     STATE.with(|s| *s.borrow_mut() = state);
 

@@ -3,7 +3,6 @@ use crate::memory::state::STATE;
 use crate::openid::scheduler::defer_restart_monitoring;
 use crate::random::defer_init_random_seed;
 use crate::types::state::{HeapState, State};
-use crate::upgrade::types::upgrade::UpgradeState;
 use ciborium::{from_reader, into_writer};
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade};
 use junobuild_shared::ic::api::caller;
@@ -46,11 +45,8 @@ fn post_upgrade() {
     let memory = get_memory_upgrades();
     let state_bytes = read_post_upgrade(&memory);
 
-    // TODO: remove once OpenIdProvider migrated on mainnet
-    let upgrade_state: UpgradeState = from_reader(&*state_bytes)
+    let state: State = from_reader(&*state_bytes)
         .expect("Failed to decode the state of the observatory in post_upgrade hook.");
-
-    let state: State = upgrade_state.into();
 
     STATE.with(|s| *s.borrow_mut() = state);
 

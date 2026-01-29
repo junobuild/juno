@@ -5,19 +5,23 @@ use crate::controllers::types::{
     AuthenticateControllerResult, AuthenticationControllerError, OpenIdAuthenticateControllerArgs,
 };
 use ic_cdk::api::time;
-use junobuild_auth::openid::types::provider::OpenIdProvider;
 use junobuild_shared::segments::controllers::assert_controllers;
 use junobuild_shared::types::interface::SetController;
 use junobuild_shared::types::state::ControllerId;
 use std::cmp::min;
 use junobuild_auth::openid::credentials;
+use junobuild_auth::state::get_providers;
 
 pub async fn openid_authenticate_controller(
     args: &OpenIdAuthenticateControllerArgs,
+    // TODO: Result<Result, String>>
 ) -> AuthenticateControllerResult {
+    // TODO: get_automation_providers
+    let providers = get_providers(&AuthHeap)?;
+
     match credentials::automation::verify_openid_credentials_with_jwks_renewal(
         &args.jwt,
-        &OpenIdProvider::GitHubActions,
+        &providers,
         &AuthHeap,
     )
     .await

@@ -2,7 +2,6 @@ use crate::openid::credentials::delegation::types::interface::{
     OpenIdCredential, OpenIdCredentialKey,
 };
 use crate::openid::jwt::types::token::Claims;
-use crate::openid::types::provider::OpenIdProvider;
 use jsonwebtoken::TokenData;
 
 impl From<TokenData<Claims>> for OpenIdCredential {

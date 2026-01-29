@@ -1,5 +1,5 @@
 use crate::openid::jwt::types::cert::Jwks;
-use crate::openid::types::provider::{OpenIdCertificate, OpenIdDelegationProvider, OpenIdProvider};
+use crate::openid::types::provider::{OpenIdAutomationProvider, OpenIdCertificate, OpenIdDelegationProvider, OpenIdProvider};
 use ic_cdk::api::time;
 use junobuild_shared::data::version::next_version;
 use junobuild_shared::types::state::{Version, Versioned};
@@ -50,6 +50,28 @@ impl OpenIdDelegationProvider {
     }
 }
 
+impl From<&OpenIdAutomationProvider> for OpenIdProvider {
+    fn from(automation_provider: &OpenIdAutomationProvider) -> Self {
+        match automation_provider {
+            OpenIdAutomationProvider::GitHub => OpenIdProvider::GitHubActions,
+        }
+    }
+}
+
+impl OpenIdAutomationProvider {
+    pub fn jwks_url(&self) -> &'static str {
+        match self {
+            Self::GitHub => OpenIdProvider::GitHubActions.jwks_url(),
+        }
+    }
+
+    pub fn issuers(&self) -> &[&'static str] {
+        match self {
+            Self::GitHub => OpenIdProvider::GitHubActions.issuers(),
+        }
+    }
+}
+
 impl Versioned for OpenIdCertificate {
     fn version(&self) -> Option<Version> {
         self.version
@@ -95,5 +117,131 @@ impl Display for OpenIdProvider {
             OpenIdProvider::GitHubAuth => write!(f, "GitHub Proxy"),
             OpenIdProvider::GitHubActions => write!(f, "GitHub Actions"),
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_openid_provider_jwks_urls() {
+        assert_eq!(
+            OpenIdProvider::Google.jwks_url(),
+            "https://www.googleapis.com/oauth2/v3/certs"
+        );
+        assert_eq!(
+            OpenIdProvider::GitHubAuth.jwks_url(),
+            "https://api.juno.build/v1/auth/certs"
+        );
+        assert_eq!(
+            OpenIdProvider::GitHubActions.jwks_url(),
+            "https://token.actions.githubusercontent.com/.well-known/jwks"
+        );
+    }
+
+    #[test]
+    fn test_openid_provider_issuers() {
+        assert_eq!(
+            OpenIdProvider::Google.issuers(),
+            &["https://accounts.google.com", "accounts.google.com"]
+        );
+        assert_eq!(
+            OpenIdProvider::GitHubAuth.issuers(),
+            &["https://api.juno.build/auth/github"]
+        );
+        assert_eq!(
+            OpenIdProvider::GitHubActions.issuers(),
+            &["https://token.actions.githubusercontent.com"]
+        );
+    }
+
+    #[test]
+    fn test_delegation_provider_to_openid_provider() {
+        assert_eq!(
+            OpenIdProvider::from(&OpenIdDelegationProvider::Google),
+            OpenIdProvider::Google
+        );
+        assert_eq!(
+            OpenIdProvider::from(&OpenIdDelegationProvider::GitHub),
+            OpenIdProvider::GitHubAuth
+        );
+    }
+
+    #[test]
+    fn test_delegation_provider_jwks_urls() {
+        assert_eq!(
+            OpenIdDelegationProvider::Google.jwks_url(),
+            "https://www.googleapis.com/oauth2/v3/certs"
+        );
+        assert_eq!(
+            OpenIdDelegationProvider::GitHub.jwks_url(),
+            "https://api.juno.build/v1/auth/certs"
+        );
+    }
+
+    #[test]
+    fn test_delegation_provider_issuers() {
+        assert_eq!(
+            OpenIdDelegationProvider::Google.issuers(),
+            &["https://accounts.google.com", "accounts.google.com"]
+        );
+        assert_eq!(
+            OpenIdDelegationProvider::GitHub.issuers(),
+            &["https://api.juno.build/auth/github"]
+        );
+    }
+
+    #[test]
+    fn test_automation_provider_to_openid_provider() {
+        assert_eq!(
+            OpenIdProvider::from(&OpenIdAutomationProvider::GitHub),
+            OpenIdProvider::GitHubActions
+        );
+    }
+
+    #[test]
+    fn test_automation_provider_jwks_urls() {
+        assert_eq!(
+            OpenIdAutomationProvider::GitHub.jwks_url(),
+            "https://token.actions.githubusercontent.com/.well-known/jwks"
+        );
+    }
+
+    #[test]
+    fn test_automation_provider_issuers() {
+        assert_eq!(
+            OpenIdAutomationProvider::GitHub.issuers(),
+            &["https://token.actions.githubusercontent.com"]
+        );
+    }
+
+    #[test]
+    fn test_openid_certificate_init() {
+        let jwks = Jwks { keys: vec![] };
+        let cert = OpenIdCertificate::init(&jwks);
+
+        assert_eq!(cert.version, Some(1));
+        assert_eq!(cert.created_at, cert.updated_at);
+    }
+
+    #[test]
+    fn test_openid_certificate_update() {
+        let jwks = Jwks { keys: vec![] };
+        let initial = OpenIdCertificate::init(&jwks);
+
+        let new_jwks = Jwks { keys: vec![] };
+        let updated = OpenIdCertificate::update(&initial, &new_jwks);
+
+        assert_eq!(updated.version, Some(2));
+        assert_eq!(updated.created_at, initial.created_at);
+        assert!(updated.updated_at >= initial.updated_at);
+    }
+
+    #[test]
+    fn test_openid_provider_display() {
+        assert_eq!(format!("{}", OpenIdProvider::Google), "Google");
+        assert_eq!(format!("{}", OpenIdProvider::GitHubAuth), "GitHub Proxy");
+        assert_eq!(format!("{}", OpenIdProvider::GitHubActions), "GitHub Actions");
     }
 }

@@ -2,7 +2,7 @@ use crate::openid::delegation::types::provider::OpenIdDelegationProvider;
 use crate::openid::jwt::header::decode_jwt_header;
 use crate::openid::jwt::types::errors::JwtFindProviderError;
 use crate::openid::jwt::types::token::UnsafeClaims;
-use crate::state::types::config::{OpenIdAuthProviders, OpenIdProviderAuthConfig};
+use crate::state::types::config::{OpenIdAuthProviderConfig, OpenIdAuthProviders};
 use jsonwebtoken::dangerous;
 
 /// ⚠️ **Warning:** This function decodes the JWT payload *without verifying its signature*.
@@ -10,7 +10,7 @@ use jsonwebtoken::dangerous;
 pub fn unsafe_find_jwt_auth_provider<'a>(
     providers: &'a OpenIdAuthProviders,
     jwt: &str,
-) -> Result<(OpenIdDelegationProvider, &'a OpenIdProviderAuthConfig), JwtFindProviderError> {
+) -> Result<(OpenIdDelegationProvider, &'a OpenIdAuthProviderConfig), JwtFindProviderError> {
     // 1) Header sanity check
     decode_jwt_header(jwt).map_err(JwtFindProviderError::from)?;
 
@@ -36,7 +36,7 @@ mod tests {
     use super::unsafe_find_jwt_auth_provider;
     use crate::openid::delegation::types::provider::OpenIdDelegationProvider;
     use crate::openid::jwt::types::errors::JwtFindProviderError;
-    use crate::state::types::config::{OpenIdAuthProviders, OpenIdProviderAuthConfig};
+    use crate::state::types::config::{OpenIdAuthProviderConfig, OpenIdAuthProviders};
     use base64::engine::general_purpose::URL_SAFE_NO_PAD;
     use base64::Engine;
     use serde_json::json;
@@ -55,7 +55,7 @@ mod tests {
         let mut map = BTreeMap::new();
         map.insert(
             OpenIdDelegationProvider::Google,
-            OpenIdProviderAuthConfig {
+            OpenIdAuthProviderConfig {
                 client_id: "client-123".into(),
                 delegation: None,
             },

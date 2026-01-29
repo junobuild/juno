@@ -60,7 +60,7 @@ export interface AuthenticationConfigInternetIdentity {
 }
 export interface AuthenticationConfigOpenId {
 	observatory_id: [] | [Principal];
-	providers: Array<[OpenIdDelegationProvider, OpenIdProviderAuthConfig]>;
+	providers: Array<[OpenIdDelegationProvider, OpenIdAuthProviderConfig]>;
 }
 export type AuthenticationControllerError =
 	| { RegisterController: string }
@@ -269,6 +269,10 @@ export interface MemorySize {
 	stable: bigint;
 	heap: bigint;
 }
+export interface OpenIdAuthProviderConfig {
+	delegation: [] | [OpenIdAuthProviderDelegationConfig];
+	client_id: string;
+}
 export interface OpenIdAuthProviderDelegationConfig {
 	targets: [] | [Array<Principal>];
 	max_time_to_live: [] | [bigint];
@@ -291,10 +295,6 @@ export interface OpenIdPrepareDelegationArgs {
 	jwt: string;
 	session_key: Uint8Array;
 	salt: Uint8Array;
-}
-export interface OpenIdProviderAuthConfig {
-	delegation: [] | [OpenIdAuthProviderDelegationConfig];
-	client_id: string;
 }
 export type Permission =
 	| { Controllers: null }

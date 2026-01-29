@@ -161,8 +161,8 @@ impl From<&OpenIdCredential> for OpenIdData {
 }
 
 impl From<&OpenIdDelegationProvider> for AuthProvider {
-    fn from(auth_provider: &OpenIdDelegationProvider) -> Self {
-        match auth_provider {
+    fn from(provider: &OpenIdDelegationProvider) -> Self {
+        match provider {
             OpenIdDelegationProvider::Google => AuthProvider::Google,
             OpenIdDelegationProvider::GitHub => AuthProvider::GitHub,
         }
@@ -345,7 +345,7 @@ mod tests {
             Ok(AuthProvider::Google)
         ));
         assert!(matches!(
-            AuthProvider::try_from(&OpenIdProvider::GitHubProxy),
+            AuthProvider::try_from(&OpenIdProvider::GitHubAuth),
             Ok(AuthProvider::GitHub)
         ));
         assert!(AuthProvider::try_from(&OpenIdProvider::GitHubActions).is_err());

@@ -11,7 +11,7 @@ pub fn defer_restart_monitoring() {
     // Early spare one timer if no scheduler is enabled.
     let enabled_count = [
         OpenIdProvider::Google,
-        OpenIdProvider::GitHubProxy,
+        OpenIdProvider::GitHubAuth,
         OpenIdProvider::GitHubActions,
     ]
     .into_iter()
@@ -30,7 +30,7 @@ pub fn defer_restart_monitoring() {
 async fn restart_monitoring() {
     for provider in [
         OpenIdProvider::Google,
-        OpenIdProvider::GitHubProxy,
+        OpenIdProvider::GitHubAuth,
         OpenIdProvider::GitHubActions,
     ] {
         schedule_certificate_update(provider, None);

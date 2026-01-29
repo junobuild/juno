@@ -5,7 +5,10 @@ import {
 	type SatelliteActor,
 	type SatelliteDid
 } from '$declarations';
-import type { OpenIdProvider, OpenIdProviderConfig } from '$declarations/satellite/satellite.did';
+import type {
+	OpenIdAuthProviderConfig,
+	OpenIdDelegationProvider
+} from '$declarations/satellite/satellite.did';
 import type { _SERVICE as TestSatelliteActor } from '$test-declarations/test_satellite/test_satellite.did';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import { ECDSAKeyIdentity, Ed25519KeyIdentity } from '@icp-sdk/core/identity';
@@ -167,8 +170,8 @@ const setupAuth = async ({
 					...(withGitHub
 						? [
 								[{ GitHub: null }, { client_id: mockGitHubClientId, delegation: [] }] as [
-									OpenIdProvider,
-									OpenIdProviderConfig
+									OpenIdDelegationProvider,
+									OpenIdAuthProviderConfig
 								]
 							]
 						: [])

@@ -45,7 +45,7 @@ impl From<UpgradeOpenIdProvider> for OpenIdProvider {
     fn from(old: UpgradeOpenIdProvider) -> Self {
         match old {
             UpgradeOpenIdProvider::Google => OpenIdProvider::Google,
-            UpgradeOpenIdProvider::GitHub => OpenIdProvider::GitHubProxy,
+            UpgradeOpenIdProvider::GitHub => OpenIdProvider::GitHubAuth,
         }
     }
 }

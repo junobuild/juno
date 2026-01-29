@@ -23,7 +23,7 @@ export const idlFactory = ({ IDL }) => {
 	const OpenIdProvider = IDL.Variant({
 		GitHubActions: IDL.Null,
 		Google: IDL.Null,
-		GitHubProxy: IDL.Null
+		GitHubAuth: IDL.Null
 	});
 	const GetOpenIdCertificateArgs = IDL.Record({ provider: OpenIdProvider });
 	const JwkType = IDL.Variant({

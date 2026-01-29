@@ -193,13 +193,13 @@ export const idlFactory = ({ IDL }) => {
 		targets: IDL.Opt(IDL.Vec(IDL.Principal)),
 		max_time_to_live: IDL.Opt(IDL.Nat64)
 	});
-	const OpenIdProviderAuthConfig = IDL.Record({
+	const OpenIdAuthProviderConfig = IDL.Record({
 		delegation: IDL.Opt(OpenIdAuthProviderDelegationConfig),
 		client_id: IDL.Text
 	});
 	const AuthenticationConfigOpenId = IDL.Record({
 		observatory_id: IDL.Opt(IDL.Principal),
-		providers: IDL.Vec(IDL.Tuple(OpenIdDelegationProvider, OpenIdProviderAuthConfig))
+		providers: IDL.Vec(IDL.Tuple(OpenIdDelegationProvider, OpenIdAuthProviderConfig))
 	});
 	const AuthenticationConfigInternetIdentity = IDL.Record({
 		derivation_origin: IDL.Opt(IDL.Text),

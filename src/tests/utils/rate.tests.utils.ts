@@ -1,6 +1,10 @@
-import type { ObservatoryActor } from '$declarations';
+import type { ObservatoryActor, ObservatoryActor040 } from '$declarations';
 
-export const updateRateConfigNoLimit = async ({ actor }: { actor: ObservatoryActor }) => {
+export const updateRateConfigNoLimit = async ({
+	actor
+}: {
+	actor: ObservatoryActor | ObservatoryActor040;
+}) => {
 	// Allow lots of requests
 	const { set_rate_config } = actor;
 

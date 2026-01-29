@@ -46,7 +46,7 @@ fn post_upgrade() {
     let memory = get_memory_upgrades();
     let state_bytes = read_post_upgrade(&memory);
 
-    // TODO: remove once stable memory introduced on mainnet
+    // TODO: remove once OpenIdProvider migrated on mainnet
     let upgrade_state: UpgradeState = from_reader(&*state_bytes)
         .expect("Failed to decode the state of the observatory in post_upgrade hook.");
 

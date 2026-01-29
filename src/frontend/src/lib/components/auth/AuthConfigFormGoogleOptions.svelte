@@ -13,7 +13,7 @@
 
 	interface Props {
 		satellite: Satellite;
-		delegation: SatelliteDid.OpenIdProviderDelegationConfig | undefined;
+		delegation: SatelliteDid.OpenIdAuthProviderDelegationConfig | undefined;
 		allowedTargets: PrincipalText[] | null | undefined;
 	}
 

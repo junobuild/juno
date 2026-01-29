@@ -11,7 +11,7 @@ pub fn defer_restart_monitoring() {
     // Early spare one timer if no scheduler is enabled.
     let enabled_count = [OpenIdProvider::Google, OpenIdProvider::GitHubAuth]
         .into_iter()
-        .filter(|provider| is_scheduler_enabled(provider))
+        .filter(is_scheduler_enabled)
         .count();
 
     if enabled_count == 0 {

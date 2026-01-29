@@ -9,7 +9,7 @@ use crate::user::core::types::state::{
     AuthProvider, OpenIdData, ProviderData, UserData, WebAuthnData,
 };
 use crate::{Doc, SetDoc};
-use junobuild_auth::openid::credentials::delegation::types::interface::OpenIdCredential;
+use junobuild_auth::openid::credentials::delegation::types::interface::OpenIdDelegationCredential;
 use junobuild_auth::openid::types::provider::OpenIdDelegationProvider;
 use junobuild_auth::profile::types::{OpenIdProfile, Validated};
 use junobuild_utils::encode_doc_data;
@@ -124,7 +124,7 @@ impl UserData {
 }
 
 impl OpenIdData {
-    pub fn merge(existing: &OpenIdData, credential: &OpenIdCredential) -> Self {
+    pub fn merge(existing: &OpenIdData, credential: &OpenIdDelegationCredential) -> Self {
         Self {
             email: credential.email.clone().or(existing.email.clone()),
             name: credential.name.clone().or(existing.name.clone()),
@@ -146,8 +146,8 @@ impl OpenIdData {
     }
 }
 
-impl From<&OpenIdCredential> for OpenIdData {
-    fn from(credential: &OpenIdCredential) -> Self {
+impl From<&OpenIdDelegationCredential> for OpenIdData {
+    fn from(credential: &OpenIdDelegationCredential) -> Self {
         Self {
             email: credential.email.clone(),
             name: credential.name.clone(),

@@ -1,5 +1,5 @@
 use crate::openid::credentials::types::errors::VerifyOpenidCredentialsError;
-use crate::openid::credentials::delegation::types::interface::OpenIdCredential;
+use crate::openid::credentials::delegation::types::interface::OpenIdDelegationCredential;
 use crate::openid::jwkset::{get_jwks, get_or_refresh_jwks};
 use crate::openid::jwt::types::cert::Jwks;
 use crate::openid::jwt::types::errors::JwtVerifyError;
@@ -13,7 +13,7 @@ use crate::state::types::state::Salt;
 use crate::strategies::AuthHeapStrategy;
 
 type VerifyOpenIdDelegationCredentialsResult =
-    Result<(OpenIdCredential, OpenIdDelegationProvider), VerifyOpenidCredentialsError>;
+    Result<(OpenIdDelegationCredential, OpenIdDelegationProvider), VerifyOpenidCredentialsError>;
 
 pub async fn verify_openid_credentials_with_jwks_renewal(
     jwt: &str,
@@ -83,7 +83,7 @@ fn verify_openid_credentials(
     )
     .map_err(VerifyOpenidCredentialsError::JwtVerify)?;
 
-    let credential = OpenIdCredential::from(token);
+    let credential = OpenIdDelegationCredential::from(token);
 
     Ok((credential, provider.clone()))
 }

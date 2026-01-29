@@ -114,6 +114,7 @@ pub mod automation {
     use candid::{CandidType, Deserialize, Principal};
     use serde::Serialize;
     use junobuild_shared::types::state::{Timestamp, Version};
+    use crate::automation::types::AutomationScope;
     use crate::openid::types::provider::{OpenIdAutomationProvider};
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
@@ -148,12 +149,19 @@ pub mod automation {
     #[derive(Default, CandidType, Serialize, Deserialize, Clone, Debug)]
     pub struct OpenIdAutomationProviderConfig {
         pub repositories: OpenIdAutomationRepositories,
+        pub controller: Option<OpenIdAutomationProviderControllerConfig>,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone, Debug)]
     pub struct OpenIdAutomationRepositoryConfig {
         // Optionally restrict to specific branches (e.g. ["main", "develop"])
         pub branches: Option<Vec<String>>,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone, Debug)]
+    pub struct OpenIdAutomationProviderControllerConfig {
+        pub scope: Option<AutomationScope>,
+        pub max_time_to_live: Option<u64>,
     }
 }
 

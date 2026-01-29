@@ -4,7 +4,7 @@ use crate::state::types::state::Salt;
 use crate::state::types::state::{AuthenticationHeapState, OpenIdCachedCertificate, OpenIdState};
 use crate::strategies::AuthHeapStrategy;
 use std::collections::hash_map::Entry;
-
+use crate::state::types::automation::AutomationConfig;
 // ---------------------------------------------------------
 // Config
 // ---------------------------------------------------------
@@ -29,6 +29,35 @@ fn insert_config_impl(config: &AuthenticationConfig, state: &mut Option<Authenti
             })
         }
         Some(state) => state.config = config.clone(),
+    }
+}
+
+// ---------------------------------------------------------
+// Automation
+// ---------------------------------------------------------
+
+pub fn get_automation(auth_heap: &impl AuthHeapStrategy) -> Option<AutomationConfig> {
+    auth_heap
+        .with_auth_state(|authentication| {
+            authentication.as_ref().and_then(|auth| auth.automation.clone())
+        })
+}
+
+pub fn insert_automation(auth_heap: &impl AuthHeapStrategy, automation: &Option<AutomationConfig>) {
+    auth_heap.with_auth_state_mut(|authentication| insert_automation_impl(automation, authentication))
+}
+
+fn insert_automation_impl(automation: &Option<AutomationConfig>, state: &mut Option<AuthenticationHeapState>) {
+    match state {
+        None => {
+            *state = Some(AuthenticationHeapState {
+                config: AuthenticationConfig::default(),
+                automation: automation.clone(),
+                salt: None,
+                openid: None,
+            })
+        }
+        Some(state) => state.automation = automation.clone(),
     }
 }
 

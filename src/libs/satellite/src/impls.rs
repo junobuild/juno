@@ -1,4 +1,4 @@
-use crate::controllers::types::AuthenticateControllerResult;
+use crate::controllers::types::AuthenticateAutomationResult;
 use crate::memory::internal::init_stable_state;
 use crate::types::interface::{
     AuthenticateControllerResultResponse, AuthenticateResultResponse, AuthenticationResult,
@@ -49,8 +49,8 @@ impl From<AuthenticationResult> for AuthenticateResultResponse {
     }
 }
 
-impl From<AuthenticateControllerResult> for AuthenticateControllerResultResponse {
-    fn from(r: AuthenticateControllerResult) -> Self {
+impl From<AuthenticateAutomationResult> for AuthenticateControllerResultResponse {
+    fn from(r: AuthenticateAutomationResult) -> Self {
         match r {
             Ok(v) => Self::Ok(v),
             Err(e) => Self::Err(e),

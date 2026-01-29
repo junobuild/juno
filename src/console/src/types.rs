@@ -280,6 +280,7 @@ pub mod ledger {
     #[derive(Clone)]
     pub enum Fee {
         Cycles(CyclesTokens),
+        #[allow(clippy::upper_case_acronyms)]
         ICP(Tokens),
     }
 }

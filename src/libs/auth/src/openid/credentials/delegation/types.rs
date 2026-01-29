@@ -1,10 +1,10 @@
 pub mod interface {
-    pub struct OpenIdCredentialKey<'a> {
+    pub struct OpenIdDelegationCredentialKey<'a> {
         pub iss: &'a String,
         pub sub: &'a String,
     }
 
-    pub struct OpenIdCredential {
+    pub struct OpenIdDelegationCredential {
         pub iss: String,
         pub sub: String,
 

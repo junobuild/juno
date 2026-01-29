@@ -1,7 +1,7 @@
-use crate::controllers::types::AuthenticateAutomationResult;
+use crate::automation::types::AuthenticateAutomationResult;
 use crate::memory::internal::init_stable_state;
 use crate::types::interface::{
-    AuthenticateControllerResultResponse, AuthenticateResultResponse, AuthenticationResult,
+    AuthenticateAutomationResultResponse, AuthenticateResultResponse, AuthenticationResult,
     GetDelegationResultResponse,
 };
 use crate::types::state::{CollectionType, HeapState, RuntimeState, State};
@@ -49,7 +49,7 @@ impl From<AuthenticationResult> for AuthenticateResultResponse {
     }
 }
 
-impl From<AuthenticateAutomationResult> for AuthenticateControllerResultResponse {
+impl From<AuthenticateAutomationResult> for AuthenticateAutomationResultResponse {
     fn from(r: AuthenticateAutomationResult) -> Self {
         match r {
             Ok(v) => Self::Ok(v),

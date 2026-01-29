@@ -56,7 +56,7 @@ pub mod state {
 }
 
 pub mod interface {
-    use crate::controllers::types::AuthenticationAutomationError;
+    use crate::automation::types::AuthenticationAutomationError;
     use crate::db::types::config::DbConfig;
     use crate::Doc;
     use candid::CandidType;
@@ -121,7 +121,7 @@ pub mod interface {
     }
 
     #[derive(CandidType, Serialize, Deserialize)]
-    pub enum AuthenticateControllerResultResponse {
+    pub enum AuthenticateAutomationResultResponse {
         Ok(()),
         Err(AuthenticationAutomationError),
     }

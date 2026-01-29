@@ -1,4 +1,4 @@
-use crate::controllers::types::AutomationScope;
+use crate::automation::types::AutomationScope;
 use junobuild_shared::types::state::ControllerScope;
 
 impl From<AutomationScope> for ControllerScope {

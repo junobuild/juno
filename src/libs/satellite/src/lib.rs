@@ -3,6 +3,7 @@
 mod api;
 mod assets;
 mod auth;
+mod automation;
 mod certification;
 mod controllers;
 mod db;
@@ -18,17 +19,17 @@ mod sdk;
 mod types;
 mod user;
 
-use crate::controllers::types::AuthenticateControllerArgs;
 use crate::db::types::config::DbConfig;
 use crate::db::types::interface::SetDbConfig;
 use crate::guards::{
     caller_is_admin_controller, caller_is_controller, caller_is_controller_with_write,
 };
 use crate::types::interface::{
-    AuthenticateControllerResultResponse, AuthenticateResultResponse, AuthenticationArgs, Config,
+    AuthenticateAutomationResultResponse, AuthenticateResultResponse, AuthenticationArgs, Config,
     DeleteProposalAssets, GetDelegationArgs, GetDelegationResultResponse,
 };
 use crate::types::state::CollectionType;
+use automation::types::AuthenticateAutomationArgs;
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
 use junobuild_auth::state::types::config::AuthenticationConfig;
 use junobuild_auth::state::types::interface::SetAuthenticationConfig;
@@ -177,6 +178,14 @@ pub fn get_delegation(args: GetDelegationArgs) -> GetDelegationResultResponse {
     api::auth::get_delegation(&args).into()
 }
 
+#[doc(hidden)]
+#[update]
+pub async fn authenticate_automation(
+    args: AuthenticateAutomationArgs,
+) -> AuthenticateAutomationResultResponse {
+    api::automation::authenticate_automation(args).await.into()
+}
+
 // ---------------------------------------------------------
 // Rules
 // ---------------------------------------------------------
@@ -231,14 +240,6 @@ pub fn del_controllers(args: DeleteControllersArgs) -> Controllers {
 #[query(guard = "caller_is_admin_controller")]
 pub fn list_controllers() -> Controllers {
     api::controllers::list_controllers()
-}
-
-#[doc(hidden)]
-#[update]
-pub async fn authenticate_controller(
-    args: AuthenticateControllerArgs,
-) -> AuthenticateControllerResultResponse {
-    api::controllers::authenticate_controller(args).await.into()
 }
 
 // ---------------------------------------------------------
@@ -549,7 +550,7 @@ pub fn memory_size() -> MemorySize {
 macro_rules! include_satellite {
     () => {
         use junobuild_satellite::{
-            authenticate, authenticate_controller, commit_asset_upload, commit_proposal,
+            authenticate, authenticate_automation, commit_asset_upload, commit_proposal,
             commit_proposal_asset_upload, commit_proposal_many_assets_upload, count_assets,
             count_collection_assets, count_collection_docs, count_docs, count_proposals, del_asset,
             del_assets, del_controllers, del_custom_domain, del_doc, del_docs, del_filtered_assets,

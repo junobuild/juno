@@ -1,9 +1,9 @@
 use candid::{CandidType, Deserialize};
-use serde::Serialize;
 use junobuild_auth::automation::types::{OpenIdPrepareAutomationArgs, PrepareAutomationError};
+use serde::Serialize;
 
 #[derive(CandidType, Serialize, Deserialize)]
-pub enum AuthenticateControllerArgs {
+pub enum AuthenticateAutomationArgs {
     OpenId(OpenIdPrepareAutomationArgs),
 }
 

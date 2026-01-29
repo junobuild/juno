@@ -1,6 +1,4 @@
-use crate::controllers::openid_authenticate_controller;
 use crate::controllers::store::{delete_controllers, set_controllers as set_controllers_store};
-use crate::controllers::types::{AuthenticateControllerArgs, AuthenticateAutomationResult};
 use crate::{get_admin_controllers, get_controllers};
 use ic_cdk::trap;
 use junobuild_shared::constants::shared::MAX_NUMBER_OF_SATELLITE_CONTROLLERS;
@@ -50,12 +48,4 @@ pub fn del_controllers(
 
 pub fn list_controllers() -> Controllers {
     get_controllers()
-}
-
-pub async fn authenticate_controller(
-    args: AuthenticateControllerArgs,
-) -> AuthenticateAutomationResult {
-    match args {
-        AuthenticateControllerArgs::OpenId(args) => openid_authenticate_controller(&args).await,
-    }
 }

@@ -1,13 +1,14 @@
 use crate::auth::strategy_impls::AuthHeap;
 use crate::certification::strategy_impls::AuthCertificate;
+use junobuild_auth::delegation;
 use junobuild_auth::delegation::types::{
     GetDelegationError, GetDelegationResult, OpenIdGetDelegationArgs, OpenIdPrepareDelegationArgs,
     PrepareDelegationError, PreparedDelegation,
 };
-use junobuild_auth::openid::delegation::types::interface::OpenIdCredential;
-use junobuild_auth::openid::delegation::types::provider::OpenIdDelegationProvider;
+use junobuild_auth::openid::credentials;
+use junobuild_auth::openid::credentials::delegation::types::interface::OpenIdCredential;
+use junobuild_auth::openid::credentials::delegation::types::provider::OpenIdDelegationProvider;
 use junobuild_auth::state::types::config::OpenIdAuthProviders;
-use junobuild_auth::{delegation, openid};
 
 pub type OpenIdPrepareDelegationResult = Result<
     (
@@ -23,7 +24,7 @@ pub async fn openid_prepare_delegation(
     providers: &OpenIdAuthProviders,
 ) -> OpenIdPrepareDelegationResult {
     let (credential, provider) =
-        match openid::delegation::verify_openid_credentials_with_jwks_renewal(
+        match credentials::delegation::verify_openid_credentials_with_jwks_renewal(
             &args.jwt, &args.salt, providers, &AuthHeap,
         )
         .await
@@ -48,7 +49,7 @@ pub fn openid_get_delegation(
     providers: &OpenIdAuthProviders,
 ) -> GetDelegationResult {
     let (credential, provider) =
-        match openid::delegation::verify_openid_credentials_with_cached_jwks(
+        match credentials::delegation::verify_openid_credentials_with_cached_jwks(
             &args.jwt, &args.salt, providers, &AuthHeap,
         ) {
             Ok(value) => value,

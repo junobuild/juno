@@ -1,4 +1,5 @@
 use crate::openid::jwt::types::cert::Jwks;
+use crate::openid::jwt::types::provider::JwtIssuers;
 use crate::openid::types::provider::{OpenIdCertificate, OpenIdDelegationProvider, OpenIdProvider};
 use junobuild_shared::data::version::next_version;
 use junobuild_shared::ic::api::time;
@@ -45,6 +46,12 @@ impl OpenIdDelegationProvider {
             Self::Google => OpenIdProvider::Google.issuers(),
             Self::GitHub => OpenIdProvider::GitHubAuth.issuers(),
         }
+    }
+}
+
+impl JwtIssuers for OpenIdDelegationProvider {
+    fn issuers(&self) -> &[&'static str] {
+        self.issuers()
     }
 }
 

@@ -21,8 +21,10 @@ pub fn unsafe_find_jwt_kid(jwt: &str) -> Result<String, JwtFindKidError> {
 #[cfg(test)]
 mod unsafe_find_kid_tests {
     use super::unsafe_find_jwt_kid;
-    use crate::openid::jwt::types::{errors::JwtFindKidError, token::Claims};
+    use crate::openid::jwt::types::errors::JwtFindKidError;
+    use candid::Deserialize;
     use jsonwebtoken::{encode, Algorithm, EncodingKey, Header};
+    use serde::Serialize;
     use std::time::{SystemTime, UNIX_EPOCH};
 
     const TEST_RSA_PEM: &str = include_str!("../../../tests/keys/test_rsa.pem");
@@ -45,9 +47,29 @@ mod unsafe_find_kid_tests {
         h
     }
 
-    fn claims_basic() -> Claims {
+    #[derive(Debug, Clone, Deserialize, Serialize)]
+    pub struct GoogleClaims {
+        pub iss: String,
+        pub sub: String,
+        pub aud: String,
+        pub exp: Option<u64>,
+        pub nbf: Option<u64>,
+        pub iat: Option<u64>,
+
+        pub nonce: Option<String>,
+
+        pub email: Option<String>,
+        pub name: Option<String>,
+        pub given_name: Option<String>,
+        pub family_name: Option<String>,
+        pub preferred_username: Option<String>,
+        pub picture: Option<String>,
+        pub locale: Option<String>,
+    }
+
+    fn claims_basic() -> GoogleClaims {
         let now = now_secs();
-        Claims {
+        GoogleClaims {
             iss: ISS.into(),
             sub: "sub".into(),
             aud: AUD.into(),
@@ -65,7 +87,7 @@ mod unsafe_find_kid_tests {
         }
     }
 
-    fn sign_token(h: &Header, c: &Claims) -> String {
+    fn sign_token(h: &Header, c: &GoogleClaims) -> String {
         let enc = EncodingKey::from_rsa_pem(TEST_RSA_PEM.as_bytes()).expect("valid pem");
         encode(h, c, &enc).expect("jwt encode")
     }

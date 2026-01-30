@@ -4,6 +4,7 @@ pub mod interface {
         pub sub: &'a String,
     }
 
+    #[derive(Debug)]
     pub struct OpenIdDelegationCredential {
         pub iss: String,
         pub sub: String,

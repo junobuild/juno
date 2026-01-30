@@ -112,8 +112,11 @@ fn now_ns() -> u64 {
 mod verify_tests {
     use super::verify_openid_jwt;
     use crate::openid::jwt::types::cert::{JwkParams, JwkParamsRsa, JwkType};
+    use crate::openid::jwt::types::token::JwtClaims;
     use crate::openid::jwt::types::{cert::Jwk, errors::JwtVerifyError};
+    use candid::Deserialize;
     use jsonwebtoken::{encode, Algorithm, EncodingKey, Header};
+    use serde::Serialize;
     use std::time::{SystemTime, UNIX_EPOCH};
 
     const TEST_RSA_PEM: &str = include_str!("../../../tests/keys/test_rsa.pem");
@@ -140,6 +143,32 @@ mod verify_tests {
         h
     }
 
+    #[derive(Debug, Clone, Deserialize, Serialize)]
+    pub struct GoogleClaims {
+        pub iss: String,
+        pub sub: String,
+        pub aud: String,
+        pub exp: Option<u64>,
+        pub nbf: Option<u64>,
+        pub iat: Option<u64>,
+
+        pub nonce: Option<String>,
+
+        pub email: Option<String>,
+        pub name: Option<String>,
+        pub given_name: Option<String>,
+        pub family_name: Option<String>,
+        pub preferred_username: Option<String>,
+        pub picture: Option<String>,
+        pub locale: Option<String>,
+    }
+
+    impl JwtClaims for GoogleClaims {
+        fn iat(&self) -> Option<u64> {
+            self.iat
+        }
+    }
+
     fn claims(
         iss: &str,
         aud: &str,
@@ -147,8 +176,8 @@ mod verify_tests {
         nbf: Option<u64>,
         nonce: Option<&str>,
         exp: Option<u64>,
-    ) -> Claims {
-        Claims {
+    ) -> GoogleClaims {
+        GoogleClaims {
             iss: iss.into(),
             sub: "sub".into(),
             aud: aud.into(),
@@ -166,7 +195,7 @@ mod verify_tests {
         }
     }
 
-    fn sign_token(h: &Header, c: &Claims) -> String {
+    fn sign_token(h: &Header, c: &GoogleClaims) -> String {
         let enc = EncodingKey::from_rsa_pem(TEST_RSA_PEM.as_bytes()).expect("valid pem");
         encode(h, c, &enc).expect("jwt encode")
     }
@@ -183,14 +212,14 @@ mod verify_tests {
         }
     }
 
-    fn assert_audience(claims: &Claims) -> Result<(), JwtVerifyError> {
+    fn assert_audience(claims: &GoogleClaims) -> Result<(), JwtVerifyError> {
         if claims.aud != AUD_OK {
             return Err(JwtVerifyError::BadClaim("aud".to_string()));
         }
         Ok(())
     }
 
-    fn assert_nonce(claims: &Claims) -> Result<(), JwtVerifyError> {
+    fn assert_nonce(claims: &GoogleClaims) -> Result<(), JwtVerifyError> {
         if claims.nonce.as_deref() != Some(NONCE_OK) {
             return Err(JwtVerifyError::BadClaim("nonce".to_string()));
         }
@@ -511,7 +540,7 @@ mod verify_tests {
     fn decodes_optional_profile_claims() {
         let now = now_secs();
 
-        let c = Claims {
+        let c = GoogleClaims {
             iss: ISS_GOOGLE.into(),
             sub: "sub-123".into(),
             aud: AUD_OK.into(),

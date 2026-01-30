@@ -1,5 +1,7 @@
 use candid::Principal;
-use ic_cdk::api::{canister_self, debug_print, msg_caller};
+
+#[cfg(target_arch = "wasm32")]
+use ic_cdk::api::{canister_self, debug_print, msg_caller, time as ic_time};
 
 /// Returns the **principal** of the current module.
 ///
@@ -9,10 +11,16 @@ use ic_cdk::api::{canister_self, debug_print, msg_caller};
 ///
 /// # Example
 /// ```ignore
-/// let current_module = core::ic::id();
+/// let current_module = ic::api::id();
 /// ```
+#[cfg(target_arch = "wasm32")]
 pub fn id() -> Principal {
     canister_self()
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+pub fn id() -> Principal {
+    Principal::from_text("ck4tp-3iaaa-aaaal-ab7da-cai").unwrap()
 }
 
 /// Returns the **principal** of the caller that invoked the current module.
@@ -23,10 +31,16 @@ pub fn id() -> Principal {
 ///
 /// # Example
 /// ```ignore
-/// let user = core::ic::caller();
+/// let user = ic::api::caller();
 /// ```
+#[cfg(target_arch = "wasm32")]
 pub fn caller() -> Principal {
     msg_caller()
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+pub fn caller() -> Principal {
+    Principal::from_text("bphsl-fvy2d-emlkg-wuhfe-fylew-25w4a-vpdm3-ajsos-ao4x5-sxn5j-jqe").unwrap()
 }
 
 /// Prints a debug message to the Juno runtime logs.
@@ -39,8 +53,37 @@ pub fn caller() -> Principal {
 ///
 /// # Example
 /// ```ignore
-/// core::ic::print("Satellite started successfully");
+/// ic::api::print("Satellite started successfully");
 /// ```
+#[cfg(target_arch = "wasm32")]
 pub fn print<S: AsRef<str>>(s: S) {
     debug_print(s)
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+pub fn print<S: AsRef<str>>(_s: S) {
+    // Noop
+}
+
+/// Returns the current timestamp in nanoseconds since the UNIX epoch.
+///
+/// This is a shorthand for [`ic_cdk::api::time`] useful for
+/// test in wasm32 environment.
+///
+/// # Example
+/// ```ignore
+/// let now = ic::api::time();
+/// ```
+#[cfg(target_arch = "wasm32")]
+pub fn time() -> u64 {
+    ic_time()
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+pub fn time() -> u64 {
+    use std::time::{SystemTime, UNIX_EPOCH};
+    SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .unwrap()
+        .as_nanos() as u64
 }

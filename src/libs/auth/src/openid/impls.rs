@@ -3,8 +3,8 @@ use crate::openid::jwt::types::provider::JwtIssuers;
 use crate::openid::types::provider::{
     OpenIdAutomationProvider, OpenIdCertificate, OpenIdDelegationProvider, OpenIdProvider,
 };
-use ic_cdk::api::time;
 use junobuild_shared::data::version::next_version;
+use junobuild_shared::ic::api::time;
 use junobuild_shared::types::state::{Version, Versioned};
 use std::fmt::{Display, Formatter, Result as FmtResult};
 

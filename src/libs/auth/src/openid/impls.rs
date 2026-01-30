@@ -53,6 +53,12 @@ impl OpenIdDelegationProvider {
     }
 }
 
+impl JwtIssuers for OpenIdDelegationProvider {
+    fn issuers(&self) -> &[&'static str] {
+        self.issuers()
+    }
+}
+
 impl From<&OpenIdAutomationProvider> for OpenIdProvider {
     fn from(automation_provider: &OpenIdAutomationProvider) -> Self {
         match automation_provider {
@@ -72,12 +78,6 @@ impl OpenIdAutomationProvider {
         match self {
             Self::GitHub => OpenIdProvider::GitHubActions.issuers(),
         }
-    }
-}
-
-impl JwtIssuers for OpenIdDelegationProvider {
-    fn issuers(&self) -> &[&'static str] {
-        self.issuers()
     }
 }
 

@@ -1,16 +1,19 @@
 use crate::openid::jwt::header::decode_jwt_header;
 use crate::openid::jwt::types::errors::JwtFindProviderError;
+use crate::openid::jwt::types::provider::JwtIssuers;
 use crate::openid::jwt::types::token::UnsafeClaims;
-use crate::openid::types::provider::OpenIdDelegationProvider;
-use crate::state::types::config::{OpenIdAuthProviderConfig, OpenIdAuthProviders};
 use jsonwebtoken::dangerous;
+use std::collections::BTreeMap;
 
 /// ⚠️ **Warning:** This function decodes the JWT payload *without verifying its signature*.
 /// Use only to inspect claims (e.g., `iss`) before performing a verified decode.
-pub fn unsafe_find_jwt_provider<'a>(
-    providers: &'a OpenIdAuthProviders,
+pub fn unsafe_find_jwt_provider<'a, Provider, Config>(
+    providers: &'a BTreeMap<Provider, Config>,
     jwt: &str,
-) -> Result<(OpenIdDelegationProvider, &'a OpenIdAuthProviderConfig), JwtFindProviderError> {
+) -> Result<(Provider, &'a Config), JwtFindProviderError>
+where
+    Provider: Clone + JwtIssuers,
+{
     // 1) Header sanity check
     decode_jwt_header(jwt).map_err(JwtFindProviderError::from)?;
 

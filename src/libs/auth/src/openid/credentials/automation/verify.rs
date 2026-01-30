@@ -6,7 +6,7 @@ use crate::openid::jwt::types::cert::Jwks;
 use crate::openid::jwt::types::errors::JwtVerifyError;
 use crate::openid::jwt::{unsafe_find_jwt_provider, verify_openid_jwt};
 use crate::openid::types::provider::{OpenIdAutomationProvider, OpenIdProvider};
-use crate::state::types::automation::OpenIdAutomationProviders;
+use crate::state::types::automation::{OpenIdAutomationProviderConfig, OpenIdAutomationProviders};
 use crate::strategies::AuthHeapStrategy;
 
 type VerifyOpenIdAutomationCredentialsResult =
@@ -26,13 +26,14 @@ pub async fn verify_openid_credentials_with_jwks_renewal(
         .await
         .map_err(VerifyOpenidCredentialsError::GetOrFetchJwks)?;
 
-    verify_openid_credentials(jwt, &jwks, &automation_provider)
+    verify_openid_credentials(jwt, &jwks, &automation_provider, &config)
 }
 
 fn verify_openid_credentials(
     jwt: &str,
     jwks: &Jwks,
     provider: &OpenIdAutomationProvider,
+    config: &OpenIdAutomationProviderConfig,
 ) -> VerifyOpenIdAutomationCredentialsResult {
     let assert_audience = |claims: &AutomationClaims| -> Result<(), JwtVerifyError> {
         // if claims.aud != client_id.as_str() {

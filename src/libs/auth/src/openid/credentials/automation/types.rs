@@ -29,12 +29,12 @@ pub(crate) mod token {
 
         pub nonce: Option<String>,
 
-        pub email: Option<String>,
-        pub name: Option<String>,
-        pub given_name: Option<String>,
-        pub family_name: Option<String>,
-        pub preferred_username: Option<String>,
-        pub picture: Option<String>,
-        pub locale: Option<String>,
+        pub jti: Option<String>,
+        pub repository: Option<String>,
+        pub repository_owner: Option<String>,
+        pub r#ref: Option<String>,
+        pub run_id: Option<String>,
+        pub run_number: Option<String>,
+        pub run_attempt: Option<String>,
     }
 }

@@ -1,19 +1,26 @@
 use crate::openid::jwt::header::decode_jwt_header;
 use crate::openid::jwt::types::cert::{JwkParams, JwkType};
-use crate::openid::jwt::types::{cert::Jwk, errors::JwtVerifyError, token::Claims};
+use crate::openid::jwt::types::token::JwtClaims;
+use crate::openid::jwt::types::{cert::Jwk, errors::JwtVerifyError};
 use jsonwebtoken::{decode, Algorithm, DecodingKey, TokenData, Validation};
+use serde::de::DeserializeOwned;
 
 fn pick_key<'a>(kid: &str, jwks: &'a [Jwk]) -> Option<&'a Jwk> {
     jwks.iter().find(|j| j.kid.as_deref() == Some(kid))
 }
 
-pub fn verify_openid_jwt(
+pub fn verify_openid_jwt<Claims, Aud, Replay>(
     jwt: &str,
     issuers: &[&str],
-    client_id: &str,
     jwks: &[Jwk],
-    expected_nonce: &str,
-) -> Result<TokenData<Claims>, JwtVerifyError> {
+    assert_audience: Aud,
+    assert_no_replay: Replay,
+) -> Result<TokenData<Claims>, JwtVerifyError>
+where
+    Claims: DeserializeOwned + JwtClaims,
+    Aud: FnOnce(&Claims) -> Result<(), JwtVerifyError>,
+    Replay: FnOnce(&Claims) -> Result<(), JwtVerifyError>,
+{
     // 1) Read header to get `kid`
     let header = decode_jwt_header(jwt).map_err(JwtVerifyError::from)?;
 
@@ -55,23 +62,20 @@ pub fn verify_openid_jwt(
     let token =
         decode::<Claims>(jwt, &key, &val).map_err(|e| JwtVerifyError::BadSig(e.to_string()))?;
 
-    // 6) Manual checks audience
     let c = &token.claims;
-    if c.aud != client_id {
-        return Err(JwtVerifyError::BadClaim("aud".to_string()));
-    }
 
-    // 7) Assert it is the expected nonce
-    if c.nonce.as_deref() != Some(expected_nonce) {
-        return Err(JwtVerifyError::BadClaim("nonce".to_string()));
-    }
+    // 6) Manual checks audience
+    assert_audience(c)?;
+
+    // 7) Prevent replace attack
+    assert_no_replay(c)?;
 
     // 8) Assert expiration
     let now_ns = now_ns();
     const MAX_VALIDITY_WINDOW_NS: u64 = 10 * 60 * 1_000_000_000; // 10 min
     const IAT_FUTURE_SKEW_NS: u64 = 2 * 60 * 1_000_000_000; // 2 min
 
-    let iat_s = c.iat.ok_or(JwtVerifyError::BadClaim("iat".to_string()))?;
+    let iat_s = c.iat().ok_or(JwtVerifyError::BadClaim("iat".to_string()))?;
     let iat_ns = iat_s.saturating_mul(1_000_000_000);
 
     // Reject if token is from the future
@@ -108,8 +112,11 @@ fn now_ns() -> u64 {
 mod verify_tests {
     use super::verify_openid_jwt;
     use crate::openid::jwt::types::cert::{JwkParams, JwkParamsRsa, JwkType};
-    use crate::openid::jwt::types::{cert::Jwk, errors::JwtVerifyError, token::Claims};
+    use crate::openid::jwt::types::token::JwtClaims;
+    use crate::openid::jwt::types::{cert::Jwk, errors::JwtVerifyError};
+    use candid::Deserialize;
     use jsonwebtoken::{encode, Algorithm, EncodingKey, Header};
+    use serde::Serialize;
     use std::time::{SystemTime, UNIX_EPOCH};
 
     const TEST_RSA_PEM: &str = include_str!("../../../tests/keys/test_rsa.pem");
@@ -136,6 +143,32 @@ mod verify_tests {
         h
     }
 
+    #[derive(Debug, Clone, Deserialize, Serialize)]
+    pub struct GoogleClaims {
+        pub iss: String,
+        pub sub: String,
+        pub aud: String,
+        pub exp: Option<u64>,
+        pub nbf: Option<u64>,
+        pub iat: Option<u64>,
+
+        pub nonce: Option<String>,
+
+        pub email: Option<String>,
+        pub name: Option<String>,
+        pub given_name: Option<String>,
+        pub family_name: Option<String>,
+        pub preferred_username: Option<String>,
+        pub picture: Option<String>,
+        pub locale: Option<String>,
+    }
+
+    impl JwtClaims for GoogleClaims {
+        fn iat(&self) -> Option<u64> {
+            self.iat
+        }
+    }
+
     fn claims(
         iss: &str,
         aud: &str,
@@ -143,8 +176,8 @@ mod verify_tests {
         nbf: Option<u64>,
         nonce: Option<&str>,
         exp: Option<u64>,
-    ) -> Claims {
-        Claims {
+    ) -> GoogleClaims {
+        GoogleClaims {
             iss: iss.into(),
             sub: "sub".into(),
             aud: aud.into(),
@@ -162,7 +195,7 @@ mod verify_tests {
         }
     }
 
-    fn sign_token(h: &Header, c: &Claims) -> String {
+    fn sign_token(h: &Header, c: &GoogleClaims) -> String {
         let enc = EncodingKey::from_rsa_pem(TEST_RSA_PEM.as_bytes()).expect("valid pem");
         encode(h, c, &enc).expect("jwt encode")
     }
@@ -177,6 +210,20 @@ mod verify_tests {
                 e: E_B64URL.into(),
             }),
         }
+    }
+
+    fn assert_audience(claims: &GoogleClaims) -> Result<(), JwtVerifyError> {
+        if claims.aud != AUD_OK {
+            return Err(JwtVerifyError::BadClaim("aud".to_string()));
+        }
+        Ok(())
+    }
+
+    fn assert_nonce(claims: &GoogleClaims) -> Result<(), JwtVerifyError> {
+        if claims.nonce.as_deref() != Some(NONCE_OK) {
+            return Err(JwtVerifyError::BadClaim("nonce".to_string()));
+        }
+        Ok(())
     }
 
     #[test]
@@ -197,9 +244,9 @@ mod verify_tests {
         let out = verify_openid_jwt(
             &token,
             &[ISS_GOOGLE],
-            AUD_OK,
             &[jwk_with_kid(KID_OK)],
-            NONCE_OK,
+            |claims| assert_audience(claims),
+            |claims| assert_nonce(claims),
         )
         .expect("should verify");
 
@@ -226,9 +273,9 @@ mod verify_tests {
         let err = verify_openid_jwt(
             &token,
             &[ISS_GOOGLE],
-            AUD_OK,
             &[jwk_with_kid(KID_OK)],
-            NONCE_OK,
+            |claims| assert_audience(claims),
+            |claims| assert_nonce(claims),
         )
         .unwrap_err();
         assert!(matches!(err, JwtVerifyError::MissingKid));
@@ -252,9 +299,9 @@ mod verify_tests {
         let err = verify_openid_jwt(
             &token,
             &[ISS_GOOGLE],
-            AUD_OK,
             &[jwk_with_kid(KID_OK)],
-            NONCE_OK,
+            |claims| assert_audience(claims),
+            |claims| assert_nonce(claims),
         )
         .unwrap_err();
         assert!(matches!(err, JwtVerifyError::NoKeyForKid));
@@ -279,9 +326,9 @@ mod verify_tests {
         let err = verify_openid_jwt(
             &token,
             &[ISS_GOOGLE],
-            AUD_OK,
             &[jwk_with_kid(KID_OK)],
-            NONCE_OK,
+            |claims| assert_audience(claims),
+            |claims| assert_nonce(claims),
         )
         .unwrap_err();
         assert!(matches!(err, JwtVerifyError::BadSig(_)));
@@ -305,9 +352,9 @@ mod verify_tests {
         let err = verify_openid_jwt(
             &token,
             &[ISS_GOOGLE],
-            AUD_OK,
             &[jwk_with_kid(KID_OK)],
-            NONCE_OK,
+            |claims| assert_audience(claims),
+            |claims| assert_nonce(claims),
         )
         .unwrap_err();
         assert!(matches!(err, JwtVerifyError::BadClaim(ref f) if f == "typ"));
@@ -331,9 +378,9 @@ mod verify_tests {
         let err = verify_openid_jwt(
             &token,
             &[ISS_GOOGLE],
-            AUD_OK,
             &[jwk_with_kid(KID_OK)],
-            NONCE_OK,
+            |claims| assert_audience(claims),
+            |claims| assert_nonce(claims),
         )
         .unwrap_err();
         assert!(matches!(err, JwtVerifyError::BadClaim(ref f) if f == "aud"));
@@ -357,9 +404,9 @@ mod verify_tests {
         let err = verify_openid_jwt(
             &token,
             &[ISS_GOOGLE],
-            AUD_OK,
             &[jwk_with_kid(KID_OK)],
-            NONCE_OK,
+            |claims| assert_audience(claims),
+            |claims| assert_nonce(claims),
         )
         .unwrap_err();
         assert!(matches!(err, JwtVerifyError::BadClaim(ref f) if f == "nonce"));
@@ -384,9 +431,9 @@ mod verify_tests {
         let err = verify_openid_jwt(
             &token,
             &[ISS_GOOGLE],
-            AUD_OK,
             &[jwk_with_kid(KID_OK)],
-            NONCE_OK,
+            |claims| assert_audience(claims),
+            |claims| assert_nonce(claims),
         )
         .unwrap_err();
         assert!(matches!(err, JwtVerifyError::BadClaim(ref f) if f == "iat_future"));
@@ -411,9 +458,9 @@ mod verify_tests {
         let err = verify_openid_jwt(
             &token,
             &[ISS_GOOGLE],
-            AUD_OK,
             &[jwk_with_kid(KID_OK)],
-            NONCE_OK,
+            |claims| assert_audience(claims),
+            |claims| assert_nonce(claims),
         )
         .unwrap_err();
         assert!(matches!(err, JwtVerifyError::BadClaim(ref f) if f == "iat_expired"));
@@ -439,9 +486,9 @@ mod verify_tests {
         let err = verify_openid_jwt(
             &token,
             &[ISS_GOOGLE],
-            AUD_OK,
             &[jwk_with_kid(KID_OK)],
-            NONCE_OK,
+            |claims| assert_audience(claims),
+            |claims| assert_nonce(claims),
         )
         .unwrap_err();
         assert!(matches!(err, JwtVerifyError::BadSig(_)));
@@ -478,8 +525,14 @@ mod verify_tests {
             }),
         };
 
-        let err =
-            verify_openid_jwt(&token, &[ISS_GOOGLE], AUD_OK, &[bad_jwk], NONCE_OK).unwrap_err();
+        let err = verify_openid_jwt(
+            &token,
+            &[ISS_GOOGLE],
+            &[bad_jwk],
+            |claims| assert_audience(claims),
+            |claims| assert_nonce(claims),
+        )
+        .unwrap_err();
         assert!(matches!(err, JwtVerifyError::BadSig(_)));
     }
 
@@ -487,7 +540,7 @@ mod verify_tests {
     fn decodes_optional_profile_claims() {
         let now = now_secs();
 
-        let c = Claims {
+        let c = GoogleClaims {
             iss: ISS_GOOGLE.into(),
             sub: "sub-123".into(),
             aud: AUD_OK.into(),
@@ -509,9 +562,9 @@ mod verify_tests {
         let out = verify_openid_jwt(
             &token,
             &[ISS_GOOGLE],
-            AUD_OK,
             &[jwk_with_kid(KID_OK)],
-            NONCE_OK,
+            |claims| assert_audience(claims),
+            |claims| assert_nonce(claims),
         )
         .expect("should verify");
 

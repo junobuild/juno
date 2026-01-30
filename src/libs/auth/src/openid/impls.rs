@@ -129,7 +129,7 @@ impl Display for OpenIdProvider {
     fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
         match self {
             OpenIdProvider::Google => write!(f, "Google"),
-            OpenIdProvider::GitHubAuth => write!(f, "GitHub Proxy"),
+            OpenIdProvider::GitHubAuth => write!(f, "GitHub"),
             OpenIdProvider::GitHubActions => write!(f, "GitHub Actions"),
         }
     }
@@ -256,7 +256,7 @@ mod tests {
     #[test]
     fn test_openid_provider_display() {
         assert_eq!(format!("{}", OpenIdProvider::Google), "Google");
-        assert_eq!(format!("{}", OpenIdProvider::GitHubAuth), "GitHub Proxy");
+        assert_eq!(format!("{}", OpenIdProvider::GitHubAuth), "GitHub");
         assert_eq!(
             format!("{}", OpenIdProvider::GitHubActions),
             "GitHub Actions"

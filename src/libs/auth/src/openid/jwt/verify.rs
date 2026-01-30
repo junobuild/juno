@@ -1,13 +1,15 @@
 use crate::openid::jwt::header::decode_jwt_header;
 use crate::openid::jwt::types::cert::{JwkParams, JwkType};
-use crate::openid::jwt::types::{cert::Jwk, errors::JwtVerifyError, token::Claims};
+use crate::openid::jwt::types::token::JwtClaims;
+use crate::openid::jwt::types::{cert::Jwk, errors::JwtVerifyError};
 use jsonwebtoken::{decode, Algorithm, DecodingKey, TokenData, Validation};
+use serde::de::DeserializeOwned;
 
 fn pick_key<'a>(kid: &str, jwks: &'a [Jwk]) -> Option<&'a Jwk> {
     jwks.iter().find(|j| j.kid.as_deref() == Some(kid))
 }
 
-pub fn verify_openid_jwt<Aud, Replay>(
+pub fn verify_openid_jwt<Claims, Aud, Replay>(
     jwt: &str,
     issuers: &[&str],
     jwks: &[Jwk],
@@ -15,6 +17,7 @@ pub fn verify_openid_jwt<Aud, Replay>(
     assert_no_replay: Replay,
 ) -> Result<TokenData<Claims>, JwtVerifyError>
 where
+    Claims: DeserializeOwned + JwtClaims,
     Aud: FnOnce(&Claims) -> Result<(), JwtVerifyError>,
     Replay: FnOnce(&Claims) -> Result<(), JwtVerifyError>,
 {
@@ -72,7 +75,7 @@ where
     const MAX_VALIDITY_WINDOW_NS: u64 = 10 * 60 * 1_000_000_000; // 10 min
     const IAT_FUTURE_SKEW_NS: u64 = 2 * 60 * 1_000_000_000; // 2 min
 
-    let iat_s = c.iat.ok_or(JwtVerifyError::BadClaim("iat".to_string()))?;
+    let iat_s = c.iat().ok_or(JwtVerifyError::BadClaim("iat".to_string()))?;
     let iat_ns = iat_s.saturating_mul(1_000_000_000);
 
     // Reject if token is from the future
@@ -109,7 +112,7 @@ fn now_ns() -> u64 {
 mod verify_tests {
     use super::verify_openid_jwt;
     use crate::openid::jwt::types::cert::{JwkParams, JwkParamsRsa, JwkType};
-    use crate::openid::jwt::types::{cert::Jwk, errors::JwtVerifyError, token::Claims};
+    use crate::openid::jwt::types::{cert::Jwk, errors::JwtVerifyError};
     use jsonwebtoken::{encode, Algorithm, EncodingKey, Header};
     use std::time::{SystemTime, UNIX_EPOCH};
 

@@ -1,15 +1,16 @@
+use crate::openid::credentials::automation::types::interface::OpenIdAutomationCredential;
+use crate::openid::credentials::automation::types::token::AutomationClaims;
 use crate::openid::credentials::types::errors::VerifyOpenidCredentialsError;
 use crate::openid::jwkset::get_or_refresh_jwks;
 use crate::openid::jwt::types::cert::Jwks;
 use crate::openid::jwt::types::errors::JwtVerifyError;
-use crate::openid::jwt::types::token::Claims;
 use crate::openid::jwt::{unsafe_find_jwt_provider, verify_openid_jwt};
 use crate::openid::types::provider::{OpenIdAutomationProvider, OpenIdProvider};
 use crate::state::types::automation::OpenIdAutomationProviders;
 use crate::strategies::AuthHeapStrategy;
 
 type VerifyOpenIdAutomationCredentialsResult =
-    Result<OpenIdAutomationProvider, VerifyOpenidCredentialsError>;
+    Result<(OpenIdAutomationCredential, OpenIdAutomationProvider), VerifyOpenidCredentialsError>;
 
 pub async fn verify_openid_credentials_with_jwks_renewal(
     jwt: &str,
@@ -33,7 +34,7 @@ fn verify_openid_credentials(
     jwks: &Jwks,
     provider: &OpenIdAutomationProvider,
 ) -> VerifyOpenIdAutomationCredentialsResult {
-    let assert_audience = |claims: &Claims| -> Result<(), JwtVerifyError> {
+    let assert_audience = |claims: &AutomationClaims| -> Result<(), JwtVerifyError> {
         // if claims.aud != client_id.as_str() {
         //     return Err(JwtVerifyError::BadClaim("aud".to_string()));
         // }
@@ -43,7 +44,7 @@ fn verify_openid_credentials(
         Ok(())
     };
 
-    let assert_no_replay = |claims: &Claims| -> Result<(), JwtVerifyError> {
+    let assert_no_replay = |claims: &AutomationClaims| -> Result<(), JwtVerifyError> {
         // let nonce = build_nonce(salt);
         //
         // if claims.nonce.as_deref() != Some(nonce.as_str()) {
@@ -55,7 +56,7 @@ fn verify_openid_credentials(
         Ok(())
     };
 
-    verify_openid_jwt(
+    let token = verify_openid_jwt(
         jwt,
         provider.issuers(),
         &jwks.keys,
@@ -64,5 +65,7 @@ fn verify_openid_credentials(
     )
     .map_err(VerifyOpenidCredentialsError::JwtVerify)?;
 
-    Ok(provider.clone())
+    let credential = OpenIdAutomationCredential::from(token);
+
+    Ok((credential, provider.clone()))
 }

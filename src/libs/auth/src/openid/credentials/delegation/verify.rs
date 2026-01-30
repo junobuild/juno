@@ -1,9 +1,9 @@
 use crate::openid::credentials::delegation::types::interface::OpenIdDelegationCredential;
+use crate::openid::credentials::delegation::types::token::DelegationClaims;
 use crate::openid::credentials::types::errors::VerifyOpenidCredentialsError;
 use crate::openid::jwkset::{get_jwks, get_or_refresh_jwks};
 use crate::openid::jwt::types::cert::Jwks;
 use crate::openid::jwt::types::errors::JwtVerifyError;
-use crate::openid::jwt::types::token::Claims;
 use crate::openid::jwt::{unsafe_find_jwt_provider, verify_openid_jwt};
 use crate::openid::types::provider::OpenIdDelegationProvider;
 use crate::openid::types::provider::OpenIdProvider;
@@ -56,7 +56,7 @@ fn verify_openid_credentials(
     client_id: &OpenIdAuthProviderClientId,
     salt: &Salt,
 ) -> VerifyOpenIdDelegationCredentialsResult {
-    let assert_audience = |claims: &Claims| -> Result<(), JwtVerifyError> {
+    let assert_audience = |claims: &DelegationClaims| -> Result<(), JwtVerifyError> {
         if claims.aud != client_id.as_str() {
             return Err(JwtVerifyError::BadClaim("aud".to_string()));
         }
@@ -64,7 +64,7 @@ fn verify_openid_credentials(
         Ok(())
     };
 
-    let assert_no_replay = |claims: &Claims| -> Result<(), JwtVerifyError> {
+    let assert_no_replay = |claims: &DelegationClaims| -> Result<(), JwtVerifyError> {
         let nonce = build_nonce(salt);
 
         if claims.nonce.as_deref() != Some(nonce.as_str()) {

@@ -1,10 +1,9 @@
 use crate::auth::strategy_impls::AuthHeap;
 use junobuild_auth::automation;
 use junobuild_auth::automation::types::{
-    OpenIdPrepareAutomationArgs, PrepareAutomationError, PreparedAutomation, PreparedDelegation,
+    OpenIdPrepareAutomationArgs, PrepareAutomationError, PreparedAutomation,
 };
 use junobuild_auth::openid::credentials;
-use junobuild_auth::openid::credentials::delegation::types::interface::OpenIdCredential;
 use junobuild_auth::openid::types::provider::OpenIdDelegationProvider;
 use junobuild_auth::state::types::automation::OpenIdAutomationProviders;
 

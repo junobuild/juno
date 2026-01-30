@@ -1,11 +1,11 @@
 pub mod state {
     use crate::delegation::types::Timestamp;
     use crate::openid::types::provider::{OpenIdCertificate, OpenIdProvider};
+    use crate::state::types::automation::AutomationConfig;
     use crate::state::types::config::AuthenticationConfig;
     use candid::CandidType;
     use serde::{Deserialize, Serialize};
     use std::collections::HashMap;
-    use crate::state::types::automation::AutomationConfig;
 
     pub type Salt = [u8; 32];
 
@@ -110,12 +110,12 @@ pub mod config {
 }
 
 pub mod automation {
-    use std::collections::{BTreeMap, HashMap};
-    use candid::{CandidType, Deserialize, Principal};
-    use serde::Serialize;
-    use junobuild_shared::types::state::{Timestamp, Version};
     use crate::automation::types::AutomationScope;
-    use crate::openid::types::provider::{OpenIdAutomationProvider};
+    use crate::openid::types::provider::OpenIdAutomationProvider;
+    use candid::{CandidType, Deserialize, Principal};
+    use junobuild_shared::types::state::{Timestamp, Version};
+    use serde::Serialize;
+    use std::collections::{BTreeMap, HashMap};
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
     pub struct AutomationConfig {
@@ -131,7 +131,8 @@ pub mod automation {
         pub observatory_id: Option<Principal>,
     }
 
-    pub type OpenIdAutomationProviders = BTreeMap<OpenIdAutomationProvider, OpenIdAutomationProviderConfig>;
+    pub type OpenIdAutomationProviders =
+        BTreeMap<OpenIdAutomationProvider, OpenIdAutomationProviderConfig>;
 
     // Repository identifier for GitHub automation.
     // Corresponds to the `repository` claim in GitHub OIDC tokens (e.g., "octo-org/octo-repo").
@@ -144,7 +145,8 @@ pub mod automation {
         pub name: String,
     }
 
-    pub type OpenIdAutomationRepositories = HashMap<RepositoryKey, OpenIdAutomationRepositoryConfig>;
+    pub type OpenIdAutomationRepositories =
+        HashMap<RepositoryKey, OpenIdAutomationRepositoryConfig>;
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone, Debug)]
     pub struct OpenIdAutomationProviderConfig {

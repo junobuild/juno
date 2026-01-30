@@ -3,6 +3,7 @@ pub const JUNO_AUTH_ERROR_INVALID_ORIGIN: &str = "juno.auth.error.invalid_origin
 // No authentication configuration found.
 pub const JUNO_AUTH_ERROR_NOT_CONFIGURED: &str = "juno.auth.error.not_configured";
 // No automation configuration found.
-pub const JUNO_AUTH_ERROR_AUTOMATION_NOT_CONFIGURED: &str = "juno.auth.error.automation_not_configured";
+pub const JUNO_AUTH_ERROR_AUTOMATION_NOT_CONFIGURED: &str =
+    "juno.auth.error.automation_not_configured";
 // Authentication with OpenId disabled.
 pub const JUNO_AUTH_ERROR_OPENID_DISABLED: &str = "juno.auth.error.openid_disabled";

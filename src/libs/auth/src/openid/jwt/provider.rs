@@ -1,9 +1,9 @@
-use std::collections::BTreeMap;
 use crate::openid::jwt::header::decode_jwt_header;
 use crate::openid::jwt::types::errors::JwtFindProviderError;
+use crate::openid::jwt::types::provider::JwtIssuers;
 use crate::openid::jwt::types::token::UnsafeClaims;
 use jsonwebtoken::dangerous;
-use crate::openid::jwt::types::provider::JwtIssuers;
+use std::collections::BTreeMap;
 
 /// ⚠️ **Warning:** This function decodes the JWT payload *without verifying its signature*.
 /// Use only to inspect claims (e.g., `iss`) before performing a verified decode.
@@ -86,8 +86,8 @@ mod tests {
         let jwt = jwt_with(json!({"alg":"RS256"}), json!({"iss": iss}));
 
         let provs = providers_with_google();
-        let (provider, _) = unsafe_find_jwt_provider(&provs, &jwt)
-            .expect("should match even without typ");
+        let (provider, _) =
+            unsafe_find_jwt_provider(&provs, &jwt).expect("should match even without typ");
         assert_eq!(provider, OpenIdDelegationProvider::Google);
     }
 

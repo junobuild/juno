@@ -6,6 +6,7 @@ use junobuild_auth::automation::types::{OpenIdPrepareAutomationArgs, PreparedAut
 use junobuild_auth::state::get_automation_providers;
 use junobuild_shared::types::interface::SetController;
 use junobuild_shared::types::state::ControllerId;
+use std::collections::HashMap;
 
 pub async fn openid_authenticate_automation(
     args: &OpenIdPrepareAutomationArgs,
@@ -33,11 +34,9 @@ fn register_controller(prepared_automation: &PreparedAutomation) {
 
     let controller: SetController = SetController {
         scope: prepared_automation.controller.scope.clone().into(),
-        metadata: args.metadata.clone(),
+        metadata: HashMap::default(), // TODO args.metadata.clone(),
         expires_at: Some(prepared_automation.controller.expires_at),
     };
 
     set_controllers(&controllers, &controller);
-
-    Ok(())
 }

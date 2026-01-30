@@ -7,12 +7,6 @@ pub enum AuthenticateAutomationArgs {
     OpenId(OpenIdPrepareAutomationArgs),
 }
 
-#[derive(CandidType, Serialize, Deserialize, Clone)]
-pub enum AutomationScope {
-    Write,
-    Submit,
-}
-
 #[derive(CandidType, Serialize, Deserialize)]
 pub enum AuthenticationAutomationError {
     PrepareAutomation(PrepareAutomationError),

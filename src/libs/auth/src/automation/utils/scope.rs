@@ -1,5 +1,5 @@
 use crate::automation::types::AutomationScope;
-use crate::openid::types::provider::{OpenIdAutomationProvider};
+use crate::openid::types::provider::OpenIdAutomationProvider;
 use crate::state::get_automation;
 use crate::strategies::AuthHeapStrategy;
 

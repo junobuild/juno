@@ -1,16 +1,17 @@
 pub mod interface {
+    #[derive(Debug)]
     pub struct OpenIdAutomationCredential {
         pub iss: String,
         pub sub: String,
 
         // See https://docs.github.com/en/actions/concepts/security/openid-connect#understanding-the-oidc-token
-        pub jti: Option<String>,
-        pub repository: Option<String>,
-        pub repository_owner: Option<String>,
-        pub r#ref: Option<String>,
-        pub run_id: Option<String>,
-        pub run_number: Option<String>,
-        pub run_attempt: Option<String>,
+        pub jti: Option<String>,              // "example-id"
+        pub repository: Option<String>,       // "octo-org/octo-repo"
+        pub repository_owner: Option<String>, // "octo-org"
+        pub r#ref: Option<String>,            // "refs/heads/main"
+        pub run_id: Option<String>,           // "example-run-id"
+        pub run_number: Option<String>,       // 10"
+        pub run_attempt: Option<String>,      // "2"
     }
 }
 

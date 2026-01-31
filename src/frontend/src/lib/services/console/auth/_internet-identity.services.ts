@@ -18,7 +18,7 @@ export const signInWithII: SignInWithAuthClient = ({ authClient }) =>
 			? /apple/i.test(navigator?.vendor)
 				? `${LOCAL_REPLICA_HOST}?canisterId=${INTERNET_IDENTITY_CANISTER_ID}`
 				: `http://${INTERNET_IDENTITY_CANISTER_ID}.${new URL(LOCAL_REPLICA_HOST).host}`
-			: `https://identity.internetcomputer.org`;
+			: 'https://id.ai';
 
 		await authClient?.login({
 			maxTimeToLive: AUTH_MAX_TIME_TO_LIVE,

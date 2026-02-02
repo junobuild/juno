@@ -39,7 +39,6 @@ pub fn http_request(
             Routing::Default(RoutingDefault { url, asset }) => build_asset_response(
                 url,
                 req_headers,
-                method,
                 certificate_version,
                 asset,
                 None,
@@ -55,7 +54,6 @@ pub fn http_request(
             }) => build_asset_response(
                 url,
                 req_headers,
-                method,
                 certificate_version,
                 asset,
                 Some(source),

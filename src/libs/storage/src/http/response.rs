@@ -16,7 +16,6 @@ use junobuild_collections::types::rules::Memory;
 pub fn build_asset_response(
     requested_url: String,
     requested_headers: Vec<HeaderField>,
-    requested_method: String,
     certificate_version: Option<u16>,
     asset: Option<(Asset, Memory)>,
     rewrite_source: Option<String>,
@@ -41,19 +40,13 @@ pub fn build_asset_response(
                         certificate.get_pruned_labeled_sigs_root_hash_tree(),
                     );
 
+                    let Asset { key, .. } = &asset;
+
                     match headers {
                         Ok(headers) => {
-                            if requested_method == "HEAD" {
-                                return HttpResponse {
-                                    body: Vec::new(),
-                                    headers: headers.clone(),
-                                    status_code,
-                                    streaming_strategy: None,
-                                }
-                            }
-
-                            let Asset { key, .. } = &asset;
-
+                            // Note: We need to return the body regardless if the requested method is GET or HEAD.
+                            // It seems that the Boundary Nodes is expecting a body for HEAD request otherwise
+                            // some checks are failing on their side and reques ends in 503.
                             let body = storage_state.get_content_chunks(encoding, 0, &memory);
 
                             // TODO: support for HTTP response 304

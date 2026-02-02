@@ -45,8 +45,8 @@ pub fn build_asset_response(
                     match headers {
                         Ok(headers) => {
                             // Note: We need to return the body regardless if the requested method is GET or HEAD.
-                            // It seems that the Boundary Nodes is expecting a body for HEAD request otherwise
-                            // some checks are failing on their side and reques ends in 503.
+                            // It seems that the Boundary Nodes are expecting a body for HEAD requests otherwise
+                            // some checks are failing on their side and requests end in 503.
                             let body = storage_state.get_content_chunks(encoding, 0, &memory);
 
                             // TODO: support for HTTP response 304

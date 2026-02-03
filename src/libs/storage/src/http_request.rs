@@ -28,7 +28,7 @@ pub fn http_request(
     storage_state: &impl StorageStateStrategy,
     certificate: &impl StorageCertificateStrategy,
 ) -> HttpResponse {
-    if method != "GET" {
+    if method != "GET" && method != "HEAD" {
         return error_response(RESPONSE_STATUS_CODE_405, "Method Not Allowed.".to_string());
     }
 

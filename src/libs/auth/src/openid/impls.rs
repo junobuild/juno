@@ -87,6 +87,14 @@ impl JwtIssuers for OpenIdAutomationProvider {
     }
 }
 
+impl Display for OpenIdAutomationProvider {
+    fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
+        match self {
+            OpenIdAutomationProvider::GitHub => write!(f, "GitHub"),
+        }
+    }
+}
+
 impl Versioned for OpenIdCertificate {
     fn version(&self) -> Option<Version> {
         self.version

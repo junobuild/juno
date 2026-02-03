@@ -3,9 +3,9 @@ pub mod interface {
     pub struct OpenIdAutomationCredential {
         pub iss: String,
         pub sub: String,
+        pub jti: Option<String>,
 
         // See https://docs.github.com/en/actions/concepts/security/openid-connect#understanding-the-oidc-token
-        pub jti: Option<String>,              // "example-id"
         pub repository: Option<String>,       // "octo-org/octo-repo"
         pub repository_owner: Option<String>, // "octo-org"
         pub r#ref: Option<String>,            // "refs/heads/main"
@@ -27,10 +27,8 @@ pub(crate) mod token {
         pub exp: Option<u64>,
         pub nbf: Option<u64>,
         pub iat: Option<u64>,
-
-        pub nonce: Option<String>,
-
         pub jti: Option<String>,
+        
         pub repository: Option<String>,
         pub repository_owner: Option<String>,
         pub r#ref: Option<String>,

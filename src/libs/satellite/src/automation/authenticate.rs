@@ -7,6 +7,7 @@ use junobuild_auth::state::get_automation_providers;
 use junobuild_shared::types::interface::SetController;
 use junobuild_shared::types::state::ControllerId;
 use std::collections::HashMap;
+use crate::automation::register::register_controller;
 
 pub async fn openid_authenticate_automation(
     args: &OpenIdPrepareAutomationArgs,
@@ -14,7 +15,7 @@ pub async fn openid_authenticate_automation(
 ) -> Result<AuthenticateAutomationResult, String> {
     let providers = get_automation_providers(&AuthHeap)?;
 
-    // TODO: rate?
+    // TODO: rate_config of collection?
 
     let prepared_automation = automation::openid_prepare_automation(args, &providers).await;
 
@@ -27,16 +28,4 @@ pub async fn openid_authenticate_automation(
     };
 
     Ok(result)
-}
-
-fn register_controller(prepared_automation: &PreparedAutomation) {
-    let controllers: [ControllerId; 1] = [prepared_automation.controller.id.clone()];
-
-    let controller: SetController = SetController {
-        scope: prepared_automation.controller.scope.clone().into(),
-        metadata: HashMap::default(), // TODO args.metadata.clone(),
-        expires_at: Some(prepared_automation.controller.expires_at),
-    };
-
-    set_controllers(&controllers, &controller);
 }

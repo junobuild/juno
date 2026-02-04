@@ -67,7 +67,7 @@ where
     // 6) Manual checks audience
     assert_audience(c)?;
 
-    // 7) Prevent replace attack
+    // 7) Prevent replay attack
     assert_no_replay(c)?;
 
     // 8) Assert expiration

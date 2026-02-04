@@ -78,13 +78,8 @@ fn verify_openid_credentials(
     };
 
     let assert_no_replay = |claims: &AutomationClaims| -> Result<(), JwtVerifyError> {
-        // let nonce = build_nonce(salt);
-        //
-        // if claims.nonce.as_deref() != Some(nonce.as_str()) {
-        //     return Err(JwtVerifyError::BadClaim("nonce".to_string()));
-        // }
-
-        // TODO: assert jti
+        // ⚠️ **Warning:** Replay protection must be enforced later by the consumer of the crate.
+        // In case of the Satellite, this is asserted via JTI tracking in save_unique_token_jti() function.
 
         Ok(())
     };
@@ -286,9 +281,7 @@ mod tests {
                 owner: "octo-org".to_string(),
                 name: "octo-repo".to_string(),
             },
-            OpenIdAutomationRepositoryConfig {
-                branches: None,
-            },
+            OpenIdAutomationRepositoryConfig { branches: None },
         );
 
         let config = OpenIdAutomationProviderConfig {

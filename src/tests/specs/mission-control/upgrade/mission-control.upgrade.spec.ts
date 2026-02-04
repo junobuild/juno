@@ -21,7 +21,10 @@ import {
 	testSatellitesMonitoring
 } from '../../../utils/monitoring-tests.utils';
 import { tick } from '../../../utils/pic-tests.utils';
-import { downloadMissionControl, MISSION_CONTROL_WASM_PATH } from '../../../utils/setup-tests.utils';
+import {
+	downloadMissionControl,
+	MISSION_CONTROL_WASM_PATH
+} from '../../../utils/setup-tests.utils';
 
 describe('Mission control > Upgrade', () => {
 	let pic: PocketIc;

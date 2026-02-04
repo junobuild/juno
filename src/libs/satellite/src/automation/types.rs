@@ -11,6 +11,7 @@ pub enum AuthenticateAutomationArgs {
 pub enum AuthenticationAutomationError {
     PrepareAutomation(PrepareAutomationError),
     SaveUniqueJtiToken(String),
+    SaveWorkflowMetadata(String),
     RegisterController(String),
 }
 

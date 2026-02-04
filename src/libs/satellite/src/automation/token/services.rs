@@ -3,7 +3,7 @@ use crate::db::internal::unsafe_get_doc;
 use crate::db::store::internal_set_doc_store;
 use crate::db::types::store::AssertSetDocOptions;
 use crate::errors::automation::{
-    JUNO_AUTOMATION_ERROR_MISSING_JTI, JUNO_AUTOMATION_ERROR_TOKEN_REUSED,
+    JUNO_AUTOMATION_TOKEN_ERROR_MISSING_JTI, JUNO_AUTOMATION_TOKEN_ERROR_TOKEN_REUSED,
 };
 use crate::rules::store::get_rule_db;
 use crate::user::core::types::state::{ProviderData, UserData};
@@ -23,7 +23,7 @@ pub fn save_unique_token_jti(
     let jti = if let Some(jti) = &credential.jti {
         jti
     } else {
-        return Err(JUNO_AUTOMATION_ERROR_MISSING_JTI.to_string());
+        return Err(JUNO_AUTOMATION_TOKEN_ERROR_MISSING_JTI.to_string());
     };
 
     let automation_token_key = AutomationTokenKey::create(provider, &jti).to_key();
@@ -39,8 +39,9 @@ pub fn save_unique_token_jti(
         &rule,
     )?;
 
+    // ⚠️ Assertion to prevent replay attack.
     if current_jti.is_some() {
-        return Err(JUNO_AUTOMATION_ERROR_TOKEN_REUSED.to_string());
+        return Err(JUNO_AUTOMATION_TOKEN_ERROR_TOKEN_REUSED.to_string());
     }
 
     // Create metadata.
@@ -50,7 +51,8 @@ pub fn save_unique_token_jti(
         },
     };
 
-    let automation_token_data = AutomationTokenData::prepare_set_doc(&automation_token_data)?;
+    let automation_token_data =
+        AutomationTokenData::prepare_set_doc(&automation_token_data, &None)?;
 
     let assert_options = AssertSetDocOptions {
         with_assert_rate: true,

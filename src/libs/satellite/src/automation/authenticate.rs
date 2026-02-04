@@ -3,6 +3,7 @@ use crate::automation::automation;
 use crate::automation::register::register_controller;
 use crate::automation::token::services::save_unique_token_jti;
 use crate::automation::types::{AuthenticateAutomationResult, AuthenticationAutomationError};
+use crate::automation::workflow::services::save_workflow_metadata;
 use junobuild_auth::automation::types::OpenIdPrepareAutomationArgs;
 use junobuild_auth::state::get_automation_providers;
 
@@ -20,6 +21,12 @@ pub async fn openid_authenticate_automation(
         Ok((automation, provider, credential)) => {
             if let Err(err) = save_unique_token_jti(&automation, &provider, &credential) {
                 return Ok(Err(AuthenticationAutomationError::SaveUniqueJtiToken(err)));
+            }
+
+            if let Err(err) = save_workflow_metadata(&provider, &credential) {
+                return Ok(Err(AuthenticationAutomationError::SaveWorkflowMetadata(
+                    err,
+                )));
             }
 
             register_controller(&automation);

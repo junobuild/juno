@@ -18,13 +18,16 @@ impl AutomationTokenKey {
 }
 
 impl AutomationTokenData {
-    pub fn prepare_set_doc(token_data: &AutomationTokenData) -> Result<SetDoc, String> {
+    pub fn prepare_set_doc(
+        token_data: &AutomationTokenData,
+        current_doc: &Option<Doc>,
+    ) -> Result<SetDoc, String> {
         let data = encode_doc_data(token_data)?;
 
         let set_doc = SetDoc {
             data,
             description: None,
-            version: None,
+            version: current_doc.as_ref().and_then(|d| d.version),
         };
 
         Ok(set_doc)

@@ -3,6 +3,7 @@ import { type Actor, PocketIc } from '@dfinity/pic';
 import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import type { Principal } from '@icp-sdk/core/principal';
 import { inject } from 'vitest';
+import { CONTROLLER_METADATA } from '../../../../constants/controller-tests.constants';
 import { testUploadProposalManyAssets } from '../../../../utils/cdn-assertions-tests.utils';
 import { controllersInitArgs, SATELLITE_WASM_PATH } from '../../../../utils/setup-tests.utils';
 
@@ -66,9 +67,8 @@ describe('Satellite > Cdn > Batch', () => {
 
 			await set_controllers({
 				controller: {
-					scope: { Write: null },
-					metadata: [],
-					expires_at: []
+					...CONTROLLER_METADATA,
+					scope: { Write: null }
 				},
 				controllers: [controllerReadWrite.getPrincipal()]
 			});

@@ -1,10 +1,10 @@
 import { type ConsoleActor, idlFactoryConsole } from '$declarations';
 import { type Actor, PocketIc } from '@dfinity/pic';
-import { toNullable } from '@dfinity/utils';
 import { AnonymousIdentity } from '@icp-sdk/core/agent';
 import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import { inject } from 'vitest';
 import { CONTROLLER_ERROR_MSG } from '../../constants/console-tests.constants';
+import { CONTROLLER_METADATA } from '../../constants/controller-tests.constants';
 import { CONSOLE_WASM_PATH } from '../../utils/setup-tests.utils';
 
 describe('Console > Controllers', () => {
@@ -40,8 +40,7 @@ describe('Console > Controllers', () => {
 				set_controllers({
 					controllers: [controller.getPrincipal()],
 					controller: {
-						expires_at: toNullable(),
-						metadata: [],
+						...CONTROLLER_METADATA,
 						scope: { Admin: null }
 					}
 				})

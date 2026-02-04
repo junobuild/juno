@@ -10,6 +10,7 @@ import {
 	JUNO_AUTH_ERROR_NOT_WRITE_CONTROLLER,
 	JUNO_STORAGE_ERROR_UPLOAD_PATH_COLLECTION_PREFIX
 } from '@junobuild/errors';
+import { CONTROLLER_METADATA } from '../../../../constants/controller-tests.constants';
 import { MEMORIES } from '../../../../constants/satellite-tests.constants';
 import { mockListProposalsParams } from '../../../../mocks/list.mocks';
 import {
@@ -159,9 +160,8 @@ describe.each(MEMORIES)('Satellite > Cdn > $title', ({ memory }) => {
 
 			await set_controllers({
 				controller: {
-					scope: { Write: null },
-					metadata: [],
-					expires_at: []
+					...CONTROLLER_METADATA,
+					scope: { Write: null }
 				},
 				controllers: [controllerReadWrite.getPrincipal()]
 			});
@@ -293,9 +293,8 @@ describe.each(MEMORIES)('Satellite > Cdn > $title', ({ memory }) => {
 
 			await set_controllers({
 				controller: {
-					scope: { Submit: null },
-					metadata: [],
-					expires_at: []
+					...CONTROLLER_METADATA,
+					scope: { Submit: null }
 				},
 				controllers: [controllerSubmit.getPrincipal()]
 			});

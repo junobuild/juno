@@ -18,6 +18,12 @@ pub mod shared {
     }
 
     #[derive(Clone)]
+    pub enum JsControllerKind {
+        Automation,
+        Emulator,
+    }
+
+    #[derive(Clone)]
     pub struct JsMetadataRecord(pub String, pub String);
 
     #[derive(Clone)]
@@ -27,6 +33,7 @@ pub mod shared {
         pub updated_at: JsTimestamp,
         pub expires_at: Option<JsTimestamp>,
         pub scope: JsControllerScope,
+        pub kind: Option<JsControllerKind>,
     }
 
     #[derive(Clone)]

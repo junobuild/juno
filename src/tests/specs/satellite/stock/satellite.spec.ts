@@ -16,6 +16,7 @@ import {
 	JUNO_STORAGE_ERROR_UPLOAD_NOT_ALLOWED
 } from '@junobuild/errors';
 import { inject } from 'vitest';
+import { CONTROLLER_METADATA } from '../../../constants/controller-tests.constants';
 import { mockListRules } from '../../../mocks/list.mocks';
 import { controllersInitArgs, SATELLITE_WASM_PATH } from '../../../utils/setup-tests.utils';
 
@@ -217,8 +218,7 @@ describe('Satellite', () => {
 			const controllers = await set_controllers({
 				controllers: [newController.getPrincipal()],
 				controller: {
-					expires_at: toNullable(),
-					metadata: [],
+					...CONTROLLER_METADATA,
 					scope: { Admin: null }
 				}
 			});
@@ -733,8 +733,7 @@ describe('Satellite', () => {
 				set_controllers({
 					controllers: [controller.getPrincipal()],
 					controller: {
-						expires_at: toNullable(),
-						metadata: [],
+						...CONTROLLER_METADATA,
 						scope: { Admin: null }
 					}
 				})

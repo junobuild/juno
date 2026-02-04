@@ -1,5 +1,4 @@
 use crate::automation::token::types::state::{AutomationTokenData, AutomationTokenKey};
-use crate::user::core::types::state::UserData;
 use crate::{Doc, SetDoc};
 use junobuild_auth::openid::types::provider::OpenIdAutomationProvider;
 use junobuild_utils::encode_doc_data;

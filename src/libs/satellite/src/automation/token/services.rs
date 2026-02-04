@@ -6,7 +6,6 @@ use crate::errors::automation::{
     JUNO_AUTOMATION_TOKEN_ERROR_MISSING_JTI, JUNO_AUTOMATION_TOKEN_ERROR_TOKEN_REUSED,
 };
 use crate::rules::store::get_rule_db;
-use crate::user::core::types::state::{ProviderData, UserData};
 use junobuild_auth::automation::types::PreparedAutomation;
 use junobuild_auth::openid::credentials::automation::types::interface::OpenIdAutomationCredential;
 use junobuild_auth::openid::types::provider::OpenIdAutomationProvider;

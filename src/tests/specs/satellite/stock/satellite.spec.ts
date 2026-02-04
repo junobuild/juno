@@ -229,17 +229,20 @@ describe('Satellite', () => {
 
 			expect(controllers).toHaveLength(2);
 
-			for (const [principal, controller] of controllers) {
-				const entry = controllers.find(([p]) => p.toText() === principal.toText());
+			expect(
+				controllers.find(([p]) => p.toText() === controller.getPrincipal().toText())
+			).not.toBeUndefined();
 
-				expect(entry).not.toBeUndefined();
+			const newAddedController = controllers.find(
+				([p]) => p.toText() === newController.getPrincipal().toText()
+			);
 
-				expect(entry?.[1].metadata).toEqual(controllerData.metadata);
-				expect(entry?.[1].scope).toEqual(controllerData.scope);
-				expect(entry?.[1].expires_at).toEqual(controllerData.expires_at);
+			assertNonNullish(newAddedController);
 
-				expect(entry?.[1].kind).toEqual(controllerData.kind);
-			}
+			expect(newAddedController[1].metadata).toEqual(controllerData.metadata);
+			expect(newAddedController[1].scope).toEqual(controllerData.scope);
+			expect(newAddedController[1].expires_at).toEqual(controllerData.expires_at);
+			expect(newAddedController[1].kind).toEqual(controllerData.kind);
 
 			await del_controllers({
 				controllers: [newController.getPrincipal()]

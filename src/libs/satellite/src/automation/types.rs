@@ -10,6 +10,7 @@ pub enum AuthenticateAutomationArgs {
 #[derive(CandidType, Serialize, Deserialize)]
 pub enum AuthenticationAutomationError {
     PrepareAutomation(PrepareAutomationError),
+    SaveUniqueJtiToken(String),
     RegisterController(String),
 }
 

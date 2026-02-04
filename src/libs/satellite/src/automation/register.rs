@@ -1,8 +1,8 @@
-use std::collections::HashMap;
+use crate::controllers::store::set_controllers;
 use junobuild_auth::automation::types::PreparedAutomation;
 use junobuild_shared::types::interface::SetController;
 use junobuild_shared::types::state::ControllerId;
-use crate::controllers::store::set_controllers;
+use std::collections::HashMap;
 
 pub fn register_controller(prepared_automation: &PreparedAutomation) {
     let controllers: [ControllerId; 1] = [prepared_automation.controller.id.clone()];
@@ -17,4 +17,3 @@ pub fn register_controller(prepared_automation: &PreparedAutomation) {
 
     set_controllers(&controllers, &controller);
 }
-

@@ -1,7 +1,10 @@
-use ic_cdk::api::time;
-use junobuild_collections::constants::db::{COLLECTION_AUTOMATION_TOKEN_KEY, COLLECTION_AUTOMATION_TOKEN_DEFAULT_RULE, COLLECTION_AUTOMATION_WORKFLOW_KEY, COLLECTION_AUTOMATION_WORKFLOW_DEFAULT_RULE};
-use junobuild_collections::types::rules::Rule;
 use crate::memory::state::STATE;
+use ic_cdk::api::time;
+use junobuild_collections::constants::db::{
+    COLLECTION_AUTOMATION_TOKEN_DEFAULT_RULE, COLLECTION_AUTOMATION_TOKEN_KEY,
+    COLLECTION_AUTOMATION_WORKFLOW_DEFAULT_RULE, COLLECTION_AUTOMATION_WORKFLOW_KEY,
+};
+use junobuild_collections::types::rules::Rule;
 
 // ---------------------------------------------------------
 // One time upgrade

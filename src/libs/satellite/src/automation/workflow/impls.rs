@@ -1,4 +1,4 @@
-use crate::automation::workflow::types::state::{AutomationWorkflowKey};
+use crate::automation::workflow::types::state::AutomationWorkflowKey;
 
 impl AutomationWorkflowKey {
     pub fn to_key(&self) -> String {

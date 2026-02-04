@@ -28,7 +28,7 @@ pub(crate) mod token {
         pub nbf: Option<u64>,
         pub iat: Option<u64>,
         pub jti: Option<String>,
-        
+
         pub repository: Option<String>,
         pub repository_owner: Option<String>,
         pub r#ref: Option<String>,

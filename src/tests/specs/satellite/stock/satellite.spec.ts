@@ -215,23 +215,31 @@ describe('Satellite', () => {
 
 			const newController = Ed25519KeyIdentity.generate();
 
+			const controllerData: SatelliteDid.SetController = {
+				scope: { Admin: null },
+				expires_at: [123n],
+				kind: [{ Automation: null }],
+				metadata: [['hello', 'world']]
+			};
+
 			const controllers = await set_controllers({
 				controllers: [newController.getPrincipal()],
-				controller: {
-					...CONTROLLER_METADATA,
-					scope: { Admin: null }
-				}
+				controller: controllerData
 			});
 
 			expect(controllers).toHaveLength(2);
 
-			expect(
-				controllers.find(([p]) => p.toText() === controller.getPrincipal().toText())
-			).not.toBeUndefined();
+			for (const [principal, controller] of controllers) {
+				const entry = controllers.find(([p]) => p.toText() === principal.toText());
 
-			expect(
-				controllers.find(([p]) => p.toText() === newController.getPrincipal().toText())
-			).not.toBeUndefined();
+				expect(entry).not.toBeUndefined();
+
+				expect(entry?.[1].metadata).toEqual(controllerData.metadata);
+				expect(entry?.[1].scope).toEqual(controllerData.scope);
+				expect(entry?.[1].expires_at).toEqual(controllerData.expires_at);
+
+				expect(entry?.[1].kind).toEqual(controllerData.kind);
+			}
 
 			await del_controllers({
 				controllers: [newController.getPrincipal()]

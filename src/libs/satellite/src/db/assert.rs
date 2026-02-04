@@ -1,4 +1,5 @@
 use crate::auth::assert::assert_caller_is_allowed;
+use crate::automation::{assert_automation_token_caller, assert_automation_workflow_caller};
 use crate::db::runtime::increment_and_assert_rate;
 use crate::db::types::config::DbConfig;
 use crate::db::types::interface::SetDbConfig;
@@ -84,6 +85,10 @@ pub fn assert_set_doc(
     assert_user_webauthn_collection_data(caller, collection, value)?;
     assert_user_webauthn_collection_write_permission(collection, current_doc)?;
 
+    // Note: we do not assert the format of the automation keys or data since only the Satellite can write.
+    assert_automation_token_caller(caller, collection)?;
+    assert_automation_workflow_caller(caller, collection)?;
+
     assert_write_permission(caller, controllers, current_doc, &rule.write)?;
 
     assert_memory_size(config)?;
@@ -132,6 +137,9 @@ pub fn assert_delete_doc(
     assert_write_permission(caller, controllers, current_doc, &rule.write)?;
 
     assert_write_version(current_doc, value.version)?;
+
+    assert_automation_token_caller(caller, collection)?;
+    assert_automation_workflow_caller(caller, collection)?;
 
     invoke_assert_delete_doc(
         &caller,

@@ -6,3 +6,5 @@ pub const JUNO_AUTOMATION_WORKFLOW_ERROR_MISSING_REPOSITORY: &str =
     "juno.automation.workflow.error.missing_repository";
 pub const JUNO_AUTOMATION_WORKFLOW_ERROR_MISSING_RUN_ID: &str =
     "juno.automation.workflow.error.missing_run_id";
+
+pub const JUNO_DATASTORE_ERROR_AUTOMATION_CALLER: &str = "juno.datastore.error.automation.caller";

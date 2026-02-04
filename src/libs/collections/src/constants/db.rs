@@ -79,8 +79,7 @@ pub const COLLECTION_USER_WEBAUTHN_INDEX_DEFAULT_RULE: SetRule = SetRule {
 };
 
 pub const COLLECTION_AUTOMATION_TOKEN_DEFAULT_RULE: SetRule = SetRule {
-    // Created and read through internal hooks. We do not have an assertion at the moment that would
-    // prevent a controller to set the document themselves.
+    // Created and read through internal hooks. Write is restricted to Satellites themselves.
     read: Controllers,
     write: Controllers,
     memory: Some(Memory::Stable),
@@ -93,8 +92,9 @@ pub const COLLECTION_AUTOMATION_TOKEN_DEFAULT_RULE: SetRule = SetRule {
 };
 
 pub const COLLECTION_AUTOMATION_WORKFLOW_DEFAULT_RULE: SetRule = SetRule {
-    read: Managed,
-    write: Managed,
+    // Created and read through internal hooks. Write is restricted to Satellites themselves.
+    read: Controllers,
+    write: Controllers,
     memory: Some(Memory::Stable),
     mutable_permissions: Some(false),
     max_size: None,

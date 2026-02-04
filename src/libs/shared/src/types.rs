@@ -42,6 +42,7 @@ pub mod state {
         pub updated_at: Timestamp,
         pub expires_at: Option<Timestamp>,
         pub scope: ControllerScope,
+        pub kind: Option<ControllerKind>,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
@@ -49,6 +50,12 @@ pub mod state {
         Write,
         Admin,
         Submit,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub enum ControllerKind {
+        Automation,
+        Emulator,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Copy, Clone, Debug, PartialEq, Eq, Hash)]
@@ -103,8 +110,8 @@ pub mod state {
 pub mod interface {
     use crate::mgmt::types::cmc::SubnetId;
     use crate::types::state::{
-        ControllerId, ControllerScope, Metadata, MissionControlId, NotificationKind, Segment,
-        Timestamp, UserId,
+        ControllerId, ControllerKind, ControllerScope, Metadata, MissionControlId,
+        NotificationKind, Segment, Timestamp, UserId,
     };
     use candid::{CandidType, Principal};
     use ic_ledger_types::BlockIndex;
@@ -169,6 +176,7 @@ pub mod interface {
         pub metadata: Metadata,
         pub expires_at: Option<Timestamp>,
         pub scope: ControllerScope,
+        pub kind: Option<ControllerKind>,
     }
 
     #[derive(CandidType, Deserialize)]

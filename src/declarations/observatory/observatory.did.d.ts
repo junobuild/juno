@@ -13,10 +13,12 @@ import type { Principal } from '@icp-sdk/core/principal';
 export interface Controller {
 	updated_at: bigint;
 	metadata: Array<[string, string]>;
+	kind: [] | [ControllerKind];
 	created_at: bigint;
 	scope: ControllerScope;
 	expires_at: [] | [bigint];
 }
+export type ControllerKind = { Emulator: null } | { Automation: null };
 export type ControllerScope = { Write: null } | { Admin: null } | { Submit: null };
 export interface CyclesBalance {
 	timestamp: bigint;
@@ -120,6 +122,7 @@ export interface Segment {
 export type SegmentKind = { Orbiter: null } | { MissionControl: null } | { Satellite: null };
 export interface SetController {
 	metadata: Array<[string, string]>;
+	kind: [] | [ControllerKind];
 	scope: ControllerScope;
 	expires_at: [] | [bigint];
 }

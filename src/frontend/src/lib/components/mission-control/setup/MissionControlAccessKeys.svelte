@@ -44,6 +44,7 @@
 		created_at: 0n,
 		updated_at: 0n,
 		expires_at: [],
+		kind: [],
 		metadata: [],
 		scope: { Admin: null }
 	};

@@ -15,6 +15,9 @@ use crate::strategies::AuthHeapStrategy;
 type VerifyOpenIdDelegationCredentialsResult =
     Result<(OpenIdDelegationCredential, OpenIdDelegationProvider), VerifyOpenidCredentialsError>;
 
+/// Verifies delegation OIDC credentials (e.g. Google, GitHub) and returns the credential.
+///
+/// Replay protection is enforced via nonce validation using the provided salt and caller().
 pub async fn verify_openid_credentials_with_jwks_renewal(
     jwt: &str,
     salt: &Salt,

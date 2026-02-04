@@ -14,6 +14,16 @@ use crate::strategies::AuthHeapStrategy;
 type VerifyOpenIdAutomationCredentialsResult =
     Result<(OpenIdAutomationCredential, OpenIdAutomationProvider), VerifyOpenidCredentialsError>;
 
+/// Verifies automation OIDC credentials (e.g. GitHub Actions) and returns the credential.
+///
+/// ⚠️ **Warning:** This function does NOT enforce replay protection via JTI tracking.
+///
+/// The caller MUST implement a replay protection. For example:
+/// - Checking if the `jti` claim has been used before
+/// - Storing the `jti` after successful verification
+/// - Rejecting tokens with duplicate `jti` values
+///
+/// In the Satellite implementation, this is handled by `save_unique_token_jti()`.
 pub async fn verify_openid_credentials_with_jwks_renewal(
     jwt: &str,
     providers: &OpenIdAutomationProviders,
@@ -77,9 +87,8 @@ fn verify_openid_credentials(
         Ok(())
     };
 
-    let assert_no_replay = |claims: &AutomationClaims| -> Result<(), JwtVerifyError> {
-        // ⚠️ **Warning:** Replay protection must be enforced later by the consumer of the crate.
-        // In case of the Satellite, this is asserted via JTI tracking in save_unique_token_jti() function.
+    let assert_custom = |claims: &AutomationClaims| -> Result<(), JwtVerifyError> {
+        // No custom assertion for automation. Replay attack protection must notably be implemented by consumer.
 
         Ok(())
     };
@@ -89,7 +98,7 @@ fn verify_openid_credentials(
         provider.issuers(),
         &jwks.keys,
         &assert_audience,
-        &assert_no_replay,
+        &assert_custom,
     )
     .map_err(VerifyOpenidCredentialsError::JwtVerify)?;
 

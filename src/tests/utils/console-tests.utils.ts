@@ -7,7 +7,7 @@ import {
 	type ConsoleDid,
 	type MissionControlActor,
 	idlFactoryConsole,
-	idlFactoryMissionControl
+	idlFactoryMissionControl, type ConsoleActor033
 } from '$declarations';
 import type { MissionControlId } from '$lib/types/mission-control';
 import { type Actor, IcpFeaturesConfig, PocketIc, SubnetStateType } from '@dfinity/pic';
@@ -81,7 +81,9 @@ const uploadSegment = async ({
 }: {
 	segment: 'satellite' | 'mission_control' | 'orbiter';
 	version: string;
-	actor: Actor<ConsoleActor | ConsoleActor0014 | ConsoleActor015 | ConsoleActor020>;
+	actor: Actor<
+		ConsoleActor | ConsoleActor0014 | ConsoleActor015 | ConsoleActor020 | ConsoleActor033
+	>;
 	proposalId: bigint;
 }) => {
 	const init_proposal_asset_upload =
@@ -200,7 +202,9 @@ export const deploySegments = async ({
 	withMissionControl = true,
 	withSatellite = true
 }: {
-	actor: Actor<ConsoleActor | ConsoleActor0014 | ConsoleActor015 | ConsoleActor020>;
+	actor: Actor<
+		ConsoleActor | ConsoleActor0014 | ConsoleActor015 | ConsoleActor020 | ConsoleActor033
+	>;
 	withOrbiter?: boolean;
 	withMissionControl?: boolean;
 	withSatellite?: boolean;

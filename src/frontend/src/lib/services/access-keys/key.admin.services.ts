@@ -1,4 +1,4 @@
-import type { ICDid } from '$declarations';
+import type { ICDid, OrbiterDid, SatelliteDid } from '$declarations';
 import { canisterStatus, canisterUpdateSettings } from '$lib/api/ic.api';
 import { MAX_NUMBER_OF_CONTROLLERS } from '$lib/constants/canister.constants';
 import { i18n } from '$lib/stores/app/i18n.store';
@@ -7,7 +7,6 @@ import { toSetController } from '$lib/utils/controllers.utils';
 import { toNullable } from '@dfinity/utils';
 import type { Identity } from '@icp-sdk/core/agent';
 import { Principal } from '@icp-sdk/core/principal';
-import type { OrbiterDid, SatelliteDid } from '@junobuild/ic-client/actor';
 import { get } from 'svelte/store';
 
 interface SetAccessKeysFnParams {

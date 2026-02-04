@@ -1,4 +1,4 @@
-import type { ConsoleActor, SatelliteActor } from '$declarations';
+import type { ConsoleActor, ConsoleActor033, SatelliteActor } from '$declarations';
 import type { _SERVICE as TestSatelliteActor } from '$test-declarations/test_satellite/test_satellite.did';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import { fromNullable } from '@dfinity/utils';
@@ -31,7 +31,7 @@ export const authenticateAndMakeIdentity = async <R>({
 }: {
 	pic: PocketIc;
 	session: TestSession;
-	actor: Actor<SatelliteActor | ConsoleActor>;
+	actor: Actor<SatelliteActor | ConsoleActor | ConsoleActor033>;
 	method?: 'google' | 'github';
 }): Promise<
 	{

@@ -4,10 +4,11 @@ import {
 	type ConsoleActor008,
 	type ConsoleActor015,
 	type ConsoleActor020,
+	type ConsoleActor033,
 	type ConsoleDid,
 	type MissionControlActor,
 	idlFactoryConsole,
-	idlFactoryMissionControl, type ConsoleActor033
+	idlFactoryMissionControl
 } from '$declarations';
 import type { MissionControlId } from '$lib/types/mission-control';
 import { type Actor, IcpFeaturesConfig, PocketIc, SubnetStateType } from '@dfinity/pic';

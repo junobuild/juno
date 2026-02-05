@@ -115,10 +115,10 @@
 
 					<td class="type">
 						{nonNullish(kind) && 'emulator' in kind
-								? `👾 ${$i18n.emulator.emulator}`
-								: nonNullish(kind) && 'automation' in kind
-										? `🤖  ${$i18n.controllers.automation}`
-										: ''}
+							? `👾 ${$i18n.emulator.emulator}`
+							: nonNullish(kind) && 'automation' in kind
+								? `🤖  ${$i18n.controllers.automation}`
+								: ''}
 					</td>
 
 					<td class="scope">

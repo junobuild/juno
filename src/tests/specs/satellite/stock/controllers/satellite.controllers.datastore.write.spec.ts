@@ -109,7 +109,7 @@ describe.each([
 		await pic.advanceTime(futureMilliseconds + 1);
 		await tick(pic);
 
-		expect(await get_doc(TEST_COLLECTION, key)).toEqual([]);
+		await expect(get_doc(TEST_COLLECTION, key)).resolves.toEqual([]);
 	});
 
 	it('should throw on delete document', async () => {

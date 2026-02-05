@@ -111,7 +111,7 @@ describe.each([
 
 		actor.setIdentity(testSubmitController);
 
-		expect(await get_doc(TEST_COLLECTION, key)).toEqual([]);
+		await expect(get_doc(TEST_COLLECTION, key)).resolves.toEqual([]);
 	});
 
 	it('should throw on delete document', async () => {

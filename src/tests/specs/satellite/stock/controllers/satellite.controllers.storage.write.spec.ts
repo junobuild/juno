@@ -127,7 +127,7 @@ describe.each([
 		await pic.advanceTime(futureMilliseconds + 1);
 		await tick(pic);
 
-		expect(await get_asset(TEST_COLLECTION, full_path)).toEqual([]);
+		await expect(get_asset(TEST_COLLECTION, full_path)).resolves.toEqual([]);
 	});
 
 	it('should throw on delete asset', async () => {

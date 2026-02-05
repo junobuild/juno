@@ -166,12 +166,12 @@ describe.each([
 
 			const { list_docs } = actor;
 
-			expect((await list_docs(TEST_COLLECTION, mockListParams)).items_length).toBeGreaterThan(0);
+			expect((await list_docs(TEST_COLLECTION, mockListParams)).items_length).toBeGreaterThan(0n);
 
 			await pic.advanceTime(futureMilliseconds + 1);
 			await tick(pic);
 
-			expect((await list_docs(TEST_COLLECTION, mockListParams)).items_length).toHaveLength(0);
+			expect((await list_docs(TEST_COLLECTION, mockListParams)).items_length).toEqual(0n);
 		});
 	});
 });

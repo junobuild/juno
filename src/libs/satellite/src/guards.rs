@@ -31,7 +31,7 @@ pub fn caller_is_controller_with_write() -> Result<(), String> {
     }
 }
 
-pub fn caller_is_controller() -> Result<(), String> {
+pub fn caller_is_valid_controller() -> Result<(), String> {
     let caller = caller();
     let controllers: Controllers = get_controllers();
 

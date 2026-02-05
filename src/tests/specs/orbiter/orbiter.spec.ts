@@ -221,7 +221,7 @@ describe('Orbiter', () => {
 			});
 		});
 
-		describe('controller', () => {
+		describe('For controller', () => {
 			beforeAll(() => {
 				actor.setIdentity(controller);
 			});

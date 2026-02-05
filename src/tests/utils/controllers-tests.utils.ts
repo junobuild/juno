@@ -10,6 +10,8 @@ import { assertNonNullish } from '@dfinity/utils';
 import type { Identity } from '@icp-sdk/core/agent';
 import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 
+/* eslint-disable vitest/require-top-level-describe */
+
 export const testControllers = ({
 	actor,
 	controller

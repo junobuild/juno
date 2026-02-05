@@ -98,7 +98,7 @@ describe.each([
 			await expect(createDoc()).rejects.toThrowError(JUNO_DATASTORE_ERROR_CANNOT_WRITE);
 		});
 
-		it.only('should throw on get document', async () => {
+		it('should throw on get document', async () => {
 			const futureMilliseconds = 10_000;
 
 			await generateController(futureMilliseconds);

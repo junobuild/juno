@@ -81,7 +81,7 @@ pub fn delete_controllers(remove_controllers: &[UserId], controllers: &mut Contr
     }
 }
 
-/// Checks if a caller is a controller with admin or write scope (permissions).
+/// Checks if a caller is a non-expired controller with admin or write scope (permissions).
 ///
 /// # Arguments
 /// - `caller`: `UserId` of the caller.
@@ -103,7 +103,7 @@ pub fn controller_can_write(caller: UserId, controllers: &Controllers) -> bool {
                 }))
 }
 
-/// Checks if a caller is a valid controller regardless of its scope (admin, write or submit).
+/// Checks if a caller is a non-expired controller regardless of scope (admin, write, or submit).
 ///
 /// # Arguments
 /// - `caller`: `UserId` of the caller.

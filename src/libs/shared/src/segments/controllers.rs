@@ -80,7 +80,7 @@ pub fn delete_controllers(remove_controllers: &[UserId], controllers: &mut Contr
     }
 }
 
-/// Checks if a caller is a non-expired controller with admin or write scope (permissions).
+/// Checks if a caller is a controller with admin or write scope (permissions).
 ///
 /// # Arguments
 /// - `caller`: `UserId` of the caller.
@@ -95,14 +95,11 @@ pub fn controller_can_write(caller: UserId, controllers: &Controllers) -> bool {
                 .iter()
                 .any(|(&controller_id, controller)| match controller.scope {
                     ControllerScope::Submit => false,
-                    _ => {
-                        principal_equal(controller_id, caller)
-                            && is_controller_not_expired(controller)
-                    }
+                    _ => principal_equal(controller_id, caller),
                 }))
 }
 
-/// Checks if a caller is a non-expired controller regardless of scope (admin, write, or submit).
+/// Checks if a caller is a valid controller regardless of its scope (admin, write or submit).
 ///
 /// # Arguments
 /// - `caller`: `UserId` of the caller.
@@ -113,46 +110,9 @@ pub fn controller_can_write(caller: UserId, controllers: &Controllers) -> bool {
 pub fn is_valid_controller(caller: UserId, controllers: &Controllers) -> bool {
     principal_not_anonymous(caller)
         && (caller_is_self(caller)
-            || controllers.iter().any(|(&controller_id, controller)| {
-                principal_equal(controller_id, caller) && is_controller_not_expired(controller)
-            }))
-}
-
-/// Checks if a controller (access key) has not expired.
-///
-/// Admin controllers never expire. Other controllers are considered not expired if:
-/// - They have no expiration date set, or
-/// - Their expiration date is in the future
-///
-/// # Arguments
-/// - `controller`: The controller to check
-///
-/// # Returns
-/// `true` if the controller has not expired, `false` otherwise.
-fn is_controller_not_expired(controller: &Controller) -> bool {
-    !is_controller_expired(controller)
-}
-
-/// Checks if a controller (access key) has expired.
-///
-/// Admin controllers never expire. Other controllers are considered expired if:
-/// - They have an expiration date set, and
-/// - That expiration date is in the past
-///
-/// # Arguments
-/// - `controller`: The controller to check
-///
-/// # Returns
-/// `true` if the controller has expired, `false` otherwise.
-fn is_controller_expired(controller: &Controller) -> bool {
-    // Admin controller cannot expire
-    if matches!(controller.scope, ControllerScope::Admin) {
-        return false;
-    }
-
-    controller
-        .expires_at
-        .map_or(false, |expires_at| expires_at < time())
+            || controllers
+                .iter()
+                .any(|(&controller_id, _)| principal_equal(controller_id, caller)))
 }
 
 /// Checks if a caller is an admin controller.

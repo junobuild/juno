@@ -1,7 +1,8 @@
 use crate::constants::internal::REVOKED_CONTROLLERS;
 use crate::env::{CONSOLE, OBSERVATORY};
 use crate::errors::{
-    JUNO_ERROR_CONTROLLERS_ANONYMOUS_NOT_ALLOWED, JUNO_ERROR_CONTROLLERS_MAX_NUMBER,
+    JUNO_ERROR_CONTROLLERS_ADMIN_NO_EXPIRY, JUNO_ERROR_CONTROLLERS_ANONYMOUS_NOT_ALLOWED,
+    JUNO_ERROR_CONTROLLERS_EXPIRY_IN_PAST, JUNO_ERROR_CONTROLLERS_MAX_NUMBER,
     JUNO_ERROR_CONTROLLERS_REVOKED_NOT_ALLOWED,
 };
 use crate::ic::api::{id, is_canister_controller, time};
@@ -266,6 +267,31 @@ fn assert_no_revoked_controller(controllers_ids: &[ControllerId]) -> Result<(), 
         true => Err(JUNO_ERROR_CONTROLLERS_REVOKED_NOT_ALLOWED.to_string()),
         false => Ok(()),
     }
+}
+
+/// Validates controller expiration settings.
+///
+/// Ensures that:
+/// - Admin controllers do not have an expiration date set
+/// - If an expiration is set, it's not in the past
+///
+/// # Arguments
+/// - `controller`: The controller configuration to validate
+///
+/// # Returns
+/// `Ok(())` if validation passes, or `Err(String)` with error message if validation fails
+pub fn assert_controller_expiration(controller: &SetController) -> Result<(), String> {
+    if matches!(controller.scope, ControllerScope::Admin) && controller.expires_at.is_some() {
+        return Err(JUNO_ERROR_CONTROLLERS_ADMIN_NO_EXPIRY.to_string());
+    }
+
+    if let Some(expires_at) = controller.expires_at {
+        if expires_at < time() {
+            return Err(JUNO_ERROR_CONTROLLERS_EXPIRY_IN_PAST.to_string());
+        }
+    }
+
+    Ok(())
 }
 
 /// Checks if the caller is the console.
@@ -664,5 +690,91 @@ mod tests {
 
         // Will fail because test_principal(99) is not the canister controller
         assert!(!is_admin_controller(not_canister, &controllers));
+    }
+
+    #[test]
+    fn test_assert_expiration_controller_admin_with_expiry_rejected() {
+        let controller = SetController {
+            metadata: HashMap::new(),
+            expires_at: Some(time() + 1000),
+            scope: ControllerScope::Admin,
+            kind: None,
+        };
+
+        let result = assert_controller_expiration(&controller);
+        assert!(result.is_err());
+        assert_eq!(
+            result.unwrap_err(),
+            JUNO_ERROR_CONTROLLERS_ADMIN_NO_EXPIRY.to_string()
+        );
+    }
+
+    #[test]
+    fn test_assert_expiration_controller_admin_without_expiry_allowed() {
+        let controller = SetController {
+            metadata: HashMap::new(),
+            expires_at: None,
+            scope: ControllerScope::Admin,
+            kind: None,
+        };
+
+        let result = assert_controller_expiration(&controller);
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn test_assert_expiration_controller_past_expiry_rejected() {
+        let controller = SetController {
+            metadata: HashMap::new(),
+            expires_at: Some(time() - 1000),
+            scope: ControllerScope::Write,
+            kind: None,
+        };
+
+        let result = assert_controller_expiration(&controller);
+        assert!(result.is_err());
+        assert_eq!(
+            result.unwrap_err(),
+            JUNO_ERROR_CONTROLLERS_EXPIRY_IN_PAST.to_string()
+        );
+    }
+
+    #[test]
+    fn test_assert_expiration_controller_future_expiry_allowed() {
+        let controller = SetController {
+            metadata: HashMap::new(),
+            expires_at: Some(time() + 1000),
+            scope: ControllerScope::Write,
+            kind: None,
+        };
+
+        let result = assert_controller_expiration(&controller);
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn test_assert_expiration_controller_no_expiry_allowed() {
+        let controller = SetController {
+            metadata: HashMap::new(),
+            expires_at: None,
+            scope: ControllerScope::Write,
+            kind: None,
+        };
+
+        let result = assert_controller_expiration(&controller);
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn test_assert_expiration_controller_submit_scope_with_future_expiry() {
+        let controller = SetController {
+            metadata: HashMap::new(),
+            expires_at: Some(time() + 1000),
+            scope: ControllerScope::Submit,
+            kind: None,
+        };
+
+        let result = assert_controller_expiration(&controller);
+        assert!(result.is_ok());
     }
 }

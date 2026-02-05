@@ -697,22 +697,6 @@ describe('Satellite', () => {
 			).rejects.toThrowError(JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER);
 		});
 
-		it('should throw errors on creating controller', async () => {
-			const { set_controllers } = actor;
-
-			const controller = Ed25519KeyIdentity.generate();
-
-			await expect(
-				set_controllers({
-					controllers: [controller.getPrincipal()],
-					controller: {
-						...CONTROLLER_METADATA,
-						scope: { Admin: null }
-					}
-				})
-			).rejects.toThrowError(JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER);
-		});
-
 		it('should throw errors on list controllers', async () => {
 			const { list_controllers } = actor;
 

@@ -12,7 +12,7 @@ import type { Principal } from '@icp-sdk/core/principal';
 import { inject } from 'vitest';
 import { OBSERVATORY_ID } from '../../../constants/observatory-tests.constants';
 import { tick } from '../../../utils/pic-tests.utils';
-import { CONSOLE_WASM_PATH, downloadObservatory, OBSERVATORY_WASM_PATH } from '../../../utils/setup-tests.utils';
+import { downloadObservatory, OBSERVATORY_WASM_PATH } from '../../../utils/setup-tests.utils';
 
 describe('Observatory > Upgrade > v0.5.0 -> v0.5.1', () => {
 	let pic: PocketIc;

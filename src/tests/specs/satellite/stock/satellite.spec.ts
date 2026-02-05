@@ -18,6 +18,7 @@ import {
 import { inject } from 'vitest';
 import { CONTROLLER_METADATA } from '../../../constants/controller-tests.constants';
 import { mockListRules } from '../../../mocks/list.mocks';
+import { testControllers } from '../../../utils/controllers-tests.utils';
 import { controllersInitArgs, SATELLITE_WASM_PATH } from '../../../utils/setup-tests.utils';
 
 describe('Satellite', () => {
@@ -210,48 +211,9 @@ describe('Satellite', () => {
 			expect(items_length).toEqual(1n);
 		});
 
-		it('should add and remove additional controller', async () => {
-			const { set_controllers, del_controllers, list_controllers } = actor;
-
-			const newController = Ed25519KeyIdentity.generate();
-
-			const controllerData: SatelliteDid.SetController = {
-				scope: { Admin: null },
-				expires_at: [123n],
-				kind: [{ Automation: null }],
-				metadata: [['hello', 'world']]
-			};
-
-			const controllers = await set_controllers({
-				controllers: [newController.getPrincipal()],
-				controller: controllerData
-			});
-
-			expect(controllers).toHaveLength(2);
-
-			expect(
-				controllers.find(([p]) => p.toText() === controller.getPrincipal().toText())
-			).not.toBeUndefined();
-
-			const newAddedController = controllers.find(
-				([p]) => p.toText() === newController.getPrincipal().toText()
-			);
-
-			assertNonNullish(newAddedController);
-
-			expect(newAddedController[1].metadata).toEqual(controllerData.metadata);
-			expect(newAddedController[1].scope).toEqual(controllerData.scope);
-			expect(newAddedController[1].expires_at).toEqual(controllerData.expires_at);
-			expect(newAddedController[1].kind).toEqual(controllerData.kind);
-
-			await del_controllers({
-				controllers: [newController.getPrincipal()]
-			});
-
-			const updatedControllers = await list_controllers();
-
-			expect(updatedControllers).toHaveLength(1);
-			expect(updatedControllers[0][0].toText()).toEqual(controller.getPrincipal().toText());
+		testControllers({
+			actor: () => actor,
+			controller: () => controller
 		});
 
 		describe.each([

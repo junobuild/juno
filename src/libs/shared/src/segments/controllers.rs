@@ -152,7 +152,7 @@ fn is_controller_expired(controller: &Controller) -> bool {
 
     controller
         .expires_at
-        .map_or(false, |expires_at| expires_at >= time())
+        .map_or(false, |expires_at| expires_at < time())
 }
 
 /// Checks if a caller is an admin controller.
@@ -363,6 +363,42 @@ mod tests {
             scope,
             kind,
         }
+    }
+
+    #[test]
+    fn test_is_controller_expired_admin_never_expires() {
+        let admin = create_controller(ControllerScope::Admin, Some(mock_time() - 1000), None);
+        assert!(!is_controller_expired(&admin));
+    }
+
+    #[test]
+    fn test_is_controller_expired_no_expiration() {
+        let controller = create_controller(ControllerScope::Write, None, None);
+        assert!(!is_controller_expired(&controller));
+    }
+
+    #[test]
+    fn test_is_controller_expired_future_expiration() {
+        let controller = create_controller(ControllerScope::Write, Some(time() + 1_000_000), None);
+        assert!(!is_controller_expired(&controller));
+    }
+
+    #[test]
+    fn test_is_controller_not_expired() {
+        let admin = create_controller(ControllerScope::Admin, Some(time() - 1000), None);
+        assert!(is_controller_not_expired(&admin));
+
+        let expired = create_controller(ControllerScope::Write, Some(time() - 1), None);
+        assert!(!is_controller_not_expired(&expired));
+
+        let valid = create_controller(ControllerScope::Write, Some(time() + 1000), None);
+        assert!(is_controller_not_expired(&valid));
+    }
+
+    #[test]
+    fn test_is_controller_expired_past_expiration() {
+        let controller = create_controller(ControllerScope::Write, Some(mock_time() - 1), None);
+        assert!(is_controller_expired(&controller));
     }
 
     #[test]

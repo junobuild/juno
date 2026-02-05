@@ -55,7 +55,7 @@ pub fn assert_create_permission_with(
         _ => {
             assert_not_anonymous(caller)
                 && (is_not_controller(caller, controllers)
-                    || is_controller_and_allowed(caller, controllers, is_allowed_controller))
+                    || is_allowed_controller(caller, controllers))
         }
     }
 }

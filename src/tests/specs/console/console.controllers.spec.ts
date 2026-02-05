@@ -90,7 +90,8 @@ describe('Console > Controllers', () => {
 
 		testControllers({
 			actor: () => actor,
-			controller: () => controller
+			controller: () => controller,
+			pic: () => pic
 		});
 	});
 });

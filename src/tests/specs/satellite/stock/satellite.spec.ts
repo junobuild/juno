@@ -16,7 +16,6 @@ import {
 	JUNO_STORAGE_ERROR_UPLOAD_NOT_ALLOWED
 } from '@junobuild/errors';
 import { inject } from 'vitest';
-import { CONTROLLER_METADATA } from '../../../constants/controller-tests.constants';
 import { mockListRules } from '../../../mocks/list.mocks';
 import { testControllers } from '../../../utils/controllers-tests.utils';
 import { controllersInitArgs, SATELLITE_WASM_PATH } from '../../../utils/setup-tests.utils';
@@ -213,7 +212,8 @@ describe('Satellite', () => {
 
 		testControllers({
 			actor: () => actor,
-			controller: () => controller
+			controller: () => controller,
+			pic: () => pic
 		});
 
 		describe.each([

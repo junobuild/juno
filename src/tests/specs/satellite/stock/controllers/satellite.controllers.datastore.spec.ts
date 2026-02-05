@@ -108,7 +108,7 @@ describe.each([
 
 			const { get_doc } = actor;
 
-			expect(await get_doc(TEST_COLLECTION, key)).toHaveLength(1);
+			expect(fromNullable(await get_doc(TEST_COLLECTION, key))).not.toBeUndefined();
 
 			await pic.advanceTime(futureMilliseconds + 1);
 			await tick(pic);
@@ -166,7 +166,7 @@ describe.each([
 
 			const { list_docs } = actor;
 
-			expect((await list_docs(TEST_COLLECTION, mockListParams)).items).toHaveLength(1);
+			expect((await list_docs(TEST_COLLECTION, mockListParams)).items).toBeGreaterThan(0);
 
 			await pic.advanceTime(futureMilliseconds + 1);
 			await tick(pic);

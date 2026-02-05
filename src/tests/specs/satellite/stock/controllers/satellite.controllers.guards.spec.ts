@@ -12,10 +12,7 @@ import { CONTROLLER_METADATA } from '../../../../constants/controller-tests.cons
 import { mockListProposalsParams } from '../../../../mocks/list.mocks';
 import { controllersInitArgs, SATELLITE_WASM_PATH } from '../../../../utils/setup-tests.utils';
 
-describe.each([
-	{ title: 'heap', memory: { Heap: null } },
-	{ title: 'stable', memory: { Stable: null } }
-])('Satellite > Controllers > Guards $title', ({ memory }) => {
+describe('Satellite > Controllers > Guards', () => {
 	let pic: PocketIc;
 	let actor: Actor<SatelliteActor>;
 

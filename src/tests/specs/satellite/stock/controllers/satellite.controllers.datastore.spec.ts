@@ -1,11 +1,12 @@
 import { idlFactorySatellite, type SatelliteActor, type SatelliteDid } from '$declarations';
 import { toBigIntNanoSeconds } from '$lib/utils/date.utils';
 import { type Actor, PocketIc } from '@dfinity/pic';
-import { toNullable } from '@dfinity/utils';
+import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
 import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import { JUNO_DATASTORE_ERROR_CANNOT_WRITE } from '@junobuild/errors';
 import { inject } from 'vitest';
 import { CONTROLLER_METADATA } from '../../../../constants/controller-tests.constants';
+import { mockListParams } from '../../../../mocks/list.mocks';
 import { tick } from '../../../../utils/pic-tests.utils';
 import { createDoc as createDocUtils } from '../../../../utils/satellite-doc-tests.utils';
 import { controllersInitArgs, SATELLITE_WASM_PATH } from '../../../../utils/setup-tests.utils';
@@ -98,7 +99,24 @@ describe.each([
 			await expect(createDoc()).rejects.toThrowError(JUNO_DATASTORE_ERROR_CANNOT_WRITE);
 		});
 
-		it('should throw on get document', async () => {
+		it('should return empty on get document', async () => {
+			const futureMilliseconds = 10_000;
+
+			await generateController(futureMilliseconds);
+
+			const key = await createDoc();
+
+			const { get_doc } = actor;
+
+			expect(await get_doc(TEST_COLLECTION, key)).toHaveLength(1);
+
+			await pic.advanceTime(futureMilliseconds + 1);
+			await tick(pic);
+
+			expect(await get_doc(TEST_COLLECTION, key)).toEqual([]);
+		});
+
+		it('should throw on delete document', async () => {
 			const futureMilliseconds = 10_000;
 
 			await generateController(futureMilliseconds);
@@ -108,9 +126,52 @@ describe.each([
 			await pic.advanceTime(futureMilliseconds + 1);
 			await tick(pic);
 
+			const { del_doc } = actor;
+
+			await expect(del_doc(TEST_COLLECTION, key, { version: [1n] })).rejects.toThrowError(
+				JUNO_DATASTORE_ERROR_CANNOT_WRITE
+			);
+		});
+
+		it('should throw on update document', async () => {
+			const futureMilliseconds = 10_000;
+
+			await generateController(futureMilliseconds);
+
+			const key = await createDoc();
+
 			const { get_doc } = actor;
 
-			expect(await get_doc(TEST_COLLECTION, key)).toEqual([]);
+			const doc = fromNullable(await get_doc(TEST_COLLECTION, key));
+
+			assertNonNullish(doc);
+
+			await pic.advanceTime(futureMilliseconds + 1);
+			await tick(pic);
+
+			const { set_doc } = actor;
+
+			await expect(
+				set_doc(TEST_COLLECTION, key, {
+					...doc,
+					version: doc.version
+				})
+			).rejects.toThrowError(JUNO_DATASTORE_ERROR_CANNOT_WRITE);
+		});
+
+		it('should return empty on list documents', async () => {
+			const futureMilliseconds = 10_000;
+
+			await generateController(futureMilliseconds);
+
+			const { list_docs } = actor;
+
+			expect((await list_docs(TEST_COLLECTION, mockListParams)).items).toHaveLength(1);
+
+			await pic.advanceTime(futureMilliseconds + 1);
+			await tick(pic);
+
+			expect((await list_docs(TEST_COLLECTION, mockListParams)).items).toHaveLength(0);
 		});
 	});
 });

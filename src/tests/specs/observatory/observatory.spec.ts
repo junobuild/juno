@@ -168,7 +168,7 @@ describe('Observatory', () => {
 		testGuards();
 	});
 
-	describe("controller", () => {
+	describe('controller', () => {
 		beforeAll(() => {
 			actor.setIdentity(controller);
 		});
@@ -218,5 +218,5 @@ describe('Observatory', () => {
 			expect(updatedControllers).toHaveLength(1);
 			expect(updatedControllers[0][0].toText()).toEqual(controller.getPrincipal().toText());
 		});
-	})
+	});
 });

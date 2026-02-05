@@ -103,7 +103,7 @@ pub fn controller_can_write(caller: UserId, controllers: &Controllers) -> bool {
                 }))
 }
 
-/// Checks if a caller is a controller regardless of its scope (admin, write or submit).
+/// Checks if a caller is a valid controller regardless of its scope (admin, write or submit).
 ///
 /// # Arguments
 /// - `caller`: `UserId` of the caller.

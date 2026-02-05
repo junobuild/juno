@@ -820,6 +820,8 @@ interface I18nAdmin {
 
 interface I18nControllers {
 	title: string;
+	type: string;
+	automation: string;
 	profile: string;
 	scope: string;
 	delete: string;

@@ -20,7 +20,7 @@ export const addSatellitesAccessKey = async ({
 	satelliteIds: satelliteIdsParam,
 	accessKeyId,
 	scope,
-	profile
+	metadata
 }: {
 	satelliteIds: Principal[];
 	identity: Identity;
@@ -32,7 +32,7 @@ export const addSatellitesAccessKey = async ({
 			identity,
 			satelliteIds,
 			accessKeyId,
-			profile
+			metadata
 		});
 		return;
 	}
@@ -41,7 +41,7 @@ export const addSatellitesAccessKey = async ({
 		identity,
 		satelliteIds,
 		accessKeyId,
-		profile,
+		metadata,
 		scope
 	});
 };
@@ -118,7 +118,7 @@ const setSatellitesNonAdminAccessKey = async ({
 	satelliteIds,
 	accessKeyId,
 	identity,
-	profile,
+	metadata,
 	scope
 }: {
 	satelliteIds: SatelliteId[];
@@ -129,7 +129,7 @@ const setSatellitesNonAdminAccessKey = async ({
 		await setSatelliteControllers({
 			args: {
 				controller: toSetController({
-					profile,
+					metadata,
 					scope: scope as AddAccessKeyScope // Safe case, the param is explicit to avoid passing admin to the function
 				}),
 				controllers: [Principal.from(accessKeyId)]

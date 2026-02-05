@@ -66,7 +66,6 @@
 
 		const { result } = await add({
 			accessKeyId,
-			profile: undefined,
 			scope
 		});
 

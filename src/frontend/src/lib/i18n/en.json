@@ -798,7 +798,9 @@
 	},
 	"controllers": {
 		"title": "Access Keys",
-		"profile": "Profile / Type",
+		"type": "Type",
+		"automation": "Automation",
+		"profile": "Profile",
 		"scope": "Role",
 		"delete": "Delete an access key",
 		"info": "Information",

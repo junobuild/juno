@@ -17,9 +17,7 @@ import type { Identity } from '@icp-sdk/core/agent';
 import type { Principal } from '@icp-sdk/core/principal';
 import { get } from 'svelte/store';
 
-const CONTROLLER_PARAMS: Omit<AddAdminAccessKeyParams, 'accessKeyId'> = {
-	profile: undefined
-};
+const CONTROLLER_PARAMS: Omit<AddAdminAccessKeyParams, 'accessKeyId'> = {};
 
 export class AttachToMissionControlError extends Error {
 	// eslint-disable-next-line local-rules/prefer-object-params

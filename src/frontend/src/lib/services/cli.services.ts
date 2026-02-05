@@ -6,6 +6,7 @@ import {
 	setMissionControlControllerForVersion,
 	setSatellitesControllerForVersion as setSatellitesControllerForVersionWithMctrl
 } from '$lib/services/mission-control/mission-control.services';
+import type { AddAccessKeyParams } from '$lib/types/access-keys';
 import type { MissionControlId } from '$lib/types/mission-control';
 import type { Option } from '$lib/types/utils';
 import { bigintStringify } from '$lib/utils/number.utils';
@@ -50,6 +51,9 @@ export const setCliControllers = async ({
 	}
 };
 
+const toMetadata = (profile: Option<string>): Pick<AddAccessKeyParams, 'metadata'> =>
+	notEmptyString(profile) ? { metadata: { profile } } : {};
+
 const setCliControllersWithoutMissionControl = async ({
 	controllerId,
 	profile,
@@ -63,7 +67,7 @@ const setCliControllersWithoutMissionControl = async ({
 					addSatellitesAdminAccessKey({
 						accessKeyId: controllerId,
 						satelliteIds: selectedSatellites.map((s) => s[0]),
-						profile,
+						...toMetadata(profile),
 						identity
 					})
 				]
@@ -73,7 +77,7 @@ const setCliControllersWithoutMissionControl = async ({
 					addOrbitersAdminAccessKey({
 						accessKeyId: controllerId,
 						orbiterIds: selectedOrbiters.map((s) => s[0]),
-						profile,
+						...toMetadata(profile),
 						identity
 					})
 				]
@@ -96,7 +100,7 @@ const setCliControllersWithMissionControl = async ({
 					setMissionControlControllerForVersion({
 						missionControlId,
 						accessKeyId: controllerId,
-						profile,
+						...toMetadata(profile),
 						scope: 'admin',
 						identity
 					})
@@ -108,7 +112,7 @@ const setCliControllersWithMissionControl = async ({
 						missionControlId,
 						accessKeyId: controllerId,
 						satelliteIds: selectedSatellites.map((s) => s[0]),
-						profile,
+						...toMetadata(profile),
 						scope: 'admin',
 						identity
 					})
@@ -120,7 +124,7 @@ const setCliControllersWithMissionControl = async ({
 						missionControlId,
 						accessKeyId: controllerId,
 						orbiterIds: selectedOrbiters.map((s) => s[0]),
-						profile,
+						...toMetadata(profile),
 						scope: 'admin',
 						identity
 					})

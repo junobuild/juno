@@ -4,12 +4,11 @@ use crate::errors::{
     JUNO_ERROR_CONTROLLERS_ANONYMOUS_NOT_ALLOWED, JUNO_ERROR_CONTROLLERS_MAX_NUMBER,
     JUNO_ERROR_CONTROLLERS_REVOKED_NOT_ALLOWED,
 };
-use crate::ic::api::id;
+use crate::ic::api::{id, is_canister_controller, time};
 use crate::types::interface::SetController;
 use crate::types::state::{Controller, ControllerId, ControllerScope, Controllers, UserId};
 use crate::utils::{principal_anonymous, principal_equal, principal_not_anonymous};
 use candid::Principal;
-use ic_cdk::api::{is_controller as is_canister_controller, time};
 use std::collections::HashMap;
 
 /// Initializes a set of controllers with default administrative scope.
@@ -81,7 +80,7 @@ pub fn delete_controllers(remove_controllers: &[UserId], controllers: &mut Contr
     }
 }
 
-/// Checks if a caller is a controller with admin or write scope (permissions).
+/// Checks if a caller is a non-expired controller with admin or write scope (permissions).
 ///
 /// # Arguments
 /// - `caller`: `UserId` of the caller.
@@ -96,11 +95,14 @@ pub fn controller_can_write(caller: UserId, controllers: &Controllers) -> bool {
                 .iter()
                 .any(|(&controller_id, controller)| match controller.scope {
                     ControllerScope::Submit => false,
-                    _ => principal_equal(controller_id, caller),
+                    _ => {
+                        principal_equal(controller_id, caller)
+                            && is_controller_not_expired(controller)
+                    }
                 }))
 }
 
-/// Checks if a caller is a controller regardless of its scope (admin, write or submit).
+/// Checks if a caller is a non-expired controller regardless of scope (admin, write, or submit).
 ///
 /// # Arguments
 /// - `caller`: `UserId` of the caller.
@@ -108,12 +110,49 @@ pub fn controller_can_write(caller: UserId, controllers: &Controllers) -> bool {
 ///
 /// # Returns
 /// `true` if the caller is a controller (not anonymous, calling itself or one of the known controllers), otherwise `false`.
-pub fn is_controller(caller: UserId, controllers: &Controllers) -> bool {
+pub fn is_valid_controller(caller: UserId, controllers: &Controllers) -> bool {
     principal_not_anonymous(caller)
         && (caller_is_self(caller)
-            || controllers
-                .iter()
-                .any(|(&controller_id, _)| principal_equal(controller_id, caller)))
+            || controllers.iter().any(|(&controller_id, controller)| {
+                principal_equal(controller_id, caller) && is_controller_not_expired(controller)
+            }))
+}
+
+/// Checks if a controller (access key) has not expired.
+///
+/// Admin controllers never expire. Other controllers are considered not expired if:
+/// - They have no expiration date set, or
+/// - Their expiration date is in the future
+///
+/// # Arguments
+/// - `controller`: The controller to check
+///
+/// # Returns
+/// `true` if the controller has not expired, `false` otherwise.
+fn is_controller_not_expired(controller: &Controller) -> bool {
+    !is_controller_expired(controller)
+}
+
+/// Checks if a controller (access key) has expired.
+///
+/// Admin controllers never expire. Other controllers are considered expired if:
+/// - They have an expiration date set, and
+/// - That expiration date is in the past
+///
+/// # Arguments
+/// - `controller`: The controller to check
+///
+/// # Returns
+/// `true` if the controller has expired, `false` otherwise.
+fn is_controller_expired(controller: &Controller) -> bool {
+    // Admin controller cannot expire
+    if matches!(controller.scope, ControllerScope::Admin) {
+        return false;
+    }
+
+    controller
+        .expires_at
+        .map_or(false, |expires_at| expires_at < time())
 }
 
 /// Checks if a caller is an admin controller.
@@ -294,4 +333,336 @@ fn controller_revoked(controller_id: &ControllerId) -> bool {
             *controller_id,
         )
     })
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::types::state::{Controller, ControllerKind, ControllerScope, Controllers};
+    use candid::Principal;
+    use std::collections::HashMap;
+
+    fn mock_time() -> u64 {
+        1_000_000_000_000
+    }
+
+    fn test_principal(id: u8) -> Principal {
+        Principal::from_slice(&[id])
+    }
+
+    fn create_controller(
+        scope: ControllerScope,
+        expires_at: Option<u64>,
+        kind: Option<ControllerKind>,
+    ) -> Controller {
+        Controller {
+            metadata: HashMap::new(),
+            created_at: mock_time(),
+            updated_at: mock_time(),
+            expires_at,
+            scope,
+            kind,
+        }
+    }
+
+    #[test]
+    fn test_is_controller_expired_admin_never_expires() {
+        let admin = create_controller(ControllerScope::Admin, Some(mock_time() - 1000), None);
+        assert!(!is_controller_expired(&admin));
+    }
+
+    #[test]
+    fn test_is_controller_expired_no_expiration() {
+        let controller = create_controller(ControllerScope::Write, None, None);
+        assert!(!is_controller_expired(&controller));
+    }
+
+    #[test]
+    fn test_is_controller_expired_future_expiration() {
+        let controller = create_controller(ControllerScope::Write, Some(time() + 1_000_000), None);
+        assert!(!is_controller_expired(&controller));
+    }
+
+    #[test]
+    fn test_is_controller_not_expired() {
+        let admin = create_controller(ControllerScope::Admin, Some(time() - 1000), None);
+        assert!(is_controller_not_expired(&admin));
+
+        let expired = create_controller(ControllerScope::Write, Some(time() - 1), None);
+        assert!(!is_controller_not_expired(&expired));
+
+        let valid = create_controller(ControllerScope::Write, Some(time() + 1000), None);
+        assert!(is_controller_not_expired(&valid));
+    }
+
+    #[test]
+    fn test_is_controller_expired_past_expiration() {
+        let controller = create_controller(ControllerScope::Write, Some(mock_time() - 1), None);
+        assert!(is_controller_expired(&controller));
+    }
+
+    #[test]
+    fn test_controller_can_write_anonymous_rejected() {
+        let controllers = Controllers::new();
+        assert!(!controller_can_write(Principal::anonymous(), &controllers));
+    }
+
+    #[test]
+    fn test_controller_can_write_self_allowed() {
+        let controllers = Controllers::new();
+        let self_principal = id();
+        assert!(controller_can_write(self_principal, &controllers));
+    }
+
+    #[test]
+    fn test_controller_can_write_admin_allowed() {
+        let mut controllers = Controllers::new();
+        let admin_principal = test_principal(1);
+
+        controllers.insert(
+            admin_principal,
+            create_controller(ControllerScope::Admin, None, None),
+        );
+
+        assert!(controller_can_write(admin_principal, &controllers));
+    }
+
+    #[test]
+    fn test_controller_can_write_write_scope_allowed() {
+        let mut controllers = Controllers::new();
+        let write_principal = test_principal(2);
+
+        controllers.insert(
+            write_principal,
+            create_controller(ControllerScope::Write, None, None),
+        );
+
+        assert!(controller_can_write(write_principal, &controllers));
+    }
+
+    #[test]
+    fn test_controller_can_write_submit_rejected() {
+        let mut controllers = Controllers::new();
+        let submit_principal = test_principal(3);
+
+        controllers.insert(
+            submit_principal,
+            create_controller(ControllerScope::Submit, None, None),
+        );
+
+        assert!(!controller_can_write(submit_principal, &controllers));
+    }
+
+    #[test]
+    fn test_controller_can_write_expired_rejected() {
+        let mut controllers = Controllers::new();
+        let expired_principal = test_principal(4);
+
+        controllers.insert(
+            expired_principal,
+            create_controller(ControllerScope::Write, Some(mock_time() - 1), None),
+        );
+
+        assert!(!controller_can_write(expired_principal, &controllers));
+    }
+
+    #[test]
+    fn test_is_valid_controller_anonymous_rejected() {
+        let controllers = Controllers::new();
+        assert!(!is_valid_controller(Principal::anonymous(), &controllers));
+    }
+
+    #[test]
+    fn test_is_valid_controller_self_allowed() {
+        let controllers = Controllers::new();
+        let self_principal = id();
+        assert!(is_valid_controller(self_principal, &controllers));
+    }
+
+    #[test]
+    fn test_is_valid_controller_all_scopes_allowed() {
+        let mut controllers = Controllers::new();
+
+        let admin = test_principal(1);
+        let write = test_principal(2);
+        let submit = test_principal(3);
+
+        controllers.insert(admin, create_controller(ControllerScope::Admin, None, None));
+        controllers.insert(write, create_controller(ControllerScope::Write, None, None));
+        controllers.insert(
+            submit,
+            create_controller(ControllerScope::Submit, None, None),
+        );
+
+        assert!(is_valid_controller(admin, &controllers));
+        assert!(is_valid_controller(write, &controllers));
+        assert!(is_valid_controller(submit, &controllers));
+    }
+
+    #[test]
+    fn test_is_valid_controller_expired_rejected() {
+        let mut controllers = Controllers::new();
+        let expired_principal = test_principal(4);
+
+        controllers.insert(
+            expired_principal,
+            create_controller(ControllerScope::Write, Some(mock_time() - 1), None),
+        );
+
+        assert!(!is_valid_controller(expired_principal, &controllers));
+    }
+
+    #[test]
+    fn test_is_valid_controller_admin_expired_still_valid() {
+        let mut controllers = Controllers::new();
+        let admin_principal = test_principal(5);
+
+        // Admin with past expiration should still be valid (admins never expire)
+        controllers.insert(
+            admin_principal,
+            create_controller(ControllerScope::Admin, Some(mock_time() - 1000), None),
+        );
+
+        assert!(is_valid_controller(admin_principal, &controllers));
+    }
+
+    #[test]
+    fn test_init_admin_controllers() {
+        let principals = vec![test_principal(1), test_principal(2)];
+        let controllers = init_admin_controllers(&principals);
+
+        assert_eq!(controllers.len(), 2);
+
+        for principal in principals {
+            let controller = controllers.get(&principal).unwrap();
+            assert!(matches!(controller.scope, ControllerScope::Admin));
+            assert!(controller.expires_at.is_none());
+            assert!(controller.kind.is_none());
+        }
+    }
+
+    #[test]
+    fn test_set_controllers_new() {
+        let mut controllers = Controllers::new();
+        let principals = vec![test_principal(1)];
+
+        let controller_data = SetController {
+            metadata: HashMap::new(),
+            expires_at: Some(mock_time() + 1000),
+            scope: ControllerScope::Write,
+            kind: Some(ControllerKind::Automation),
+        };
+
+        set_controllers(&principals, &controller_data, &mut controllers);
+
+        assert_eq!(controllers.len(), 1);
+        let controller = controllers.get(&principals[0]).unwrap();
+        assert!(matches!(controller.scope, ControllerScope::Write));
+        assert_eq!(controller.expires_at, Some(mock_time() + 1000));
+        assert!(matches!(controller.kind, Some(ControllerKind::Automation)));
+    }
+
+    #[test]
+    fn test_set_controllers_update_preserves_created_at() {
+        let mut controllers = Controllers::new();
+        let principal = test_principal(1);
+
+        // First insert
+        let initial_data = SetController {
+            metadata: HashMap::new(),
+            expires_at: None,
+            scope: ControllerScope::Write,
+            kind: None,
+        };
+        set_controllers(&[principal], &initial_data, &mut controllers);
+        let original_created_at = controllers.get(&principal).unwrap().created_at;
+
+        // Update
+        let update_data = SetController {
+            metadata: HashMap::new(),
+            expires_at: Some(mock_time() + 1000),
+            scope: ControllerScope::Admin,
+            kind: Some(ControllerKind::Automation),
+        };
+        set_controllers(&[principal], &update_data, &mut controllers);
+
+        let updated = controllers.get(&principal).unwrap();
+        assert_eq!(updated.created_at, original_created_at);
+        assert!(matches!(updated.scope, ControllerScope::Admin));
+    }
+
+    #[test]
+    fn test_delete_controllers() {
+        let mut controllers = Controllers::new();
+        let principals = vec![test_principal(1), test_principal(2), test_principal(3)];
+
+        for principal in &principals {
+            controllers.insert(
+                *principal,
+                create_controller(ControllerScope::Write, None, None),
+            );
+        }
+
+        delete_controllers(&principals[0..2], &mut controllers);
+
+        assert_eq!(controllers.len(), 1);
+        assert!(controllers.contains_key(&principals[2]));
+        assert!(!controllers.contains_key(&principals[0]));
+        assert!(!controllers.contains_key(&principals[1]));
+    }
+
+    #[test]
+    fn test_filter_admin_controllers() {
+        let mut controllers = Controllers::new();
+
+        controllers.insert(
+            test_principal(1),
+            create_controller(ControllerScope::Admin, None, None),
+        );
+        controllers.insert(
+            test_principal(2),
+            create_controller(ControllerScope::Write, None, None),
+        );
+        controllers.insert(
+            test_principal(3),
+            create_controller(ControllerScope::Admin, None, None),
+        );
+        controllers.insert(
+            test_principal(4),
+            create_controller(ControllerScope::Submit, None, None),
+        );
+
+        let admin_only = filter_admin_controllers(&controllers);
+
+        assert_eq!(admin_only.len(), 2);
+        assert!(admin_only.contains_key(&test_principal(1)));
+        assert!(admin_only.contains_key(&test_principal(3)));
+    }
+
+    #[test]
+    fn test_is_admin_controller() {
+        let mut controllers = Controllers::new();
+        let admin_principal = id(); // Self canister in test
+
+        controllers.insert(
+            admin_principal,
+            create_controller(ControllerScope::Admin, None, None),
+        );
+
+        assert!(is_admin_controller(admin_principal, &controllers));
+    }
+
+    #[test]
+    fn test_is_admin_controller_not_canister_controller() {
+        let mut controllers = Controllers::new();
+        let not_canister = test_principal(99);
+
+        controllers.insert(
+            not_canister,
+            create_controller(ControllerScope::Admin, None, None),
+        );
+
+        // Will fail because test_principal(99) is not the canister controller
+        assert!(!is_admin_controller(not_canister, &controllers));
+    }
 }

@@ -1,7 +1,9 @@
 use candid::Principal;
 
 #[cfg(target_arch = "wasm32")]
-use ic_cdk::api::{canister_self, debug_print, msg_caller, time as ic_time};
+use ic_cdk::api::{
+    canister_self, debug_print, is_controller as ic_is_controller, msg_caller, time as ic_time,
+};
 
 /// Returns the **principal** of the current module.
 ///
@@ -86,4 +88,16 @@ pub fn time() -> u64 {
         .duration_since(UNIX_EPOCH)
         .unwrap()
         .as_nanos() as u64
+}
+
+#[cfg(target_arch = "wasm32")]
+pub fn is_canister_controller(principal: &Principal) -> bool {
+    ic_is_controller(principal)
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+pub fn is_canister_controller(principal: &Principal) -> bool {
+    // For tests, return true for specific test principals or implement mock logic
+    // This is a simple mock - adjust based on your needs
+    *principal == Principal::from_text("ck4tp-3iaaa-aaaal-ab7da-cai").unwrap()
 }

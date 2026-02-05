@@ -11,7 +11,7 @@ use junobuild_collections::constants::assets::COLLECTION_ASSET_KEY;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::Permission;
 use junobuild_shared::assert::assert_version;
-use junobuild_shared::segments::controllers::{controller_can_write, is_controller};
+use junobuild_shared::segments::controllers::{controller_can_write, is_valid_controller};
 use junobuild_shared::types::state::Controllers;
 use junobuild_storage::errors::{
     JUNO_STORAGE_ERROR_ASSET_NOT_FOUND, JUNO_STORAGE_ERROR_CANNOT_READ_ASSET,
@@ -67,7 +67,7 @@ pub fn assert_storage_list_permission(
     // because when used with the CLI, it needs to know which assets are currently deployed in order to only submit those
     // that are different.
     if collection == COLLECTION_ASSET_KEY {
-        return assert_permission_with(permission, owner, caller, controllers, is_controller);
+        return assert_permission_with(permission, owner, caller, controllers, is_valid_controller);
     }
 
     assert_permission(permission, owner, caller, controllers)

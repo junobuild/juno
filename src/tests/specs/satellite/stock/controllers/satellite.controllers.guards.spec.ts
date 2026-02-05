@@ -1,4 +1,4 @@
-import { idlFactorySatellite, type SatelliteActor, type SatelliteDid } from '$declarations';
+import { idlFactorySatellite, type SatelliteActor } from '$declarations';
 import { toBigIntNanoSeconds } from '$lib/utils/date.utils';
 import { type Actor, PocketIc } from '@dfinity/pic';
 import { toNullable } from '@dfinity/utils';
@@ -40,21 +40,6 @@ describe.each([
 		actor = c;
 
 		actor.setIdentity(controller);
-
-		const setRule: SatelliteDid.SetRule = {
-			memory: toNullable(memory),
-			max_size: toNullable(),
-			read: { Managed: null },
-			mutable_permissions: toNullable(),
-			write: { Managed: null },
-			version: toNullable(),
-			max_capacity: toNullable(),
-			rate_config: toNullable(),
-			max_changes_per_user: toNullable()
-		};
-
-		const { set_rule } = actor;
-		await set_rule({ Db: null }, TEST_COLLECTION, setRule);
 	});
 
 	afterAll(async () => {
@@ -233,6 +218,62 @@ describe.each([
 			const { del_docs } = actor;
 
 			await expect(del_docs(TEST_COLLECTION)).rejects.toThrowError(
+				JUNO_AUTH_ERROR_NOT_WRITE_CONTROLLER
+			);
+		});
+
+		it('should throw on count_collection_docs', async () => {
+			const { count_collection_docs } = actor;
+
+			await expect(count_collection_docs(TEST_COLLECTION)).rejects.toThrowError(
+				JUNO_AUTH_ERROR_NOT_WRITE_CONTROLLER
+			);
+		});
+
+		it('should throw on reject_proposal', async () => {
+			const { reject_proposal } = actor;
+
+			await expect(
+				reject_proposal({
+					proposal_id: 1123n,
+					sha256: Uint8Array.from([1, 2])
+				})
+			).rejects.toThrowError(JUNO_AUTH_ERROR_NOT_WRITE_CONTROLLER);
+		});
+
+		it('should throw on commit_proposal', async () => {
+			const { commit_proposal } = actor;
+
+			await expect(
+				commit_proposal({
+					proposal_id: 1123n,
+					sha256: Uint8Array.from([1, 2])
+				})
+			).rejects.toThrowError(JUNO_AUTH_ERROR_NOT_WRITE_CONTROLLER);
+		});
+
+		it('should throw on delete_proposal_assets', async () => {
+			const { delete_proposal_assets } = actor;
+
+			await expect(
+				delete_proposal_assets({
+					proposal_ids: [1n]
+				})
+			).rejects.toThrowError(JUNO_AUTH_ERROR_NOT_WRITE_CONTROLLER);
+		});
+
+		it('should throw on del_assets', async () => {
+			const { del_assets } = actor;
+
+			await expect(del_assets(TEST_COLLECTION)).rejects.toThrowError(
+				JUNO_AUTH_ERROR_NOT_WRITE_CONTROLLER
+			);
+		});
+
+		it('should throw on count_collection_assets', async () => {
+			const { count_collection_assets } = actor;
+
+			await expect(count_collection_assets(TEST_COLLECTION)).rejects.toThrowError(
 				JUNO_AUTH_ERROR_NOT_WRITE_CONTROLLER
 			);
 		});

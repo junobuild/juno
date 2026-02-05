@@ -17,7 +17,7 @@ import { controllersInitArgs, SATELLITE_WASM_PATH } from '../../../../utils/setu
 describe.each([
 	{ title: 'heap', memory: { Heap: null } },
 	{ title: 'stable', memory: { Stable: null } }
-])('Satellite > Controllers > Datastore $title > Write', ({ memory }) => {
+])('Satellite > Controllers > Datastore $title > Submit', ({ memory }) => {
 	let pic: PocketIc;
 	let actor: Actor<SatelliteActor>;
 
@@ -39,6 +39,9 @@ describe.each([
 			actor
 		});
 	};
+
+	let testWriteController: Ed25519KeyIdentity;
+	let testSubmitController: Ed25519KeyIdentity;
 
 	beforeAll(async () => {
 		pic = await PocketIc.create(inject('PIC_URL'));
@@ -76,30 +79,34 @@ describe.each([
 		await pic?.tearDown();
 	});
 
-	const generateController = async (futureMilliseconds?: number) => {
+	beforeEach(async () => {
 		actor.setIdentity(controller);
 
-		const testController = Ed25519KeyIdentity.generate();
+		testWriteController = Ed25519KeyIdentity.generate();
+		testSubmitController = Ed25519KeyIdentity.generate();
 
 		const { set_controllers } = actor;
 
 		await set_controllers({
 			controller: {
 				...CONTROLLER_METADATA,
-				scope: { Write: null },
-				expires_at: [
-					toBigIntNanoSeconds(new Date((await pic.getTime()) + (futureMilliseconds ?? 0)))
-				]
+				scope: { Write: null }
 			},
-			controllers: [testController.getPrincipal()]
+			controllers: [testWriteController.getPrincipal()]
 		});
 
-		actor.setIdentity(testController);
-	};
+		await set_controllers({
+			controller: {
+				...CONTROLLER_METADATA,
+				scope: { Submit: null }
+			},
+			controllers: [testSubmitController.getPrincipal()]
+		});
+
+		actor.setIdentity(testSubmitController);
+	});
 
 	it('should throw on upload asset', async () => {
-		await generateController();
-
 		await pic.advanceTime(100);
 
 		const name = 'hello.html';
@@ -111,9 +118,7 @@ describe.each([
 	});
 
 	it('should return empty on get asset', async () => {
-		const futureMilliseconds = 10_000;
-
-		await generateController(futureMilliseconds);
+		actor.setIdentity(testWriteController);
 
 		const name = 'hello.html';
 		const full_path = `/${TEST_COLLECTION}/${name}`;
@@ -124,24 +129,20 @@ describe.each([
 
 		expect(fromNullable(await get_asset(TEST_COLLECTION, full_path))).not.toBeUndefined();
 
-		await pic.advanceTime(futureMilliseconds + 1);
-		await tick(pic);
+		actor.setIdentity(testSubmitController);
 
 		expect(await get_asset(TEST_COLLECTION, full_path)).toEqual([]);
 	});
 
 	it('should throw on delete asset', async () => {
-		const futureMilliseconds = 10_000;
-
-		await generateController(futureMilliseconds);
+		actor.setIdentity(testWriteController);
 
 		const name = 'hello1.html';
 		const full_path = `/${TEST_COLLECTION}/${name}`;
 
 		await upload({ full_path, name, collection: TEST_COLLECTION });
 
-		await pic.advanceTime(futureMilliseconds + 1);
-		await tick(pic);
+		actor.setIdentity(testSubmitController);
 
 		const { del_asset } = actor;
 
@@ -151,9 +152,7 @@ describe.each([
 	});
 
 	it('should throw on update asset', async () => {
-		const futureMilliseconds = 10_000;
-
-		await generateController(futureMilliseconds);
+		actor.setIdentity(testWriteController);
 
 		const name = 'hello2.html';
 		const full_path = `/${TEST_COLLECTION}/${name}`;
@@ -166,8 +165,7 @@ describe.each([
 
 		assertNonNullish(asset);
 
-		await pic.advanceTime(futureMilliseconds + 1);
-		await tick(pic);
+		actor.setIdentity(testSubmitController);
 
 		await expect(upload({ full_path, name, collection: TEST_COLLECTION })).rejects.toThrowError(
 			JUNO_STORAGE_ERROR_UPLOAD_NOT_ALLOWED
@@ -175,16 +173,13 @@ describe.each([
 	});
 
 	it('should return empty on list assets', async () => {
-		const futureMilliseconds = 10_000;
-
-		await generateController(futureMilliseconds);
+		actor.setIdentity(testWriteController);
 
 		const { list_assets } = actor;
 
 		expect((await list_assets(TEST_COLLECTION, mockListParams)).items_length).toBeGreaterThan(0n);
 
-		await pic.advanceTime(futureMilliseconds + 1);
-		await tick(pic);
+		actor.setIdentity(testSubmitController);
 
 		expect((await list_assets(TEST_COLLECTION, mockListParams)).items_length).toEqual(0n);
 	});

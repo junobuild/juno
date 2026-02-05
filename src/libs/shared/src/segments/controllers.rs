@@ -652,7 +652,6 @@ mod tests {
         assert!(is_admin_controller(admin_principal, &controllers));
     }
 
-
     #[test]
     fn test_is_admin_controller_not_canister_controller() {
         let mut controllers = Controllers::new();

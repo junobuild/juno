@@ -21,7 +21,7 @@ mod user;
 use crate::db::types::config::DbConfig;
 use crate::db::types::interface::SetDbConfig;
 use crate::guards::{
-    caller_is_admin_controller, caller_is_controller, caller_is_controller_with_write,
+    caller_is_admin_controller, caller_is_controller_with_write, caller_is_valid_controller,
 };
 use crate::types::interface::{
     AuthenticateResultResponse, AuthenticationArgs, Config, DeleteProposalAssets,
@@ -237,31 +237,31 @@ pub fn list_controllers() -> Controllers {
 // ---------------------------------------------------------
 
 #[doc(hidden)]
-#[query(guard = "caller_is_controller")]
+#[query(guard = "caller_is_valid_controller")]
 pub fn get_proposal(proposal_id: ProposalId) -> Option<Proposal> {
     api::cdn::get_proposal(&proposal_id)
 }
 
 #[doc(hidden)]
-#[query(guard = "caller_is_controller")]
+#[query(guard = "caller_is_valid_controller")]
 pub fn list_proposals(filter: ListProposalsParams) -> ListProposalResults {
     api::cdn::list_proposals(&filter)
 }
 
 #[doc(hidden)]
-#[query(guard = "caller_is_controller")]
+#[query(guard = "caller_is_valid_controller")]
 pub fn count_proposals() -> usize {
     api::cdn::count_proposals()
 }
 
 #[doc(hidden)]
-#[update(guard = "caller_is_controller")]
+#[update(guard = "caller_is_valid_controller")]
 pub fn init_proposal(proposal_type: ProposalType) -> (ProposalId, Proposal) {
     api::cdn::init_proposal(&proposal_type)
 }
 
 #[doc(hidden)]
-#[update(guard = "caller_is_controller")]
+#[update(guard = "caller_is_valid_controller")]
 pub fn submit_proposal(proposal_id: ProposalId) -> (ProposalId, Proposal) {
     api::cdn::submit_proposal(&proposal_id)
 }
@@ -289,13 +289,13 @@ pub fn delete_proposal_assets(params: DeleteProposalAssets) {
 // ---------------------------------------------------------
 
 #[doc(hidden)]
-#[update(guard = "caller_is_controller")]
+#[update(guard = "caller_is_valid_controller")]
 pub fn init_proposal_asset_upload(init: InitAssetKey, proposal_id: ProposalId) -> InitUploadResult {
     api::cdn::init_proposal_asset_upload(init, proposal_id)
 }
 
 #[doc(hidden)]
-#[update(guard = "caller_is_controller")]
+#[update(guard = "caller_is_valid_controller")]
 pub fn init_proposal_many_assets_upload(
     init_asset_keys: Vec<InitAssetKey>,
     proposal_id: ProposalId,
@@ -304,19 +304,19 @@ pub fn init_proposal_many_assets_upload(
 }
 
 #[doc(hidden)]
-#[update(guard = "caller_is_controller")]
+#[update(guard = "caller_is_valid_controller")]
 pub fn upload_proposal_asset_chunk(chunk: UploadChunk) -> UploadChunkResult {
     api::cdn::upload_proposal_asset_chunk(chunk)
 }
 
 #[doc(hidden)]
-#[update(guard = "caller_is_controller")]
+#[update(guard = "caller_is_valid_controller")]
 pub fn commit_proposal_asset_upload(commit: CommitBatch) {
     api::cdn::commit_proposal_asset_upload(commit)
 }
 
 #[doc(hidden)]
-#[update(guard = "caller_is_controller")]
+#[update(guard = "caller_is_valid_controller")]
 pub fn commit_proposal_many_assets_upload(commits: Vec<CommitBatch>) {
     api::cdn::commit_proposal_many_assets_upload(commits)
 }
@@ -516,7 +516,7 @@ pub async fn deposit_cycles(args: DepositCyclesArgs) {
 }
 
 #[doc(hidden)]
-#[query(guard = "caller_is_controller")]
+#[query(guard = "caller_is_valid_controller")]
 pub fn memory_size() -> MemorySize {
     junobuild_shared::segments::utils::memory_size()
 }

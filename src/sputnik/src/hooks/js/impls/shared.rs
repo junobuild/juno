@@ -1,11 +1,14 @@
 use crate::hooks::js::types::shared::{
-    JsController, JsControllerRecord, JsControllerScope, JsControllers, JsMetadataRecord,
+    JsController, JsControllerKind, JsControllerRecord, JsControllerScope, JsControllers,
+    JsMetadataRecord,
 };
 use crate::js::types::candid::JsRawPrincipal;
 use crate::js::utils::primitives::{
     from_bigint_js, from_optional_bigint_js, into_bigint_js, into_optional_bigint_js,
 };
-use junobuild_shared::types::state::{Controller, ControllerScope, Controllers, Timestamp};
+use junobuild_shared::types::state::{
+    Controller, ControllerKind, ControllerScope, Controllers, Timestamp,
+};
 use rquickjs::{
     Array, BigInt, Ctx, Error as JsError, FromJs, IntoJs, Object, Result as JsResult, Value,
 };
@@ -26,6 +29,10 @@ impl<'js> JsController {
                 ControllerScope::Admin => JsControllerScope::Admin,
                 ControllerScope::Submit => JsControllerScope::Submit,
             },
+            kind: controller.kind.map(|kind| match kind {
+                ControllerKind::Automation => JsControllerKind::Automation,
+                ControllerKind::Emulator => JsControllerKind::Emulator,
+            }),
         })
     }
 
@@ -44,6 +51,10 @@ impl<'js> JsController {
                 JsControllerScope::Admin => ControllerScope::Admin,
                 JsControllerScope::Submit => ControllerScope::Submit,
             },
+            kind: self.kind.as_ref().map(|kind| match kind {
+                JsControllerKind::Automation => ControllerKind::Automation,
+                JsControllerKind::Emulator => ControllerKind::Emulator,
+            }),
         })
     }
 }
@@ -91,6 +102,17 @@ impl<'js> IntoJs<'js> for JsControllerScope {
     }
 }
 
+impl<'js> IntoJs<'js> for JsControllerKind {
+    fn into_js(self, ctx: &Ctx<'js>) -> JsResult<Value<'js>> {
+        let s = match self {
+            JsControllerKind::Automation => "automation",
+            JsControllerKind::Emulator => "emulator",
+        };
+
+        s.into_js(ctx)
+    }
+}
+
 impl<'js> IntoJs<'js> for JsController {
     fn into_js(self, ctx: &Ctx<'js>) -> JsResult<Value<'js>> {
         let obj = Object::new(ctx.clone())?;
@@ -103,6 +125,8 @@ impl<'js> IntoJs<'js> for JsController {
         obj.set("expires_at", into_optional_bigint_js(ctx, self.expires_at)?)?;
 
         obj.set("scope", self.scope)?;
+
+        obj.set("kind", self.kind)?;
 
         Ok(obj.into_value())
     }
@@ -152,6 +176,18 @@ impl<'js> FromJs<'js> for JsControllerScope {
     }
 }
 
+impl<'js> FromJs<'js> for JsControllerKind {
+    fn from_js(ctx: &Ctx<'js>, value: Value<'js>) -> JsResult<Self> {
+        let s: String = String::from_js(ctx, value)?;
+
+        match s.as_str() {
+            "automation" => Ok(Self::Automation),
+            "emulator" => Ok(Self::Emulator),
+            _ => Err(JsError::new_from_js("JsControllerKind", "ControllerKind")),
+        }
+    }
+}
+
 impl<'js> FromJs<'js> for JsMetadataRecord {
     fn from_js(_ctx: &Ctx<'js>, value: Value<'js>) -> JsResult<Self> {
         let arr = Array::from_value(value)?;
@@ -180,12 +216,18 @@ impl<'js> FromJs<'js> for JsController {
 
         let scope = JsControllerScope::from_js(ctx, obj.get("scope")?)?;
 
+        let kind = obj
+            .get::<_, Option<Value>>("kind")?
+            .map(|value| JsControllerKind::from_js(ctx, value))
+            .transpose()?;
+
         Ok(Self {
             metadata,
             created_at,
             updated_at,
             expires_at,
             scope,
+            kind,
         })
     }
 }

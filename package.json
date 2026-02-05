@@ -83,7 +83,7 @@
 		"@junobuild/config": "^2.10.0",
 		"@junobuild/config-loader": "^0.4.7",
 		"@junobuild/errors": "^0.2.1",
-		"@junobuild/functions": "^0.5.5",
+		"@junobuild/functions": "^0.5.5-next-2026-02-04",
 		"@ltd/j-toml": "^1.38.0",
 		"@playwright/test": "^1.57.0",
 		"@sveltejs/adapter-static": "^3.0.10",

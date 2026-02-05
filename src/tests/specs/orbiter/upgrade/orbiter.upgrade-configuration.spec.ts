@@ -9,13 +9,13 @@ import { fromNullable } from '@dfinity/utils';
 import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import type { Principal } from '@icp-sdk/core/principal';
 import { inject } from 'vitest';
-import { satelliteIdMock } from '../../mocks/orbiter.mocks';
-import { tick } from '../../utils/pic-tests.utils';
+import { satelliteIdMock } from '../../../mocks/orbiter.mocks';
+import { tick } from '../../../utils/pic-tests.utils';
 import {
 	ORBITER_WASM_PATH,
 	controllersInitArgs,
 	downloadOrbiter
-} from '../../utils/setup-tests.utils';
+} from '../../../utils/setup-tests.utils';
 
 describe('Orbiter > Upgrade > Configuration', () => {
 	let pic: PocketIc;

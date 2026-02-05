@@ -17,13 +17,13 @@ import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import type { Principal } from '@icp-sdk/core/principal';
 import { nanoid } from 'nanoid';
 import { inject } from 'vitest';
-import { pageViewMock, satelliteIdMock, trackEventMock } from '../../mocks/orbiter.mocks';
-import { tick } from '../../utils/pic-tests.utils';
+import { pageViewMock, satelliteIdMock, trackEventMock } from '../../../mocks/orbiter.mocks';
+import { tick } from '../../../utils/pic-tests.utils';
 import {
 	ORBITER_WASM_PATH,
 	controllersInitArgs,
 	downloadOrbiter
-} from '../../utils/setup-tests.utils';
+} from '../../../utils/setup-tests.utils';
 
 describe('Orbiter > Upgrade', () => {
 	let pic: PocketIc;

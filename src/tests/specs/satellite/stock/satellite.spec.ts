@@ -16,7 +16,9 @@ import {
 	JUNO_STORAGE_ERROR_UPLOAD_NOT_ALLOWED
 } from '@junobuild/errors';
 import { inject } from 'vitest';
+import { CONTROLLER_METADATA } from '../../../constants/controller-tests.constants';
 import { mockListRules } from '../../../mocks/list.mocks';
+import { testControllers } from '../../../utils/controllers-tests.utils';
 import { controllersInitArgs, SATELLITE_WASM_PATH } from '../../../utils/setup-tests.utils';
 
 describe('Satellite', () => {
@@ -209,38 +211,9 @@ describe('Satellite', () => {
 			expect(items_length).toEqual(1n);
 		});
 
-		it('should add and remove additional controller', async () => {
-			const { set_controllers, del_controllers, list_controllers } = actor;
-
-			const newController = Ed25519KeyIdentity.generate();
-
-			const controllers = await set_controllers({
-				controllers: [newController.getPrincipal()],
-				controller: {
-					expires_at: toNullable(),
-					metadata: [],
-					scope: { Admin: null }
-				}
-			});
-
-			expect(controllers).toHaveLength(2);
-
-			expect(
-				controllers.find(([p]) => p.toText() === controller.getPrincipal().toText())
-			).not.toBeUndefined();
-
-			expect(
-				controllers.find(([p]) => p.toText() === newController.getPrincipal().toText())
-			).not.toBeUndefined();
-
-			await del_controllers({
-				controllers: [newController.getPrincipal()]
-			});
-
-			const updatedControllers = await list_controllers();
-
-			expect(updatedControllers).toHaveLength(1);
-			expect(updatedControllers[0][0].toText()).toEqual(controller.getPrincipal().toText());
+		testControllers({
+			actor: () => actor,
+			controller: () => controller
 		});
 
 		describe.each([
@@ -733,8 +706,7 @@ describe('Satellite', () => {
 				set_controllers({
 					controllers: [controller.getPrincipal()],
 					controller: {
-						expires_at: toNullable(),
-						metadata: [],
+						...CONTROLLER_METADATA,
 						scope: { Admin: null }
 					}
 				})

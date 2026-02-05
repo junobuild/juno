@@ -20,6 +20,7 @@ import { idlFactory as idlFactorySatellite0021 } from '$declarations/deprecated/
 import { idlFactory as idlFactorySatellite0022 } from '$declarations/deprecated/satellite-0-0-22.factory.did';
 import { idlFactory as idlFactorySatellite008 } from '$declarations/deprecated/satellite-0-0-8.factory.did';
 import { idlFactory as idlFactorySatellite009 } from '$declarations/deprecated/satellite-0-0-9.factory.did';
+import { idlFactory as idlFactorySatellite016 } from '$declarations/deprecated/satellite-0-1-6.factory.did';
 import { idlFactory as idlFactoryCertifiedIC } from '$declarations/ic-management/ic-management.factory.certified.did';
 import { idlFactory as idlFactoryIC } from '$declarations/ic-management/ic-management.factory.did';
 import { idlFactory as idlFactoryMissionControl } from '$declarations/mission_control/mission_control.factory.did';
@@ -49,6 +50,7 @@ import type { _SERVICE as SatelliteActor0021 } from '$declarations/deprecated/sa
 import type { _SERVICE as SatelliteActor0022 } from '$declarations/deprecated/satellite-0-0-22.did';
 import type { _SERVICE as SatelliteActor008 } from '$declarations/deprecated/satellite-0-0-8.did';
 import type { _SERVICE as SatelliteActor009 } from '$declarations/deprecated/satellite-0-0-9.did';
+import type { _SERVICE as SatelliteActor016 } from '$declarations/deprecated/satellite-0-1-6.did';
 import type { _SERVICE as ICActor } from '$declarations/ic-management/ic-management.did';
 import type { _SERVICE as MissionControlActor } from '$declarations/mission_control/mission_control.did';
 import type { _SERVICE as ObservatoryActor } from '$declarations/observatory/observatory.did';
@@ -85,6 +87,7 @@ export {
 	idlFactorySatellite0022,
 	idlFactorySatellite008,
 	idlFactorySatellite009,
+	idlFactorySatellite016,
 	idlFactorySputnik,
 	type ConsoleActor,
 	type ConsoleActor0014,
@@ -112,5 +115,6 @@ export {
 	type SatelliteActor0022,
 	type SatelliteActor008,
 	type SatelliteActor009,
+	type SatelliteActor016,
 	type SputnikActor
 };

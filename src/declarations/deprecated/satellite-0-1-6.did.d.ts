@@ -34,12 +34,6 @@ export interface AssetNoContent {
 export interface AssetsUpgradeOptions {
 	clear_existing_assets: [] | [boolean];
 }
-export type AuthenticateControllerArgs = {
-	OpenId: OpenIdAuthenticateControllerArgs;
-};
-export type AuthenticateControllerResultResponse =
-	| { Ok: null }
-	| { Err: AuthenticationControllerError };
 export type AuthenticateResultResponse = { Ok: Authentication } | { Err: AuthenticationError };
 export interface Authentication {
 	doc: Doc;
@@ -60,11 +54,8 @@ export interface AuthenticationConfigInternetIdentity {
 }
 export interface AuthenticationConfigOpenId {
 	observatory_id: [] | [Principal];
-	providers: Array<[OpenIdDelegationProvider, OpenIdAuthProviderConfig]>;
+	providers: Array<[OpenIdProvider, OpenIdProviderConfig]>;
 }
-export type AuthenticationControllerError =
-	| { RegisterController: string }
-	| { VerifyOpenIdCredentials: VerifyOpenidAutomationCredentialsError };
 export type AuthenticationError =
 	| {
 			PrepareDelegation: PrepareDelegationError;
@@ -73,7 +64,6 @@ export type AuthenticationError =
 export interface AuthenticationRules {
 	allowed_callers: Array<Principal>;
 }
-export type AutomationScope = { Write: null } | { Submit: null };
 export type CollectionType = { Db: null } | { Storage: null };
 export interface CommitBatch {
 	batch_id: bigint;
@@ -96,12 +86,10 @@ export interface ConfigMaxMemorySize {
 export interface Controller {
 	updated_at: bigint;
 	metadata: Array<[string, string]>;
-	kind: [] | [ControllerKind];
 	created_at: bigint;
 	scope: ControllerScope;
 	expires_at: [] | [bigint];
 }
-export type ControllerKind = { Emulator: null } | { Automation: null };
 export type ControllerScope = { Write: null } | { Admin: null } | { Submit: null };
 export interface CustomDomain {
 	updated_at: bigint;
@@ -271,22 +259,6 @@ export interface MemorySize {
 	stable: bigint;
 	heap: bigint;
 }
-export interface OpenIdAuthProviderConfig {
-	delegation: [] | [OpenIdAuthProviderDelegationConfig];
-	client_id: string;
-}
-export interface OpenIdAuthProviderDelegationConfig {
-	targets: [] | [Array<Principal>];
-	max_time_to_live: [] | [bigint];
-}
-export interface OpenIdAuthenticateControllerArgs {
-	jwt: string;
-	metadata: Array<[string, string]>;
-	scope: AutomationScope;
-	max_time_to_live: [] | [bigint];
-	controller_id: Principal;
-}
-export type OpenIdDelegationProvider = { GitHub: null } | { Google: null };
 export interface OpenIdGetDelegationArgs {
 	jwt: string;
 	session_key: Uint8Array;
@@ -297,6 +269,15 @@ export interface OpenIdPrepareDelegationArgs {
 	jwt: string;
 	session_key: Uint8Array;
 	salt: Uint8Array;
+}
+export type OpenIdProvider = { Google: null };
+export interface OpenIdProviderConfig {
+	delegation: [] | [OpenIdProviderDelegationConfig];
+	client_id: string;
+}
+export interface OpenIdProviderDelegationConfig {
+	targets: [] | [Array<Principal>];
+	max_time_to_live: [] | [bigint];
 }
 export type Permission =
 	| { Controllers: null }
@@ -342,7 +323,6 @@ export interface RateConfig {
 	max_tokens: bigint;
 	time_per_token_ns: bigint;
 }
-export type Result = { Ok: number } | { Err: string };
 export interface Rule {
 	max_capacity: [] | [number];
 	memory: [] | [Memory];
@@ -369,7 +349,6 @@ export interface SetAuthenticationConfig {
 }
 export interface SetController {
 	metadata: Array<[string, string]>;
-	kind: [] | [ControllerKind];
 	scope: ControllerScope;
 	expires_at: [] | [bigint];
 }
@@ -459,18 +438,8 @@ export interface UploadChunk {
 export interface UploadChunkResult {
 	chunk_id: bigint;
 }
-export type VerifyOpenidAutomationCredentialsError =
-	| {
-			GetCachedJwks: null;
-	  }
-	| { JwtVerify: JwtVerifyError }
-	| { GetOrFetchJwks: GetOrRefreshJwksError };
 export interface _SERVICE {
 	authenticate: ActorMethod<[AuthenticationArgs], AuthenticateResultResponse>;
-	authenticate_controller: ActorMethod<
-		[AuthenticateControllerArgs],
-		AuthenticateControllerResultResponse
-	>;
 	commit_asset_upload: ActorMethod<[CommitBatch], undefined>;
 	commit_proposal: ActorMethod<[CommitProposal], null>;
 	commit_proposal_asset_upload: ActorMethod<[CommitBatch], undefined>;
@@ -537,8 +506,6 @@ export interface _SERVICE {
 	switch_storage_system_memory: ActorMethod<[], undefined>;
 	upload_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;
 	upload_proposal_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;
-	get_random: ActorMethod<[], Result>;
-	whoami: ActorMethod<[], Principal>;
 }
 export declare const idlFactory: IDL.InterfaceFactory;
 export declare const init: (args: { IDL: typeof IDL }) => IDL.Type[];

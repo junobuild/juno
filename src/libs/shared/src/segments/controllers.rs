@@ -26,6 +26,7 @@ pub fn init_admin_controllers(new_controllers: &[UserId]) -> Controllers {
         metadata: HashMap::new(),
         expires_at: None,
         scope: ControllerScope::Admin,
+        kind: None,
     };
 
     set_controllers(new_controllers, &controller_data, &mut controllers);
@@ -62,6 +63,7 @@ pub fn set_controllers(
             updated_at,
             expires_at: controller_data.expires_at,
             scope: controller_data.scope.clone(),
+            kind: controller_data.kind.clone(),
         };
 
         controllers.insert(*controller_id, controller);

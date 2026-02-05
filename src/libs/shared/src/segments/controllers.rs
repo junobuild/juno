@@ -111,7 +111,7 @@ pub fn controller_can_write(caller: UserId, controllers: &Controllers) -> bool {
 ///
 /// # Returns
 /// `true` if the caller is a controller (not anonymous, calling itself or one of the known controllers), otherwise `false`.
-pub fn is_controller(caller: UserId, controllers: &Controllers) -> bool {
+pub fn is_valid_controller(caller: UserId, controllers: &Controllers) -> bool {
     principal_not_anonymous(caller)
         && (caller_is_self(caller)
             || controllers.iter().any(|(&controller_id, controller)| {

@@ -5,7 +5,7 @@ use crate::errors::auth::{
 };
 use junobuild_shared::ic::api::caller;
 use junobuild_shared::segments::controllers::{
-    controller_can_write, is_admin_controller, is_controller,
+    controller_can_write, is_admin_controller, is_valid_controller,
 };
 use junobuild_shared::types::state::Controllers;
 
@@ -35,7 +35,7 @@ pub fn caller_is_controller() -> Result<(), String> {
     let caller = caller();
     let controllers: Controllers = get_controllers();
 
-    if is_controller(caller, &controllers) {
+    if is_valid_controller(caller, &controllers) {
         Ok(())
     } else {
         Err(JUNO_AUTH_ERROR_NOT_CONTROLLER.to_string())

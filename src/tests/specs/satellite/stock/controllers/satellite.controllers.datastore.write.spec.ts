@@ -76,7 +76,7 @@ describe.each([
 		await set_controllers({
 			controller: {
 				...CONTROLLER_METADATA,
-				scope: {Write: null},
+				scope: { Write: null },
 				expires_at: [
 					toBigIntNanoSeconds(new Date((await pic.getTime()) + (futureMilliseconds ?? 0)))
 				]

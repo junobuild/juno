@@ -1,5 +1,4 @@
 import { idlFactorySatellite, type SatelliteActor, type SatelliteDid } from '$declarations';
-import { toBigIntNanoSeconds } from '$lib/utils/date.utils';
 import { type Actor, PocketIc } from '@dfinity/pic';
 import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
 import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
@@ -10,7 +9,6 @@ import {
 import { inject } from 'vitest';
 import { CONTROLLER_METADATA } from '../../../../constants/controller-tests.constants';
 import { mockListParams } from '../../../../mocks/list.mocks';
-import { tick } from '../../../../utils/pic-tests.utils';
 import { uploadAsset } from '../../../../utils/satellite-storage-tests.utils';
 import { controllersInitArgs, SATELLITE_WASM_PATH } from '../../../../utils/setup-tests.utils';
 

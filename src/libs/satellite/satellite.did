@@ -63,10 +63,12 @@ type ConfigMaxMemorySize = record { stable : opt nat64; heap : opt nat64 };
 type Controller = record {
   updated_at : nat64;
   metadata : vec record { text; text };
+  kind : opt ControllerKind;
   created_at : nat64;
   scope : ControllerScope;
   expires_at : opt nat64;
 };
+type ControllerKind = variant { Emulator; Automation };
 type ControllerScope = variant { Write; Admin; Submit };
 type CustomDomain = record {
   updated_at : nat64;
@@ -289,6 +291,7 @@ type SetAuthenticationConfig = record {
 };
 type SetController = record {
   metadata : vec record { text; text };
+  kind : opt ControllerKind;
   scope : ControllerScope;
   expires_at : opt nat64;
 };

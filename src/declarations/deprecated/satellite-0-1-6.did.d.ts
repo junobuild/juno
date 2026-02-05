@@ -10,22 +10,6 @@ import type { ActorMethod } from '@icp-sdk/core/agent';
 import type { IDL } from '@icp-sdk/core/candid';
 import type { Principal } from '@icp-sdk/core/principal';
 
-export interface Account {
-	updated_at: bigint;
-	credits: Tokens;
-	mission_control_id: [] | [Principal];
-	provider: [] | [Provider];
-	owner: Principal;
-	created_at: bigint;
-}
-export interface Account_1 {
-	owner: Principal;
-	subaccount: [] | [Uint8Array];
-}
-export interface AssertMissionControlCenterArgs {
-	mission_control_id: Principal;
-	user: Principal;
-}
 export interface AssetEncodingNoContent {
 	modified: bigint;
 	sha256: Uint8Array;
@@ -50,9 +34,10 @@ export interface AssetNoContent {
 export interface AssetsUpgradeOptions {
 	clear_existing_assets: [] | [boolean];
 }
+export type AuthenticateResultResponse = { Ok: Authentication } | { Err: AuthenticationError };
 export interface Authentication {
+	doc: Doc;
 	delegation: PreparedDelegation;
-	account: Account;
 }
 export type AuthenticationArgs = { OpenId: OpenIdPrepareDelegationArgs };
 export interface AuthenticationConfig {
@@ -69,7 +54,7 @@ export interface AuthenticationConfigInternetIdentity {
 }
 export interface AuthenticationConfigOpenId {
 	observatory_id: [] | [Principal];
-	providers: Array<[OpenIdDelegationProvider, OpenIdAuthProviderConfig]>;
+	providers: Array<[OpenIdProvider, OpenIdProviderConfig]>;
 }
 export type AuthenticationError =
 	| {
@@ -79,6 +64,7 @@ export type AuthenticationError =
 export interface AuthenticationRules {
 	allowed_callers: Array<Principal>;
 }
+export type CollectionType = { Db: null } | { Storage: null };
 export interface CommitBatch {
 	batch_id: bigint;
 	headers: Array<[string, string]>;
@@ -89,6 +75,7 @@ export interface CommitProposal {
 	proposal_id: bigint;
 }
 export interface Config {
+	db: [] | [DbConfig];
 	authentication: [] | [AuthenticationConfig];
 	storage: StorageConfig;
 }
@@ -99,37 +86,28 @@ export interface ConfigMaxMemorySize {
 export interface Controller {
 	updated_at: bigint;
 	metadata: Array<[string, string]>;
-	kind: [] | [ControllerKind];
 	created_at: bigint;
 	scope: ControllerScope;
 	expires_at: [] | [bigint];
 }
-export type ControllerKind = { Emulator: null } | { Automation: null };
 export type ControllerScope = { Write: null } | { Admin: null } | { Submit: null };
-export interface CreateMissionControlArgs {
-	subnet_id: [] | [Principal];
-}
-export interface CreateOrbiterArgs {
-	block_index: [] | [bigint];
-	subnet_id: [] | [Principal];
-	name: [] | [string];
-	user: Principal;
-}
-export interface CreateSatelliteArgs {
-	block_index: [] | [bigint];
-	subnet_id: [] | [Principal];
-	storage: [] | [InitStorageArgs];
-	name: [] | [string];
-	user: Principal;
-}
 export interface CustomDomain {
 	updated_at: bigint;
 	created_at: bigint;
 	version: [] | [bigint];
 	bn_id: [] | [string];
 }
-export interface CyclesTokens {
-	e12s: bigint;
+export interface DbConfig {
+	updated_at: [] | [bigint];
+	created_at: [] | [bigint];
+	version: [] | [bigint];
+	max_memory_size: [] | [ConfigMaxMemorySize];
+}
+export interface DelDoc {
+	version: [] | [bigint];
+}
+export interface DelRule {
+	version: [] | [bigint];
 }
 export interface Delegation {
 	pubkey: Uint8Array;
@@ -142,17 +120,17 @@ export interface DeleteControllersArgs {
 export interface DeleteProposalAssets {
 	proposal_ids: Array<bigint>;
 }
-export interface FactoryFee {
+export interface DepositCyclesArgs {
+	cycles: bigint;
+	destination_id: Principal;
+}
+export interface Doc {
 	updated_at: bigint;
-	fee_cycles: CyclesTokens;
-	fee_icp: [] | [Tokens];
-}
-export interface FeesArgs {
-	fee_cycles: CyclesTokens;
-	fee_icp: [] | [Tokens];
-}
-export interface GetCreateCanisterFeeArgs {
-	user: Principal;
+	owner: Principal;
+	data: Uint8Array;
+	description: [] | [string];
+	created_at: bigint;
+	version: [] | [bigint];
 }
 export type GetDelegationArgs = { OpenId: OpenIdGetDelegationArgs };
 export type GetDelegationError =
@@ -162,6 +140,7 @@ export type GetDelegationError =
 	| { JwtVerify: JwtVerifyError }
 	| { GetOrFetchJwks: GetOrRefreshJwksError }
 	| { DeriveSeedFailed: string };
+export type GetDelegationResultResponse = { Ok: SignedDelegation } | { Err: GetDelegationError };
 export type GetOrRefreshJwksError =
 	| { InvalidConfig: string }
 	| { MissingKid: null }
@@ -185,25 +164,6 @@ export interface HttpResponse {
 	streaming_strategy: [] | [StreamingStrategy];
 	status_code: number;
 }
-export interface IcpPayment {
-	status: PaymentStatus;
-	updated_at: bigint;
-	block_index_payment: bigint;
-	mission_control_id: [] | [Principal];
-	created_at: bigint;
-	block_index_refunded: [] | [bigint];
-}
-export interface IcrcPayment {
-	status: PaymentStatus;
-	updated_at: bigint;
-	created_at: bigint;
-	block_index_refunded: [] | [bigint];
-	purchaser: Account_1;
-}
-export interface IcrcPaymentKey {
-	block_index: bigint;
-	ledger_id: Principal;
-}
 export interface InitAssetKey {
 	token: [] | [string];
 	collection: string;
@@ -212,10 +172,13 @@ export interface InitAssetKey {
 	encoding_type: [] | [string];
 	full_path: string;
 }
-export interface InitStorageArgs {
-	system_memory: [] | [InitStorageMemory];
+export interface InitSatelliteArgs {
+	controllers: Array<Principal>;
+	storage: [] | [InitStorageArgs];
 }
-export type InitStorageMemory = { Heap: null } | { Stable: null };
+export interface InitStorageArgs {
+	system_memory: [] | [Memory];
+}
 export interface InitUploadResult {
 	batch_id: bigint;
 }
@@ -273,33 +236,29 @@ export interface ListResults {
 	items: Array<[string, AssetNoContent]>;
 	items_length: bigint;
 }
-export interface ListSegmentsArgs {
-	segment_id: [] | [Principal];
-	segment_kind: [] | [StorableSegmentKind];
+export interface ListResults_1 {
+	matches_pages: [] | [bigint];
+	matches_length: bigint;
+	items_page: [] | [bigint];
+	items: Array<[string, Doc]>;
+	items_length: bigint;
+}
+export interface ListRulesMatcher {
+	include_system: boolean;
+}
+export interface ListRulesParams {
+	matcher: [] | [ListRulesMatcher];
+}
+export interface ListRulesResults {
+	matches_length: bigint;
+	items: Array<[string, Rule]>;
+	items_length: bigint;
 }
 export type Memory = { Heap: null } | { Stable: null };
-export interface OpenId {
-	provider: OpenIdDelegationProvider;
-	data: OpenIdData;
+export interface MemorySize {
+	stable: bigint;
+	heap: bigint;
 }
-export interface OpenIdAuthProviderConfig {
-	delegation: [] | [OpenIdAuthProviderDelegationConfig];
-	client_id: string;
-}
-export interface OpenIdAuthProviderDelegationConfig {
-	targets: [] | [Array<Principal>];
-	max_time_to_live: [] | [bigint];
-}
-export interface OpenIdData {
-	name: [] | [string];
-	locale: [] | [string];
-	family_name: [] | [string];
-	email: [] | [string];
-	picture: [] | [string];
-	given_name: [] | [string];
-	preferred_username: [] | [string];
-}
-export type OpenIdDelegationProvider = { GitHub: null } | { Google: null };
 export interface OpenIdGetDelegationArgs {
 	jwt: string;
 	session_key: Uint8Array;
@@ -311,7 +270,20 @@ export interface OpenIdPrepareDelegationArgs {
 	session_key: Uint8Array;
 	salt: Uint8Array;
 }
-export type PaymentStatus = { Refunded: null } | { Acknowledged: null } | { Completed: null };
+export type OpenIdProvider = { Google: null };
+export interface OpenIdProviderConfig {
+	delegation: [] | [OpenIdProviderDelegationConfig];
+	client_id: string;
+}
+export interface OpenIdProviderDelegationConfig {
+	targets: [] | [Array<Principal>];
+	max_time_to_live: [] | [bigint];
+}
+export type Permission =
+	| { Controllers: null }
+	| { Private: null }
+	| { Public: null }
+	| { Managed: null };
 export type PrepareDelegationError =
 	| {
 			JwtFindProvider: JwtFindProviderError;
@@ -347,25 +319,23 @@ export type ProposalStatus =
 export type ProposalType =
 	| { AssetsUpgrade: AssetsUpgradeOptions }
 	| { SegmentsDeployment: SegmentsDeploymentOptions };
-export type Provider = { InternetIdentity: null } | { OpenId: OpenId };
 export interface RateConfig {
 	max_tokens: bigint;
 	time_per_token_ns: bigint;
 }
-export type Result = { Ok: Authentication } | { Err: AuthenticationError };
-export type Result_1 = { Ok: SignedDelegation } | { Err: GetDelegationError };
-export interface Segment {
+export interface Rule {
+	max_capacity: [] | [number];
+	memory: [] | [Memory];
 	updated_at: bigint;
-	metadata: Array<[string, string]>;
-	segment_id: Principal;
+	max_size: [] | [bigint];
+	read: Permission;
 	created_at: bigint;
+	version: [] | [bigint];
+	mutable_permissions: [] | [boolean];
+	rate_config: [] | [RateConfig];
+	write: Permission;
+	max_changes_per_user: [] | [number];
 }
-export interface SegmentKey {
-	user: Principal;
-	segment_id: Principal;
-	segment_kind: StorableSegmentKind;
-}
-export type SegmentKind = { Orbiter: null } | { MissionControl: null } | { Satellite: null };
 export interface SegmentsDeploymentOptions {
 	orbiter: [] | [string];
 	mission_control_version: [] | [string];
@@ -379,7 +349,6 @@ export interface SetAuthenticationConfig {
 }
 export interface SetController {
 	metadata: Array<[string, string]>;
-	kind: [] | [ControllerKind];
 	scope: ControllerScope;
 	expires_at: [] | [bigint];
 }
@@ -387,15 +356,25 @@ export interface SetControllersArgs {
 	controller: SetController;
 	controllers: Array<Principal>;
 }
-export interface SetSegmentMetadataArgs {
-	metadata: Array<[string, string]>;
-	segment_id: Principal;
-	segment_kind: StorableSegmentKind;
+export interface SetDbConfig {
+	version: [] | [bigint];
+	max_memory_size: [] | [ConfigMaxMemorySize];
 }
-export interface SetSegmentsArgs {
-	metadata: [] | [Array<[string, string]>];
-	segment_id: Principal;
-	segment_kind: StorableSegmentKind;
+export interface SetDoc {
+	data: Uint8Array;
+	description: [] | [string];
+	version: [] | [bigint];
+}
+export interface SetRule {
+	max_capacity: [] | [number];
+	memory: [] | [Memory];
+	max_size: [] | [bigint];
+	read: Permission;
+	version: [] | [bigint];
+	mutable_permissions: [] | [boolean];
+	rate_config: [] | [RateConfig];
+	write: Permission;
+	max_changes_per_user: [] | [number];
 }
 export interface SetStorageConfig {
 	iframe: [] | [StorageConfigIFrame];
@@ -410,7 +389,6 @@ export interface SignedDelegation {
 	signature: Uint8Array;
 	delegation: Delegation;
 }
-export type StorableSegmentKind = { Orbiter: null } | { Satellite: null };
 export interface StorageConfig {
 	iframe: [] | [StorageConfigIFrame];
 	updated_at: [] | [bigint];
@@ -452,13 +430,6 @@ export type TimestampMatcher =
 	| { Between: [bigint, bigint] }
 	| { GreaterThan: bigint }
 	| { LessThan: bigint };
-export interface Tokens {
-	e8s: bigint;
-}
-export interface UnsetSegmentsArgs {
-	segment_id: Principal;
-	segment_kind: StorableSegmentKind;
-}
 export interface UploadChunk {
 	content: Uint8Array;
 	batch_id: bigint;
@@ -468,64 +439,72 @@ export interface UploadChunkResult {
 	chunk_id: bigint;
 }
 export interface _SERVICE {
-	add_credits: ActorMethod<[Principal, Tokens], undefined>;
-	add_invitation_code: ActorMethod<[string], undefined>;
-	assert_mission_control_center: ActorMethod<[AssertMissionControlCenterArgs], undefined>;
-	authenticate: ActorMethod<[AuthenticationArgs], Result>;
+	authenticate: ActorMethod<[AuthenticationArgs], AuthenticateResultResponse>;
+	commit_asset_upload: ActorMethod<[CommitBatch], undefined>;
 	commit_proposal: ActorMethod<[CommitProposal], null>;
 	commit_proposal_asset_upload: ActorMethod<[CommitBatch], undefined>;
 	commit_proposal_many_assets_upload: ActorMethod<[Array<CommitBatch>], undefined>;
+	count_assets: ActorMethod<[string, ListParams], bigint>;
+	count_collection_assets: ActorMethod<[string], bigint>;
+	count_collection_docs: ActorMethod<[string], bigint>;
+	count_docs: ActorMethod<[string, ListParams], bigint>;
 	count_proposals: ActorMethod<[], bigint>;
-	create_mission_control: ActorMethod<[CreateMissionControlArgs], Principal>;
-	create_orbiter: ActorMethod<[CreateOrbiterArgs], Principal>;
-	create_satellite: ActorMethod<[CreateSatelliteArgs], Principal>;
-	del_controllers: ActorMethod<[DeleteControllersArgs], undefined>;
+	del_asset: ActorMethod<[string, string], undefined>;
+	del_assets: ActorMethod<[string], undefined>;
+	del_controllers: ActorMethod<[DeleteControllersArgs], Array<[Principal, Controller]>>;
 	del_custom_domain: ActorMethod<[string], undefined>;
+	del_doc: ActorMethod<[string, string, DelDoc], undefined>;
+	del_docs: ActorMethod<[string], undefined>;
+	del_filtered_assets: ActorMethod<[string, ListParams], undefined>;
+	del_filtered_docs: ActorMethod<[string, ListParams], undefined>;
+	del_many_assets: ActorMethod<[Array<[string, string]>], undefined>;
+	del_many_docs: ActorMethod<[Array<[string, string, DelDoc]>], undefined>;
+	del_rule: ActorMethod<[CollectionType, string, DelRule], undefined>;
 	delete_proposal_assets: ActorMethod<[DeleteProposalAssets], undefined>;
-	get_account: ActorMethod<[], [] | [Account]>;
+	deposit_cycles: ActorMethod<[DepositCyclesArgs], undefined>;
+	get_asset: ActorMethod<[string, string], [] | [AssetNoContent]>;
 	get_auth_config: ActorMethod<[], [] | [AuthenticationConfig]>;
 	get_config: ActorMethod<[], Config>;
-	get_create_orbiter_fee: ActorMethod<[GetCreateCanisterFeeArgs], [] | [Tokens]>;
-	get_create_satellite_fee: ActorMethod<[GetCreateCanisterFeeArgs], [] | [Tokens]>;
-	get_credits: ActorMethod<[], Tokens>;
-	get_delegation: ActorMethod<[GetDelegationArgs], Result_1>;
-	get_fee: ActorMethod<[SegmentKind], FactoryFee>;
-	get_or_init_account: ActorMethod<[], Account>;
+	get_db_config: ActorMethod<[], [] | [DbConfig]>;
+	get_delegation: ActorMethod<[GetDelegationArgs], GetDelegationResultResponse>;
+	get_doc: ActorMethod<[string, string], [] | [Doc]>;
+	get_many_assets: ActorMethod<[Array<[string, string]>], Array<[string, [] | [AssetNoContent]]>>;
+	get_many_docs: ActorMethod<[Array<[string, string]>], Array<[string, [] | [Doc]]>>;
 	get_proposal: ActorMethod<[bigint], [] | [Proposal]>;
-	get_rate_config: ActorMethod<[SegmentKind], RateConfig>;
+	get_rule: ActorMethod<[CollectionType, string], [] | [Rule]>;
 	get_storage_config: ActorMethod<[], StorageConfig>;
 	http_request: ActorMethod<[HttpRequest], HttpResponse>;
 	http_request_streaming_callback: ActorMethod<
 		[StreamingCallbackToken],
 		StreamingCallbackHttpResponse
 	>;
+	init_asset_upload: ActorMethod<[InitAssetKey], InitUploadResult>;
 	init_proposal: ActorMethod<[ProposalType], [bigint, Proposal]>;
 	init_proposal_asset_upload: ActorMethod<[InitAssetKey, bigint], InitUploadResult>;
 	init_proposal_many_assets_upload: ActorMethod<
 		[Array<InitAssetKey>, bigint],
 		Array<[string, InitUploadResult]>
 	>;
-	list_accounts: ActorMethod<[], Array<[Principal, Account]>>;
 	list_assets: ActorMethod<[string, ListParams], ListResults>;
 	list_controllers: ActorMethod<[], Array<[Principal, Controller]>>;
 	list_custom_domains: ActorMethod<[], Array<[string, CustomDomain]>>;
-	list_icp_payments: ActorMethod<[], Array<[bigint, IcpPayment]>>;
-	list_icrc_payments: ActorMethod<[], Array<[IcrcPaymentKey, IcrcPayment]>>;
+	list_docs: ActorMethod<[string, ListParams], ListResults_1>;
 	list_proposals: ActorMethod<[ListProposalsParams], ListProposalResults>;
-	list_segments: ActorMethod<[ListSegmentsArgs], Array<[SegmentKey, Segment]>>;
+	list_rules: ActorMethod<[CollectionType, ListRulesParams], ListRulesResults>;
+	memory_size: ActorMethod<[], MemorySize>;
 	reject_proposal: ActorMethod<[CommitProposal], null>;
+	set_asset_token: ActorMethod<[string, string, [] | [string]], undefined>;
 	set_auth_config: ActorMethod<[SetAuthenticationConfig], AuthenticationConfig>;
-	set_controllers: ActorMethod<[SetControllersArgs], undefined>;
+	set_controllers: ActorMethod<[SetControllersArgs], Array<[Principal, Controller]>>;
 	set_custom_domain: ActorMethod<[string, [] | [string]], undefined>;
-	set_fee: ActorMethod<[SegmentKind, FeesArgs], undefined>;
-	set_many_segments: ActorMethod<[Array<SetSegmentsArgs>], Array<Segment>>;
-	set_rate_config: ActorMethod<[SegmentKind, RateConfig], undefined>;
-	set_segment: ActorMethod<[SetSegmentsArgs], Segment>;
-	set_segment_metadata: ActorMethod<[SetSegmentMetadataArgs], Segment>;
+	set_db_config: ActorMethod<[SetDbConfig], DbConfig>;
+	set_doc: ActorMethod<[string, string, SetDoc], Doc>;
+	set_many_docs: ActorMethod<[Array<[string, string, SetDoc]>], Array<[string, Doc]>>;
+	set_rule: ActorMethod<[CollectionType, string, SetRule], Rule>;
 	set_storage_config: ActorMethod<[SetStorageConfig], StorageConfig>;
 	submit_proposal: ActorMethod<[bigint], [bigint, Proposal]>;
-	unset_many_segments: ActorMethod<[Array<UnsetSegmentsArgs>], undefined>;
-	unset_segment: ActorMethod<[UnsetSegmentsArgs], undefined>;
+	switch_storage_system_memory: ActorMethod<[], undefined>;
+	upload_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;
 	upload_proposal_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;
 }
 export declare const idlFactory: IDL.InterfaceFactory;

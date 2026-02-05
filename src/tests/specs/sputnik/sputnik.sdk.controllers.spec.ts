@@ -3,6 +3,7 @@ import type { Actor, PocketIc } from '@dfinity/pic';
 import { assertNonNullish, jsonReplacer, jsonReviver } from '@dfinity/utils';
 import type { Identity } from '@icp-sdk/core/agent';
 import { Principal } from '@icp-sdk/core/principal';
+import { CONTROLLER_METADATA } from '../../constants/controller-tests.constants';
 import { mockSetRule } from '../../mocks/collection.mocks';
 import { setupTestSputnik } from '../../utils/fixtures-tests.utils';
 import { createUser as createUserUtils } from '../../utils/satellite-doc-tests.utils';
@@ -217,9 +218,9 @@ describe('Sputnik > sdk > controllers', () => {
 
 			await set_controllers({
 				controller: {
+					...CONTROLLER_METADATA,
 					scope: { Write: null },
-					metadata: [['hello', 'world']],
-					expires_at: []
+					metadata: [['hello', 'world']]
 				},
 				controllers: [user.getPrincipal()]
 			});

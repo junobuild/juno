@@ -13,6 +13,10 @@ export const idlFactory = ({ IDL }) => {
 	const DeleteControllersArgs = IDL.Record({
 		controllers: IDL.Vec(IDL.Principal)
 	});
+	const ControllerKind = IDL.Variant({
+		Emulator: IDL.Null,
+		Automation: IDL.Null
+	});
 	const ControllerScope = IDL.Variant({
 		Write: IDL.Null,
 		Admin: IDL.Null,
@@ -21,6 +25,7 @@ export const idlFactory = ({ IDL }) => {
 	const Controller = IDL.Record({
 		updated_at: IDL.Nat64,
 		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
+		kind: IDL.Opt(ControllerKind),
 		created_at: IDL.Nat64,
 		scope: ControllerScope,
 		expires_at: IDL.Opt(IDL.Nat64)
@@ -202,6 +207,7 @@ export const idlFactory = ({ IDL }) => {
 	const MemorySize = IDL.Record({ stable: IDL.Nat64, heap: IDL.Nat64 });
 	const SetController = IDL.Record({
 		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
+		kind: IDL.Opt(ControllerKind),
 		scope: ControllerScope,
 		expires_at: IDL.Opt(IDL.Nat64)
 	});

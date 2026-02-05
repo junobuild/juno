@@ -1,10 +1,12 @@
 type Controller = record {
   updated_at : nat64;
   metadata : vec record { text; text };
+  kind : opt ControllerKind;
   created_at : nat64;
   scope : ControllerScope;
   expires_at : opt nat64;
 };
+type ControllerKind = variant { Emulator; Automation };
 type ControllerScope = variant { Write; Admin; Submit };
 type CyclesBalance = record { timestamp : nat64; amount : nat };
 type DeleteControllersArgs = record { controllers : vec principal };
@@ -79,6 +81,7 @@ type Segment = record {
 type SegmentKind = variant { Orbiter; MissionControl; Satellite };
 type SetController = record {
   metadata : vec record { text; text };
+  kind : opt ControllerKind;
   scope : ControllerScope;
   expires_at : opt nat64;
 };

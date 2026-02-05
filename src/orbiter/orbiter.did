@@ -57,10 +57,12 @@ type CalendarDate = record { day : nat8; month : nat8; year : int32 };
 type Controller = record {
   updated_at : nat64;
   metadata : vec record { text; text };
+  kind : opt ControllerKind;
   created_at : nat64;
   scope : ControllerScope;
   expires_at : opt nat64;
 };
+type ControllerKind = variant { Emulator; Automation };
 type ControllerScope = variant { Write; Admin; Submit };
 type DelSatelliteConfig = record { version : opt nat64 };
 type DeleteControllersArgs = record { controllers : vec principal };
@@ -152,6 +154,7 @@ type Result_2 = variant { Ok : PerformanceMetric; Err : text };
 type Result_3 = variant { Ok : TrackEvent; Err : text };
 type SetController = record {
   metadata : vec record { text; text };
+  kind : opt ControllerKind;
   scope : ControllerScope;
   expires_at : opt nat64;
 };

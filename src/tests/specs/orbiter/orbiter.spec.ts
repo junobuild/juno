@@ -14,6 +14,7 @@ import {
 	satelliteIdMock,
 	trackEventMock
 } from '../../mocks/orbiter.mocks';
+import { testControllers } from '../../utils/controllers-tests.utils';
 import { controllersInitArgs, ORBITER_WASM_PATH } from '../../utils/setup-tests.utils';
 
 describe('Orbiter', () => {
@@ -603,6 +604,11 @@ describe('Orbiter', () => {
 
 					expect(result.total.find((entry) => entry[0] === 'my_event')?.[1]).toEqual(2);
 				});
+			});
+
+			testControllers({
+				actor: () => actor,
+				controller: () => controller
 			});
 		});
 	});

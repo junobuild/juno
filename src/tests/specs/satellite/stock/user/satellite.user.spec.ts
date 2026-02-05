@@ -16,6 +16,7 @@ import {
 } from '@junobuild/errors';
 import { fromArray, toArray } from '@junobuild/utils';
 import { inject } from 'vitest';
+import { CONTROLLER_METADATA } from '../../../../constants/controller-tests.constants';
 import { controllersInitArgs, SATELLITE_WASM_PATH } from '../../../../utils/setup-tests.utils';
 
 describe('Satellite > User', () => {
@@ -454,9 +455,8 @@ describe('Satellite > User', () => {
 
 			await set_controllers({
 				controller: {
-					scope: { Write: null },
-					metadata: [],
-					expires_at: []
+					...CONTROLLER_METADATA,
+					scope: { Write: null }
 				},
 				controllers: [controllerReadWrite.getPrincipal()]
 			});

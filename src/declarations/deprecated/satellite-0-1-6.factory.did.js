@@ -7,10 +7,11 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 export const idlFactory = ({ IDL }) => {
-	const Tokens = IDL.Record({ e8s: IDL.Nat64 });
-	const AssertMissionControlCenterArgs = IDL.Record({
-		mission_control_id: IDL.Principal,
-		user: IDL.Principal
+	const Memory = IDL.Variant({ Heap: IDL.Null, Stable: IDL.Null });
+	const InitStorageArgs = IDL.Record({ system_memory: IDL.Opt(Memory) });
+	const InitSatelliteArgs = IDL.Record({
+		controllers: IDL.Vec(IDL.Principal),
+		storage: IDL.Opt(InitStorageArgs)
 	});
 	const OpenIdPrepareDelegationArgs = IDL.Record({
 		jwt: IDL.Text,
@@ -20,42 +21,21 @@ export const idlFactory = ({ IDL }) => {
 	const AuthenticationArgs = IDL.Variant({
 		OpenId: OpenIdPrepareDelegationArgs
 	});
+	const Doc = IDL.Record({
+		updated_at: IDL.Nat64,
+		owner: IDL.Principal,
+		data: IDL.Vec(IDL.Nat8),
+		description: IDL.Opt(IDL.Text),
+		created_at: IDL.Nat64,
+		version: IDL.Opt(IDL.Nat64)
+	});
 	const PreparedDelegation = IDL.Record({
 		user_key: IDL.Vec(IDL.Nat8),
 		expiration: IDL.Nat64
 	});
-	const OpenIdDelegationProvider = IDL.Variant({
-		GitHub: IDL.Null,
-		Google: IDL.Null
-	});
-	const OpenIdData = IDL.Record({
-		name: IDL.Opt(IDL.Text),
-		locale: IDL.Opt(IDL.Text),
-		family_name: IDL.Opt(IDL.Text),
-		email: IDL.Opt(IDL.Text),
-		picture: IDL.Opt(IDL.Text),
-		given_name: IDL.Opt(IDL.Text),
-		preferred_username: IDL.Opt(IDL.Text)
-	});
-	const OpenId = IDL.Record({
-		provider: OpenIdDelegationProvider,
-		data: OpenIdData
-	});
-	const Provider = IDL.Variant({
-		InternetIdentity: IDL.Null,
-		OpenId: OpenId
-	});
-	const Account = IDL.Record({
-		updated_at: IDL.Nat64,
-		credits: Tokens,
-		mission_control_id: IDL.Opt(IDL.Principal),
-		provider: IDL.Opt(Provider),
-		owner: IDL.Principal,
-		created_at: IDL.Nat64
-	});
 	const Authentication = IDL.Record({
-		delegation: PreparedDelegation,
-		account: Account
+		doc: Doc,
+		delegation: PreparedDelegation
 	});
 	const JwtFindProviderError = IDL.Variant({
 		BadClaim: IDL.Text,
@@ -91,59 +71,105 @@ export const idlFactory = ({ IDL }) => {
 		PrepareDelegation: PrepareDelegationError,
 		RegisterUser: IDL.Text
 	});
-	const Result = IDL.Variant({
+	const AuthenticateResultResponse = IDL.Variant({
 		Ok: Authentication,
 		Err: AuthenticationError
-	});
-	const CommitProposal = IDL.Record({
-		sha256: IDL.Vec(IDL.Nat8),
-		proposal_id: IDL.Nat
 	});
 	const CommitBatch = IDL.Record({
 		batch_id: IDL.Nat,
 		headers: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
 		chunk_ids: IDL.Vec(IDL.Nat)
 	});
-	const CreateMissionControlArgs = IDL.Record({
-		subnet_id: IDL.Opt(IDL.Principal)
+	const CommitProposal = IDL.Record({
+		sha256: IDL.Vec(IDL.Nat8),
+		proposal_id: IDL.Nat
 	});
-	const CreateOrbiterArgs = IDL.Record({
-		block_index: IDL.Opt(IDL.Nat64),
-		subnet_id: IDL.Opt(IDL.Principal),
-		name: IDL.Opt(IDL.Text),
-		user: IDL.Principal
+	const ListOrderField = IDL.Variant({
+		UpdatedAt: IDL.Null,
+		Keys: IDL.Null,
+		CreatedAt: IDL.Null
 	});
-	const InitStorageMemory = IDL.Variant({
-		Heap: IDL.Null,
-		Stable: IDL.Null
+	const ListOrder = IDL.Record({ field: ListOrderField, desc: IDL.Bool });
+	const TimestampMatcher = IDL.Variant({
+		Equal: IDL.Nat64,
+		Between: IDL.Tuple(IDL.Nat64, IDL.Nat64),
+		GreaterThan: IDL.Nat64,
+		LessThan: IDL.Nat64
 	});
-	const InitStorageArgs = IDL.Record({
-		system_memory: IDL.Opt(InitStorageMemory)
+	const ListMatcher = IDL.Record({
+		key: IDL.Opt(IDL.Text),
+		updated_at: IDL.Opt(TimestampMatcher),
+		description: IDL.Opt(IDL.Text),
+		created_at: IDL.Opt(TimestampMatcher)
 	});
-	const CreateSatelliteArgs = IDL.Record({
-		block_index: IDL.Opt(IDL.Nat64),
-		subnet_id: IDL.Opt(IDL.Principal),
-		storage: IDL.Opt(InitStorageArgs),
-		name: IDL.Opt(IDL.Text),
-		user: IDL.Principal
+	const ListPaginate = IDL.Record({
+		start_after: IDL.Opt(IDL.Text),
+		limit: IDL.Opt(IDL.Nat64)
+	});
+	const ListParams = IDL.Record({
+		order: IDL.Opt(ListOrder),
+		owner: IDL.Opt(IDL.Principal),
+		matcher: IDL.Opt(ListMatcher),
+		paginate: IDL.Opt(ListPaginate)
 	});
 	const DeleteControllersArgs = IDL.Record({
 		controllers: IDL.Vec(IDL.Principal)
 	});
+	const ControllerScope = IDL.Variant({
+		Write: IDL.Null,
+		Admin: IDL.Null,
+		Submit: IDL.Null
+	});
+	const Controller = IDL.Record({
+		updated_at: IDL.Nat64,
+		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
+		created_at: IDL.Nat64,
+		scope: ControllerScope,
+		expires_at: IDL.Opt(IDL.Nat64)
+	});
+	const DelDoc = IDL.Record({ version: IDL.Opt(IDL.Nat64) });
+	const CollectionType = IDL.Variant({ Db: IDL.Null, Storage: IDL.Null });
+	const DelRule = IDL.Record({ version: IDL.Opt(IDL.Nat64) });
 	const DeleteProposalAssets = IDL.Record({
 		proposal_ids: IDL.Vec(IDL.Nat)
 	});
-	const OpenIdAuthProviderDelegationConfig = IDL.Record({
+	const DepositCyclesArgs = IDL.Record({
+		cycles: IDL.Nat,
+		destination_id: IDL.Principal
+	});
+	const AssetKey = IDL.Record({
+		token: IDL.Opt(IDL.Text),
+		collection: IDL.Text,
+		owner: IDL.Principal,
+		name: IDL.Text,
+		description: IDL.Opt(IDL.Text),
+		full_path: IDL.Text
+	});
+	const AssetEncodingNoContent = IDL.Record({
+		modified: IDL.Nat64,
+		sha256: IDL.Vec(IDL.Nat8),
+		total_length: IDL.Nat
+	});
+	const AssetNoContent = IDL.Record({
+		key: AssetKey,
+		updated_at: IDL.Nat64,
+		encodings: IDL.Vec(IDL.Tuple(IDL.Text, AssetEncodingNoContent)),
+		headers: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
+		created_at: IDL.Nat64,
+		version: IDL.Opt(IDL.Nat64)
+	});
+	const OpenIdProvider = IDL.Variant({ Google: IDL.Null });
+	const OpenIdProviderDelegationConfig = IDL.Record({
 		targets: IDL.Opt(IDL.Vec(IDL.Principal)),
 		max_time_to_live: IDL.Opt(IDL.Nat64)
 	});
-	const OpenIdAuthProviderConfig = IDL.Record({
-		delegation: IDL.Opt(OpenIdAuthProviderDelegationConfig),
+	const OpenIdProviderConfig = IDL.Record({
+		delegation: IDL.Opt(OpenIdProviderDelegationConfig),
 		client_id: IDL.Text
 	});
 	const AuthenticationConfigOpenId = IDL.Record({
 		observatory_id: IDL.Opt(IDL.Principal),
-		providers: IDL.Vec(IDL.Tuple(OpenIdDelegationProvider, OpenIdAuthProviderConfig))
+		providers: IDL.Vec(IDL.Tuple(OpenIdProvider, OpenIdProviderConfig))
 	});
 	const AuthenticationConfigInternetIdentity = IDL.Record({
 		derivation_origin: IDL.Opt(IDL.Text),
@@ -160,14 +186,20 @@ export const idlFactory = ({ IDL }) => {
 		internet_identity: IDL.Opt(AuthenticationConfigInternetIdentity),
 		rules: IDL.Opt(AuthenticationRules)
 	});
+	const ConfigMaxMemorySize = IDL.Record({
+		stable: IDL.Opt(IDL.Nat64),
+		heap: IDL.Opt(IDL.Nat64)
+	});
+	const DbConfig = IDL.Record({
+		updated_at: IDL.Opt(IDL.Nat64),
+		created_at: IDL.Opt(IDL.Nat64),
+		version: IDL.Opt(IDL.Nat64),
+		max_memory_size: IDL.Opt(ConfigMaxMemorySize)
+	});
 	const StorageConfigIFrame = IDL.Variant({
 		Deny: IDL.Null,
 		AllowAny: IDL.Null,
 		SameOrigin: IDL.Null
-	});
-	const ConfigMaxMemorySize = IDL.Record({
-		stable: IDL.Opt(IDL.Nat64),
-		heap: IDL.Opt(IDL.Nat64)
 	});
 	const StorageConfigRawAccess = IDL.Variant({
 		Deny: IDL.Null,
@@ -189,10 +221,10 @@ export const idlFactory = ({ IDL }) => {
 		redirects: IDL.Opt(IDL.Vec(IDL.Tuple(IDL.Text, StorageConfigRedirect)))
 	});
 	const Config = IDL.Record({
+		db: IDL.Opt(DbConfig),
 		authentication: IDL.Opt(AuthenticationConfig),
 		storage: StorageConfig
 	});
-	const GetCreateCanisterFeeArgs = IDL.Record({ user: IDL.Principal });
 	const OpenIdGetDelegationArgs = IDL.Record({
 		jwt: IDL.Text,
 		session_key: IDL.Vec(IDL.Nat8),
@@ -217,20 +249,9 @@ export const idlFactory = ({ IDL }) => {
 		GetOrFetchJwks: GetOrRefreshJwksError,
 		DeriveSeedFailed: IDL.Text
 	});
-	const Result_1 = IDL.Variant({
+	const GetDelegationResultResponse = IDL.Variant({
 		Ok: SignedDelegation,
 		Err: GetDelegationError
-	});
-	const SegmentKind = IDL.Variant({
-		Orbiter: IDL.Null,
-		MissionControl: IDL.Null,
-		Satellite: IDL.Null
-	});
-	const CyclesTokens = IDL.Record({ e12s: IDL.Nat64 });
-	const FactoryFee = IDL.Record({
-		updated_at: IDL.Nat64,
-		fee_cycles: CyclesTokens,
-		fee_icp: IDL.Opt(Tokens)
 	});
 	const ProposalStatus = IDL.Variant({
 		Initialized: IDL.Null,
@@ -262,9 +283,28 @@ export const idlFactory = ({ IDL }) => {
 		version: IDL.Opt(IDL.Nat64),
 		proposal_type: ProposalType
 	});
+	const Permission = IDL.Variant({
+		Controllers: IDL.Null,
+		Private: IDL.Null,
+		Public: IDL.Null,
+		Managed: IDL.Null
+	});
 	const RateConfig = IDL.Record({
 		max_tokens: IDL.Nat64,
 		time_per_token_ns: IDL.Nat64
+	});
+	const Rule = IDL.Record({
+		max_capacity: IDL.Opt(IDL.Nat32),
+		memory: IDL.Opt(Memory),
+		updated_at: IDL.Nat64,
+		max_size: IDL.Opt(IDL.Nat),
+		read: Permission,
+		created_at: IDL.Nat64,
+		version: IDL.Opt(IDL.Nat64),
+		mutable_permissions: IDL.Opt(IDL.Bool),
+		rate_config: IDL.Opt(RateConfig),
+		write: Permission,
+		max_changes_per_user: IDL.Opt(IDL.Nat32)
 	});
 	const HttpRequest = IDL.Record({
 		url: IDL.Text,
@@ -273,7 +313,6 @@ export const idlFactory = ({ IDL }) => {
 		headers: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
 		certificate_version: IDL.Opt(IDL.Nat16)
 	});
-	const Memory = IDL.Variant({ Heap: IDL.Null, Stable: IDL.Null });
 	const StreamingCallbackToken = IDL.Record({
 		memory: Memory,
 		token: IDL.Opt(IDL.Text),
@@ -286,7 +325,7 @@ export const idlFactory = ({ IDL }) => {
 	const StreamingStrategy = IDL.Variant({
 		Callback: IDL.Record({
 			token: StreamingCallbackToken,
-			callback: IDL.Func([], [], [])
+			callback: IDL.Func([], [], ['query'])
 		})
 	});
 	const HttpResponse = IDL.Record({
@@ -308,55 +347,6 @@ export const idlFactory = ({ IDL }) => {
 		full_path: IDL.Text
 	});
 	const InitUploadResult = IDL.Record({ batch_id: IDL.Nat });
-	const ListOrderField = IDL.Variant({
-		UpdatedAt: IDL.Null,
-		Keys: IDL.Null,
-		CreatedAt: IDL.Null
-	});
-	const ListOrder = IDL.Record({ field: ListOrderField, desc: IDL.Bool });
-	const TimestampMatcher = IDL.Variant({
-		Equal: IDL.Nat64,
-		Between: IDL.Tuple(IDL.Nat64, IDL.Nat64),
-		GreaterThan: IDL.Nat64,
-		LessThan: IDL.Nat64
-	});
-	const ListMatcher = IDL.Record({
-		key: IDL.Opt(IDL.Text),
-		updated_at: IDL.Opt(TimestampMatcher),
-		description: IDL.Opt(IDL.Text),
-		created_at: IDL.Opt(TimestampMatcher)
-	});
-	const ListPaginate = IDL.Record({
-		start_after: IDL.Opt(IDL.Text),
-		limit: IDL.Opt(IDL.Nat64)
-	});
-	const ListParams = IDL.Record({
-		order: IDL.Opt(ListOrder),
-		owner: IDL.Opt(IDL.Principal),
-		matcher: IDL.Opt(ListMatcher),
-		paginate: IDL.Opt(ListPaginate)
-	});
-	const AssetKey = IDL.Record({
-		token: IDL.Opt(IDL.Text),
-		collection: IDL.Text,
-		owner: IDL.Principal,
-		name: IDL.Text,
-		description: IDL.Opt(IDL.Text),
-		full_path: IDL.Text
-	});
-	const AssetEncodingNoContent = IDL.Record({
-		modified: IDL.Nat64,
-		sha256: IDL.Vec(IDL.Nat8),
-		total_length: IDL.Nat
-	});
-	const AssetNoContent = IDL.Record({
-		key: AssetKey,
-		updated_at: IDL.Nat64,
-		encodings: IDL.Vec(IDL.Tuple(IDL.Text, AssetEncodingNoContent)),
-		headers: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
-		created_at: IDL.Nat64,
-		version: IDL.Opt(IDL.Nat64)
-	});
 	const ListResults = IDL.Record({
 		matches_pages: IDL.Opt(IDL.Nat64),
 		matches_length: IDL.Nat64,
@@ -364,56 +354,18 @@ export const idlFactory = ({ IDL }) => {
 		items: IDL.Vec(IDL.Tuple(IDL.Text, AssetNoContent)),
 		items_length: IDL.Nat64
 	});
-	const ControllerKind = IDL.Variant({
-		Emulator: IDL.Null,
-		Automation: IDL.Null
-	});
-	const ControllerScope = IDL.Variant({
-		Write: IDL.Null,
-		Admin: IDL.Null,
-		Submit: IDL.Null
-	});
-	const Controller = IDL.Record({
-		updated_at: IDL.Nat64,
-		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
-		kind: IDL.Opt(ControllerKind),
-		created_at: IDL.Nat64,
-		scope: ControllerScope,
-		expires_at: IDL.Opt(IDL.Nat64)
-	});
 	const CustomDomain = IDL.Record({
 		updated_at: IDL.Nat64,
 		created_at: IDL.Nat64,
 		version: IDL.Opt(IDL.Nat64),
 		bn_id: IDL.Opt(IDL.Text)
 	});
-	const PaymentStatus = IDL.Variant({
-		Refunded: IDL.Null,
-		Acknowledged: IDL.Null,
-		Completed: IDL.Null
-	});
-	const IcpPayment = IDL.Record({
-		status: PaymentStatus,
-		updated_at: IDL.Nat64,
-		block_index_payment: IDL.Nat64,
-		mission_control_id: IDL.Opt(IDL.Principal),
-		created_at: IDL.Nat64,
-		block_index_refunded: IDL.Opt(IDL.Nat64)
-	});
-	const IcrcPaymentKey = IDL.Record({
-		block_index: IDL.Nat64,
-		ledger_id: IDL.Principal
-	});
-	const Account_1 = IDL.Record({
-		owner: IDL.Principal,
-		subaccount: IDL.Opt(IDL.Vec(IDL.Nat8))
-	});
-	const IcrcPayment = IDL.Record({
-		status: PaymentStatus,
-		updated_at: IDL.Nat64,
-		created_at: IDL.Nat64,
-		block_index_refunded: IDL.Opt(IDL.Nat64),
-		purchaser: Account_1
+	const ListResults_1 = IDL.Record({
+		matches_pages: IDL.Opt(IDL.Nat64),
+		matches_length: IDL.Nat64,
+		items_page: IDL.Opt(IDL.Nat64),
+		items: IDL.Vec(IDL.Tuple(IDL.Text, Doc)),
+		items_length: IDL.Nat64
 	});
 	const ListProposalsOrder = IDL.Record({ desc: IDL.Bool });
 	const ListProposalsPaginate = IDL.Record({
@@ -430,25 +382,14 @@ export const idlFactory = ({ IDL }) => {
 		items: IDL.Vec(IDL.Tuple(ProposalKey, Proposal)),
 		items_length: IDL.Nat64
 	});
-	const StorableSegmentKind = IDL.Variant({
-		Orbiter: IDL.Null,
-		Satellite: IDL.Null
+	const ListRulesMatcher = IDL.Record({ include_system: IDL.Bool });
+	const ListRulesParams = IDL.Record({ matcher: IDL.Opt(ListRulesMatcher) });
+	const ListRulesResults = IDL.Record({
+		matches_length: IDL.Nat64,
+		items: IDL.Vec(IDL.Tuple(IDL.Text, Rule)),
+		items_length: IDL.Nat64
 	});
-	const ListSegmentsArgs = IDL.Record({
-		segment_id: IDL.Opt(IDL.Principal),
-		segment_kind: IDL.Opt(StorableSegmentKind)
-	});
-	const SegmentKey = IDL.Record({
-		user: IDL.Principal,
-		segment_id: IDL.Principal,
-		segment_kind: StorableSegmentKind
-	});
-	const Segment = IDL.Record({
-		updated_at: IDL.Nat64,
-		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
-		segment_id: IDL.Principal,
-		created_at: IDL.Nat64
-	});
+	const MemorySize = IDL.Record({ stable: IDL.Nat64, heap: IDL.Nat64 });
 	const SetAuthenticationConfig = IDL.Record({
 		openid: IDL.Opt(AuthenticationConfigOpenId),
 		version: IDL.Opt(IDL.Nat64),
@@ -457,7 +398,6 @@ export const idlFactory = ({ IDL }) => {
 	});
 	const SetController = IDL.Record({
 		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
-		kind: IDL.Opt(ControllerKind),
 		scope: ControllerScope,
 		expires_at: IDL.Opt(IDL.Nat64)
 	});
@@ -465,19 +405,25 @@ export const idlFactory = ({ IDL }) => {
 		controller: SetController,
 		controllers: IDL.Vec(IDL.Principal)
 	});
-	const FeesArgs = IDL.Record({
-		fee_cycles: CyclesTokens,
-		fee_icp: IDL.Opt(Tokens)
+	const SetDbConfig = IDL.Record({
+		version: IDL.Opt(IDL.Nat64),
+		max_memory_size: IDL.Opt(ConfigMaxMemorySize)
 	});
-	const SetSegmentsArgs = IDL.Record({
-		metadata: IDL.Opt(IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))),
-		segment_id: IDL.Principal,
-		segment_kind: StorableSegmentKind
+	const SetDoc = IDL.Record({
+		data: IDL.Vec(IDL.Nat8),
+		description: IDL.Opt(IDL.Text),
+		version: IDL.Opt(IDL.Nat64)
 	});
-	const SetSegmentMetadataArgs = IDL.Record({
-		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
-		segment_id: IDL.Principal,
-		segment_kind: StorableSegmentKind
+	const SetRule = IDL.Record({
+		max_capacity: IDL.Opt(IDL.Nat32),
+		memory: IDL.Opt(Memory),
+		max_size: IDL.Opt(IDL.Nat),
+		read: Permission,
+		version: IDL.Opt(IDL.Nat64),
+		mutable_permissions: IDL.Opt(IDL.Bool),
+		rate_config: IDL.Opt(RateConfig),
+		write: Permission,
+		max_changes_per_user: IDL.Opt(IDL.Nat32)
 	});
 	const SetStorageConfig = IDL.Record({
 		iframe: IDL.Opt(StorageConfigIFrame),
@@ -488,10 +434,6 @@ export const idlFactory = ({ IDL }) => {
 		raw_access: IDL.Opt(StorageConfigRawAccess),
 		redirects: IDL.Opt(IDL.Vec(IDL.Tuple(IDL.Text, StorageConfigRedirect)))
 	});
-	const UnsetSegmentsArgs = IDL.Record({
-		segment_id: IDL.Principal,
-		segment_kind: StorableSegmentKind
-	});
 	const UploadChunk = IDL.Record({
 		content: IDL.Vec(IDL.Nat8),
 		batch_id: IDL.Nat,
@@ -500,38 +442,59 @@ export const idlFactory = ({ IDL }) => {
 	const UploadChunkResult = IDL.Record({ chunk_id: IDL.Nat });
 
 	return IDL.Service({
-		add_credits: IDL.Func([IDL.Principal, Tokens], [], []),
-		add_invitation_code: IDL.Func([IDL.Text], [], []),
-		assert_mission_control_center: IDL.Func([AssertMissionControlCenterArgs], [], []),
-		authenticate: IDL.Func([AuthenticationArgs], [Result], []),
+		authenticate: IDL.Func([AuthenticationArgs], [AuthenticateResultResponse], []),
+		commit_asset_upload: IDL.Func([CommitBatch], [], []),
 		commit_proposal: IDL.Func([CommitProposal], [IDL.Null], []),
 		commit_proposal_asset_upload: IDL.Func([CommitBatch], [], []),
 		commit_proposal_many_assets_upload: IDL.Func([IDL.Vec(CommitBatch)], [], []),
-		count_proposals: IDL.Func([], [IDL.Nat64], []),
-		create_mission_control: IDL.Func([CreateMissionControlArgs], [IDL.Principal], []),
-		create_orbiter: IDL.Func([CreateOrbiterArgs], [IDL.Principal], []),
-		create_satellite: IDL.Func([CreateSatelliteArgs], [IDL.Principal], []),
-		del_controllers: IDL.Func([DeleteControllersArgs], [], []),
+		count_assets: IDL.Func([IDL.Text, ListParams], [IDL.Nat64], ['query']),
+		count_collection_assets: IDL.Func([IDL.Text], [IDL.Nat64], ['query']),
+		count_collection_docs: IDL.Func([IDL.Text], [IDL.Nat64], ['query']),
+		count_docs: IDL.Func([IDL.Text, ListParams], [IDL.Nat64], ['query']),
+		count_proposals: IDL.Func([], [IDL.Nat64], ['query']),
+		del_asset: IDL.Func([IDL.Text, IDL.Text], [], []),
+		del_assets: IDL.Func([IDL.Text], [], []),
+		del_controllers: IDL.Func(
+			[DeleteControllersArgs],
+			[IDL.Vec(IDL.Tuple(IDL.Principal, Controller))],
+			[]
+		),
 		del_custom_domain: IDL.Func([IDL.Text], [], []),
+		del_doc: IDL.Func([IDL.Text, IDL.Text, DelDoc], [], []),
+		del_docs: IDL.Func([IDL.Text], [], []),
+		del_filtered_assets: IDL.Func([IDL.Text, ListParams], [], []),
+		del_filtered_docs: IDL.Func([IDL.Text, ListParams], [], []),
+		del_many_assets: IDL.Func([IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))], [], []),
+		del_many_docs: IDL.Func([IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text, DelDoc))], [], []),
+		del_rule: IDL.Func([CollectionType, IDL.Text, DelRule], [], []),
 		delete_proposal_assets: IDL.Func([DeleteProposalAssets], [], []),
-		get_account: IDL.Func([], [IDL.Opt(Account)], []),
-		get_auth_config: IDL.Func([], [IDL.Opt(AuthenticationConfig)], []),
+		deposit_cycles: IDL.Func([DepositCyclesArgs], [], []),
+		get_asset: IDL.Func([IDL.Text, IDL.Text], [IDL.Opt(AssetNoContent)], ['query']),
+		get_auth_config: IDL.Func([], [IDL.Opt(AuthenticationConfig)], ['query']),
 		get_config: IDL.Func([], [Config], []),
-		get_create_orbiter_fee: IDL.Func([GetCreateCanisterFeeArgs], [IDL.Opt(Tokens)], []),
-		get_create_satellite_fee: IDL.Func([GetCreateCanisterFeeArgs], [IDL.Opt(Tokens)], []),
-		get_credits: IDL.Func([], [Tokens], []),
-		get_delegation: IDL.Func([GetDelegationArgs], [Result_1], []),
-		get_fee: IDL.Func([SegmentKind], [FactoryFee], []),
-		get_or_init_account: IDL.Func([], [Account], []),
-		get_proposal: IDL.Func([IDL.Nat], [IDL.Opt(Proposal)], []),
-		get_rate_config: IDL.Func([SegmentKind], [RateConfig], []),
-		get_storage_config: IDL.Func([], [StorageConfig], []),
-		http_request: IDL.Func([HttpRequest], [HttpResponse], []),
+		get_db_config: IDL.Func([], [IDL.Opt(DbConfig)], ['query']),
+		get_delegation: IDL.Func([GetDelegationArgs], [GetDelegationResultResponse], ['query']),
+		get_doc: IDL.Func([IDL.Text, IDL.Text], [IDL.Opt(Doc)], ['query']),
+		get_many_assets: IDL.Func(
+			[IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))],
+			[IDL.Vec(IDL.Tuple(IDL.Text, IDL.Opt(AssetNoContent)))],
+			['query']
+		),
+		get_many_docs: IDL.Func(
+			[IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))],
+			[IDL.Vec(IDL.Tuple(IDL.Text, IDL.Opt(Doc)))],
+			['query']
+		),
+		get_proposal: IDL.Func([IDL.Nat], [IDL.Opt(Proposal)], ['query']),
+		get_rule: IDL.Func([CollectionType, IDL.Text], [IDL.Opt(Rule)], ['query']),
+		get_storage_config: IDL.Func([], [StorageConfig], ['query']),
+		http_request: IDL.Func([HttpRequest], [HttpResponse], ['query']),
 		http_request_streaming_callback: IDL.Func(
 			[StreamingCallbackToken],
 			[StreamingCallbackHttpResponse],
-			[]
+			['query']
 		),
+		init_asset_upload: IDL.Func([InitAssetKey], [InitUploadResult], []),
 		init_proposal: IDL.Func([ProposalType], [IDL.Nat, Proposal], []),
 		init_proposal_asset_upload: IDL.Func([InitAssetKey, IDL.Nat], [InitUploadResult], []),
 		init_proposal_many_assets_upload: IDL.Func(
@@ -539,31 +502,45 @@ export const idlFactory = ({ IDL }) => {
 			[IDL.Vec(IDL.Tuple(IDL.Text, InitUploadResult))],
 			[]
 		),
-		list_accounts: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Principal, Account))], []),
-		list_assets: IDL.Func([IDL.Text, ListParams], [ListResults], []),
-		list_controllers: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Principal, Controller))], []),
-		list_custom_domains: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Text, CustomDomain))], []),
-		list_icp_payments: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Nat64, IcpPayment))], []),
-		list_icrc_payments: IDL.Func([], [IDL.Vec(IDL.Tuple(IcrcPaymentKey, IcrcPayment))], []),
-		list_proposals: IDL.Func([ListProposalsParams], [ListProposalResults], []),
-		list_segments: IDL.Func([ListSegmentsArgs], [IDL.Vec(IDL.Tuple(SegmentKey, Segment))], []),
+		list_assets: IDL.Func([IDL.Text, ListParams], [ListResults], ['query']),
+		list_controllers: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Principal, Controller))], ['query']),
+		list_custom_domains: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Text, CustomDomain))], ['query']),
+		list_docs: IDL.Func([IDL.Text, ListParams], [ListResults_1], ['query']),
+		list_proposals: IDL.Func([ListProposalsParams], [ListProposalResults], ['query']),
+		list_rules: IDL.Func([CollectionType, ListRulesParams], [ListRulesResults], ['query']),
+		memory_size: IDL.Func([], [MemorySize], ['query']),
 		reject_proposal: IDL.Func([CommitProposal], [IDL.Null], []),
+		set_asset_token: IDL.Func([IDL.Text, IDL.Text, IDL.Opt(IDL.Text)], [], []),
 		set_auth_config: IDL.Func([SetAuthenticationConfig], [AuthenticationConfig], []),
-		set_controllers: IDL.Func([SetControllersArgs], [], []),
+		set_controllers: IDL.Func(
+			[SetControllersArgs],
+			[IDL.Vec(IDL.Tuple(IDL.Principal, Controller))],
+			[]
+		),
 		set_custom_domain: IDL.Func([IDL.Text, IDL.Opt(IDL.Text)], [], []),
-		set_fee: IDL.Func([SegmentKind, FeesArgs], [], []),
-		set_many_segments: IDL.Func([IDL.Vec(SetSegmentsArgs)], [IDL.Vec(Segment)], []),
-		set_rate_config: IDL.Func([SegmentKind, RateConfig], [], []),
-		set_segment: IDL.Func([SetSegmentsArgs], [Segment], []),
-		set_segment_metadata: IDL.Func([SetSegmentMetadataArgs], [Segment], []),
+		set_db_config: IDL.Func([SetDbConfig], [DbConfig], []),
+		set_doc: IDL.Func([IDL.Text, IDL.Text, SetDoc], [Doc], []),
+		set_many_docs: IDL.Func(
+			[IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text, SetDoc))],
+			[IDL.Vec(IDL.Tuple(IDL.Text, Doc))],
+			[]
+		),
+		set_rule: IDL.Func([CollectionType, IDL.Text, SetRule], [Rule], []),
 		set_storage_config: IDL.Func([SetStorageConfig], [StorageConfig], []),
 		submit_proposal: IDL.Func([IDL.Nat], [IDL.Nat, Proposal], []),
-		unset_many_segments: IDL.Func([IDL.Vec(UnsetSegmentsArgs)], [], []),
-		unset_segment: IDL.Func([UnsetSegmentsArgs], [], []),
+		switch_storage_system_memory: IDL.Func([], [], []),
+		upload_asset_chunk: IDL.Func([UploadChunk], [UploadChunkResult], []),
 		upload_proposal_asset_chunk: IDL.Func([UploadChunk], [UploadChunkResult], [])
 	});
 };
 
 export const init = ({ IDL }) => {
-	return [];
+	const Memory = IDL.Variant({ Heap: IDL.Null, Stable: IDL.Null });
+	const InitStorageArgs = IDL.Record({ system_memory: IDL.Opt(Memory) });
+	const InitSatelliteArgs = IDL.Record({
+		controllers: IDL.Vec(IDL.Principal),
+		storage: IDL.Opt(InitStorageArgs)
+	});
+
+	return [InitSatelliteArgs];
 };

@@ -800,7 +800,9 @@
 	},
 	"controllers": {
 		"title": "访问密钥",
-		"profile": "配置/类型",
+		"type": "类型",
+		"automation": "自动化",
+		"profile": "配置",
 		"scope": "权限",
 		"delete": "删除访问密钥",
 		"info": "信息",

@@ -9,10 +9,19 @@ import type { MissionControlId } from '$lib/types/mission-control';
 import { nonNullish, toNullable } from '@dfinity/utils';
 import { Principal } from '@icp-sdk/core/principal';
 
-const toSetController = ({
-	profile
+/**
+ * @deprecated TODO: to be remove - backwards compatibility
+ */
+const toSetController004 = ({
+	metadata
 }: Omit<AddAccessKeyParams, 'accessKeyId'>): MissionControlDid004.SetController => ({
-	metadata: nonNullish(profile) && profile !== '' ? [['profile', profile]] : [],
+	metadata:
+		nonNullish(metadata) &&
+		'profile' in metadata &&
+		nonNullish(metadata.profile) &&
+		metadata.profile !== ''
+			? [['profile', metadata.profile]]
+			: [],
 	expires_at: toNullable<bigint>(undefined)
 });
 
@@ -30,9 +39,10 @@ export const setMissionControlController004 = async ({
 } & AddAccessKeyParams) => {
 	try {
 		const actor = await getMissionControlActor004({ missionControlId, identity });
+
 		await actor.set_mission_control_controllers(
 			[Principal.from(accessKeyId)],
-			toSetController(rest)
+			toSetController004(rest)
 		);
 	} catch (err: unknown) {
 		console.error('setMissionControlController004:', missionControlId.toText());

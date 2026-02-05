@@ -37,7 +37,7 @@ export const setAdminAccessKey = async ({
 	setAccessKeysFn,
 	attachFn,
 	canisterId,
-	profile,
+	metadata,
 	...rest
 }: {
 	setAccessKeysFn: SetAccessKeysFn;
@@ -49,7 +49,7 @@ export const setAdminAccessKey = async ({
 		await setAccessKeysFn({
 			args: {
 				controller: toSetController({
-					profile,
+					metadata,
 					scope: 'admin'
 				}),
 				controllers: [controllerId]

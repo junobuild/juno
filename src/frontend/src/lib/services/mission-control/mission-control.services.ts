@@ -43,7 +43,7 @@ import { get } from 'svelte/store';
 export const setMissionControlControllerForVersion = async ({
 	missionControlId,
 	accessKeyId,
-	profile,
+	metadata,
 	identity
 }: {
 	missionControlId: MissionControlId;
@@ -70,7 +70,7 @@ export const setMissionControlControllerForVersion = async ({
 	await missionControlController({
 		missionControlId,
 		accessKeyId,
-		profile,
+		metadata,
 		scope: 'admin',
 		identity
 	});
@@ -80,7 +80,7 @@ export const setSatellitesControllerForVersion = async ({
 	missionControlId,
 	satelliteIds,
 	accessKeyId,
-	profile,
+	metadata,
 	identity
 }: {
 	missionControlId: MissionControlId;
@@ -99,7 +99,7 @@ export const setSatellitesControllerForVersion = async ({
 						satelliteIds: setSatelliteIds,
 						missionControlId,
 						accessKeyId,
-						profile,
+						metadata,
 						scope: 'admin',
 						identity
 					})
@@ -111,7 +111,7 @@ export const setSatellitesControllerForVersion = async ({
 						satelliteIds: addSatellitesIds,
 						missionControlId,
 						accessKeyId,
-						profile,
+						metadata,
 						scope: 'admin',
 						identity
 					})

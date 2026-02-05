@@ -1,13 +1,16 @@
 import type { MissionControlId } from '$lib/types/mission-control';
-import type { Option } from '$lib/types/utils';
 import type { Identity } from '@icp-sdk/core/agent';
 import type { Principal } from '@icp-sdk/core/principal';
 
 export type AddAccessKeyScope = 'write' | 'admin' | 'submit';
 
+export type AddAccessKeyKind = 'automation' | 'emulator';
+
+export type AddAccessKeyMetadataParams = { profile: string } | { kind: AddAccessKeyKind };
+
 export interface AddAccessKeyParams {
 	accessKeyId: string | Principal;
-	profile: Option<string>;
+	metadata?: AddAccessKeyMetadataParams;
 	scope: AddAccessKeyScope;
 }
 

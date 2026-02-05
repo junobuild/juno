@@ -69,6 +69,7 @@
 				<th class="tools"></th>
 				<th class="controller"> {$i18n.controllers.title} </th>
 				<th class="profile"> {$i18n.controllers.profile} </th>
+				<th class="type"> {$i18n.controllers.type} </th>
 				<th class="scope"> {$i18n.controllers.scope} </th>
 			</tr>
 		</thead>
@@ -76,6 +77,7 @@
 			{#each controllers as [controllerId, controller] (controllerId.toText())}
 				{@const dev = isDev(controllerId)}
 				{@const mic = isMissionControl(controllerId)}
+				{@const kind = controller?.kind}
 
 				<tr>
 					<td class="actions">
@@ -98,7 +100,7 @@
 					</td>
 
 					<td>
-						<Identifier identifier={controllerId.toText()} shorten={false} small={false} />
+						<Identifier identifier={controllerId.toText()} small={false} />
 					</td>
 
 					<td class="profile"
@@ -109,6 +111,14 @@
 						{:else}
 							{metadataProfile(nonNullish(controller) ? controller.metadata : [])}
 						{/if}
+					</td>
+
+					<td class="type">
+						{nonNullish(kind) && 'emulator' in kind
+							? `👾 ${$i18n.emulator.emulator}`
+							: nonNullish(kind) && 'automation' in kind
+								? `🤖  ${$i18n.controllers.automation}`
+								: ''}
 					</td>
 
 					<td class="scope">
@@ -141,12 +151,7 @@
 		width: 48px;
 	}
 
-	.controller {
-		@include media.min-width(small) {
-			width: 60%;
-		}
-	}
-
+	.type,
 	.profile,
 	.scope {
 		display: none;

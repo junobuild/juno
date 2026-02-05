@@ -21,7 +21,7 @@ export const addMissionControlAccessKey = async ({
 	missionControlId,
 	accessKeyId,
 	scope,
-	profile,
+	metadata,
 	...rest
 }: {
 	missionControlId: MissionControlId;
@@ -33,7 +33,7 @@ export const addMissionControlAccessKey = async ({
 			missionControlId,
 			accessKeyId,
 			scope,
-			profile
+			metadata
 		});
 	};
 

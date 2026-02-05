@@ -50,7 +50,9 @@ const unsafeSetEmulatorController = async ({
 
 	await addController({
 		accessKeyId: mainIdentity,
-		profile: `👾 ${get(i18n).emulator.emulator}`
+		metadata: {
+			kind: 'emulator'
+		}
 	});
 };
 

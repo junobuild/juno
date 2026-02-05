@@ -80,14 +80,6 @@ fn is_not_controller(caller: Principal, controllers: &Controllers) -> bool {
     !is_controller(caller, controllers)
 }
 
-fn is_controller_and_allowed(
-    caller: Principal,
-    controllers: &Controllers,
-    is_allowed_controller: fn(UserId, &Controllers) -> bool,
-) -> bool {
-    is_controller(caller, controllers) && is_allowed_controller(caller, controllers)
-}
-
 fn is_owner_and_valid(caller: Principal, owner: Principal, controllers: &Controllers) -> bool {
     is_owner(caller, owner)
         && (is_not_controller(caller, controllers) || controller_can_write(caller, controllers))

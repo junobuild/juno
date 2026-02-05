@@ -1,7 +1,9 @@
 use candid::Principal;
 
 #[cfg(target_arch = "wasm32")]
-use ic_cdk::api::{canister_self, debug_print, msg_caller, time as ic_time, is_controller as ic_is_controller};
+use ic_cdk::api::{
+    canister_self, debug_print, is_controller as ic_is_controller, msg_caller, time as ic_time,
+};
 
 /// Returns the **principal** of the current module.
 ///

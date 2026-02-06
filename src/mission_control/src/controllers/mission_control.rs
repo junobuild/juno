@@ -19,7 +19,7 @@ pub async fn set_mission_control_controllers(
 ) -> Result<(), String> {
     assert_max_number_of_controllers(
         &get_controllers(),
-        &controllers,
+        controllers,
         &controller.scope,
         Some(MAX_NUMBER_OF_MISSION_CONTROL_ADMIN_CONTROLLERS),
     )
@@ -27,7 +27,7 @@ pub async fn set_mission_control_controllers(
 
     assert_controllers(controllers)?;
 
-    assert_controller_expiration(&controller)?;
+    assert_controller_expiration(controller)?;
 
     set_controllers(controllers, controller);
 

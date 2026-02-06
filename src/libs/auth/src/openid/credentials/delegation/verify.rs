@@ -81,8 +81,8 @@ fn verify_openid_credentials(
         jwt,
         provider.issuers(),
         &jwks.keys,
-        &assert_audience,
-        &assert_no_replay,
+        assert_audience,
+        assert_no_replay,
     )
     .map_err(VerifyOpenidCredentialsError::JwtVerify)?;
 

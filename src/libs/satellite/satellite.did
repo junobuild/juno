@@ -60,6 +60,20 @@ type AuthenticationError = variant {
   RegisterUser : text;
 };
 type AuthenticationRules = record { allowed_callers : vec principal };
+type AutomationConfig = record {
+  updated_at : opt nat64;
+  openid : opt AutomationConfigOpenId;
+  created_at : opt nat64;
+  version : opt nat64;
+};
+type AutomationConfigOpenId = record {
+  observatory_id : opt principal;
+  providers : vec record {
+    OpenIdAutomationProvider;
+    OpenIdAutomationProviderConfig;
+  };
+};
+type AutomationScope = variant { Write; Submit };
 type CollectionType = variant { Db; Storage };
 type CommitBatch = record {
   batch_id : nat;
@@ -233,6 +247,16 @@ type OpenIdAuthProviderDelegationConfig = record {
   targets : opt vec principal;
   max_time_to_live : opt nat64;
 };
+type OpenIdAutomationProvider = variant { GitHub };
+type OpenIdAutomationProviderConfig = record {
+  controller : opt OpenIdAutomationProviderControllerConfig;
+  repositories : vec record { RepositoryKey; OpenIdAutomationRepositoryConfig };
+};
+type OpenIdAutomationProviderControllerConfig = record {
+  scope : opt AutomationScope;
+  max_time_to_live : opt nat64;
+};
+type OpenIdAutomationRepositoryConfig = record { branches : opt vec text };
 type OpenIdDelegationProvider = variant { GitHub; Google };
 type OpenIdGetDelegationArgs = record {
   jwt : text;
@@ -256,6 +280,8 @@ type PrepareAutomationError = variant {
   GetCachedJwks;
   JwtVerify : JwtVerifyError;
   GetOrFetchJwks : GetOrRefreshJwksError;
+  ControllerAlreadyExists;
+  TooManyControllers : text;
 };
 type PrepareDelegationError = variant {
   JwtFindProvider : JwtFindProviderError;
@@ -289,6 +315,7 @@ type ProposalType = variant {
   SegmentsDeployment : SegmentsDeploymentOptions;
 };
 type RateConfig = record { max_tokens : nat64; time_per_token_ns : nat64 };
+type RepositoryKey = record { owner : text; name : text };
 type Rule = record {
   max_capacity : opt nat32;
   memory : opt Memory;
@@ -312,6 +339,10 @@ type SetAuthenticationConfig = record {
   version : opt nat64;
   internet_identity : opt AuthenticationConfigInternetIdentity;
   rules : opt AuthenticationRules;
+};
+type SetAutomationConfig = record {
+  openid : opt AutomationConfigOpenId;
+  version : opt nat64;
 };
 type SetController = record {
   metadata : vec record { text; text };
@@ -429,6 +460,7 @@ service : (InitSatelliteArgs) -> {
   deposit_cycles : (DepositCyclesArgs) -> ();
   get_asset : (text, text) -> (opt AssetNoContent) query;
   get_auth_config : () -> (opt AuthenticationConfig) query;
+  get_automation_config : () -> (opt AutomationConfig) query;
   get_config : () -> (Config);
   get_db_config : () -> (opt DbConfig) query;
   get_delegation : (GetDelegationArgs) -> (GetDelegationResultResponse) query;
@@ -462,6 +494,7 @@ service : (InitSatelliteArgs) -> {
   reject_proposal : (CommitProposal) -> (null);
   set_asset_token : (text, text, opt text) -> ();
   set_auth_config : (SetAuthenticationConfig) -> (AuthenticationConfig);
+  set_automation_config : (SetAutomationConfig) -> (AutomationConfig);
   set_controllers : (SetControllersArgs) -> (
       vec record { principal; Controller },
     );

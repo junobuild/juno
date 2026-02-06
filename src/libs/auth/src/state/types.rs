@@ -168,6 +168,7 @@ pub mod automation {
 }
 
 pub mod interface {
+    use crate::state::types::automation::AutomationConfigOpenId;
     use crate::state::types::config::{
         AuthenticationConfigInternetIdentity, AuthenticationConfigOpenId, AuthenticationRules,
     };
@@ -180,6 +181,12 @@ pub mod interface {
         pub internet_identity: Option<AuthenticationConfigInternetIdentity>,
         pub openid: Option<AuthenticationConfigOpenId>,
         pub rules: Option<AuthenticationRules>,
+        pub version: Option<Version>,
+    }
+
+    #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
+    pub struct SetAutomationConfig {
+        pub openid: Option<AutomationConfigOpenId>,
         pub version: Option<Version>,
     }
 }

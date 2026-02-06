@@ -45,25 +45,25 @@ pub fn get_automation(auth_heap: &impl AuthHeapStrategy) -> Option<AutomationCon
     })
 }
 
-pub fn insert_automation(auth_heap: &impl AuthHeapStrategy, automation: &Option<AutomationConfig>) {
+pub fn insert_automation(auth_heap: &impl AuthHeapStrategy, automation: &AutomationConfig) {
     auth_heap
         .with_auth_state_mut(|authentication| insert_automation_impl(automation, authentication))
 }
 
 fn insert_automation_impl(
-    automation: &Option<AutomationConfig>,
+    automation: &AutomationConfig,
     state: &mut Option<AuthenticationHeapState>,
 ) {
     match state {
         None => {
             *state = Some(AuthenticationHeapState {
                 config: AuthenticationConfig::default(),
-                automation: automation.clone(),
+                automation: Some(automation.clone()),
                 salt: None,
                 openid: None,
             })
         }
-        Some(state) => state.automation = automation.clone(),
+        Some(state) => state.automation = Some(automation.clone()),
     }
 }
 

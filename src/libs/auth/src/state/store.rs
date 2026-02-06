@@ -2,12 +2,12 @@ use crate::errors::{
     JUNO_AUTH_ERROR_AUTOMATION_NOT_CONFIGURED, JUNO_AUTH_ERROR_NOT_CONFIGURED,
     JUNO_AUTH_ERROR_OPENID_DISABLED,
 };
-use crate::state::asserts::authentication::assert_set_authentication_config;
-use crate::state::heap::insert_config;
+use crate::state::asserts::{assert_set_authentication_config, assert_set_automation_config};
 use crate::state::heap::{get_automation, get_config};
-use crate::state::types::automation::OpenIdAutomationProviders;
+use crate::state::heap::{insert_automation, insert_config};
+use crate::state::types::automation::{AutomationConfig, OpenIdAutomationProviders};
 use crate::state::types::config::{AuthenticationConfig, OpenIdAuthProviders};
-use crate::state::types::interface::SetAuthenticationConfig;
+use crate::state::types::interface::{SetAuthenticationConfig, SetAutomationConfig};
 use crate::state::{get_salt, insert_salt};
 use crate::strategies::AuthHeapStrategy;
 use junobuild_shared::ic::api::print;
@@ -24,6 +24,21 @@ pub fn set_authentication_config(
     let config = AuthenticationConfig::prepare(&current_config, proposed_config);
 
     insert_config(auth_heap, &config);
+
+    Ok(config)
+}
+
+pub fn set_automation_config(
+    auth_heap: &impl AuthHeapStrategy,
+    proposed_config: &SetAutomationConfig,
+) -> Result<AutomationConfig, String> {
+    let current_config = get_automation(auth_heap);
+
+    assert_set_automation_config(proposed_config, &current_config)?;
+
+    let config = AutomationConfig::prepare(&current_config, proposed_config);
+
+    insert_automation(auth_heap, &config);
 
     Ok(config)
 }

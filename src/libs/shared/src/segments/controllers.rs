@@ -11,7 +11,6 @@ use crate::types::interface::SetController;
 use crate::types::state::{Controller, ControllerId, ControllerScope, Controllers, UserId};
 use crate::utils::{principal_anonymous, principal_equal, principal_not_anonymous};
 use candid::Principal;
-use std::cmp::max_by;
 use std::collections::HashMap;
 
 /// Initializes a set of controllers with default administrative scope.

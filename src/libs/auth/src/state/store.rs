@@ -1,5 +1,5 @@
 use crate::errors::{JUNO_AUTH_ERROR_NOT_CONFIGURED, JUNO_AUTH_ERROR_OPENID_DISABLED};
-use crate::state::assert::assert_set_config;
+use crate::state::asserts::authentication::assert_set_authentication_config;
 use crate::state::heap::get_config;
 use crate::state::heap::insert_config;
 use crate::state::types::config::{AuthenticationConfig, OpenIdAuthProviders};
@@ -9,13 +9,13 @@ use crate::strategies::AuthHeapStrategy;
 use junobuild_shared::ic::api::print;
 use junobuild_shared::random::raw_rand;
 
-pub fn set_config(
+pub fn set_authentication_config(
     auth_heap: &impl AuthHeapStrategy,
     proposed_config: &SetAuthenticationConfig,
 ) -> Result<AuthenticationConfig, String> {
     let current_config = get_config(auth_heap);
 
-    assert_set_config(proposed_config, &current_config)?;
+    assert_set_authentication_config(proposed_config, &current_config)?;
 
     let config = AuthenticationConfig::prepare(&current_config, proposed_config);
 

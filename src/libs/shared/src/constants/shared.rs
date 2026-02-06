@@ -41,10 +41,13 @@ pub const MEMO_SATELLITE_CREATE_REFUND: Memo = Memo(0x44464552544153); // == 'SA
 pub const MEMO_ORBITER_CREATE_REFUND: Memo = Memo(0x4446455242524f); // == 'ORBREFD'
 
 // 10 controllers max on the IC - the canister itself and user of the console because these two are not added to the mission control state controllers
-pub const MAX_NUMBER_OF_MISSION_CONTROL_CONTROLLERS: usize = 8;
+pub const MAX_NUMBER_OF_MISSION_CONTROL_ADMIN_CONTROLLERS: usize = 8;
 
 // 10 controllers max on the IC. User and mission control principals are copied in satellite state controllers
-pub const MAX_NUMBER_OF_SATELLITE_CONTROLLERS: usize = 10;
+pub const MAX_NUMBER_OF_ADMIN_CONTROLLERS: usize = 10;
+
+// 20 editor or submit access keys. We defined this value to prevent stacking way too way identities.
+pub const MAX_NUMBER_OF_ACCESS_KEYS: usize = 20;
 
 // Useful for filtering stable tree map ranges that use Principal in keys
 pub const PRINCIPAL_MIN: Principal = Principal::from_slice(&[]);

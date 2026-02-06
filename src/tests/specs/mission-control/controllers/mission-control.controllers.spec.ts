@@ -11,7 +11,8 @@ import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import {
 	JUNO_ERROR_CONTROLLERS_ADMIN_NO_EXPIRY,
 	JUNO_ERROR_CONTROLLERS_ANONYMOUS_NOT_ALLOWED,
-	JUNO_ERROR_CONTROLLERS_EXPIRY_IN_PAST
+	JUNO_ERROR_CONTROLLERS_EXPIRY_IN_PAST,
+	JUNO_ERROR_CONTROLLERS_MAX_NUMBER
 } from '@junobuild/errors';
 import { inject } from 'vitest';
 import { CONTROLLER_METADATA } from '../../../constants/controller-tests.constants';
@@ -24,8 +25,6 @@ describe('Mission Control > Controllers', () => {
 	let actor: Actor<MissionControlActor>;
 
 	const controller = Ed25519KeyIdentity.generate();
-
-	const metadata: [string, string][] = [['email', 'test@test.com']];
 
 	beforeAll(async () => {
 		pic = await PocketIc.create(inject('PIC_URL'));
@@ -95,6 +94,21 @@ describe('Mission Control > Controllers', () => {
 		expect(updatedControllers).toHaveLength(0);
 	});
 
+	it('should throw error when creating too many admin controllers', async () => {
+		const { set_mission_control_controllers } = actor;
+
+		const controllers = Array.from({ length: 11 }, () =>
+			Ed25519KeyIdentity.generate().getPrincipal()
+		);
+
+		await expect(
+			set_mission_control_controllers(controllers, {
+				...CONTROLLER_METADATA,
+				scope: { Admin: null }
+			})
+		).rejects.toThrowError(JUNO_ERROR_CONTROLLERS_MAX_NUMBER);
+	});
+
 	describe('assert', () => {
 		it('should throw errors on creating admin controller with expiration date', async () => {
 			const { set_mission_control_controllers } = actor;
@@ -147,6 +161,24 @@ describe('Mission Control > Controllers', () => {
 					expires_at: [1n]
 				})
 			).rejects.toThrowError(JUNO_ERROR_CONTROLLERS_ANONYMOUS_NOT_ALLOWED);
+		});
+
+		it.each([
+			{ title: 'write', scope: { Write: null } },
+			{ title: 'submit', scope: { Submit: null } }
+		])('should throw error when creating too many controllers for $write', async ({ scope }) => {
+			const { set_mission_control_controllers } = actor;
+
+			const controllers = Array.from({ length: 21 }, () =>
+				Ed25519KeyIdentity.generate().getPrincipal()
+			);
+
+			await expect(
+				set_mission_control_controllers(controllers, {
+					...CONTROLLER_METADATA,
+					scope
+				})
+			).rejects.toThrowError(JUNO_ERROR_CONTROLLERS_MAX_NUMBER);
 		});
 	});
 });

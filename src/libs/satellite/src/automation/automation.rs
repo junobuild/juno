@@ -1,4 +1,5 @@
 use crate::auth::strategy_impls::AuthHeap;
+use crate::automation::strategy_impls::AuthAutomation;
 use junobuild_auth::automation;
 use junobuild_auth::automation::types::{
     OpenIdPrepareAutomationArgs, PrepareAutomationError, PreparedAutomation,
@@ -31,7 +32,12 @@ pub async fn openid_prepare_automation(
             Err(err) => return Err(PrepareAutomationError::from(err)),
         };
 
-    let result = automation::openid_prepare_automation(&args.controller_id, &provider, &AuthHeap);
+    let result = automation::openid_prepare_automation(
+        &args.controller_id,
+        &provider,
+        &AuthHeap,
+        &AuthAutomation,
+    );
 
     result.map(|prepared_automation| (prepared_automation, provider, credential))
 }

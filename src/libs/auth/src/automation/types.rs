@@ -35,7 +35,9 @@ pub enum AutomationScope {
 
 #[derive(CandidType, Serialize, Deserialize, Debug)]
 pub enum PrepareAutomationError {
+    ControllerAlreadyExists,
     InvalidController(String),
+    TooManyControllers(String),
     GetOrFetchJwks(GetOrRefreshJwksError),
     GetCachedJwks,
     JwtFindProvider(JwtFindProviderError),

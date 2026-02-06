@@ -5,6 +5,7 @@ use crate::state::types::state::Salt;
 use crate::state::types::state::{AuthenticationHeapState, OpenIdCachedCertificate, OpenIdState};
 use crate::strategies::AuthHeapStrategy;
 use std::collections::hash_map::Entry;
+
 // ---------------------------------------------------------
 // Config
 // ---------------------------------------------------------

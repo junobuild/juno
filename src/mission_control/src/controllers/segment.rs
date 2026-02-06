@@ -2,7 +2,10 @@ use candid::Principal;
 use ic_cdk::call::Call;
 use junobuild_shared::ic::DecodeCandid;
 use junobuild_shared::mgmt::ic::update_canister_controllers;
-use junobuild_shared::segments::controllers::{assert_controller_expiration, assert_controllers, assert_max_number_of_controllers, filter_admin_controllers, into_controller_ids};
+use junobuild_shared::segments::controllers::{
+    assert_controller_expiration, assert_controllers, assert_max_number_of_controllers,
+    filter_admin_controllers, into_controller_ids,
+};
 use junobuild_shared::types::interface::{
     DeleteControllersArgs, SetController, SetControllersArgs,
 };

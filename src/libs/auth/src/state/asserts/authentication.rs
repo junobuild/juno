@@ -6,7 +6,7 @@ use junobuild_shared::types::core::DomainName;
 use junobuild_shared::types::state::Version;
 use url::Url;
 
-pub fn assert_set_config(
+pub fn assert_set_authentication_config(
     proposed_config: &SetAuthenticationConfig,
     current_config: &Option<AuthenticationConfig>,
 ) -> Result<(), String> {

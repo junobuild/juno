@@ -1,4 +1,4 @@
-mod assert;
+mod asserts;
 pub mod errors;
 mod heap;
 mod impls;

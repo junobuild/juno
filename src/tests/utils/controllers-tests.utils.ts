@@ -13,7 +13,8 @@ import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import {
 	JUNO_ERROR_CONTROLLERS_ADMIN_NO_EXPIRY,
 	JUNO_ERROR_CONTROLLERS_ANONYMOUS_NOT_ALLOWED,
-	JUNO_ERROR_CONTROLLERS_EXPIRY_IN_PAST
+	JUNO_ERROR_CONTROLLERS_EXPIRY_IN_PAST,
+	JUNO_ERROR_CONTROLLERS_MAX_NUMBER
 } from '@junobuild/errors';
 import { CONTROLLER_METADATA } from '../constants/controller-tests.constants';
 import { tick } from './pic-tests.utils';
@@ -93,6 +94,24 @@ export const testControllers = ({
 			).rejects.toThrowError(JUNO_ERROR_CONTROLLERS_ADMIN_NO_EXPIRY);
 		});
 
+		it('should throw error when creating too many admin controllers', async () => {
+			const { set_controllers } = actor();
+
+			const controllers = Array.from({ length: 11 }, () =>
+				Ed25519KeyIdentity.generate().getPrincipal()
+			);
+
+			await expect(
+				set_controllers({
+					controllers,
+					controller: {
+						...CONTROLLER_METADATA,
+						scope: { Admin: null }
+					}
+				})
+			).rejects.toThrowError(JUNO_ERROR_CONTROLLERS_MAX_NUMBER);
+		});
+
 		it.each([
 			{ title: 'write', scope: { Write: null } },
 			{ title: 'submit', scope: { Submit: null } }
@@ -136,6 +155,27 @@ export const testControllers = ({
 					}
 				})
 			).rejects.toThrowError(JUNO_ERROR_CONTROLLERS_ANONYMOUS_NOT_ALLOWED);
+		});
+
+		it.each([
+			{ title: 'write', scope: { Write: null } },
+			{ title: 'submit', scope: { Submit: null } }
+		])('should throw error when creating too many controllers for $write', async ({ scope }) => {
+			const { set_controllers } = actor();
+
+			const controllers = Array.from({ length: 21 }, () =>
+				Ed25519KeyIdentity.generate().getPrincipal()
+			);
+
+			await expect(
+				set_controllers({
+					controllers,
+					controller: {
+						...CONTROLLER_METADATA,
+						scope
+					}
+				})
+			).rejects.toThrowError(JUNO_ERROR_CONTROLLERS_MAX_NUMBER);
 		});
 	});
 };

@@ -1,30 +1,29 @@
-use crate::controllers::store::{delete_controllers, get_admin_controllers, set_controllers};
+use crate::controllers::store::{
+    delete_controllers, get_admin_controllers, get_controllers, set_controllers,
+};
 use crate::user::store::get_user;
-use junobuild_shared::constants::shared::MAX_NUMBER_OF_MISSION_CONTROL_CONTROLLERS;
+use junobuild_shared::constants::shared::MAX_NUMBER_OF_MISSION_CONTROL_ADMIN_CONTROLLERS;
 use junobuild_shared::ic::api::id;
+use junobuild_shared::ic::UnwrapOrTrap;
 use junobuild_shared::mgmt::ic::update_canister_controllers;
 use junobuild_shared::segments::controllers::{
     assert_controller_expiration, assert_controllers, assert_max_number_of_controllers,
     into_controller_ids,
 };
 use junobuild_shared::types::interface::SetController;
-use junobuild_shared::types::state::{ControllerId, ControllerScope, Controllers};
+use junobuild_shared::types::state::{ControllerId, Controllers};
 
 pub async fn set_mission_control_controllers(
     controllers: &[ControllerId],
     controller: &SetController,
 ) -> Result<(), String> {
-    #[allow(clippy::single_match)]
-    match controller.scope {
-        ControllerScope::Admin => {
-            assert_max_number_of_controllers(
-                &get_admin_controllers(),
-                controllers,
-                MAX_NUMBER_OF_MISSION_CONTROL_CONTROLLERS,
-            )?;
-        }
-        _ => (),
-    }
+    assert_max_number_of_controllers(
+        &get_controllers(),
+        &controllers,
+        &controller.scope,
+        Some(MAX_NUMBER_OF_MISSION_CONTROL_ADMIN_CONTROLLERS),
+    )
+    .unwrap_or_trap();
 
     assert_controllers(controllers)?;
 

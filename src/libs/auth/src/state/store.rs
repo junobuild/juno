@@ -2,7 +2,6 @@ use crate::errors::{
     JUNO_AUTH_ERROR_AUTOMATION_NOT_CONFIGURED, JUNO_AUTH_ERROR_NOT_CONFIGURED,
     JUNO_AUTH_ERROR_OPENID_DISABLED,
 };
-use crate::state::assert::assert_set_config;
 use crate::state::asserts::authentication::assert_set_authentication_config;
 use crate::state::heap::insert_config;
 use crate::state::heap::{get_automation, get_config};

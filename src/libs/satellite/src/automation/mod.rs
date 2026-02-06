@@ -1,6 +1,6 @@
 pub mod authenticate;
 mod automation;
-mod register;
+mod controllers;
 mod token;
 pub mod types;
 mod workflow;

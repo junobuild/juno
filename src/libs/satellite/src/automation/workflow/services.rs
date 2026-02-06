@@ -1,11 +1,8 @@
-use crate::automation::workflow::types::state::{AutomationWorkflowData, AutomationWorkflowKey};
+use crate::automation::workflow::types::state::AutomationWorkflowData;
+use crate::automation::workflow::utils::build_automation_workflow_key;
 use crate::db::internal::unsafe_get_doc;
 use crate::db::store::internal_set_doc_store;
 use crate::db::types::store::AssertSetDocOptions;
-use crate::errors::automation::{
-    JUNO_AUTOMATION_WORKFLOW_ERROR_MISSING_REPOSITORY,
-    JUNO_AUTOMATION_WORKFLOW_ERROR_MISSING_RUN_ID,
-};
 use crate::rules::store::get_rule_db;
 use junobuild_auth::openid::credentials::automation::types::interface::OpenIdAutomationCredential;
 use junobuild_auth::openid::types::provider::OpenIdAutomationProvider;
@@ -17,20 +14,7 @@ pub fn save_workflow_metadata(
     provider: &OpenIdAutomationProvider,
     credential: &OpenIdAutomationCredential,
 ) -> Result<(), String> {
-    let repository = if let Some(repository) = &credential.repository {
-        repository
-    } else {
-        return Err(JUNO_AUTOMATION_WORKFLOW_ERROR_MISSING_REPOSITORY.to_string());
-    };
-
-    let run_id = if let Some(run_id) = &credential.run_id {
-        run_id
-    } else {
-        return Err(JUNO_AUTOMATION_WORKFLOW_ERROR_MISSING_RUN_ID.to_string());
-    };
-
-    let automation_workflow_key =
-        AutomationWorkflowKey::create(provider, &repository, &run_id).to_key();
+    let automation_workflow_key = build_automation_workflow_key(provider, credential)?.to_key();
 
     let automation_workflow_collection = COLLECTION_AUTOMATION_WORKFLOW_KEY.to_string();
 

@@ -1,6 +1,6 @@
 use crate::auth::strategy_impls::AuthHeap;
 use crate::automation::automation;
-use crate::automation::register::register_controller;
+use crate::automation::controllers::register::register_controller;
 use crate::automation::token::save_unique_token_jti;
 use crate::automation::types::{AuthenticateAutomationResult, AuthenticationAutomationError};
 use crate::automation::workflow::save_workflow_metadata;
@@ -29,7 +29,9 @@ pub async fn openid_authenticate_automation(
                 )));
             }
 
-            register_controller(&automation);
+            if let Err(err) = register_controller(&automation, &provider, &credential) {
+                return Ok(Err(AuthenticationAutomationError::RegisterController(err)));
+            }
 
             Ok(())
         }

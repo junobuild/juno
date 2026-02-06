@@ -1,7 +1,6 @@
 use crate::state::memory::manager::STATE;
 use junobuild_shared::segments::controllers::{
-    delete_controllers as delete_controllers_impl,
-    set_controllers as set_controllers_impl,
+    delete_controllers as delete_controllers_impl, set_controllers as set_controllers_impl,
 };
 use junobuild_shared::types::interface::SetController;
 use junobuild_shared::types::state::{ControllerId, Controllers};

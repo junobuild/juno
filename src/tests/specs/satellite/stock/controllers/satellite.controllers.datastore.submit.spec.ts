@@ -63,10 +63,6 @@ describe.each([
 		await set_rule({ Db: null }, TEST_COLLECTION, setRule);
 	});
 
-	afterAll(async () => {
-		await pic?.tearDown();
-	});
-
 	beforeEach(async () => {
 		actor.setIdentity(controller);
 
@@ -92,6 +88,10 @@ describe.each([
 		});
 
 		actor.setIdentity(testSubmitController);
+	});
+
+	afterAll(async () => {
+		await pic?.tearDown();
 	});
 
 	it('should throw on set document', async () => {

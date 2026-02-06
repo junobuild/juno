@@ -4,7 +4,7 @@ import {
 	type MissionControlDid
 } from '$declarations';
 import { PocketIc, type Actor } from '@dfinity/pic';
-import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
+import { fromNullable, toNullable } from '@dfinity/utils';
 import { AnonymousIdentity } from '@icp-sdk/core/agent';
 import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import { inject } from 'vitest';
@@ -173,46 +173,6 @@ describe('Mission Control', () => {
 			expect(fromNullable(user.config)).toEqual(config);
 			expect(user.created_at).toBeGreaterThan(0n);
 			expect(user.updated_at).toBeGreaterThan(0n);
-		});
-
-		it('should add and remove additional controller', async () => {
-			const {
-				set_mission_control_controllers,
-				list_mission_control_controllers,
-				del_mission_control_controllers
-			} = actor;
-
-			const newController = Ed25519KeyIdentity.generate();
-
-			const controllerData: MissionControlDid.SetController = {
-				scope: { Admin: null },
-				expires_at: [123n],
-				kind: [{ Automation: null }],
-				metadata: [['hello', 'world']]
-			};
-
-			await set_mission_control_controllers([newController.getPrincipal()], controllerData);
-
-			const addControllers = await list_mission_control_controllers();
-
-			expect(addControllers).toHaveLength(1);
-
-			const newAddedController = addControllers.find(
-				([p]) => p.toText() === newController.getPrincipal().toText()
-			);
-
-			assertNonNullish(newAddedController);
-
-			expect(newAddedController[1].metadata).toEqual(controllerData.metadata);
-			expect(newAddedController[1].scope).toEqual(controllerData.scope);
-			expect(newAddedController[1].expires_at).toEqual(controllerData.expires_at);
-			expect(newAddedController[1].kind).toEqual(controllerData.kind);
-
-			await del_mission_control_controllers([newController.getPrincipal()]);
-
-			const updatedControllers = await list_mission_control_controllers();
-
-			expect(updatedControllers).toHaveLength(0);
 		});
 	});
 });

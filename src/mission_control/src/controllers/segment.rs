@@ -2,7 +2,9 @@ use candid::Principal;
 use ic_cdk::call::Call;
 use junobuild_shared::ic::DecodeCandid;
 use junobuild_shared::mgmt::ic::update_canister_controllers;
-use junobuild_shared::segments::controllers::{filter_admin_controllers, into_controller_ids};
+use junobuild_shared::segments::controllers::{
+    assert_controller_expiration, assert_controllers, filter_admin_controllers, into_controller_ids,
+};
 use junobuild_shared::types::interface::{
     DeleteControllersArgs, SetController, SetControllersArgs,
 };
@@ -13,6 +15,10 @@ pub async fn set_segment_controllers(
     controllers: &[ControllerId],
     controller: &SetController,
 ) -> Result<(), String> {
+    assert_controllers(controllers)?;
+
+    assert_controller_expiration(&controller)?;
+
     let satellite_admin_controllers = set_controllers(segment_id, controllers, controller).await?;
 
     // We update the IC controllers because it is possible that an existing controller was updated.

@@ -176,7 +176,8 @@ describe('Observatory', () => {
 
 		testControllers({
 			actor: () => actor,
-			controller: () => controller
+			controller: () => controller,
+			pic: () => pic
 		});
 	});
 });

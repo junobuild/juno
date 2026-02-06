@@ -23,7 +23,7 @@ pub fn openid_prepare_automation(
         return Err(PrepareAutomationError::ControllerAlreadyExists);
     }
 
-    let submitted_controllers: [ControllerId; 1] = [controller_id.clone()];
+    let submitted_controllers: [ControllerId; 1] = [*controller_id];
 
     assert_controllers(&submitted_controllers)
         .map_err(PrepareAutomationError::InvalidController)?;
@@ -41,7 +41,7 @@ pub fn openid_prepare_automation(
     let expires_at = build_expiration(provider, auth_heap);
 
     let controller: PreparedControllerAutomation = PreparedControllerAutomation {
-        id: controller_id.clone(),
+        id: *controller_id,
         expires_at,
         scope,
     };

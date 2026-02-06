@@ -4,15 +4,15 @@ use junobuild_auth::openid::types::provider::OpenIdAutomationProvider;
 use junobuild_utils::encode_doc_data;
 
 impl AutomationTokenKey {
-    pub fn create(provider: &OpenIdAutomationProvider, jti: &String) -> Self {
+    pub fn create(provider: &OpenIdAutomationProvider, jti: &str) -> Self {
         Self {
             provider: provider.clone(),
-            jti: jti.clone(),
+            jti: jti.to_owned(),
         }
     }
 
     pub fn to_key(&self) -> String {
-        format!("{}#{}", self.provider.to_string(), self.jti)
+        format!("{}#{}", self.provider, self.jti)
     }
 }
 

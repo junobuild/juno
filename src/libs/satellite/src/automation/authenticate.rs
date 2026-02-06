@@ -1,6 +1,6 @@
 use crate::auth::strategy_impls::AuthHeap;
-use crate::automation::automation;
 use crate::automation::controllers::register::register_controller;
+use crate::automation::prepare;
 use crate::automation::token::save_unique_token_jti;
 use crate::automation::types::{AuthenticateAutomationResult, AuthenticationAutomationError};
 use crate::automation::workflow::save_workflow_metadata;
@@ -12,7 +12,7 @@ pub async fn openid_authenticate_automation(
 ) -> Result<AuthenticateAutomationResult, String> {
     let providers = get_automation_providers(&AuthHeap)?;
 
-    let prepared_automation = automation::openid_prepare_automation(args, &providers).await;
+    let prepared_automation = prepare::openid_prepare_automation(args, &providers).await;
 
     let result = match prepared_automation {
         Ok((automation, provider, credential)) => {

@@ -4,25 +4,16 @@ use junobuild_auth::openid::types::provider::OpenIdAutomationProvider;
 use junobuild_utils::encode_doc_data;
 
 impl AutomationWorkflowKey {
-    pub fn create(
-        provider: &OpenIdAutomationProvider,
-        repository: &String,
-        run_id: &String,
-    ) -> Self {
+    pub fn create(provider: &OpenIdAutomationProvider, repository: &str, run_id: &str) -> Self {
         Self {
             provider: provider.clone(),
-            repository: repository.clone(),
-            run_id: run_id.clone(),
+            repository: repository.to_owned(),
+            run_id: run_id.to_owned(),
         }
     }
 
     pub fn to_key(&self) -> String {
-        format!(
-            "{}#{}#{}",
-            self.provider.to_string(),
-            self.repository,
-            self.run_id
-        )
+        format!("{}#{}#{}", self.provider, self.repository, self.run_id)
     }
 }
 

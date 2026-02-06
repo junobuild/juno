@@ -11,7 +11,7 @@ pub fn register_controller(
     provider: &OpenIdAutomationProvider,
     credential: &OpenIdAutomationCredential,
 ) -> Result<(), String> {
-    let controllers: [ControllerId; 1] = [automation.controller.id.clone()];
+    let controllers: [ControllerId; 1] = [automation.controller.id];
 
     let automation_workflow_key = build_automation_workflow_key(provider, credential)?;
 

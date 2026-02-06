@@ -25,7 +25,7 @@ pub fn save_unique_token_jti(
         return Err(JUNO_AUTOMATION_TOKEN_ERROR_MISSING_JTI.to_string());
     };
 
-    let automation_token_key = AutomationTokenKey::create(provider, &jti).to_key();
+    let automation_token_key = AutomationTokenKey::create(provider, jti).to_key();
 
     let automation_token_collection = COLLECTION_AUTOMATION_TOKEN_KEY.to_string();
 

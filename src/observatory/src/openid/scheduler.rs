@@ -15,7 +15,7 @@ pub fn defer_restart_monitoring() {
         OpenIdProvider::GitHubActions,
     ]
     .into_iter()
-    .filter(|provider| is_scheduler_enabled(provider))
+    .filter(is_scheduler_enabled)
     .count();
 
     if enabled_count == 0 {

@@ -38,7 +38,7 @@ pub async fn verify_openid_credentials_with_jwks_renewal(
         .await
         .map_err(VerifyOpenidCredentialsError::GetOrFetchJwks)?;
 
-    verify_openid_credentials(jwt, &jwks, &automation_provider, &config)
+    verify_openid_credentials(jwt, &jwks, &automation_provider, config)
 }
 
 fn verify_openid_credentials(
@@ -87,7 +87,7 @@ fn verify_openid_credentials(
         Ok(())
     };
 
-    let assert_custom = |claims: &AutomationClaims| -> Result<(), JwtVerifyError> {
+    let assert_custom = |_claims: &AutomationClaims| -> Result<(), JwtVerifyError> {
         // No custom assertion for automation. Replay attack protection must notably be implemented by consumer.
 
         Ok(())
@@ -97,8 +97,8 @@ fn verify_openid_credentials(
         jwt,
         provider.issuers(),
         &jwks.keys,
-        &assert_audience,
-        &assert_custom,
+        assert_audience,
+        assert_custom,
     )
     .map_err(VerifyOpenidCredentialsError::JwtVerify)?;
 

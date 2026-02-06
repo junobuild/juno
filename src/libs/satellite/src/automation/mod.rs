@@ -1,6 +1,6 @@
 pub mod authenticate;
-mod automation;
 mod controllers;
+mod prepare;
 mod strategy_impls;
 mod token;
 pub mod types;

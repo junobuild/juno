@@ -22,7 +22,7 @@ pub fn build_automation_workflow_key(
         return Err(JUNO_AUTOMATION_WORKFLOW_ERROR_MISSING_RUN_ID.to_string());
     };
 
-    let automation_workflow_key = AutomationWorkflowKey::create(provider, &repository, &run_id);
+    let automation_workflow_key = AutomationWorkflowKey::create(provider, repository, run_id);
 
     Ok(automation_workflow_key)
 }

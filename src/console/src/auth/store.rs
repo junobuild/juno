@@ -1,7 +1,9 @@
 use crate::auth::strategy_impls::AuthHeap;
 use junobuild_auth::state::types::config::AuthenticationConfig;
 use junobuild_auth::state::types::interface::SetAuthenticationConfig;
-use junobuild_auth::state::{get_config as get_state_config, set_config as set_store_config};
+use junobuild_auth::state::{
+    get_config as get_state_config, set_authentication_config as set_store_config,
+};
 
 pub async fn set_config(
     proposed_config: &SetAuthenticationConfig,

@@ -1,4 +1,5 @@
 use crate::constants::internal::REVOKED_CONTROLLERS;
+use crate::constants::shared::{MAX_NUMBER_OF_ACCESS_KEYS, MAX_NUMBER_OF_ADMIN_CONTROLLERS};
 use crate::env::{CONSOLE, OBSERVATORY};
 use crate::errors::{
     JUNO_ERROR_CONTROLLERS_ADMIN_NO_EXPIRY, JUNO_ERROR_CONTROLLERS_ANONYMOUS_NOT_ALLOWED,
@@ -10,6 +11,7 @@ use crate::types::interface::SetController;
 use crate::types::state::{Controller, ControllerId, ControllerScope, Controllers, UserId};
 use crate::utils::{principal_anonymous, principal_equal, principal_not_anonymous};
 use candid::Principal;
+use std::cmp::max_by;
 use std::collections::HashMap;
 
 /// Initializes a set of controllers with default administrative scope.
@@ -194,11 +196,37 @@ pub fn into_controller_ids(controllers: &Controllers) -> Vec<ControllerId> {
 /// # Arguments
 /// - `current_controllers`: Reference to the current set of controllers.
 /// - `controllers_ids`: Slice of `ControllerId` representing the controllers to be added.
-/// - `max_controllers`: Maximum number of allowed controllers.
+/// - `scope`: The scope of the new controllers to be added.
+/// - `max_controllers`: Optional custom maximum number of allowed controllers.
 ///
 /// # Returns
 /// `Ok(())` if the operation is successful, or `Err(String)` if the maximum is exceeded.
 pub fn assert_max_number_of_controllers(
+    current_controllers: &Controllers,
+    controllers_ids: &[ControllerId],
+    scope: &ControllerScope,
+    max_controllers: Option<usize>,
+) -> Result<(), String> {
+    let filtered_controllers = filter_controllers(current_controllers, scope);
+
+    let max_length = match scope {
+        ControllerScope::Admin => max_controllers.unwrap_or(MAX_NUMBER_OF_ADMIN_CONTROLLERS),
+        _ => max_controllers.unwrap_or(MAX_NUMBER_OF_ACCESS_KEYS),
+    };
+
+    assert_controllers_length(&filtered_controllers, controllers_ids, max_length)
+}
+
+/// Asserts that the number of controllers does not exceed the maximum allowed.
+///
+/// # Arguments
+/// - `current_controllers`: Reference to the current set of controllers.
+/// - `controllers_ids`: Slice of `ControllerId` representing the controllers to be added.
+/// - `max_controllers`: Maximum number of allowed controllers.
+///
+/// # Returns
+/// `Ok(())` if the operation is successful, or `Err(String)` if the maximum is exceeded.
+fn assert_controllers_length(
     current_controllers: &Controllers,
     controllers_ids: &[ControllerId],
     max_controllers: usize,
@@ -341,13 +369,26 @@ pub fn caller_is_self(caller: UserId) -> bool {
 /// # Returns
 /// A `Controllers` collection containing only admin controllers.
 pub fn filter_admin_controllers(controllers: &Controllers) -> Controllers {
+    filter_controllers(controllers, &ControllerScope::Admin)
+}
+
+/// Filters the set of controllers, returning only those matching the provided scope.
+///
+/// # Arguments
+/// - `controllers`: Reference to the current set of controllers.
+/// - `scope`: The expected scope.
+///
+/// # Returns
+/// A `Controllers` collection containing only matching controllers.
+fn filter_controllers(controllers: &Controllers, scope: &ControllerScope) -> Controllers {
     #[allow(clippy::match_like_matches_macro)]
     controllers
         .clone()
         .into_iter()
-        .filter(|(_, controller)| match controller.scope {
-            ControllerScope::Admin => true,
-            _ => false,
+        .filter(|(_, controller)| match scope {
+            ControllerScope::Write => matches!(controller.scope, ControllerScope::Write),
+            ControllerScope::Admin => matches!(controller.scope, ControllerScope::Admin),
+            ControllerScope::Submit => matches!(controller.scope, ControllerScope::Submit),
         })
         .collect()
 }
@@ -666,6 +707,49 @@ mod tests {
     }
 
     #[test]
+    fn test_filter_controllers_write() {
+        let mut controllers = Controllers::new();
+
+        controllers.insert(
+            test_principal(1),
+            create_controller(ControllerScope::Admin, None, None),
+        );
+        controllers.insert(
+            test_principal(2),
+            create_controller(ControllerScope::Write, None, None),
+        );
+        controllers.insert(
+            test_principal(3),
+            create_controller(ControllerScope::Write, None, None),
+        );
+
+        let write_only = filter_controllers(&controllers, &ControllerScope::Write);
+
+        assert_eq!(write_only.len(), 2);
+        assert!(write_only.contains_key(&test_principal(2)));
+        assert!(write_only.contains_key(&test_principal(3)));
+    }
+
+    #[test]
+    fn test_filter_controllers_submit() {
+        let mut controllers = Controllers::new();
+
+        controllers.insert(
+            test_principal(1),
+            create_controller(ControllerScope::Submit, None, None),
+        );
+        controllers.insert(
+            test_principal(2),
+            create_controller(ControllerScope::Write, None, None),
+        );
+
+        let submit_only = filter_controllers(&controllers, &ControllerScope::Submit);
+
+        assert_eq!(submit_only.len(), 1);
+        assert!(submit_only.contains_key(&test_principal(1)));
+    }
+
+    #[test]
     fn test_is_admin_controller() {
         let mut controllers = Controllers::new();
         let admin_principal = id(); // Self canister in test
@@ -775,6 +859,146 @@ mod tests {
         };
 
         let result = assert_controller_expiration(&controller);
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn test_assert_max_number_of_controllers_admin_default() {
+        let mut controllers = Controllers::new();
+
+        // Add MAX_NUMBER_OF_ADMIN_CONTROLLERS - 1 admin controllers
+        for i in 0..(MAX_NUMBER_OF_ADMIN_CONTROLLERS - 1) {
+            controllers.insert(
+                test_principal(i as u8),
+                create_controller(ControllerScope::Admin, None, None),
+            );
+        }
+
+        // Adding one more should succeed
+        let new_controllers = vec![test_principal(99)];
+        let result = assert_max_number_of_controllers(
+            &controllers,
+            &new_controllers,
+            &ControllerScope::Admin,
+            None,
+        );
+        assert!(result.is_ok());
+
+        // Adding two more should fail
+        let new_controllers = vec![test_principal(98), test_principal(99)];
+        let result = assert_max_number_of_controllers(
+            &controllers,
+            &new_controllers,
+            &ControllerScope::Admin,
+            None,
+        );
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn test_assert_max_number_of_controllers_write_default() {
+        let mut controllers = Controllers::new();
+
+        // Add MAX_NUMBER_OF_ACCESS_KEYS - 1 write controllers
+        for i in 0..(MAX_NUMBER_OF_ACCESS_KEYS - 1) {
+            controllers.insert(
+                test_principal(i as u8),
+                create_controller(ControllerScope::Write, None, None),
+            );
+        }
+
+        // Adding one more should succeed
+        let new_controllers = vec![test_principal(255)];
+        let result = assert_max_number_of_controllers(
+            &controllers,
+            &new_controllers,
+            &ControllerScope::Write,
+            None,
+        );
+        assert!(result.is_ok());
+
+        // Adding two more should fail
+        let new_controllers = vec![test_principal(254), test_principal(255)];
+        let result = assert_max_number_of_controllers(
+            &controllers,
+            &new_controllers,
+            &ControllerScope::Write,
+            None,
+        );
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn test_assert_max_number_of_controllers_custom_limit() {
+        let mut controllers = Controllers::new();
+
+        // Add 2 admin controllers
+        for i in 0..2 {
+            controllers.insert(
+                test_principal(i),
+                create_controller(ControllerScope::Admin, None, None),
+            );
+        }
+
+        // With custom limit of 3, adding one more should succeed
+        let new_controllers = vec![test_principal(3)];
+        let result = assert_max_number_of_controllers(
+            &controllers,
+            &new_controllers,
+            &ControllerScope::Admin,
+            Some(3),
+        );
+        assert!(result.is_ok());
+
+        // Adding two more should fail
+        let new_controllers = vec![test_principal(3), test_principal(4)];
+        let result = assert_max_number_of_controllers(
+            &controllers,
+            &new_controllers,
+            &ControllerScope::Admin,
+            Some(3),
+        );
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn test_assert_max_number_of_controllers_filters_by_scope() {
+        let mut controllers = Controllers::new();
+
+        // Add admin controllers
+        for i in 0..5 {
+            controllers.insert(
+                test_principal(i),
+                create_controller(ControllerScope::Admin, None, None),
+            );
+        }
+
+        // Add write controllers
+        for i in 10..15 {
+            controllers.insert(
+                test_principal(i),
+                create_controller(ControllerScope::Write, None, None),
+            );
+        }
+
+        // Adding a write controller should only count against write limit, not admin
+        let new_controllers = vec![test_principal(20)];
+        let result = assert_max_number_of_controllers(
+            &controllers,
+            &new_controllers,
+            &ControllerScope::Write,
+            Some(6), // 5 existing + 1 new = 6, should succeed
+        );
+        assert!(result.is_ok());
+
+        // Adding an admin controller should only count against admin limit
+        let new_controllers = vec![test_principal(21)];
+        let result = assert_max_number_of_controllers(
+            &controllers,
+            &new_controllers,
+            &ControllerScope::Admin,
+            Some(6), // 5 existing + 1 new = 6, should succeed
+        );
         assert!(result.is_ok());
     }
 }

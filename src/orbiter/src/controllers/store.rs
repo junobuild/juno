@@ -29,7 +29,3 @@ pub fn delete_controllers(remove_controllers: &[ControllerId]) {
 pub fn get_controllers() -> Controllers {
     STATE.with(|state| state.borrow().heap.controllers.clone())
 }
-
-pub fn get_admin_controllers() -> Controllers {
-    STATE.with(|state| filter_admin_controllers(&state.borrow().heap.controllers))
-}

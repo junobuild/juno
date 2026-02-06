@@ -4,7 +4,9 @@ use crate::store::heap::{
 };
 use ic_cdk_macros::{query, update};
 use junobuild_shared::ic::UnwrapOrTrap;
-use junobuild_shared::segments::controllers::{assert_controller_expiration, assert_controllers};
+use junobuild_shared::segments::controllers::{
+    assert_controller_expiration, assert_controllers, assert_max_number_of_controllers,
+};
 use junobuild_shared::types::interface::{DeleteControllersArgs, SetControllersArgs};
 use junobuild_shared::types::state::Controllers;
 
@@ -15,6 +17,9 @@ fn set_controllers(
         controller,
     }: SetControllersArgs,
 ) {
+    assert_max_number_of_controllers(&get_controllers(), &controllers, &controller.scope, None)
+        .unwrap_or_trap();
+
     assert_controllers(&controllers).unwrap_or_trap();
 
     assert_controller_expiration(&controller).unwrap_or_trap();

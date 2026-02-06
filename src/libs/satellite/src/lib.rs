@@ -31,8 +31,9 @@ use crate::types::interface::{
 use crate::types::state::CollectionType;
 use automation::types::AuthenticateAutomationArgs;
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
+use junobuild_auth::state::types::automation::AutomationConfig;
 use junobuild_auth::state::types::config::AuthenticationConfig;
-use junobuild_auth::state::types::interface::SetAuthenticationConfig;
+use junobuild_auth::state::types::interface::{SetAuthenticationConfig, SetAutomationConfig};
 use junobuild_cdn::proposals::{
     CommitProposal, ListProposalResults, ListProposalsParams, Proposal, ProposalId, ProposalType,
     RejectProposal,
@@ -377,6 +378,22 @@ pub async fn set_auth_config(config: SetAuthenticationConfig) -> AuthenticationC
 #[query(guard = "caller_is_admin_controller")]
 pub fn get_auth_config() -> Option<AuthenticationConfig> {
     api::config::get_auth_config()
+}
+
+// ---------------------------------------------------------
+// Automation config
+// ---------------------------------------------------------
+
+#[doc(hidden)]
+#[update(guard = "caller_is_admin_controller")]
+pub async fn set_automation_config(config: SetAutomationConfig) -> AutomationConfig {
+    api::config::set_automation_config(config).await
+}
+
+#[doc(hidden)]
+#[query(guard = "caller_is_admin_controller")]
+pub fn get_automation_config() -> Option<AutomationConfig> {
+    api::config::get_automation_config()
 }
 
 // ---------------------------------------------------------

@@ -1,31 +1,26 @@
 import {
 	idlFactoryMissionControl,
 	idlFactoryOrbiter,
-	idlFactorySatellite,
 	type MissionControlActor,
-	type OrbiterActor,
-	type SatelliteActor
+	type OrbiterActor
 } from '$declarations';
 import { PocketIc, type Actor } from '@dfinity/pic';
 import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import type { Principal } from '@icp-sdk/core/principal';
-import { JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER } from '@junobuild/errors';
 import { inject } from 'vitest';
-import { ORBITER_CONTROLLER_ERR_MSG } from '../../constants/orbiter-tests.constants';
-import { missionControlUserInitArgs } from '../../utils/mission-control-tests.utils';
+import { ORBITER_CONTROLLER_ERR_MSG } from '../../../constants/orbiter-tests.constants';
+import { missionControlUserInitArgs } from '../../../utils/mission-control-tests.utils';
 import {
 	controllersInitArgs,
 	MISSION_CONTROL_WASM_PATH,
-	ORBITER_WASM_PATH,
-	SATELLITE_WASM_PATH
-} from '../../utils/setup-tests.utils';
+	ORBITER_WASM_PATH
+} from '../../../utils/setup-tests.utils';
 
-describe('Mission Control > Controllers', () => {
+describe('Mission Control > Controllers > Orbiter', () => {
 	let pic: PocketIc;
 	let actor: Actor<MissionControlActor>;
 
 	let orbiterId: Principal;
-	let satelliteId: Principal;
 
 	const controller = Ed25519KeyIdentity.generate();
 
@@ -54,15 +49,6 @@ describe('Mission Control > Controllers', () => {
 
 		orbiterId = canisterId;
 
-		const { canisterId: cId } = await pic.setupCanister<SatelliteActor>({
-			idlFactory: idlFactorySatellite,
-			wasm: SATELLITE_WASM_PATH,
-			arg: controllersInitArgs([controller.getPrincipal(), missionControlId]),
-			sender: controller.getPrincipal()
-		});
-
-		satelliteId = cId;
-
 		actor.setIdentity(controller);
 	});
 
@@ -75,14 +61,6 @@ describe('Mission Control > Controllers', () => {
 
 		await expect(set_orbiter(orbiterId, ['Hello'])).rejects.toThrowError(
 			new RegExp(ORBITER_CONTROLLER_ERR_MSG)
-		);
-	});
-
-	it('should not be able to set a satellite because mission control is effectively not a controller', async () => {
-		const { set_satellite } = actor;
-
-		await expect(set_satellite(satelliteId, ['Hello'])).rejects.toThrowError(
-			new RegExp(JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER)
 		);
 	});
 });

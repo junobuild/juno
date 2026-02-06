@@ -4,7 +4,8 @@ use junobuild_shared::constants::shared::MAX_NUMBER_OF_MISSION_CONTROL_CONTROLLE
 use junobuild_shared::ic::api::id;
 use junobuild_shared::mgmt::ic::update_canister_controllers;
 use junobuild_shared::segments::controllers::{
-    assert_controllers, assert_max_number_of_controllers, into_controller_ids,
+    assert_controller_expiration, assert_controllers, assert_max_number_of_controllers,
+    into_controller_ids,
 };
 use junobuild_shared::types::interface::SetController;
 use junobuild_shared::types::state::{ControllerId, ControllerScope, Controllers};
@@ -26,6 +27,8 @@ pub async fn set_mission_control_controllers(
     }
 
     assert_controllers(controllers)?;
+
+    assert_controller_expiration(&controller)?;
 
     set_controllers(controllers, controller);
 

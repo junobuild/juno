@@ -16,7 +16,6 @@ import {
 	JUNO_STORAGE_ERROR_UPLOAD_NOT_ALLOWED
 } from '@junobuild/errors';
 import { inject } from 'vitest';
-import { CONTROLLER_METADATA } from '../../../constants/controller-tests.constants';
 import { mockListRules } from '../../../mocks/list.mocks';
 import { testControllers } from '../../../utils/controllers-tests.utils';
 import { controllersInitArgs, SATELLITE_WASM_PATH } from '../../../utils/setup-tests.utils';
@@ -213,7 +212,8 @@ describe('Satellite', () => {
 
 		testControllers({
 			actor: () => actor,
-			controller: () => controller
+			controller: () => controller,
+			pic: () => pic
 		});
 
 		describe.each([
@@ -694,22 +694,6 @@ describe('Satellite', () => {
 
 			await expect(
 				del_rule({ Db: null }, 'test', { version: testRuleVersion })
-			).rejects.toThrowError(JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER);
-		});
-
-		it('should throw errors on creating controller', async () => {
-			const { set_controllers } = actor;
-
-			const controller = Ed25519KeyIdentity.generate();
-
-			await expect(
-				set_controllers({
-					controllers: [controller.getPrincipal()],
-					controller: {
-						...CONTROLLER_METADATA,
-						scope: { Admin: null }
-					}
-				})
 			).rejects.toThrowError(JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER);
 		});
 

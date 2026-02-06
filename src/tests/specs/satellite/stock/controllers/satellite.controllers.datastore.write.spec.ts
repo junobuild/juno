@@ -78,7 +78,7 @@ describe.each([
 				...CONTROLLER_METADATA,
 				scope: { Write: null },
 				expires_at: [
-					toBigIntNanoSeconds(new Date((await pic.getTime()) + (futureMilliseconds ?? 0)))
+					toBigIntNanoSeconds(new Date((await pic.getTime()) + (futureMilliseconds ?? 10))) // Fallback to 10 just to be a bit in the future but less that the advance time afterwards
 				]
 			},
 			controllers: [testController.getPrincipal()]

@@ -608,7 +608,8 @@ describe('Orbiter', () => {
 
 			testControllers({
 				actor: () => actor,
-				controller: () => controller
+				controller: () => controller,
+				pic: () => pic
 			});
 		});
 	});

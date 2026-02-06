@@ -4,7 +4,7 @@ use ic_cdk::trap;
 use junobuild_shared::constants::shared::MAX_NUMBER_OF_SATELLITE_CONTROLLERS;
 use junobuild_shared::ic::UnwrapOrTrap;
 use junobuild_shared::segments::controllers::{
-    assert_controllers, assert_max_number_of_controllers,
+    assert_controller_expiration, assert_controllers, assert_max_number_of_controllers,
 };
 use junobuild_shared::types::interface::{DeleteControllersArgs, SetControllersArgs};
 use junobuild_shared::types::state::{ControllerScope, Controllers};
@@ -32,6 +32,8 @@ pub fn set_controllers(
     }
 
     assert_controllers(&controllers).unwrap_or_trap();
+
+    assert_controller_expiration(&controller).unwrap_or_trap();
 
     set_controllers_store(&controllers, &controller);
 

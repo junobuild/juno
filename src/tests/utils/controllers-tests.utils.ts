@@ -5,19 +5,29 @@ import type {
 	OrbiterDid,
 	SatelliteActor
 } from '$declarations';
-import type { Actor } from '@dfinity/pic';
+import { toBigIntNanoSeconds } from '$lib/utils/date.utils';
+import type { Actor, PocketIc } from '@dfinity/pic';
 import { assertNonNullish } from '@dfinity/utils';
-import type { Identity } from '@icp-sdk/core/agent';
+import { AnonymousIdentity, type Identity } from '@icp-sdk/core/agent';
 import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
+import {
+	JUNO_ERROR_CONTROLLERS_ADMIN_NO_EXPIRY,
+	JUNO_ERROR_CONTROLLERS_ANONYMOUS_NOT_ALLOWED,
+	JUNO_ERROR_CONTROLLERS_EXPIRY_IN_PAST
+} from '@junobuild/errors';
+import { CONTROLLER_METADATA } from '../constants/controller-tests.constants';
+import { tick } from './pic-tests.utils';
 
 /* eslint-disable vitest/require-top-level-describe */
 
 export const testControllers = ({
 	actor,
-	controller
+	controller,
+	pic
 }: {
 	actor: () => Actor<SatelliteActor | ConsoleActor | ObservatoryActor | OrbiterActor>;
 	controller: () => Identity;
+	pic: () => PocketIc;
 }) => {
 	it('should add and remove additional controller', async () => {
 		const { set_controllers, del_controllers, list_controllers } = actor();
@@ -26,7 +36,7 @@ export const testControllers = ({
 
 		const controllerData: OrbiterDid.SetController = {
 			scope: { Admin: null },
-			expires_at: [123n],
+			expires_at: [],
 			kind: [{ Automation: null }],
 			metadata: [['hello', 'world']]
 		};
@@ -63,5 +73,69 @@ export const testControllers = ({
 
 		expect(updatedControllers).toHaveLength(1);
 		expect(updatedControllers[0][0].toText()).toEqual(controller().getPrincipal().toText());
+	});
+
+	describe('assert', () => {
+		it('should throw errors on creating admin controller with expiration date', async () => {
+			const { set_controllers } = actor();
+
+			const controller = Ed25519KeyIdentity.generate();
+
+			await expect(
+				set_controllers({
+					controllers: [controller.getPrincipal()],
+					controller: {
+						...CONTROLLER_METADATA,
+						scope: { Admin: null },
+						expires_at: [1n]
+					}
+				})
+			).rejects.toThrowError(JUNO_ERROR_CONTROLLERS_ADMIN_NO_EXPIRY);
+		});
+
+		it.each([
+			{ title: 'write', scope: { Write: null } },
+			{ title: 'submit', scope: { Submit: null } }
+		])(
+			'should throw errors on creating controller with expiry in the past for $title',
+			async ({ scope }) => {
+				const { set_controllers } = actor();
+
+				const controller = Ed25519KeyIdentity.generate();
+
+				const now = toBigIntNanoSeconds(new Date(await pic().getTime()));
+
+				await pic().advanceTime(10_000);
+				await tick(pic());
+
+				await expect(
+					set_controllers({
+						controllers: [controller.getPrincipal()],
+						controller: {
+							...CONTROLLER_METADATA,
+							scope,
+							expires_at: [now]
+						}
+					})
+				).rejects.toThrowError(JUNO_ERROR_CONTROLLERS_EXPIRY_IN_PAST);
+			}
+		);
+
+		it('should throw errors on creating anonymous controller', async () => {
+			const { set_controllers } = actor();
+
+			const controller = new AnonymousIdentity();
+
+			await expect(
+				set_controllers({
+					controllers: [controller.getPrincipal()],
+					controller: {
+						...CONTROLLER_METADATA,
+						scope: { Admin: null },
+						expires_at: [1n]
+					}
+				})
+			).rejects.toThrowError(JUNO_ERROR_CONTROLLERS_ANONYMOUS_NOT_ALLOWED);
+		});
 	});
 };

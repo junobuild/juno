@@ -10,6 +10,7 @@ import {
 import { inject } from 'vitest';
 import { CONTROLLER_METADATA } from '../../../../constants/controller-tests.constants';
 import { mockListProposalsParams } from '../../../../mocks/list.mocks';
+import { tick } from '../../../../utils/pic-tests.utils';
 import { controllersInitArgs, SATELLITE_WASM_PATH } from '../../../../utils/setup-tests.utils';
 
 describe('Satellite > Controllers > Guards', () => {
@@ -58,7 +59,7 @@ describe('Satellite > Controllers > Guards', () => {
 				controller: {
 					...CONTROLLER_METADATA,
 					scope,
-					expires_at: [toBigIntNanoSeconds(currentDate)]
+					expires_at: [toBigIntNanoSeconds(new Date((await pic.getTime()) + 10))]
 				},
 				controllers: [testController.getPrincipal()]
 			});
@@ -66,6 +67,7 @@ describe('Satellite > Controllers > Guards', () => {
 			actor.setIdentity(testController);
 
 			await pic.advanceTime(100);
+			await tick(pic);
 		});
 
 		it('should throw on get_proposal', async () => {
@@ -201,7 +203,7 @@ describe('Satellite > Controllers > Guards', () => {
 				controller: {
 					...CONTROLLER_METADATA,
 					scope: { Write: null },
-					expires_at: [toBigIntNanoSeconds(currentDate)]
+					expires_at: [toBigIntNanoSeconds(new Date((await pic.getTime()) + 10))]
 				},
 				controllers: [testController.getPrincipal()]
 			});

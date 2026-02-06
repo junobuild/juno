@@ -9,17 +9,17 @@ fn pick_key<'a>(kid: &str, jwks: &'a [Jwk]) -> Option<&'a Jwk> {
     jwks.iter().find(|j| j.kid.as_deref() == Some(kid))
 }
 
-pub fn verify_openid_jwt<Claims, Aud, Replay>(
+pub fn verify_openid_jwt<Claims, Aud, Custom>(
     jwt: &str,
     issuers: &[&str],
     jwks: &[Jwk],
     assert_audience: Aud,
-    assert_no_replay: Replay,
+    assert_custom: Custom,
 ) -> Result<TokenData<Claims>, JwtVerifyError>
 where
     Claims: DeserializeOwned + JwtClaims,
     Aud: FnOnce(&Claims) -> Result<(), JwtVerifyError>,
-    Replay: FnOnce(&Claims) -> Result<(), JwtVerifyError>,
+    Custom: FnOnce(&Claims) -> Result<(), JwtVerifyError>,
 {
     // 1) Read header to get `kid`
     let header = decode_jwt_header(jwt).map_err(JwtVerifyError::from)?;
@@ -67,8 +67,8 @@ where
     // 6) Manual checks audience
     assert_audience(c)?;
 
-    // 7) Prevent replace attack
-    assert_no_replay(c)?;
+    // 7) Assert custom fields such as the nonce for delegation to prevent replay attack
+    assert_custom(c)?;
 
     // 8) Assert expiration
     let now_ns = now_ns();

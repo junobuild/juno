@@ -9,11 +9,8 @@ use junobuild_auth::state::get_automation_providers;
 
 pub async fn openid_authenticate_automation(
     args: &OpenIdPrepareAutomationArgs,
-    // TODO: Result<Result, String>>
 ) -> Result<AuthenticateAutomationResult, String> {
     let providers = get_automation_providers(&AuthHeap)?;
-
-    // TODO: rate_config of collection?
 
     let prepared_automation = automation::openid_prepare_automation(args, &providers).await;
 

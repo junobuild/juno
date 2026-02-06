@@ -154,7 +154,7 @@ fn is_controller_expired(controller: &Controller) -> bool {
 
     controller
         .expires_at
-        .map_or(false, |expires_at| expires_at < time())
+        .is_some_and(|expires_at| expires_at < time())
 }
 
 /// Checks if a caller is an admin controller.

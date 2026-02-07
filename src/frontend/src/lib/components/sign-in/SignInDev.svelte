@@ -69,12 +69,15 @@
 							inputType="text"
 							placeholder="e.g. yolo"
 							required={false}
+							testId={testIds.auth.inputDevIdentifier}
 							bind:value={customIdentifier}
 						/>
 					</Value>
 				</div>
 
-				<button disabled={$isBusy} type="submit"><span>{$i18n.core.continue}</span></button>
+				<button {...testId(testIds.auth.continueDevAccount)} disabled={$isBusy} type="submit"
+					><span>{$i18n.core.continue}</span></button
+				>
 			</form>
 
 			{#if withRecentIdentifiers}
@@ -119,7 +122,11 @@
 
 		<p class="switch">
 			{$i18n.dev.or}
-			<button class="text" onclick={() => (mode = 'switch')}>{$i18n.dev.switch_account}</button>
+			<button
+				{...testId(testIds.auth.switchDevAccount)}
+				class="text"
+				onclick={() => (mode = 'switch')}>{$i18n.dev.switch_account}</button
+			>
 		</p>
 	{/if}
 {/if}

@@ -7,7 +7,6 @@ use serde::Serialize;
 #[derive(CandidType, Serialize, Deserialize)]
 pub struct OpenIdPrepareAutomationArgs {
     pub jwt: String,
-    pub controller_id: ControllerId,
 }
 
 pub type PrepareAutomationResult = Result<PreparedAutomation, PrepareAutomationError>;

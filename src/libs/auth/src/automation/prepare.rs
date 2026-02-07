@@ -6,24 +6,26 @@ use crate::automation::utils::duration::build_expiration;
 use crate::automation::utils::scope::build_scope;
 use crate::openid::types::provider::OpenIdAutomationProvider;
 use crate::strategies::{AuthAutomationStrategy, AuthHeapStrategy};
+use junobuild_shared::ic::api::caller;
 use junobuild_shared::segments::controllers::{
     assert_controllers, assert_max_number_of_controllers,
 };
 use junobuild_shared::types::state::ControllerId;
 
 pub fn openid_prepare_automation(
-    controller_id: &ControllerId,
     provider: &OpenIdAutomationProvider,
     auth_heap: &impl AuthHeapStrategy,
     auth_automation: &impl AuthAutomationStrategy,
 ) -> PrepareAutomationResult {
+    let controller_id = caller();
+
     let existing_controllers = auth_automation.get_controllers();
 
-    if existing_controllers.contains_key(controller_id) {
+    if existing_controllers.contains_key(&controller_id) {
         return Err(PrepareAutomationError::ControllerAlreadyExists);
     }
 
-    let submitted_controllers: [ControllerId; 1] = [*controller_id];
+    let submitted_controllers: [ControllerId; 1] = [controller_id];
 
     assert_controllers(&submitted_controllers)
         .map_err(PrepareAutomationError::InvalidController)?;
@@ -41,7 +43,7 @@ pub fn openid_prepare_automation(
     let expires_at = build_expiration(provider, auth_heap);
 
     let controller: PreparedControllerAutomation = PreparedControllerAutomation {
-        id: *controller_id,
+        id: controller_id,
         expires_at,
         scope,
     };

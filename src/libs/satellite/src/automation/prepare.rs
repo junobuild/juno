@@ -32,12 +32,7 @@ pub async fn openid_prepare_automation(
             Err(err) => return Err(PrepareAutomationError::from(err)),
         };
 
-    let result = automation::openid_prepare_automation(
-        &args.controller_id,
-        &provider,
-        &AuthHeap,
-        &AuthAutomation,
-    );
+    let result = automation::openid_prepare_automation(&provider, &AuthHeap, &AuthAutomation);
 
     result.map(|prepared_automation| (prepared_automation, provider, credential))
 }

@@ -10,6 +10,7 @@ use crate::state::types::automation::{
     OpenIdAutomationProviderConfig, OpenIdAutomationProviders, RepositoryKey,
 };
 use crate::strategies::AuthHeapStrategy;
+use junobuild_shared::ic::api::caller;
 
 type VerifyOpenIdAutomationCredentialsResult =
     Result<(OpenIdAutomationCredential, OpenIdAutomationProvider), VerifyOpenidCredentialsError>;
@@ -47,8 +48,13 @@ fn verify_openid_credentials(
     provider: &OpenIdAutomationProvider,
     config: &OpenIdAutomationProviderConfig,
 ) -> VerifyOpenIdAutomationCredentialsResult {
-    let assert_audience = |_claims: &AutomationClaims| -> Result<(), JwtVerifyError> {
-        // TODO: assert caller is audience
+    let assert_audience = |claims: &AutomationClaims| -> Result<(), JwtVerifyError> {
+        // Ensure the JWT has not been intercepted and submitted with a different identity.
+        // We verify the audience matches the caller's principal (GitHub does not allow customizing
+        // other JWT fields, making audience our only option for binding the JWT to a specific principal).
+        if claims.aud != caller().to_text() {
+            return Err(JwtVerifyError::BadClaim("aud".to_string()));
+        }
 
         Ok(())
     };
@@ -116,6 +122,7 @@ mod tests {
         OpenIdAutomationProviderConfig, OpenIdAutomationRepositories,
         OpenIdAutomationRepositoryConfig, RepositoryKey,
     };
+    use ic_cdk::call;
     use jsonwebtoken::{encode, Algorithm, EncodingKey, Header};
     use std::collections::HashMap;
     use std::time::{SystemTime, UNIX_EPOCH};
@@ -182,7 +189,7 @@ mod tests {
         let claims = AutomationClaims {
             iss: ISS_GITHUB_ACTIONS.into(),
             sub: "repo:octo-org/octo-repo:ref:refs/heads/main".into(),
-            aud: "https://github.com/octo-org".into(),
+            aud: caller().to_text(),
             iat: Some(now),
             exp: Some(now + 600),
             nbf: None,
@@ -210,13 +217,47 @@ mod tests {
     }
 
     #[test]
+    fn rejects_mismatched_audience() {
+        let now = now_secs();
+
+        let claims = AutomationClaims {
+            iss: ISS_GITHUB_ACTIONS.into(),
+            sub: "repo:octo-org/octo-repo:ref:refs/heads/main".into(),
+            aud: "another-principal-id".into(),
+            iat: Some(now),
+            exp: Some(now + 600),
+            nbf: None,
+            jti: Some("example-id".into()),
+            repository: Some("octo-org/octo-repo".into()),
+            repository_owner: Some("octo-org".into()),
+            r#ref: Some("refs/heads/main".into()),
+            run_id: Some("123456".into()),
+            run_number: Some("1".into()),
+            run_attempt: Some("1".into()),
+        };
+
+        let jwt = create_token(&claims);
+        let jwks = test_jwks();
+        let config = test_config();
+
+        let result =
+            verify_openid_credentials(&jwt, &jwks, &OpenIdAutomationProvider::GitHub, &config);
+
+        assert!(result.is_err());
+        assert!(matches!(
+            result.unwrap_err(),
+            VerifyOpenidCredentialsError::JwtVerify(JwtVerifyError::BadClaim(ref c)) if c == "aud"
+        ));
+    }
+
+    #[test]
     fn rejects_unauthorized_repository() {
         let now = now_secs();
 
         let claims = AutomationClaims {
             iss: ISS_GITHUB_ACTIONS.into(),
             sub: "repo:other-org/other-repo:ref:refs/heads/main".into(),
-            aud: "https://github.com/other-org".into(),
+            aud: caller().to_text(),
             iat: Some(now),
             exp: Some(now + 600),
             nbf: None,
@@ -250,7 +291,7 @@ mod tests {
         let claims = AutomationClaims {
             iss: ISS_GITHUB_ACTIONS.into(),
             sub: "repo:octo-org/octo-repo:ref:refs/heads/feature".into(),
-            aud: "https://github.com/octo-org".into(),
+            aud: caller().to_text(),
             iat: Some(now),
             exp: Some(now + 600),
             nbf: None,
@@ -298,7 +339,7 @@ mod tests {
         let claims = AutomationClaims {
             iss: ISS_GITHUB_ACTIONS.into(),
             sub: "repo:octo-org/octo-repo:ref:refs/heads/any-branch".into(),
-            aud: "https://github.com/octo-org".into(),
+            aud: caller().to_text(),
             iat: Some(now),
             exp: Some(now + 600),
             nbf: None,
@@ -327,7 +368,7 @@ mod tests {
         let claims = AutomationClaims {
             iss: ISS_GITHUB_ACTIONS.into(),
             sub: "repo:octo-org/octo-repo:ref:refs/heads/main".into(),
-            aud: "https://github.com/octo-org".into(),
+            aud: caller().to_text(),
             iat: Some(now),
             exp: Some(now + 600),
             nbf: None,

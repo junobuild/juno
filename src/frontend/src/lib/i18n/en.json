@@ -989,6 +989,15 @@
 		"error_toggling_openid_monitoring_failed": "Toggling the Observatory monitoring in the emulator failed.",
 		"error_getting_icp": "Getting ICP with the emulator failed."
 	},
+	"dev": {
+		"continue_with_dev": "Continue with {0}",
+		"or": "or",
+		"switch_account": "switch account",
+		"identifier": "Identifier",
+		"examples": "e.g. David",
+		"recent": "or recent",
+		"enter_a_name": "Enter a name to identify your dev session (e.g., \"alice\", \"bob\")"
+	},
 	"upgrade": {
 		"title": "Upgrade Dock",
 		"modules": "Modules",

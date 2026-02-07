@@ -1,9 +1,9 @@
-import { testWithII } from '@dfinity/internet-identity-playwright';
+import { test } from '@playwright/test';
 import { initTestSuite } from './utils/init.utils';
 
 const getConsolePage = initTestSuite();
 
-testWithII('should not allow creating a second satellite', async () => {
+test('should not allow creating a second satellite', async () => {
 	const consolePage = getConsolePage();
 
 	// First creation succeeds (use website by default – scenario symmetry with existing tests)

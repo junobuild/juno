@@ -47,7 +47,13 @@ fn verify_openid_credentials(
     provider: &OpenIdAutomationProvider,
     config: &OpenIdAutomationProviderConfig,
 ) -> VerifyOpenIdAutomationCredentialsResult {
-    let assert_audience = |claims: &AutomationClaims| -> Result<(), JwtVerifyError> {
+    let assert_audience = |_claims: &AutomationClaims| -> Result<(), JwtVerifyError> {
+        // TODO: assert caller is audience
+
+        Ok(())
+    };
+
+    let assert_repository = |claims: &AutomationClaims| -> Result<(), JwtVerifyError> {
         let repository = claims
             .repository
             .as_ref()
@@ -87,18 +93,12 @@ fn verify_openid_credentials(
         Ok(())
     };
 
-    let assert_custom = |_claims: &AutomationClaims| -> Result<(), JwtVerifyError> {
-        // No custom assertion for automation. Replay attack protection must notably be implemented by consumer.
-
-        Ok(())
-    };
-
     let token = verify_openid_jwt(
         jwt,
         provider.issuers(),
         &jwks.keys,
         assert_audience,
-        assert_custom,
+        assert_repository,
     )
     .map_err(VerifyOpenidCredentialsError::JwtVerify)?;
 

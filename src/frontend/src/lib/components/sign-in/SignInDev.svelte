@@ -27,7 +27,9 @@
 
 	let customIdentifier = $state('');
 
-	const signInWithIdentifier = async () => {
+	const signInWithIdentifier = async ($event: SubmitEvent) => {
+		$event.preventDefault();
+
 		if (isEmptyString(customIdentifier)) {
 			toasts.error({
 				text: $i18n.dev.enter_a_name
@@ -108,7 +110,7 @@
 		<button
 			{...testId(testIds.auth.signInDev)}
 			disabled={$isBusy}
-			onclick={async () => await signIn()}
+			onclick={async () => await signIn(lastDevIdentifier)}
 			><IconRobot size="18px" />
 			<span
 				>{i18nFormat($i18n.dev.continue_with_dev, [

@@ -991,6 +991,15 @@
 		"error_toggling_openid_monitoring_failed": "在模拟器中切换 Observatory 监控失败。",
 		"error_getting_icp": "使用模拟器获取 ICP 失败。"
 	},
+	"dev": {
+		"continue_with_dev": "继续使用 {0}",
+		"or": "或",
+		"switch_account": "切换账号",
+		"identifier": "标识符",
+		"examples": "例如 David",
+		"recent": "或最近使用",
+		"enter_a_name": "输入一个名称以标识您的开发会话(例如 \"alice\"、\"bob\")"
+	},
 	"upgrade": {
 		"title": "升级中心",
 		"modules": "模块",

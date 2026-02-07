@@ -65,11 +65,11 @@
 						{/snippet}
 
 						<Input
-							testId={testIds.auth.inputDevIdentifier}
 							name="dev_key"
 							inputType="text"
 							placeholder="e.g. yolo"
 							required={false}
+							testId={testIds.auth.inputDevIdentifier}
 							bind:value={customIdentifier}
 						/>
 					</Value>

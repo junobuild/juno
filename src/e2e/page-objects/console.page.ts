@@ -26,12 +26,15 @@ export class ConsolePage {
 		await expect(this.#page.getByTestId(testIds.auth.switchDevAccount)).toBeVisible(
 			TIMEOUT_AVERAGE
 		);
+
 		await this.#page.getByTestId(testIds.auth.switchDevAccount).click();
 
 		await expect(this.#page.getByTestId(testIds.auth.inputDevIdentifier)).toBeVisible();
+
 		await this.#page.getByTestId(testIds.auth.inputDevIdentifier).fill(crypto.randomUUID());
 
 		await expect(this.#page.getByTestId(testIds.auth.continueDevAccount)).toBeVisible();
+
 		await this.#page.getByTestId(testIds.auth.continueDevAccount).click();
 	}
 

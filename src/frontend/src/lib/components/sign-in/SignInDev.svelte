@@ -103,9 +103,9 @@
 		</div>
 	{:else}
 		<button
+			{...testId(testIds.auth.signInDev)}
 			disabled={$isBusy}
 			onclick={async () => await signIn()}
-			{...testId(testIds.auth.signInDev)}
 			><IconRobot size="18px" />
 			<span
 				>{i18nFormat($i18n.dev.continue_with_dev, [

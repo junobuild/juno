@@ -1,9 +1,9 @@
 <script lang="ts">
+	import SignInDev from '$lib/components/sign-in/SignInDev.svelte';
 	import SignInGitHub from '$lib/components/sign-in/SignInGitHub.svelte';
 	import SignInGoogle from '$lib/components/sign-in/SignInGoogle.svelte';
 	import SignInII from '$lib/components/sign-in/SignInII.svelte';
-	import SignInDev from "$lib/components/sign-in/SignInDev.svelte";
-	import {isProd} from "$lib/env/app.env";
+	import { isProd } from '$lib/env/app.env';
 </script>
 
 <div class="sign-in">
@@ -15,7 +15,7 @@
 		<SignInGitHub />
 
 		<SignInII />
-		{/if}
+	{/if}
 </div>
 
 <style lang="scss">

@@ -1,60 +1,121 @@
 <script lang="ts">
+	import { isEmptyString } from '@dfinity/utils';
+	import {
+		type DevIdentifier,
+		type DevIdentifierData,
+		loadDevIdentifiers
+	} from '@junobuild/ic-client/dev';
+	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
-	import { isBusy } from '$lib/derived/app/busy.derived';
-	import { signInWithGoogle } from '$lib/services/console/auth/auth.openid.services';
-	import { isDev } from '$lib/env/app.env';
 	import IconRobot from '$lib/components/icons/IconRobot.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
-	import Badge from "$lib/components/ui/Badge.svelte";
-	import {signInWithDev} from "$lib/services/console/auth/auth.dev.services";
+	import { isBusy } from '$lib/derived/app/busy.derived';
+	import { isDev } from '$lib/env/app.env';
+	import { signInWithDev } from '$lib/services/console/auth/auth.dev.services';
+	import { i18n } from '$lib/stores/app/i18n.store';
+	import { toasts } from '$lib/stores/app/toasts.store';
+	import { i18nFormat } from '$lib/utils/i18n.utils';
 
 	let mode = $state<'continue' | 'switch'>('continue');
-	let devKey = $state('');
 
-	export const signIn = async () => {
-		await signInWithDev({});
-	}
+	const signIn = async (identifier?: DevIdentifier) => {
+		await signInWithDev({ identifier });
+	};
+
+	let customIdentifier = $state('');
+
+	const signInWithIdentifier = async () => {
+		if (isEmptyString(customIdentifier)) {
+			toasts.error({
+				text: $i18n.dev.enter_a_name
+			});
+			return;
+		}
+
+		await signInWithDev({ identifier: customIdentifier });
+	};
+
+	let identifiers = $state<[DevIdentifier, DevIdentifierData][]>([]);
+	let lastDevIdentifier = $state<string | undefined>(undefined);
+
+	let withRecentIdentifiers = $derived(identifiers.find(([key]) => key !== 'dev') !== undefined);
+
+	const load = async () => {
+		identifiers = await loadDevIdentifiers({
+			limit: 10
+		});
+
+		lastDevIdentifier = identifiers[0]?.[0];
+	};
+
+	onMount(load);
 </script>
 
 {#if isDev()}
 	{#if mode === 'switch'}
 		<div in:fade>
-			<div>
-				<Value>
-					{#snippet label()}
-						Dev Identifier
-					{/snippet}
+			<form onsubmit={signInWithIdentifier}>
+				<div class="identifier">
+					<Value>
+						{#snippet label()}
+							{$i18n.dev.identifier}
+						{/snippet}
 
-					<Input
+						<Input
 							name="dev_key"
 							inputType="text"
-							placeholder="e.g. david"
+							placeholder="e.g. yolo"
 							required={false}
-							bind:value={devKey}
-					/>
-				</Value>
-			</div>
+							bind:value={customIdentifier}
+						/>
+					</Value>
+				</div>
 
-			<button disabled={$isBusy} onclick={signInWithGoogle}><span>Continue</span></button>
+				<button disabled={$isBusy} type="submit"><span>{$i18n.core.continue}</span></button>
+			</form>
 
+			{#if withRecentIdentifiers}
+				<p class="recent">{$i18n.dev.recent}:</p>
 
-			<p>Recent:</p>
+				<ul>
+					{#each identifiers as identifier (identifier)}
+						{@const [key] = identifier}
 
-			<ul>
-				<li><Badge color="primary">David</Badge></li>
-				<li><Badge color="primary">Yolo</Badge></li>
-				<li><Badge color="primary">Hello</Badge></li>
-				<li><Badge color="primary">World</Badge></li>
-			</ul>
+						<li>
+							<button
+								class="badge"
+								aria-label={i18nFormat($i18n.dev.continue_with_dev, [
+									{
+										placeholder: '{0}',
+										value: key
+									}
+								])}
+								disabled={$isBusy}
+								onclick={async () => await signIn(key)}><span>{key}</span></button
+							>
+						</li>
+					{/each}
+				</ul>
+			{/if}
 		</div>
 	{:else}
-		<button disabled={$isBusy} onclick={signIn}
-			><IconRobot size="20px" />
-			<span>Continue with Dev</span></button
+		<button disabled={$isBusy} onclick={async () => await signIn()}
+			><IconRobot size="18px" />
+			<span
+				>{i18nFormat($i18n.dev.continue_with_dev, [
+					{
+						placeholder: '{0}',
+						value: lastDevIdentifier ?? 'dev'
+					}
+				])}</span
+			></button
 		>
 
-		<p>or <button class="text" onclick={() => (mode = 'switch')}>switch account</button></p>
+		<p class="switch">
+			{$i18n.dev.or}
+			<button class="text" onclick={() => (mode = 'switch')}>{$i18n.dev.switch_account}</button>
+		</p>
 	{/if}
 {/if}
 
@@ -64,18 +125,57 @@
 		padding: var(--padding) var(--padding-3x);
 	}
 
-	p {
+	.switch {
 		display: flex;
 		justify-content: center;
 		align-items: center;
 		gap: var(--padding-0_5x);
 
 		font-size: var(--font-size-very-small);
-		margin: var(--padding-0_25x) 0;
+		margin: var(--padding-0_25x) 0 var(--padding-3x);
 	}
 
 	.text {
 		width: fit-content;
 		margin: 0;
+	}
+
+	.identifier {
+		text-align: initial;
+
+		:global(input) {
+			margin: var(--padding-0_5x) 0;
+		}
+	}
+
+	.recent {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+
+		font-size: var(--font-size-very-small);
+		margin: var(--padding-3x) 0 var(--padding);
+	}
+
+	ul {
+		padding: var(--padding-0_25x) 0;
+		margin: 0;
+		list-style: none;
+
+		display: flex;
+		justify-content: center;
+		flex-wrap: wrap;
+		gap: var(--padding);
+
+		max-width: 300px;
+	}
+
+	form {
+		display: flex;
+		align-items: center;
+		flex-direction: column;
+
+		margin: 0 auto;
+		max-width: 200px;
 	}
 </style>

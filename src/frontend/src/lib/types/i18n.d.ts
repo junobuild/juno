@@ -1019,6 +1019,16 @@ interface I18nEmulator {
 	error_getting_icp: string;
 }
 
+interface I18nDev {
+	continue_with_dev: string;
+	or: string;
+	switch_account: string;
+	identifier: string;
+	examples: string;
+	recent: string;
+	enter_a_name: string;
+}
+
 interface I18nUpgrade {
 	title: string;
 	modules: string;
@@ -1138,6 +1148,7 @@ interface I18n {
 	monitoring: I18nMonitoring;
 	preferences: I18nPreferences;
 	emulator: I18nEmulator;
+	dev: I18nDev;
 	upgrade: I18nUpgrade;
 	changes: I18nChanges;
 	cdn: I18nCdn;

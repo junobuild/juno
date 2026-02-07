@@ -1,3 +1,4 @@
+pub mod automation;
 pub mod delegation;
 pub mod openid;
 pub mod profile;

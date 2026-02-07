@@ -70,7 +70,7 @@ type OpenIdCertificate = record {
   created_at : nat64;
   version : opt nat64;
 };
-type OpenIdProvider = variant { Google; GitHubAuth };
+type OpenIdProvider = variant { GitHubActions; Google; GitHubAuth };
 type RateConfig = record { max_tokens : nat64; time_per_token_ns : nat64 };
 type RateKind = variant { OpenIdCertificateRequests };
 type Segment = record {

@@ -34,12 +34,25 @@ export interface AssetNoContent {
 export interface AssetsUpgradeOptions {
 	clear_existing_assets: [] | [boolean];
 }
+export type AuthenticateAutomationArgs = {
+	OpenId: OpenIdPrepareAutomationArgs;
+};
+export type AuthenticateAutomationResultResponse =
+	| { Ok: null }
+	| { Err: AuthenticationAutomationError };
 export type AuthenticateResultResponse = { Ok: Authentication } | { Err: AuthenticationError };
 export interface Authentication {
 	doc: Doc;
 	delegation: PreparedDelegation;
 }
 export type AuthenticationArgs = { OpenId: OpenIdPrepareDelegationArgs };
+export type AuthenticationAutomationError =
+	| {
+			PrepareAutomation: PrepareAutomationError;
+	  }
+	| { RegisterController: string }
+	| { SaveWorkflowMetadata: string }
+	| { SaveUniqueJtiToken: string };
 export interface AuthenticationConfig {
 	updated_at: [] | [bigint];
 	openid: [] | [AuthenticationConfigOpenId];
@@ -64,6 +77,17 @@ export type AuthenticationError =
 export interface AuthenticationRules {
 	allowed_callers: Array<Principal>;
 }
+export interface AutomationConfig {
+	updated_at: [] | [bigint];
+	openid: [] | [AutomationConfigOpenId];
+	created_at: [] | [bigint];
+	version: [] | [bigint];
+}
+export interface AutomationConfigOpenId {
+	observatory_id: [] | [Principal];
+	providers: Array<[OpenIdAutomationProvider, OpenIdAutomationProviderConfig]>;
+}
+export type AutomationScope = { Write: null } | { Submit: null };
 export type CollectionType = { Db: null } | { Storage: null };
 export interface CommitBatch {
 	batch_id: bigint;
@@ -269,12 +293,28 @@ export interface OpenIdAuthProviderDelegationConfig {
 	targets: [] | [Array<Principal>];
 	max_time_to_live: [] | [bigint];
 }
+export type OpenIdAutomationProvider = { GitHub: null };
+export interface OpenIdAutomationProviderConfig {
+	controller: [] | [OpenIdAutomationProviderControllerConfig];
+	repositories: Array<[RepositoryKey, OpenIdAutomationRepositoryConfig]>;
+}
+export interface OpenIdAutomationProviderControllerConfig {
+	scope: [] | [AutomationScope];
+	max_time_to_live: [] | [bigint];
+}
+export interface OpenIdAutomationRepositoryConfig {
+	branches: [] | [Array<string>];
+}
 export type OpenIdDelegationProvider = { GitHub: null } | { Google: null };
 export interface OpenIdGetDelegationArgs {
 	jwt: string;
 	session_key: Uint8Array;
 	salt: Uint8Array;
 	expiration: bigint;
+}
+export interface OpenIdPrepareAutomationArgs {
+	jwt: string;
+	controller_id: Principal;
 }
 export interface OpenIdPrepareDelegationArgs {
 	jwt: string;
@@ -286,6 +326,16 @@ export type Permission =
 	| { Private: null }
 	| { Public: null }
 	| { Managed: null };
+export type PrepareAutomationError =
+	| {
+			JwtFindProvider: JwtFindProviderError;
+	  }
+	| { InvalidController: string }
+	| { GetCachedJwks: null }
+	| { JwtVerify: JwtVerifyError }
+	| { GetOrFetchJwks: GetOrRefreshJwksError }
+	| { ControllerAlreadyExists: null }
+	| { TooManyControllers: string };
 export type PrepareDelegationError =
 	| {
 			JwtFindProvider: JwtFindProviderError;
@@ -325,6 +375,10 @@ export interface RateConfig {
 	max_tokens: bigint;
 	time_per_token_ns: bigint;
 }
+export interface RepositoryKey {
+	owner: string;
+	name: string;
+}
 export type Result = { Ok: number } | { Err: string };
 export interface Rule {
 	max_capacity: [] | [number];
@@ -349,6 +403,10 @@ export interface SetAuthenticationConfig {
 	version: [] | [bigint];
 	internet_identity: [] | [AuthenticationConfigInternetIdentity];
 	rules: [] | [AuthenticationRules];
+}
+export interface SetAutomationConfig {
+	openid: [] | [AutomationConfigOpenId];
+	version: [] | [bigint];
 }
 export interface SetController {
 	metadata: Array<[string, string]>;
@@ -444,6 +502,10 @@ export interface UploadChunkResult {
 }
 export interface _SERVICE {
 	authenticate: ActorMethod<[AuthenticationArgs], AuthenticateResultResponse>;
+	authenticate_automation: ActorMethod<
+		[AuthenticateAutomationArgs],
+		AuthenticateAutomationResultResponse
+	>;
 	commit_asset_upload: ActorMethod<[CommitBatch], undefined>;
 	commit_proposal: ActorMethod<[CommitProposal], null>;
 	commit_proposal_asset_upload: ActorMethod<[CommitBatch], undefined>;
@@ -468,6 +530,7 @@ export interface _SERVICE {
 	deposit_cycles: ActorMethod<[DepositCyclesArgs], undefined>;
 	get_asset: ActorMethod<[string, string], [] | [AssetNoContent]>;
 	get_auth_config: ActorMethod<[], [] | [AuthenticationConfig]>;
+	get_automation_config: ActorMethod<[], [] | [AutomationConfig]>;
 	get_config: ActorMethod<[], Config>;
 	get_db_config: ActorMethod<[], [] | [DbConfig]>;
 	get_delegation: ActorMethod<[GetDelegationArgs], GetDelegationResultResponse>;
@@ -499,6 +562,7 @@ export interface _SERVICE {
 	reject_proposal: ActorMethod<[CommitProposal], null>;
 	set_asset_token: ActorMethod<[string, string, [] | [string]], undefined>;
 	set_auth_config: ActorMethod<[SetAuthenticationConfig], AuthenticationConfig>;
+	set_automation_config: ActorMethod<[SetAutomationConfig], AutomationConfig>;
 	set_controllers: ActorMethod<[SetControllersArgs], Array<[Principal, Controller]>>;
 	set_custom_domain: ActorMethod<[string, [] | [string]], undefined>;
 	set_db_config: ActorMethod<[SetDbConfig], DbConfig>;

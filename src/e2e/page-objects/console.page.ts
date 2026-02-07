@@ -23,9 +23,16 @@ export class ConsolePage {
 	}
 
 	async signIn(): Promise<void> {
-		await expect(this.#page.getByTestId(testIds.auth.signInDev)).toBeVisible(TIMEOUT_AVERAGE);
+		await expect(this.#page.getByTestId(testIds.auth.switchDevAccount)).toBeVisible(
+			TIMEOUT_AVERAGE
+		);
+		await this.#page.getByTestId(testIds.auth.switchDevAccount).click();
 
-		await this.#page.getByTestId(testIds.auth.signInDev).click();
+		await expect(this.#page.getByTestId(testIds.auth.inputDevIdentifier)).toBeVisible();
+		await this.#page.getByTestId(testIds.auth.inputDevIdentifier).fill(crypto.randomUUID());
+
+		await expect(this.#page.getByTestId(testIds.auth.continueDevAccount)).toBeVisible();
+		await this.#page.getByTestId(testIds.auth.continueDevAccount).click();
 	}
 
 	async createSatellite({ kind }: { kind: 'website' | 'application' }): Promise<void> {

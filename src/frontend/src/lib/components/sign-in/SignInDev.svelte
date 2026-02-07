@@ -10,6 +10,7 @@
 	import IconRobot from '$lib/components/icons/IconRobot.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
+	import { testIds } from '$lib/constants/test-ids.constants';
 	import { isBusy } from '$lib/derived/app/busy.derived';
 	import { isDev } from '$lib/env/app.env';
 	import { signInWithDev } from '$lib/services/console/auth/auth.dev.services';
@@ -17,7 +18,6 @@
 	import { toasts } from '$lib/stores/app/toasts.store';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { testId } from '$lib/utils/test.utils';
-	import { testIds } from '$lib/constants/test-ids.constants';
 
 	let mode = $state<'continue' | 'switch'>('continue');
 

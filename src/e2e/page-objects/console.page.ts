@@ -1,6 +1,7 @@
 import { testIds } from '$lib/constants/test-ids.constants';
 import i18n from '$lib/i18n/en.json' with { type: 'json' };
 import { type BrowserContext, expect } from '@playwright/test';
+import { nanoid } from 'nanoid';
 import type { Page } from 'playwright-core';
 import { TIMEOUT_AVERAGE, TIMEOUT_LONG } from '../constants/e2e.constants';
 
@@ -31,7 +32,7 @@ export class ConsolePage {
 
 		await expect(this.#page.getByTestId(testIds.auth.inputDevIdentifier)).toBeVisible();
 
-		await this.#page.getByTestId(testIds.auth.inputDevIdentifier).fill(crypto.randomUUID());
+		await this.#page.getByTestId(testIds.auth.inputDevIdentifier).fill(nanoid());
 
 		await expect(this.#page.getByTestId(testIds.auth.continueDevAccount)).toBeVisible();
 

@@ -16,6 +16,8 @@
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
+	import {testId} from "$lib/utils/test.utils";
+	import {testIds} from "$lib/constants/test-ids.constants";
 
 	let mode = $state<'continue' | 'switch'>('continue');
 
@@ -100,7 +102,7 @@
 			{/if}
 		</div>
 	{:else}
-		<button disabled={$isBusy} onclick={async () => await signIn()}
+		<button disabled={$isBusy} onclick={async () => await signIn()} {...testId(testIds.auth.signInDev)}
 			><IconRobot size="18px" />
 			<span
 				>{i18nFormat($i18n.dev.continue_with_dev, [

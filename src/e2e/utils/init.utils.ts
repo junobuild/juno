@@ -1,13 +1,13 @@
-import { testWithII } from '@dfinity/internet-identity-playwright';
+import { test } from '@playwright/test';
 import { ConsolePage } from '../page-objects/console.page';
 
 export const initTestSuite = (): (() => ConsolePage) => {
-	testWithII.describe.configure({ mode: 'serial' });
+	test.describe.configure({ mode: 'serial' });
 
 	let consolePage: ConsolePage;
 
-	testWithII.beforeAll(async ({ playwright }) => {
-		testWithII.setTimeout(120000);
+	test.beforeAll(async ({ playwright }) => {
+		test.setTimeout(120000);
 
 		const browser = await playwright.chromium.launch();
 
@@ -20,15 +20,9 @@ export const initTestSuite = (): (() => ConsolePage) => {
 			browser
 		});
 
-		await consolePage.waitReady();
-
 		await consolePage.goto();
 
-		await consolePage.signInWithII();
-	});
-
-	testWithII.afterAll(async () => {
-		await consolePage.close();
+		await consolePage.signIn();
 	});
 
 	return (): ConsolePage => consolePage;

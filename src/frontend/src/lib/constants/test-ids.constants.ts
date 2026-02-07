@@ -2,8 +2,7 @@ import type { TestIds } from '$lib/types/test-id';
 
 export const testIds = {
 	auth: {
-		signInDev: 'btn-sign-in-dev',
-		signInII: 'btn-sign-in-ii'
+		signInDev: 'btn-sign-in-dev'
 	},
 	launchpad: {
 		launch: 'btn-launch-first-satellite',

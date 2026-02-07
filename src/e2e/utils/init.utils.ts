@@ -16,8 +16,7 @@ export const initTestSuite = (): (() => ConsolePage) => {
 
 		consolePage = new ConsolePage({
 			page,
-			context,
-			browser
+			context
 		});
 
 		await consolePage.goto();

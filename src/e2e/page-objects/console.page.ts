@@ -1,24 +1,21 @@
 import { testIds } from '$lib/constants/test-ids.constants';
 import i18n from '$lib/i18n/en.json' with { type: 'json' };
-import { type Browser, type BrowserContext, expect } from '@playwright/test';
+import { type BrowserContext, expect } from '@playwright/test';
 import type { Page } from 'playwright-core';
 import { TIMEOUT_AVERAGE, TIMEOUT_LONG } from '../constants/e2e.constants';
 
 export interface ConsolePageParams {
 	page: Page;
 	context: BrowserContext;
-	browser: Browser;
 }
 
 export class ConsolePage {
 	readonly #page: Page;
 	readonly #context: BrowserContext;
-	readonly #browser: Browser;
 
-	constructor({ page, browser, context }: ConsolePageParams) {
+	constructor({ page, context }: ConsolePageParams) {
 		this.#page = page;
 		this.#context = context;
-		this.#browser = browser;
 	}
 
 	async goto(): Promise<void> {

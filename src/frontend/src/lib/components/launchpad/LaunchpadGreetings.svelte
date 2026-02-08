@@ -1,10 +1,10 @@
 <script lang="ts">
+	import { fromNullable, nonNullish } from '@dfinity/utils';
 	import { getHours } from 'date-fns';
+	import type { ConsoleDid } from '$declarations';
 	import IconTerminal from '$lib/components/icons/IconTerminal.svelte';
 	import TextAnimated from '$lib/components/ui/TextAnimated.svelte';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import type { ConsoleDid } from '$declarations';
-	import { fromNullable, nonNullish } from '@dfinity/utils';
 
 	interface Props {
 		provider?: ConsoleDid.Provider;

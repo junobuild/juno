@@ -1,9 +1,9 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import LaunchpadGreetings from '$lib/components/launchpad/LaunchpadGreetings.svelte';
+	import { provider } from '$lib/derived/console/account.provider.derived';
 	import { onIntersection } from '$lib/directives/intersection.directives';
 	import { onLayoutTitleIntersection } from '$lib/stores/app/layout-intersecting.store';
-	import { provider } from '$lib/derived/console/account.provider.derived';
 
 	interface Props {
 		children?: Snippet;

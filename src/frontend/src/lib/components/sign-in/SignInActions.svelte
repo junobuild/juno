@@ -3,13 +3,15 @@
 	import SignInGitHub from '$lib/components/sign-in/SignInGitHub.svelte';
 	import SignInGoogle from '$lib/components/sign-in/SignInGoogle.svelte';
 	import SignInII from '$lib/components/sign-in/SignInII.svelte';
-	import { isProd } from '$lib/env/app.env';
+	import { isDev, isNotSkylab, isProd } from '$lib/env/app.env';
 </script>
 
 <div class="sign-in">
-	<SignInDev />
+	{#if isDev()}
+		<SignInDev />
+	{/if}
 
-	{#if isProd()}
+	{#if isProd() && isNotSkylab()}
 		<SignInGoogle />
 
 		<SignInGitHub />

@@ -1,7 +1,6 @@
 <script lang="ts">
-	import { fromNullable, nonNullish, notEmptyString } from '@dfinity/utils';
+	import { notEmptyString } from '@dfinity/utils';
 	import { page } from '$app/state';
-	import type { ConsoleDid } from '$declarations';
 	import UserProviderData from '$lib/components/core/UserProviderData.svelte';
 	import IconBook from '$lib/components/icons/IconBook.svelte';
 	import IconCodeBranch from '$lib/components/icons/IconCodeBranch.svelte';
@@ -16,12 +15,13 @@
 	import { APP_VERSION } from '$lib/constants/app.constants';
 	import { signOut } from '$lib/services/console/auth/auth.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
+	import type { ProviderDataUi } from '$lib/types/provider';
 
 	interface Props {
-		provider?: ConsoleDid.Provider;
+		providerData?: ProviderDataUi;
 	}
 
-	let { provider }: Props = $props();
+	let { providerData }: Props = $props();
 
 	let button: HTMLButtonElement | undefined = $state();
 	let visible: boolean = $state(false);
@@ -41,11 +41,7 @@
 	let preferences = $derived(page.route.id === '/(single)/preferences');
 	let wallet = $derived(page.route.id === '/(single)/wallet');
 
-	let openId = $derived<ConsoleDid.OpenId | undefined>(
-		nonNullish(provider) && 'OpenId' in provider ? provider.OpenId : undefined
-	);
-	let openIdData = $derived<ConsoleDid.OpenIdData | undefined>(openId?.data);
-	let openIdPicture = $derived<string | undefined>(fromNullable(openIdData?.picture ?? []));
+	let openIdPicture = $derived(providerData?.picture);
 </script>
 
 <ButtonIcon {onclick} bind:button>
@@ -62,7 +58,7 @@
 
 <Popover anchor={button} direction="rtl" bind:visible>
 	<div class="container">
-		<UserProviderData {provider} />
+		<UserProviderData {providerData} />
 
 		{#if !preferences}
 			<a class="menu" aria-haspopup="menu" href="/preferences" onclick={close} role="menuitem">

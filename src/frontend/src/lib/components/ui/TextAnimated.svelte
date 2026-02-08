@@ -18,12 +18,15 @@
 
 	$effect(() => {
 		const interval = setInterval(() => {
+			if (count >= text.length) {
+				clearInterval(interval);
+				return;
+			}
+
 			count += 1;
 		}, 100);
 
-		return () => {
-			clearInterval(interval);
-		};
+		return () => clearInterval(interval);
 	});
 
 	let chars = $derived(
@@ -40,12 +43,15 @@
 
 	$effect(() => {
 		const interval = setInterval(() => {
+			if (count >= text.length) {
+				clearInterval(interval);
+				return;
+			}
+
 			loader = randomLoader();
 		}, 50);
 
-		return () => {
-			clearInterval(interval);
-		};
+		return () => clearInterval(interval);
 	});
 </script>
 

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { getHours } from 'date-fns';
 	import IconTerminal from '$lib/components/icons/IconTerminal.svelte';
+	import TextAnimated from '$lib/components/ui/TextAnimated.svelte';
 	import { i18n } from '$lib/stores/app/i18n.store';
 
 	interface Props {
@@ -32,7 +33,7 @@
 	let title = $derived(titles[Math.floor(Math.random() * titles.length)]);
 </script>
 
-<p><IconTerminal /> {greeting} {title}</p>
+<p><IconTerminal /> <TextAnimated text={`${greeting} ${title}`} /></p>
 
 <style lang="scss">
 	p {

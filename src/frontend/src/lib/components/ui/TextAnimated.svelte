@@ -1,5 +1,6 @@
 <script lang="ts">
 	import * as z from 'zod';
+	import TextAnimatedCursor from '$lib/components/ui/TextAnimatedCursor.svelte';
 
 	interface Props {
 		text: string;
@@ -16,9 +17,11 @@
 
 	let count = $state(0);
 
+	let animated = $derived(count < text.length);
+
 	$effect(() => {
 		const interval = setInterval(() => {
-			if (count >= text.length) {
+			if (!animated) {
 				clearInterval(interval);
 				return;
 			}
@@ -35,29 +38,11 @@
 			status: index === count ? 'loading' : index < count ? 'visible' : 'hidden'
 		}))
 	);
-
-	const loaders = ['/', '\\', '@', '#', '%'];
-	const randomLoader = (): string => loaders[Math.floor(Math.random() * loaders.length)];
-
-	let loader = $state(randomLoader());
-
-	$effect(() => {
-		const interval = setInterval(() => {
-			if (count >= text.length) {
-				clearInterval(interval);
-				return;
-			}
-
-			loader = randomLoader();
-		}, 50);
-
-		return () => clearInterval(interval);
-	});
 </script>
 
 {#each chars as char, index (index)}
-	{#if char.status === 'loading'}
-		<span>{loader}</span>
+	{#if char.status === 'loading' && animated}
+		<TextAnimatedCursor />
 	{:else if char.status === 'visible'}
 		<span>{char.value}</span>
 	{/if}

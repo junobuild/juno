@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import LaunchpadGreetings from '$lib/components/launchpad/LaunchpadGreetings.svelte';
+	import { provider } from '$lib/derived/console/account.provider.derived';
 	import { onIntersection } from '$lib/directives/intersection.directives';
 	import { onLayoutTitleIntersection } from '$lib/stores/app/layout-intersecting.store';
 
@@ -20,7 +21,7 @@
 </script>
 
 <div class="header" onjunoIntersecting={onLayoutTitleIntersection} use:customOnIntersection>
-	<LaunchpadGreetings withoutReturningLabel={withoutGreetingsReturningLabel} />
+	<LaunchpadGreetings provider={$provider} withoutReturningLabel={withoutGreetingsReturningLabel} />
 
 	{@render children?.()}
 </div>

@@ -1,25 +1,19 @@
 <script lang="ts">
-	import { fromNullable, nonNullish, notEmptyString } from '@dfinity/utils';
-	import type { ConsoleDid } from '$declarations';
+	import { notEmptyString } from '@dfinity/utils';
 	import Avatar from '$lib/components/ui/Avatar.svelte';
 	import { i18n } from '$lib/stores/app/i18n.store';
+	import type { ProviderDataUi } from '$lib/types/provider';
 
 	interface Props {
-		provider?: ConsoleDid.Provider;
+		providerData?: ProviderDataUi;
 	}
 
-	let { provider }: Props = $props();
+	let { providerData }: Props = $props();
 
-	let openId = $derived<ConsoleDid.OpenId | undefined>(
-		nonNullish(provider) && 'OpenId' in provider ? provider.OpenId : undefined
-	);
-	let openIdData = $derived<ConsoleDid.OpenIdData | undefined>(openId?.data);
-	let openIdPicture = $derived<string | undefined>(fromNullable(openIdData?.picture ?? []));
-	let openIdGivenName = $derived<string | undefined>(fromNullable(openIdData?.given_name ?? []));
-	let openIdPreferredUsername = $derived<string | undefined>(
-		fromNullable(openIdData?.preferred_username ?? [])
-	);
-	let openIdEmail = $derived<string | undefined>(fromNullable(openIdData?.email ?? []));
+	let openIdPicture = $derived(providerData?.picture);
+	let openIdGivenName = $derived(providerData?.givenName);
+	let openIdPreferredUsername = $derived(providerData?.username);
+	let openIdEmail = $derived(providerData?.email);
 
 	let displayName = $derived(openIdPreferredUsername ?? openIdGivenName);
 </script>

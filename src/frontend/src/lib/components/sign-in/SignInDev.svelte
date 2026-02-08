@@ -142,7 +142,6 @@
 	.switch {
 		display: flex;
 		justify-content: center;
-		align-items: center;
 		gap: var(--padding-0_5x);
 
 		font-size: var(--font-size-very-small);
@@ -152,6 +151,8 @@
 	.text {
 		width: fit-content;
 		margin: 0;
+		padding: 0;
+		border: none;
 	}
 
 	.identifier {

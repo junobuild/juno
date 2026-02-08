@@ -3,12 +3,25 @@
 	import IconTerminal from '$lib/components/icons/IconTerminal.svelte';
 	import TextAnimated from '$lib/components/ui/TextAnimated.svelte';
 	import { i18n } from '$lib/stores/app/i18n.store';
+	import type { ConsoleDid } from '$declarations';
+	import { fromNullable, nonNullish } from '@dfinity/utils';
 
 	interface Props {
+		provider?: ConsoleDid.Provider;
 		withoutReturningLabel?: boolean;
 	}
 
-	let { withoutReturningLabel = false }: Props = $props();
+	let { provider, withoutReturningLabel = false }: Props = $props();
+
+	let openId = $derived<ConsoleDid.OpenId | undefined>(
+		nonNullish(provider) && 'OpenId' in provider ? provider.OpenId : undefined
+	);
+	let openIdData = $derived<ConsoleDid.OpenIdData | undefined>(openId?.data);
+	let openIdGivenName = $derived<string | undefined>(fromNullable(openIdData?.given_name ?? []));
+	let openIdPreferredUsername = $derived<string | undefined>(
+		fromNullable(openIdData?.preferred_username ?? [])
+	);
+	let displayName = $derived(openIdPreferredUsername ?? openIdGivenName);
 
 	const timedGreeting = (): string => {
 		const hour = getHours(new Date());
@@ -31,9 +44,11 @@
 
 	let greeting = $derived(greetings[Math.floor(Math.random() * greetings.length)]);
 	let title = $derived(titles[Math.floor(Math.random() * titles.length)]);
+
+	let text = $derived(`${greeting} ${displayName ?? title}`);
 </script>
 
-<p><IconTerminal /> <TextAnimated text={`${greeting} ${title}`} /></p>
+<p><IconTerminal /> <TextAnimated {text} /></p>
 
 <style lang="scss">
 	p {

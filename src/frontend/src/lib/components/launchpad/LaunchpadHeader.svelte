@@ -3,6 +3,7 @@
 	import LaunchpadGreetings from '$lib/components/launchpad/LaunchpadGreetings.svelte';
 	import { onIntersection } from '$lib/directives/intersection.directives';
 	import { onLayoutTitleIntersection } from '$lib/stores/app/layout-intersecting.store';
+	import { provider } from '$lib/derived/console/account.provider.derived';
 
 	interface Props {
 		children?: Snippet;
@@ -20,7 +21,7 @@
 </script>
 
 <div class="header" onjunoIntersecting={onLayoutTitleIntersection} use:customOnIntersection>
-	<LaunchpadGreetings withoutReturningLabel={withoutGreetingsReturningLabel} />
+	<LaunchpadGreetings provider={$provider} withoutReturningLabel={withoutGreetingsReturningLabel} />
 
 	{@render children?.()}
 </div>

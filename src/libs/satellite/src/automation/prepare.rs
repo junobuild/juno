@@ -24,7 +24,7 @@ pub async fn openid_prepare_automation(
 ) -> OpenIdPrepareAutomationResult {
     let (credential, provider) =
         match credentials::automation::verify_openid_credentials_with_jwks_renewal(
-            &args.jwt, providers, &AuthHeap,
+            &args.jwt, &args.salt, providers, &AuthHeap,
         )
         .await
         {

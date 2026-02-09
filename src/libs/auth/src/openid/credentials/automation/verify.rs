@@ -9,8 +9,8 @@ use crate::openid::types::provider::{OpenIdAutomationProvider, OpenIdProvider};
 use crate::state::types::automation::{
     OpenIdAutomationProviderConfig, OpenIdAutomationProviders, RepositoryKey,
 };
+use crate::state::types::state::Salt;
 use crate::strategies::AuthHeapStrategy;
-use junobuild_shared::ic::api::caller;
 
 type VerifyOpenIdAutomationCredentialsResult =
     Result<(OpenIdAutomationCredential, OpenIdAutomationProvider), VerifyOpenidCredentialsError>;
@@ -27,6 +27,7 @@ type VerifyOpenIdAutomationCredentialsResult =
 /// In the Satellite implementation, this is handled by `save_unique_token_jti()`.
 pub async fn verify_openid_credentials_with_jwks_renewal(
     jwt: &str,
+    salt: &Salt,
     providers: &OpenIdAutomationProviders,
     auth_heap: &impl AuthHeapStrategy,
 ) -> VerifyOpenIdAutomationCredentialsResult {
@@ -39,7 +40,7 @@ pub async fn verify_openid_credentials_with_jwks_renewal(
         .await
         .map_err(VerifyOpenidCredentialsError::GetOrFetchJwks)?;
 
-    verify_openid_credentials(jwt, &jwks, &automation_provider, config)
+    verify_openid_credentials(jwt, &jwks, &automation_provider, config, salt)
 }
 
 fn verify_openid_credentials(
@@ -47,12 +48,13 @@ fn verify_openid_credentials(
     jwks: &Jwks,
     provider: &OpenIdAutomationProvider,
     config: &OpenIdAutomationProviderConfig,
+    salt: &Salt,
 ) -> VerifyOpenIdAutomationCredentialsResult {
-    let assert_audience = |claims: &AutomationClaims| -> Result<(), JwtVerifyError> {
+    let assert_nonce = |claims: &AutomationClaims, nonce: &String| -> Result<(), JwtVerifyError> {
         // Ensure the JWT has not been intercepted and submitted with a different identity.
-        // We verify the audience matches the caller's principal (GitHub does not allow customizing
+        // We verify the audience matches the caller's principal + salt (GitHub does not allow customizing
         // other JWT fields, making audience our only option for binding the JWT to a specific principal).
-        if claims.aud != caller().to_text() {
+        if claims.aud != nonce.as_str() {
             return Err(JwtVerifyError::BadClaim("aud".to_string()));
         }
 
@@ -103,7 +105,8 @@ fn verify_openid_credentials(
         jwt,
         provider.issuers(),
         &jwks.keys,
-        assert_audience,
+        &salt,
+        assert_nonce,
         assert_repository,
     )
     .map_err(VerifyOpenidCredentialsError::JwtVerify)?;
@@ -118,11 +121,12 @@ mod tests {
     use super::*;
     use crate::openid::jwt::types::cert::{Jwk, JwkParams, JwkParamsRsa, JwkType, Jwks};
     use crate::openid::types::provider::OpenIdAutomationProvider;
+    use crate::openid::utils::nonce::build_nonce;
     use crate::state::types::automation::{
         OpenIdAutomationProviderConfig, OpenIdAutomationRepositories,
         OpenIdAutomationRepositoryConfig, RepositoryKey,
     };
-    use ic_cdk::call;
+    use crate::state::types::state::Salt;
     use jsonwebtoken::{encode, Algorithm, EncodingKey, Header};
     use std::collections::HashMap;
     use std::time::{SystemTime, UNIX_EPOCH};
@@ -138,6 +142,10 @@ mod tests {
             .duration_since(UNIX_EPOCH)
             .unwrap()
             .as_secs()
+    }
+
+    fn test_salt() -> Salt {
+        [42u8; 32]
     }
 
     fn test_jwks() -> Jwks {
@@ -185,11 +193,13 @@ mod tests {
     #[test]
     fn verifies_valid_automation_credentials() {
         let now = now_secs();
+        let salt = test_salt();
+        let nonce = build_nonce(&salt);
 
         let claims = AutomationClaims {
             iss: ISS_GITHUB_ACTIONS.into(),
             sub: "repo:octo-org/octo-repo:ref:refs/heads/main".into(),
-            aud: caller().to_text(),
+            aud: nonce.clone(),
             iat: Some(now),
             exp: Some(now + 600),
             nbf: None,
@@ -206,8 +216,13 @@ mod tests {
         let jwks = test_jwks();
         let config = test_config();
 
-        let result =
-            verify_openid_credentials(&jwt, &jwks, &OpenIdAutomationProvider::GitHub, &config);
+        let result = verify_openid_credentials(
+            &jwt,
+            &jwks,
+            &OpenIdAutomationProvider::GitHub,
+            &config,
+            &salt,
+        );
 
         assert!(result.is_ok());
         let (credential, provider) = result.unwrap();
@@ -219,11 +234,12 @@ mod tests {
     #[test]
     fn rejects_mismatched_audience() {
         let now = now_secs();
+        let salt = test_salt();
 
         let claims = AutomationClaims {
             iss: ISS_GITHUB_ACTIONS.into(),
             sub: "repo:octo-org/octo-repo:ref:refs/heads/main".into(),
-            aud: "another-principal-id".into(),
+            aud: "wrong-nonce".into(),
             iat: Some(now),
             exp: Some(now + 600),
             nbf: None,
@@ -240,8 +256,13 @@ mod tests {
         let jwks = test_jwks();
         let config = test_config();
 
-        let result =
-            verify_openid_credentials(&jwt, &jwks, &OpenIdAutomationProvider::GitHub, &config);
+        let result = verify_openid_credentials(
+            &jwt,
+            &jwks,
+            &OpenIdAutomationProvider::GitHub,
+            &config,
+            &salt,
+        );
 
         assert!(result.is_err());
         assert!(matches!(
@@ -253,11 +274,13 @@ mod tests {
     #[test]
     fn rejects_unauthorized_repository() {
         let now = now_secs();
+        let salt = test_salt();
+        let nonce = build_nonce(&salt);
 
         let claims = AutomationClaims {
             iss: ISS_GITHUB_ACTIONS.into(),
             sub: "repo:other-org/other-repo:ref:refs/heads/main".into(),
-            aud: caller().to_text(),
+            aud: nonce,
             iat: Some(now),
             exp: Some(now + 600),
             nbf: None,
@@ -274,8 +297,13 @@ mod tests {
         let jwks = test_jwks();
         let config = test_config();
 
-        let result =
-            verify_openid_credentials(&jwt, &jwks, &OpenIdAutomationProvider::GitHub, &config);
+        let result = verify_openid_credentials(
+            &jwt,
+            &jwks,
+            &OpenIdAutomationProvider::GitHub,
+            &config,
+            &salt,
+        );
 
         assert!(result.is_err());
         assert!(matches!(
@@ -287,11 +315,13 @@ mod tests {
     #[test]
     fn rejects_unauthorized_branch() {
         let now = now_secs();
+        let salt = test_salt();
+        let nonce = build_nonce(&salt);
 
         let claims = AutomationClaims {
             iss: ISS_GITHUB_ACTIONS.into(),
             sub: "repo:octo-org/octo-repo:ref:refs/heads/feature".into(),
-            aud: caller().to_text(),
+            aud: nonce,
             iat: Some(now),
             exp: Some(now + 600),
             nbf: None,
@@ -308,8 +338,13 @@ mod tests {
         let jwks = test_jwks();
         let config = test_config();
 
-        let result =
-            verify_openid_credentials(&jwt, &jwks, &OpenIdAutomationProvider::GitHub, &config);
+        let result = verify_openid_credentials(
+            &jwt,
+            &jwks,
+            &OpenIdAutomationProvider::GitHub,
+            &config,
+            &salt,
+        );
 
         assert!(result.is_err());
         assert!(matches!(
@@ -321,6 +356,8 @@ mod tests {
     #[test]
     fn allows_all_branches_when_not_configured() {
         let now = now_secs();
+        let salt = test_salt();
+        let nonce = build_nonce(&salt);
 
         let mut repositories: OpenIdAutomationRepositories = HashMap::new();
         repositories.insert(
@@ -339,7 +376,7 @@ mod tests {
         let claims = AutomationClaims {
             iss: ISS_GITHUB_ACTIONS.into(),
             sub: "repo:octo-org/octo-repo:ref:refs/heads/any-branch".into(),
-            aud: caller().to_text(),
+            aud: nonce,
             iat: Some(now),
             exp: Some(now + 600),
             nbf: None,
@@ -355,8 +392,13 @@ mod tests {
         let jwt = create_token(&claims);
         let jwks = test_jwks();
 
-        let result =
-            verify_openid_credentials(&jwt, &jwks, &OpenIdAutomationProvider::GitHub, &config);
+        let result = verify_openid_credentials(
+            &jwt,
+            &jwks,
+            &OpenIdAutomationProvider::GitHub,
+            &config,
+            &salt,
+        );
 
         assert!(result.is_ok());
     }
@@ -364,11 +406,13 @@ mod tests {
     #[test]
     fn rejects_missing_repository_claim() {
         let now = now_secs();
+        let salt = test_salt();
+        let nonce = build_nonce(&salt);
 
         let claims = AutomationClaims {
             iss: ISS_GITHUB_ACTIONS.into(),
             sub: "repo:octo-org/octo-repo:ref:refs/heads/main".into(),
-            aud: caller().to_text(),
+            aud: nonce,
             iat: Some(now),
             exp: Some(now + 600),
             nbf: None,
@@ -385,8 +429,13 @@ mod tests {
         let jwks = test_jwks();
         let config = test_config();
 
-        let result =
-            verify_openid_credentials(&jwt, &jwks, &OpenIdAutomationProvider::GitHub, &config);
+        let result = verify_openid_credentials(
+            &jwt,
+            &jwks,
+            &OpenIdAutomationProvider::GitHub,
+            &config,
+            &salt,
+        );
 
         assert!(result.is_err());
         assert!(matches!(

@@ -1,5 +1,6 @@
 use crate::openid::jwkset::types::errors::GetOrRefreshJwksError;
 use crate::openid::jwt::types::errors::{JwtFindProviderError, JwtVerifyError};
+use crate::state::types::state::Salt;
 use candid::{CandidType, Deserialize};
 use junobuild_shared::types::state::ControllerId;
 use serde::Serialize;
@@ -7,6 +8,7 @@ use serde::Serialize;
 #[derive(CandidType, Serialize, Deserialize)]
 pub struct OpenIdPrepareAutomationArgs {
     pub jwt: String,
+    pub salt: Salt,
 }
 
 pub type PrepareAutomationResult = Result<PreparedAutomation, PrepareAutomationError>;

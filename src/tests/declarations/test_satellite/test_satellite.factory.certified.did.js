@@ -77,7 +77,7 @@ export const idlFactory = ({ IDL }) => {
 	});
 	const OpenIdPrepareAutomationArgs = IDL.Record({
 		jwt: IDL.Text,
-		controller_id: IDL.Principal
+		salt: IDL.Vec(IDL.Nat8)
 	});
 	const AuthenticateAutomationArgs = IDL.Variant({
 		OpenId: OpenIdPrepareAutomationArgs

@@ -314,7 +314,7 @@ export interface OpenIdGetDelegationArgs {
 }
 export interface OpenIdPrepareAutomationArgs {
 	jwt: string;
-	controller_id: Principal;
+	salt: Uint8Array;
 }
 export interface OpenIdPrepareDelegationArgs {
 	jwt: string;

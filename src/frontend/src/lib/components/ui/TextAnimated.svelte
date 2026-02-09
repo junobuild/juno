@@ -1,5 +1,4 @@
 <script lang="ts">
-	import * as z from 'zod';
 	import TextAnimatedCursor from '$lib/components/ui/TextAnimatedCursor.svelte';
 
 	interface Props {
@@ -8,12 +7,10 @@
 
 	let { text }: Props = $props();
 
-	const TextSchema = z.strictObject({
-		value: z.string().min(1).max(1),
-		status: z.literal(['hidden', 'loading', 'visible'])
-	});
-
-	type Text = z.infer<typeof TextSchema>;
+	interface Text {
+		value: string;
+		status: 'hidden' | 'loading' | 'visible';
+	}
 
 	let count = $state(0);
 

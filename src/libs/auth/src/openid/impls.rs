@@ -1,6 +1,8 @@
 use crate::openid::jwt::types::cert::Jwks;
 use crate::openid::jwt::types::provider::JwtIssuers;
-use crate::openid::types::provider::{OpenIdCertificate, OpenIdDelegationProvider, OpenIdProvider};
+use crate::openid::types::provider::{
+    OpenIdCertificate, OpenIdDelegationProvider, OpenIdProvider,
+};
 use junobuild_shared::data::version::next_version;
 use junobuild_shared::ic::api::time;
 use junobuild_shared::types::state::{Version, Versioned};
@@ -13,6 +15,7 @@ impl OpenIdProvider {
             // Swap for local development with the Juno API:
             // http://host.docker.internal:3000/v1/auth/certs
             Self::GitHubAuth => "https://api.juno.build/v1/auth/certs",
+            Self::GitHubActions => "https://token.actions.githubusercontent.com/.well-known/jwks",
         }
     }
 
@@ -20,6 +23,7 @@ impl OpenIdProvider {
         match self {
             OpenIdProvider::Google => &["https://accounts.google.com", "accounts.google.com"],
             OpenIdProvider::GitHubAuth => &["https://api.juno.build/auth/github"],
+            OpenIdProvider::GitHubActions => &["https://token.actions.githubusercontent.com"],
         }
     }
 }
@@ -98,6 +102,7 @@ impl Display for OpenIdProvider {
         match self {
             OpenIdProvider::Google => write!(f, "Google"),
             OpenIdProvider::GitHubAuth => write!(f, "GitHub"),
+            OpenIdProvider::GitHubActions => write!(f, "GitHub Actions"),
         }
     }
 }
@@ -116,6 +121,10 @@ mod tests {
             OpenIdProvider::GitHubAuth.jwks_url(),
             "https://api.juno.build/v1/auth/certs"
         );
+        assert_eq!(
+            OpenIdProvider::GitHubActions.jwks_url(),
+            "https://token.actions.githubusercontent.com/.well-known/jwks"
+        );
     }
 
     #[test]
@@ -127,6 +136,10 @@ mod tests {
         assert_eq!(
             OpenIdProvider::GitHubAuth.issuers(),
             &["https://api.juno.build/auth/github"]
+        );
+        assert_eq!(
+            OpenIdProvider::GitHubActions.issuers(),
+            &["https://token.actions.githubusercontent.com"]
         );
     }
 
@@ -192,5 +205,9 @@ mod tests {
     fn test_openid_provider_display() {
         assert_eq!(format!("{}", OpenIdProvider::Google), "Google");
         assert_eq!(format!("{}", OpenIdProvider::GitHubAuth), "GitHub");
+        assert_eq!(
+            format!("{}", OpenIdProvider::GitHubActions),
+            "GitHub Actions"
+        );
     }
 }

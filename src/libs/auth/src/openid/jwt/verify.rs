@@ -69,6 +69,7 @@ where
 
     // 6) Checks the nonce - i.e. the caller + salt is present in the jwt
     let nonce = build_nonce(salt);
+
     assert_nonce(c, &nonce)?;
 
     // 7) Assert custom fields according consumer's flow

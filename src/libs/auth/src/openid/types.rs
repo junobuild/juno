@@ -10,6 +10,7 @@ pub mod provider {
     pub enum OpenIdProvider {
         Google,
         GitHubAuth, // GitHub user authentication (OAuth) via Juno API proxy
+        GitHubActions,
     }
 
     #[derive(

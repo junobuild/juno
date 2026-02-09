@@ -1,6 +1,5 @@
 use crate::openid::credentials::delegation::types::interface::OpenIdDelegationCredential;
 use crate::openid::credentials::delegation::types::token::DelegationClaims;
-use crate::openid::credentials::delegation::utils::nonce::build_nonce;
 use crate::openid::credentials::types::errors::VerifyOpenidCredentialsError;
 use crate::openid::jwkset::{get_jwks, get_or_refresh_jwks};
 use crate::openid::jwt::types::cert::Jwks;
@@ -59,19 +58,17 @@ fn verify_openid_credentials(
     client_id: &OpenIdAuthProviderClientId,
     salt: &Salt,
 ) -> VerifyOpenIdDelegationCredentialsResult {
-    let assert_audience = |claims: &DelegationClaims| -> Result<(), JwtVerifyError> {
-        if claims.aud != client_id.as_str() {
-            return Err(JwtVerifyError::BadClaim("aud".to_string()));
+    let assert_nonce = |claims: &DelegationClaims, nonce: &String| -> Result<(), JwtVerifyError> {
+        if claims.nonce.as_deref() != Some(nonce.as_str()) {
+            return Err(JwtVerifyError::BadClaim("nonce".to_string()));
         }
 
         Ok(())
     };
 
-    let assert_no_replay = |claims: &DelegationClaims| -> Result<(), JwtVerifyError> {
-        let nonce = build_nonce(salt);
-
-        if claims.nonce.as_deref() != Some(nonce.as_str()) {
-            return Err(JwtVerifyError::BadClaim("nonce".to_string()));
+    let assert_audience = |claims: &DelegationClaims| -> Result<(), JwtVerifyError> {
+        if claims.aud != client_id.as_str() {
+            return Err(JwtVerifyError::BadClaim("aud".to_string()));
         }
 
         Ok(())
@@ -81,8 +78,9 @@ fn verify_openid_credentials(
         jwt,
         provider.issuers(),
         &jwks.keys,
+        salt,
+        assert_nonce,
         assert_audience,
-        assert_no_replay,
     )
     .map_err(VerifyOpenidCredentialsError::JwtVerify)?;
 
@@ -96,6 +94,7 @@ mod tests {
     use super::*;
     use crate::openid::jwt::types::cert::{Jwk, JwkParams, JwkParamsRsa, JwkType, Jwks};
     use crate::openid::types::provider::OpenIdDelegationProvider;
+    use crate::openid::utils::nonce::build_nonce;
     use jsonwebtoken::{encode, Algorithm, EncodingKey, Header};
     use std::time::{SystemTime, UNIX_EPOCH};
 

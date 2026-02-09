@@ -14,7 +14,7 @@ import type { Actor, PocketIc } from '@dfinity/pic';
 import { ECDSAKeyIdentity, Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import type { Principal } from '@icp-sdk/core/principal';
 import {
-	GITHUB_OPEN_ID_PROVIDER,
+	GITHUB_AUTH_OPEN_ID_PROVIDER,
 	GOOGLE_OPEN_ID_PROVIDER
 } from '../constants/auth-tests.constants';
 import { OBSERVATORY_ID } from '../constants/observatory-tests.constants';
@@ -190,7 +190,7 @@ const setupAuth = async ({
 	await start_openid_monitoring(GOOGLE_OPEN_ID_PROVIDER);
 
 	if (withGitHub) {
-		await start_openid_monitoring(GITHUB_OPEN_ID_PROVIDER);
+		await start_openid_monitoring(GITHUB_AUTH_OPEN_ID_PROVIDER);
 	}
 
 	await updateRateConfigNoLimit({ actor: observatoryActor });

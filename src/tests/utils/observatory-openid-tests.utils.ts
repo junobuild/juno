@@ -13,7 +13,7 @@ export const assertOpenIdHttpsOutcalls = async ({
 }: {
 	pic: PocketIc;
 	jwks: MockOpenIdJwt['jwks'];
-	method?: 'google' | 'github';
+	method?: 'google' | 'github_auth' | 'github_actions';
 }) => {
 	await tick(pic);
 
@@ -23,9 +23,11 @@ export const assertOpenIdHttpsOutcalls = async ({
 	const pendingRequestedHttpOutCall = pendingHttpOutCalls.find(
 		({ url }) =>
 			url ===
-			(method === 'github'
+			(method === 'github_auth'
 				? 'https://api.juno.build/v1/auth/certs'
-				: 'https://www.googleapis.com/oauth2/v3/certs')
+				: method === 'github_actions'
+					? 'https://token.actions.githubusercontent.com/.well-known/jwks'
+					: 'https://www.googleapis.com/oauth2/v3/certs')
 	);
 
 	expect(pendingRequestedHttpOutCall).not.toBeUndefined();

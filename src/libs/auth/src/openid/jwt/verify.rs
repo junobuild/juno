@@ -2,6 +2,8 @@ use crate::openid::jwt::header::decode_jwt_header;
 use crate::openid::jwt::types::cert::{JwkParams, JwkType};
 use crate::openid::jwt::types::token::JwtClaims;
 use crate::openid::jwt::types::{cert::Jwk, errors::JwtVerifyError};
+use crate::openid::utils::nonce::build_nonce;
+use crate::state::types::state::Salt;
 use jsonwebtoken::{decode, Algorithm, DecodingKey, TokenData, Validation};
 use serde::de::DeserializeOwned;
 
@@ -9,16 +11,17 @@ fn pick_key<'a>(kid: &str, jwks: &'a [Jwk]) -> Option<&'a Jwk> {
     jwks.iter().find(|j| j.kid.as_deref() == Some(kid))
 }
 
-pub fn verify_openid_jwt<Claims, Aud, Custom>(
+pub fn verify_openid_jwt<Claims, Nonce, Custom>(
     jwt: &str,
     issuers: &[&str],
     jwks: &[Jwk],
-    assert_audience: Aud,
+    salt: &Salt,
+    assert_nonce: Nonce,
     assert_custom: Custom,
 ) -> Result<TokenData<Claims>, JwtVerifyError>
 where
     Claims: DeserializeOwned + JwtClaims,
-    Aud: FnOnce(&Claims) -> Result<(), JwtVerifyError>,
+    Nonce: FnOnce(&Claims, &String) -> Result<(), JwtVerifyError>,
     Custom: FnOnce(&Claims) -> Result<(), JwtVerifyError>,
 {
     // 1) Read header to get `kid`
@@ -64,10 +67,12 @@ where
 
     let c = &token.claims;
 
-    // 6) Manual checks audience
-    assert_audience(c)?;
+    // 6) Checks the nonce - i.e. the caller + salt is present in the jwt
+    let nonce = build_nonce(salt);
 
-    // 7) Assert custom fields such as the nonce for delegation to prevent replay attack
+    assert_nonce(c, &nonce)?;
+
+    // 7) Assert custom fields according consumer's flow
     assert_custom(c)?;
 
     // 8) Assert expiration
@@ -114,6 +119,8 @@ mod verify_tests {
     use crate::openid::jwt::types::cert::{JwkParams, JwkParamsRsa, JwkType};
     use crate::openid::jwt::types::token::JwtClaims;
     use crate::openid::jwt::types::{cert::Jwk, errors::JwtVerifyError};
+    use crate::openid::utils::nonce::build_nonce;
+    use crate::state::types::state::Salt;
     use candid::Deserialize;
     use jsonwebtoken::{encode, Algorithm, EncodingKey, Header};
     use serde::Serialize;
@@ -126,7 +133,6 @@ mod verify_tests {
 
     const ISS_GOOGLE: &str = "https://accounts.google.com";
     const AUD_OK: &str = "client-123";
-    const NONCE_OK: &str = "nonce-xyz";
     const KID_OK: &str = "test-kid-1";
 
     fn now_secs() -> u64 {
@@ -134,6 +140,10 @@ mod verify_tests {
             .duration_since(UNIX_EPOCH)
             .unwrap()
             .as_secs()
+    }
+
+    fn test_salt() -> Salt {
+        [42u8; 32]
     }
 
     fn header(typ: Option<&str>, kid: Option<&str>) -> Header {
@@ -212,6 +222,13 @@ mod verify_tests {
         }
     }
 
+    fn assert_nonce(claims: &GoogleClaims, nonce: &String) -> Result<(), JwtVerifyError> {
+        if claims.nonce.as_deref() != Some(nonce.as_str()) {
+            return Err(JwtVerifyError::BadClaim("nonce".to_string()));
+        }
+        Ok(())
+    }
+
     fn assert_audience(claims: &GoogleClaims) -> Result<(), JwtVerifyError> {
         if claims.aud != AUD_OK {
             return Err(JwtVerifyError::BadClaim("aud".to_string()));
@@ -219,16 +236,13 @@ mod verify_tests {
         Ok(())
     }
 
-    fn assert_nonce(claims: &GoogleClaims) -> Result<(), JwtVerifyError> {
-        if claims.nonce.as_deref() != Some(NONCE_OK) {
-            return Err(JwtVerifyError::BadClaim("nonce".to_string()));
-        }
-        Ok(())
-    }
-
     #[test]
     fn verifies_ok() {
         let now = now_secs();
+        let salt = test_salt();
+
+        let nonce = build_nonce(&salt);
+
         let token = sign_token(
             &header(Some("JWT"), Some(KID_OK)),
             &claims(
@@ -236,7 +250,7 @@ mod verify_tests {
                 AUD_OK,
                 Some(now),
                 None,
-                Some(NONCE_OK),
+                Some(&nonce),
                 Some(now + 600),
             ),
         );
@@ -245,19 +259,24 @@ mod verify_tests {
             &token,
             &[ISS_GOOGLE],
             &[jwk_with_kid(KID_OK)],
-            |claims| assert_audience(claims),
-            |claims| assert_nonce(claims),
+            &salt,
+            assert_nonce,
+            assert_audience,
         )
         .expect("should verify");
 
         assert_eq!(out.claims.iss, ISS_GOOGLE);
         assert_eq!(out.claims.aud, AUD_OK);
-        assert_eq!(out.claims.nonce.as_deref(), Some(NONCE_OK));
+        assert_eq!(out.claims.nonce.as_deref(), Some(nonce.as_str()));
     }
 
     #[test]
     fn missing_kid() {
         let now = now_secs();
+        let salt = test_salt();
+
+        let nonce = build_nonce(&salt);
+
         let token = sign_token(
             &header(Some("JWT"), None),
             &claims(
@@ -265,7 +284,7 @@ mod verify_tests {
                 AUD_OK,
                 Some(now),
                 None,
-                Some(NONCE_OK),
+                Some(&nonce),
                 Some(now + 600),
             ),
         );
@@ -274,8 +293,9 @@ mod verify_tests {
             &token,
             &[ISS_GOOGLE],
             &[jwk_with_kid(KID_OK)],
-            |claims| assert_audience(claims),
-            |claims| assert_nonce(claims),
+            &salt,
+            assert_nonce,
+            assert_audience,
         )
         .unwrap_err();
         assert!(matches!(err, JwtVerifyError::MissingKid));
@@ -284,6 +304,10 @@ mod verify_tests {
     #[test]
     fn no_key_for_kid() {
         let now = now_secs();
+        let salt = test_salt();
+
+        let nonce = build_nonce(&salt);
+
         let token = sign_token(
             &header(Some("JWT"), Some("kid-unknown")),
             &claims(
@@ -291,7 +315,7 @@ mod verify_tests {
                 AUD_OK,
                 Some(now),
                 None,
-                Some(NONCE_OK),
+                Some(&nonce),
                 Some(now + 600),
             ),
         );
@@ -300,8 +324,9 @@ mod verify_tests {
             &token,
             &[ISS_GOOGLE],
             &[jwk_with_kid(KID_OK)],
-            |claims| assert_audience(claims),
-            |claims| assert_nonce(claims),
+            &salt,
+            assert_nonce,
+            assert_audience,
         )
         .unwrap_err();
         assert!(matches!(err, JwtVerifyError::NoKeyForKid));
@@ -310,6 +335,10 @@ mod verify_tests {
     #[test]
     fn wrong_issuer_is_badsig_from_lib() {
         let now = now_secs();
+        let salt = test_salt();
+
+        let nonce = build_nonce(&salt);
+
         let token = sign_token(
             &header(Some("JWT"), Some(KID_OK)),
             &claims(
@@ -317,7 +346,7 @@ mod verify_tests {
                 AUD_OK,
                 Some(now),
                 None,
-                Some(NONCE_OK),
+                Some(&nonce),
                 Some(now + 600),
             ),
         );
@@ -327,8 +356,9 @@ mod verify_tests {
             &token,
             &[ISS_GOOGLE],
             &[jwk_with_kid(KID_OK)],
-            |claims| assert_audience(claims),
-            |claims| assert_nonce(claims),
+            &salt,
+            assert_nonce,
+            assert_audience,
         )
         .unwrap_err();
         assert!(matches!(err, JwtVerifyError::BadSig(_)));
@@ -337,6 +367,10 @@ mod verify_tests {
     #[test]
     fn wrong_typ_is_badclaim_typ() {
         let now = now_secs();
+        let salt = test_salt();
+
+        let nonce = build_nonce(&salt);
+
         let token = sign_token(
             &header(Some("JOT"), Some(KID_OK)),
             &claims(
@@ -344,7 +378,7 @@ mod verify_tests {
                 AUD_OK,
                 Some(now),
                 None,
-                Some(NONCE_OK),
+                Some(&nonce),
                 Some(now + 600),
             ),
         );
@@ -353,8 +387,9 @@ mod verify_tests {
             &token,
             &[ISS_GOOGLE],
             &[jwk_with_kid(KID_OK)],
-            |claims| assert_audience(claims),
-            |claims| assert_nonce(claims),
+            &salt,
+            assert_nonce,
+            assert_audience,
         )
         .unwrap_err();
         assert!(matches!(err, JwtVerifyError::BadClaim(ref f) if f == "typ"));
@@ -363,6 +398,10 @@ mod verify_tests {
     #[test]
     fn bad_audience() {
         let now = now_secs();
+        let salt = test_salt();
+
+        let nonce = build_nonce(&salt);
+
         let token = sign_token(
             &header(Some("JWT"), Some(KID_OK)),
             &claims(
@@ -370,7 +409,7 @@ mod verify_tests {
                 "wrong-aud",
                 Some(now),
                 None,
-                Some(NONCE_OK),
+                Some(&nonce),
                 Some(now + 600),
             ),
         );
@@ -379,8 +418,9 @@ mod verify_tests {
             &token,
             &[ISS_GOOGLE],
             &[jwk_with_kid(KID_OK)],
-            |claims| assert_audience(claims),
-            |claims| assert_nonce(claims),
+            &salt,
+            assert_nonce,
+            assert_audience,
         )
         .unwrap_err();
         assert!(matches!(err, JwtVerifyError::BadClaim(ref f) if f == "aud"));
@@ -389,6 +429,8 @@ mod verify_tests {
     #[test]
     fn bad_nonce() {
         let now = now_secs();
+        let salt = test_salt();
+
         let token = sign_token(
             &header(Some("JWT"), Some(KID_OK)),
             &claims(
@@ -396,7 +438,7 @@ mod verify_tests {
                 AUD_OK,
                 Some(now),
                 None,
-                Some("nope"),
+                Some("wrong-nonce"),
                 Some(now + 600),
             ),
         );
@@ -405,8 +447,9 @@ mod verify_tests {
             &token,
             &[ISS_GOOGLE],
             &[jwk_with_kid(KID_OK)],
-            |claims| assert_audience(claims),
-            |claims| assert_nonce(claims),
+            &salt,
+            assert_nonce,
+            assert_audience,
         )
         .unwrap_err();
         assert!(matches!(err, JwtVerifyError::BadClaim(ref f) if f == "nonce"));
@@ -415,6 +458,10 @@ mod verify_tests {
     #[test]
     fn iat_too_far_in_future() {
         let now = now_secs();
+        let salt = test_salt();
+
+        let nonce = build_nonce(&salt);
+
         let future = now + 4 * 60; // +4min, threshold is 2min skew
         let token = sign_token(
             &header(Some("JWT"), Some(KID_OK)),
@@ -423,7 +470,7 @@ mod verify_tests {
                 AUD_OK,
                 Some(future),
                 None,
-                Some(NONCE_OK),
+                Some(&nonce),
                 Some(now + 600),
             ),
         );
@@ -432,8 +479,9 @@ mod verify_tests {
             &token,
             &[ISS_GOOGLE],
             &[jwk_with_kid(KID_OK)],
-            |claims| assert_audience(claims),
-            |claims| assert_nonce(claims),
+            &salt,
+            assert_nonce,
+            assert_audience,
         )
         .unwrap_err();
         assert!(matches!(err, JwtVerifyError::BadClaim(ref f) if f == "iat_future"));
@@ -442,6 +490,10 @@ mod verify_tests {
     #[test]
     fn iat_too_old() {
         let now = now_secs();
+        let salt = test_salt();
+
+        let nonce = build_nonce(&salt);
+
         let old = now.saturating_sub(11 * 60); // >10 min
         let token = sign_token(
             &header(Some("JWT"), Some(KID_OK)),
@@ -450,7 +502,7 @@ mod verify_tests {
                 AUD_OK,
                 Some(old),
                 None,
-                Some(NONCE_OK),
+                Some(&nonce),
                 Some(now + 600),
             ),
         );
@@ -459,8 +511,9 @@ mod verify_tests {
             &token,
             &[ISS_GOOGLE],
             &[jwk_with_kid(KID_OK)],
-            |claims| assert_audience(claims),
-            |claims| assert_nonce(claims),
+            &salt,
+            assert_nonce,
+            assert_audience,
         )
         .unwrap_err();
         assert!(matches!(err, JwtVerifyError::BadClaim(ref f) if f == "iat_expired"));
@@ -469,6 +522,10 @@ mod verify_tests {
     #[test]
     fn nbf_in_future_is_rejected_by_lib() {
         let now = now_secs();
+        let salt = test_salt();
+
+        let nonce = build_nonce(&salt);
+
         let nbf_future = now + 300; // +5 min
         let token = sign_token(
             &header(Some("JWT"), Some(KID_OK)),
@@ -477,7 +534,7 @@ mod verify_tests {
                 AUD_OK,
                 Some(now),
                 Some(nbf_future),
-                Some(NONCE_OK),
+                Some(&nonce),
                 Some(now + 600),
             ),
         );
@@ -487,8 +544,9 @@ mod verify_tests {
             &token,
             &[ISS_GOOGLE],
             &[jwk_with_kid(KID_OK)],
-            |claims| assert_audience(claims),
-            |claims| assert_nonce(claims),
+            &salt,
+            assert_nonce,
+            assert_audience,
         )
         .unwrap_err();
         assert!(matches!(err, JwtVerifyError::BadSig(_)));
@@ -497,6 +555,10 @@ mod verify_tests {
     #[test]
     fn bad_signature_with_wrong_key_material() {
         let now = now_secs();
+        let salt = test_salt();
+
+        let nonce = build_nonce(&salt);
+
         let token = sign_token(
             &header(Some("JWT"), Some(KID_OK)),
             &claims(
@@ -504,7 +566,7 @@ mod verify_tests {
                 AUD_OK,
                 Some(now),
                 None,
-                Some(NONCE_OK),
+                Some(&nonce),
                 Some(now + 600),
             ),
         );
@@ -529,8 +591,9 @@ mod verify_tests {
             &token,
             &[ISS_GOOGLE],
             &[bad_jwk],
-            |claims| assert_audience(claims),
-            |claims| assert_nonce(claims),
+            &salt,
+            assert_nonce,
+            assert_audience,
         )
         .unwrap_err();
         assert!(matches!(err, JwtVerifyError::BadSig(_)));
@@ -539,6 +602,9 @@ mod verify_tests {
     #[test]
     fn decodes_optional_profile_claims() {
         let now = now_secs();
+        let salt = test_salt();
+
+        let nonce = build_nonce(&salt);
 
         let c = GoogleClaims {
             iss: ISS_GOOGLE.into(),
@@ -553,7 +619,7 @@ mod verify_tests {
             family_name: Some("World".into()),
             preferred_username: Some("hello_world".into()),
             picture: Some("https://example.com/world.png".into()),
-            nonce: Some(NONCE_OK.into()),
+            nonce: Some(nonce.clone()),
             locale: Some("fr-CH".into()),
         };
 
@@ -563,14 +629,15 @@ mod verify_tests {
             &token,
             &[ISS_GOOGLE],
             &[jwk_with_kid(KID_OK)],
-            |claims| assert_audience(claims),
-            |claims| assert_nonce(claims),
+            &salt,
+            assert_nonce,
+            assert_audience,
         )
         .expect("should verify");
 
         let claims = out.claims;
         assert_eq!(claims.email.as_deref(), Some("hello@example.com"));
-        assert_eq!(claims.name.as_deref(), Some("World")); // unicode/emoji
+        assert_eq!(claims.name.as_deref(), Some("World"));
         assert_eq!(claims.given_name.as_deref(), Some("Hello"));
         assert_eq!(claims.family_name.as_deref(), Some("World"));
         assert_eq!(claims.preferred_username.as_deref(), Some("hello_world"));

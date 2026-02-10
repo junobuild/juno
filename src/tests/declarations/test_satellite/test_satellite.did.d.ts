@@ -38,7 +38,9 @@ export type AuthenticateAutomationArgs = {
 	OpenId: OpenIdPrepareAutomationArgs;
 };
 export type AuthenticateAutomationResultResponse =
-	| { Ok: null }
+	| {
+			Ok: [Principal, AutomationController];
+	  }
 	| { Err: AuthenticationAutomationError };
 export type AuthenticateResultResponse = { Ok: Authentication } | { Err: AuthenticationError };
 export interface Authentication {
@@ -86,6 +88,10 @@ export interface AutomationConfig {
 export interface AutomationConfigOpenId {
 	observatory_id: [] | [Principal];
 	providers: Array<[OpenIdAutomationProvider, OpenIdAutomationProviderConfig]>;
+}
+export interface AutomationController {
+	scope: AutomationScope;
+	expires_at: bigint;
 }
 export type AutomationScope = { Write: null } | { Submit: null };
 export type CollectionType = { Db: null } | { Storage: null };

@@ -26,7 +26,7 @@ type AuthenticateAutomationArgs = variant {
   OpenId : OpenIdPrepareAutomationArgs;
 };
 type AuthenticateAutomationResultResponse = variant {
-  Ok;
+  Ok : record { principal; AutomationController };
   Err : AuthenticationAutomationError;
 };
 type AuthenticateResultResponse = variant {
@@ -74,6 +74,10 @@ type AutomationConfigOpenId = record {
     OpenIdAutomationProvider;
     OpenIdAutomationProviderConfig;
   };
+};
+type AutomationController = record {
+  scope : AutomationScope;
+  expires_at : nat64;
 };
 type AutomationScope = variant { Write; Submit };
 type CollectionType = variant { Db; Storage };

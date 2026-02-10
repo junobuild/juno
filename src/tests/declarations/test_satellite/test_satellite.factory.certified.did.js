@@ -82,6 +82,14 @@ export const idlFactory = ({ IDL }) => {
 	const AuthenticateAutomationArgs = IDL.Variant({
 		OpenId: OpenIdPrepareAutomationArgs
 	});
+	const AutomationScope = IDL.Variant({
+		Write: IDL.Null,
+		Submit: IDL.Null
+	});
+	const AutomationController = IDL.Record({
+		scope: AutomationScope,
+		expires_at: IDL.Nat64
+	});
 	const PrepareAutomationError = IDL.Variant({
 		JwtFindProvider: JwtFindProviderError,
 		InvalidController: IDL.Text,
@@ -98,7 +106,7 @@ export const idlFactory = ({ IDL }) => {
 		SaveUniqueJtiToken: IDL.Text
 	});
 	const AuthenticateAutomationResultResponse = IDL.Variant({
-		Ok: IDL.Null,
+		Ok: IDL.Tuple(IDL.Principal, AutomationController),
 		Err: AuthenticationAutomationError
 	});
 	const CommitBatch = IDL.Record({
@@ -221,10 +229,6 @@ export const idlFactory = ({ IDL }) => {
 		rules: IDL.Opt(AuthenticationRules)
 	});
 	const OpenIdAutomationProvider = IDL.Variant({ GitHub: IDL.Null });
-	const AutomationScope = IDL.Variant({
-		Write: IDL.Null,
-		Submit: IDL.Null
-	});
 	const OpenIdAutomationProviderControllerConfig = IDL.Record({
 		scope: IDL.Opt(AutomationScope),
 		max_time_to_live: IDL.Opt(IDL.Nat64)

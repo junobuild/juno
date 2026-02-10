@@ -55,7 +55,11 @@ export const authenticateAndMakeIdentity = async <R>({
 
 	const { jwks, jwt } = mockJwt;
 
-	await assertOpenIdHttpsOutcalls({ pic, jwks, method });
+	await assertOpenIdHttpsOutcalls({
+		pic,
+		jwks,
+		method: method === 'github' ? 'github_auth' : 'google'
+	});
 
 	const { authenticate, get_delegation } = actor;
 

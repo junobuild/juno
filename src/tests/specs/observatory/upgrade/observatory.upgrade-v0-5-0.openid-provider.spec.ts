@@ -9,7 +9,7 @@ import { fromNullable } from '@dfinity/utils';
 import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import type { Principal } from '@icp-sdk/core/principal';
 import { inject } from 'vitest';
-import { GITHUB_OPEN_ID_PROVIDER } from '../../../constants/auth-tests.constants';
+import { GITHUB_AUTH_OPEN_ID_PROVIDER } from '../../../constants/auth-tests.constants';
 import { OBSERVATORY_ID } from '../../../constants/observatory-tests.constants';
 import { mockGitHubClientId } from '../../../mocks/jwt.mocks';
 import { generateNonce } from '../../../utils/auth-nonce-tests.utils';
@@ -74,7 +74,7 @@ describe('Observatory > Upgrade', () => {
 
 		const { jwks } = mockJwt;
 
-		await assertOpenIdHttpsOutcalls({ pic, jwks, method: 'github' });
+		await assertOpenIdHttpsOutcalls({ pic, jwks, method: 'github_auth' });
 	});
 
 	afterAll(async () => {
@@ -92,7 +92,7 @@ describe('Observatory > Upgrade', () => {
 		const { get_openid_certificate } = newActor;
 
 		const cert = await get_openid_certificate({
-			provider: GITHUB_OPEN_ID_PROVIDER
+			provider: GITHUB_AUTH_OPEN_ID_PROVIDER
 		});
 
 		expect(fromNullable(cert)).not.toBeUndefined();

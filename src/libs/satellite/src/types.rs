@@ -63,6 +63,7 @@ pub mod interface {
         GetDelegationError, OpenIdGetDelegationArgs, OpenIdPrepareDelegationArgs,
         PrepareDelegationError, PreparedDelegation, SignedDelegation,
     };
+    use junobuild_auth::state::types::automation::AutomationConfig;
     use junobuild_auth::state::types::config::AuthenticationConfig;
     use junobuild_cdn::proposals::ProposalId;
     use junobuild_storage::types::config::StorageConfig;
@@ -73,6 +74,7 @@ pub mod interface {
         pub storage: StorageConfig,
         pub db: Option<DbConfig>,
         pub authentication: Option<AuthenticationConfig>,
+        pub automation: Option<AutomationConfig>,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]

@@ -13,7 +13,7 @@ import { GITHUB_AUTH_OPEN_ID_PROVIDER } from '../../../constants/auth-tests.cons
 import { OBSERVATORY_ID } from '../../../constants/observatory-tests.constants';
 import { mockGitHubClientId } from '../../../mocks/jwt.mocks';
 import { generateNonce } from '../../../utils/auth-nonce-tests.utils';
-import { makeMockGitHubOpenIdJwt } from '../../../utils/jwt-tests.utils';
+import { makeMockGitHubAuthOpenIdJwt } from '../../../utils/jwt-tests.utils';
 import { assertOpenIdHttpsOutcalls } from '../../../utils/observatory-openid-tests.utils';
 import { tick } from '../../../utils/pic-tests.utils';
 import { downloadObservatory } from '../../../utils/setup-tests.utils';
@@ -66,7 +66,7 @@ describe('Observatory > Upgrade', () => {
 		const { nonce } = await generateNonce({ caller: user });
 
 		// Load the related certificate
-		const mockJwt = await makeMockGitHubOpenIdJwt({
+		const mockJwt = await makeMockGitHubAuthOpenIdJwt({
 			clientId: mockGitHubClientId,
 			date: currentDate,
 			nonce

@@ -92,7 +92,8 @@ pub const COLLECTION_AUTOMATION_TOKEN_DEFAULT_RULE: SetRule = SetRule {
 };
 
 pub const COLLECTION_AUTOMATION_WORKFLOW_DEFAULT_RULE: SetRule = SetRule {
-    // Created and read through internal hooks. Write is restricted to Satellites themselves.
+    // Created through internal hooks. Write is restricted to Satellites themselves.
+    // Read allowed for controllers.
     read: Controllers,
     write: Controllers,
     memory: Some(Memory::Stable),

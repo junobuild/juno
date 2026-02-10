@@ -64,11 +64,11 @@ pub mod interface {
         GetDelegationError, OpenIdGetDelegationArgs, OpenIdPrepareDelegationArgs,
         PrepareDelegationError, PreparedDelegation, SignedDelegation,
     };
+    use junobuild_auth::state::types::automation::AutomationConfig;
     use junobuild_auth::state::types::config::AuthenticationConfig;
     use junobuild_cdn::proposals::ProposalId;
     use junobuild_storage::types::config::StorageConfig;
     use serde::{Deserialize, Serialize};
-    use junobuild_auth::state::types::automation::AutomationConfig;
 
     #[derive(CandidType, Deserialize)]
     pub struct Config {

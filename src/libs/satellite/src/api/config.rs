@@ -34,7 +34,7 @@ pub fn get_config() -> Config {
         storage,
         db,
         authentication,
-        automation
+        automation,
     }
 }
 

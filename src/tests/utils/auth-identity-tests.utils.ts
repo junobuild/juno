@@ -13,7 +13,7 @@ import {
 import { mockGitHubClientId, mockGoogleClientId } from '../mocks/jwt.mocks';
 import type { TestSession } from './auth-tests.utils';
 import {
-	makeMockGitHubOpenIdJwt,
+	makeMockGitHubAuthOpenIdJwt,
 	makeMockGoogleOpenIdJwt,
 	type MockOpenIdJwt
 } from './jwt-tests.utils';
@@ -45,7 +45,7 @@ export const authenticateAndMakeIdentity = async <R>({
 
 	const now = await pic.getTime();
 
-	const fn = method === 'github' ? makeMockGitHubOpenIdJwt : makeMockGoogleOpenIdJwt;
+	const fn = method === 'github' ? makeMockGitHubAuthOpenIdJwt : makeMockGoogleOpenIdJwt;
 
 	const mockJwt = await fn({
 		clientId: method === 'github' ? mockGitHubClientId : mockGoogleClientId,

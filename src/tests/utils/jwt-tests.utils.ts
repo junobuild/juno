@@ -43,7 +43,7 @@ export const makeMockGoogleOpenIdJwt = async ({
 	});
 };
 
-export const makeMockGitHubOpenIdJwt = async ({
+export const makeMockGitHubAuthOpenIdJwt = async ({
 	clientId,
 	nonce,
 	date,

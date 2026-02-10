@@ -44,9 +44,11 @@ pub fn save_unique_token_jti(
     }
 
     // Create metadata.
+    let PreparedAutomation(controller_id, _) = prepared_automation;
+
     let automation_token_data: AutomationTokenData = AutomationTokenData {
         controller_id: DocDataPrincipal {
-            value: prepared_automation.controller.id,
+            value: controller_id.clone(),
         },
     };
 

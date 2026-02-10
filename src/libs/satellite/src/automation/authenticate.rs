@@ -30,7 +30,7 @@ pub async fn openid_authenticate_automation(
                 return Ok(Err(AuthenticationAutomationError::RegisterController(err)));
             }
 
-            Ok(())
+            Ok(automation)
         }
         Err(err) => Err(AuthenticationAutomationError::PrepareAutomation(err)),
     };

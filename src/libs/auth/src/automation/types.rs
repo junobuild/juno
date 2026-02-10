@@ -14,13 +14,10 @@ pub struct OpenIdPrepareAutomationArgs {
 pub type PrepareAutomationResult = Result<PreparedAutomation, PrepareAutomationError>;
 
 #[derive(CandidType, Serialize, Deserialize)]
-pub struct PreparedAutomation {
-    pub controller: PreparedControllerAutomation,
-}
+pub struct PreparedAutomation(pub ControllerId, pub AutomationController);
 
 #[derive(CandidType, Serialize, Deserialize)]
-pub struct PreparedControllerAutomation {
-    pub id: ControllerId,
+pub struct AutomationController {
     pub scope: AutomationScope,
     pub expires_at: u64,
 }

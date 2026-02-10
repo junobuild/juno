@@ -1,6 +1,5 @@
 use crate::automation::types::{
-    PrepareAutomationError, PrepareAutomationResult, PreparedAutomation,
-    PreparedControllerAutomation,
+    AutomationController, PrepareAutomationError, PrepareAutomationResult, PreparedAutomation,
 };
 use crate::automation::utils::duration::build_expiration;
 use crate::automation::utils::scope::build_scope;
@@ -42,11 +41,7 @@ pub fn openid_prepare_automation(
 
     let expires_at = build_expiration(provider, auth_heap);
 
-    let controller: PreparedControllerAutomation = PreparedControllerAutomation {
-        id: controller_id,
-        expires_at,
-        scope,
-    };
+    let controller: AutomationController = AutomationController { expires_at, scope };
 
-    Ok(PreparedAutomation { controller })
+    Ok(PreparedAutomation(controller_id, controller))
 }

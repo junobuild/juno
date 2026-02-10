@@ -60,6 +60,7 @@ pub mod interface {
     use crate::db::types::config::DbConfig;
     use crate::Doc;
     use candid::CandidType;
+    use junobuild_auth::automation::types::PreparedAutomation;
     use junobuild_auth::delegation::types::{
         GetDelegationError, OpenIdGetDelegationArgs, OpenIdPrepareDelegationArgs,
         PrepareDelegationError, PreparedDelegation, SignedDelegation,
@@ -124,7 +125,7 @@ pub mod interface {
 
     #[derive(CandidType, Serialize, Deserialize)]
     pub enum AuthenticateAutomationResultResponse {
-        Ok(()),
+        Ok(PreparedAutomation),
         Err(AuthenticationAutomationError),
     }
 }

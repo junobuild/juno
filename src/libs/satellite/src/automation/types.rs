@@ -1,5 +1,7 @@
 use candid::{CandidType, Deserialize};
-use junobuild_auth::automation::types::{OpenIdPrepareAutomationArgs, PrepareAutomationError};
+use junobuild_auth::automation::types::{
+    OpenIdPrepareAutomationArgs, PrepareAutomationError, PreparedAutomation,
+};
 use serde::Serialize;
 
 #[derive(CandidType, Serialize, Deserialize)]
@@ -15,4 +17,4 @@ pub enum AuthenticationAutomationError {
     RegisterController(String),
 }
 
-pub type AuthenticateAutomationResult = Result<(), AuthenticationAutomationError>;
+pub type AuthenticateAutomationResult = Result<PreparedAutomation, AuthenticationAutomationError>;

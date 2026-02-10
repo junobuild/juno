@@ -1518,7 +1518,7 @@ dependencies = [
 
 [[package]]
 name = "observatory"
-version = "0.5.0"
+version = "0.5.1"
 dependencies = [
  "candid",
  "ciborium",

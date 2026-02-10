@@ -21,6 +21,7 @@ export const idlFactory = ({ IDL }) => {
 		failed: IDL.Nat64
 	});
 	const OpenIdProvider = IDL.Variant({
+		GitHubActions: IDL.Null,
 		Google: IDL.Null,
 		GitHubAuth: IDL.Null
 	});

@@ -1,11 +1,13 @@
 import { idlFactoryObservatory, type ObservatoryActor } from '$declarations';
+import type { OpenIdProvider } from '$declarations/observatory/observatory.did';
 import { type Actor, PocketIc } from '@dfinity/pic';
 import { fromNullable } from '@dfinity/utils';
 import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import type { Principal } from '@icp-sdk/core/principal';
 import { inject } from 'vitest';
 import {
-	GITHUB_OPEN_ID_PROVIDER,
+	GITHUB_ACTIONS_OPEN_ID_PROVIDER,
+	GITHUB_AUTH_OPEN_ID_PROVIDER,
 	GOOGLE_OPEN_ID_PROVIDER
 } from '../../../constants/auth-tests.constants';
 import { mockCertificateDate, mockGoogleClientId } from '../../../mocks/jwt.mocks';
@@ -58,13 +60,13 @@ describe('Observatory > OpenId > Upgrade', async () => {
 		});
 	};
 
-	const assertNoHttpsOutcalls = async () => {
+	const assertNoHttpsOutcalls = async ({ provider }: { provider: OpenIdProvider }) => {
 		await expect(pic.getPendingHttpsOutcalls()).resolves.toHaveLength(0);
 
 		const { get_openid_certificate } = actor;
 
 		const cert = await get_openid_certificate({
-			provider: { Google: null }
+			provider
 		});
 
 		expect(fromNullable(cert)).toBeUndefined();
@@ -76,8 +78,12 @@ describe('Observatory > OpenId > Upgrade', async () => {
 			provider: GOOGLE_OPEN_ID_PROVIDER
 		},
 		{
-			method: 'github',
-			provider: GITHUB_OPEN_ID_PROVIDER
+			method: 'github_auth',
+			provider: GITHUB_AUTH_OPEN_ID_PROVIDER
+		},
+		{
+			method: 'github_actions',
+			provider: GITHUB_ACTIONS_OPEN_ID_PROVIDER
 		}
 	])('$method', ({ method, provider }) => {
 		it('should not start monitoring after upgrade if never stopped', async () => {
@@ -85,7 +91,7 @@ describe('Observatory > OpenId > Upgrade', async () => {
 
 			await tick(pic);
 
-			await assertNoHttpsOutcalls();
+			await assertNoHttpsOutcalls({ provider });
 		});
 
 		it('should not start monitoring after upgrade if stopped', async () => {
@@ -97,7 +103,7 @@ describe('Observatory > OpenId > Upgrade', async () => {
 			await assertOpenIdHttpsOutcalls({
 				pic,
 				jwks: mockJwks,
-				method: method as 'google' | 'github'
+				method: method as 'google' | 'github_auth' | 'github_actions'
 			});
 
 			await pic.advanceTime(1000);
@@ -111,7 +117,7 @@ describe('Observatory > OpenId > Upgrade', async () => {
 			await assertOpenIdHttpsOutcalls({
 				pic,
 				jwks: mockJwks,
-				method: method as 'google' | 'github'
+				method: method as 'google' | 'github_auth' | 'github_actions'
 			});
 
 			await expect(pic.getPendingHttpsOutcalls()).resolves.toHaveLength(0);
@@ -132,7 +138,7 @@ describe('Observatory > OpenId > Upgrade', async () => {
 			await assertOpenIdHttpsOutcalls({
 				pic,
 				jwks: mockJwks,
-				method: method as 'google' | 'github'
+				method: method as 'google' | 'github_auth' | 'github_actions'
 			});
 
 			await upgradeCurrent();
@@ -155,7 +161,7 @@ describe('Observatory > OpenId > Upgrade', async () => {
 			await assertOpenIdHttpsOutcalls({
 				pic,
 				jwks: mockJwks,
-				method: method as 'google' | 'github'
+				method: method as 'google' | 'github_auth' | 'github_actions'
 			});
 
 			await upgradeCurrent();
@@ -169,7 +175,7 @@ describe('Observatory > OpenId > Upgrade', async () => {
 			await assertOpenIdHttpsOutcalls({
 				pic,
 				jwks: mockJwks,
-				method: method as 'google' | 'github'
+				method: method as 'google' | 'github_auth' | 'github_actions'
 			});
 		});
 	});

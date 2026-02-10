@@ -7,4 +7,5 @@ export const LOG_SALT_INITIALIZED = 'Authentication salt initialized.';
 export const LOG_SALT_ALREADY_INITIALIZED = 'Authentication salt exists. Skipping initialization.';
 
 export const GOOGLE_OPEN_ID_PROVIDER = { Google: null };
-export const GITHUB_OPEN_ID_PROVIDER = { GitHubAuth: null };
+export const GITHUB_AUTH_OPEN_ID_PROVIDER = { GitHubAuth: null };
+export const GITHUB_ACTIONS_OPEN_ID_PROVIDER = { GitHubActions: null };

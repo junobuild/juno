@@ -1,8 +1,6 @@
 use crate::openid::jwt::types::cert::Jwks;
 use crate::openid::jwt::types::provider::JwtIssuers;
-use crate::openid::types::provider::{
-    OpenIdCertificate, OpenIdDelegationProvider, OpenIdProvider,
-};
+use crate::openid::types::provider::{OpenIdCertificate, OpenIdDelegationProvider, OpenIdProvider};
 use junobuild_shared::data::version::next_version;
 use junobuild_shared::ic::api::time;
 use junobuild_shared::types::state::{Version, Versioned};

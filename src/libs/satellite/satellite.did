@@ -85,6 +85,7 @@ type Config = record {
   db : opt DbConfig;
   authentication : opt AuthenticationConfig;
   storage : StorageConfig;
+  automation : opt AutomationConfig;
 };
 type ConfigMaxMemorySize = record { stable : opt nat64; heap : opt nat64 };
 type Controller = record {

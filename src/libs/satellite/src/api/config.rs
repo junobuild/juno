@@ -28,11 +28,13 @@ pub fn get_config() -> Config {
     let storage = get_storage_config_store();
     let db = get_db_config_store();
     let authentication = get_auth_config_store();
+    let automation = get_automation_config_store();
 
     Config {
         storage,
         db,
         authentication,
+        automation
     }
 }
 

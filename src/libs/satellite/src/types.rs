@@ -68,12 +68,14 @@ pub mod interface {
     use junobuild_cdn::proposals::ProposalId;
     use junobuild_storage::types::config::StorageConfig;
     use serde::{Deserialize, Serialize};
+    use junobuild_auth::state::types::automation::AutomationConfig;
 
     #[derive(CandidType, Deserialize)]
     pub struct Config {
         pub storage: StorageConfig,
         pub db: Option<DbConfig>,
         pub authentication: Option<AuthenticationConfig>,
+        pub automation: Option<AutomationConfig>,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]

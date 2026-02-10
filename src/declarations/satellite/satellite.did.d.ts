@@ -102,6 +102,7 @@ export interface Config {
 	db: [] | [DbConfig];
 	authentication: [] | [AuthenticationConfig];
 	storage: StorageConfig;
+	automation: [] | [AutomationConfig];
 }
 export interface ConfigMaxMemorySize {
 	stable: [] | [bigint];

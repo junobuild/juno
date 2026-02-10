@@ -284,7 +284,8 @@ export const idlFactory = ({ IDL }) => {
 	const Config = IDL.Record({
 		db: IDL.Opt(DbConfig),
 		authentication: IDL.Opt(AuthenticationConfig),
-		storage: StorageConfig
+		storage: StorageConfig,
+		automation: IDL.Opt(AutomationConfig)
 	});
 	const OpenIdGetDelegationArgs = IDL.Record({
 		jwt: IDL.Text,

@@ -12,7 +12,12 @@ const getGoogleCertificate = async ({ mainnet, provider: cmdProvider }) => {
 		? observatoryActorIC()
 		: observatoryActorLocal());
 
-	const provider = cmdProvider === 'github_auth' ? { GitHubAuth: null } : { Google: null };
+	const provider =
+		cmdProvider === 'gh_auth'
+			? { GitHubAuth: null }
+			: cmdProvider === 'gh_actions'
+				? { GitHubActions: null }
+				: { Google: null };
 
 	const certificate = await get_openid_certificate({ provider });
 
@@ -31,7 +36,7 @@ const mainnet = targetMainnet();
 const args = process.argv.slice(2);
 const provider = nextArg({ args, option: '-p' }) ?? nextArg({ args, option: '--provider' });
 
-if (!['google', 'github_auth'].includes(provider)) {
+if (!['google', 'gh_auth', 'gh_actions'].includes(provider)) {
 	console.log(`Provider ${provider} is not supported`);
 	process.exit(1);
 }

@@ -204,6 +204,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 						version: [1n]
 					}),
 					authentication: toNullable(),
+					automation: toNullable(),
 					db: toNullable()
 				});
 
@@ -569,6 +570,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 							version: [2n]
 						}),
 						authentication: toNullable(),
+						automation: toNullable(),
 						db: toNullable()
 					});
 

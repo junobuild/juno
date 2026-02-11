@@ -64,6 +64,17 @@ export type AuthenticationError =
 export interface AuthenticationRules {
 	allowed_callers: Array<Principal>;
 }
+export interface AutomationConfig {
+	updated_at: [] | [bigint];
+	openid: [] | [AutomationConfigOpenId];
+	created_at: [] | [bigint];
+	version: [] | [bigint];
+}
+export interface AutomationConfigOpenId {
+	observatory_id: [] | [Principal];
+	providers: Array<[OpenIdAutomationProvider, OpenIdAutomationProviderConfig]>;
+}
+export type AutomationScope = { Write: null } | { Submit: null };
 export type CollectionType = { Db: null } | { Storage: null };
 export interface CommitBatch {
 	batch_id: bigint;
@@ -78,6 +89,7 @@ export interface Config {
 	db: [] | [DbConfig];
 	authentication: [] | [AuthenticationConfig];
 	storage: StorageConfig;
+	automation: [] | [AutomationConfig];
 }
 export interface ConfigMaxMemorySize {
 	stable: [] | [bigint];
@@ -269,6 +281,18 @@ export interface OpenIdAuthProviderDelegationConfig {
 	targets: [] | [Array<Principal>];
 	max_time_to_live: [] | [bigint];
 }
+export type OpenIdAutomationProvider = { GitHub: null };
+export interface OpenIdAutomationProviderConfig {
+	controller: [] | [OpenIdAutomationProviderControllerConfig];
+	repositories: Array<[RepositoryKey, OpenIdAutomationRepositoryConfig]>;
+}
+export interface OpenIdAutomationProviderControllerConfig {
+	scope: [] | [AutomationScope];
+	max_time_to_live: [] | [bigint];
+}
+export interface OpenIdAutomationRepositoryConfig {
+	branches: [] | [Array<string>];
+}
 export type OpenIdDelegationProvider = { GitHub: null } | { Google: null };
 export interface OpenIdGetDelegationArgs {
 	jwt: string;
@@ -325,6 +349,10 @@ export interface RateConfig {
 	max_tokens: bigint;
 	time_per_token_ns: bigint;
 }
+export interface RepositoryKey {
+	owner: string;
+	name: string;
+}
 export type Result = { Ok: number } | { Err: string };
 export interface Rule {
 	max_capacity: [] | [number];
@@ -349,6 +377,10 @@ export interface SetAuthenticationConfig {
 	version: [] | [bigint];
 	internet_identity: [] | [AuthenticationConfigInternetIdentity];
 	rules: [] | [AuthenticationRules];
+}
+export interface SetAutomationConfig {
+	openid: [] | [AutomationConfigOpenId];
+	version: [] | [bigint];
 }
 export interface SetController {
 	metadata: Array<[string, string]>;
@@ -468,6 +500,7 @@ export interface _SERVICE {
 	deposit_cycles: ActorMethod<[DepositCyclesArgs], undefined>;
 	get_asset: ActorMethod<[string, string], [] | [AssetNoContent]>;
 	get_auth_config: ActorMethod<[], [] | [AuthenticationConfig]>;
+	get_automation_config: ActorMethod<[], [] | [AutomationConfig]>;
 	get_config: ActorMethod<[], Config>;
 	get_db_config: ActorMethod<[], [] | [DbConfig]>;
 	get_delegation: ActorMethod<[GetDelegationArgs], GetDelegationResultResponse>;
@@ -499,6 +532,7 @@ export interface _SERVICE {
 	reject_proposal: ActorMethod<[CommitProposal], null>;
 	set_asset_token: ActorMethod<[string, string, [] | [string]], undefined>;
 	set_auth_config: ActorMethod<[SetAuthenticationConfig], AuthenticationConfig>;
+	set_automation_config: ActorMethod<[SetAutomationConfig], AutomationConfig>;
 	set_controllers: ActorMethod<[SetControllersArgs], Array<[Principal, Controller]>>;
 	set_custom_domain: ActorMethod<[string, [] | [string]], undefined>;
 	set_db_config: ActorMethod<[SetDbConfig], DbConfig>;

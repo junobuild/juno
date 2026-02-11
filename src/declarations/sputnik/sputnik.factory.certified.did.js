@@ -194,6 +194,33 @@ export const idlFactory = ({ IDL }) => {
 		internet_identity: IDL.Opt(AuthenticationConfigInternetIdentity),
 		rules: IDL.Opt(AuthenticationRules)
 	});
+	const OpenIdAutomationProvider = IDL.Variant({ GitHub: IDL.Null });
+	const AutomationScope = IDL.Variant({
+		Write: IDL.Null,
+		Submit: IDL.Null
+	});
+	const OpenIdAutomationProviderControllerConfig = IDL.Record({
+		scope: IDL.Opt(AutomationScope),
+		max_time_to_live: IDL.Opt(IDL.Nat64)
+	});
+	const RepositoryKey = IDL.Record({ owner: IDL.Text, name: IDL.Text });
+	const OpenIdAutomationRepositoryConfig = IDL.Record({
+		branches: IDL.Opt(IDL.Vec(IDL.Text))
+	});
+	const OpenIdAutomationProviderConfig = IDL.Record({
+		controller: IDL.Opt(OpenIdAutomationProviderControllerConfig),
+		repositories: IDL.Vec(IDL.Tuple(RepositoryKey, OpenIdAutomationRepositoryConfig))
+	});
+	const AutomationConfigOpenId = IDL.Record({
+		observatory_id: IDL.Opt(IDL.Principal),
+		providers: IDL.Vec(IDL.Tuple(OpenIdAutomationProvider, OpenIdAutomationProviderConfig))
+	});
+	const AutomationConfig = IDL.Record({
+		updated_at: IDL.Opt(IDL.Nat64),
+		openid: IDL.Opt(AutomationConfigOpenId),
+		created_at: IDL.Opt(IDL.Nat64),
+		version: IDL.Opt(IDL.Nat64)
+	});
 	const ConfigMaxMemorySize = IDL.Record({
 		stable: IDL.Opt(IDL.Nat64),
 		heap: IDL.Opt(IDL.Nat64)
@@ -231,7 +258,8 @@ export const idlFactory = ({ IDL }) => {
 	const Config = IDL.Record({
 		db: IDL.Opt(DbConfig),
 		authentication: IDL.Opt(AuthenticationConfig),
-		storage: StorageConfig
+		storage: StorageConfig,
+		automation: IDL.Opt(AutomationConfig)
 	});
 	const OpenIdGetDelegationArgs = IDL.Record({
 		jwt: IDL.Text,
@@ -404,6 +432,10 @@ export const idlFactory = ({ IDL }) => {
 		internet_identity: IDL.Opt(AuthenticationConfigInternetIdentity),
 		rules: IDL.Opt(AuthenticationRules)
 	});
+	const SetAutomationConfig = IDL.Record({
+		openid: IDL.Opt(AutomationConfigOpenId),
+		version: IDL.Opt(IDL.Nat64)
+	});
 	const SetController = IDL.Record({
 		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
 		kind: IDL.Opt(ControllerKind),
@@ -480,6 +512,7 @@ export const idlFactory = ({ IDL }) => {
 		deposit_cycles: IDL.Func([DepositCyclesArgs], [], []),
 		get_asset: IDL.Func([IDL.Text, IDL.Text], [IDL.Opt(AssetNoContent)], []),
 		get_auth_config: IDL.Func([], [IDL.Opt(AuthenticationConfig)], []),
+		get_automation_config: IDL.Func([], [IDL.Opt(AutomationConfig)], []),
 		get_config: IDL.Func([], [Config], []),
 		get_db_config: IDL.Func([], [IDL.Opt(DbConfig)], []),
 		get_delegation: IDL.Func([GetDelegationArgs], [GetDelegationResultResponse], []),
@@ -521,6 +554,7 @@ export const idlFactory = ({ IDL }) => {
 		reject_proposal: IDL.Func([CommitProposal], [IDL.Null], []),
 		set_asset_token: IDL.Func([IDL.Text, IDL.Text, IDL.Opt(IDL.Text)], [], []),
 		set_auth_config: IDL.Func([SetAuthenticationConfig], [AuthenticationConfig], []),
+		set_automation_config: IDL.Func([SetAutomationConfig], [AutomationConfig], []),
 		set_controllers: IDL.Func(
 			[SetControllersArgs],
 			[IDL.Vec(IDL.Tuple(IDL.Principal, Controller))],

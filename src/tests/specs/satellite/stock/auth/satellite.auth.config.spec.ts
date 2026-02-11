@@ -2,7 +2,7 @@ import type { SatelliteActor, SatelliteDid } from '$declarations';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import { toNullable } from '@dfinity/utils';
 import { AnonymousIdentity } from '@icp-sdk/core/agent';
-import type { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
+import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import type { Principal } from '@icp-sdk/core/principal';
 import { JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER } from '@junobuild/errors';
 import {
@@ -339,11 +339,7 @@ describe('Satellite > Authentication > Configuration', () => {
 		});
 	});
 
-	describe('anonymous', () => {
-		beforeAll(() => {
-			actor.setIdentity(new AnonymousIdentity());
-		});
-
+	const assertGuards = () => {
 		it('should throw errors on setting config', async () => {
 			const { set_auth_config } = actor;
 
@@ -364,5 +360,22 @@ describe('Satellite > Authentication > Configuration', () => {
 
 			await expect(get_auth_config()).rejects.toThrowError(JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER);
 		});
+	};
+
+	describe('anonymous', () => {
+		beforeAll(() => {
+			actor.setIdentity(new AnonymousIdentity());
+		});
+
+		assertGuards();
+	});
+
+	describe('Some identity', () => {
+		beforeAll(() => {
+			const user = Ed25519KeyIdentity.generate();
+			actor.setIdentity(user);
+		});
+
+		assertGuards();
 	});
 });

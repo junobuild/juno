@@ -1,5 +1,6 @@
 import { exportJWK, generateKeyPair, SignJWT, type JWK, type JWTPayload } from 'jose';
 import { nanoid } from 'nanoid';
+import { mockRepositoryKey } from '../mocks/automation.mocks';
 
 export interface MockOpenIdJwt {
 	jwks: { keys: Required<JWK>[] };
@@ -66,6 +67,39 @@ export const makeMockGitHubAuthOpenIdJwt = async ({
 		iat: timestamp - 10,
 		exp: timestamp + 3600,
 		nonce
+	} as const;
+
+	return await makeMockOpenIdJwt({
+		payload,
+		...rest
+	});
+};
+
+export const makeMockGitHubActionsOpenIdJwt = async ({
+	nonce,
+	date,
+	...rest
+}: {
+	date: Date;
+	nonce: string;
+	kid?: string;
+}): Promise<MockOpenIdJwt> => {
+	const timestamp = Math.floor(date.getTime() / 1000);
+
+	const { owner, name } = mockRepositoryKey;
+
+	const payload = {
+		iss: 'https://token.actions.githubusercontent.com',
+		sub: `repo:${owner}/${name}:ref:refs/heads/main`,
+		aud: nonce,
+		iat: timestamp - 10,
+		exp: timestamp + 3600,
+		ref: ['refs/heads/main'],
+		repository_owner: [owner],
+		run_id: ['21776509605'],
+		run_attempt: ['1'],
+		repository: [`${owner}/${name}`],
+		run_number: ['1']
 	} as const;
 
 	return await makeMockOpenIdJwt({

@@ -8,11 +8,10 @@ import type { Actor, PocketIc } from '@dfinity/pic';
 import { toNullable } from '@dfinity/utils';
 import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import type { Principal } from '@icp-sdk/core/principal';
-import { GITHUB_ACTIONS_OPEN_ID_PROVIDER, GOOGLE_OPEN_ID_PROVIDER } from '../constants/auth-tests.constants';
+import { GITHUB_ACTIONS_OPEN_ID_PROVIDER } from '../constants/auth-tests.constants';
 import { mockRepositoryKey } from '../mocks/automation.mocks';
-import { mockGoogleClientId } from '../mocks/jwt.mocks';
 import { generateNonce } from './auth-nonce-tests.utils';
-import { makeMockGoogleOpenIdJwt } from './jwt-tests.utils';
+import { makeMockGitHubActionsOpenIdJwt } from './jwt-tests.utils';
 import { assertOpenIdHttpsOutcalls } from './observatory-openid-tests.utils';
 import { tick } from './pic-tests.utils';
 import { updateRateConfigNoLimit } from './rate.tests.utils';
@@ -96,14 +95,13 @@ export const testAutomationConfigObservatory = ({
 
 			const now = await pic.getTime();
 
-			const { jwks, jwt } = await makeMockGoogleOpenIdJwt({
-				clientId: mockGoogleClientId,
+			const { jwks, jwt } = await makeMockGitHubActionsOpenIdJwt({
 				date: new Date(now),
 				nonce
 			});
 
 			// Refresh certificate in Observatory
-			await assertOpenIdHttpsOutcalls({ pic, jwks });
+			await assertOpenIdHttpsOutcalls({ pic, jwks, method: 'github_actions' });
 
 			mockJwt = jwt;
 		});
@@ -111,9 +109,9 @@ export const testAutomationConfigObservatory = ({
 		it('should fail if default observatory is targeted', async () => {
 			await configTargetObservatory({});
 
-			const { authenticate } = getActor();
+			const { authenticate_automation } = getActor();
 
-			const result = await authenticate({
+			const result = await authenticate_automation({
 				OpenId: {
 					jwt: mockJwt,
 					session_key: publicKey,

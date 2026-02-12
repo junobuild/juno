@@ -1,6 +1,6 @@
 import type { SatelliteActor } from '$declarations';
 import type { Actor, PocketIc } from '@dfinity/pic';
-import { type Ed25519KeyIdentity } from '@icp-sdk/core/identity';
+import type { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import { JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER } from '@junobuild/errors';
 import type { TestAutomation } from './automation-tests.utils';
 import { makeMockGitHubActionsOpenIdJwt } from './jwt-tests.utils';
@@ -61,6 +61,7 @@ export const assertAutomationController = async ({
 	const { count_collection_docs, list_controllers } = satelliteActor;
 
 	const count = await count_collection_docs('#automation-workflow');
+
 	expect(count).toEqual(1n);
 
 	await expect(list_controllers()).rejects.toThrowError(JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER);

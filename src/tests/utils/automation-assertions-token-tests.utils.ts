@@ -15,7 +15,7 @@ import { GITHUB_ACTIONS_OPEN_ID_PROVIDER } from '../constants/auth-tests.constan
 import { OBSERVATORY_ID } from '../constants/observatory-tests.constants';
 import { mockRepositoryKey } from '../mocks/automation.mocks';
 import { generateNonce } from './auth-nonce-tests.utils';
-import { makeMockGitHubActionsOpenIdJwt, type MockOpenIdJwt } from './jwt-tests.utils';
+import { makeMockGitHubActionsOpenIdJwt } from './jwt-tests.utils';
 import { assertOpenIdHttpsOutcalls } from './observatory-openid-tests.utils';
 import { tick } from './pic-tests.utils';
 import { updateRateConfigNoLimit } from './rate.tests.utils';
@@ -90,9 +90,6 @@ export const testAutomationToken = ({
 			});
 
 			describe('With Jwts', () => {
-				let mockJwks: MockOpenIdJwt['jwks'];
-				let mockJwt: MockOpenIdJwt['jwt'];
-
 				beforeAll(async () => {
 					actor.setIdentity(controller);
 
@@ -102,38 +99,6 @@ export const testAutomationToken = ({
 
 					actor.setIdentity(automationController);
 				});
-
-				const generateJwtCertificate = async ({
-					advanceTime,
-					refreshJwts = true,
-					kid
-				}: {
-					advanceTime?: number;
-					refreshJwts?: boolean;
-					kid?: string;
-				}) => {
-					await pic.advanceTime(advanceTime ?? 1000 * 60 * 15); // Observatory refresh every 15min
-
-					await tick(pic);
-
-					const now = await pic.getTime();
-
-					const { jwks, jwt } = await makeMockGitHubActionsOpenIdJwt({
-						date: new Date(now),
-						nonce,
-						kid
-					});
-
-					mockJwks = jwks;
-					mockJwt = jwt;
-
-					if (!refreshJwts) {
-						return;
-					}
-
-					// Refresh certificate in Observatory
-					await assertOpenIdHttpsOutcalls({ pic, jwks: mockJwks, method: 'github_actions' });
-				};
 
 				it('should fail when jti is missing from JWT', async () => {
 					await pic.advanceTime(15 * 60_000);
@@ -211,6 +176,7 @@ export const testAutomationToken = ({
 
 					if ('Ok' in result2) {
 						expect(true).toBeFalsy();
+
 						return;
 					}
 
@@ -218,6 +184,7 @@ export const testAutomationToken = ({
 
 					if (!('SaveUniqueJtiToken' in Err)) {
 						expect(true).toBeFalsy();
+
 						return;
 					}
 

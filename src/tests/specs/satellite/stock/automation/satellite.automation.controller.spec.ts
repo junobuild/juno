@@ -1,5 +1,6 @@
 import type { SatelliteActor } from '$declarations';
 import type { Actor, PocketIc } from '@dfinity/pic';
+import type { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import {
 	assertAutomationController,
 	authenticateAutomationAndMakeController
@@ -8,7 +9,6 @@ import {
 	setupSatelliteAutomation,
 	type TestAutomation
 } from '../../../../utils/automation-tests.utils';
-import type { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 
 describe('Satellite > Automation > Controller', () => {
 	let pic: PocketIc;

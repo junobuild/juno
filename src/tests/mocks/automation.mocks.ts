@@ -1,4 +1,4 @@
-import { type SatelliteDid } from '$declarations';
+import type { SatelliteDid } from '$declarations';
 
 export const mockRepositoryKey: SatelliteDid.RepositoryKey = {
 	owner: 'junobuild',

@@ -11,17 +11,15 @@ fn pick_key<'a>(kid: &str, jwks: &'a [Jwk]) -> Option<&'a Jwk> {
     jwks.iter().find(|j| j.kid.as_deref() == Some(kid))
 }
 
-pub fn verify_openid_jwt<Claims, Nonce, Custom>(
+pub fn verify_openid_jwt<Claims, Custom>(
     jwt: &str,
     issuers: &[&str],
     jwks: &[Jwk],
     salt: &Salt,
-    assert_nonce: Nonce,
     assert_custom: Custom,
 ) -> Result<TokenData<Claims>, JwtVerifyError>
 where
     Claims: DeserializeOwned + JwtClaims,
-    Nonce: FnOnce(&Claims, &String) -> Result<(), JwtVerifyError>,
     Custom: FnOnce(&Claims) -> Result<(), JwtVerifyError>,
 {
     // 1) Read header to get `kid`
@@ -68,9 +66,12 @@ where
     let c = &token.claims;
 
     // 6) Checks the nonce - i.e. the caller + salt is present in the jwt
+    // This ensures the JWT has not been intercepted and submitted with a different identity.
     let nonce = build_nonce(salt);
 
-    assert_nonce(c, &nonce)?;
+    if c.nonce() != Some(nonce.as_str()) {
+        return Err(JwtVerifyError::BadClaim("nonce".to_string()));
+    }
 
     // 7) Assert custom fields according consumer's flow
     assert_custom(c)?;
@@ -177,6 +178,9 @@ mod verify_tests {
         fn iat(&self) -> Option<u64> {
             self.iat
         }
+        fn nonce(&self) -> Option<&str> {
+            self.nonce.as_deref()
+        }
     }
 
     fn claims(
@@ -222,13 +226,6 @@ mod verify_tests {
         }
     }
 
-    fn assert_nonce(claims: &GoogleClaims, nonce: &String) -> Result<(), JwtVerifyError> {
-        if claims.nonce.as_deref() != Some(nonce.as_str()) {
-            return Err(JwtVerifyError::BadClaim("nonce".to_string()));
-        }
-        Ok(())
-    }
-
     fn assert_audience(claims: &GoogleClaims) -> Result<(), JwtVerifyError> {
         if claims.aud != AUD_OK {
             return Err(JwtVerifyError::BadClaim("aud".to_string()));
@@ -260,7 +257,6 @@ mod verify_tests {
             &[ISS_GOOGLE],
             &[jwk_with_kid(KID_OK)],
             &salt,
-            assert_nonce,
             assert_audience,
         )
         .expect("should verify");
@@ -294,7 +290,6 @@ mod verify_tests {
             &[ISS_GOOGLE],
             &[jwk_with_kid(KID_OK)],
             &salt,
-            assert_nonce,
             assert_audience,
         )
         .unwrap_err();
@@ -325,7 +320,6 @@ mod verify_tests {
             &[ISS_GOOGLE],
             &[jwk_with_kid(KID_OK)],
             &salt,
-            assert_nonce,
             assert_audience,
         )
         .unwrap_err();
@@ -357,7 +351,6 @@ mod verify_tests {
             &[ISS_GOOGLE],
             &[jwk_with_kid(KID_OK)],
             &salt,
-            assert_nonce,
             assert_audience,
         )
         .unwrap_err();
@@ -388,7 +381,6 @@ mod verify_tests {
             &[ISS_GOOGLE],
             &[jwk_with_kid(KID_OK)],
             &salt,
-            assert_nonce,
             assert_audience,
         )
         .unwrap_err();
@@ -419,7 +411,6 @@ mod verify_tests {
             &[ISS_GOOGLE],
             &[jwk_with_kid(KID_OK)],
             &salt,
-            assert_nonce,
             assert_audience,
         )
         .unwrap_err();
@@ -448,7 +439,6 @@ mod verify_tests {
             &[ISS_GOOGLE],
             &[jwk_with_kid(KID_OK)],
             &salt,
-            assert_nonce,
             assert_audience,
         )
         .unwrap_err();
@@ -480,7 +470,6 @@ mod verify_tests {
             &[ISS_GOOGLE],
             &[jwk_with_kid(KID_OK)],
             &salt,
-            assert_nonce,
             assert_audience,
         )
         .unwrap_err();
@@ -512,7 +501,6 @@ mod verify_tests {
             &[ISS_GOOGLE],
             &[jwk_with_kid(KID_OK)],
             &salt,
-            assert_nonce,
             assert_audience,
         )
         .unwrap_err();
@@ -545,7 +533,6 @@ mod verify_tests {
             &[ISS_GOOGLE],
             &[jwk_with_kid(KID_OK)],
             &salt,
-            assert_nonce,
             assert_audience,
         )
         .unwrap_err();
@@ -587,15 +574,8 @@ mod verify_tests {
             }),
         };
 
-        let err = verify_openid_jwt(
-            &token,
-            &[ISS_GOOGLE],
-            &[bad_jwk],
-            &salt,
-            assert_nonce,
-            assert_audience,
-        )
-        .unwrap_err();
+        let err = verify_openid_jwt(&token, &[ISS_GOOGLE], &[bad_jwk], &salt, assert_audience)
+            .unwrap_err();
         assert!(matches!(err, JwtVerifyError::BadSig(_)));
     }
 
@@ -630,7 +610,6 @@ mod verify_tests {
             &[ISS_GOOGLE],
             &[jwk_with_kid(KID_OK)],
             &salt,
-            assert_nonce,
             assert_audience,
         )
         .expect("should verify");

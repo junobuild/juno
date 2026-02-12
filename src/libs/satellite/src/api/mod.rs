@@ -1,4 +1,5 @@
 pub mod auth;
+pub mod automation;
 pub mod cdn;
 pub mod config;
 pub mod controllers;

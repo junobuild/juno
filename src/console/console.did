@@ -123,6 +123,7 @@ type GetDelegationError = variant {
   JwtVerify : JwtVerifyError;
   GetOrFetchJwks : GetOrRefreshJwksError;
   DeriveSeedFailed : text;
+  InvalidObservatoryId : text;
 };
 type GetOrRefreshJwksError = variant {
   InvalidConfig : text;
@@ -262,6 +263,7 @@ type PrepareDelegationError = variant {
   JwtVerify : JwtVerifyError;
   GetOrFetchJwks : GetOrRefreshJwksError;
   DeriveSeedFailed : text;
+  InvalidObservatoryId : text;
 };
 type PreparedDelegation = record { user_key : blob; expiration : nat64 };
 type Proposal = record {

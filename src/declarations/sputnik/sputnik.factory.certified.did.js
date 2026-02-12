@@ -65,7 +65,8 @@ export const idlFactory = ({ IDL }) => {
 		GetCachedJwks: IDL.Null,
 		JwtVerify: JwtVerifyError,
 		GetOrFetchJwks: GetOrRefreshJwksError,
-		DeriveSeedFailed: IDL.Text
+		DeriveSeedFailed: IDL.Text,
+		InvalidObservatoryId: IDL.Text
 	});
 	const AuthenticationError = IDL.Variant({
 		PrepareDelegation: PrepareDelegationError,
@@ -74,6 +75,41 @@ export const idlFactory = ({ IDL }) => {
 	const AuthenticateResultResponse = IDL.Variant({
 		Ok: Authentication,
 		Err: AuthenticationError
+	});
+	const OpenIdPrepareAutomationArgs = IDL.Record({
+		jwt: IDL.Text,
+		salt: IDL.Vec(IDL.Nat8)
+	});
+	const AuthenticateAutomationArgs = IDL.Variant({
+		OpenId: OpenIdPrepareAutomationArgs
+	});
+	const AutomationScope = IDL.Variant({
+		Write: IDL.Null,
+		Submit: IDL.Null
+	});
+	const AutomationController = IDL.Record({
+		scope: AutomationScope,
+		expires_at: IDL.Nat64
+	});
+	const PrepareAutomationError = IDL.Variant({
+		JwtFindProvider: JwtFindProviderError,
+		InvalidController: IDL.Text,
+		GetCachedJwks: IDL.Null,
+		JwtVerify: JwtVerifyError,
+		GetOrFetchJwks: GetOrRefreshJwksError,
+		ControllerAlreadyExists: IDL.Null,
+		InvalidObservatoryId: IDL.Text,
+		TooManyControllers: IDL.Text
+	});
+	const AuthenticationAutomationError = IDL.Variant({
+		PrepareAutomation: PrepareAutomationError,
+		RegisterController: IDL.Text,
+		SaveWorkflowMetadata: IDL.Text,
+		SaveUniqueJtiToken: IDL.Text
+	});
+	const AuthenticateAutomationResultResponse = IDL.Variant({
+		Ok: IDL.Tuple(IDL.Principal, AutomationController),
+		Err: AuthenticationAutomationError
 	});
 	const CommitBatch = IDL.Record({
 		batch_id: IDL.Nat,
@@ -195,10 +231,6 @@ export const idlFactory = ({ IDL }) => {
 		rules: IDL.Opt(AuthenticationRules)
 	});
 	const OpenIdAutomationProvider = IDL.Variant({ GitHub: IDL.Null });
-	const AutomationScope = IDL.Variant({
-		Write: IDL.Null,
-		Submit: IDL.Null
-	});
 	const OpenIdAutomationProviderControllerConfig = IDL.Record({
 		scope: IDL.Opt(AutomationScope),
 		max_time_to_live: IDL.Opt(IDL.Nat64)
@@ -283,7 +315,8 @@ export const idlFactory = ({ IDL }) => {
 		NoSuchDelegation: IDL.Null,
 		JwtVerify: JwtVerifyError,
 		GetOrFetchJwks: GetOrRefreshJwksError,
-		DeriveSeedFailed: IDL.Text
+		DeriveSeedFailed: IDL.Text,
+		InvalidObservatoryId: IDL.Text
 	});
 	const GetDelegationResultResponse = IDL.Variant({
 		Ok: SignedDelegation,
@@ -484,6 +517,11 @@ export const idlFactory = ({ IDL }) => {
 
 	return IDL.Service({
 		authenticate: IDL.Func([AuthenticationArgs], [AuthenticateResultResponse], []),
+		authenticate_automation: IDL.Func(
+			[AuthenticateAutomationArgs],
+			[AuthenticateAutomationResultResponse],
+			[]
+		),
 		commit_asset_upload: IDL.Func([CommitBatch], [], []),
 		commit_proposal: IDL.Func([CommitProposal], [IDL.Null], []),
 		commit_proposal_asset_upload: IDL.Func([CommitBatch], [], []),

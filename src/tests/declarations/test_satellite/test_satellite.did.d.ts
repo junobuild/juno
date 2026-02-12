@@ -34,12 +34,27 @@ export interface AssetNoContent {
 export interface AssetsUpgradeOptions {
 	clear_existing_assets: [] | [boolean];
 }
+export type AuthenticateAutomationArgs = {
+	OpenId: OpenIdPrepareAutomationArgs;
+};
+export type AuthenticateAutomationResultResponse =
+	| {
+			Ok: [Principal, AutomationController];
+	  }
+	| { Err: AuthenticationAutomationError };
 export type AuthenticateResultResponse = { Ok: Authentication } | { Err: AuthenticationError };
 export interface Authentication {
 	doc: Doc;
 	delegation: PreparedDelegation;
 }
 export type AuthenticationArgs = { OpenId: OpenIdPrepareDelegationArgs };
+export type AuthenticationAutomationError =
+	| {
+			PrepareAutomation: PrepareAutomationError;
+	  }
+	| { RegisterController: string }
+	| { SaveWorkflowMetadata: string }
+	| { SaveUniqueJtiToken: string };
 export interface AuthenticationConfig {
 	updated_at: [] | [bigint];
 	openid: [] | [AuthenticationConfigOpenId];
@@ -73,6 +88,10 @@ export interface AutomationConfig {
 export interface AutomationConfigOpenId {
 	observatory_id: [] | [Principal];
 	providers: Array<[OpenIdAutomationProvider, OpenIdAutomationProviderConfig]>;
+}
+export interface AutomationController {
+	scope: AutomationScope;
+	expires_at: bigint;
 }
 export type AutomationScope = { Write: null } | { Submit: null };
 export type CollectionType = { Db: null } | { Storage: null };
@@ -153,7 +172,8 @@ export type GetDelegationError =
 	| { NoSuchDelegation: null }
 	| { JwtVerify: JwtVerifyError }
 	| { GetOrFetchJwks: GetOrRefreshJwksError }
-	| { DeriveSeedFailed: string };
+	| { DeriveSeedFailed: string }
+	| { InvalidObservatoryId: string };
 export type GetDelegationResultResponse = { Ok: SignedDelegation } | { Err: GetDelegationError };
 export type GetOrRefreshJwksError =
 	| { InvalidConfig: string }
@@ -300,6 +320,10 @@ export interface OpenIdGetDelegationArgs {
 	salt: Uint8Array;
 	expiration: bigint;
 }
+export interface OpenIdPrepareAutomationArgs {
+	jwt: string;
+	salt: Uint8Array;
+}
 export interface OpenIdPrepareDelegationArgs {
 	jwt: string;
 	session_key: Uint8Array;
@@ -310,6 +334,17 @@ export type Permission =
 	| { Private: null }
 	| { Public: null }
 	| { Managed: null };
+export type PrepareAutomationError =
+	| {
+			JwtFindProvider: JwtFindProviderError;
+	  }
+	| { InvalidController: string }
+	| { GetCachedJwks: null }
+	| { JwtVerify: JwtVerifyError }
+	| { GetOrFetchJwks: GetOrRefreshJwksError }
+	| { ControllerAlreadyExists: null }
+	| { InvalidObservatoryId: string }
+	| { TooManyControllers: string };
 export type PrepareDelegationError =
 	| {
 			JwtFindProvider: JwtFindProviderError;
@@ -317,7 +352,8 @@ export type PrepareDelegationError =
 	| { GetCachedJwks: null }
 	| { JwtVerify: JwtVerifyError }
 	| { GetOrFetchJwks: GetOrRefreshJwksError }
-	| { DeriveSeedFailed: string };
+	| { DeriveSeedFailed: string }
+	| { InvalidObservatoryId: string };
 export interface PreparedDelegation {
 	user_key: Uint8Array;
 	expiration: bigint;
@@ -476,6 +512,10 @@ export interface UploadChunkResult {
 }
 export interface _SERVICE {
 	authenticate: ActorMethod<[AuthenticationArgs], AuthenticateResultResponse>;
+	authenticate_automation: ActorMethod<
+		[AuthenticateAutomationArgs],
+		AuthenticateAutomationResultResponse
+	>;
 	commit_asset_upload: ActorMethod<[CommitBatch], undefined>;
 	commit_proposal: ActorMethod<[CommitProposal], null>;
 	commit_proposal_asset_upload: ActorMethod<[CommitBatch], undefined>;

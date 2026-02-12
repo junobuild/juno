@@ -22,12 +22,25 @@ type AssetNoContent = record {
   version : opt nat64;
 };
 type AssetsUpgradeOptions = record { clear_existing_assets : opt bool };
+type AuthenticateAutomationArgs = variant {
+  OpenId : OpenIdPrepareAutomationArgs;
+};
+type AuthenticateAutomationResultResponse = variant {
+  Ok : record { principal; AutomationController };
+  Err : AuthenticationAutomationError;
+};
 type AuthenticateResultResponse = variant {
   Ok : Authentication;
   Err : AuthenticationError;
 };
 type Authentication = record { doc : Doc; delegation : PreparedDelegation };
 type AuthenticationArgs = variant { OpenId : OpenIdPrepareDelegationArgs };
+type AuthenticationAutomationError = variant {
+  PrepareAutomation : PrepareAutomationError;
+  RegisterController : text;
+  SaveWorkflowMetadata : text;
+  SaveUniqueJtiToken : text;
+};
 type AuthenticationConfig = record {
   updated_at : opt nat64;
   openid : opt AuthenticationConfigOpenId;
@@ -61,6 +74,10 @@ type AutomationConfigOpenId = record {
     OpenIdAutomationProvider;
     OpenIdAutomationProviderConfig;
   };
+};
+type AutomationController = record {
+  scope : AutomationScope;
+  expires_at : nat64;
 };
 type AutomationScope = variant { Write; Submit };
 type CollectionType = variant { Db; Storage };
@@ -125,6 +142,7 @@ type GetDelegationError = variant {
   JwtVerify : JwtVerifyError;
   GetOrFetchJwks : GetOrRefreshJwksError;
   DeriveSeedFailed : text;
+  InvalidObservatoryId : text;
 };
 type GetDelegationResultResponse = variant {
   Ok : SignedDelegation;
@@ -254,18 +272,30 @@ type OpenIdGetDelegationArgs = record {
   salt : blob;
   expiration : nat64;
 };
+type OpenIdPrepareAutomationArgs = record { jwt : text; salt : blob };
 type OpenIdPrepareDelegationArgs = record {
   jwt : text;
   session_key : blob;
   salt : blob;
 };
 type Permission = variant { Controllers; Private; Public; Managed };
+type PrepareAutomationError = variant {
+  JwtFindProvider : JwtFindProviderError;
+  InvalidController : text;
+  GetCachedJwks;
+  JwtVerify : JwtVerifyError;
+  GetOrFetchJwks : GetOrRefreshJwksError;
+  ControllerAlreadyExists;
+  InvalidObservatoryId : text;
+  TooManyControllers : text;
+};
 type PrepareDelegationError = variant {
   JwtFindProvider : JwtFindProviderError;
   GetCachedJwks;
   JwtVerify : JwtVerifyError;
   GetOrFetchJwks : GetOrRefreshJwksError;
   DeriveSeedFailed : text;
+  InvalidObservatoryId : text;
 };
 type PreparedDelegation = record { user_key : blob; expiration : nat64 };
 type Proposal = record {
@@ -408,6 +438,9 @@ type UploadChunk = record {
 type UploadChunkResult = record { chunk_id : nat };
 service : (InitSatelliteArgs) -> {
   authenticate : (AuthenticationArgs) -> (AuthenticateResultResponse);
+  authenticate_automation : (AuthenticateAutomationArgs) -> (
+      AuthenticateAutomationResultResponse,
+    );
   commit_asset_upload : (CommitBatch) -> ();
   commit_proposal : (CommitProposal) -> (null);
   commit_proposal_asset_upload : (CommitBatch) -> ();

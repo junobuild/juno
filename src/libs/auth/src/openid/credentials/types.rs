@@ -6,6 +6,7 @@ pub(crate) mod errors {
 
     #[derive(CandidType, Serialize, Deserialize, Debug)]
     pub enum VerifyOpenidCredentialsError {
+        InvalidObservatoryId(String),
         GetOrFetchJwks(GetOrRefreshJwksError),
         GetCachedJwks,
         JwtFindProvider(JwtFindProviderError),

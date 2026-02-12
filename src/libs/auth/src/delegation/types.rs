@@ -52,6 +52,7 @@ pub struct Delegation {
 
 #[derive(CandidType, Serialize, Deserialize, Debug)]
 pub enum PrepareDelegationError {
+    InvalidObservatoryId(String),
     DeriveSeedFailed(String),
     GetOrFetchJwks(GetOrRefreshJwksError),
     GetCachedJwks,
@@ -61,6 +62,7 @@ pub enum PrepareDelegationError {
 
 #[derive(CandidType, Serialize, Deserialize, Debug)]
 pub enum GetDelegationError {
+    InvalidObservatoryId(String),
     NoSuchDelegation,
     DeriveSeedFailed(String),
     GetOrFetchJwks(GetOrRefreshJwksError),

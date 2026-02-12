@@ -161,7 +161,8 @@ export type GetDelegationError =
 	| { NoSuchDelegation: null }
 	| { JwtVerify: JwtVerifyError }
 	| { GetOrFetchJwks: GetOrRefreshJwksError }
-	| { DeriveSeedFailed: string };
+	| { DeriveSeedFailed: string }
+	| { InvalidObservatoryId: string };
 export type GetOrRefreshJwksError =
 	| { InvalidConfig: string }
 	| { MissingKid: null }
@@ -319,7 +320,8 @@ export type PrepareDelegationError =
 	| { GetCachedJwks: null }
 	| { JwtVerify: JwtVerifyError }
 	| { GetOrFetchJwks: GetOrRefreshJwksError }
-	| { DeriveSeedFailed: string };
+	| { DeriveSeedFailed: string }
+	| { InvalidObservatoryId: string };
 export interface PreparedDelegation {
 	user_key: Uint8Array;
 	expiration: bigint;

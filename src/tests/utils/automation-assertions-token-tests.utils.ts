@@ -6,8 +6,11 @@ import {
 } from '$declarations';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
-import { JUNO_AUTOMATION_TOKEN_ERROR_MISSING_JTI, JUNO_AUTOMATION_TOKEN_ERROR_TOKEN_REUSED } from '@junobuild/errors';
-import { SignJWT } from 'jose';
+import {
+	JUNO_AUTOMATION_TOKEN_ERROR_MISSING_JTI,
+	JUNO_AUTOMATION_TOKEN_ERROR_TOKEN_REUSED
+} from '@junobuild/errors';
+import { nanoid } from 'nanoid';
 import { GITHUB_ACTIONS_OPEN_ID_PROVIDER } from '../constants/auth-tests.constants';
 import { OBSERVATORY_ID } from '../constants/observatory-tests.constants';
 import { mockRepositoryKey } from '../mocks/automation.mocks';
@@ -17,8 +20,6 @@ import { assertOpenIdHttpsOutcalls } from './observatory-openid-tests.utils';
 import { tick } from './pic-tests.utils';
 import { updateRateConfigNoLimit } from './rate.tests.utils';
 import { OBSERVATORY_WASM_PATH } from './setup-tests.utils';
-import { nanoid } from 'nanoid';
-import { jsonReplacer } from '@dfinity/utils';
 
 export const testAutomationToken = ({
 	actor: getActor,
@@ -139,41 +140,17 @@ export const testAutomationToken = ({
 					await tick(pic);
 
 					const now = await pic.getTime();
-					const base = Math.floor(now / 1000);
 
-					const { jwks, kid, privateKey } = await makeMockGitHubActionsOpenIdJwt({
+					const { jwks, jwt } = await makeMockGitHubActionsOpenIdJwt({
 						date: new Date(now),
-						nonce
+						nonce,
+						jti: null // No jti in the jwt
 					});
 					await assertOpenIdHttpsOutcalls({ pic, jwks, method: 'github_actions' });
 
-					const { owner, name } = mockRepositoryKey;
-
-					const payload = {
-						iss: 'https://token.actions.githubusercontent.com',
-						sub: `repo:${owner}/${name}:ref:refs/heads/main`,
-						aud: nonce,
-						iat: base,
-						exp: base + 3600,
-						// No nbf to avoid ImmatureSignature
-						// Missing jti
-						ref: 'refs/heads/main',
-						repository_owner: owner,
-						run_id: '21776509605',
-						run_attempt: '1',
-						repository: `${owner}/${name}`,
-						run_number: '1'
-					} as const;
-
-					const jwtWithoutJti = await new SignJWT(payload)
-						.setProtectedHeader({ alg: 'RS256', kid, typ: 'JWT' })
-						.setIssuedAt(base)
-						.setExpirationTime(base + 3600)
-						.sign(privateKey);
-
 					const { authenticate_automation } = actor;
 					const result = await authenticate_automation({
-						OpenId: { jwt: jwtWithoutJti, salt }
+						OpenId: { jwt, salt }
 					});
 
 					if ('Ok' in result) {
@@ -222,7 +199,7 @@ export const testAutomationToken = ({
 					// Remove controller to avoid ControllerAlreadyExists checks in next step
 					actor.setIdentity(controller);
 
-					const {del_controllers} = actor;
+					const { del_controllers } = actor;
 					await del_controllers({ controllers: [automationController.getPrincipal()] });
 
 					actor.setIdentity(automationController);

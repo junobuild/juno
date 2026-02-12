@@ -34,4 +34,8 @@ impl JwtClaims for DelegationClaims {
     fn iat(&self) -> Option<u64> {
         self.iat
     }
+
+    fn nonce(&self) -> Option<&str> {
+        self.nonce.as_deref()
+    }
 }

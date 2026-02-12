@@ -50,17 +50,6 @@ fn verify_openid_credentials(
     config: &OpenIdAutomationProviderConfig,
     salt: &Salt,
 ) -> VerifyOpenIdAutomationCredentialsResult {
-    let assert_nonce = |claims: &AutomationClaims, nonce: &String| -> Result<(), JwtVerifyError> {
-        // Ensure the JWT has not been intercepted and submitted with a different identity.
-        // We verify the audience matches the caller's principal + salt (GitHub does not allow customizing
-        // other JWT fields, making audience our only option for binding the JWT to a specific principal).
-        if claims.aud != nonce.as_str() {
-            return Err(JwtVerifyError::BadClaim("aud".to_string()));
-        }
-
-        Ok(())
-    };
-
     let assert_repository = |claims: &AutomationClaims| -> Result<(), JwtVerifyError> {
         let repository = claims
             .repository
@@ -106,7 +95,6 @@ fn verify_openid_credentials(
         provider.issuers(),
         &jwks.keys,
         &salt,
-        assert_nonce,
         assert_repository,
     )
     .map_err(VerifyOpenidCredentialsError::JwtVerify)?;
@@ -267,7 +255,7 @@ mod tests {
         assert!(result.is_err());
         assert!(matches!(
             result.unwrap_err(),
-            VerifyOpenidCredentialsError::JwtVerify(JwtVerifyError::BadClaim(ref c)) if c == "aud"
+            VerifyOpenidCredentialsError::JwtVerify(JwtVerifyError::BadClaim(ref c)) if c == "nonce"
         ));
     }
 

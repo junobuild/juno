@@ -58,14 +58,6 @@ fn verify_openid_credentials(
     client_id: &OpenIdAuthProviderClientId,
     salt: &Salt,
 ) -> VerifyOpenIdDelegationCredentialsResult {
-    let assert_nonce = |claims: &DelegationClaims, nonce: &String| -> Result<(), JwtVerifyError> {
-        if claims.nonce.as_deref() != Some(nonce.as_str()) {
-            return Err(JwtVerifyError::BadClaim("nonce".to_string()));
-        }
-
-        Ok(())
-    };
-
     let assert_audience = |claims: &DelegationClaims| -> Result<(), JwtVerifyError> {
         if claims.aud != client_id.as_str() {
             return Err(JwtVerifyError::BadClaim("aud".to_string()));
@@ -74,15 +66,8 @@ fn verify_openid_credentials(
         Ok(())
     };
 
-    let token = verify_openid_jwt(
-        jwt,
-        provider.issuers(),
-        &jwks.keys,
-        salt,
-        assert_nonce,
-        assert_audience,
-    )
-    .map_err(VerifyOpenidCredentialsError::JwtVerify)?;
+    let token = verify_openid_jwt(jwt, provider.issuers(), &jwks.keys, salt, assert_audience)
+        .map_err(VerifyOpenidCredentialsError::JwtVerify)?;
 
     let credential = OpenIdDelegationCredential::from(token);
 

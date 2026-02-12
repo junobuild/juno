@@ -23,4 +23,10 @@ impl JwtClaims for AutomationClaims {
     fn iat(&self) -> Option<u64> {
         self.iat
     }
+
+    // We use the audience to match the caller's principal + salt because GitHub does not allow customizing
+    // other JWT fields, making audience our only option for binding the JWT to a specific principal.
+    fn nonce(&self) -> Option<&str> {
+        Some(&self.aud)
+    }
 }

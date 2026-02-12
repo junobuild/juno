@@ -3,6 +3,7 @@ pub(crate) mod token {
 
     pub trait JwtClaims {
         fn iat(&self) -> Option<u64>;
+        fn nonce(&self) -> Option<&str>;
     }
 
     #[derive(Clone, Deserialize)]

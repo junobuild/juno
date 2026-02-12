@@ -1,5 +1,6 @@
 import type { SatelliteActor } from '$declarations';
 import type { Actor, PocketIc } from '@dfinity/pic';
+import { fromNullable } from '@dfinity/utils';
 import type { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import { JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER } from '@junobuild/errors';
 import type { TestAutomation } from './automation-tests.utils';
@@ -78,4 +79,7 @@ export const assertAutomationController = async ({
 
 	expect(automatedController).not.toBeUndefined();
 	expect('Write' in (automatedController?.[1].scope ?? {})).toBeTruthy();
+
+	const kind = fromNullable(automatedController?.[1].kind ?? []);
+	expect('Automation' in (kind ?? {})).toBeTruthy();
 };

@@ -5,6 +5,7 @@ import {
 	type SatelliteDid
 } from '$declarations';
 import type { Actor, PocketIc } from '@dfinity/pic';
+import { toNullable } from '@dfinity/utils';
 import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import type { Principal } from '@icp-sdk/core/principal';
 import { GITHUB_ACTIONS_OPEN_ID_PROVIDER } from '../constants/auth-tests.constants';
@@ -29,7 +30,11 @@ interface SetupAutomation {
 	automation: TestAutomation;
 }
 
-export const setupSatelliteAutomation = async (): Promise<
+export const setupSatelliteAutomation = async ({
+	controllerConfig
+}: {
+	controllerConfig?: SatelliteDid.OpenIdAutomationProviderControllerConfig;
+} = {}): Promise<
 	SetupAutomation & {
 		satellite: { canisterId: Principal; actor: Actor<SatelliteActor> };
 	}
@@ -53,7 +58,8 @@ export const setupSatelliteAutomation = async (): Promise<
 	const common = await setupAutomation({
 		pic,
 		controller,
-		actor: satelliteActor
+		actor: satelliteActor,
+		controllerConfig
 	});
 
 	return {
@@ -65,11 +71,13 @@ export const setupSatelliteAutomation = async (): Promise<
 const setupAutomation = async ({
 	pic,
 	controller,
-	actor
+	actor,
+	controllerConfig
 }: {
 	pic: PocketIc;
 	controller: Ed25519KeyIdentity;
 	actor: Actor<SatelliteActor>;
+	controllerConfig?: SatelliteDid.OpenIdAutomationProviderControllerConfig;
 }): Promise<SetupAutomation> => {
 	const automationIdentity = Ed25519KeyIdentity.generate();
 
@@ -96,7 +104,7 @@ const setupAutomation = async ({
 						{ GitHub: null },
 						{
 							repositories: [[mockRepositoryKey, { branches: [] }]],
-							controller: []
+							controller: toNullable(controllerConfig)
 						}
 					]
 				],

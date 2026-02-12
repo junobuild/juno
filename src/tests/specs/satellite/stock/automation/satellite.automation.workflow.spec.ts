@@ -1,6 +1,5 @@
 import type { SatelliteActor } from '$declarations';
 import type { Actor, PocketIc } from '@dfinity/pic';
-import type { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import { fromArray } from '@junobuild/utils';
 import { mockAutomationWorkflowData, mockRepositoryKey } from '../../../../mocks/automation.mocks';
 import { mockListParams } from '../../../../mocks/list.mocks';
@@ -13,7 +12,6 @@ import {
 describe('Satellite > Automation > Workflow', () => {
 	let pic: PocketIc;
 	let satelliteActor: Actor<SatelliteActor>;
-	let controller: Ed25519KeyIdentity;
 
 	let automation: TestAutomation;
 
@@ -21,13 +19,11 @@ describe('Satellite > Automation > Workflow', () => {
 		const {
 			pic: p,
 			satellite: { actor },
-			automation: s,
-			controller: c
+			automation: s
 		} = await setupSatelliteAutomation();
 
 		pic = p;
 		satelliteActor = actor;
-		controller = c;
 
 		automation = s;
 	});
@@ -59,6 +55,7 @@ describe('Satellite > Automation > Workflow', () => {
 		expect(key).toEqual(`GitHub#${mockRepositoryKey.owner}/${mockRepositoryKey.name}#${runId}`);
 
 		const data = await fromArray(doc.data);
+
 		expect(data).toEqual(rest);
 	});
 });

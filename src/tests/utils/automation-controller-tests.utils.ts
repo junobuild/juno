@@ -81,5 +81,6 @@ export const assertAutomationController = async ({
 	expect('Write' in (automatedController?.[1].scope ?? {})).toBeTruthy();
 
 	const kind = fromNullable(automatedController?.[1].kind ?? []);
+
 	expect('Automation' in (kind ?? {})).toBeTruthy();
 };

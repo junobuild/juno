@@ -77,12 +77,14 @@ export const makeMockGitHubAuthOpenIdJwt = async ({
 
 export const makeMockGitHubActionsOpenIdJwt = async ({
 	nonce,
+	jti,
 	date,
 	...rest
 }: {
 	date: Date;
 	nonce: string;
 	kid?: string;
+	jti?: string | null;
 }): Promise<MockOpenIdJwt> => {
 	const timestamp = Math.floor(date.getTime() / 1000);
 
@@ -94,7 +96,7 @@ export const makeMockGitHubActionsOpenIdJwt = async ({
 		aud: nonce,
 		iat: timestamp - 10,
 		exp: timestamp + 3600,
-		jti: nanoid(),
+		...(jti !== null && { jti: jti ?? nanoid() }),
 		ref: 'refs/heads/main',
 		repository_owner: owner,
 		run_id: '21776509605',

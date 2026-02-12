@@ -1,5 +1,6 @@
 use crate::openid::credentials::automation::types::interface::OpenIdAutomationCredential;
 use crate::openid::credentials::automation::types::token::AutomationClaims;
+use crate::openid::credentials::automation::utils::targets::target_observatory_id;
 use crate::openid::credentials::types::errors::VerifyOpenidCredentialsError;
 use crate::openid::jwkset::get_or_refresh_jwks;
 use crate::openid::jwt::types::cert::Jwks;
@@ -36,7 +37,10 @@ pub async fn verify_openid_credentials_with_jwks_renewal(
 
     let provider: OpenIdProvider = (&automation_provider).into();
 
-    let jwks = get_or_refresh_jwks(&provider, jwt, auth_heap)
+    let observatory_id = target_observatory_id(auth_heap)
+        .map_err(VerifyOpenidCredentialsError::InvalidObservatoryId)?;
+
+    let jwks = get_or_refresh_jwks(&provider, jwt, observatory_id, auth_heap)
         .await
         .map_err(VerifyOpenidCredentialsError::GetOrFetchJwks)?;
 

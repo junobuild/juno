@@ -85,7 +85,8 @@ export const idlFactory = ({ IDL }) => {
 		GetCachedJwks: IDL.Null,
 		JwtVerify: JwtVerifyError,
 		GetOrFetchJwks: GetOrRefreshJwksError,
-		DeriveSeedFailed: IDL.Text
+		DeriveSeedFailed: IDL.Text,
+		InvalidObservatoryId: IDL.Text
 	});
 	const AuthenticationError = IDL.Variant({
 		PrepareDelegation: PrepareDelegationError,
@@ -215,7 +216,8 @@ export const idlFactory = ({ IDL }) => {
 		NoSuchDelegation: IDL.Null,
 		JwtVerify: JwtVerifyError,
 		GetOrFetchJwks: GetOrRefreshJwksError,
-		DeriveSeedFailed: IDL.Text
+		DeriveSeedFailed: IDL.Text,
+		InvalidObservatoryId: IDL.Text
 	});
 	const Result_1 = IDL.Variant({
 		Ok: SignedDelegation,

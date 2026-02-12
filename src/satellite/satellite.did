@@ -142,6 +142,7 @@ type GetDelegationError = variant {
   JwtVerify : JwtVerifyError;
   GetOrFetchJwks : GetOrRefreshJwksError;
   DeriveSeedFailed : text;
+  InvalidObservatoryId : text;
 };
 type GetDelegationResultResponse = variant {
   Ok : SignedDelegation;
@@ -285,6 +286,7 @@ type PrepareAutomationError = variant {
   JwtVerify : JwtVerifyError;
   GetOrFetchJwks : GetOrRefreshJwksError;
   ControllerAlreadyExists;
+  InvalidObservatoryId : text;
   TooManyControllers : text;
 };
 type PrepareDelegationError = variant {
@@ -293,6 +295,7 @@ type PrepareDelegationError = variant {
   JwtVerify : JwtVerifyError;
   GetOrFetchJwks : GetOrRefreshJwksError;
   DeriveSeedFailed : text;
+  InvalidObservatoryId : text;
 };
 type PreparedDelegation = record { user_key : blob; expiration : nat64 };
 type Proposal = record {

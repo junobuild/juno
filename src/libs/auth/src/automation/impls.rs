@@ -5,6 +5,9 @@ use junobuild_shared::types::state::ControllerScope;
 impl From<VerifyOpenidCredentialsError> for PrepareAutomationError {
     fn from(e: VerifyOpenidCredentialsError) -> Self {
         match e {
+            VerifyOpenidCredentialsError::InvalidObservatoryId(err) => {
+                PrepareAutomationError::InvalidObservatoryId(err)
+            }
             VerifyOpenidCredentialsError::GetOrFetchJwks(err) => {
                 PrepareAutomationError::GetOrFetchJwks(err)
             }

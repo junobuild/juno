@@ -4,6 +4,9 @@ use crate::openid::credentials::types::errors::VerifyOpenidCredentialsError;
 impl From<VerifyOpenidCredentialsError> for GetDelegationError {
     fn from(e: VerifyOpenidCredentialsError) -> Self {
         match e {
+            VerifyOpenidCredentialsError::InvalidObservatoryId(err) => {
+                GetDelegationError::InvalidObservatoryId(err)
+            }
             VerifyOpenidCredentialsError::GetOrFetchJwks(err) => {
                 GetDelegationError::GetOrFetchJwks(err)
             }
@@ -19,6 +22,9 @@ impl From<VerifyOpenidCredentialsError> for GetDelegationError {
 impl From<VerifyOpenidCredentialsError> for PrepareDelegationError {
     fn from(e: VerifyOpenidCredentialsError) -> Self {
         match e {
+            VerifyOpenidCredentialsError::InvalidObservatoryId(err) => {
+                PrepareDelegationError::InvalidObservatoryId(err)
+            }
             VerifyOpenidCredentialsError::GetOrFetchJwks(err) => {
                 PrepareDelegationError::GetOrFetchJwks(err)
             }

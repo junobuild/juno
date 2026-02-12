@@ -1,13 +1,13 @@
 use crate::openid::jwkset::asserts::refresh_allowed;
 use crate::openid::jwkset::asserts::types::RefreshStatus;
 use crate::openid::jwkset::fetch::fetch_openid_certificate;
-use crate::openid::jwkset::targets::target_observatory_id;
 use crate::openid::jwkset::types::errors::GetOrRefreshJwksError;
 use crate::openid::jwt::types::cert::Jwks;
 use crate::openid::jwt::unsafe_find_jwt_kid;
 use crate::openid::types::provider::OpenIdProvider;
 use crate::state::{cache_certificate, get_cached_certificate, record_fetch_attempt};
 use crate::strategies::AuthHeapStrategy;
+use candid::Principal;
 
 pub fn get_jwks(provider: &OpenIdProvider, auth_heap: &impl AuthHeapStrategy) -> Option<Jwks> {
     let cached_certificate = get_cached_certificate(provider, auth_heap);
@@ -21,6 +21,7 @@ pub fn get_jwks(provider: &OpenIdProvider, auth_heap: &impl AuthHeapStrategy) ->
 pub async fn get_or_refresh_jwks(
     provider: &OpenIdProvider,
     jwt: &str,
+    observatory_id: Principal,
     auth_heap: &impl AuthHeapStrategy,
 ) -> Result<Jwks, GetOrRefreshJwksError> {
     let unsafe_kid = unsafe_find_jwt_kid(jwt)?;
@@ -48,9 +49,6 @@ pub async fn get_or_refresh_jwks(
             return Err(GetOrRefreshJwksError::KeyNotFoundCooldown);
         }
     }
-
-    let observatory_id =
-        target_observatory_id(auth_heap).map_err(GetOrRefreshJwksError::InvalidConfig)?;
 
     let fetched_certificate = fetch_openid_certificate(provider, observatory_id)
         .await

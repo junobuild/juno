@@ -1,5 +1,6 @@
 use crate::openid::credentials::delegation::types::interface::OpenIdDelegationCredential;
 use crate::openid::credentials::delegation::types::token::DelegationClaims;
+use crate::openid::credentials::delegation::utils::targets::target_observatory_id;
 use crate::openid::credentials::types::errors::VerifyOpenidCredentialsError;
 use crate::openid::jwkset::{get_jwks, get_or_refresh_jwks};
 use crate::openid::jwt::types::cert::Jwks;
@@ -28,7 +29,10 @@ pub async fn verify_openid_credentials_with_jwks_renewal(
 
     let provider: OpenIdProvider = (&delegation_provider).into();
 
-    let jwks = get_or_refresh_jwks(&provider, jwt, auth_heap)
+    let observatory_id = target_observatory_id(auth_heap)
+        .map_err(VerifyOpenidCredentialsError::InvalidObservatoryId)?;
+
+    let jwks = get_or_refresh_jwks(&provider, jwt, observatory_id, auth_heap)
         .await
         .map_err(VerifyOpenidCredentialsError::GetOrFetchJwks)?;
 

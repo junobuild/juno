@@ -33,6 +33,7 @@ pub enum PrepareAutomationError {
     ControllerAlreadyExists,
     InvalidController(String),
     TooManyControllers(String),
+    InvalidObservatoryId(String),
     GetOrFetchJwks(GetOrRefreshJwksError),
     GetCachedJwks,
     JwtFindProvider(JwtFindProviderError),

@@ -94,12 +94,13 @@ export const makeMockGitHubActionsOpenIdJwt = async ({
 		aud: nonce,
 		iat: timestamp - 10,
 		exp: timestamp + 3600,
-		ref: ['refs/heads/main'],
-		repository_owner: [owner],
-		run_id: ['21776509605'],
-		run_attempt: ['1'],
-		repository: [`${owner}/${name}`],
-		run_number: ['1']
+		jti: nanoid(),
+		ref: 'refs/heads/main',
+		repository_owner: owner,
+		run_id: '21776509605',
+		run_attempt: '1',
+		repository: `${owner}/${name}`,
+		run_number: '1'
 	} as const;
 
 	return await makeMockOpenIdJwt({

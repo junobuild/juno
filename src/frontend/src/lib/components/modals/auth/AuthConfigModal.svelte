@@ -9,13 +9,13 @@
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import { authIdentity } from '$lib/derived/auth.derived';
 	import { isSkylab } from '$lib/env/app.env';
+	import { emulatorToggleOpenIdMonitoring } from '$lib/services/emulator.services';
 	import {
 		updateAuthConfigRules,
 		updateAuthConfigInternetIdentity,
 		type UpdateAuthConfigResult,
 		updateAuthConfigGoogle
 	} from '$lib/services/satellite/auth.config.services';
-	import { emulatorToggleOpenIdMonitoring } from '$lib/services/emulator.services';
 	import { wizardBusy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { JunoModalDetail, JunoModalEditAuthConfigDetail } from '$lib/types/modal';

@@ -1087,6 +1087,6 @@
 	},
 	"automation": {
 		"title": "部署",
-		"description": "直接从 GitHub Actions 构建、部署和管理您的 Satellite。自动化部署、发布无服务器函数等。"
+		"description": "直接从 GitHub Actions 构建、部署和管理您的 Satellite。通过配置您的仓库及其访问权限，自动化部署、发布无服务器函数等。"
 	}
 }

@@ -1085,6 +1085,6 @@
 	},
 	"automation": {
 		"title": "Deployments",
-		"description": "Build, deploy, and manage your Satellite directly from GitHub Actions. Automate deployments, publish serverless functions, and more."
+		"description": "Build, deploy, and manage your Satellite directly from GitHub Actions. Automate deployments, publish serverless functions, and more by configuring your repository and its access."
 	}
 }

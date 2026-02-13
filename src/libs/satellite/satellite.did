@@ -450,6 +450,7 @@ service : (InitSatelliteArgs) -> {
   count_proposals : () -> (nat64) query;
   del_asset : (text, text) -> ();
   del_assets : (text) -> ();
+  del_controller_self : () -> ();
   del_controllers : (DeleteControllersArgs) -> (
       vec record { principal; Controller },
     );

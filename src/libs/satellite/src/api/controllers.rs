@@ -1,11 +1,11 @@
 use crate::controllers::store::{delete_controllers, set_controllers as set_controllers_store};
-use crate::get_controllers;
+use crate::{caller, get_controllers};
 use junobuild_shared::ic::UnwrapOrTrap;
 use junobuild_shared::segments::controllers::{
     assert_controller_expiration, assert_controllers, assert_max_number_of_controllers,
 };
 use junobuild_shared::types::interface::{DeleteControllersArgs, SetControllersArgs};
-use junobuild_shared::types::state::Controllers;
+use junobuild_shared::types::state::{ControllerId, Controllers};
 
 pub fn set_controllers(
     SetControllersArgs {
@@ -31,6 +31,13 @@ pub fn del_controllers(
     delete_controllers(&controllers);
 
     get_controllers()
+}
+
+pub fn del_controller_self() {
+    let caller = caller();
+    let controllers: [ControllerId; 1] = [caller.clone()];
+
+    delete_controllers(&controllers);
 }
 
 pub fn list_controllers() -> Controllers {

@@ -526,6 +526,7 @@ export interface _SERVICE {
 	count_proposals: ActorMethod<[], bigint>;
 	del_asset: ActorMethod<[string, string], undefined>;
 	del_assets: ActorMethod<[string], undefined>;
+	del_controller_self: ActorMethod<[], undefined>;
 	del_controllers: ActorMethod<[DeleteControllersArgs], Array<[Principal, Controller]>>;
 	del_custom_domain: ActorMethod<[string], undefined>;
 	del_doc: ActorMethod<[string, string, DelDoc], undefined>;

@@ -89,7 +89,16 @@ export const makeMockGitHubActionsOpenIdJwt = async ({
 	const timestamp = Math.floor(date.getTime() / 1000);
 
 	const { owner, name } = mockRepositoryKey;
-	const { runId, runNumber, runAttempt, ref } = mockAutomationWorkflowData;
+	const {
+		runId,
+		runNumber,
+		runAttempt,
+		ref,
+		sha,
+		actor: gitHubActor,
+		workflow,
+		eventName
+	} = mockAutomationWorkflowData;
 
 	const payload = {
 		iss: 'https://token.actions.githubusercontent.com',
@@ -103,7 +112,11 @@ export const makeMockGitHubActionsOpenIdJwt = async ({
 		run_id: runId,
 		run_attempt: runAttempt,
 		repository: `${owner}/${name}`,
-		run_number: runNumber
+		run_number: runNumber,
+		sha,
+		actor: gitHubActor,
+		workflow,
+		event_name: eventName
 	} as const;
 
 	return await makeMockOpenIdJwt({

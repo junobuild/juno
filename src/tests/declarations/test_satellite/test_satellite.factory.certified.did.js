@@ -237,7 +237,7 @@ export const idlFactory = ({ IDL }) => {
 	});
 	const RepositoryKey = IDL.Record({ owner: IDL.Text, name: IDL.Text });
 	const OpenIdAutomationRepositoryConfig = IDL.Record({
-		branches: IDL.Opt(IDL.Vec(IDL.Text))
+		refs: IDL.Opt(IDL.Vec(IDL.Text))
 	});
 	const OpenIdAutomationProviderConfig = IDL.Record({
 		controller: IDL.Opt(OpenIdAutomationProviderControllerConfig),

@@ -66,7 +66,7 @@ export const testAutomationOpenIdConfig = ({
 	const githubConfig: [OpenIdAutomationProvider, OpenIdAutomationProviderConfig] = [
 		{ GitHub: null },
 		{
-			repositories: [[mockRepositoryKey, { branches: [] }]],
+			repositories: [[mockRepositoryKey, { refs: [] }]],
 			controller: []
 		}
 	];
@@ -92,7 +92,7 @@ export const testAutomationOpenIdConfig = ({
 			([key]) => 'GitHub' in key
 		)?.[1];
 
-		expect(github?.repositories[0]).toEqual([mockRepositoryKey, { branches: [] }]);
+		expect(github?.repositories[0]).toEqual([mockRepositoryKey, { refs: [] }]);
 	});
 
 	it('should disable github', async () => {

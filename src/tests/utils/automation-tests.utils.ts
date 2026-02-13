@@ -103,7 +103,7 @@ const setupAutomation = async ({
 					[
 						{ GitHub: null },
 						{
-							repositories: [[mockRepositoryKey, { branches: [] }]],
+							repositories: [[mockRepositoryKey, { refs: [] }]],
 							controller: toNullable(controllerConfig)
 						}
 					]

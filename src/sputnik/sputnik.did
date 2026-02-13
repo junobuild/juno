@@ -264,7 +264,7 @@ type OpenIdAutomationProviderControllerConfig = record {
   scope : opt AutomationScope;
   max_time_to_live : opt nat64;
 };
-type OpenIdAutomationRepositoryConfig = record { branches : opt vec text };
+type OpenIdAutomationRepositoryConfig = record { refs : opt vec text };
 type OpenIdDelegationProvider = variant { GitHub; Google };
 type OpenIdGetDelegationArgs = record {
   jwt : text;

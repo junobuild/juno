@@ -1,14 +1,14 @@
 <script lang="ts">
+	import { isNullish } from '@dfinity/utils';
 	import { setContext } from 'svelte';
 	import AutomationConfigLoader from '$lib/components/automation/AutomationConfigLoader.svelte';
+	import NoAutomation from '$lib/components/automation/NoAutomation.svelte';
 	import { initAutomationConfigContext } from '$lib/stores/satellite/automation.context.store';
 	import {
 		AUTOMATION_CONFIG_CONTEXT_KEY,
 		type AutomationConfigContext
 	} from '$lib/types/automation.context';
 	import type { Satellite } from '$lib/types/satellite';
-	import { isNullish } from '@dfinity/utils';
-	import NoAutomation from '$lib/components/automation/NoAutomation.svelte';
 
 	interface Props {
 		satellite: Satellite;

@@ -156,8 +156,8 @@ pub mod automation {
 
     #[derive(CandidType, Serialize, Deserialize, Clone, Debug)]
     pub struct OpenIdAutomationRepositoryConfig {
-        // Optionally restrict to specific branches (e.g. ["main", "develop"])
-        pub branches: Option<Vec<String>>,
+        // Optionally restrict to specific references / branches (e.g. ["refs/heads/main", "refs/pull/74/merge"])
+        pub refs: Option<Vec<String>>,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone, Debug)]

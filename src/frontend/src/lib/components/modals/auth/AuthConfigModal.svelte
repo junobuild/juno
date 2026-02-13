@@ -14,7 +14,7 @@
 		updateAuthConfigInternetIdentity,
 		type UpdateAuthConfigResult,
 		updateAuthConfigGoogle
-	} from '$lib/services/console/auth/auth.config.services';
+	} from '$lib/services/satellite/auth.config.services';
 	import { emulatorToggleOpenIdMonitoring } from '$lib/services/emulator.services';
 	import { wizardBusy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';

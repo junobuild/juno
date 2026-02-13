@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { setContext } from 'svelte';
 	import { writable } from 'svelte/store';
+	import Automation from '$lib/components/automation/Automation.svelte';
 	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
 	import SatelliteGuard from '$lib/components/guards/SatelliteGuard.svelte';
 	import Loaders from '$lib/components/loaders/Loaders.svelte';
@@ -12,12 +13,11 @@
 		TABS_CONTEXT_KEY
 	} from '$lib/types/tabs.context';
 	import { initTabId } from '$lib/utils/tabs.utils';
-	import Automation from "$lib/components/automation/Automation.svelte";
 
 	const tabs: Tab[] = [
 		{
 			id: Symbol('1'),
-			labelKey: 'deployments.title'
+			labelKey: 'automation.title'
 		}
 	];
 

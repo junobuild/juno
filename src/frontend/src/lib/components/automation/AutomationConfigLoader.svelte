@@ -4,17 +4,14 @@
 	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
 	import Warning from '$lib/components/ui/Warning.svelte';
 	import { authIdentity } from '$lib/derived/auth.derived';
-	import { getAuthConfig } from '$lib/services/console/auth/auth.config.services';
-	import { getRuleUser } from '$lib/services/satellite/collection.services';
+	import { getAutomationConfig } from '$lib/services/satellite/automation.config.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { versionStore } from '$lib/stores/version.store';
-	import { AUTH_CONFIG_CONTEXT_KEY, type AuthConfigContext } from '$lib/types/auth.context';
-	import type { Satellite } from '$lib/types/satellite';
 	import {
 		AUTOMATION_CONFIG_CONTEXT_KEY,
 		type AutomationConfigContext
 	} from '$lib/types/automation.context';
-	import { getAutomationConfig } from '$lib/services/satellite/automation.config.services';
+	import type { Satellite } from '$lib/types/satellite';
 
 	interface Props {
 		satellite: Satellite;

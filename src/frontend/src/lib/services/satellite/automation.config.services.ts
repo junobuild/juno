@@ -1,6 +1,6 @@
 import type { SatelliteDid } from '$declarations';
 import { getAutomationConfig as getAutomationConfigApi } from '$lib/api/satellites.api';
-import { SATELLITE_v0_0_17, SATELLITE_v0_1_4 } from '$lib/constants/version.constants';
+import { SATELLITE_v0_1_4 } from '$lib/constants/version.constants';
 import { isSatelliteFeatureSupported } from '$lib/services/_feature.services';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';

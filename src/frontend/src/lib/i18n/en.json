@@ -1083,7 +1083,8 @@
 		"syncing_orbiters_to_console": "Syncing Orbiters to Console...",
 		"syncing_orbiters_to_mctrl": "Syncing Orbiters to Mission Control... ({0})"
 	},
-	"deployments": {
-		"title": "Deployments"
+	"automation": {
+		"title": "Deployments",
+		"description": "Build, deploy, and manage your Satellite directly from GitHub Actions. Automate deployments, publish serverless functions, and more."
 	}
 }

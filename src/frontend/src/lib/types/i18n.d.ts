@@ -1121,8 +1121,9 @@ interface I18nOut_of_sync {
 	syncing_orbiters_to_mctrl: string;
 }
 
-interface I18nDeployments {
+interface I18nAutomation {
 	title: string;
+	description: string;
 }
 
 interface I18n {
@@ -1162,5 +1163,5 @@ interface I18n {
 	not_found: I18nNot_found;
 	spotlight: I18nSpotlight;
 	out_of_sync: I18nOut_of_sync;
-	deployments: I18nDeployments;
+	automation: I18nAutomation;
 }

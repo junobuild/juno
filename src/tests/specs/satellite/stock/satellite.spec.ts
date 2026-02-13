@@ -713,6 +713,12 @@ describe('Satellite', () => {
 			).rejects.toThrowError(JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER);
 		});
 
+		it('should throw errors on deleting controller self', async () => {
+			const { del_controller_self } = actor;
+
+			await expect(del_controller_self()).rejects.toThrowError(JUNO_AUTH_ERROR_NOT_CONTROLLER);
+		});
+
 		it('should throw errors on deleting docs', async () => {
 			const { del_docs } = actor;
 

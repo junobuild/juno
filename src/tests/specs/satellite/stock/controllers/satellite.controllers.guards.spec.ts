@@ -70,6 +70,12 @@ describe('Satellite > Controllers > Guards', () => {
 			await tick(pic);
 		});
 
+		it('should throw on del_controller_self', async () => {
+			const { del_controller_self } = actor;
+
+			await expect(del_controller_self()).rejects.toThrowError(JUNO_AUTH_ERROR_NOT_CONTROLLER);
+		});
+
 		it('should throw on get_proposal', async () => {
 			const { get_proposal } = actor;
 

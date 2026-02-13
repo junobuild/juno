@@ -201,6 +201,10 @@ mod tests {
             run_id: Some("123456".into()),
             run_number: Some("1".into()),
             run_attempt: Some("1".into()),
+            sha: Some("abc123def456".into()),
+            actor: Some("octocat".into()),
+            workflow: Some("deploy".into()),
+            event_name: Some("push".into()),
         };
 
         let jwt = create_token(&claims);
@@ -220,6 +224,10 @@ mod tests {
         assert_eq!(provider, OpenIdAutomationProvider::GitHub);
         assert_eq!(credential.repository.as_deref(), Some("octo-org/octo-repo"));
         assert_eq!(credential.r#ref.as_deref(), Some("refs/heads/main"));
+        assert_eq!(credential.sha.as_deref(), Some("abc123def456"));
+        assert_eq!(credential.actor.as_deref(), Some("octocat"));
+        assert_eq!(credential.workflow.as_deref(), Some("deploy"));
+        assert_eq!(credential.event_name.as_deref(), Some("push"));
     }
 
     #[test]
@@ -241,6 +249,10 @@ mod tests {
             run_id: Some("123456".into()),
             run_number: Some("1".into()),
             run_attempt: Some("1".into()),
+            sha: Some("abc123def456".into()),
+            actor: Some("octocat".into()),
+            workflow: Some("deploy".into()),
+            event_name: Some("push".into()),
         };
 
         let jwt = create_token(&claims);
@@ -282,6 +294,10 @@ mod tests {
             run_id: Some("123456".into()),
             run_number: Some("1".into()),
             run_attempt: Some("1".into()),
+            sha: Some("abc123def456".into()),
+            actor: Some("octocat".into()),
+            workflow: Some("deploy".into()),
+            event_name: Some("push".into()),
         };
 
         let jwt = create_token(&claims);
@@ -323,6 +339,10 @@ mod tests {
             run_id: Some("123456".into()),
             run_number: Some("1".into()),
             run_attempt: Some("1".into()),
+            sha: Some("abc123def456".into()),
+            actor: Some("octocat".into()),
+            workflow: Some("deploy".into()),
+            event_name: Some("push".into()),
         };
 
         let jwt = create_token(&claims);
@@ -378,6 +398,10 @@ mod tests {
             run_id: Some("123456".into()),
             run_number: Some("1".into()),
             run_attempt: Some("1".into()),
+            sha: Some("abc123def456".into()),
+            actor: Some("octocat".into()),
+            workflow: Some("deploy".into()),
+            event_name: Some("push".into()),
         };
 
         let jwt = create_token(&claims);
@@ -414,6 +438,10 @@ mod tests {
             run_id: Some("123456".into()),
             run_number: Some("1".into()),
             run_attempt: Some("1".into()),
+            sha: Some("abc123def456".into()),
+            actor: Some("octocat".into()),
+            workflow: Some("deploy".into()),
+            event_name: Some("push".into()),
         };
 
         let jwt = create_token(&claims);
@@ -451,6 +479,10 @@ mod tests {
             run_id: Some("123456".into()),
             run_number: Some("1".into()),
             run_attempt: Some("1".into()),
+            sha: Some("abc123def456".into()),
+            actor: Some("octocat".into()),
+            workflow: Some("deploy".into()),
+            event_name: Some("push".into()),
         };
 
         let jwt = create_token(&claims);
@@ -492,6 +524,10 @@ mod tests {
             run_id: Some("123456".into()),
             run_number: Some("1".into()),
             run_attempt: Some("1".into()),
+            sha: Some("abc123def456".into()),
+            actor: Some("octocat".into()),
+            workflow: Some("deploy".into()),
+            event_name: Some("push".into()),
         };
 
         let jwt = create_token(&claims);

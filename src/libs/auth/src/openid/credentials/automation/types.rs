@@ -12,6 +12,10 @@ pub mod interface {
         pub run_id: Option<String>,           // "example-run-id"
         pub run_number: Option<String>,       // 10"
         pub run_attempt: Option<String>,      // "2"
+        pub sha: Option<String>,              // "example-sha" - commit SHA
+        pub actor: Option<String>,            // "octocat" - who triggered it
+        pub workflow: Option<String>,         // "example-workflow" - workflow name
+        pub event_name: Option<String>,       // "push", "workflow_dispatch", etc.
     }
 }
 
@@ -35,5 +39,9 @@ pub(crate) mod token {
         pub run_id: Option<String>,
         pub run_number: Option<String>,
         pub run_attempt: Option<String>,
+        pub sha: Option<String>,
+        pub actor: Option<String>,
+        pub workflow: Option<String>,
+        pub event_name: Option<String>,
     }
 }

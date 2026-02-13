@@ -75,19 +75,14 @@ fn verify_openid_credentials(
             .get(&repo_key)
             .ok_or_else(|| JwtVerifyError::BadClaim("repository_unauthorized".to_string()))?;
 
-        if let Some(allowed_branches) = &repo_config.branches {
+        if let Some(allowed_refs) = &repo_config.refs {
             let ref_claim = claims
                 .r#ref
                 .as_ref()
                 .ok_or_else(|| JwtVerifyError::BadClaim("ref".to_string()))?;
 
-            // ref is like "refs/heads/main", extract branch name
-            let branch = ref_claim
-                .strip_prefix("refs/heads/")
-                .ok_or_else(|| JwtVerifyError::BadClaim("ref_format".to_string()))?;
-
-            if !allowed_branches.contains(&branch.to_string()) {
-                return Err(JwtVerifyError::BadClaim("branch_unauthorized".to_string()));
+            if !allowed_refs.contains(ref_claim) {
+                return Err(JwtVerifyError::BadClaim("ref_unauthorized".to_string()));
             }
         }
 
@@ -163,7 +158,11 @@ mod tests {
                 name: "octo-repo".to_string(),
             },
             OpenIdAutomationRepositoryConfig {
-                branches: Some(vec!["main".to_string(), "develop".to_string()]),
+                refs: Some(vec![
+                    "refs/heads/main".to_string(),
+                    "refs/heads/develop".to_string(),
+                    "refs/pull/74/merge".to_string(), // Specific PR
+                ]),
             },
         );
 
@@ -305,7 +304,7 @@ mod tests {
     }
 
     #[test]
-    fn rejects_unauthorized_branch() {
+    fn rejects_unauthorized_ref() {
         let now = now_secs();
         let salt = test_salt();
         let nonce = build_nonce(&salt);
@@ -341,12 +340,12 @@ mod tests {
         assert!(result.is_err());
         assert!(matches!(
             result.unwrap_err(),
-            VerifyOpenidCredentialsError::JwtVerify(JwtVerifyError::BadClaim(ref c)) if c == "branch_unauthorized"
+            VerifyOpenidCredentialsError::JwtVerify(JwtVerifyError::BadClaim(ref c)) if c == "ref_unauthorized"
         ));
     }
 
     #[test]
-    fn allows_all_branches_when_not_configured() {
+    fn allows_all_refs_when_not_configured() {
         let now = now_secs();
         let salt = test_salt();
         let nonce = build_nonce(&salt);
@@ -357,7 +356,7 @@ mod tests {
                 owner: "octo-org".to_string(),
                 name: "octo-repo".to_string(),
             },
-            OpenIdAutomationRepositoryConfig { branches: None },
+            OpenIdAutomationRepositoryConfig { refs: None },
         );
 
         let config = OpenIdAutomationProviderConfig {
@@ -393,6 +392,84 @@ mod tests {
         );
 
         assert!(result.is_ok());
+    }
+
+    #[test]
+    fn allows_authorized_pull_request() {
+        let now = now_secs();
+        let salt = test_salt();
+        let nonce = build_nonce(&salt);
+
+        let claims = AutomationClaims {
+            iss: ISS_GITHUB_ACTIONS.into(),
+            sub: "repo:octo-org/octo-repo:pull_request".into(),
+            aud: nonce,
+            iat: Some(now),
+            exp: Some(now + 600),
+            nbf: None,
+            jti: Some("example-id".into()),
+            repository: Some("octo-org/octo-repo".into()),
+            repository_owner: Some("octo-org".into()),
+            r#ref: Some("refs/pull/74/merge".into()),
+            run_id: Some("123456".into()),
+            run_number: Some("1".into()),
+            run_attempt: Some("1".into()),
+        };
+
+        let jwt = create_token(&claims);
+        let jwks = test_jwks();
+        let config = test_config();
+
+        let result = verify_openid_credentials(
+            &jwt,
+            &jwks,
+            &OpenIdAutomationProvider::GitHub,
+            &config,
+            &salt,
+        );
+
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn rejects_unauthorized_pull_request() {
+        let now = now_secs();
+        let salt = test_salt();
+        let nonce = build_nonce(&salt);
+
+        let claims = AutomationClaims {
+            iss: ISS_GITHUB_ACTIONS.into(),
+            sub: "repo:octo-org/octo-repo:pull_request".into(),
+            aud: nonce,
+            iat: Some(now),
+            exp: Some(now + 600),
+            nbf: None,
+            jti: Some("example-id".into()),
+            repository: Some("octo-org/octo-repo".into()),
+            repository_owner: Some("octo-org".into()),
+            r#ref: Some("refs/pull/99/merge".into()), // Different PR
+            run_id: Some("123456".into()),
+            run_number: Some("1".into()),
+            run_attempt: Some("1".into()),
+        };
+
+        let jwt = create_token(&claims);
+        let jwks = test_jwks();
+        let config = test_config();
+
+        let result = verify_openid_credentials(
+            &jwt,
+            &jwks,
+            &OpenIdAutomationProvider::GitHub,
+            &config,
+            &salt,
+        );
+
+        assert!(result.is_err());
+        assert!(matches!(
+            result.unwrap_err(),
+            VerifyOpenidCredentialsError::JwtVerify(JwtVerifyError::BadClaim(ref c)) if c == "ref_unauthorized"
+        ));
     }
 
     #[test]

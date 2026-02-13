@@ -311,7 +311,7 @@ export interface OpenIdAutomationProviderControllerConfig {
 	max_time_to_live: [] | [bigint];
 }
 export interface OpenIdAutomationRepositoryConfig {
-	branches: [] | [Array<string>];
+	refs: [] | [Array<string>];
 }
 export type OpenIdDelegationProvider = { GitHub: null } | { Google: null };
 export interface OpenIdGetDelegationArgs {

@@ -73,7 +73,7 @@ export const testAutomationToken = ({
 								[
 									{ GitHub: null },
 									{
-										repositories: [[mockRepositoryKey, { branches: [] }]],
+										repositories: [[mockRepositoryKey, { refs: [] }]],
 										controller: []
 									}
 								]

@@ -11,6 +11,7 @@ interface I18nCore {
 	copied: string;
 	toggle: string;
 	loading: string;
+	loading_config: string;
 	status: string;
 	sign_out: string;
 	sign_in: string;
@@ -451,7 +452,6 @@ interface I18nAuthentication {
 	target_your_satellite: string;
 	target_modules: string;
 	in_nanoseconds: string;
-	loading_config: string;
 }
 
 interface I18nDatastore {
@@ -637,6 +637,7 @@ interface I18nErrors {
 	load_settings: string;
 	load_user_data: string;
 	load_auth_config_error: string;
+	load_automation_config_error: string;
 	hosting_missing_domain_name: string;
 	hosting_invalid_url: string;
 	hosting_missing_dns_configuration: string;
@@ -695,6 +696,7 @@ interface I18nErrors {
 	transfer_cycles: string;
 	cannot_fetch_logs: string;
 	authentication_config_loading: string;
+	automation_config_loading: string;
 	no_file_selected_for_upload: string;
 	upload_error: string;
 	set_asset_token_error: string;
@@ -1119,6 +1121,11 @@ interface I18nOut_of_sync {
 	syncing_orbiters_to_mctrl: string;
 }
 
+interface I18nAutomation {
+	title: string;
+	description: string;
+}
+
 interface I18n {
 	lang: Languages;
 	core: I18nCore;
@@ -1156,4 +1163,5 @@ interface I18n {
 	not_found: I18nNot_found;
 	spotlight: I18nSpotlight;
 	out_of_sync: I18nOut_of_sync;
+	automation: I18nAutomation;
 }

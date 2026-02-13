@@ -8,6 +8,7 @@
 		"copied": "已拷贝到剪贴板",
 		"toggle": "切换",
 		"loading": "加载中...",
+		"loading_config": "正在加载配置...",
 		"status": "状态",
 		"sign_out": "退出登录",
 		"sign_in": "登录",
@@ -440,8 +441,7 @@
 		"allowed_targets_placeholder": "Principal ID，逗号分隔或每行一个。留空则使用默认权限。",
 		"target_your_satellite": "您的 Satellite：",
 		"target_modules": "{0} 个模块",
-		"in_nanoseconds": "单位：纳秒",
-		"loading_config": "正在加载配置..."
+		"in_nanoseconds": "单位：纳秒"
 	},
 	"datastore": {
 		"title": "数据池",
@@ -621,6 +621,7 @@
 		"load_user_data": "加载您的数据（配置、元数据等）时发生意外错误。",
 		"loading_config": "正在加载配置…",
 		"load_auth_config_error": "加载身份验证配置时出现意外错误。",
+		"load_automation_config_error": "加载自动化配置时发生意外错误。",
 		"hosting_missing_domain_name": "必须提供域名。",
 		"hosting_invalid_url": "请提供有效的URL。",
 		"hosting_missing_dns_configuration": "必须提供域名配置。",
@@ -679,6 +680,7 @@
 		"transfer_cycles": "转移cycles时发生意外错误。",
 		"cannot_fetch_logs": "获取日志时发生意外错误。",
 		"authentication_config_loading": "加载认证配置时发生意外错误。",
+		"automation_config_loading": "加载自动化配置时发生意外错误。",
 		"no_file_selected_for_upload": "未选择上传文件。",
 		"upload_error": "上传文件时发生意外错误。",
 		"set_asset_token_error": "更新资产访问令牌时发生意外错误。",
@@ -1082,5 +1084,9 @@
 		"syncing_satellites_to_mctrl": "正在将卫星同步到任务控制中心... ({0})",
 		"syncing_orbiters_to_console": "正在将轨道器同步到控制台...",
 		"syncing_orbiters_to_mctrl": "正在将轨道器同步到任务控制中心... ({0})"
+	},
+	"automation": {
+		"title": "部署",
+		"description": "直接从 GitHub Actions 构建、部署和管理您的 Satellite。通过配置您的仓库及其访问权限，自动化部署、发布无服务器函数等。"
 	}
 }

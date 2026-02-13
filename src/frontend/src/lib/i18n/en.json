@@ -8,6 +8,7 @@
 		"copied": "copied to clipboard",
 		"toggle": "Toggle",
 		"loading": "Loading...",
+		"loading_config": "Loading configuration...",
 		"status": "Status",
 		"sign_out": "Sign-out",
 		"sign_in": "Sign-in",
@@ -439,8 +440,7 @@
 		"allowed_targets_placeholder": "Principal IDs, comma-separated or one per line. Leave empty for default permissions.",
 		"target_your_satellite": "Your Satellite:",
 		"target_modules": "{0} modules",
-		"in_nanoseconds": "in nanoseconds",
-		"loading_config": "Loading configuration…"
+		"in_nanoseconds": "in nanoseconds"
 	},
 	"datastore": {
 		"title": "Datastore",
@@ -619,6 +619,7 @@
 		"load_settings": "Unexpected error(s) while loading the settings.",
 		"load_user_data": "Unexpected error(s) while loading your data (configuration, metadata, etc.).",
 		"load_auth_config_error": "An unexpected error occurred while loading your authentication configuration.",
+		"load_automation_config_error": "An unexpected error occurred while loading your automation configuration.",
 		"hosting_missing_domain_name": "A domain name must be provided.",
 		"hosting_invalid_url": "Please provide a valid URL.",
 		"hosting_missing_dns_configuration": "A domain name configuration must be provided.",
@@ -677,6 +678,7 @@
 		"transfer_cycles": "Unexpected error(s) while transferring the cycles.",
 		"cannot_fetch_logs": "Unexpected error(s) while fetching the logs.",
 		"authentication_config_loading": "Unexpected error(s) while loading the configuration of the authentication.",
+		"automation_config_loading": "Unexpected error(s) while loading the configuration of the automation.",
 		"no_file_selected_for_upload": "No file was selected for the upload.",
 		"upload_error": "Unexpected error(s) while uploading the file.",
 		"set_asset_token_error": "Unexpected error(s) while updating the access token of the asset.",
@@ -1080,5 +1082,9 @@
 		"syncing_satellites_to_mctrl": "Syncing Satellites to Mission Control... ({0})",
 		"syncing_orbiters_to_console": "Syncing Orbiters to Console...",
 		"syncing_orbiters_to_mctrl": "Syncing Orbiters to Mission Control... ({0})"
+	},
+	"automation": {
+		"title": "Deployments",
+		"description": "Build, deploy, and manage your Satellite directly from GitHub Actions. Automate deployments, publish serverless functions, and more by configuring your repository and its access."
 	}
 }

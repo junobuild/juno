@@ -9,6 +9,7 @@
 	import IconDatastore from '$lib/components/icons/IconDatastore.svelte';
 	import IconFunctions from '$lib/components/icons/IconFunctions.svelte';
 	import IconHosting from '$lib/components/icons/IconHosting.svelte';
+	import IconRocket from '$lib/components/icons/IconRocket.svelte';
 	import IconSatellite from '$lib/components/icons/IconSatellite.svelte';
 	import IconStorage from '$lib/components/icons/IconStorage.svelte';
 	import IconTelescope from '$lib/components/icons/IconTelescope.svelte';
@@ -99,6 +100,17 @@
 				>
 					<IconHosting size="24px" />
 					<span>{$i18n.hosting.title}</span>
+				</a>
+
+				<a
+					class="link"
+					class:collapsed={$menuCollapsed}
+					class:selected={isRouteSelected({ routeId, path: 'deployments' })}
+					href={`/deployments${queryParam}`}
+					role="menuitem"
+				>
+					<IconRocket size="24px" />
+					<span>{$i18n.automation.title}</span>
 				</a>
 			</div>
 		{/if}

@@ -534,6 +534,7 @@ export const idlFactory = ({ IDL }) => {
 		count_proposals: IDL.Func([], [IDL.Nat64], []),
 		del_asset: IDL.Func([IDL.Text, IDL.Text], [], []),
 		del_assets: IDL.Func([IDL.Text], [], []),
+		del_controller_self: IDL.Func([], [], []),
 		del_controllers: IDL.Func(
 			[DeleteControllersArgs],
 			[IDL.Vec(IDL.Tuple(IDL.Principal, Controller))],

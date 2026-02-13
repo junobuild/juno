@@ -238,6 +238,12 @@ pub fn del_controllers(args: DeleteControllersArgs) -> Controllers {
 }
 
 #[doc(hidden)]
+#[update(guard = "caller_is_valid_controller")]
+pub fn del_controller_self() {
+    api::controllers::del_controller_self()
+}
+
+#[doc(hidden)]
 #[query(guard = "caller_is_admin_controller")]
 pub fn list_controllers() -> Controllers {
     api::controllers::list_controllers()
@@ -570,7 +576,7 @@ macro_rules! include_satellite {
             authenticate, authenticate_automation, commit_asset_upload, commit_proposal,
             commit_proposal_asset_upload, commit_proposal_many_assets_upload, count_assets,
             count_collection_assets, count_collection_docs, count_docs, count_proposals, del_asset,
-            del_assets, del_controllers, del_custom_domain, del_doc, del_docs, del_filtered_assets,
+            del_assets, del_controllers, del_controller_self, del_custom_domain, del_doc, del_docs, del_filtered_assets,
             del_filtered_docs, del_many_assets, del_many_docs, del_rule, delete_proposal_assets,
             deposit_cycles, get_asset, get_auth_config, get_automation_config, get_config,
             get_db_config, get_delegation, get_doc, get_many_assets, get_many_docs, get_proposal,

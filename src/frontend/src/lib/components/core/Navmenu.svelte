@@ -19,6 +19,7 @@
 	import { isSatelliteRoute } from '$lib/derived/app/route.derived.svelte.js';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { isRouteSelected } from '$lib/utils/nav.utils';
+	import IconRocket from '$lib/components/icons/IconRocket.svelte';
 
 	let routeId: string | null = $derived(page.route.id);
 
@@ -99,6 +100,17 @@
 				>
 					<IconHosting size="24px" />
 					<span>{$i18n.hosting.title}</span>
+				</a>
+
+				<a
+					class="link"
+					class:collapsed={$menuCollapsed}
+					class:selected={isRouteSelected({ routeId, path: 'deployments' })}
+					href={`/deployments${queryParam}`}
+					role="menuitem"
+				>
+					<IconRocket size="24px" />
+					<span>{$i18n.deployments.title}</span>
 				</a>
 			</div>
 		{/if}

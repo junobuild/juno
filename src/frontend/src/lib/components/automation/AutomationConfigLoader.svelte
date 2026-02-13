@@ -10,6 +10,11 @@
 	import { versionStore } from '$lib/stores/version.store';
 	import { AUTH_CONFIG_CONTEXT_KEY, type AuthConfigContext } from '$lib/types/auth.context';
 	import type { Satellite } from '$lib/types/satellite';
+	import {
+		AUTOMATION_CONFIG_CONTEXT_KEY,
+		type AutomationConfigContext
+	} from '$lib/types/automation.context';
+	import { getAutomationConfig } from '$lib/services/satellite/automation.config.services';
 
 	interface Props {
 		satellite: Satellite;
@@ -21,15 +26,10 @@
 	let satelliteId = $derived(satellite.satellite_id);
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const { setConfig, setRule, state } = getContext<AuthConfigContext>(AUTH_CONFIG_CONTEXT_KEY);
-
-	const loadRule = async () => {
-		const result = await getRuleUser({ satelliteId, identity: $authIdentity });
-		setRule(result);
-	};
+	const { setConfig, state } = getContext<AutomationConfigContext>(AUTOMATION_CONFIG_CONTEXT_KEY);
 
 	const loadConfig = async () => {
-		const result = await getAuthConfig({
+		const result = await getAutomationConfig({
 			satelliteId,
 			identity: $authIdentity
 		});
@@ -38,7 +38,7 @@
 	};
 
 	const load = async () => {
-		await Promise.all([loadConfig(), loadRule()]);
+		await loadConfig();
 	};
 
 	$effect(() => {
@@ -61,7 +61,7 @@
 		{@render children()}
 	</div>
 {:else if $state === 'error'}
-	<Warning>{$i18n.errors.load_auth_config_error}</Warning>
+	<Warning>{$i18n.errors.load_automation_config_error}</Warning>
 {:else}
 	<SpinnerParagraph>{$i18n.core.loading_config}</SpinnerParagraph>
 {/if}

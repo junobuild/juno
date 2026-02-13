@@ -13,7 +13,7 @@ import {
 import { nanoid } from 'nanoid';
 import { GITHUB_ACTIONS_OPEN_ID_PROVIDER } from '../constants/auth-tests.constants';
 import { OBSERVATORY_ID } from '../constants/observatory-tests.constants';
-import { mockRepositoryKey } from '../mocks/automation.mocks';
+import { mockAutomationWorkflowData, mockRepositoryKey } from '../mocks/automation.mocks';
 import { mockCertificateDate } from '../mocks/jwt.mocks';
 import { generateNonce } from './auth-nonce-tests.utils';
 import { assembleJwt } from './jwt-assemble-tests.utils';
@@ -895,6 +895,16 @@ export const testAutomationAuthenticate = ({
 
 					const { owner, name } = mockRepositoryKey;
 
+					const {
+						runId: run_id,
+						runAttempt: run_attempt,
+						runNumber: run_number,
+						sha,
+						actor: gitHubActor,
+						workflow,
+						eventName: event_name
+					} = mockAutomationWorkflowData;
+
 					const payload = {
 						iss: 'https://token.actions.githubusercontent.com',
 						sub: `repo:${owner}/${name}:ref:refs/heads/main`,
@@ -905,10 +915,14 @@ export const testAutomationAuthenticate = ({
 						jti: nanoid(),
 						ref: 'refs/heads/main',
 						repository_owner: owner,
-						run_id: '21776509605',
-						run_attempt: '1',
+						run_id,
+						run_attempt,
 						repository: `${owner}/${name}`,
-						run_number: '1'
+						run_number,
+						sha,
+						actor: gitHubActor,
+						workflow,
+						event_name
 					} as const;
 
 					const header = JSON.stringify({ alg: 'RS256', kid, typ: 'JWT' });

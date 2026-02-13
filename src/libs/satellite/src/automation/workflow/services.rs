@@ -33,6 +33,10 @@ pub fn save_workflow_metadata(
         run_number: credential.run_number.clone(),
         run_attempt: credential.run_attempt.clone(),
         r#ref: credential.r#ref.clone(),
+        sha: credential.sha.clone(),
+        actor: credential.actor.clone(),
+        workflow: credential.workflow.clone(),
+        event_name: credential.event_name.clone(),
     };
 
     let automation_workflow_data = AutomationWorkflowData::prepare_set_doc(

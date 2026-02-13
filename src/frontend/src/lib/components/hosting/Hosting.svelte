@@ -10,7 +10,7 @@
 	import HostingCount from '$lib/components/hosting/HostingCount.svelte';
 	import { authIdentity } from '$lib/derived/auth.derived';
 	import { sortedSatelliteCustomDomains } from '$lib/derived/satellite/satellite-custom-domains.derived';
-	import { getAuthConfig } from '$lib/services/console/auth/auth.config.services';
+	import { getAuthConfig } from '$lib/services/satellite/auth.config.services';
 	import { listCustomDomains } from '$lib/services/satellite/custom-domain.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { Satellite } from '$lib/types/satellite';

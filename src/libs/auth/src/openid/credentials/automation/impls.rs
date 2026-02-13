@@ -15,6 +15,10 @@ impl From<TokenData<AutomationClaims>> for OpenIdAutomationCredential {
             run_id: token.claims.run_id,
             run_number: token.claims.run_number,
             run_attempt: token.claims.run_attempt,
+            sha: token.claims.sha,
+            actor: token.claims.actor,
+            workflow: token.claims.workflow,
+            event_name: token.claims.event_name,
         }
     }
 }

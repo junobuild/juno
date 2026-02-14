@@ -2,6 +2,7 @@
 	import { nonNullish } from '@dfinity/utils';
 	import AuthConfigModal from '$lib/components/modals/auth/AuthConfigModal.svelte';
 	import UserDetailsModal from '$lib/components/modals/auth/UserDetailsModal.svelte';
+	import CreateAutomationModal from '$lib/components/modals/automation/CreateAutomationModal.svelte';
 	import ApplyChangeModal from '$lib/components/modals/changes/ApplyChangeModal.svelte';
 	import RejectChangeModal from '$lib/components/modals/changes/RejectChangeModal.svelte';
 	import MissionControlTopUpModal from '$lib/components/modals/cycles/top-up/MissionControlTopUpModal.svelte';
@@ -162,4 +163,8 @@
 
 {#if modal?.type === 'reconcile_out_of_sync_segments'}
 	<OutOfSyncSegmentsModal onclose={close} />
+{/if}
+
+{#if modal?.type === 'create_automation' && nonNullish(modal.detail)}
+	<CreateAutomationModal detail={modal.detail} onclose={close} />
 {/if}

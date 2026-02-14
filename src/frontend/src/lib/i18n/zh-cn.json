@@ -62,6 +62,7 @@
 		"config": "系统配置",
 		"edit_config": "编辑配置",
 		"advanced_options": "高级设置",
+		"configuring": "配置中...",
 		"updating_configuration": "正在更新系统配置...",
 		"configuration_applied": "配置已生效",
 		"completed": "完成",
@@ -750,7 +751,12 @@
 		"missing_satellite_version": "无法确定当前卫星版本。",
 		"invalid_version_cannot_downgrade": "无法降级默认函数，所选版本低于当前卫星版本。",
 		"reconcile_out_of_sync_error": "在控制台和您的任务控制中心之间同步模块时发生意外错误。",
-		"reconcile_no_divergence": "未检测到配置不匹配。无需同步。"
+		"reconcile_no_divergence": "未检测到配置不匹配。无需同步。",
+		"build_repo_key_invalid_url": "无效的 URL。请输入有效的仓库 URL。",
+		"build_repo_key_invalid_github_url": "仅支持 GitHub 仓库。请输入您的 GitHub 仓库 URL。",
+		"build_repo_key_owner_not_found": "在 URL 中未找到仓库所有者。请输入完整的 GitHub 仓库 URL。",
+		"build_repo_key_repo_not_found": "在 URL 中未找到仓库名称。请输入完整的 GitHub 仓库 URL。",
+		"create_automation_config": "保存自动化配置时发生错误。"
 	},
 	"document": {
 		"owner": "所有者",
@@ -1087,6 +1093,14 @@
 	},
 	"automation": {
 		"title": "部署",
-		"description": "直接从 GitHub Actions 构建、部署和管理您的 Satellite。通过配置您的仓库及其访问权限，自动化部署、发布无服务器函数等。"
+		"description": "直接从 GitHub Actions 构建、部署和发布您的 Satellite 的无服务器函数。通过配置来自您的 Git 提供商的仓库开始使用。",
+		"create_connect_title": "连接仓库",
+		"create_connect_description": "输入您要授权进行自动化部署的 GitHub 仓库 URL。",
+		"create_connect_input_placeholder": "https://github.com/owner/repo",
+		"create_connect_review_title": "审查配置",
+		"create_connect_review_description": "审查您的仓库信息。您可以稍后在设置中优化分支访问和其他选项。",
+		"repository": "仓库",
+		"provider": "提供商",
+		"open_repo": "在 GitHub 上打开仓库"
 	}
 }

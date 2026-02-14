@@ -14,6 +14,7 @@
 
 <style lang="scss">
 	@use '../../styles/mixins/shadow';
+	@use '../../styles/mixins/media';
 
 	code {
 		display: block;
@@ -29,5 +30,12 @@
 		border-radius: var(--border-radius);
 
 		font-size: var(--font-size-very-small);
+	}
+
+	@include media.dark-theme {
+		code {
+			background: var(--color-background);
+			color: var(--color-background-contrast);
+		}
 	}
 </style>

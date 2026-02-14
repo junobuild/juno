@@ -1,0 +1,35 @@
+name: Publish Serverless Functions
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          registry-url: "https://registry.npmjs.org"
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Install Dependencies
+        run: pnpm i --frozen-lockfile
+
+      - name: Build
+        uses: junobuild/juno-action@full
+        with:
+          args: functions build
+
+      - name: Publish
+        uses: junobuild/juno-action@full
+        with:
+          args: functions publish

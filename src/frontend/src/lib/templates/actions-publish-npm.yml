@@ -1,0 +1,31 @@
+name: Publish Serverless Functions
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Build
+        uses: junobuild/juno-action@full
+        with:
+          args: functions build
+
+      - name: Publish
+        uses: junobuild/juno-action@full
+        with:
+          args: functions publish

@@ -2,6 +2,7 @@
 	import { nonNullish } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
 	import type { SatelliteDid } from '$declarations';
+	import AutomationCreateActions from '$lib/components/automation/create/AutomationCreateActions.svelte';
 	import AutomationCreateConnectForm from '$lib/components/automation/create/AutomationCreateConnectForm.svelte';
 	import AutomationCreateConnectReview from '$lib/components/automation/create/AutomationCreateConnectReview.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
@@ -12,7 +13,6 @@
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { JunoModalDetail, JunoModalWithSatellite } from '$lib/types/modal';
 	import { emit } from '$lib/utils/events.utils';
-	import AutomationCreateActions from '$lib/components/automation/create/AutomationCreateActions.svelte';
 
 	interface Props {
 		detail: JunoModalDetail;

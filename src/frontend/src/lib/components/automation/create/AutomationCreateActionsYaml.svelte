@@ -4,14 +4,14 @@
 </script>
 
 <script lang="ts">
-	import deployNpm from '$lib/templates/actions-deploy-npm.yml?raw';
-	import deployYarn from '$lib/templates/actions-deploy-yarn.yml?raw';
-	import deployPnpm from '$lib/templates/actions-deploy-pnpm.yml?raw';
-	import publishNpm from '$lib/templates/actions-publish-npm.yml?raw';
-	import publishYarn from '$lib/templates/actions-publish-yarn.yml?raw';
-	import publishPnpm from '$lib/templates/actions-publish-pnpm.yml?raw';
 	import Copy from '$lib/components/ui/Copy.svelte';
 	import { i18n } from '$lib/stores/app/i18n.store';
+	import deployNpm from '$lib/templates/actions-deploy-npm.yml?raw';
+	import deployPnpm from '$lib/templates/actions-deploy-pnpm.yml?raw';
+	import deployYarn from '$lib/templates/actions-deploy-yarn.yml?raw';
+	import publishNpm from '$lib/templates/actions-publish-npm.yml?raw';
+	import publishPnpm from '$lib/templates/actions-publish-pnpm.yml?raw';
+	import publishYarn from '$lib/templates/actions-publish-yarn.yml?raw';
 
 	interface Props {
 		workflow: WorkflowType;
@@ -42,7 +42,7 @@
 <article>
 	{snippet}
 
-	<div class="copy"><Copy value={snippet} {what} toastValue={false} /></div>
+	<div class="copy"><Copy toastValue={false} value={snippet} {what} /></div>
 </article>
 
 <style lang="scss">

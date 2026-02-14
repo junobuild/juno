@@ -1,11 +1,11 @@
 <script lang="ts">
-	import { i18n } from '$lib/stores/app/i18n.store';
-	import Value from '$lib/components/ui/Value.svelte';
 	import AutomationCreateActionsYaml, {
 		type PackageManager,
 		type WorkflowType
 	} from '$lib/components/automation/create/AutomationCreateActionsYaml.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
+	import Value from '$lib/components/ui/Value.svelte';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 
 	interface Props {

@@ -1101,6 +1101,13 @@
 		"create_connect_review_description": "审查您的仓库信息。您可以稍后在设置中优化分支访问和其他选项。",
 		"repository": "仓库",
 		"provider": "提供商",
-		"open_repo": "在 GitHub 上打开仓库"
+		"open_repo": "在 GitHub 上打开仓库",
+		"create_actions_title": "设置 GitHub Actions",
+		"create_actions_configured": "✓ 仓库配置成功",
+		"create_actions_description": "复制下面的操作并将其添加到您仓库中的 <mark>{0}</mark>。选择符合您需求的工作流。",
+		"deploy_frontend": "部署前端",
+		"publish_functions": "发布函数",
+		"workflow_type": "工作流类型",
+		"package_manager": "包管理器"
 	}
 }

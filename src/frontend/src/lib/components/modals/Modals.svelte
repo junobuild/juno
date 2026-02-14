@@ -165,6 +165,6 @@
 	<OutOfSyncSegmentsModal onclose={close} />
 {/if}
 
-{#if modal?.type === 'create_automation'}
-	<CreateAutomationModal onclose={close} />
+{#if modal?.type === 'create_automation' && nonNullish(modal.detail)}
+	<CreateAutomationModal detail={modal.detail} onclose={close} />
 {/if}

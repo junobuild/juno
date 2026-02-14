@@ -17,8 +17,6 @@
 
 	let { satellite }: Props = $props();
 
-	let satelliteId = $derived(satellite.satellite_id);
-
 	const { config, ...contextRest } = initAutomationConfigContext();
 
 	setContext<AutomationConfigContext>(AUTOMATION_CONFIG_CONTEXT_KEY, { config, ...contextRest });
@@ -28,6 +26,6 @@
 	{#if isNullish($config)}
 		<NoAutomation />
 
-		<AutomationNew />
+		<AutomationNew {satellite} />
 	{/if}
 </AutomationConfigLoader>

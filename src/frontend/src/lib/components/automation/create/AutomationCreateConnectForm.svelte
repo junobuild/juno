@@ -4,12 +4,11 @@
 	import { i18n } from '$lib/stores/app/i18n.store';
 
 	interface Props {
+		repoUrl: string;
 		oncontinue: (params: { repoKey: SatelliteDid.RepositoryKey }) => void;
 	}
 
-	let { oncontinue }: Props = $props();
-
-	let repoUrl = $state('');
+	let { oncontinue, repoUrl = $bindable('') }: Props = $props();
 
 	const onSubmit = ($event: SubmitEvent) => {
 		$event.preventDefault();

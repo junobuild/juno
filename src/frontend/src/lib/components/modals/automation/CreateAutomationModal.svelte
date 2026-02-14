@@ -5,16 +5,27 @@
 	import AutomationCreateConnectReview from '$lib/components/automation/create/AutomationCreateConnectReview.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
+	import { authIdentity } from '$lib/derived/auth.derived';
+	import { createAutomationConfig } from '$lib/services/satellite/automation.config.services';
+	import { wizardBusy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
+	import type { JunoModalDetail, JunoModalWithSatellite } from '$lib/types/modal';
+	import { emit } from '$lib/utils/events.utils';
 
 	interface Props {
+		detail: JunoModalDetail;
 		onclose: () => void;
 	}
 
-	let { onclose }: Props = $props();
+	let { detail: d, onclose }: Props = $props();
+
+	let detail = $derived(d as JunoModalWithSatellite);
+
+	let satellite = $derived(detail.satellite);
 
 	let step: 'init' | 'review' | 'in_progress' | 'ready' | 'error' = $state('init');
 
+	let repoUrl = $state('');
 	let repoKey = $state<SatelliteDid.RepositoryKey | undefined>();
 
 	const onConnect = ({ repoKey: k }: { repoKey: SatelliteDid.RepositoryKey }) => {
@@ -22,7 +33,26 @@
 		step = 'review';
 	};
 
-	const onsubmit = async () => {};
+	const onconfirm = async ({ repoKey }: { repoKey: SatelliteDid.RepositoryKey }) => {
+		wizardBusy.start();
+		step = 'in_progress';
+
+		const result = await createAutomationConfig({
+			satellite,
+			identity: $authIdentity,
+			repoKey
+		});
+
+		wizardBusy.stop();
+
+		if (result.result === 'error') {
+			return;
+		}
+
+		emit({ message: 'junoReloadAutomationConfig' });
+
+		step = 'ready';
+	};
 </script>
 
 <Modal {onclose}>
@@ -33,12 +63,12 @@
 		</div>
 	{:else if step === 'in_progress'}
 		<SpinnerModal>
-			<p>{$i18n.core.updating_configuration}</p>
+			<p>{$i18n.core.configuring}</p>
 		</SpinnerModal>
 	{:else if nonNullish(repoKey) && step === 'review'}
-		<AutomationCreateConnectReview onback={() => step === 'init'} {onsubmit} {repoKey} />
+		<AutomationCreateConnectReview onback={() => (step = 'init')} {onconfirm} {repoKey} />
 	{:else}
-		<AutomationCreateConnectForm oncontinue={onConnect} />
+		<AutomationCreateConnectForm oncontinue={onConnect} bind:repoUrl />
 	{/if}
 </Modal>
 

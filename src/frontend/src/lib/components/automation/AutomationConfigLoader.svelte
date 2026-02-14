@@ -51,7 +51,7 @@
 	});
 </script>
 
-<svelte:window onjunoReloadAuthConfig={load} />
+<svelte:window onjunoReloadAutomationConfig={load} />
 
 {#if $state === 'initialized'}
 	<div in:fade>

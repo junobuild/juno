@@ -64,6 +64,7 @@ interface I18nCore {
 	config: string;
 	edit_config: string;
 	advanced_options: string;
+	configuring: string;
 	updating_configuration: string;
 	configuration_applied: string;
 	completed: string;
@@ -767,10 +768,11 @@ interface I18nErrors {
 	invalid_version_cannot_downgrade: string;
 	reconcile_out_of_sync_error: string;
 	reconcile_no_divergence: string;
-	build_automation_config_invalid_url: string;
-	build_automation_config_invalid_github_url: string;
-	build_automation_config_owner_not_found: string;
-	build_automation_config_repo_not_found: string;
+	build_repo_key_invalid_url: string;
+	build_repo_key_invalid_github_url: string;
+	build_repo_key_owner_not_found: string;
+	build_repo_key_repo_not_found: string;
+	create_automation_config: string;
 }
 
 interface I18nDocument {

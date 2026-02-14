@@ -7,13 +7,17 @@
 	interface Props {
 		repoKey: SatelliteDid.RepositoryKey;
 		onback: () => void;
-		onsubmit: () => Promise<void>;
+		onconfirm: (params: { repoKey: SatelliteDid.RepositoryKey }) => Promise<void>;
 	}
 
-	let { repoKey, onback, onsubmit }: Props = $props();
+	let { repoKey, onback, onconfirm }: Props = $props();
 
 	let repo = $derived(`${repoKey.owner}/${repoKey.name}`);
 	let href = $derived(`https://github.com/${repo}`);
+
+	const onClick = async () => {
+		await onconfirm({ repoKey });
+	};
 </script>
 
 <h2>{$i18n.automation.create_connect_review_title}</h2>
@@ -47,7 +51,7 @@
 
 <div class="toolbar">
 	<button onclick={onback} type="button">{$i18n.core.back}</button>
-	<button onclick={onsubmit} type="button">{$i18n.core.confirm}</button>
+	<button onclick={onClick} type="button">{$i18n.core.confirm}</button>
 </div>
 
 <style lang="scss">

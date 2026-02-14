@@ -1,12 +1,22 @@
 <script lang="ts">
 	import { i18n } from '$lib/stores/app/i18n.store';
+	import type { Satellite } from '$lib/types/satellite';
 	import { emit } from '$lib/utils/events.utils';
+
+	interface Props {
+		satellite: Satellite;
+	}
+
+	let { satellite }: Props = $props();
 
 	const createAutomation = () => {
 		emit({
 			message: 'junoModal',
 			detail: {
-				type: 'create_automation'
+				type: 'create_automation',
+				detail: {
+					satellite
+				}
 			}
 		});
 	};

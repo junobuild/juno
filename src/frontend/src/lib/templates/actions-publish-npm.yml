@@ -29,5 +29,3 @@ jobs:
         uses: junobuild/juno-action@full
         with:
           args: functions publish
-        env:
-          JUNO_TOKEN: ${{ secrets.JUNO_TOKEN }}

@@ -24,5 +24,3 @@ jobs:
         uses: junobuild/juno-action@main
         with:
           args: hosting deploy
-        env:
-          JUNO_TOKEN: ${{ secrets.JUNO_TOKEN }}

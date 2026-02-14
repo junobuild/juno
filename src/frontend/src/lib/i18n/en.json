@@ -1099,6 +1099,13 @@
 		"create_connect_review_description": "Review the information of your repo. You can refine branch access and other options later in the settings.",
 		"repository": "Repository",
 		"provider": "Provider",
-		"open_repo": "Open repository on GitHub"
+		"open_repo": "Open repository on GitHub",
+		"create_actions_title": "Set up GitHub Actions",
+		"create_actions_configured": "✓ Repository configured successfully",
+		"create_actions_description": "Copy the action below and add it to <mark>{0}</mark> in your repository. Choose the workflow that matches your needs.",
+		"deploy_frontend": "Deploy Frontend",
+		"publish_functions": "Publish Functions",
+		"workflow_type": "Workflow type",
+		"package_manager": "Package manager"
 	}
 }

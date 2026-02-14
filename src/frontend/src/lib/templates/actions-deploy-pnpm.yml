@@ -1,0 +1,32 @@
+name: Deploy to Juno
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          registry-url: "https://registry.npmjs.org"
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Install Dependencies
+        run: pnpm i --frozen-lockfile
+
+      - name: Deploy to Juno
+        uses: junobuild/juno-action@main
+        with:
+          args: hosting deploy
+        env:
+          JUNO_TOKEN: ${{ secrets.JUNO_TOKEN }}

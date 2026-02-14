@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
+	import { fade } from 'svelte/transition';
 	import type { SatelliteDid } from '$declarations';
 	import AutomationCreateConnectForm from '$lib/components/automation/create/AutomationCreateConnectForm.svelte';
 	import AutomationCreateConnectReview from '$lib/components/automation/create/AutomationCreateConnectReview.svelte';
@@ -11,6 +12,7 @@
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { JunoModalDetail, JunoModalWithSatellite } from '$lib/types/modal';
 	import { emit } from '$lib/utils/events.utils';
+	import AutomationCreateActions from '$lib/components/automation/create/AutomationCreateActions.svelte';
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -57,16 +59,15 @@
 
 <Modal {onclose}>
 	{#if step === 'ready'}
-		<div class="msg">
-			<p>{$i18n.core.configuration_applied}</p>
-			<button onclick={onclose}>{$i18n.core.close}</button>
-		</div>
+		<AutomationCreateActions {onclose} />
 	{:else if step === 'in_progress'}
 		<SpinnerModal>
 			<p>{$i18n.core.configuring}</p>
 		</SpinnerModal>
 	{:else if nonNullish(repoKey) && step === 'review'}
-		<AutomationCreateConnectReview onback={() => (step = 'init')} {onconfirm} {repoKey} />
+		<div in:fade>
+			<AutomationCreateConnectReview onback={() => (step = 'init')} {onconfirm} {repoKey} />
+		</div>
 	{:else}
 		<AutomationCreateConnectForm oncontinue={onConnect} bind:repoUrl />
 	{/if}

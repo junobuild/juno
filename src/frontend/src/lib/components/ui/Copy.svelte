@@ -11,15 +11,16 @@
 		variant?: 'square' | 'text';
 		what?: string;
 		testId?: TestId;
+		toastValue?: boolean;
 	}
 
-	let { value, variant = 'square', what, testId: testIdProp }: Props = $props();
+	let { value, variant = 'square', what, testId: testIdProp, toastValue = true }: Props = $props();
 
 	let actionLabel = $derived(
 		`${$i18n.core.copy}${notEmptyString(what) ? ` ${what}` : ''}: ${value}`
 	);
 	let confirmLabel = $derived(
-		`${notEmptyString(what) ? `${what} ` : ''}${value} ${$i18n.core.copied}`
+		`${notEmptyString(what) ? `${what} ` : ''}${toastValue ? value : ''} ${$i18n.core.copied}`
 	);
 
 	const copyToClipboard = async ($event: UIEvent) => {

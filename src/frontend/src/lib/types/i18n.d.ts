@@ -1138,6 +1138,13 @@ interface I18nAutomation {
 	repository: string;
 	provider: string;
 	open_repo: string;
+	create_actions_title: string;
+	create_actions_configured: string;
+	create_actions_description: string;
+	deploy_frontend: string;
+	publish_functions: string;
+	workflow_type: string;
+	package_manager: string;
 }
 
 interface I18n {

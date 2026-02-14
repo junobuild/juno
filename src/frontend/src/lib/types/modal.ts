@@ -184,6 +184,7 @@ export interface JunoModal<T extends JunoModalDetail> {
 		| 'reject_change'
 		| 'upgrade_satellite_with_cdn'
 		| 'convert_icp_to_cycles'
-		| 'reconcile_out_of_sync_segments';
+		| 'reconcile_out_of_sync_segments'
+		| 'create_automation';
 	detail?: T;
 }

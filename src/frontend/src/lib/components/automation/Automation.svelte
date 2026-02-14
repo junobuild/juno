@@ -2,6 +2,7 @@
 	import { isNullish } from '@dfinity/utils';
 	import { setContext } from 'svelte';
 	import AutomationConfigLoader from '$lib/components/automation/AutomationConfigLoader.svelte';
+	import AutomationNew from '$lib/components/automation/AutomationNew.svelte';
 	import NoAutomation from '$lib/components/automation/NoAutomation.svelte';
 	import { initAutomationConfigContext } from '$lib/stores/satellite/automation.context.store';
 	import {
@@ -26,5 +27,7 @@
 <AutomationConfigLoader {satellite}>
 	{#if isNullish($config)}
 		<NoAutomation />
+
+		<AutomationNew />
 	{/if}
 </AutomationConfigLoader>

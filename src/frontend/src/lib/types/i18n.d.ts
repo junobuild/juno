@@ -767,6 +767,10 @@ interface I18nErrors {
 	invalid_version_cannot_downgrade: string;
 	reconcile_out_of_sync_error: string;
 	reconcile_no_divergence: string;
+	build_automation_config_invalid_url: string;
+	build_automation_config_invalid_github_url: string;
+	build_automation_config_owner_not_found: string;
+	build_automation_config_repo_not_found: string;
 }
 
 interface I18nDocument {
@@ -1124,6 +1128,14 @@ interface I18nOut_of_sync {
 interface I18nAutomation {
 	title: string;
 	description: string;
+	create_connect_title: string;
+	create_connect_description: string;
+	create_connect_input_placeholder: string;
+	create_connect_review_title: string;
+	create_connect_review_description: string;
+	repository: string;
+	provider: string;
+	open_repo: string;
 }
 
 interface I18n {

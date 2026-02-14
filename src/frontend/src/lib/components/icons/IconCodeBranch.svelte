@@ -1,6 +1,12 @@
 <!-- source: Font Awesome v5.15.4 - David Pro License -->
 <script lang="ts">
-	let width = $derived(`${(24 * 384) / 512}px`);
+	interface Props {
+		size?: string;
+	}
+
+	let { size = '24px' }: Props = $props();
+
+	let width = $derived(`${(parseInt(size) * 384) / 512}px`);
 </script>
 
 <svg

@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
-	import type { Principal } from '@icp-sdk/core/principal';
 	import { getContext } from 'svelte';
 	import IconRefresh from '$lib/components/icons/IconRefresh.svelte';
 	import WorkflowFilter from '$lib/components/satellites/automation/workflows/WorkflowFilter.svelte';

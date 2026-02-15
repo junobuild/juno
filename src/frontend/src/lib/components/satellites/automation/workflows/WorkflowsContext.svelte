@@ -1,6 +1,4 @@
 <script lang="ts">
-	import type { Principal } from '@icp-sdk/core/principal';
-	import UsersTable from '$lib/components/satellites/auth/Users.svelte';
 	import Workflows from '$lib/components/satellites/automation/workflows/Workflows.svelte';
 	import ListContext from '$lib/components/satellites/list/ListContext.svelte';
 	import type { ListDocsFn } from '$lib/services/satellite/_list-docs.services';

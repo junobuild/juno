@@ -19,7 +19,7 @@
 	</p>
 
 	{#snippet action()}
-		<a class="button" href="/src/frontend/static"
+		<a class="button" href="/"
 			>{$authSignedIn ? $i18n.not_found.go_launchpad : $i18n.not_found.go_home}</a
 		>
 	{/snippet}

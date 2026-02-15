@@ -20,7 +20,8 @@
 
 		// I dislike those kind of "loading guard" pattern but, I don't really see another way
 		// for now to prevent loading twice the list of segments.
-		// // TODO(#767): in the future, remove the state and load segments with query+update
+		// TODO(#767): in the future, remove the state and load segments with query+update
+		// TODO: likewise in SatelliteConfigLoader
 		if (loading) {
 			return;
 		}

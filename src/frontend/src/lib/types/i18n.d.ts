@@ -699,6 +699,7 @@ interface I18nErrors {
 	cannot_fetch_logs: string;
 	authentication_config_loading: string;
 	automation_config_loading: string;
+	satellite_config_loading: string;
 	no_file_selected_for_upload: string;
 	upload_error: string;
 	set_asset_token_error: string;

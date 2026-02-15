@@ -681,6 +681,7 @@
 		"cannot_fetch_logs": "Unexpected error(s) while fetching the logs.",
 		"authentication_config_loading": "Unexpected error(s) while loading the configuration of the authentication.",
 		"automation_config_loading": "Unexpected error(s) while loading the configuration of the automation.",
+		"satellite_config_loading": "Unexpected error(s) while loading the configuration of the Satellite.",
 		"no_file_selected_for_upload": "No file was selected for the upload.",
 		"upload_error": "Unexpected error(s) while uploading the file.",
 		"set_asset_token_error": "Unexpected error(s) while updating the access token of the asset.",

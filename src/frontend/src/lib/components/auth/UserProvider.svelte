@@ -1,4 +1,5 @@
 <script lang="ts">
+	import IconGitHub from '$lib/components/icons/IconGitHub.svelte';
 	import IconGoogle from '$lib/components/icons/IconGoogle.svelte';
 	import IconIc from '$lib/components/icons/IconIC.svelte';
 	import IconNFID from '$lib/components/icons/IconNFID.svelte';
@@ -27,6 +28,11 @@
 {:else if provider === 'google'}
 	<span class="align-center"
 		><IconGoogle size="18px" withTitle />{#if withText}
+			<span>Google</span>{/if}</span
+	>
+{:else if provider === 'github'}
+	<span class="align-center"
+		><IconGitHub size="18px" withTitle />{#if withText}
 			<span>Google</span>{/if}</span
 	>
 {:else if provider === 'nfid'}

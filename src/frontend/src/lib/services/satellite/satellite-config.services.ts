@@ -21,8 +21,6 @@ export const loadSatelliteConfig = async ({
 	const existingConfigs = get(uncertifiedSatellitesConfigsStore);
 	const existingConfig = existingConfigs?.[satelliteId.toText()];
 
-	console.log(existingConfig);
-
 	if (nonNullish(existingConfig) && !reload) {
 		return { result: 'skip' };
 	}

@@ -2,7 +2,7 @@
 	import { setContext } from 'svelte';
 	import { writable } from 'svelte/store';
 	import AuthSettings from '$lib/components/auth/AuthSettings.svelte';
-	import Users from '$lib/components/auth/Users.svelte';
+	import Users from '$lib/components/auth/UsersContext.svelte';
 	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
 	import SatelliteGuard from '$lib/components/guards/SatelliteGuard.svelte';
 	import Loaders from '$lib/components/loaders/Loaders.svelte';

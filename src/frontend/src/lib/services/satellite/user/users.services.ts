@@ -1,4 +1,4 @@
-import { listDocs } from '$lib/services/satellite/_list-docs.services';
+import { listDocs, type ListDocsResult } from '$lib/services/satellite/_list-docs.services';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { ListParams } from '$lib/types/list';
 import type { User } from '$lib/types/user';
@@ -10,11 +10,7 @@ export const listUsers = async (
 		satelliteId: Principal;
 		identity: OptionIdentity;
 	}
-): Promise<{
-	users: [string, User][];
-	matches_length: bigint;
-	items_length: bigint;
-}> => {
+): Promise<ListDocsResult<User>> => {
 	const { items, matches_length, items_length } = await listDocs({
 		...params,
 		collection: '#user'
@@ -28,7 +24,7 @@ export const listUsers = async (
 	}
 
 	return {
-		users,
+		items: users,
 		matches_length,
 		items_length
 	};

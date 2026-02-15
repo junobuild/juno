@@ -3,6 +3,7 @@
 	import type { Principal } from '@icp-sdk/core/principal';
 	import { getContext, setContext, type Snippet, untrack } from 'svelte';
 	import { authIdentity } from '$lib/derived/auth.derived';
+	import type { ListDocsFn } from '$lib/services/satellite/_list-docs.services';
 	import { initListParamsContext } from '$lib/stores/app/list-params.context.store';
 	import { initPaginationContext } from '$lib/stores/app/pagination.context.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
@@ -14,7 +15,6 @@
 	} from '$lib/types/list-params.context';
 	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
 	import { emit } from '$lib/utils/events.utils';
-	import type { ListDocsFn } from '$lib/services/satellite/_list-docs.services';
 
 	interface Props {
 		satelliteId: Principal;

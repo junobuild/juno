@@ -2,7 +2,7 @@
 	import { setContext } from 'svelte';
 	import { writable } from 'svelte/store';
 	import AuthSettings from '$lib/components/auth/AuthSettings.svelte';
-	import Users from '$lib/components/auth/UsersContext.svelte';
+	import UsersContext from '$lib/components/auth/UsersContext.svelte';
 	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
 	import SatelliteGuard from '$lib/components/guards/SatelliteGuard.svelte';
 	import Loaders from '$lib/components/loaders/Loaders.svelte';
@@ -42,7 +42,7 @@
 			{#snippet content(satellite)}
 				<Tabs>
 					{#if $store.tabId === $store.tabs[0].id}
-						<Users satelliteId={satellite.satellite_id} />
+						<UsersContext satelliteId={satellite.satellite_id} />
 					{:else if $store.tabId === $store.tabs[1].id}
 						<AuthSettings {satellite} />
 					{/if}

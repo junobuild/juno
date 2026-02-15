@@ -7,6 +7,19 @@ import type { OptionIdentity } from '$lib/types/itentity';
 import type { ListParams } from '$lib/types/list';
 import type { Principal } from '@icp-sdk/core/principal';
 
+type ListDocsParams = Pick<ListParams, 'startAfter' | 'filter' | 'order'> & {
+	satelliteId: Principal;
+	identity: OptionIdentity;
+};
+
+export interface ListDocsResult<T> {
+	items: [string, T][];
+	matches_length: bigint;
+	items_length: bigint;
+}
+
+export type ListDocsFn<T> = (params: ListDocsParams) => Promise<ListDocsResult<T>>;
+
 export const listDocs = async ({
 	collection,
 	startAfter,
@@ -14,10 +27,8 @@ export const listDocs = async ({
 	filter,
 	order,
 	identity
-}: Pick<ListParams, 'startAfter' | 'filter' | 'order'> & {
+}: ListDocsParams & {
 	collection: string;
-	satelliteId: Principal;
-	identity: OptionIdentity;
 }): Promise<{
 	items: [string, SatelliteDid.Doc][];
 	matches_length: bigint;

@@ -7,7 +7,7 @@ import type { OptionIdentity } from '$lib/types/itentity';
 import type { ListParams } from '$lib/types/list';
 import type { Principal } from '@icp-sdk/core/principal';
 
-type ListDocsParams = Pick<ListParams, 'startAfter' | 'filter' | 'order'> & {
+export type ListDocsParams = Pick<ListParams, 'startAfter' | 'filter' | 'order'> & {
 	satelliteId: Principal;
 	identity: OptionIdentity;
 };

@@ -8,7 +8,7 @@
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import { authIdentity } from '$lib/derived/auth.derived';
-	import { createAutomationConfig } from '$lib/services/satellite/automation.config.services';
+	import { createAutomationConfig } from '$lib/services/satellite/automation/automation.config.services';
 	import { wizardBusy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { JunoModalDetail, JunoModalWithSatellite } from '$lib/types/modal';

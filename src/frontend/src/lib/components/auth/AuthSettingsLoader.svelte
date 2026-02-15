@@ -4,8 +4,8 @@
 	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
 	import Warning from '$lib/components/ui/Warning.svelte';
 	import { authIdentity } from '$lib/derived/auth.derived';
-	import { getAuthConfig } from '$lib/services/satellite/auth.config.services';
-	import { getRuleUser } from '$lib/services/satellite/collection.services';
+	import { getAuthConfig } from '$lib/services/satellite/authentication/auth.config.services';
+	import { getRuleUser } from '$lib/services/satellite/collection/collection.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { versionStore } from '$lib/stores/version.store';
 	import { AUTH_CONFIG_CONTEXT_KEY, type AuthConfigContext } from '$lib/types/auth.context';

@@ -15,7 +15,7 @@
 		type PermissionText
 	} from '$lib/constants/rules.constants';
 	import { authIdentity } from '$lib/derived/auth.derived';
-	import { setRule } from '$lib/services/satellite/collection.services';
+	import { setRule } from '$lib/services/satellite/collection/collection.services';
 	import { busy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';

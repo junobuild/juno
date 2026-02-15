@@ -72,7 +72,7 @@
 			background: var(--color-background);
 			color: var(--color-background-contrast);
 
-			border: 1px solid var(--color-primary-contrast);
+			border: 1px solid var(--color-primary);
 		}
 	}
 

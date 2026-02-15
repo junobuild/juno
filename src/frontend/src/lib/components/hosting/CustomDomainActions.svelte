@@ -10,7 +10,7 @@
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import { isBusy } from '$lib/derived/app/busy.derived';
 	import { authIdentity } from '$lib/derived/auth.derived';
-	import { deleteCustomDomain as deleteCustomDomainService } from '$lib/services/satellite/custom-domain.services';
+	import { deleteCustomDomain as deleteCustomDomainService } from '$lib/services/satellite/hosting/custom-domain.services';
 	import { busy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';

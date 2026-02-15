@@ -3,7 +3,7 @@
 	import type { SatelliteDid } from '$declarations';
 	import Confirmation from '$lib/components/core/Confirmation.svelte';
 	import { authIdentity } from '$lib/derived/auth.derived';
-	import { switchHostingMemory } from '$lib/services/satellite/hosting.storage.services';
+	import { switchHostingMemory } from '$lib/services/satellite/hosting/hosting.storage.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { Satellite } from '$lib/types/satellite';
 	import { i18nFormat } from '$lib/utils/i18n.utils';

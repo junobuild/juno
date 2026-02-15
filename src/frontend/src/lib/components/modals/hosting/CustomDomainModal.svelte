@@ -7,7 +7,7 @@
 	import IconVerified from '$lib/components/icons/IconVerified.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import { authIdentity } from '$lib/derived/auth.derived';
-	import { configHosting } from '$lib/services/satellite/hosting.services';
+	import { configHosting } from '$lib/services/satellite/hosting/hosting.services';
 	import { wizardBusy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';

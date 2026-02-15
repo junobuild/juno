@@ -222,6 +222,14 @@ export const setAutomationConfig = async ({
 	return set_automation_config(config);
 };
 
+export const getConfig = async (params: {
+	satelliteId: Principal;
+	identity: OptionIdentity;
+}): Promise<SatelliteDid.Config> => {
+	const { get_config } = await getSatelliteActor(params);
+	return get_config();
+};
+
 export const deleteDoc = async ({
 	satelliteId,
 	collection,

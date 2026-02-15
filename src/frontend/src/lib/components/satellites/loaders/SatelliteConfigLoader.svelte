@@ -1,11 +1,11 @@
 <script lang="ts">
-	import { type Snippet, untrack } from 'svelte';
-	import type { Satellite } from '$lib/types/satellite';
-	import { loadSatelliteConfig } from '$lib/services/satellite/satellite-config.services';
-	import { satellite } from '$lib/derived/satellite.derived';
-	import type { Option } from '$lib/types/utils';
 	import { isNullish } from '@dfinity/utils';
+	import { type Snippet, untrack } from 'svelte';
 	import { authIdentity } from '$lib/derived/auth.derived';
+	import { satellite } from '$lib/derived/satellite.derived';
+	import { loadSatelliteConfig } from '$lib/services/satellite/satellite-config.services';
+	import type { Satellite } from '$lib/types/satellite';
+	import type { Option } from '$lib/types/utils';
 
 	interface Props {
 		children: Snippet;

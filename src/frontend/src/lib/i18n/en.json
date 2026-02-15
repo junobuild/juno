@@ -617,6 +617,7 @@
 		"load_credits": "Cannot load your current credits status.",
 		"load_documents": "Unexpected error(s) while loading the documents.",
 		"load_users": "Unexpected error(s) while loading the users.",
+		"load_workflows": "Unexpected error(s) while loading the workflows.",
 		"load_settings": "Unexpected error(s) while loading the settings.",
 		"load_user_data": "Unexpected error(s) while loading your data (configuration, metadata, etc.).",
 		"load_auth_config_error": "An unexpected error occurred while loading your authentication configuration.",

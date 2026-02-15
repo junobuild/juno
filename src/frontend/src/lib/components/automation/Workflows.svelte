@@ -10,7 +10,6 @@
 	import DataPaginator from '$lib/components/data/DataPaginator.svelte';
 	import IconRefresh from '$lib/components/icons/IconRefresh.svelte';
 	import { authIdentity } from '$lib/derived/auth.derived';
-	import { listUsers } from '$lib/services/satellite/user/users.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { initListParamsContext } from '$lib/stores/app/list-params.context.store';
 	import { initPaginationContext } from '$lib/stores/app/pagination.context.store';
@@ -22,8 +21,9 @@
 		type ListParamsContext
 	} from '$lib/types/list-params.context';
 	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
-	import type { User as UserType } from '$lib/types/user';
 	import { emit } from '$lib/utils/events.utils';
+	import { listWorkflows } from '$lib/services/satellite/automation/workflows.services';
+	import type { Workflow } from '$lib/types/workflow';
 
 	interface Props {
 		satelliteId: Principal;
@@ -45,7 +45,7 @@
 		}
 
 		try {
-			const { users, matches_length, items_length } = await listUsers({
+			const { workflows, matches_length, items_length } = await listWorkflows({
 				satelliteId,
 				startAfter: $startAfter,
 				filter: $listParams.filter,
@@ -53,16 +53,16 @@
 				identity: $authIdentity
 			});
 
-			setItems({ items: users, matches_length, items_length });
+			setItems({ items: workflows, matches_length, items_length });
 		} catch (err: unknown) {
 			toasts.error({
-				text: $i18n.errors.load_users,
+				text: $i18n.errors.load_workflows,
 				detail: err
 			});
 		}
 	};
 
-	setContext<PaginationContext<UserType>>(PAGINATION_CONTEXT_KEY, {
+	setContext<PaginationContext<Workflow>>(PAGINATION_CONTEXT_KEY, {
 		...initPaginationContext(),
 		list
 	});
@@ -71,11 +71,11 @@
 		store: paginationStore,
 		setItems,
 		startAfter
-	}: PaginationContext<UserType> = getContext<PaginationContext<UserType>>(PAGINATION_CONTEXT_KEY);
+	}: PaginationContext<Workflow> = getContext<PaginationContext<Workflow>>(PAGINATION_CONTEXT_KEY);
 
 	setContext<ListParamsContext>(
 		LIST_PARAMS_CONTEXT_KEY,
-		initListParamsContext(ListParamsKey.USERS)
+		initListParamsContext(ListParamsKey.WORKFLOWS)
 	);
 
 	const { listParams } = getContext<ListParamsContext>(LIST_PARAMS_CONTEXT_KEY);

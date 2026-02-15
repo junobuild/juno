@@ -1,3 +1,4 @@
+import type { SatelliteDid } from '$declarations';
 
 export type WorkflowProvider = 'GitHub';
 
@@ -18,3 +19,7 @@ export interface WorkflowData {
 	workflow?: string;
 	eventName?: string;
 }
+
+export type Workflow = Omit<SatelliteDid.Doc, 'data'> & {
+	data: WorkflowData;
+};

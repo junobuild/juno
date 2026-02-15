@@ -635,6 +635,7 @@ interface I18nErrors {
 	load_credits: string;
 	load_documents: string;
 	load_users: string;
+	load_workflows: string;
 	load_settings: string;
 	load_user_data: string;
 	load_auth_config_error: string;

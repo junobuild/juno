@@ -1,4 +1,4 @@
-import { listDocs } from '$lib/services/satellite/_list-docs.services';
+import { listDocs, type ListDocsResult } from '$lib/services/satellite/_list-docs.services';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { ListParams } from '$lib/types/list';
 import type { Workflow, WorkflowKey } from '$lib/types/workflow';
@@ -10,11 +10,7 @@ export const listWorkflows = async (
 		satelliteId: Principal;
 		identity: OptionIdentity;
 	}
-): Promise<{
-	workflows: [WorkflowKey, Workflow][];
-	matches_length: bigint;
-	items_length: bigint;
-}> => {
+): Promise<ListDocsResult<Workflow>> => {
 	const { items, matches_length, items_length } = await listDocs({
 		...params,
 		collection: '#automation-workflow'
@@ -28,7 +24,7 @@ export const listWorkflows = async (
 	}
 
 	return {
-		workflows,
+		items: workflows,
 		matches_length,
 		items_length
 	};

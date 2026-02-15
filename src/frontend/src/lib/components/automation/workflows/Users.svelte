@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { isNullish, nonNullish } from '@dfinity/utils';
+	import { nonNullish } from '@dfinity/utils';
 	import type { Principal } from '@icp-sdk/core/principal';
-	import { getContext, setContext, untrack } from 'svelte';
+	import { getContext } from 'svelte';
 	import UserFilter from '$lib/components/auth/UserFilter.svelte';
 	import UserRow from '$lib/components/auth/UserRow.svelte';
 	import DataActions from '$lib/components/data/DataActions.svelte';
@@ -9,92 +9,19 @@
 	import DataOrder from '$lib/components/data/DataOrder.svelte';
 	import DataPaginator from '$lib/components/data/DataPaginator.svelte';
 	import IconRefresh from '$lib/components/icons/IconRefresh.svelte';
-	import { authIdentity } from '$lib/derived/auth.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import { initListParamsContext } from '$lib/stores/app/list-params.context.store';
-	import { initPaginationContext } from '$lib/stores/app/pagination.context.store';
-	import { toasts } from '$lib/stores/app/toasts.store';
-	import { versionStore } from '$lib/stores/version.store';
-	import {
-		LIST_PARAMS_CONTEXT_KEY,
-		ListParamsKey,
-		type ListParamsContext
-	} from '$lib/types/list-params.context';
 	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
-	import { emit } from '$lib/utils/events.utils';
-	import { listWorkflows } from '$lib/services/satellite/automation/workflows.services';
-	import type { Workflow } from '$lib/types/workflow';
+	import type { User as UserType } from '$lib/types/user';
 
 	interface Props {
 		satelliteId: Principal;
+		reload: () => void;
 	}
 
-	let { satelliteId }: Props = $props();
+	let { satelliteId, reload }: Props = $props();
 
-	const list = async () => {
-		if (isNullish(satelliteId)) {
-			setItems({ items: undefined, matches_length: undefined, items_length: undefined });
-			return;
-		}
-
-		const version = $versionStore?.satellites[satelliteId.toText()]?.current;
-
-		if (isNullish(version)) {
-			setItems({ items: undefined, matches_length: undefined, items_length: undefined });
-			return;
-		}
-
-		try {
-			const { workflows, matches_length, items_length } = await listWorkflows({
-				satelliteId,
-				startAfter: $startAfter,
-				filter: $listParams.filter,
-				order: $listParams.order,
-				identity: $authIdentity
-			});
-
-			setItems({ items: workflows, matches_length, items_length });
-		} catch (err: unknown) {
-			toasts.error({
-				text: $i18n.errors.load_workflows,
-				detail: err
-			});
-		}
-	};
-
-	setContext<PaginationContext<Workflow>>(PAGINATION_CONTEXT_KEY, {
-		...initPaginationContext(),
-		list
-	});
-
-	const {
-		store: paginationStore,
-		setItems,
-		startAfter
-	}: PaginationContext<Workflow> = getContext<PaginationContext<Workflow>>(PAGINATION_CONTEXT_KEY);
-
-	setContext<ListParamsContext>(
-		LIST_PARAMS_CONTEXT_KEY,
-		initListParamsContext(ListParamsKey.WORKFLOWS)
-	);
-
-	const { listParams } = getContext<ListParamsContext>(LIST_PARAMS_CONTEXT_KEY);
-
-	$effect(() => {
-		$versionStore;
-		$listParams;
-
-		untrack(() => {
-			list();
-		});
-	});
-
-	const reload = () => {
-		// Not awaited on purpose, we want to close the popover no matter what
-		list();
-
-		emit({ message: 'junoCloseActions' });
-	};
+	const { store: paginationStore }: PaginationContext<UserType> =
+		getContext<PaginationContext<UserType>>(PAGINATION_CONTEXT_KEY);
 
 	let empty = $derived($paginationStore.items?.length === 0);
 

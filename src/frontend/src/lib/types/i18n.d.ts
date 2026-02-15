@@ -1146,6 +1146,19 @@ interface I18nAutomation {
 	publish_functions: string;
 	workflow_type: string;
 	package_manager: string;
+	workflow_placeholder: string;
+	workflow: string;
+	reference: string;
+	timestamp: string;
+	empty: string;
+	commit: string;
+	pushed_by: string;
+	manually_run_by: string;
+	pr_run_by: string;
+	no_workflow_info: string;
+	view_workflow: string;
+	view_commit: string;
+	view_branch: string;
 }
 
 interface I18n {

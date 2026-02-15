@@ -6,7 +6,7 @@
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { Workflow } from '$lib/types/workflow';
 	import { listWorkflows } from '$lib/services/satellite/automation/workflows.services';
-	import Workflows from "$lib/components/automation/workflows/Workflows.svelte";
+	import Workflows from '$lib/components/automation/workflows/Workflows.svelte';
 
 	interface Props {
 		satelliteId: Principal;
@@ -21,5 +21,5 @@
 </script>
 
 <ListContext bind:this={listContextRef} errorLabel={$i18n.errors.load_users} {listFn} {satelliteId}>
-	<Workflows {reload} {satelliteId} />
+	<Workflows {reload} />
 </ListContext>

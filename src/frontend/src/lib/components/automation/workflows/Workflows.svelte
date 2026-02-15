@@ -2,8 +2,6 @@
 	import { nonNullish } from '@dfinity/utils';
 	import type { Principal } from '@icp-sdk/core/principal';
 	import { getContext } from 'svelte';
-	import UserFilter from '$lib/components/auth/UserFilter.svelte';
-	import UserRow from '$lib/components/auth/UserRow.svelte';
 	import DataActions from '$lib/components/data/DataActions.svelte';
 	import DataCount from '$lib/components/data/DataCount.svelte';
 	import DataOrder from '$lib/components/data/DataOrder.svelte';
@@ -11,25 +9,24 @@
 	import IconRefresh from '$lib/components/icons/IconRefresh.svelte';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
-	import type { User as UserType } from '$lib/types/user';
+	import WorkflowFilter from '$lib/components/automation/workflows/WorkflowFilter.svelte';
+	import WorkflowRow from '$lib/components/automation/workflows/WorkflowRow.svelte';
+	import type { Workflow } from '$lib/types/workflow';
 
 	interface Props {
-		satelliteId: Principal;
 		reload: () => void;
 	}
 
-	let { satelliteId, reload }: Props = $props();
+	let { reload }: Props = $props();
 
-	const { store: paginationStore }: PaginationContext<UserType> =
-		getContext<PaginationContext<UserType>>(PAGINATION_CONTEXT_KEY);
+	const { store: paginationStore }: PaginationContext<Workflow> =
+		getContext<PaginationContext<Workflow>>(PAGINATION_CONTEXT_KEY);
 
 	let empty = $derived($paginationStore.items?.length === 0);
 
 	let innerWidth = $state(0);
 
-	let colspan = $derived(
-		innerWidth >= 1024 ? 6 : innerWidth >= 768 ? 5 : innerWidth >= 576 ? 4 : 2
-	);
+	let colspan = $derived(innerWidth >= 576 ? 3 : 2);
 </script>
 
 <svelte:window bind:innerWidth />
@@ -40,7 +37,7 @@
 			<tr>
 				<th {colspan}>
 					<div class="actions">
-						<UserFilter />
+						<WorkflowFilter />
 						<DataOrder />
 
 						<DataActions>
@@ -52,19 +49,16 @@
 				</th>
 			</tr>
 			<tr>
-				<th class="tools"></th>
-				<th class="identifier"> {$i18n.users.identifier} </th>
-				<th class="providers"> {$i18n.users.provider} </th>
-				<th class="user"> {$i18n.users.user} </th>
-				<th class="email"> {$i18n.users.email} </th>
-				<th class="created"> {$i18n.core.created} </th>
+				<th class="workflow"> {$i18n.automation.workflow} </th>
+				<th class="reference"> {$i18n.automation.reference} </th>
+				<th class="timestamp"> {$i18n.automation.timestamp} </th>
 			</tr>
 		</thead>
 
 		<tbody>
 			{#if nonNullish($paginationStore.items)}
-				{#each $paginationStore.items as [key, user] (key)}
-					<UserRow {satelliteId} {user} />
+				{#each $paginationStore.items as [key, workflow] (key)}
+					<WorkflowRow {key} {workflow} />
 				{/each}
 
 				{#if !empty && ($paginationStore.pages ?? 0) > 1}
@@ -72,7 +66,7 @@
 				{/if}
 
 				{#if empty}
-					<tr><td {colspan}>{$i18n.users.empty}</td></tr>
+					<tr><td {colspan}>{$i18n.automation.empty}</td></tr>
 				{/if}
 			{/if}
 		</tbody>
@@ -82,65 +76,22 @@
 <DataCount />
 
 <style lang="scss">
-	@use '../../styles/mixins/media';
+	@use '../../../styles/mixins/media';
 
 	table {
 		table-layout: auto;
 	}
 
-	.tools {
-		width: 60px;
-	}
-
-	.providers {
-		display: none;
-
-		@include media.min-width(small) {
-			display: table-cell;
-		}
-	}
-
-	.user {
-		display: none;
-
-		@include media.min-width(small) {
-			display: table-cell;
-		}
-	}
-
-	.user,
-	.email {
+	.reference,
+	.timestamp {
 		max-width: 200px;
 	}
 
-	.created,
-	.email {
+	.timestamp {
 		display: none;
 
-		@include media.min-width(large) {
+		@include media.min-width(small) {
 			display: table-cell;
 		}
-	}
-
-	.user {
-		@include media.min-width(small) {
-			width: 50%;
-		}
-
-		@include media.min-width(large) {
-			width: inherit;
-		}
-	}
-
-	@include media.min-width(large) {
-		.providers {
-			width: inherit;
-		}
-	}
-
-	.actions {
-		display: flex;
-		gap: var(--padding-1_5x);
-		padding: var(--padding) 0;
 	}
 </style>

@@ -1,14 +1,14 @@
 import type { SatelliteDid } from '$declarations';
 
-export type WorkflowProvider = 'GitHub';
+type WorkflowProvider = 'GitHub';
 
-type Owner = string;
-type Name = string;
-export type Repository = `${Owner}/${Name}`;
+type DocOwnerKey = string;
+type DocNameKey = string;
+type DocRepositoryKey = `${DocOwnerKey}/${DocNameKey}`;
 
 export type RunId = string;
 
-export type WorkflowKey = `${WorkflowProvider}#${Repository}#${RunId}`;
+export type WorkflowKey = `${WorkflowProvider}#${DocRepositoryKey}#${RunId}`;
 
 export interface WorkflowData {
 	runNumber?: string;

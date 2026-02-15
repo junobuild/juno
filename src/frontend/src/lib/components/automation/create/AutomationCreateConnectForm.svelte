@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { SatelliteDid } from '$declarations';
-	import { buildRepositoryKey } from '$lib/services/satellite/automation.config.services';
+	import { buildRepositoryKey } from '$lib/services/satellite/automation/automation.config.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
 
 	interface Props {

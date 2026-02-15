@@ -4,7 +4,7 @@
 	import CanisterStopStart from '$lib/components/canister/lifecycle/CanisterStopStart.svelte';
 	import TopUp from '$lib/components/canister/top-up/TopUp.svelte';
 	import SegmentActions from '$lib/components/segments/SegmentActions.svelte';
-	import { listCustomDomains } from '$lib/services/satellite/custom-domain.services';
+	import { listCustomDomains } from '$lib/services/satellite/hosting/custom-domain.services';
 	import { busy } from '$lib/stores/app/busy.store';
 	import type { CanisterSyncData as CanisterSyncDataType } from '$lib/types/canister';
 	import type { Satellite } from '$lib/types/satellite';

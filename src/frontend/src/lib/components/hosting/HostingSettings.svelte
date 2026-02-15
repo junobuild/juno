@@ -7,7 +7,7 @@
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { authIdentity } from '$lib/derived/auth.derived';
-	import { getRuleDapp } from '$lib/services/satellite/collection.services';
+	import { getRuleDapp } from '$lib/services/satellite/collection/collection.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { versionStore } from '$lib/stores/version.store';
 	import type { Satellite } from '$lib/types/satellite';

@@ -4,7 +4,7 @@
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { User } from '$lib/types/user';
-	import { isGoogleUser } from '$lib/utils/user.utils';
+	import { isOpenIdUser } from '$lib/utils/user.utils';
 
 	interface Props {
 		user: User;
@@ -12,10 +12,10 @@
 
 	let { user }: Props = $props();
 
-	let google = $derived(isGoogleUser(user));
+	let openId = $derived(isOpenIdUser(user));
 </script>
 
-{#if google}
+{#if openId}
 	<div>
 		<Value>
 			{#snippet label()}

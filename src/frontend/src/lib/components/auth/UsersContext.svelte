@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Principal } from '@icp-sdk/core/principal';
-	import UsersTable from '$lib/components/auth/Users.svelte';
+	import Users from '$lib/components/auth/Users.svelte';
 	import ListContext from '$lib/components/list/ListContext.svelte';
 	import type { ListDocsFn } from '$lib/services/satellite/_list-docs.services';
 	import { listUsers } from '$lib/services/satellite/user/users.services';
@@ -20,5 +20,5 @@
 </script>
 
 <ListContext bind:this={listContextRef} errorLabel={$i18n.errors.load_users} {listFn} {satelliteId}>
-	<UsersTable {reload} {satelliteId} />
+	<Users {reload} {satelliteId} />
 </ListContext>

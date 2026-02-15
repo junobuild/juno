@@ -639,7 +639,6 @@ interface I18nErrors {
 	load_settings: string;
 	load_user_data: string;
 	load_auth_config_error: string;
-	load_automation_config_error: string;
 	hosting_missing_domain_name: string;
 	hosting_invalid_url: string;
 	hosting_missing_dns_configuration: string;

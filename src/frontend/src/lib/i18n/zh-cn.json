@@ -623,7 +623,6 @@
 		"load_user_data": "加载您的数据（配置、元数据等）时发生意外错误。",
 		"loading_config": "正在加载配置…",
 		"load_auth_config_error": "加载身份验证配置时出现意外错误。",
-		"load_automation_config_error": "加载自动化配置时发生意外错误。",
 		"hosting_missing_domain_name": "必须提供域名。",
 		"hosting_invalid_url": "请提供有效的URL。",
 		"hosting_missing_dns_configuration": "必须提供域名配置。",

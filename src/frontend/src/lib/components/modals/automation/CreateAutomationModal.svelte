@@ -12,7 +12,6 @@
 	import { wizardBusy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { JunoModalDetail, JunoModalWithSatellite } from '$lib/types/modal';
-	import { emit } from '$lib/utils/events.utils';
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -50,8 +49,6 @@
 		if (result.result === 'error') {
 			return;
 		}
-
-		emit({ message: 'junoReloadAutomationConfig' });
 
 		step = 'ready';
 	};

@@ -635,6 +635,7 @@ interface I18nErrors {
 	load_credits: string;
 	load_documents: string;
 	load_users: string;
+	load_workflows: string;
 	load_settings: string;
 	load_user_data: string;
 	load_auth_config_error: string;
@@ -1145,6 +1146,20 @@ interface I18nAutomation {
 	publish_functions: string;
 	workflow_type: string;
 	package_manager: string;
+	workflow_placeholder: string;
+	workflow: string;
+	reference: string;
+	timestamp: string;
+	empty: string;
+	commit: string;
+	pushed_by: string;
+	manually_run_by: string;
+	pr_run_by: string;
+	no_workflow_info: string;
+	view_workflow: string;
+	view_commit: string;
+	view_branch: string;
+	view_contributor: string;
 }
 
 interface I18n {

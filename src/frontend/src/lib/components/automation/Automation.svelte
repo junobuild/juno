@@ -1,9 +1,11 @@
 <script lang="ts">
 	import { isNullish } from '@dfinity/utils';
 	import { setContext } from 'svelte';
+	import { fade } from 'svelte/transition';
 	import AutomationConfigLoader from '$lib/components/automation/AutomationConfigLoader.svelte';
 	import AutomationNew from '$lib/components/automation/AutomationNew.svelte';
 	import NoAutomation from '$lib/components/automation/NoAutomation.svelte';
+	import WorkflowsContext from '$lib/components/automation/workflows/WorkflowsContext.svelte';
 	import { initAutomationConfigContext } from '$lib/stores/satellite/automation.context.store';
 	import {
 		AUTOMATION_CONFIG_CONTEXT_KEY,
@@ -27,5 +29,9 @@
 		<NoAutomation />
 
 		<AutomationNew {satellite} />
+	{:else}
+		<div in:fade>
+			<WorkflowsContext {satellite} />
+		</div>
 	{/if}
 </AutomationConfigLoader>

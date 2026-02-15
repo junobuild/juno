@@ -618,6 +618,7 @@
 		"load_credits": "无法加载当前积分状态。",
 		"load_documents": "文档加载时发生意外错误。",
 		"load_users": "用户加载时发生意外错误。",
+		"load_workflows": "加载工作流时发生意外错误。",
 		"load_settings": "设置加载时发生意外错误。",
 		"load_user_data": "加载您的数据（配置、元数据等）时发生意外错误。",
 		"loading_config": "正在加载配置…",
@@ -1108,6 +1109,20 @@
 		"deploy_frontend": "部署前端",
 		"publish_functions": "发布函数",
 		"workflow_type": "工作流类型",
-		"package_manager": "包管理器"
+		"package_manager": "包管理器",
+		"workflow_placeholder": "仓库或运行 ID",
+		"workflow": "工作流",
+		"reference": "引用",
+		"timestamp": "时间戳",
+		"empty": "尚无部署。您的工作流将在 GitHub Actions 运行后显示在此处。",
+		"commit": "提交",
+		"pushed_by": "推送者",
+		"manually_run_by": "手动运行者",
+		"pr_run_by": "PR 运行者",
+		"no_workflow_info": "无可用的工作流信息",
+		"view_workflow": "在 GitHub 上查看工作流运行",
+		"view_commit": "在 GitHub 上查看提交",
+		"view_branch": "在 GitHub 上查看分支",
+		"view_contributor": "在 GitHub 上查看贡献者"
 	}
 }

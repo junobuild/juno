@@ -5,7 +5,8 @@ export enum ListParamsKey {
 	STORAGE = 'storage',
 	USERS = 'users',
 	CDN = 'cdn',
-	DOCS = 'docs'
+	DOCS = 'docs',
+	WORKFLOWS = 'workflows'
 }
 
 export type ListParamsData = Pick<ListParams, 'order' | 'filter'>;

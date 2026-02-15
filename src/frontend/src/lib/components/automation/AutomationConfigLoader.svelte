@@ -4,7 +4,7 @@
 	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
 	import Warning from '$lib/components/ui/Warning.svelte';
 	import { authIdentity } from '$lib/derived/auth.derived';
-	import { getAutomationConfig } from '$lib/services/satellite/automation.config.services';
+	import { getAutomationConfig } from '$lib/services/satellite/automation/automation.config.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { versionStore } from '$lib/stores/version.store';
 	import {

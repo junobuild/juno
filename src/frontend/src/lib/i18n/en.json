@@ -617,6 +617,7 @@
 		"load_credits": "Cannot load your current credits status.",
 		"load_documents": "Unexpected error(s) while loading the documents.",
 		"load_users": "Unexpected error(s) while loading the users.",
+		"load_workflows": "Unexpected error(s) while loading the workflows.",
 		"load_settings": "Unexpected error(s) while loading the settings.",
 		"load_user_data": "Unexpected error(s) while loading your data (configuration, metadata, etc.).",
 		"load_auth_config_error": "An unexpected error occurred while loading your authentication configuration.",
@@ -1106,6 +1107,20 @@
 		"deploy_frontend": "Deploy Frontend",
 		"publish_functions": "Publish Functions",
 		"workflow_type": "Workflow type",
-		"package_manager": "Package manager"
+		"package_manager": "Package manager",
+		"workflow_placeholder": "Repository or Run ID",
+		"workflow": "Workflow",
+		"reference": "Reference",
+		"timestamp": "Timestamp",
+		"empty": "No deployments yet. Your workflows will appear here once your GitHub Actions run.",
+		"commit": "Commit",
+		"pushed_by": "pushed by",
+		"manually_run_by": "Manually run by",
+		"pr_run_by": "PR run by",
+		"no_workflow_info": "No workflow information available",
+		"view_workflow": "View workflow run on GitHub",
+		"view_commit": "View commit on GitHub",
+		"view_branch": "View branch run on GitHub",
+		"view_contributor": "View contributor on GitHub"
 	}
 }

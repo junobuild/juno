@@ -1,11 +1,14 @@
 <script lang="ts">
+	import { nonNullish } from '@dfinity/utils';
 	import { setContext } from 'svelte';
 	import { writable } from 'svelte/store';
 	import Loaders from '$lib/components/app/loaders/Loaders.svelte';
 	import IdentityGuard from '$lib/components/auth/guards/IdentityGuard.svelte';
 	import Automation from '$lib/components/satellites/automation/Automation.svelte';
 	import SatelliteGuard from '$lib/components/satellites/guards/SatelliteGuard.svelte';
+	import NoTabs from '$lib/components/ui/NoTabs.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
+	import { satelliteAutomationConfig } from '$lib/derived/satellite/satellite-configs.derived';
 	import {
 		type Tab,
 		type TabsContext,
@@ -13,9 +16,6 @@
 		TABS_CONTEXT_KEY
 	} from '$lib/types/tabs.context';
 	import { initTabId } from '$lib/utils/tabs.utils';
-	import { nonNullish } from '@dfinity/utils';
-	import NoTabs from '$lib/components/ui/NoTabs.svelte';
-	import { satelliteAutomationConfig } from '$lib/derived/satellite/satellite-configs.derived';
 
 	const tabs: Tab[] = [
 		{

@@ -1,17 +1,17 @@
 <script lang="ts">
-	import { fade } from 'svelte/transition';
 	import { isNullish } from '@dfinity/utils';
 	import { setContext } from 'svelte';
+	import { fade } from 'svelte/transition';
 	import AutomationConfigLoader from '$lib/components/automation/AutomationConfigLoader.svelte';
 	import AutomationNew from '$lib/components/automation/AutomationNew.svelte';
 	import NoAutomation from '$lib/components/automation/NoAutomation.svelte';
+	import WorkflowsContext from '$lib/components/automation/workflows/WorkflowsContext.svelte';
 	import { initAutomationConfigContext } from '$lib/stores/satellite/automation.context.store';
 	import {
 		AUTOMATION_CONFIG_CONTEXT_KEY,
 		type AutomationConfigContext
 	} from '$lib/types/automation.context';
 	import type { Satellite } from '$lib/types/satellite';
-	import WorkflowsContext from '$lib/components/automation/workflows/WorkflowsContext.svelte';
 
 	interface Props {
 		satellite: Satellite;

@@ -1,13 +1,13 @@
 <script lang="ts">
 	import type { Principal } from '@icp-sdk/core/principal';
 	import UsersTable from '$lib/components/auth/Users.svelte';
+	import Workflows from '$lib/components/automation/workflows/Workflows.svelte';
 	import ListContext from '$lib/components/list/ListContext.svelte';
 	import type { ListDocsFn } from '$lib/services/satellite/_list-docs.services';
-	import { i18n } from '$lib/stores/app/i18n.store';
-	import type { Workflow } from '$lib/types/workflow';
 	import { listWorkflows } from '$lib/services/satellite/automation/workflows.services';
-	import Workflows from '$lib/components/automation/workflows/Workflows.svelte';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { Satellite } from '$lib/types/satellite';
+	import type { Workflow } from '$lib/types/workflow';
 
 	interface Props {
 		satellite: Satellite;

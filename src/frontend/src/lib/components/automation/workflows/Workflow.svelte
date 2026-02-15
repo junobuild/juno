@@ -1,8 +1,8 @@
 <script lang="ts">
+	import { notEmptyString } from '@dfinity/utils';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { Workflow, WorkflowKey } from '$lib/types/workflow';
 	import { toRepositoryKey, toRunId } from '$lib/utils/workflow.utils';
-	import { i18n } from '$lib/stores/app/i18n.store';
-	import { notEmptyString } from '@dfinity/utils';
 
 	interface Props {
 		key: WorkflowKey;
@@ -25,10 +25,10 @@
 
 {#snippet actorLink({ actor }: { actor: string })}
 	<a
+		aria-label={$i18n.automation.view_contributor}
 		href={`https://github.com/${actor}`}
-		target="_blank"
 		rel="noopener noreferrer"
-		aria-label={$i18n.automation.view_contributor}>{actor}</a
+		target="_blank">{actor}</a
 	>
 {/snippet}
 
@@ -44,10 +44,10 @@
 	<span
 		>{$i18n.automation.commit}
 		<a
+			aria-label={$i18n.automation.view_commit}
 			href={shaHref}
-			target="_blank"
 			rel="noopener noreferrer"
-			aria-label={$i18n.automation.view_commit}>{sha.slice(0, 7) ?? ''}</a
+			target="_blank">{sha.slice(0, 7) ?? ''}</a
 		>
 		{$i18n.automation.pushed_by}
 		{@render actorLink({ actor })}</span
@@ -60,10 +60,10 @@
 			<p class="workflow">
 				{workflowName}
 				{#if notEmptyString(runNumber)}(<a
+						aria-label={$i18n.automation.view_workflow}
 						href={runIdHref}
-						target="_blank"
 						rel="noopener noreferrer"
-						aria-label={$i18n.automation.view_workflow}>#{runNumber}</a
+						target="_blank">#{runNumber}</a
 					>){/if}
 			</p>
 		{/if}

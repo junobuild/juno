@@ -1,9 +1,9 @@
 <script lang="ts">
-	import type { Workflow, WorkflowKey } from '$lib/types/workflow';
-	import { toRepositoryKey } from '$lib/utils/workflow.utils';
 	import { notEmptyString } from '@dfinity/utils';
 	import Badge from '$lib/components/ui/Badge.svelte';
 	import { i18n } from '$lib/stores/app/i18n.store';
+	import type { Workflow, WorkflowKey } from '$lib/types/workflow';
+	import { toRepositoryKey } from '$lib/utils/workflow.utils';
 
 	interface Props {
 		key: WorkflowKey;
@@ -48,10 +48,10 @@
 
 {#if notEmptyString(refHref)}
 	<a
+		aria-label={$i18n.automation.view_branch}
 		href={refHref}
-		target="_blank"
 		rel="noopener noreferrer"
-		aria-label={$i18n.automation.view_branch}><Badge color="primary-opaque">{refName}</Badge></a
+		target="_blank"><Badge color="primary-opaque">{refName}</Badge></a
 	>
 {/if}
 

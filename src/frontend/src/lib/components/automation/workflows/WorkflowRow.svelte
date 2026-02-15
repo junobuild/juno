@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { formatToDate } from '$lib/utils/date.utils';
-	import type { Workflow as WorkflowType, WorkflowKey } from '$lib/types/workflow';
 	import Workflow from '$lib/components/automation/workflows/Workflow.svelte';
 	import WorkflowRef from '$lib/components/automation/workflows/WorkflowRef.svelte';
+	import type { Workflow as WorkflowType, WorkflowKey } from '$lib/types/workflow';
+	import { formatToDate } from '$lib/utils/date.utils';
 
 	interface Props {
 		key: string;

@@ -2,6 +2,8 @@
 	import { nonNullish } from '@dfinity/utils';
 	import type { Principal } from '@icp-sdk/core/principal';
 	import { getContext } from 'svelte';
+	import WorkflowFilter from '$lib/components/automation/workflows/WorkflowFilter.svelte';
+	import WorkflowRow from '$lib/components/automation/workflows/WorkflowRow.svelte';
 	import DataActions from '$lib/components/data/DataActions.svelte';
 	import DataCount from '$lib/components/data/DataCount.svelte';
 	import DataOrder from '$lib/components/data/DataOrder.svelte';
@@ -9,8 +11,6 @@
 	import IconRefresh from '$lib/components/icons/IconRefresh.svelte';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
-	import WorkflowFilter from '$lib/components/automation/workflows/WorkflowFilter.svelte';
-	import WorkflowRow from '$lib/components/automation/workflows/WorkflowRow.svelte';
 	import type { Workflow } from '$lib/types/workflow';
 
 	interface Props {

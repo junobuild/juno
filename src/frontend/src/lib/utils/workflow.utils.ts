@@ -16,7 +16,7 @@ export const toKeyWorkflow = async ([key, { data: dataArray, ...rest }]: [
 export const toRunId = (key: WorkflowKey): RunId => {
 	const [_, __, runId] = key.split('#');
 	return runId;
-}
+};
 
 export const toRepositoryKey = (key: WorkflowKey): SatelliteDid.RepositoryKey => {
 	const [_, repo] = key.split('#');

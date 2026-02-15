@@ -1159,6 +1159,7 @@ interface I18nAutomation {
 	view_workflow: string;
 	view_commit: string;
 	view_branch: string;
+	view_contributor: string;
 }
 
 interface I18n {

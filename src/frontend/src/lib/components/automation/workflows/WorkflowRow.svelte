@@ -24,9 +24,14 @@
 <style lang="scss">
 	@use '../../../styles/mixins/media';
 
-	.reference,
+	.workflow,
+	.reference {
+		width: 35%;
+	}
+
 	.timestamp {
-		max-width: 200px;
+		width: 30%;
+		text-align: right;
 	}
 
 	.timestamp {

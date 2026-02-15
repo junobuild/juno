@@ -54,3 +54,9 @@
 		aria-label={$i18n.automation.view_branch}><Badge color="primary-opaque">{refName}</Badge></a
 	>
 {/if}
+
+<style lang="scss">
+	a {
+		text-decoration: none;
+	}
+</style>

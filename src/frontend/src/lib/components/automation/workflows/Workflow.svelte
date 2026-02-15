@@ -23,12 +23,21 @@
 	let shaHref = $derived(`https://github.com/${repoKey.owner}/${repoKey.name}/commit/${sha ?? ''}`);
 </script>
 
-{#snippet workflowDispatch({ actor }: { actor: string })}
-	<span>{$i18n.automation.manually_run_by} {actor}</span>
+{#snippet actorLink({ actor }: { actor: string })}
+	<a
+		href={`https://github.com/${actor}`}
+		target="_blank"
+		rel="noopener noreferrer"
+		aria-label={$i18n.automation.view_contributor}>{actor}</a
+	>
 {/snippet}
 
-{#snippet pullRequest({ actor }: { actor: string })}
-	<span>{$i18n.automation.pr_run_by} {actor}</span>
+{#snippet workflowDispatch(params: { actor: string })}
+	<span>{$i18n.automation.manually_run_by} {@render actorLink(params)}</span>
+{/snippet}
+
+{#snippet pullRequest(params: { actor: string })}
+	<span>{$i18n.automation.pr_run_by} {@render actorLink(params)}</span>
 {/snippet}
 
 {#snippet push({ actor, sha }: { actor: string; sha: string })}
@@ -41,26 +50,26 @@
 			aria-label={$i18n.automation.view_commit}>{sha.slice(0, 7) ?? ''}</a
 		>
 		{$i18n.automation.pushed_by}
-		{actor}</span
+		{@render actorLink({ actor })}</span
 	>
 {/snippet}
 
 {#if notEmptyString(workflowName) || notEmptyString(actor)}
 	<div>
 		{#if notEmptyString(workflowName)}
-			<p>
+			<p class="workflow">
 				{workflowName}
-				{#if notEmptyString(runNumber)}<a
+				{#if notEmptyString(runNumber)}(<a
 						href={runIdHref}
 						target="_blank"
 						rel="noopener noreferrer"
 						aria-label={$i18n.automation.view_workflow}>#{runNumber}</a
-					>{/if}
+					>){/if}
 			</p>
 		{/if}
 
 		{#if notEmptyString(actor)}
-			<p>
+			<p class="event">
 				{#if eventName === 'workflow_dispatch'}
 					{@render workflowDispatch({ actor })}
 				{:else if eventName === 'pull_request'}
@@ -76,7 +85,16 @@
 {/if}
 
 <style lang="scss">
-	p {
-		margin: 0;
+	.workflow {
+		margin: 0 0 var(--padding-0_25x);
+
+		a {
+			text-decoration: none;
+		}
+	}
+
+	.event {
+		font-size: var(--font-size-small);
+		color: var(--value-color);
 	}
 </style>

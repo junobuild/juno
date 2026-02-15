@@ -1120,6 +1120,7 @@
 		"no_workflow_info": "No workflow information available",
 		"view_workflow": "View workflow run on GitHub",
 		"view_commit": "View commit on GitHub",
-		"view_branch": "View branch run on GitHub"
+		"view_branch": "View branch run on GitHub",
+		"view_contributor": "View contributor on GitHub"
 	}
 }

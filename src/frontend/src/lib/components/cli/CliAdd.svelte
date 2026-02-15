@@ -3,7 +3,7 @@
 	import type { Principal } from '@icp-sdk/core/principal';
 	import { fade } from 'svelte/transition';
 	import type { MissionControlDid } from '$declarations';
-	import SegmentsTable from '$lib/components/segments/SegmentsTable.svelte';
+	import SegmentsTable from '$lib/components/modules/segments/SegmentsTable.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import Warning from '$lib/components/ui/Warning.svelte';
 	import { REVOKED_CONTROLLERS } from '$lib/constants/app.constants';

@@ -1,13 +1,13 @@
 <script lang="ts">
 	import { setContext } from 'svelte';
 	import { writable } from 'svelte/store';
-	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
-	import SatelliteGuard from '$lib/components/guards/SatelliteGuard.svelte';
-	import Loaders from '$lib/components/loaders/Loaders.svelte';
+	import Loaders from '$lib/components/app/loaders/Loaders.svelte';
+	import IdentityGuard from '$lib/components/auth/guards/IdentityGuard.svelte';
+	import Warnings from '$lib/components/modules/warning/Warnings.svelte';
 	import SatelliteOverview from '$lib/components/satellites/SatelliteOverview.svelte';
+	import SatelliteGuard from '$lib/components/satellites/guards/SatelliteGuard.svelte';
 	import SatelliteSettings from '$lib/components/satellites/setup/SatelliteSettings.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
-	import Warnings from '$lib/components/warning/Warnings.svelte';
 	import {
 		type Tab,
 		TABS_CONTEXT_KEY,

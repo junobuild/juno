@@ -2,9 +2,9 @@
 	import { Principal } from '@icp-sdk/core/principal';
 	import type { Snippet } from 'svelte';
 	import { fade } from 'svelte/transition';
-	import ProgressTopUp from '$lib/components/canister/ProgressTopUp.svelte';
-	import CanisterTopUpForm from '$lib/components/canister/top-up/CanisterTopUpForm.svelte';
-	import CanisterTopUpReview from '$lib/components/canister/top-up/CanisterTopUpReview.svelte';
+	import ProgressTopUp from '$lib/components/modules/canister/ProgressTopUp.svelte';
+	import CanisterTopUpForm from '$lib/components/modules/canister/top-up/CanisterTopUpForm.svelte';
+	import CanisterTopUpReview from '$lib/components/modules/canister/top-up/CanisterTopUpReview.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import { CYCLES } from '$lib/constants/token.constants';
 	import { authIdentity } from '$lib/derived/auth.derived';

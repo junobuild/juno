@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { fade } from 'svelte/transition';
-	import OutOfSyncForm from '$lib/components/out-of-sync/OutOfSyncForm.svelte';
-	import ProgressOutOfSync from '$lib/components/out-of-sync/ProgressOutOfSync.svelte';
+	import OutOfSyncForm from '$lib/components/modules/out-of-sync/OutOfSyncForm.svelte';
+	import ProgressOutOfSync from '$lib/components/modules/out-of-sync/ProgressOutOfSync.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import { authIdentity } from '$lib/derived/auth.derived';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';

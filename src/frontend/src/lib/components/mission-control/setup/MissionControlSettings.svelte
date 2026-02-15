@@ -1,7 +1,7 @@
 <script lang="ts">
-	import CanisterSettings from '$lib/components/canister/settings/CanisterSettings.svelte';
 	import MissionControlAccessKeys from '$lib/components/mission-control/setup/MissionControlAccessKeys.svelte';
-	import Snapshots from '$lib/components/snapshot/Snapshots.svelte';
+	import CanisterSettings from '$lib/components/modules/canister/settings/CanisterSettings.svelte';
+	import Snapshots from '$lib/components/modules/snapshot/Snapshots.svelte';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { MissionControlId } from '$lib/types/mission-control';
 

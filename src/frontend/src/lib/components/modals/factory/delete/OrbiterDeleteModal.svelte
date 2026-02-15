@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
-	import FactoryDeleteWizard from '$lib/components/factory/delete/FactoryDeleteWizard.svelte';
+	import FactoryDeleteWizard from '$lib/components/modules/factory/delete/FactoryDeleteWizard.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import { orbiter } from '$lib/derived/orbiter.derived';
 	import type { JunoModalDeleteSegmentDetail, JunoModalDetail } from '$lib/types/modal';

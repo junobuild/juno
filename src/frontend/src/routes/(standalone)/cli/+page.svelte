@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { nonNullish, notEmptyString } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
+	import SignInActions from '$lib/components/auth/sign-in/SignInActions.svelte';
 	import CliAdd from '$lib/components/cli/CliAdd.svelte';
-	import MissionControlLoadingGuard from '$lib/components/guards/MissionControlLoadingGuard.svelte';
-	import MetadataLoader from '$lib/components/loaders/MetadataLoader.svelte';
-	import SignInActions from '$lib/components/sign-in/SignInActions.svelte';
+	import MissionControlLoadingGuard from '$lib/components/mission-control/guards/MissionControlLoadingGuard.svelte';
+	import MetadataLoader from '$lib/components/modules/loaders/MetadataLoader.svelte';
 	import ContainerCentered from '$lib/components/ui/ContainerCentered.svelte';
 	import Message from '$lib/components/ui/Message.svelte';
 	import { authSignedIn } from '$lib/derived/auth.derived';

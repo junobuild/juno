@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
 	import type { PrincipalText } from '@dfinity/zod-schemas';
-	import FactoryAdvancedOptions from '$lib/components/factory/create/FactoryAdvancedOptions.svelte';
-	import FactoryCredits from '$lib/components/factory/create/FactoryCredits.svelte';
-	import FactoryProgressCreate from '$lib/components/factory/create/FactoryProgressCreate.svelte';
+	import FactoryAdvancedOptions from '$lib/components/modules/factory/create/FactoryAdvancedOptions.svelte';
+	import FactoryCredits from '$lib/components/modules/factory/create/FactoryCredits.svelte';
+	import FactoryProgressCreate from '$lib/components/modules/factory/create/FactoryProgressCreate.svelte';
 	import Confetti from '$lib/components/ui/Confetti.svelte';
 	import { authSignedOut, authIdentity } from '$lib/derived/auth.derived';
 	import type { SelectedWallet } from '$lib/schemas/wallet.schema';

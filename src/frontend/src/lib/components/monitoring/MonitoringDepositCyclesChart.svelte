@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { addDays, eachDayOfInterval, format } from 'date-fns';
 	import { fade } from 'svelte/transition';
-	import TimeOfDayPlot from '$lib/components/charts/TimeOfDayPlot.svelte';
+	import TimeOfDayPlot from '$lib/components/modules/charts/TimeOfDayPlot.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { CanisterMonitoringCharts } from '$lib/types/canister';

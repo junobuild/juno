@@ -4,11 +4,11 @@
 	import type { Snippet } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import type { MissionControlDid } from '$declarations';
-	import Canister from '$lib/components/canister/Canister.svelte';
-	import CanisterMonitoringData from '$lib/components/canister/monitoring/CanisterMonitoringData.svelte';
-	import Chart from '$lib/components/charts/Chart.svelte';
 	import IconClockUpdate from '$lib/components/icons/IconClockUpdate.svelte';
 	import IconRefresh from '$lib/components/icons/IconRefresh.svelte';
+	import Canister from '$lib/components/modules/canister/Canister.svelte';
+	import CanisterMonitoringData from '$lib/components/modules/canister/monitoring/CanisterMonitoringData.svelte';
+	import Chart from '$lib/components/modules/charts/Chart.svelte';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type {
 		CanisterData,

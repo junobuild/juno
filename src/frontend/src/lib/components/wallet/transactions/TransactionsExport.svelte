@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Confirmation from '$lib/components/core/Confirmation.svelte';
+	import Confirmation from '$lib/components/app/core/Confirmation.svelte';
 	import type { SelectedToken, SelectedWallet } from '$lib/schemas/wallet.schema';
 	import { exportTransactions as exportTransactionsServices } from '$lib/services/wallet/wallet.transactions.services';
 	import { busy } from '$lib/stores/app/busy.store';

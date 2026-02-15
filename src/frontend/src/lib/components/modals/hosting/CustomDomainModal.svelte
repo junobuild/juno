@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { fromNullishNullable, isEmptyString, isNullish } from '@dfinity/utils';
 	import { onMount } from 'svelte';
-	import ProgressHosting from '$lib/components/canister/ProgressHosting.svelte';
-	import AddCustomDomainDns from '$lib/components/hosting/AddCustomDomainDns.svelte';
-	import AddCustomDomainForm from '$lib/components/hosting/AddCustomDomainForm.svelte';
 	import IconVerified from '$lib/components/icons/IconVerified.svelte';
+	import ProgressHosting from '$lib/components/modules/canister/ProgressHosting.svelte';
+	import AddCustomDomainDns from '$lib/components/satellites/hosting/AddCustomDomainDns.svelte';
+	import AddCustomDomainForm from '$lib/components/satellites/hosting/AddCustomDomainForm.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import { authIdentity } from '$lib/derived/auth.derived';
 	import { configHosting } from '$lib/services/satellite/hosting/hosting.services';

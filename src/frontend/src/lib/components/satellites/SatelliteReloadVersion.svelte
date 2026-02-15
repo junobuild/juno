@@ -1,5 +1,5 @@
 <script lang="ts">
-	import SegmentReload from '$lib/components/segments/SegmentReload.svelte';
+	import SegmentReload from '$lib/components/modules/segments/SegmentReload.svelte';
 	import { reloadSatelliteVersion } from '$lib/services/version/version.satellite.services';
 	import type { Satellite } from '$lib/types/satellite';
 

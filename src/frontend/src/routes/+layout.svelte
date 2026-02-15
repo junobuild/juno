@@ -2,11 +2,11 @@
 	import { debounce } from '@dfinity/utils';
 	import type { Snippet } from 'svelte';
 	import { onNavigate } from '$app/navigation';
-	import Overlays from '$lib/components/core/Overlays.svelte';
-	import AuthBroadcastGuard from '$lib/components/guards/AuthBroadcastGuard.svelte';
-	import AppLoader from '$lib/components/loaders/AppLoader.svelte';
-	import AuthLoader from '$lib/components/loaders/AuthLoader.svelte';
-	import AuthWorkerLoader from '$lib/components/loaders/AuthWorkerLoader.svelte';
+	import Overlays from '$lib/components/app/core/Overlays.svelte';
+	import AppLoader from '$lib/components/app/loaders/AppLoader.svelte';
+	import AuthBroadcastGuard from '$lib/components/auth/guards/AuthBroadcastGuard.svelte';
+	import AuthLoader from '$lib/components/auth/loaders/AuthLoader.svelte';
+	import AuthWorkerLoader from '$lib/components/auth/loaders/AuthWorkerLoader.svelte';
 	import { layoutNavigationTitle } from '$lib/derived/app/layout-navigation.derived';
 	import { authStore, type AuthStoreData } from '$lib/stores/auth.store';
 	import '$lib/styles/global.scss';

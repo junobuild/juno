@@ -2,9 +2,9 @@
 	import { nonNullish } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
 	import type { SatelliteDid } from '$declarations';
-	import AutomationCreateActions from '$lib/components/automation/create/AutomationCreateActions.svelte';
-	import AutomationCreateConnectForm from '$lib/components/automation/create/AutomationCreateConnectForm.svelte';
-	import AutomationCreateConnectReview from '$lib/components/automation/create/AutomationCreateConnectReview.svelte';
+	import AutomationCreateActions from '$lib/components/satellites/automation/create/AutomationCreateActions.svelte';
+	import AutomationCreateConnectForm from '$lib/components/satellites/automation/create/AutomationCreateConnectForm.svelte';
+	import AutomationCreateConnectReview from '$lib/components/satellites/automation/create/AutomationCreateConnectReview.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import { authIdentity } from '$lib/derived/auth.derived';

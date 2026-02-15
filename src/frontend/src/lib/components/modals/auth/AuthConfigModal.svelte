@@ -2,9 +2,9 @@
 	import { nonNullish } from '@dfinity/utils';
 	import type { PrincipalText } from '@dfinity/zod-schemas';
 	import type { Principal } from '@icp-sdk/core/principal';
-	import AuthConfigFormCore from '$lib/components/auth/AuthConfigFormCore.svelte';
-	import AuthConfigFormGoogle from '$lib/components/auth/AuthConfigFormGoogle.svelte';
-	import AuthConfigFormII from '$lib/components/auth/AuthConfigFormII.svelte';
+	import AuthConfigFormCore from '$lib/components/satellites/auth/AuthConfigFormCore.svelte';
+	import AuthConfigFormGoogle from '$lib/components/satellites/auth/AuthConfigFormGoogle.svelte';
+	import AuthConfigFormII from '$lib/components/satellites/auth/AuthConfigFormII.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import { authIdentity } from '$lib/derived/auth.derived';

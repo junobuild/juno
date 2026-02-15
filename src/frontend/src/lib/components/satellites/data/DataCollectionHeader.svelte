@@ -1,0 +1,45 @@
+<script lang="ts">
+	import { nonNullish } from '@dfinity/utils';
+	import { getContext, type Snippet } from 'svelte';
+	import DataActions from '$lib/components/satellites/data/DataActions.svelte';
+	import DataOrder from '$lib/components/satellites/data/DataOrder.svelte';
+	import ListParamsFilter from '$lib/components/satellites/list/ListParamsFilter.svelte';
+	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
+
+	interface Props {
+		children: Snippet;
+		actions?: Snippet;
+	}
+
+	let { children, actions }: Props = $props();
+
+	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
+
+	let collectionSelected = $derived(nonNullish($store.rule));
+</script>
+
+<div class="actions">
+	<span>{@render children()}</span>
+
+	{#if collectionSelected}
+		<div>
+			<ListParamsFilter />
+			<DataOrder />
+			<DataActions>
+				{@render actions?.()}
+			</DataActions>
+		</div>
+	{/if}
+</div>
+
+<style lang="scss">
+	.actions {
+		display: flex;
+		justify-content: space-between;
+	}
+
+	div {
+		display: flex;
+		gap: var(--padding-1_5x);
+	}
+</style>

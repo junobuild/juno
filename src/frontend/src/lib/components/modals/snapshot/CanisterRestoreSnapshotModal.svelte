@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { encodeSnapshotId } from '@icp-sdk/canisters/ic-management';
 	import { Principal } from '@icp-sdk/core/principal';
-	import ProgressSnapshot from '$lib/components/canister/ProgressSnapshot.svelte';
+	import ProgressSnapshot from '$lib/components/modules/canister/ProgressSnapshot.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import Warning from '$lib/components/ui/Warning.svelte';

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Principal } from '@icp-sdk/core/principal';
 	import { fade } from 'svelte/transition';
-	import ProgressSnapshot from '$lib/components/canister/ProgressSnapshot.svelte';
+	import ProgressSnapshot from '$lib/components/modules/canister/ProgressSnapshot.svelte';
 	import Confetti from '$lib/components/ui/Confetti.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';

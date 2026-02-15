@@ -13,5 +13,5 @@ export const toKeyUser = async ([key, { data: dataArray, ...rest }]: [
 	}
 ];
 
-export const isGoogleUser = (user: User): user is User<'google'> =>
-	user?.data?.provider === 'google';
+export const isOpenIdUser = (user: User): user is User<'google'> | User<'github'> =>
+	user?.data?.provider === 'google' || user?.data?.provider === 'github';

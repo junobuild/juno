@@ -1,8 +1,8 @@
 <script lang="ts">
 	import type { Principal } from '@icp-sdk/core/principal';
-	import CanisterSettings from '$lib/components/canister/settings/CanisterSettings.svelte';
+	import CanisterSettings from '$lib/components/modules/canister/settings/CanisterSettings.svelte';
+	import Snapshots from '$lib/components/modules/snapshot/Snapshots.svelte';
 	import OrbiterAccessKeys from '$lib/components/orbiter/setup/OrbiterAccessKeys.svelte';
-	import Snapshots from '$lib/components/snapshot/Snapshots.svelte';
 	import { i18n } from '$lib/stores/app/i18n.store';
 
 	interface Props {

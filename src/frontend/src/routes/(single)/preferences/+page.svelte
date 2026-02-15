@@ -2,8 +2,8 @@
 	import { nonNullish } from '@dfinity/utils';
 	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
-	import AppLangSelect from '$lib/components/core/AppLangSelect.svelte';
-	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
+	import AppLangSelect from '$lib/components/app/core/AppLangSelect.svelte';
+	import IdentityGuard from '$lib/components/auth/guards/IdentityGuard.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Theme from '$lib/components/ui/Theme.svelte';
 	import Value from '$lib/components/ui/Value.svelte';

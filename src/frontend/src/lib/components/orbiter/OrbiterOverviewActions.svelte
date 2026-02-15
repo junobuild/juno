@@ -1,8 +1,8 @@
 <script lang="ts">
 	import type { MissionControlDid } from '$declarations';
-	import DetachSegment from '$lib/components/attach-detach/DetachSegment.svelte';
+	import DetachSegment from '$lib/components/modules/attach-detach/DetachSegment.svelte';
+	import SegmentActions from '$lib/components/modules/segments/SegmentActions.svelte';
 	import OrbiterReloadVersion from '$lib/components/orbiter/OrbiterReloadVersion.svelte';
-	import SegmentActions from '$lib/components/segments/SegmentActions.svelte';
 
 	interface Props {
 		orbiter: MissionControlDid.Orbiter;

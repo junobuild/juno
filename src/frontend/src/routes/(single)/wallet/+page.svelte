@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { setContext } from 'svelte';
 	import { writable } from 'svelte/store';
-	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
-	import Loaders from '$lib/components/loaders/Loaders.svelte';
+	import Loaders from '$lib/components/app/loaders/Loaders.svelte';
+	import IdentityGuard from '$lib/components/auth/guards/IdentityGuard.svelte';
+	import Warnings from '$lib/components/modules/warning/Warnings.svelte';
 	import NoTabs from '$lib/components/ui/NoTabs.svelte';
 	import Wallet from '$lib/components/wallet/Wallet.svelte';
-	import Warnings from '$lib/components/warning/Warnings.svelte';
 	import { authSignedIn } from '$lib/derived/auth.derived';
 	import {
 		type Tab,

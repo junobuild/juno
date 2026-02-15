@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { isEmptyString } from '@dfinity/utils';
-	import CanisterTopUpFormIcp from '$lib/components/canister/top-up/CanisterTopUpFormIcp.svelte';
+	import CanisterTopUpFormIcp from '$lib/components/modules/canister/top-up/CanisterTopUpFormIcp.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import { ICP } from '$lib/constants/token.constants';
 	import {

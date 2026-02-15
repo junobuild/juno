@@ -3,7 +3,7 @@
 	import type { Principal } from '@icp-sdk/core/principal';
 	import type { MissionControlDid } from '$declarations';
 	import { listMissionControlControllers } from '$lib/api/mission-control.api';
-	import AccessKeys from '$lib/components/access-keys/AccessKeys.svelte';
+	import AccessKeys from '$lib/components/modules/access-keys/AccessKeys.svelte';
 	import { authIdentity } from '$lib/derived/auth.derived';
 	import {
 		addMissionControlAccessKey,

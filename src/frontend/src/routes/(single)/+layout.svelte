@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import Navbar from '$lib/components/core/Navbar.svelte';
+	import Navbar from '$lib/components/app/core/Navbar.svelte';
 	import Layout from '$lib/components/ui/Layout.svelte';
 
 	interface Props {

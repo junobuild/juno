@@ -4,8 +4,8 @@
 	import { type UpgradeCodeParams, upgradeOrbiter } from '@junobuild/admin';
 	import { compare } from 'semver';
 	import CanisterUpgradeModal from '$lib/components/modals/upgrade/CanisterUpgradeModal.svelte';
+	import type { IgnoreCanUpgradeErrorFn } from '$lib/components/modules/upgrade/wizard/SelectUpgradeVersion.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
-	import type { IgnoreCanUpgradeErrorFn } from '$lib/components/upgrade/wizard/SelectUpgradeVersion.svelte';
 	import { ORBITER_v0_0_8, ORBITER_v0_2_0 } from '$lib/constants/version.constants';
 	import { authIdentity } from '$lib/derived/auth.derived';
 	import { orbiter } from '$lib/derived/orbiter.derived';

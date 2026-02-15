@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { fade, blur } from 'svelte/transition';
-	import SegmentVersion from '$lib/components/segments/SegmentVersion.svelte';
+	import SegmentVersion from '$lib/components/modules/segments/SegmentVersion.svelte';
 	import Badge from '$lib/components/ui/Badge.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/app/i18n.store';

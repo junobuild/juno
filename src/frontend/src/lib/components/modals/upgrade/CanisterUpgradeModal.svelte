@@ -4,11 +4,11 @@
 	import CanisterUpgradeWizard, {
 		type CanisterUpgradeWizardProps,
 		type CanisterUpgradeWizardStep
-	} from '$lib/components/canister/upgrade/CanisterUpgradeWizard.svelte';
-	import Modal from '$lib/components/ui/Modal.svelte';
+	} from '$lib/components/modules/canister/upgrade/CanisterUpgradeWizard.svelte';
 	import SelectUpgradeVersion, {
 		type IgnoreCanUpgradeErrorFn
-	} from '$lib/components/upgrade/wizard/SelectUpgradeVersion.svelte';
+	} from '$lib/components/modules/upgrade/wizard/SelectUpgradeVersion.svelte';
+	import Modal from '$lib/components/ui/Modal.svelte';
 	import type { Wasm } from '$lib/types/upgrade';
 
 	interface Props {

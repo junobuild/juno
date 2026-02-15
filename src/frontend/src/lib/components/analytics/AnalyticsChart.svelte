@@ -2,7 +2,7 @@
 	import { isNullish } from '@dfinity/utils';
 	import { eachDayOfInterval, startOfDay } from 'date-fns';
 	import { fade } from 'svelte/transition';
-	import Chart from '$lib/components/charts/Chart.svelte';
+	import Chart from '$lib/components/modules/charts/Chart.svelte';
 	import type { ChartsData } from '$lib/types/chart';
 	import type { AnalyticsPageViews } from '$lib/types/orbiter';
 	import { last } from '$lib/utils/utils';

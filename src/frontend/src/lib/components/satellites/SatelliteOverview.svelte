@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { fromNullishNullable } from '@dfinity/utils';
 	import { onMount } from 'svelte';
-	import CanisterSyncData from '$lib/components/canister/CanisterSyncData.svelte';
-	import CanisterOverview from '$lib/components/canister/display/CanisterOverview.svelte';
-	import CanisterSubnet from '$lib/components/canister/display/CanisterSubnet.svelte';
+	import CanisterSyncData from '$lib/components/modules/canister/CanisterSyncData.svelte';
+	import CanisterOverview from '$lib/components/modules/canister/display/CanisterOverview.svelte';
+	import CanisterSubnet from '$lib/components/modules/canister/display/CanisterSubnet.svelte';
 	import SatelliteEnvText from '$lib/components/satellites/SatelliteEnvironmentText.svelte';
 	import SatelliteName from '$lib/components/satellites/SatelliteName.svelte';
 	import SatelliteOverviewActions from '$lib/components/satellites/SatelliteOverviewActions.svelte';

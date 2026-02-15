@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { MissionControlDid } from '$declarations';
-	import SegmentReload from '$lib/components/segments/SegmentReload.svelte';
+	import SegmentReload from '$lib/components/modules/segments/SegmentReload.svelte';
 	import { reloadOrbiterVersion } from '$lib/services/version/version.orbiter.services';
 
 	interface Props {

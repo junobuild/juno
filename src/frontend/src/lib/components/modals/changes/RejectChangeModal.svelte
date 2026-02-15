@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { fromNullable, nonNullish, uint8ArrayToHexString } from '@dfinity/utils';
 	import type { RejectProposalProgress } from '@junobuild/cdn';
-	import ConfirmRejectChange from '$lib/components/changes/wizard/ConfirmRejectChange.svelte';
-	import ProgressRejectChange from '$lib/components/changes/wizard/ProgressRejectChange.svelte';
+	import ConfirmRejectChange from '$lib/components/satellites/changes/wizard/ConfirmRejectChange.svelte';
+	import ProgressRejectChange from '$lib/components/satellites/changes/wizard/ProgressRejectChange.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import { authIdentity } from '$lib/derived/auth.derived';
 	import { rejectProposal } from '$lib/services/satellite/proposals/proposals.services';

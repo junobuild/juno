@@ -1,5 +1,5 @@
 <script lang="ts">
-	import UpgradeCdnWizard from '$lib/components/cdn/wizard/UpgradeCdnWizard.svelte';
+	import UpgradeCdnWizard from '$lib/components/satellites/cdn/wizard/UpgradeCdnWizard.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import type { JunoModalCdnUpgradeDetail, JunoModalDetail } from '$lib/types/modal';
 

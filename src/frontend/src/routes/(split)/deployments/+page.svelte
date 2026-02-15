@@ -13,6 +13,9 @@
 		TABS_CONTEXT_KEY
 	} from '$lib/types/tabs.context';
 	import { initTabId } from '$lib/utils/tabs.utils';
+	import { nonNullish } from '@dfinity/utils';
+	import NoTabs from '$lib/components/ui/NoTabs.svelte';
+	import { satelliteAutomationConfig } from '$lib/derived/satellite/satellite-configs.derived';
 
 	const tabs: Tab[] = [
 		{
@@ -29,17 +32,19 @@
 	setContext<TabsContext>(TABS_CONTEXT_KEY, {
 		store
 	});
+
+	let TabsCmp = $derived(nonNullish($satelliteAutomationConfig) ? Tabs : NoTabs);
 </script>
 
 <IdentityGuard>
 	<Loaders satelliteConfig>
 		<SatelliteGuard>
 			{#snippet content(satellite)}
-				<Tabs>
+				<TabsCmp>
 					{#if $store.tabId === $store.tabs[0].id}
 						<Automation {satellite} />
 					{/if}
-				</Tabs>
+				</TabsCmp>
 			{/snippet}
 		</SatelliteGuard>
 	</Loaders>

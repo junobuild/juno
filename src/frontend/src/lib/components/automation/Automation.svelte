@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { fade } from 'svelte/transition';
 	import { isNullish } from '@dfinity/utils';
 	import { setContext } from 'svelte';
 	import AutomationConfigLoader from '$lib/components/automation/AutomationConfigLoader.svelte';
@@ -10,6 +11,7 @@
 		type AutomationConfigContext
 	} from '$lib/types/automation.context';
 	import type { Satellite } from '$lib/types/satellite';
+	import WorkflowsContext from '$lib/components/automation/workflows/WorkflowsContext.svelte';
 
 	interface Props {
 		satellite: Satellite;
@@ -27,5 +29,9 @@
 		<NoAutomation />
 
 		<AutomationNew {satellite} />
+	{:else}
+		<div in:fade>
+			<WorkflowsContext {satellite} />
+		</div>
 	{/if}
 </AutomationConfigLoader>

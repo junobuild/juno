@@ -7,12 +7,15 @@
 	import type { Workflow } from '$lib/types/workflow';
 	import { listWorkflows } from '$lib/services/satellite/automation/workflows.services';
 	import Workflows from '$lib/components/automation/workflows/Workflows.svelte';
+	import type { Satellite } from '$lib/types/satellite';
 
 	interface Props {
-		satelliteId: Principal;
+		satellite: Satellite;
 	}
 
-	let { satelliteId }: Props = $props();
+	let { satellite }: Props = $props();
+
+	let satelliteId = $derived(satellite.satellite_id);
 
 	const listFn: ListDocsFn<Workflow> = listWorkflows;
 

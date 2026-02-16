@@ -23,7 +23,7 @@
 		type?: 'default' | 'custom';
 		customDomain?: CustomDomain | undefined;
 		satellite?: Satellite | undefined;
-		config?: SatelliteDid.AuthenticationConfig | undefined;
+		config?: Option<SatelliteDid.AuthenticationConfig>;
 	}
 
 	let {

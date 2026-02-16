@@ -1,20 +1,18 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
 	import { onMount } from 'svelte';
-	import type { SatelliteDid } from '$declarations';
 	import AddCustomDomain from '$lib/components/satellites/hosting/AddCustomDomain.svelte';
 	import CustomDomain from '$lib/components/satellites/hosting/CustomDomain.svelte';
 	import CustomDomainInfo, {
 		type SelectedCustomDomain
 	} from '$lib/components/satellites/hosting/CustomDomainInfo.svelte';
 	import HostingCount from '$lib/components/satellites/hosting/HostingCount.svelte';
-	import { authIdentity } from '$lib/derived/auth.derived';
 	import { sortedSatelliteCustomDomains } from '$lib/derived/satellite/satellite-custom-domains.derived';
-	import { getAuthConfig } from '$lib/services/satellite/authentication/auth.config.services';
 	import { listCustomDomains } from '$lib/services/satellite/hosting/custom-domain.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { Satellite } from '$lib/types/satellite';
 	import { satelliteUrl } from '$lib/utils/satellite.utils';
+	import { satelliteAuthConfig } from '$lib/derived/satellite/satellite-configs.derived';
 
 	interface Props {
 		satellite: Satellite;
@@ -24,21 +22,11 @@
 
 	let satelliteId = $derived(satellite.satellite_id.toText());
 
-	let config = $state<SatelliteDid.AuthenticationConfig | undefined>();
-
 	const list = async () => {
-		const [_, { config: c }] = await Promise.all([
-			listCustomDomains({
-				satelliteId: satellite.satellite_id,
-				reload: true
-			}),
-			getAuthConfig({
-				satelliteId: satellite.satellite_id,
-				identity: $authIdentity
-			})
-		]);
-
-		config = c;
+		await listCustomDomains({
+			satelliteId: satellite.satellite_id,
+			reload: true
+		});
 	};
 
 	onMount(list);
@@ -69,7 +57,7 @@
 				<tr>
 					<CustomDomain
 						ariaLabel={$i18n.hosting.custom_domain}
-						{config}
+						config={$satelliteAuthConfig}
 						customDomain={[customDomainUrl, customDomain]}
 						{satellite}
 						type="custom"
@@ -83,7 +71,7 @@
 </div>
 
 <div class="footer">
-	<AddCustomDomain {config} {satellite} />
+	<AddCustomDomain config={$satelliteAuthConfig} {satellite} />
 
 	<HostingCount {satellite} />
 </div>

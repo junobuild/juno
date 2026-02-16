@@ -1,4 +1,5 @@
 import type { SatelliteDid } from '$declarations';
+import type { Option } from '$lib/types/utils';
 import { fromNullable, isNullish, nonNullish, toNullable } from '@dfinity/utils';
 
 export const buildSetAuthenticationConfig = ({
@@ -6,7 +7,7 @@ export const buildSetAuthenticationConfig = ({
 	domainName,
 	externalOrigins
 }: {
-	config: SatelliteDid.AuthenticationConfig | undefined;
+	config: Option<SatelliteDid.AuthenticationConfig>;
 	domainName: string;
 	externalOrigins?: string[];
 }): Omit<SatelliteDid.SetAuthenticationConfig, 'version'> => {

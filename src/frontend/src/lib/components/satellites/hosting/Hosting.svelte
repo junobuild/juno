@@ -7,14 +7,14 @@
 		type SelectedCustomDomain
 	} from '$lib/components/satellites/hosting/CustomDomainInfo.svelte';
 	import HostingCount from '$lib/components/satellites/hosting/HostingCount.svelte';
+	import { authIdentity } from '$lib/derived/auth.derived';
 	import { satelliteAuthConfig } from '$lib/derived/satellite/satellite-configs.derived';
 	import { sortedSatelliteCustomDomains } from '$lib/derived/satellite/satellite-custom-domains.derived';
 	import { listCustomDomains } from '$lib/services/satellite/hosting/custom-domain.services';
+	import { loadSatelliteConfig } from '$lib/services/satellite/satellite-config.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { Satellite } from '$lib/types/satellite';
 	import { satelliteUrl } from '$lib/utils/satellite.utils';
-	import { loadSatelliteConfig } from '$lib/services/satellite/satellite-config.services';
-	import { authIdentity } from '$lib/derived/auth.derived';
 
 	interface Props {
 		satellite: Satellite;

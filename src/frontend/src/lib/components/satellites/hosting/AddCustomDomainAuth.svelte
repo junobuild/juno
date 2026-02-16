@@ -1,8 +1,9 @@
 <script lang="ts" module>
 	import type { SatelliteDid } from '$declarations';
+	import type { Option } from '$lib/types/utils';
 
 	export interface AddCustomDomainAuthProps {
-		config: SatelliteDid.AuthenticationConfig | undefined;
+		config: Option<SatelliteDid.AuthenticationConfig>;
 		useDomainForDerivationOrigin: boolean;
 	}
 </script>

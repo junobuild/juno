@@ -26,7 +26,7 @@
 		satellite: Satellite;
 		customDomain: CustomDomain | undefined;
 		displayState: Option<string>;
-		config: SatelliteDid.AuthenticationConfig | undefined;
+		config: Option<SatelliteDid.AuthenticationConfig>;
 	}
 
 	let { satellite, customDomain, displayState, config }: Props = $props();

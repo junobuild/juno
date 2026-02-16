@@ -39,7 +39,7 @@ export interface JunoModalCreateSegmentDetail {
 export interface JunoModalCustomDomainDetail {
 	editDomainName?: string;
 	satellite: Satellite;
-	config: SatelliteDid.AuthenticationConfig | undefined;
+	config: SatelliteDid.AuthenticationConfig | null | undefined;
 }
 
 export interface JunoModalCycles {

@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
 	import { onMount } from 'svelte';
-	import type { SatelliteDid } from '$declarations';
 	import AddCustomDomain from '$lib/components/satellites/hosting/AddCustomDomain.svelte';
 	import CustomDomain from '$lib/components/satellites/hosting/CustomDomain.svelte';
 	import CustomDomainInfo, {
@@ -9,9 +8,10 @@
 	} from '$lib/components/satellites/hosting/CustomDomainInfo.svelte';
 	import HostingCount from '$lib/components/satellites/hosting/HostingCount.svelte';
 	import { authIdentity } from '$lib/derived/auth.derived';
+	import { satelliteAuthConfig } from '$lib/derived/satellite/satellite-configs.derived';
 	import { sortedSatelliteCustomDomains } from '$lib/derived/satellite/satellite-custom-domains.derived';
-	import { getAuthConfig } from '$lib/services/satellite/authentication/auth.config.services';
 	import { listCustomDomains } from '$lib/services/satellite/hosting/custom-domain.services';
+	import { loadSatelliteConfig } from '$lib/services/satellite/satellite-config.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { Satellite } from '$lib/types/satellite';
 	import { satelliteUrl } from '$lib/utils/satellite.utils';
@@ -24,21 +24,22 @@
 
 	let satelliteId = $derived(satellite.satellite_id.toText());
 
-	let config = $state<SatelliteDid.AuthenticationConfig | undefined>();
-
-	const list = async () => {
-		const [_, { config: c }] = await Promise.all([
+	const list = async ({ reloadConfig }: { reloadConfig: boolean } = { reloadConfig: false }) => {
+		await Promise.all([
 			listCustomDomains({
 				satelliteId: satellite.satellite_id,
 				reload: true
 			}),
-			getAuthConfig({
+			loadSatelliteConfig({
 				satelliteId: satellite.satellite_id,
-				identity: $authIdentity
+				identity: $authIdentity,
+				reload: reloadConfig
 			})
 		]);
+	};
 
-		config = c;
+	const reload = async () => {
+		await list({ reloadConfig: true });
 	};
 
 	onMount(list);
@@ -48,7 +49,7 @@
 	const onDisplayInfo = ({ detail }: CustomEvent<SelectedCustomDomain>) => (selectedInfo = detail);
 </script>
 
-<svelte:window onjunoSyncCustomDomains={list} />
+<svelte:window onjunoSyncCustomDomains={reload} />
 
 <div class="table-container">
 	<table>
@@ -69,7 +70,7 @@
 				<tr>
 					<CustomDomain
 						ariaLabel={$i18n.hosting.custom_domain}
-						{config}
+						config={$satelliteAuthConfig}
 						customDomain={[customDomainUrl, customDomain]}
 						{satellite}
 						type="custom"
@@ -83,7 +84,7 @@
 </div>
 
 <div class="footer">
-	<AddCustomDomain {config} {satellite} />
+	<AddCustomDomain config={$satelliteAuthConfig} {satellite} />
 
 	<HostingCount {satellite} />
 </div>

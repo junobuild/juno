@@ -11,6 +11,16 @@ const satelliteConfig = derived(
 			: $uncertifiedSatellitesConfigsStore?.[$satellite.satellite_id.toText()]
 );
 
+export const satelliteAuthConfig = derived([satelliteConfig], ([$satelliteConfig]) => {
+	// Undefined not loaded or null as set as such
+	if (isNullish($satelliteConfig)) {
+		return $satelliteConfig;
+	}
+
+	const config = fromNullable($satelliteConfig.data.authentication);
+	return nonNullish(config) ? config : null;
+});
+
 export const satelliteAutomationConfig = derived([satelliteConfig], ([$satelliteConfig]) => {
 	// Undefined not loaded or null as set as such
 	if (isNullish($satelliteConfig)) {

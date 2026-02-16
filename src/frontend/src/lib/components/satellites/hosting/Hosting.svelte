@@ -7,12 +7,14 @@
 		type SelectedCustomDomain
 	} from '$lib/components/satellites/hosting/CustomDomainInfo.svelte';
 	import HostingCount from '$lib/components/satellites/hosting/HostingCount.svelte';
+	import { satelliteAuthConfig } from '$lib/derived/satellite/satellite-configs.derived';
 	import { sortedSatelliteCustomDomains } from '$lib/derived/satellite/satellite-custom-domains.derived';
 	import { listCustomDomains } from '$lib/services/satellite/hosting/custom-domain.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { Satellite } from '$lib/types/satellite';
 	import { satelliteUrl } from '$lib/utils/satellite.utils';
-	import { satelliteAuthConfig } from '$lib/derived/satellite/satellite-configs.derived';
+	import { loadSatelliteConfig } from '$lib/services/satellite/satellite-config.services';
+	import { authIdentity } from '$lib/derived/auth.derived';
 
 	interface Props {
 		satellite: Satellite;
@@ -22,11 +24,22 @@
 
 	let satelliteId = $derived(satellite.satellite_id.toText());
 
-	const list = async () => {
-		await listCustomDomains({
-			satelliteId: satellite.satellite_id,
-			reload: true
-		});
+	const list = async ({ reloadConfig }: { reloadConfig: boolean } = { reloadConfig: false }) => {
+		await Promise.all([
+			listCustomDomains({
+				satelliteId: satellite.satellite_id,
+				reload: true
+			}),
+			loadSatelliteConfig({
+				satelliteId: satellite.satellite_id,
+				identity: $authIdentity,
+				reload: reloadConfig
+			})
+		]);
+	};
+
+	const reload = async () => {
+		await list({ reloadConfig: true });
 	};
 
 	onMount(list);
@@ -36,7 +49,7 @@
 	const onDisplayInfo = ({ detail }: CustomEvent<SelectedCustomDomain>) => (selectedInfo = detail);
 </script>
 
-<svelte:window onjunoSyncCustomDomains={list} />
+<svelte:window onjunoSyncCustomDomains={reload} />
 
 <div class="table-container">
 	<table>

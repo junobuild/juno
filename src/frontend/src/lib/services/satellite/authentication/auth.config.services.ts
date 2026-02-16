@@ -1,14 +1,12 @@
 import type { SatelliteDid } from '$declarations';
 import type { OpenIdAuthProviderDelegationConfig } from '$declarations/satellite/satellite.did';
-import { getAuthConfig as getAuthConfigApi, setAuthConfig, setRule } from '$lib/api/satellites.api';
+import { setAuthConfig, setRule } from '$lib/api/satellites.api';
 import {
 	AUTH_DEFAULT_MAX_SESSION_TIME_TO_LIVE,
 	GOOGLE_CLIENT_ID_REGEX
 } from '$lib/constants/auth.constants';
 import { DEFAULT_RATE_CONFIG_TIME_PER_TOKEN_NS } from '$lib/constants/data.constants';
 import { DbCollectionType } from '$lib/constants/rules.constants';
-import { SATELLITE_v0_0_17 } from '$lib/constants/version.constants';
-import { isSatelliteFeatureSupported } from '$lib/services/_feature.services';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
@@ -441,42 +439,4 @@ const updateRule = async ({
 	}
 
 	return { result: 'success' };
-};
-
-export const getAuthConfig = async ({
-	satelliteId,
-	identity
-}: {
-	satelliteId: Principal;
-	identity: OptionIdentity;
-}): Promise<{
-	result: 'success' | 'error' | 'skip';
-	config?: SatelliteDid.AuthenticationConfig | undefined;
-}> => {
-	try {
-		const authConfigSupported = isSatelliteFeatureSupported({
-			satelliteId,
-			requiredMinVersion: SATELLITE_v0_0_17
-		});
-
-		if (!authConfigSupported) {
-			return { result: 'skip' };
-		}
-
-		const config = await getAuthConfigApi({
-			satelliteId,
-			identity
-		});
-
-		return { result: 'success', config: fromNullable(config) };
-	} catch (err: unknown) {
-		const labels = get(i18n);
-
-		toasts.error({
-			text: labels.errors.authentication_config_loading,
-			detail: err
-		});
-
-		return { result: 'error' };
-	}
 };

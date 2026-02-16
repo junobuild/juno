@@ -1,25 +1,18 @@
 import type { SatelliteDid } from '$declarations';
+import type { Option } from '$lib/types/utils';
 import type { Readable } from 'svelte/store';
 
 export interface AuthConfigData {
 	rule?: { result: 'success' | 'error' | 'skip'; rule?: SatelliteDid.Rule | undefined };
-	config?: {
-		result: 'success' | 'error' | 'skip';
-		config?: SatelliteDid.AuthenticationConfig | undefined;
-	};
 }
 
 export interface AuthConfigContext {
-	setConfig: (result: {
-		result: 'success' | 'error' | 'skip';
-		config?: SatelliteDid.AuthenticationConfig | undefined;
-	}) => void;
 	setRule: (result: {
 		result: 'success' | 'error' | 'skip';
 		rule?: SatelliteDid.Rule | undefined;
 	}) => void;
 
-	config: Readable<SatelliteDid.AuthenticationConfig | undefined>;
+	config: Readable<Option<SatelliteDid.AuthenticationConfig>>;
 	rule: Readable<SatelliteDid.Rule | undefined>;
 	supportSettings: Readable<boolean>;
 	supportConfig: Readable<boolean>;

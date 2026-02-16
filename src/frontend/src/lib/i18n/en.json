@@ -678,8 +678,6 @@
 		"invalid_amount_to_convert_icp_to_cycles": "Invalid amount to convert ICP to Cycles.",
 		"transfer_cycles": "Unexpected error(s) while transferring the cycles.",
 		"cannot_fetch_logs": "Unexpected error(s) while fetching the logs.",
-		"authentication_config_loading": "Unexpected error(s) while loading the configuration of the authentication.",
-		"automation_config_loading": "Unexpected error(s) while loading the configuration of the automation.",
 		"satellite_config_loading": "Unexpected error(s) while loading the configuration of the Satellite.",
 		"no_file_selected_for_upload": "No file was selected for the upload.",
 		"upload_error": "Unexpected error(s) while uploading the file.",

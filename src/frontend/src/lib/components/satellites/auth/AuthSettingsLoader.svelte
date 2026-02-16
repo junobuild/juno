@@ -4,8 +4,9 @@
 	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
 	import Warning from '$lib/components/ui/Warning.svelte';
 	import { authIdentity } from '$lib/derived/auth.derived';
-	import { getAuthConfig } from '$lib/services/satellite/authentication/auth.config.services';
+	import { satelliteAuthConfig } from '$lib/derived/satellite/satellite-configs.derived';
 	import { getRuleUser } from '$lib/services/satellite/collection/collection.services';
+	import { loadSatelliteConfig } from '$lib/services/satellite/satellite-config.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { versionStore } from '$lib/stores/version.store';
 	import { AUTH_CONFIG_CONTEXT_KEY, type AuthConfigContext } from '$lib/types/auth.context';
@@ -21,24 +22,29 @@
 	let satelliteId = $derived(satellite.satellite_id);
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const { setConfig, setRule, state } = getContext<AuthConfigContext>(AUTH_CONFIG_CONTEXT_KEY);
+	const { setRule, state } = getContext<AuthConfigContext>(AUTH_CONFIG_CONTEXT_KEY);
 
 	const loadRule = async () => {
 		const result = await getRuleUser({ satelliteId, identity: $authIdentity });
 		setRule(result);
 	};
 
-	const loadConfig = async () => {
-		const result = await getAuthConfig({
+	const loadConfig = async ({ reload }: { reload: boolean } = { reload: false }) => {
+		await loadSatelliteConfig({
 			satelliteId,
-			identity: $authIdentity
+			identity: $authIdentity,
+			reload
 		});
-
-		setConfig(result);
 	};
+
+	$inspect($satelliteAuthConfig);
 
 	const load = async () => {
 		await Promise.all([loadConfig(), loadRule()]);
+	};
+
+	const reload = async () => {
+		await Promise.all([loadConfig({ reload: true }), loadRule()]);
 	};
 
 	$effect(() => {
@@ -54,7 +60,7 @@
 	});
 </script>
 
-<svelte:window onjunoReloadAuthConfig={load} />
+<svelte:window onjunoReloadAuthConfig={reload} />
 
 {#if $state === 'initialized'}
 	<div in:fade>

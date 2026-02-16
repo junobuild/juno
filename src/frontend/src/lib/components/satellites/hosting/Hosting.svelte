@@ -24,6 +24,8 @@
 
 	let satelliteId = $derived(satellite.satellite_id.toText());
 
+	let config = $derived($satelliteAuthConfig?.config);
+
 	const list = async ({ reloadConfig }: { reloadConfig: boolean } = { reloadConfig: false }) => {
 		await Promise.all([
 			listCustomDomains({
@@ -70,7 +72,7 @@
 				<tr>
 					<CustomDomain
 						ariaLabel={$i18n.hosting.custom_domain}
-						config={$satelliteAuthConfig}
+						{config}
 						customDomain={[customDomainUrl, customDomain]}
 						{satellite}
 						type="custom"
@@ -84,7 +86,7 @@
 </div>
 
 <div class="footer">
-	<AddCustomDomain config={$satelliteAuthConfig} {satellite} />
+	<AddCustomDomain {config} {satellite} />
 
 	<HostingCount {satellite} />
 </div>

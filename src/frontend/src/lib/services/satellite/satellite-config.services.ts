@@ -41,6 +41,8 @@ export const loadSatelliteConfig = async ({
 
 		return { result: 'success' };
 	} catch (err: unknown) {
+		uncertifiedSatellitesConfigsStore.reset(satelliteId.toText());
+
 		const labels = get(i18n);
 
 		toasts.error({

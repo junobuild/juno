@@ -182,14 +182,6 @@ export const listCustomDomains = async (params: {
 	return list_custom_domains();
 };
 
-export const getAuthConfig = async (params: {
-	satelliteId: Principal;
-	identity: OptionIdentity;
-}): Promise<[] | [SatelliteDid.AuthenticationConfig]> => {
-	const { get_auth_config } = await getSatelliteActor(params);
-	return get_auth_config();
-};
-
 export const setAuthConfig = async ({
 	config,
 	...rest

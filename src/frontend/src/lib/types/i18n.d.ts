@@ -696,8 +696,6 @@ interface I18nErrors {
 	invalid_amount_to_convert_icp_to_cycles: string;
 	transfer_cycles: string;
 	cannot_fetch_logs: string;
-	authentication_config_loading: string;
-	automation_config_loading: string;
 	satellite_config_loading: string;
 	no_file_selected_for_upload: string;
 	upload_error: string;

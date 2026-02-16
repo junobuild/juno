@@ -680,8 +680,6 @@
 		"invalid_amount_to_convert_icp_to_cycles": "兑换 ICP 到 Cycles 的金额无效。",
 		"transfer_cycles": "转移cycles时发生意外错误。",
 		"cannot_fetch_logs": "获取日志时发生意外错误。",
-		"authentication_config_loading": "加载认证配置时发生意外错误。",
-		"automation_config_loading": "加载自动化配置时发生意外错误。",
 		"satellite_config_loading": "加载 Satellite 配置时发生意外错误。",
 		"no_file_selected_for_upload": "未选择上传文件。",
 		"upload_error": "上传文件时发生意外错误。",

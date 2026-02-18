@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { SatelliteDid } from '$declarations';
-	import WorkflowsContext from '$lib/components/satellites/automation/workflows/WorkflowsContext.svelte';
 	import AutomationConfigGuard from '$lib/components/satellites/automation/guards/AutomationConfigGuard.svelte';
+	import WorkflowsContext from '$lib/components/satellites/automation/workflows/WorkflowsContext.svelte';
 	import type { Satellite } from '$lib/types/satellite';
 
 	interface Props {

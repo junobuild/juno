@@ -32,9 +32,15 @@
 	let repoKey = $state<SatelliteDid.RepositoryKey | undefined>();
 	let repoReferences = $state<[string, ...string[]] | undefined>(undefined);
 
-	const onConnect = ({ repoKey: k, repoReferences: r }: { repoKey: SatelliteDid.RepositoryKey, repoReferences: [string, ...string[]] | undefined }) => {
+	const onConnect = ({
+		repoKey: k,
+		repoReferences: r
+	}: {
+		repoKey: SatelliteDid.RepositoryKey;
+		repoReferences: [string, ...string[]] | undefined;
+	}) => {
 		repoKey = k;
-		repoReferences = r
+		repoReferences = r;
 		step = 'review';
 	};
 

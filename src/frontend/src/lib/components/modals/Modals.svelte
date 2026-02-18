@@ -34,6 +34,8 @@
 	import ConvertIcpModal from '$lib/components/modals/wallet/ConvertIcpModal.svelte';
 	import SendTokensModal from '$lib/components/modals/wallet/SendTokensModal.svelte';
 	import type { JunoModal, JunoModalDetail } from '$lib/types/modal';
+	import AutomationAddRepositoryConfigModal
+		from "$lib/components/modals/automation/AutomationAddRepositoryConfigModal.svelte";
 
 	let modal: JunoModal<JunoModalDetail> | undefined = $state(undefined);
 
@@ -172,4 +174,8 @@
 
 {#if modal?.type === 'edit_automation_keys_config' && nonNullish(modal.detail)}
 	<AutomationKeysConfigModal detail={modal.detail} onclose={close} />
+{/if}
+
+{#if modal?.type === 'edit_automation_add_repository_config' && nonNullish(modal.detail)}
+	<AutomationAddRepositoryConfigModal detail={modal.detail} onclose={close} />
 {/if}

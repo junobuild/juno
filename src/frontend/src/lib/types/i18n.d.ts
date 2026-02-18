@@ -777,6 +777,7 @@ interface I18nErrors {
 	build_repo_key_invalid_github_url: string;
 	build_repo_key_owner_not_found: string;
 	build_repo_key_repo_not_found: string;
+	repo_references_invalid: string;
 	save_automation_config: string;
 	automation_config_undefined: string;
 }
@@ -1155,6 +1156,7 @@ interface I18nAutomation {
 	workflow: string;
 	reference: string;
 	references: string;
+	references_placeholder: string;
 	timestamp: string;
 	empty_deployments: string;
 	commit: string;

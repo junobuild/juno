@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { fromNullable } from '@dfinity/utils';
 	import type { SatelliteDid } from '$declarations';
-	import RepositoryRef from '$lib/components/satellites/automation/RepositoryRef.svelte';
+	import RepositoryRef from '$lib/components/satellites/automation/repository/RepositoryRef.svelte';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toDocRepositoryKey } from '$lib/utils/workflow.utils';
 

@@ -759,6 +759,7 @@
 		"build_repo_key_invalid_github_url": "Only GitHub repositories are supported. Please enter the GitHub URL of your repository.",
 		"build_repo_key_owner_not_found": "Repository owner not found in URL. Please enter a complete GitHub repository URL.",
 		"build_repo_key_repo_not_found": "Repository name not found in URL. Please enter a complete GitHub repository URL.",
+		"repo_references_invalid": "The repository references are invalid. Each must start with refs/heads/, refs/tags/, or refs/pull/.",
 		"save_automation_config": "An error occurred while saving your automation configuration.",
 		"automation_config_undefined": "The automation configuration is undefined, which is unexpected. Try reloading the page."
 	},
@@ -1117,6 +1118,7 @@
 		"workflow": "Workflow",
 		"reference": "Reference",
 		"references": "References",
+		"references_placeholder": "A comma-separated list of refences (e.g. \"refs/heads/main\", \"refs/pull/74/merge\")",
 		"timestamp": "Timestamp",
 		"empty_deployments": "No deployments yet. Your workflows will appear here once your GitHub Actions run.",
 		"commit": "Commit",

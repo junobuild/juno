@@ -1172,6 +1172,8 @@ interface I18nAutomation {
 	access_duration: string;
 	edit_automation_keys: string;
 	empty_repositories: string;
+	delete_title: string;
+	delete_question: string;
 }
 
 interface I18n {

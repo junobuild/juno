@@ -9,16 +9,19 @@
 		visible?: boolean;
 		title?: Snippet;
 		children: Snippet;
+		size?: "default" | "wide"
 	}
 
-	let { visible = $bindable(false), title, children }: Props = $props();
+	let { visible = $bindable(false), title, children, size = "default" }: Props = $props();
 
 	const dispatch = createEventDispatcher();
 	const yes = () => dispatch('junoYes');
 	const no = () => dispatch('junoNo');
+
+	let center = $derived(size === "wide" ? "wide" : true)
 </script>
 
-<Popover backdrop="dark" center={true} bind:visible>
+<Popover backdrop="dark" {center} bind:visible>
 	<div class="content">
 		<h3>{@render title?.()}</h3>
 

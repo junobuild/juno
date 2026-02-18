@@ -4,6 +4,8 @@
 	import RepositoryRef from '$lib/components/satellites/automation/repository/RepositoryRef.svelte';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toDocRepositoryKey } from '$lib/utils/workflow.utils';
+	import ButtonTableAction from '$lib/components/ui/ButtonTableAction.svelte';
+	import GitHubDeleteRepoConfig from '$lib/components/satellites/automation/settings/GitHubDeleteRepoConfig.svelte';
 
 	interface Props {
 		config: SatelliteDid.OpenIdAutomationProviderConfig;
@@ -37,7 +39,9 @@
 				{@const refs = fromNullable(repository[1].refs)}
 
 				<tr>
-					<td>TODO</td>
+					<td>
+						<GitHubDeleteRepoConfig {key} />
+					</td>
 					<td>{toDocRepositoryKey(key)}</td>
 					<td>
 						<div class="refs">

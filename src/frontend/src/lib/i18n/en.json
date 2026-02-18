@@ -1103,7 +1103,7 @@
 		"create_connect_description": "Enter the URL of the GitHub repository you want to authorize for automated deployments.",
 		"create_connect_input_placeholder": "https://github.com/owner/repo",
 		"create_connect_review_title": "Review configuration",
-		"create_connect_review_description": "Review the information of your repo. You can refine branch access and other options later in the settings.",
+		"create_connect_review_description": "查看您的仓库信息。您可以稍后在设置中调整访问权限和其他选项。",
 		"repository": "Repository",
 		"provider": "Provider",
 		"open_repo": "Open repository on GitHub",
@@ -1133,6 +1133,8 @@
 		"keys": "Automation Keys",
 		"access_duration": "Access Duration",
 		"edit_automation_keys": "Configure how your workflows access your Satellite and how long their keys remain valid.",
-		"empty_repositories": "No repositories configured for automation."
+		"empty_repositories": "No repositories configured for automation.",
+		"delete_title": "Delete repository",
+		"delete_question": "Are you sure you want to remove <mark>{0}</mark> from your automation configuration?"
 	}
 }

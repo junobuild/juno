@@ -63,8 +63,8 @@
 			BigInt(maxTimeToLiveInput) !== TEN_MINUTES_NS &&
 			BigInt(maxTimeToLiveInput) !== FIFTEEN_MINUTES_NS &&
 			BigInt(maxTimeToLiveInput) !== THIRTY_MINUTES_NS &&
-			BigInt(maxTimeToLiveInput) !== FORTY_FIVE_MINUTES_NS;
-		BigInt(maxTimeToLiveInput) !== AN_HOUR_NS;
+			BigInt(maxTimeToLiveInput) !== FORTY_FIVE_MINUTES_NS &&
+			BigInt(maxTimeToLiveInput) !== AN_HOUR_NS;
 	});
 </script>
 

@@ -5,8 +5,9 @@
 	import Collapsible from '$lib/components/ui/Collapsible.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
-	import { notEmptyString } from '@dfinity/utils';
+	import { isEmptyString, notEmptyString } from '@dfinity/utils';
 	import { toasts } from '$lib/stores/app/toasts.store';
+	import { onMount } from 'svelte';
 
 	interface Props {
 		repoUrlInput: string;
@@ -58,6 +59,16 @@
 				(repoReferences?.length ?? 0) > 0 ? (repoReferences as [string, ...string[]]) : undefined
 		});
 	};
+
+	let collapsibleRef: Collapsible | undefined = $state(undefined);
+
+	onMount(() => {
+		if (isEmptyString(repoReferencesInput)) {
+			return;
+		}
+
+		collapsibleRef?.open();
+	});
 </script>
 
 <h2>{$i18n.automation.create_connect_title}</h2>
@@ -74,7 +85,7 @@
 		bind:value={repoUrlInput}
 	/>
 
-	<Collapsible>
+	<Collapsible bind:this={collapsibleRef}>
 		{#snippet header()}
 			{$i18n.core.advanced_options}
 		{/snippet}

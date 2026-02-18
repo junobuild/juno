@@ -2,8 +2,13 @@ const MINUTE_NANOSECONDS = 60n * 1_000_000_000n;
 const HOUR_NANOSECONDS = 60n * MINUTE_NANOSECONDS;
 const DAY_NANOSECONDS = 24n * HOUR_NANOSECONDS;
 
-// 1 day in nanoseconds
-export const AN_HOUR_NS = HOUR_NANOSECONDS;
+export const TWO_MINUTES_NS = 2n * MINUTE_NANOSECONDS;
+export const FIVE_MINUTES_NS = 5n * MINUTE_NANOSECONDS;
+export const TEN_MINUTES_NS = 10n * MINUTE_NANOSECONDS;
+export const FIFTEEN_MINUTES_NS = 15n * MINUTE_NANOSECONDS;
+export const THIRTY_MINUTES_NS = 30n * MINUTE_NANOSECONDS;
+export const FORTY_FIVE_MINUTES_NS = 45n * MINUTE_NANOSECONDS;
+export const AN_HOUR_NS = HOUR_NANOSECONDS; // One hour max for automation
 export const TWO_HOURS_NS = 2n * AN_HOUR_NS;
 export const FOUR_HOURS_NS = 4n * AN_HOUR_NS;
 export const EIGHT_HOURS_NS = 8n * AN_HOUR_NS;
@@ -11,4 +16,4 @@ export const HALF_DAY_NS = 12n * AN_HOUR_NS;
 export const ONE_DAY_NS = DAY_NANOSECONDS;
 export const A_WEEK_NS = 7n * ONE_DAY_NS;
 export const TWO_WEEKS_NS = 2n * A_WEEK_NS;
-export const A_MONTH_NS = 30n * ONE_DAY_NS; // 30 days. Max.
+export const A_MONTH_NS = 30n * ONE_DAY_NS; // 30 days. max for authentication

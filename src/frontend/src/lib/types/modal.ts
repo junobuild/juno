@@ -131,6 +131,10 @@ export interface JunoModalWalletDetail {
 
 export type JunoModalConvertIcpToCyclesDetails = Pick<JunoModalWalletDetail, 'selectedWallet'>;
 
+export interface JunoModalAutomationConfigDetail extends JunoModalWithSatellite {
+	config: SatelliteDid.OpenIdAutomationProviderConfig;
+}
+
 export type JunoModalDetail =
 	| JunoModalUpgradeSatelliteDetail
 	| JunoModalUpgradeDetail
@@ -150,7 +154,8 @@ export type JunoModalDetail =
 	| JunoModalChangeDetail
 	| JunoModalCdnUpgradeDetail
 	| JunoModalEditAuthConfigDetail
-	| JunoModalWalletDetail;
+	| JunoModalWalletDetail
+	| JunoModalAutomationConfigDetail;
 
 export interface JunoModal<T extends JunoModalDetail> {
 	type:
@@ -185,6 +190,7 @@ export interface JunoModal<T extends JunoModalDetail> {
 		| 'upgrade_satellite_with_cdn'
 		| 'convert_icp_to_cycles'
 		| 'reconcile_out_of_sync_segments'
-		| 'create_automation';
+		| 'create_automation'
+		| 'edit_automation_keys_config';
 	detail?: T;
 }

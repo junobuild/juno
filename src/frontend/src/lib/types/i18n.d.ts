@@ -101,6 +101,12 @@ interface I18nCore {
 	staging: string;
 	test: string;
 	unspecified: string;
+	two_minutes: string;
+	five_minutes: string;
+	ten_minutes: string;
+	fifteen_minutes: string;
+	thirty_minutes: string;
+	forty_five_minutes: string;
 	an_hour: string;
 	two_hours: string;
 	four_hours: string;
@@ -771,7 +777,7 @@ interface I18nErrors {
 	build_repo_key_invalid_github_url: string;
 	build_repo_key_owner_not_found: string;
 	build_repo_key_repo_not_found: string;
-	create_automation_config: string;
+	save_automation_config: string;
 }
 
 interface I18nDocument {
@@ -1160,6 +1166,7 @@ interface I18nAutomation {
 	view_contributor: string;
 	keys: string;
 	access_duration: string;
+	edit_automation_keys: string;
 }
 
 interface I18n {

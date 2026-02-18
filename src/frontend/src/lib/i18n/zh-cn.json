@@ -755,7 +755,7 @@
 		"build_repo_key_invalid_github_url": "仅支持 GitHub 仓库。请输入您的 GitHub 仓库 URL。",
 		"build_repo_key_owner_not_found": "在 URL 中未找到仓库所有者。请输入完整的 GitHub 仓库 URL。",
 		"build_repo_key_repo_not_found": "在 URL 中未找到仓库名称。请输入完整的 GitHub 仓库 URL。",
-		"create_automation_config": "保存自动化配置时发生错误。"
+		"save_automation_config": "保存自动化配置时发生错误。"
 	},
 	"document": {
 		"owner": "所有者",

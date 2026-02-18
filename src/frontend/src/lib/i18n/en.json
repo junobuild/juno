@@ -98,6 +98,12 @@
 		"staging": "Staging",
 		"test": "Test",
 		"unspecified": "Unspecified",
+		"two_minutes": "Two minutes",
+		"five_minutes": "Five minutes",
+		"ten_minutes": "Ten minutes",
+		"fifteen_minutes": "Fifteen minutes",
+		"thirty_minutes": "Thirty minutes",
+		"forty_five_minutes": "Forty-five minutes",
 		"an_hour": "An hour",
 		"two_hours": "Two hours",
 		"four_hours": "Four hours",
@@ -753,7 +759,7 @@
 		"build_repo_key_invalid_github_url": "Only GitHub repositories are supported. Please enter the GitHub URL of your repository.",
 		"build_repo_key_owner_not_found": "Repository owner not found in URL. Please enter a complete GitHub repository URL.",
 		"build_repo_key_repo_not_found": "Repository name not found in URL. Please enter a complete GitHub repository URL.",
-		"create_automation_config": "An error occurred while saving your automation configuration."
+		"save_automation_config": "An error occurred while saving your automation configuration."
 	},
 	"document": {
 		"owner": "Owner",
@@ -1121,6 +1127,7 @@
 		"view_branch": "View branch run on GitHub",
 		"view_contributor": "View contributor on GitHub",
 		"keys": "Automation Keys",
-		"access_duration": "Access Duration"
+		"access_duration": "Access Duration",
+		"edit_automation_keys": "Configure how your workflows access your Satellite and how long their keys remain valid."
 	}
 }

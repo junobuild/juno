@@ -132,7 +132,8 @@ export interface JunoModalWalletDetail {
 export type JunoModalConvertIcpToCyclesDetails = Pick<JunoModalWalletDetail, 'selectedWallet'>;
 
 export interface JunoModalAutomationConfigDetail extends JunoModalWithSatellite {
-	config: SatelliteDid.OpenIdAutomationProviderConfig;
+	automationConfig: SatelliteDid.AutomationConfig;
+	providerConfig: SatelliteDid.OpenIdAutomationProviderConfig;
 }
 
 export type JunoModalDetail =

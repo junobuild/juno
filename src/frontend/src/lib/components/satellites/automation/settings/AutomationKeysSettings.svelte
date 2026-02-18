@@ -16,6 +16,8 @@
 		TWO_MINUTES_NS
 	} from '$lib/constants/duration.constants';
     import {emit} from "$lib/utils/events.utils";
+	import {satelliteAutomationConfig} from "$lib/derived/satellite/satellite-configs.derived";
+	import {toasts} from "$lib/stores/app/toasts.store";
 
 	interface Props {
 		satellite: Satellite;
@@ -33,12 +35,24 @@
 	);
 
     const openEditModal = () => {
+		const automationConfig = $satelliteAutomationConfig;
+
+		// If the provider config for GitHub is defined it's unlikely that the parent, the overall automation config is undefined.
+		// This is rather to be seen as a TypeScript guard.
+		if (isNullish(automationConfig)) {
+			toasts.error({
+				text: $i18n.errors.automation_config_undefined
+			});
+			return;
+		}
+
         emit({
             message: 'junoModal',
             detail: {
                 type: 'edit_automation_keys_config',
                 detail: {
-                    config,
+					automationConfig,
+                    providerConfig: config,
                     satellite
                 }
             }

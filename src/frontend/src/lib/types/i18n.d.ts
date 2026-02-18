@@ -778,6 +778,7 @@ interface I18nErrors {
 	build_repo_key_owner_not_found: string;
 	build_repo_key_repo_not_found: string;
 	save_automation_config: string;
+	automation_config_undefined: string;
 }
 
 interface I18nDocument {

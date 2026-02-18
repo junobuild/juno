@@ -11,13 +11,19 @@ import { isNullish, toNullable } from '@dfinity/utils';
 import type { Identity } from '@icp-sdk/core/agent';
 import { get } from 'svelte/store';
 
+export interface UpdateAutomationConfigResult {
+	success: 'ok' | 'error';
+	err?: unknown;
+}
+
 interface UpdateResult {
-	result: 'skip' | 'success' | 'error';
+	result: 'success' | 'error';
 	err?: unknown;
 }
 
 export const updateAutomationKeysConfig = async ({
-	currentConfig,
+	automationConfig,
+	providerConfig,
 	maxTimeToLive,
 	scope,
 	identity,
@@ -25,22 +31,20 @@ export const updateAutomationKeysConfig = async ({
 }: {
 	scope: Omit<AddAccessKeyScope, 'admin'> | undefined;
 	maxTimeToLive: bigint | undefined;
-	currentConfig: SatelliteDid.OpenIdAutomationProviderConfig;
+	automationConfig: SatelliteDid.AutomationConfig;
+	providerConfig: SatelliteDid.OpenIdAutomationProviderConfig;
 	satellite: Satellite;
 	identity: OptionIdentity;
-}): Promise<{
-	result: 'success' | 'error';
-	err?: unknown;
-}> => {
+}): Promise<UpdateAutomationConfigResult> => {
 	const labels = get(i18n);
 
 	if (isNullish(identity) || isNullish(identity?.getPrincipal())) {
 		toasts.error({ text: labels.core.not_logged_in });
-		return { result: 'error' };
+		return { success: 'error' };
 	}
 
-	const updateConfigOptions: SatelliteDid.OpenIdAutomationProviderConfig = {
-		...currentConfig,
+	const updateProviderConfig: SatelliteDid.OpenIdAutomationProviderConfig = {
+		...providerConfig,
 		controller:
 			scope === 'write' && maxTimeToLive === AUTOMATION_DEFAULT_MAX_SESSION_TIME_TO_LIVE
 				? []
@@ -54,16 +58,24 @@ export const updateAutomationKeysConfig = async ({
 	};
 
 	const updateAutomationConfig: SatelliteDid.SetAutomationConfig = {
+		...automationConfig,
 		openid: toNullable({
 			observatory_id: [],
-			providers: [[{ GitHub: null }, updateConfigOptions]]
-		}),
-		version
+			providers: [[{ GitHub: null }, updateProviderConfig]]
+		})
 	};
 
 	const result = await updateConfig({ identity, satellite, config: updateAutomationConfig });
 
+	if (result.result === 'error') {
+		return {
+			success: 'error',
+			err: result.err
+		};
+	}
+
 	if (result.result === 'success') {
+		// Reload Satellite configuration
 		await loadSatelliteConfig({
 			identity,
 			satelliteId: satellite.satellite_id,
@@ -71,7 +83,7 @@ export const updateAutomationKeysConfig = async ({
 		});
 	}
 
-	return result;
+	return { success: 'ok' };
 };
 
 const updateConfig = async ({

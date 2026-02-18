@@ -37,8 +37,6 @@
 		});
 	};
 
-	$inspect($satelliteAuthConfig);
-
 	const load = async () => {
 		await Promise.all([loadConfig(), loadRule()]);
 	};

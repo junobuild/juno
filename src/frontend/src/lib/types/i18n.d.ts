@@ -777,6 +777,7 @@ interface I18nErrors {
 	build_repo_key_invalid_github_url: string;
 	build_repo_key_owner_not_found: string;
 	build_repo_key_repo_not_found: string;
+	repo_references_invalid: string;
 	save_automation_config: string;
 	automation_config_undefined: string;
 }
@@ -1136,7 +1137,7 @@ interface I18nOut_of_sync {
 interface I18nAutomation {
 	title: string;
 	description: string;
-	create_connect_title: string;
+	connect_repository: string;
 	create_connect_description: string;
 	create_connect_input_placeholder: string;
 	create_connect_review_title: string;
@@ -1154,8 +1155,10 @@ interface I18nAutomation {
 	workflow_placeholder: string;
 	workflow: string;
 	reference: string;
+	references: string;
+	references_placeholder: string;
 	timestamp: string;
-	empty: string;
+	empty_deployments: string;
 	commit: string;
 	pushed_by: string;
 	manually_run_by: string;
@@ -1168,6 +1171,9 @@ interface I18nAutomation {
 	keys: string;
 	access_duration: string;
 	edit_automation_keys: string;
+	empty_repositories: string;
+	delete_title: string;
+	delete_question: string;
 }
 
 interface I18n {

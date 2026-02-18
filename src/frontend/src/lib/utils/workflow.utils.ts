@@ -1,5 +1,5 @@
 import type { SatelliteDid } from '$declarations';
-import type { RunId, Workflow, WorkflowKey } from '$lib/types/workflow';
+import type { DocRepositoryKey, RunId, Workflow, WorkflowKey } from '$lib/types/workflow';
 import { fromArray } from '@junobuild/utils';
 
 export const toKeyWorkflow = async ([key, { data: dataArray, ...rest }]: [
@@ -27,3 +27,6 @@ export const toRepositoryKey = (key: WorkflowKey): SatelliteDid.RepositoryKey =>
 		name
 	};
 };
+
+export const toDocRepositoryKey = ({ owner, name }: SatelliteDid.RepositoryKey): DocRepositoryKey =>
+	`${owner}/${name}`;

@@ -1,16 +1,20 @@
 <script lang="ts">
+	import { nonNullish } from '@dfinity/utils';
 	import type { SatelliteDid } from '$declarations';
 	import IconCodeBranch from '$lib/components/icons/IconCodeBranch.svelte';
+	import RepositoryRef from '$lib/components/satellites/automation/repository/RepositoryRef.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/app/i18n.store';
+	import type { WorkflowReferences } from '$lib/types/workflow';
 
 	interface Props {
 		repoKey: SatelliteDid.RepositoryKey;
+		repoReferences: WorkflowReferences | undefined;
 		onback: () => void;
 		onconfirm: (params: { repoKey: SatelliteDid.RepositoryKey }) => Promise<void>;
 	}
 
-	let { repoKey, onback, onconfirm }: Props = $props();
+	let { repoKey, repoReferences, onback, onconfirm }: Props = $props();
 
 	let repo = $derived(`${repoKey.owner}/${repoKey.name}`);
 	let href = $derived(`https://github.com/${repo}`);
@@ -41,13 +45,19 @@
 	</p>
 </Value>
 
-<Value>
-	{#snippet label()}
-		{$i18n.automation.provider}
-	{/snippet}
+{#if nonNullish(repoReferences)}
+	<Value>
+		{#snippet label()}
+			{$i18n.automation.references}
+		{/snippet}
 
-	<p>GitHub</p>
-</Value>
+		<p class="refs">
+			{#each repoReferences as ref (ref)}
+				<RepositoryRef key={repoKey} {ref} />
+			{/each}
+		</p>
+	</Value>
+{/if}
 
 <div class="toolbar">
 	<button onclick={onback} type="button">{$i18n.core.back}</button>
@@ -69,5 +79,13 @@
 		vertical-align: bottom;
 
 		margin: 0 0 0 var(--padding-2x);
+	}
+
+	.refs {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--padding);
+
+		margin: var(--padding) 0 var(--padding-3x);
 	}
 </style>

@@ -759,6 +759,7 @@
 		"build_repo_key_invalid_github_url": "Only GitHub repositories are supported. Please enter the GitHub URL of your repository.",
 		"build_repo_key_owner_not_found": "Repository owner not found in URL. Please enter a complete GitHub repository URL.",
 		"build_repo_key_repo_not_found": "Repository name not found in URL. Please enter a complete GitHub repository URL.",
+		"repo_references_invalid": "The repository references are invalid. Each must start with refs/heads/, refs/tags/, or refs/pull/.",
 		"save_automation_config": "An error occurred while saving your automation configuration.",
 		"automation_config_undefined": "The automation configuration is undefined, which is unexpected. Try reloading the page."
 	},
@@ -1098,11 +1099,11 @@
 	"automation": {
 		"title": "Deployments",
 		"description": "Build, deploy, and publish serverless functions for your Satellite directly from GitHub Actions. Get started by configuring a repo from your git provider.",
-		"create_connect_title": "Connect repository",
+		"connect_repository": "Connect repository",
 		"create_connect_description": "Enter the URL of the GitHub repository you want to authorize for automated deployments.",
 		"create_connect_input_placeholder": "https://github.com/owner/repo",
 		"create_connect_review_title": "Review configuration",
-		"create_connect_review_description": "Review the information of your repo. You can refine branch access and other options later in the settings.",
+		"create_connect_review_description": "查看您的仓库信息。您可以稍后在设置中调整访问权限和其他选项。",
 		"repository": "Repository",
 		"provider": "Provider",
 		"open_repo": "Open repository on GitHub",
@@ -1116,8 +1117,10 @@
 		"workflow_placeholder": "Repository or Run ID",
 		"workflow": "Workflow",
 		"reference": "Reference",
+		"references": "References",
+		"references_placeholder": "A comma-separated list of refences (e.g. \"refs/heads/main\", \"refs/pull/74/merge\")",
 		"timestamp": "Timestamp",
-		"empty": "No deployments yet. Your workflows will appear here once your GitHub Actions run.",
+		"empty_deployments": "No deployments yet. Your workflows will appear here once your GitHub Actions run.",
 		"commit": "Commit",
 		"pushed_by": "pushed by",
 		"manually_run_by": "Manually run by",
@@ -1129,6 +1132,9 @@
 		"view_contributor": "View contributor on GitHub",
 		"keys": "Automation Keys",
 		"access_duration": "Access Duration",
-		"edit_automation_keys": "Configure how your workflows access your Satellite and how long their keys remain valid."
+		"edit_automation_keys": "Configure how your workflows access your Satellite and how long their keys remain valid.",
+		"empty_repositories": "No repositories configured for automation.",
+		"delete_title": "Delete repository",
+		"delete_question": "Are you sure you want to remove <mark>{0}</mark> from your automation configuration?"
 	}
 }

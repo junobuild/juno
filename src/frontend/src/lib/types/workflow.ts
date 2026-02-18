@@ -4,7 +4,7 @@ type WorkflowProvider = 'GitHub';
 
 type DocOwnerKey = string;
 type DocNameKey = string;
-type DocRepositoryKey = `${DocOwnerKey}/${DocNameKey}`;
+export type DocRepositoryKey = `${DocOwnerKey}/${DocNameKey}`;
 
 export type RunId = string;
 
@@ -23,3 +23,5 @@ export interface WorkflowData {
 export type Workflow = Omit<SatelliteDid.Doc, 'data'> & {
 	data: WorkflowData;
 };
+
+export type WorkflowReferences = [string, ...string[]];

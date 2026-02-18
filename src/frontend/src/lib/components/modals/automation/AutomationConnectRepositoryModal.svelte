@@ -8,10 +8,10 @@
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import { authIdentity } from '$lib/derived/auth.derived';
-	import { createAutomationConfig } from '$lib/services/satellite/automation/automation.config.create.services';
+	import { updateAutomationConnectRepositoryConfig } from '$lib/services/satellite/automation/automation.config.edit.services';
 	import { wizardBusy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import type { JunoModalDetail, JunoModalWithSatellite } from '$lib/types/modal';
+	import type { JunoModalAutomationConfigDetail, JunoModalDetail } from '$lib/types/modal';
 	import type { WorkflowReferences } from '$lib/types/workflow';
 
 	interface Props {
@@ -21,9 +21,11 @@
 
 	let { detail: d, onclose }: Props = $props();
 
-	let detail = $derived(d as JunoModalWithSatellite);
+	let detail = $derived(d as JunoModalAutomationConfigDetail);
 
 	let satellite = $derived(detail.satellite);
+	let automationConfig = $derived(detail.automationConfig);
+	let providerConfig = $derived(detail.providerConfig);
 
 	let step: 'init' | 'review' | 'in_progress' | 'ready' | 'error' = $state('init');
 
@@ -49,8 +51,10 @@
 		wizardBusy.start();
 		step = 'in_progress';
 
-		const result = await createAutomationConfig({
+		const result = await updateAutomationConnectRepositoryConfig({
 			satellite,
+			providerConfig,
+			automationConfig,
 			identity: $authIdentity,
 			repoKey,
 			repoReferences
@@ -58,7 +62,7 @@
 
 		wizardBusy.stop();
 
-		if (result.result === 'error') {
+		if (result.success === 'error') {
 			return;
 		}
 

@@ -761,6 +761,7 @@
 		"build_repo_key_invalid_github_url": "仅支持 GitHub 仓库。请输入您的 GitHub 仓库 URL。",
 		"build_repo_key_owner_not_found": "在 URL 中未找到仓库所有者。请输入完整的 GitHub 仓库 URL。",
 		"build_repo_key_repo_not_found": "在 URL 中未找到仓库名称。请输入完整的 GitHub 仓库 URL。",
+		"repo_references_invalid": "仓库引用无效。每个引用必须以 refs/heads/、refs/tags/ 或 refs/pull/ 开头。",
 		"save_automation_config": "保存自动化配置时发生错误。",
 		"automation_config_undefined": "自动化配置未定义，这是意外情况。请尝试重新加载页面。"
 	},
@@ -1100,7 +1101,7 @@
 	"automation": {
 		"title": "部署",
 		"description": "直接从 GitHub Actions 构建、部署和发布您的 Satellite 的无服务器函数。通过配置来自您的 Git 提供商的仓库开始使用。",
-		"create_connect_title": "连接仓库",
+		"connect_repository": "连接仓库",
 		"create_connect_description": "输入您要授权进行自动化部署的 GitHub 仓库 URL。",
 		"create_connect_input_placeholder": "https://github.com/owner/repo",
 		"create_connect_review_title": "审查配置",
@@ -1118,8 +1119,10 @@
 		"workflow_placeholder": "仓库或运行 ID",
 		"workflow": "工作流",
 		"reference": "引用",
+		"references": "引用",
+		"references_placeholder": "以逗号分隔的引用列表（例如 \"refs/heads/main\"、\"refs/pull/74/merge\"）",
 		"timestamp": "时间戳",
-		"empty_deployments": "尚无部署。您的工作流将在 GitHub Actions 运行后显示在此处。",
+		"empty_deployments": "暂无部署记录。GitHub Actions 运行后，您的工作流将显示在此处。",
 		"commit": "提交",
 		"pushed_by": "推送者",
 		"manually_run_by": "手动运行者",
@@ -1131,6 +1134,9 @@
 		"view_contributor": "在 GitHub 上查看贡献者",
 		"keys": "自动化密钥",
 		"access_duration": "访问时长",
-		"edit_automation_keys": "配置工作流访问 Satellite 的方式及其密钥的有效期。"
+		"edit_automation_keys": "配置工作流访问 Satellite 的方式及其密钥的有效期。",
+		"empty_repositories": "尚未配置用于自动化的仓库。",
+		"delete_title": "删除仓库",
+		"delete_question": "确定要从自动化配置中移除 <mark>{0}</mark> 吗？"
 	}
 }

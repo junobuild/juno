@@ -22,7 +22,7 @@
 		},
 		{
 			id: Symbol('2'),
-			labelKey: 'core.setup'
+			labelKey: 'core.settings'
 		}
 	];
 

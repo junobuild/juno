@@ -1158,6 +1158,8 @@ interface I18nAutomation {
 	view_commit: string;
 	view_branch: string;
 	view_contributor: string;
+	keys: string;
+	access_duration: string;
 }
 
 interface I18n {

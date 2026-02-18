@@ -16,11 +16,16 @@
 		TABS_CONTEXT_KEY
 	} from '$lib/types/tabs.context';
 	import { initTabId } from '$lib/utils/tabs.utils';
+	import AutomationSettings from '$lib/components/satellites/automation/AutomationSettings.svelte';
 
 	const tabs: Tab[] = [
 		{
 			id: Symbol('1'),
 			labelKey: 'automation.title'
+		},
+		{
+			id: Symbol('2'),
+			labelKey: 'core.settings'
 		}
 	];
 
@@ -43,6 +48,8 @@
 				<TabsCmp>
 					{#if $store.tabId === $store.tabs[0].id}
 						<Automation {satellite} />
+					{:else if $store.tabId === $store.tabs[1].id}
+						<AutomationSettings {satellite} />
 					{/if}
 				</TabsCmp>
 			{/snippet}

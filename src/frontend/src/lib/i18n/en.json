@@ -1119,6 +1119,8 @@
 		"view_workflow": "View workflow run on GitHub",
 		"view_commit": "View commit on GitHub",
 		"view_branch": "View branch run on GitHub",
-		"view_contributor": "View contributor on GitHub"
+		"view_contributor": "View contributor on GitHub",
+		"keys": "Automation Keys",
+		"access_duration": "Access Duration"
 	}
 }

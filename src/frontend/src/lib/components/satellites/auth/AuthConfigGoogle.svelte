@@ -2,13 +2,6 @@
 	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
 	import { getContext } from 'svelte';
 	import Value from '$lib/components/ui/Value.svelte';
-	import { i18n } from '$lib/stores/app/i18n.store';
-	import { AUTH_CONFIG_CONTEXT_KEY, type AuthConfigContext } from '$lib/types/auth.context';
-	import type { JunoModalEditAuthConfigDetailType } from '$lib/types/modal';
-	import type { Satellite } from '$lib/types/satellite';
-	import { secondsToDuration } from '$lib/utils/date.utils';
-	import { i18nFormat } from '$lib/utils/i18n.utils';
-	import { satelliteName } from '$lib/utils/satellite.utils';
 	import {
 		A_MONTH_NS,
 		A_WEEK_NS,
@@ -20,6 +13,13 @@
 		TWO_HOURS_NS,
 		TWO_WEEKS_NS
 	} from '$lib/constants/duration.constants';
+	import { i18n } from '$lib/stores/app/i18n.store';
+	import { AUTH_CONFIG_CONTEXT_KEY, type AuthConfigContext } from '$lib/types/auth.context';
+	import type { JunoModalEditAuthConfigDetailType } from '$lib/types/modal';
+	import type { Satellite } from '$lib/types/satellite';
+	import { secondsToDuration } from '$lib/utils/date.utils';
+	import { i18nFormat } from '$lib/utils/i18n.utils';
+	import { satelliteName } from '$lib/utils/satellite.utils';
 
 	interface Props {
 		satellite: Satellite;

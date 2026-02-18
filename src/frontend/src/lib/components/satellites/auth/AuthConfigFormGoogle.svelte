@@ -9,10 +9,6 @@
 	import Value from '$lib/components/ui/Value.svelte';
 	import Warning from '$lib/components/ui/Warning.svelte';
 	import { AUTH_DEFAULT_MAX_SESSION_TIME_TO_LIVE } from '$lib/constants/auth.constants';
-	import { isBusy } from '$lib/derived/app/busy.derived';
-	import { i18n } from '$lib/stores/app/i18n.store';
-	import type { Satellite } from '$lib/types/satellite';
-	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import {
 		A_MONTH_NS,
 		A_WEEK_NS,
@@ -24,6 +20,10 @@
 		TWO_HOURS_NS,
 		TWO_WEEKS_NS
 	} from '$lib/constants/duration.constants';
+	import { isBusy } from '$lib/derived/app/busy.derived';
+	import { i18n } from '$lib/stores/app/i18n.store';
+	import type { Satellite } from '$lib/types/satellite';
+	import { i18nFormat } from '$lib/utils/i18n.utils';
 
 	interface Props {
 		satellite: Satellite;

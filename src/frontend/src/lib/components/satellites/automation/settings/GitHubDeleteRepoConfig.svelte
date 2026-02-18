@@ -59,12 +59,7 @@
 	onaction={() => (visibleDelete = true)}
 />
 
-<Confirmation
-	size="wide"
-	bind:visible={visibleDelete}
-	on:junoYes={deleteRepoConfig}
-	on:junoNo={close}
->
+<Confirmation onno={close} onyes={deleteRepoConfig} size="wide" bind:visible={visibleDelete}>
 	{#snippet title()}
 		{$i18n.automation.delete_title}
 	{/snippet}

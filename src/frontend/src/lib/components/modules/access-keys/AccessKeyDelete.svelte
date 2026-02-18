@@ -50,7 +50,7 @@
 	};
 </script>
 
-<Confirmation bind:visible on:junoYes={deleteController} on:junoNo={close}>
+<Confirmation onno={close} onyes={deleteController} bind:visible>
 	{#snippet title()}
 		{$i18n.controllers.delete_question}
 	{/snippet}

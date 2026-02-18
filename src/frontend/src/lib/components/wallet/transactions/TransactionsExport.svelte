@@ -43,7 +43,7 @@
 	<button onclick={() => (visible = true)} type="button">{$i18n.core.export}</button>
 {/if}
 
-<Confirmation bind:visible on:junoYes={exportTransactions} on:junoNo={close}>
+<Confirmation onno={close} onyes={exportTransactions} bind:visible>
 	{#snippet title()}
 		{$i18n.wallet.export_title}
 	{/snippet}

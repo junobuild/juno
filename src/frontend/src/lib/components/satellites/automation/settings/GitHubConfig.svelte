@@ -2,19 +2,20 @@
 	import { fromNullable } from '@dfinity/utils';
 	import type { SatelliteDid } from '$declarations';
 	import RepositoryRef from '$lib/components/satellites/automation/repository/RepositoryRef.svelte';
-	import { i18n } from '$lib/stores/app/i18n.store';
-	import { toDocRepositoryKey } from '$lib/utils/workflow.utils';
-	import ButtonTableAction from '$lib/components/ui/ButtonTableAction.svelte';
 	import GitHubDeleteRepoConfig from '$lib/components/satellites/automation/settings/GitHubDeleteRepoConfig.svelte';
+	import { i18n } from '$lib/stores/app/i18n.store';
+	import type { Satellite } from '$lib/types/satellite';
+	import { toDocRepositoryKey } from '$lib/utils/workflow.utils';
 
 	interface Props {
+		satellite: Satellite;
 		config: SatelliteDid.OpenIdAutomationProviderConfig;
 		openModal: (params: {
 			type: 'edit_automation_keys_config' | 'edit_automation_connect_repository_config';
 		}) => void;
 	}
 
-	let { config, openModal }: Props = $props();
+	let { config, satellite, openModal }: Props = $props();
 
 	let repositories = $derived(config.repositories);
 
@@ -40,7 +41,7 @@
 
 				<tr>
 					<td>
-						<GitHubDeleteRepoConfig {key} />
+						<GitHubDeleteRepoConfig {config} {key} {satellite} />
 					</td>
 					<td>{toDocRepositoryKey(key)}</td>
 					<td>

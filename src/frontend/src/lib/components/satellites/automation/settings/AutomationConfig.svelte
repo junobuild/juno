@@ -46,6 +46,6 @@
 	};
 </script>
 
-<GitHubConfig {config} {openModal} />
+<GitHubConfig {config} {openModal} {satellite} />
 
 <AutomationKeysConfig {config} {openModal} />

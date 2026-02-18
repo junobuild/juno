@@ -1,21 +1,24 @@
 <script lang="ts">
-	import type { Satellite } from '$lib/types/satellite';
+	import { fromNullable } from '@dfinity/utils';
 	import type { SatelliteDid } from '$declarations';
+	import RepositoryRef from '$lib/components/satellites/automation/RepositoryRef.svelte';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toDocRepositoryKey } from '$lib/utils/workflow.utils';
-	import RepositoryRef from '$lib/components/satellites/automation/RepositoryRef.svelte';
-	import { fromNullable } from '@dfinity/utils';
 
 	interface Props {
-		satellite: Satellite;
 		config: SatelliteDid.OpenIdAutomationProviderConfig;
+		openModal: (params: {
+			type: 'edit_automation_keys_config' | 'edit_automation_add_repository_config';
+		}) => void;
 	}
 
-	let { satellite, config }: Props = $props();
+	let { config, openModal }: Props = $props();
 
 	let repositories = $derived(config.repositories);
 
 	let empty = $derived(repositories.length === 0);
+
+	const openEditModal = () => openModal({ type: 'edit_automation_add_repository_config' });
 </script>
 
 <div class="table-container">
@@ -51,8 +54,14 @@
 	</table>
 </div>
 
+<button onclick={openEditModal}>{$i18n.automation.add_repository}</button>
+
 <style lang="scss">
 	.tools {
 		width: 88px;
+	}
+
+	button {
+		margin: 0 0 var(--padding-8x);
 	}
 </style>

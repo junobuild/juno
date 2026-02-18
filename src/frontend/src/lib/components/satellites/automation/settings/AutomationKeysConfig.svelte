@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
+	import { fromNullable, nonNullish } from '@dfinity/utils';
 	import type { SatelliteDid } from '$declarations';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { AUTOMATION_DEFAULT_MAX_SESSION_TIME_TO_LIVE } from '$lib/constants/automation.constants';
@@ -12,19 +12,17 @@
 		THIRTY_MINUTES_NS,
 		TWO_MINUTES_NS
 	} from '$lib/constants/duration.constants';
-	import { satelliteAutomationConfig } from '$lib/derived/satellite/satellite-configs.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import { toasts } from '$lib/stores/app/toasts.store';
-	import type { Satellite } from '$lib/types/satellite';
 	import { secondsToDuration } from '$lib/utils/date.utils';
-	import { emit } from '$lib/utils/events.utils';
 
 	interface Props {
-		satellite: Satellite;
 		config: SatelliteDid.OpenIdAutomationProviderConfig;
+		openModal: (params: {
+			type: 'edit_automation_keys_config' | 'edit_automation_add_repository_config';
+		}) => void;
 	}
 
-	let { satellite, config }: Props = $props();
+	let { config, openModal }: Props = $props();
 
 	let controller = $derived(fromNullable(config?.controller));
 
@@ -37,30 +35,7 @@
 		fromNullable(controller?.max_time_to_live ?? []) ?? AUTOMATION_DEFAULT_MAX_SESSION_TIME_TO_LIVE
 	);
 
-	const openEditModal = () => {
-		const automationConfig = $satelliteAutomationConfig;
-
-		// If the provider config for GitHub is defined it's unlikely that the parent, the overall automation config is undefined.
-		// This is rather to be seen as a TypeScript guard.
-		if (isNullish(automationConfig)) {
-			toasts.error({
-				text: $i18n.errors.automation_config_undefined
-			});
-			return;
-		}
-
-		emit({
-			message: 'junoModal',
-			detail: {
-				type: 'edit_automation_keys_config',
-				detail: {
-					automationConfig,
-					providerConfig: config,
-					satellite
-				}
-			}
-		});
-	};
+	const openEditModal = () => openModal({ type: 'edit_automation_keys_config' });
 </script>
 
 <div class="card-container with-title">

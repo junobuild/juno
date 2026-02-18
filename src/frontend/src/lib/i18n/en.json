@@ -1131,6 +1131,7 @@
 		"keys": "Automation Keys",
 		"access_duration": "Access Duration",
 		"edit_automation_keys": "Configure how your workflows access your Satellite and how long their keys remain valid.",
-		"empty_repositories": "No repositories configured for automation."
+		"empty_repositories": "No repositories configured for automation.",
+		"add_repository": "Add repository"
 	}
 }

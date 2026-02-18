@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { notEmptyString } from '@dfinity/utils';
+	import type { SatelliteDid } from '$declarations';
 	import Badge from '$lib/components/ui/Badge.svelte';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { Workflow, WorkflowKey } from '$lib/types/workflow';
 	import { toDocRepositoryKey, toRepositoryKey } from '$lib/utils/workflow.utils';
-	import type { SatelliteDid } from '$declarations';
 
 	interface Props {
 		key: SatelliteDid.RepositoryKey;

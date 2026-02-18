@@ -1,7 +1,7 @@
 <script lang="ts">
+	import RepositoryRef from '$lib/components/satellites/automation/RepositoryRef.svelte';
 	import type { Workflow, WorkflowKey } from '$lib/types/workflow';
 	import { toRepositoryKey } from '$lib/utils/workflow.utils';
-	import RepositoryRef from '$lib/components/satellites/automation/RepositoryRef.svelte';
 
 	interface Props {
 		key: WorkflowKey;

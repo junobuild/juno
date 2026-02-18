@@ -71,7 +71,7 @@
 	});
 </script>
 
-<h2>{$i18n.automation.create_connect_title}</h2>
+<h2>{$i18n.automation.connect_repository}</h2>
 
 <p>{$i18n.automation.create_connect_description}</p>
 

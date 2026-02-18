@@ -4,11 +4,12 @@
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { nonNullish } from '@dfinity/utils';
-	import RepositoryRef from "$lib/components/satellites/automation/repository/RepositoryRef.svelte";
+	import RepositoryRef from '$lib/components/satellites/automation/repository/RepositoryRef.svelte';
+	import type { WorkflowReferences } from '$lib/types/workflow';
 
 	interface Props {
 		repoKey: SatelliteDid.RepositoryKey;
-		repoReferences: [string, ...string[]] | undefined;
+		repoReferences: WorkflowReferences | undefined;
 		onback: () => void;
 		onconfirm: (params: { repoKey: SatelliteDid.RepositoryKey }) => Promise<void>;
 	}

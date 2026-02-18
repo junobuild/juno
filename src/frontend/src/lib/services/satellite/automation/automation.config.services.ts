@@ -5,6 +5,7 @@ import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { Satellite } from '$lib/types/satellite';
+import type { WorkflowReferences } from '$lib/types/workflow';
 import { isEmptyString, isNullish, toNullable } from '@dfinity/utils';
 import { get } from 'svelte/store';
 
@@ -78,6 +79,7 @@ export const createAutomationConfig = async ({
 	satellite: Satellite;
 	identity: OptionIdentity;
 	repoKey: SatelliteDid.RepositoryKey;
+	repoReferences: WorkflowReferences | undefined;
 }): Promise<{
 	result: 'success' | 'error';
 	err?: unknown;
@@ -107,11 +109,13 @@ export const createAutomationConfig = async ({
 const setAutomationConfig = async ({
 	satellite,
 	identity,
-	repoKey
+	repoKey,
+	repoReferences
 }: {
 	satellite: Satellite;
 	identity: OptionIdentity;
 	repoKey: SatelliteDid.RepositoryKey;
+	repoReferences: WorkflowReferences | undefined;
 }): Promise<{
 	result: 'success' | 'error';
 	err?: unknown;
@@ -122,7 +126,7 @@ const setAutomationConfig = async ({
 				providers: toNullable([
 					{ GitHub: null },
 					{
-						repositories: toNullable([repoKey, { refs: toNullable() }]),
+						repositories: toNullable([repoKey, { refs: toNullable(repoReferences) }]),
 						controller: toNullable()
 					}
 				]),

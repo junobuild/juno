@@ -40,9 +40,11 @@
 					<td>TODO</td>
 					<td>{toDocRepositoryKey(key)}</td>
 					<td>
-						{#each refs as ref (ref)}
-							<RepositoryRef {key} {ref} />
-						{/each}
+						<div class="refs">
+							{#each refs as ref (ref)}
+								<RepositoryRef {key} {ref} />
+							{/each}
+						</div>
 					</td>
 				</tr>
 			{/each}
@@ -54,7 +56,7 @@
 	</table>
 </div>
 
-<button onclick={openEditModal}>{$i18n.automation.add_repository}</button>
+<button onclick={openEditModal}>{$i18n.automation.connect_repository}</button>
 
 <style lang="scss">
 	.tools {
@@ -63,5 +65,11 @@
 
 	button {
 		margin: 0 0 var(--padding-8x);
+	}
+
+	.refs {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--padding);
 	}
 </style>

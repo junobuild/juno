@@ -1137,7 +1137,7 @@ interface I18nOut_of_sync {
 interface I18nAutomation {
 	title: string;
 	description: string;
-	create_connect_title: string;
+	connect_repository: string;
 	create_connect_description: string;
 	create_connect_input_placeholder: string;
 	create_connect_review_title: string;
@@ -1172,7 +1172,6 @@ interface I18nAutomation {
 	access_duration: string;
 	edit_automation_keys: string;
 	empty_repositories: string;
-	add_repository: string;
 }
 
 interface I18n {

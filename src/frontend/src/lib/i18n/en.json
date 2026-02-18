@@ -1099,7 +1099,7 @@
 	"automation": {
 		"title": "Deployments",
 		"description": "Build, deploy, and publish serverless functions for your Satellite directly from GitHub Actions. Get started by configuring a repo from your git provider.",
-		"create_connect_title": "Connect repository",
+		"connect_repository": "Connect repository",
 		"create_connect_description": "Enter the URL of the GitHub repository you want to authorize for automated deployments.",
 		"create_connect_input_placeholder": "https://github.com/owner/repo",
 		"create_connect_review_title": "Review configuration",
@@ -1133,7 +1133,6 @@
 		"keys": "Automation Keys",
 		"access_duration": "Access Duration",
 		"edit_automation_keys": "Configure how your workflows access your Satellite and how long their keys remain valid.",
-		"empty_repositories": "No repositories configured for automation.",
-		"add_repository": "Add repository"
+		"empty_repositories": "No repositories configured for automation."
 	}
 }

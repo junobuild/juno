@@ -23,3 +23,5 @@ export interface WorkflowData {
 export type Workflow = Omit<SatelliteDid.Doc, 'data'> & {
 	data: WorkflowData;
 };
+
+export type WorkflowReferences = [string, ...string[]];

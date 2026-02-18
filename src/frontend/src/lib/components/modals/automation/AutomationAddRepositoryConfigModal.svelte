@@ -12,6 +12,7 @@
 	import { wizardBusy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { JunoModalDetail, JunoModalWithSatellite } from '$lib/types/modal';
+	import type { WorkflowReferences } from '$lib/types/workflow';
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -30,14 +31,14 @@
 	let repoReferencesInput = $state('');
 
 	let repoKey = $state<SatelliteDid.RepositoryKey | undefined>();
-	let repoReferences = $state<[string, ...string[]] | undefined>(undefined);
+	let repoReferences = $state<WorkflowReferences | undefined>(undefined);
 
 	const onConnect = ({
 		repoKey: k,
 		repoReferences: r
 	}: {
 		repoKey: SatelliteDid.RepositoryKey;
-		repoReferences: [string, ...string[]] | undefined;
+		repoReferences: WorkflowReferences | undefined;
 	}) => {
 		repoKey = k;
 		repoReferences = r;
@@ -51,7 +52,8 @@
 		const result = await createAutomationConfig({
 			satellite,
 			identity: $authIdentity,
-			repoKey
+			repoKey,
+			repoReferences
 		});
 
 		wizardBusy.stop();
@@ -73,7 +75,12 @@
 		</SpinnerModal>
 	{:else if nonNullish(repoKey) && step === 'review'}
 		<div in:fade>
-			<RepositoryConnectReview onback={() => (step = 'init')} {onconfirm} {repoKey} {repoReferences} />
+			<RepositoryConnectReview
+				onback={() => (step = 'init')}
+				{onconfirm}
+				{repoKey}
+				{repoReferences}
+			/>
 		</div>
 	{:else}
 		<RepositoryConnectForm oncontinue={onConnect} bind:repoUrlInput bind:repoReferencesInput />

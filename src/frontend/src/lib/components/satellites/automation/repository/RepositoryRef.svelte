@@ -3,8 +3,7 @@
 	import type { SatelliteDid } from '$declarations';
 	import Badge from '$lib/components/ui/Badge.svelte';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import type { Workflow, WorkflowKey } from '$lib/types/workflow';
-	import { toDocRepositoryKey, toRepositoryKey } from '$lib/utils/workflow.utils';
+	import { toDocRepositoryKey } from '$lib/utils/workflow.utils';
 
 	interface Props {
 		key: SatelliteDid.RepositoryKey;

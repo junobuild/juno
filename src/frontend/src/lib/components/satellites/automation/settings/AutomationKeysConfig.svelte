@@ -18,7 +18,7 @@
 	interface Props {
 		config: SatelliteDid.OpenIdAutomationProviderConfig;
 		openModal: (params: {
-			type: 'edit_automation_keys_config' | 'edit_automation_add_repository_config';
+			type: 'edit_automation_keys_config' | 'edit_automation_connect_repository_config';
 		}) => void;
 	}
 

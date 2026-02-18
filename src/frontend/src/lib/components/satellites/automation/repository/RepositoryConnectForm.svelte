@@ -1,13 +1,13 @@
 <script lang="ts">
+	import { isEmptyString, notEmptyString } from '@dfinity/utils';
+	import { onMount } from 'svelte';
 	import type { SatelliteDid } from '$declarations';
+	import Collapsible from '$lib/components/ui/Collapsible.svelte';
+	import Input from '$lib/components/ui/Input.svelte';
+	import Value from '$lib/components/ui/Value.svelte';
 	import { buildRepositoryKey } from '$lib/services/satellite/automation/automation.config.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import Collapsible from '$lib/components/ui/Collapsible.svelte';
-	import Value from '$lib/components/ui/Value.svelte';
-	import Input from '$lib/components/ui/Input.svelte';
-	import { isEmptyString, notEmptyString } from '@dfinity/utils';
 	import { toasts } from '$lib/stores/app/toasts.store';
-	import { onMount } from 'svelte';
 
 	interface Props {
 		repoUrlInput: string;

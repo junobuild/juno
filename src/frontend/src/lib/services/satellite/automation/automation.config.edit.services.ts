@@ -7,6 +7,7 @@ import { toasts } from '$lib/stores/app/toasts.store';
 import type { AddAccessKeyScope } from '$lib/types/access-keys';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { Satellite } from '$lib/types/satellite';
+import type { WorkflowReferences } from '$lib/types/workflow';
 import { isNullish, toNullable } from '@dfinity/utils';
 import type { Identity } from '@icp-sdk/core/agent';
 import { get } from 'svelte/store';
@@ -57,15 +58,73 @@ export const updateAutomationKeysConfig = async ({
 					})
 	};
 
+	return await updateConfig({
+		identity,
+		satellite,
+		automationConfig,
+		providerConfig: updateProviderConfig
+	});
+};
+
+export const updateAutomationConnectRepositoryConfig = async ({
+	automationConfig,
+	providerConfig,
+	repoKey,
+	repoReferences,
+	identity,
+	satellite
+}: {
+	repoKey: SatelliteDid.RepositoryKey;
+	repoReferences: WorkflowReferences | undefined;
+	automationConfig: SatelliteDid.AutomationConfig;
+	providerConfig: SatelliteDid.OpenIdAutomationProviderConfig;
+	satellite: Satellite;
+	identity: OptionIdentity;
+}): Promise<UpdateAutomationConfigResult> => {
+	const labels = get(i18n);
+
+	if (isNullish(identity) || isNullish(identity?.getPrincipal())) {
+		toasts.error({ text: labels.core.not_logged_in });
+		return { success: 'error' };
+	}
+
+	const updateProviderConfig: SatelliteDid.OpenIdAutomationProviderConfig = {
+		...providerConfig,
+		repositories: [...providerConfig.repositories, [repoKey, { refs: toNullable(repoReferences) }]]
+	};
+
+	return await updateConfig({
+		identity,
+		satellite,
+		automationConfig,
+		providerConfig: updateProviderConfig
+	});
+};
+
+const updateConfig = async ({
+	satellite,
+	automationConfig,
+	providerConfig,
+	identity
+}: {
+	satellite: Satellite;
+	automationConfig: SatelliteDid.AutomationConfig;
+	providerConfig: SatelliteDid.OpenIdAutomationProviderConfig;
+	identity: Identity;
+}): Promise<UpdateAutomationConfigResult> => {
 	const updateAutomationConfig: SatelliteDid.SetAutomationConfig = {
 		...automationConfig,
 		openid: toNullable({
 			observatory_id: [],
-			providers: [[{ GitHub: null }, updateProviderConfig]]
+			providers: [[{ GitHub: null }, providerConfig]]
 		})
 	};
 
-	const result = await updateConfig({ identity, satellite, config: updateAutomationConfig });
+	const result = await setConfig({
+		identity,
+		satellite,
+		config: updateAutomationConfig
+	});
 
 	if (result.result === 'error') {
 		return {
@@ -86,7 +145,7 @@ export const updateAutomationKeysConfig = async ({
 	return { success: 'ok' };
 };
 
-const updateConfig = async ({
+const setConfig = async ({
 	satellite: { satellite_id: satelliteId },
 	config,
 	identity

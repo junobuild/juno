@@ -193,6 +193,6 @@ export interface JunoModal<T extends JunoModalDetail> {
 		| 'reconcile_out_of_sync_segments'
 		| 'create_automation'
 		| 'edit_automation_keys_config'
-		| 'edit_automation_add_repository_config';
+		| 'edit_automation_connect_repository_config';
 	detail?: T;
 }

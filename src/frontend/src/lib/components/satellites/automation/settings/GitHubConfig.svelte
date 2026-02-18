@@ -8,7 +8,7 @@
 	interface Props {
 		config: SatelliteDid.OpenIdAutomationProviderConfig;
 		openModal: (params: {
-			type: 'edit_automation_keys_config' | 'edit_automation_add_repository_config';
+			type: 'edit_automation_keys_config' | 'edit_automation_connect_repository_config';
 		}) => void;
 	}
 
@@ -18,7 +18,7 @@
 
 	let empty = $derived(repositories.length === 0);
 
-	const openEditModal = () => openModal({ type: 'edit_automation_add_repository_config' });
+	const openEditModal = () => openModal({ type: 'edit_automation_connect_repository_config' });
 </script>
 
 <div class="table-container">
@@ -33,7 +33,7 @@
 
 		<tbody>
 			{#each repositories as repository, index (index)}
-				{@const key = repository[0]}
+				{@const [key] = repository}
 				{@const refs = fromNullable(repository[1].refs)}
 
 				<tr>

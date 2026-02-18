@@ -2,6 +2,7 @@
 	import { nonNullish } from '@dfinity/utils';
 	import AuthConfigModal from '$lib/components/modals/auth/AuthConfigModal.svelte';
 	import UserDetailsModal from '$lib/components/modals/auth/UserDetailsModal.svelte';
+	import AutomationConnectRepositoryModal from '$lib/components/modals/automation/AutomationConnectRepositoryModal.svelte';
 	import AutomationKeysConfigModal from '$lib/components/modals/automation/AutomationKeysConfigModal.svelte';
 	import CreateAutomationModal from '$lib/components/modals/automation/CreateAutomationModal.svelte';
 	import ApplyChangeModal from '$lib/components/modals/changes/ApplyChangeModal.svelte';
@@ -34,8 +35,6 @@
 	import ConvertIcpModal from '$lib/components/modals/wallet/ConvertIcpModal.svelte';
 	import SendTokensModal from '$lib/components/modals/wallet/SendTokensModal.svelte';
 	import type { JunoModal, JunoModalDetail } from '$lib/types/modal';
-	import AutomationAddRepositoryConfigModal
-		from "$lib/components/modals/automation/AutomationAddRepositoryConfigModal.svelte";
 
 	let modal: JunoModal<JunoModalDetail> | undefined = $state(undefined);
 
@@ -176,6 +175,6 @@
 	<AutomationKeysConfigModal detail={modal.detail} onclose={close} />
 {/if}
 
-{#if modal?.type === 'edit_automation_add_repository_config' && nonNullish(modal.detail)}
-	<AutomationAddRepositoryConfigModal detail={modal.detail} onclose={close} />
+{#if modal?.type === 'edit_automation_connect_repository_config' && nonNullish(modal.detail)}
+	<AutomationConnectRepositoryModal detail={modal.detail} onclose={close} />
 {/if}

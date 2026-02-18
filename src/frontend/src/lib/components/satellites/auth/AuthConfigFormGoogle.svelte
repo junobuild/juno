@@ -8,18 +8,18 @@
 	import Input from '$lib/components/ui/Input.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import Warning from '$lib/components/ui/Warning.svelte';
+	import { AUTH_DEFAULT_MAX_SESSION_TIME_TO_LIVE } from '$lib/constants/auth.constants';
 	import {
 		A_MONTH_NS,
 		A_WEEK_NS,
 		AN_HOUR_NS,
-		AUTH_DEFAULT_MAX_SESSION_TIME_TO_LIVE,
 		EIGHT_HOURS_NS,
 		FOUR_HOURS_NS,
 		HALF_DAY_NS,
 		ONE_DAY_NS,
 		TWO_HOURS_NS,
 		TWO_WEEKS_NS
-	} from '$lib/constants/auth.constants';
+	} from '$lib/constants/duration.constants';
 	import { isBusy } from '$lib/derived/app/busy.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { Satellite } from '$lib/types/satellite';

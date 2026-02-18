@@ -15,9 +15,9 @@
 		THIRTY_MINUTES_NS,
 		TWO_MINUTES_NS
 	} from '$lib/constants/duration.constants';
-    import {emit} from "$lib/utils/events.utils";
-	import {satelliteAutomationConfig} from "$lib/derived/satellite/satellite-configs.derived";
-	import {toasts} from "$lib/stores/app/toasts.store";
+	import { emit } from '$lib/utils/events.utils';
+	import { satelliteAutomationConfig } from '$lib/derived/satellite/satellite-configs.derived';
+	import { toasts } from '$lib/stores/app/toasts.store';
 
 	interface Props {
 		satellite: Satellite;
@@ -27,14 +27,17 @@
 	let { satellite, config }: Props = $props();
 
 	let controller = $derived(fromNullable(config?.controller));
+
+	let controllerScope = $derived(fromNullable(controller?.scope ?? []));
 	let scope = $derived(
-		nonNullish(controller?.scope) && 'Submit' in controller?.scope ? 'submit' : 'write'
+		nonNullish(controllerScope) && 'Submit' in controllerScope ? 'submit' : 'write'
 	);
+
 	let maxTimeToLive = $derived(
 		fromNullable(controller?.max_time_to_live ?? []) ?? AUTOMATION_DEFAULT_MAX_SESSION_TIME_TO_LIVE
 	);
 
-    const openEditModal = () => {
+	const openEditModal = () => {
 		const automationConfig = $satelliteAutomationConfig;
 
 		// If the provider config for GitHub is defined it's unlikely that the parent, the overall automation config is undefined.
@@ -46,18 +49,18 @@
 			return;
 		}
 
-        emit({
-            message: 'junoModal',
-            detail: {
-                type: 'edit_automation_keys_config',
-                detail: {
+		emit({
+			message: 'junoModal',
+			detail: {
+				type: 'edit_automation_keys_config',
+				detail: {
 					automationConfig,
-                    providerConfig: config,
-                    satellite
-                }
-            }
-        });
-    }
+					providerConfig: config,
+					satellite
+				}
+			}
+		});
+	};
 </script>
 
 <div class="card-container with-title">

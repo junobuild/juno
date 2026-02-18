@@ -25,19 +25,15 @@
 		maxTimeToLive: bigint | undefined;
 	}
 
-	let {
-		onsubmit,
-		config,
-		scope = $bindable(),
-		maxTimeToLive = $bindable()
-	}: Props = $props();
+	let { onsubmit, config, scope = $bindable(), maxTimeToLive = $bindable() }: Props = $props();
 
 	// svelte-ignore state_referenced_locally
 	let controller = $state(fromNullable(config?.controller));
+	let controllerScope = $state(fromNullable(controller?.scope ?? []));
 
 	// Scope
 	let scopeInput = $state(
-		nonNullish(controller?.scope) && 'Submit' in controller?.scope ? 'submit' : 'write'
+		nonNullish(controllerScope) && 'Submit' in controllerScope ? 'submit' : 'write'
 	);
 
 	$effect(() => {

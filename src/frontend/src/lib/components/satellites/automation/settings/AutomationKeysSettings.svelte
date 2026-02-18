@@ -1,11 +1,8 @@
 <script lang="ts">
-	import { i18n } from '$lib/stores/app/i18n.store';
-	import type { Satellite } from '$lib/types/satellite';
-	import type { SatelliteDid } from '$declarations';
 	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
-	import { AUTOMATION_DEFAULT_MAX_SESSION_TIME_TO_LIVE } from '$lib/constants/automation.constants';
+	import type { SatelliteDid } from '$declarations';
 	import Value from '$lib/components/ui/Value.svelte';
-	import { secondsToDuration } from '$lib/utils/date.utils';
+	import { AUTOMATION_DEFAULT_MAX_SESSION_TIME_TO_LIVE } from '$lib/constants/automation.constants';
 	import {
 		AN_HOUR_NS,
 		FIFTEEN_MINUTES_NS,
@@ -15,9 +12,12 @@
 		THIRTY_MINUTES_NS,
 		TWO_MINUTES_NS
 	} from '$lib/constants/duration.constants';
-	import { emit } from '$lib/utils/events.utils';
 	import { satelliteAutomationConfig } from '$lib/derived/satellite/satellite-configs.derived';
+	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
+	import type { Satellite } from '$lib/types/satellite';
+	import { secondsToDuration } from '$lib/utils/date.utils';
+	import { emit } from '$lib/utils/events.utils';
 
 	interface Props {
 		satellite: Satellite;

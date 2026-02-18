@@ -1,13 +1,13 @@
 <script lang="ts">
+	import AutomationKeysConfigForm from '$lib/components/satellites/automation/settings/AutomationKeysConfigForm.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import { authIdentity } from '$lib/derived/auth.derived';
+	import { updateAutomationKeysConfig } from '$lib/services/satellite/automation/automation.config.edit.services';
 	import { wizardBusy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import type { JunoModalAutomationConfigDetail, JunoModalDetail } from '$lib/types/modal';
-	import AutomationKeysConfigForm from '$lib/components/satellites/automation/settings/AutomationKeysConfigForm.svelte';
 	import type { AddAccessKeyScope } from '$lib/types/access-keys';
-	import { updateAutomationKeysConfig } from '$lib/services/satellite/automation/automation.config.edit.services';
+	import type { JunoModalAutomationConfigDetail, JunoModalDetail } from '$lib/types/modal';
 
 	interface Props {
 		detail: JunoModalDetail;

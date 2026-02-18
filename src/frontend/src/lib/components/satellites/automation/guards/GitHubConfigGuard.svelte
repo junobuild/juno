@@ -5,9 +5,9 @@
 	import AutomationNew from '$lib/components/satellites/automation/AutomationNew.svelte';
 	import NoAutomation from '$lib/components/satellites/automation/NoAutomation.svelte';
 	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
+	import { githubConfig } from '$lib/derived/satellite/github.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { Satellite } from '$lib/types/satellite';
-	import {githubConfig} from "$lib/derived/satellite/github.derived";
 
 	interface Props {
 		satellite: Satellite;

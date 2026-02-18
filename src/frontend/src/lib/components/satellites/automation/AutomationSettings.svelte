@@ -1,8 +1,8 @@
 <script lang="ts">
-	import type { Satellite } from '$lib/types/satellite';
 	import type { SatelliteDid } from '$declarations';
 	import GitHubConfigGuard from '$lib/components/satellites/automation/guards/GitHubConfigGuard.svelte';
 	import AutomationKeysSettings from '$lib/components/satellites/automation/settings/AutomationKeysSettings.svelte';
+	import type { Satellite } from '$lib/types/satellite';
 
 	interface Props {
 		satellite: Satellite;
@@ -13,6 +13,6 @@
 
 <GitHubConfigGuard {satellite}>
 	{#snippet content(config: SatelliteDid.OpenIdAutomationProviderConfig)}
-		<AutomationKeysSettings {satellite} {config} />
+		<AutomationKeysSettings {config} {satellite} />
 	{/snippet}
 </GitHubConfigGuard>

@@ -1,6 +1,6 @@
-import { derived } from 'svelte/store';
-import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
 import { satelliteAutomationConfig } from '$lib/derived/satellite/satellite-configs.derived';
+import { fromNullable, isNullish } from '@dfinity/utils';
+import { derived } from 'svelte/store';
 
 export const githubConfig = derived([satelliteAutomationConfig], ([$satelliteAutomationConfig]) => {
 	// Undefined not loaded or null as set as such

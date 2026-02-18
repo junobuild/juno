@@ -4,6 +4,7 @@
 	import type { SatelliteDid } from '$declarations';
 	import Input from '$lib/components/ui/Input.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
+	import { AUTOMATION_DEFAULT_MAX_SESSION_TIME_TO_LIVE } from '$lib/constants/automation.constants';
 	import {
 		AN_HOUR_NS,
 		FIFTEEN_MINUTES_NS,
@@ -15,7 +16,6 @@
 	} from '$lib/constants/duration.constants';
 	import { isBusy } from '$lib/derived/app/busy.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import { AUTOMATION_DEFAULT_MAX_SESSION_TIME_TO_LIVE } from '$lib/constants/automation.constants';
 	import type { AddAccessKeyScope } from '$lib/types/access-keys';
 
 	interface Props {

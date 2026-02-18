@@ -5,6 +5,7 @@
 	import Loaders from '$lib/components/app/loaders/Loaders.svelte';
 	import IdentityGuard from '$lib/components/auth/guards/IdentityGuard.svelte';
 	import Automation from '$lib/components/satellites/automation/Automation.svelte';
+	import AutomationSettings from '$lib/components/satellites/automation/AutomationSettings.svelte';
 	import SatelliteGuard from '$lib/components/satellites/guards/SatelliteGuard.svelte';
 	import NoTabs from '$lib/components/ui/NoTabs.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
@@ -16,7 +17,6 @@
 		TABS_CONTEXT_KEY
 	} from '$lib/types/tabs.context';
 	import { initTabId } from '$lib/utils/tabs.utils';
-	import AutomationSettings from '$lib/components/satellites/automation/AutomationSettings.svelte';
 
 	const tabs: Tab[] = [
 		{

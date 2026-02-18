@@ -1116,8 +1116,9 @@
 		"workflow_placeholder": "Repository or Run ID",
 		"workflow": "Workflow",
 		"reference": "Reference",
+		"references": "References",
 		"timestamp": "Timestamp",
-		"empty": "No deployments yet. Your workflows will appear here once your GitHub Actions run.",
+		"empty_deployments": "No deployments yet. Your workflows will appear here once your GitHub Actions run.",
 		"commit": "Commit",
 		"pushed_by": "pushed by",
 		"manually_run_by": "Manually run by",
@@ -1129,6 +1130,7 @@
 		"view_contributor": "View contributor on GitHub",
 		"keys": "Automation Keys",
 		"access_duration": "Access Duration",
-		"edit_automation_keys": "Configure how your workflows access your Satellite and how long their keys remain valid."
+		"edit_automation_keys": "Configure how your workflows access your Satellite and how long their keys remain valid.",
+		"empty_repositories": "No repositories configured for automation."
 	}
 }

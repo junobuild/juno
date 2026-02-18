@@ -4,7 +4,7 @@ type WorkflowProvider = 'GitHub';
 
 type DocOwnerKey = string;
 type DocNameKey = string;
-type DocRepositoryKey = `${DocOwnerKey}/${DocNameKey}`;
+export type DocRepositoryKey = `${DocOwnerKey}/${DocNameKey}`;
 
 export type RunId = string;
 

@@ -65,7 +65,7 @@
 				{/if}
 
 				{#if empty}
-					<tr><td {colspan}>{$i18n.automation.empty}</td></tr>
+					<tr><td {colspan}>{$i18n.automation.empty_deployments}</td></tr>
 				{/if}
 			{/if}
 		</tbody>

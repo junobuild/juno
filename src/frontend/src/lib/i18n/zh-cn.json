@@ -1119,7 +1119,7 @@
 		"workflow": "工作流",
 		"reference": "引用",
 		"timestamp": "时间戳",
-		"empty": "尚无部署。您的工作流将在 GitHub Actions 运行后显示在此处。",
+		"empty_deployments": "尚无部署。您的工作流将在 GitHub Actions 运行后显示在此处。",
 		"commit": "提交",
 		"pushed_by": "推送者",
 		"manually_run_by": "手动运行者",

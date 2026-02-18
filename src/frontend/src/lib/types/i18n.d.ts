@@ -1154,8 +1154,9 @@ interface I18nAutomation {
 	workflow_placeholder: string;
 	workflow: string;
 	reference: string;
+	references: string;
 	timestamp: string;
-	empty: string;
+	empty_deployments: string;
 	commit: string;
 	pushed_by: string;
 	manually_run_by: string;
@@ -1168,6 +1169,7 @@ interface I18nAutomation {
 	keys: string;
 	access_duration: string;
 	edit_automation_keys: string;
+	empty_repositories: string;
 }
 
 interface I18n {

@@ -10,13 +10,18 @@
 		title?: Snippet;
 		children: Snippet;
 		size?: 'default' | 'wide';
+		onyes: () => Promise<void>;
+		onno: () => void;
 	}
 
-	let { visible = $bindable(false), title, children, size = 'default' }: Props = $props();
-
-	const dispatch = createEventDispatcher();
-	const yes = () => dispatch('junoYes');
-	const no = () => dispatch('junoNo');
+	let {
+		visible = $bindable(false),
+		title,
+		children,
+		size = 'default',
+		onyes,
+		onno
+	}: Props = $props();
 
 	let center = $derived(size === 'wide' ? ('wide' as const) : true);
 </script>
@@ -27,11 +32,11 @@
 
 		{@render children()}
 
-		<button disabled={$isBusy} onclick={stopPropagation(no)} type="button">
+		<button disabled={$isBusy} onclick={onno} type="button">
 			{$i18n.core.no}
 		</button>
 
-		<button disabled={$isBusy} onclick={stopPropagation(yes)} type="button">
+		<button disabled={$isBusy} onclick={onyes} type="button">
 			{$i18n.core.yes}
 		</button>
 	</div>

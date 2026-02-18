@@ -72,7 +72,7 @@
 
 <button class="menu" onclick={() => (visible = true)}><IconLinkOff /> {$i18n.core.detach}</button>
 
-<Confirmation bind:visible on:junoYes={detach} on:junoNo={close}>
+<Confirmation onno={close} onyes={detach} bind:visible>
 	{#snippet title()}
 		<Text key="canisters.detach_title" value={segment} />
 	{/snippet}

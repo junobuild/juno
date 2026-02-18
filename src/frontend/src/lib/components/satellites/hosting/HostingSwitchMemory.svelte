@@ -41,7 +41,7 @@
 
 <button onclick={open}>{$i18n.hosting.switch_memory}</button>
 
-<Confirmation bind:visible on:junoYes={switchMemory} on:junoNo={close}>
+<Confirmation onno={close} onyes={switchMemory} bind:visible>
 	{#snippet title()}
 		{$i18n.hosting.switch_memory}
 	{/snippet}

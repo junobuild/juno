@@ -91,7 +91,7 @@
 
 <button class="menu" onclick={() => (visible = true)}><IconStart /> {$i18n.core.start}</button>
 
-<Confirmation bind:visible on:junoYes={start} on:junoNo={close}>
+<Confirmation onno={close} onyes={start} bind:visible>
 	{#snippet title()}
 		<Text key="canisters.start_tile" value={segment} />
 	{/snippet}

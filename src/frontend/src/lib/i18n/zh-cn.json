@@ -99,6 +99,12 @@
 		"staging": "预发环境",
 		"test": "测试环境",
 		"unspecified": "未定义状态",
+		"two_minutes": "两分钟",
+		"five_minutes": "五分钟",
+		"ten_minutes": "十分钟",
+		"fifteen_minutes": "十五分钟",
+		"thirty_minutes": "三十分钟",
+		"forty_five_minutes": "四十五分钟",
 		"an_hour": "一小时",
 		"two_hours": "两小时",
 		"four_hours": "四小时",
@@ -755,7 +761,8 @@
 		"build_repo_key_invalid_github_url": "仅支持 GitHub 仓库。请输入您的 GitHub 仓库 URL。",
 		"build_repo_key_owner_not_found": "在 URL 中未找到仓库所有者。请输入完整的 GitHub 仓库 URL。",
 		"build_repo_key_repo_not_found": "在 URL 中未找到仓库名称。请输入完整的 GitHub 仓库 URL。",
-		"create_automation_config": "保存自动化配置时发生错误。"
+		"save_automation_config": "保存自动化配置时发生错误。",
+		"automation_config_undefined": "自动化配置未定义，这是意外情况。请尝试重新加载页面。"
 	},
 	"document": {
 		"owner": "所有者",
@@ -1121,6 +1128,9 @@
 		"view_workflow": "在 GitHub 上查看工作流运行",
 		"view_commit": "在 GitHub 上查看提交",
 		"view_branch": "在 GitHub 上查看分支",
-		"view_contributor": "在 GitHub 上查看贡献者"
+		"view_contributor": "在 GitHub 上查看贡献者",
+		"keys": "自动化密钥",
+		"access_duration": "访问时长",
+		"edit_automation_keys": "配置工作流访问 Satellite 的方式及其密钥的有效期。"
 	}
 }

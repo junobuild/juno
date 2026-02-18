@@ -5,6 +5,7 @@
 	import Loaders from '$lib/components/app/loaders/Loaders.svelte';
 	import IdentityGuard from '$lib/components/auth/guards/IdentityGuard.svelte';
 	import Automation from '$lib/components/satellites/automation/Automation.svelte';
+	import AutomationSettings from '$lib/components/satellites/automation/AutomationSettings.svelte';
 	import SatelliteGuard from '$lib/components/satellites/guards/SatelliteGuard.svelte';
 	import NoTabs from '$lib/components/ui/NoTabs.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
@@ -21,6 +22,10 @@
 		{
 			id: Symbol('1'),
 			labelKey: 'automation.title'
+		},
+		{
+			id: Symbol('2'),
+			labelKey: 'core.settings'
 		}
 	];
 
@@ -43,6 +48,8 @@
 				<TabsCmp>
 					{#if $store.tabId === $store.tabs[0].id}
 						<Automation {satellite} />
+					{:else if $store.tabId === $store.tabs[1].id}
+						<AutomationSettings {satellite} />
 					{/if}
 				</TabsCmp>
 			{/snippet}

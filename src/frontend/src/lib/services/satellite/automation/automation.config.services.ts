@@ -140,7 +140,7 @@ const setAutomationConfig = async ({
 		const labels = get(i18n);
 
 		toasts.error({
-			text: labels.errors.create_automation_config,
+			text: labels.errors.save_automation_config,
 			detail: err
 		});
 

@@ -2,6 +2,7 @@
 	import { nonNullish } from '@dfinity/utils';
 	import AuthConfigModal from '$lib/components/modals/auth/AuthConfigModal.svelte';
 	import UserDetailsModal from '$lib/components/modals/auth/UserDetailsModal.svelte';
+	import AutomationKeysConfigModal from '$lib/components/modals/automation/AutomationKeysConfigModal.svelte';
 	import CreateAutomationModal from '$lib/components/modals/automation/CreateAutomationModal.svelte';
 	import ApplyChangeModal from '$lib/components/modals/changes/ApplyChangeModal.svelte';
 	import RejectChangeModal from '$lib/components/modals/changes/RejectChangeModal.svelte';
@@ -167,4 +168,8 @@
 
 {#if modal?.type === 'create_automation' && nonNullish(modal.detail)}
 	<CreateAutomationModal detail={modal.detail} onclose={close} />
+{/if}
+
+{#if modal?.type === 'edit_automation_keys_config' && nonNullish(modal.detail)}
+	<AutomationKeysConfigModal detail={modal.detail} onclose={close} />
 {/if}

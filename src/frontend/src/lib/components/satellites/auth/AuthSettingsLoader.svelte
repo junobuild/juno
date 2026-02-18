@@ -4,7 +4,6 @@
 	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
 	import Warning from '$lib/components/ui/Warning.svelte';
 	import { authIdentity } from '$lib/derived/auth.derived';
-	import { satelliteAuthConfig } from '$lib/derived/satellite/satellite-configs.derived';
 	import { getRuleUser } from '$lib/services/satellite/collection/collection.services';
 	import { loadSatelliteConfig } from '$lib/services/satellite/satellite-config.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
@@ -36,8 +35,6 @@
 			reload
 		});
 	};
-
-	$inspect($satelliteAuthConfig);
 
 	const load = async () => {
 		await Promise.all([loadConfig(), loadRule()]);

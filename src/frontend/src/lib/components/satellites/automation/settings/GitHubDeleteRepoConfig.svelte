@@ -10,10 +10,10 @@
 	import { deleteAutomationRepoConfig } from '$lib/services/satellite/automation/automation.config.delete.services';
 	import { busy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
+	import { toasts } from '$lib/stores/app/toasts.store';
 	import type { Satellite } from '$lib/types/satellite';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { toDocRepositoryKey } from '$lib/utils/workflow.utils';
-	import { toasts } from '$lib/stores/app/toasts.store';
 
 	interface Props {
 		key: RepositoryKey;

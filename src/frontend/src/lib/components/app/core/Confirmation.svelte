@@ -18,7 +18,7 @@
 	const yes = () => dispatch('junoYes');
 	const no = () => dispatch('junoNo');
 
-	let center = $derived(size === 'wide' ? 'wide' : true);
+	let center = $derived(size === 'wide' ? ('wide' as const) : true);
 </script>
 
 <Popover backdrop="dark" {center} bind:visible>

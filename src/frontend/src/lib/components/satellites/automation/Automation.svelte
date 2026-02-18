@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { SatelliteDid } from '$declarations';
 	import WorkflowsContext from '$lib/components/satellites/automation/workflows/WorkflowsContext.svelte';
-	import SatelliteAutomationConfigGuard from '$lib/components/satellites/automation/guards/SatelliteAutomationConfigGuard.svelte';
+	import AutomationConfigGuard from '$lib/components/satellites/automation/guards/AutomationConfigGuard.svelte';
 	import type { Satellite } from '$lib/types/satellite';
 
 	interface Props {
@@ -11,8 +11,8 @@
 	let { satellite }: Props = $props();
 </script>
 
-<SatelliteAutomationConfigGuard {satellite}>
+<AutomationConfigGuard {satellite}>
 	{#snippet content(_config: SatelliteDid.AutomationConfig)}
 		<WorkflowsContext {satellite} />
 	{/snippet}
-</SatelliteAutomationConfigGuard>
+</AutomationConfigGuard>

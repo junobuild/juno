@@ -48,7 +48,7 @@ pub fn save_unique_token_jti(
 
     let automation_token_data: AutomationTokenData = AutomationTokenData {
         controller_id: DocDataPrincipal {
-            value: controller_id.clone(),
+            value: *controller_id,
         },
     };
 

@@ -4,7 +4,7 @@
 	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import type { SatelliteDid } from '$declarations';
-	import AuthConfigFormGoogleOptions from '$lib/components/satellites/auth/AuthConfigFormGoogleOptions.svelte';
+	import AuthConfigFormOpenIdOptions from '$lib/components/satellites/auth/AuthConfigFormOpenIdOptions.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import Warning from '$lib/components/ui/Warning.svelte';
@@ -22,8 +22,10 @@
 	} from '$lib/constants/duration.constants';
 	import { isBusy } from '$lib/derived/app/busy.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
+	import type { OpenIdAuthProvider } from '$lib/types/auth';
 	import type { Satellite } from '$lib/types/satellite';
-	import { i18nFormat } from '$lib/utils/i18n.utils';
+	import { findProviderGitHub, findProviderGoogle } from '$lib/utils/auth.openid.utils';
+	import { i18nCapitalize, i18nFormat } from '$lib/utils/i18n.utils';
 
 	interface Props {
 		satellite: Satellite;
@@ -32,6 +34,7 @@
 		clientId: string | undefined;
 		maxTimeToLive: bigint | undefined;
 		allowedTargets: PrincipalText[] | null | undefined;
+		provider: OpenIdAuthProvider;
 	}
 
 	let {
@@ -40,15 +43,19 @@
 		config,
 		clientId = $bindable(undefined),
 		maxTimeToLive = $bindable(),
-		allowedTargets = $bindable(undefined)
+		allowedTargets = $bindable(undefined),
+		provider
 	}: Props = $props();
 
 	// svelte-ignore state_referenced_locally
+	let findProvider = $state(provider === 'github' ? findProviderGitHub : findProviderGoogle);
+
+	// svelte-ignore state_referenced_locally
 	let openid = $state(fromNullable(config?.openid ?? []));
-	let google = $state(openid?.providers.find(([key]) => 'Google' in key));
-	let providerData = $state(google?.[1]);
+	let openidProvider = $state(findProvider(openid));
+	let providerData = $state(openidProvider?.[1]);
 	let delegation = $state(fromNullable(providerData?.delegation ?? []));
-	let googleEnabled = $state(nonNullish(google));
+	let openidEnabled = $state(nonNullish(openidProvider));
 
 	// Client ID
 	let currentClientId = $state(providerData?.client_id);
@@ -89,17 +96,17 @@
 	let warnClientId = $derived(isEmptyString(clientId) && notEmptyString(currentClientId));
 </script>
 
-<h2>Google</h2>
+<h2>{provider}</h2>
 
 <p>
 	{i18nFormat(
-		googleEnabled
+		openidEnabled
 			? $i18n.authentication.edit_provider
 			: $i18n.authentication.edit_to_enable_provider,
 		[
 			{
 				placeholder: '{0}',
-				value: 'Google'
+				value: i18nCapitalize(provider)
 			}
 		]
 	)}
@@ -153,7 +160,7 @@
 			</Value>
 		</div>
 
-		<AuthConfigFormGoogleOptions {delegation} {satellite} bind:allowedTargets />
+		<AuthConfigFormOpenIdOptions {delegation} {satellite} bind:allowedTargets />
 
 		{#if warnClientId}
 			<div class="warn" in:fade>
@@ -166,3 +173,9 @@
 		{$i18n.core.submit}
 	</button>
 </form>
+
+<style lang="scss">
+	h2 {
+		text-transform: capitalize;
+	}
+</style>

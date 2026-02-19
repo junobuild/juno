@@ -1,7 +1,8 @@
 import type { SatelliteDid } from '$declarations';
 import type {
 	AuthenticationConfigOpenId,
-	OpenIdAuthProviderDelegationConfig
+	OpenIdAuthProviderDelegationConfig,
+	OpenIdDelegationProvider
 } from '$declarations/satellite/satellite.did';
 import { setAuthConfig, setRule } from '$lib/api/satellites.api';
 import {
@@ -184,13 +185,14 @@ export const updateAuthConfigGoogle = async ({
 		return { success: resultConfig === 'error' ? 'error' : 'ok' };
 	}
 
-	if (!GOOGLE_CLIENT_ID_REGEX.test(clientId)) {
+	if (provider === 'google' && !GOOGLE_CLIENT_ID_REGEX.test(clientId)) {
 		toasts.error({ text: labels.errors.auth_invalid_google_client_id });
 		return { success: 'error' };
 	}
 
 	const { result: resultConfig } = await updateConfigGoogle({
 		satellite,
+		provider,
 		clientId,
 		maxTimeToLive,
 		allowedTargets,
@@ -320,14 +322,18 @@ const updateConfigGoogle = async ({
 	clientId,
 	maxTimeToLive,
 	allowedTargets,
-	identity
+	identity,
+	provider
 }: Pick<UpdateAuthConfigOpenIdParams, 'config' | 'maxTimeToLive' | 'allowedTargets' | 'satellite'> &
 	Required<Pick<UpdateAuthConfigParams, 'identity'>> & {
 		clientId: string;
+		provider: OpenIdAuthProvider;
 	}): Promise<UpdateResult> => {
+	const findProvider = provider === 'github' ? findProviderGitHub : findProviderGoogle;
+
 	const openid = fromNullable(config?.openid ?? []);
-	const google = openid?.providers.find(([key]) => 'Google' in key);
-	const providerData = google?.[1];
+	const openidProvider = findProvider(openid);
+	const providerData = openidProvider?.[1];
 	const delegation = fromNullable(providerData?.delegation ?? []);
 
 	const sameClientId = providerData?.client_id === clientId;
@@ -378,6 +384,13 @@ const updateConfigGoogle = async ({
 					}
 				: undefined;
 
+	const filterProviders =
+		provider === 'github' ? filterProvidersNotGitHub : filterProvidersNotGoogle;
+	const openidProviders = filterProviders(openid);
+
+	const delegationProvider: OpenIdDelegationProvider =
+		provider === 'github' ? { GitHub: null } : { Google: null };
+
 	return await updateConfig({
 		config: {
 			internet_identity: config?.internet_identity ?? [],
@@ -385,8 +398,9 @@ const updateConfigGoogle = async ({
 			openid: [
 				{
 					providers: [
+						...openidProviders,
 						[
-							{ Google: null },
+							delegationProvider,
 							{
 								client_id: clientId,
 								delegation: toNullable(updateDelegation)

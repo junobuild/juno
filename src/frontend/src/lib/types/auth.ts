@@ -1,7 +1,3 @@
-import type {
-	OpenIdAuthProviderConfig,
-	OpenIdDelegationProvider
-} from '$declarations/satellite/satellite.did';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { AuthClient } from '@icp-sdk/auth/client';
 
@@ -14,6 +10,4 @@ export type SignInWithAuthClient = (params: {
 }) => Promise<SignedInIdentity>;
 export type SignInWithNewAuthClient = () => Promise<void>;
 
-export type SignInOpenIdProvider = 'google' | 'github';
-
-export type OpenIdAuthProvider = [OpenIdDelegationProvider, OpenIdAuthProviderConfig];
+export type OpenIdAuthProvider = 'google' | 'github';

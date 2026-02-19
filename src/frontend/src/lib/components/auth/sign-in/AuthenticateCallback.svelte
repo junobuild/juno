@@ -3,10 +3,10 @@
 	import AlreadySignedIn from '$lib/components/auth/sign-in/AlreadySignedIn.svelte';
 	import Authenticate from '$lib/components/auth/sign-in/Authenticate.svelte';
 	import { authSignedIn } from '$lib/derived/auth.derived';
-	import type { SignInOpenIdProvider } from '$lib/types/auth';
+	import type { OpenIdAuthProvider } from '$lib/types/auth';
 
 	interface Props {
-		provider: SignInOpenIdProvider;
+		provider: OpenIdAuthProvider;
 	}
 
 	let { provider }: Props = $props();

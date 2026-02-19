@@ -1,10 +1,15 @@
-import type { AuthenticationConfigOpenId } from '$declarations/satellite/satellite.did';
-import type { OpenIdAuthProvider } from '$lib/types/auth';
+import type {
+	AuthenticationConfigOpenId,
+	OpenIdAuthProviderConfig,
+	OpenIdDelegationProvider
+} from '$declarations/satellite/satellite.did';
 
 export const findProviderGoogle = (
 	openid: AuthenticationConfigOpenId | undefined
-): OpenIdAuthProvider | undefined => openid?.providers.find(([key]) => 'Google' in key);
+): [OpenIdDelegationProvider, OpenIdAuthProviderConfig] | undefined =>
+	openid?.providers.find(([key]) => 'Google' in key);
 
 export const findProviderGitHub = (
 	openid: AuthenticationConfigOpenId | undefined
-): OpenIdAuthProvider | undefined => openid?.providers.find(([key]) => 'GitHub' in key);
+): [OpenIdDelegationProvider, OpenIdAuthProviderConfig] | undefined =>
+	openid?.providers.find(([key]) => 'GitHub' in key);

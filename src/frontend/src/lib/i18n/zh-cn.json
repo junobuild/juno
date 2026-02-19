@@ -1137,6 +1137,7 @@
 		"edit_automation_keys": "配置工作流访问 Satellite 的方式及其密钥的有效期。",
 		"empty_repositories": "尚未配置用于自动化的仓库。",
 		"delete_title": "删除仓库",
-		"delete_question": "确定要从自动化配置中移除 <mark>{0}</mark> 吗？"
+		"delete_question": "确定要从自动化配置中移除 <mark>{0}</mark> 吗？",
+		"warn_skylab": "GitHub 部署仅在生产环境中可用。GitHub Actions 无法与模拟器通信。"
 	}
 }

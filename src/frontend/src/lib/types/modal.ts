@@ -1,6 +1,7 @@
 import type { ConsoleDid, ICDid, MissionControlDid, OrbiterDid, SatelliteDid } from '$declarations';
 import type { SelectedToken, SelectedWallet } from '$lib/schemas/wallet.schema';
 import type { AddAccessKeyParams, AddAccessKeyResult } from '$lib/types/access-keys';
+import type { OpenIdAuthProvider } from '$lib/types/auth';
 import type { CanisterInfo, CanisterSegmentWithLabel, CanisterSettings } from '$lib/types/canister';
 import type { MissionControlId } from '$lib/types/mission-control';
 import type { OrbiterSatelliteConfigEntry } from '$lib/types/orbiter';
@@ -91,10 +92,10 @@ export interface JunoModalEditAuthConfigDetailCore {
 export type JunoModalEditAuthConfigDetailType =
 	| JunoModalEditAuthConfigDetailCore
 	| JunoModalEditAuthConfigDetailII
-	| JunoModalEditAuthConfigDetailGoogle;
+	| JunoModalEditAuthConfigDetailOpenId;
 
-export interface JunoModalEditAuthConfigDetailGoogle {
-	google: null;
+export interface JunoModalEditAuthConfigDetailOpenId {
+	openid: { provider: OpenIdAuthProvider };
 }
 
 export interface JunoModalEditAuthConfigDetailII {

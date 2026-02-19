@@ -20,12 +20,12 @@
 	import { secondsToDuration } from '$lib/utils/date.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { satelliteName } from '$lib/utils/satellite.utils';
-	import type { OpenIdAuthProvider, SignInOpenIdProvider } from '$lib/types/auth';
+	import type { OpenIdAuthProvider } from '$lib/types/auth';
 	import { findProviderGitHub, findProviderGoogle } from '$lib/utils/auth.openid.utils';
 
 	interface Props {
 		satellite: Satellite;
-		provider: SignInOpenIdProvider;
+		provider: OpenIdAuthProvider;
 		openModal: (params: JunoModalEditAuthConfigDetailType) => Promise<void>;
 	}
 
@@ -60,7 +60,7 @@
 
 	const openEditModal = async () =>
 		await openModal({
-			google: null
+			openid: { provider }
 		});
 </script>
 

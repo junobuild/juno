@@ -1128,7 +1128,7 @@
 		"pushed_by": "推送者",
 		"manually_run_by": "手动运行者",
 		"pr_run_by": "PR 运行者",
-		"no_workflow_info": "无可用的工作流信息",
+		"no_workflow_info": "未知任务",
 		"view_workflow": "在 GitHub 上查看工作流运行",
 		"view_commit": "在 GitHub 上查看提交",
 		"view_branch": "在 GitHub 上查看分支",

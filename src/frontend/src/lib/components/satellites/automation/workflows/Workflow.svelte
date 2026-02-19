@@ -88,6 +88,8 @@
 	.workflow {
 		margin: 0 0 var(--padding-0_25x);
 
+		font-weight: var(--font-weight-bold);
+
 		a {
 			text-decoration: none;
 		}

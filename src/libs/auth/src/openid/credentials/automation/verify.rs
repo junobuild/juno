@@ -93,7 +93,7 @@ fn verify_openid_credentials(
         jwt,
         provider.issuers(),
         &jwks.keys,
-        &salt,
+        salt,
         assert_repository,
     )
     .map_err(VerifyOpenidCredentialsError::JwtVerify)?;

@@ -35,7 +35,7 @@ pub fn del_controllers(
 
 pub fn del_controller_self() {
     let caller = caller();
-    let controllers: [ControllerId; 1] = [caller.clone()];
+    let controllers: [ControllerId; 1] = [caller];
 
     delete_controllers(&controllers);
 }

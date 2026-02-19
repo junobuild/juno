@@ -4,6 +4,7 @@ import { assertNonNullish, isNullish } from '@dfinity/utils';
 import { type PrincipalText, PrincipalTextSchema } from '@dfinity/zod-schemas';
 import { encodeIcrcAccount } from '@icp-sdk/canisters/ledger/icrc';
 import { get } from 'svelte/store';
+import type { OpenIdAuthProvider } from '$lib/types/auth';
 
 export const getEmulatorMainIdentity = async (): Promise<PrincipalText> => {
 	const { VITE_EMULATOR_ADMIN_URL } = import.meta.env;
@@ -55,16 +56,18 @@ export const emulatorLedgerTransfer = async ({
 };
 
 export const emulatorObservatoryMonitoringOpenId = async ({
-	action
+	action,
+	provider
 }: {
 	action: 'start' | 'stop';
+	provider: OpenIdAuthProvider
 }) => {
 	const { VITE_EMULATOR_ADMIN_URL } = import.meta.env;
 
 	assertNonNullish(VITE_EMULATOR_ADMIN_URL);
 
 	const response = await fetch(
-		`${VITE_EMULATOR_ADMIN_URL}/observatory/monitoring/openid/?action=${action}`
+		`${VITE_EMULATOR_ADMIN_URL}/observatory/monitoring/openid/?action=${action}&provider=${provider}`
 	);
 
 	if (!response.ok) {

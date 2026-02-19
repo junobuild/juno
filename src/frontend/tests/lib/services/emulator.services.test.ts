@@ -83,10 +83,12 @@ describe('emulator.services', () => {
 	});
 
 	describe('emulatorToggleOpenIdMonitoring', () => {
+		const provider = 'google';
+
 		it('should throw an error when mode is production', async () => {
 			vi.stubEnv('MODE', 'production');
 
-			await expect(emulatorToggleOpenIdMonitoring({ enable: true })).rejects.toThrowError(
+			await expect(emulatorToggleOpenIdMonitoring({ enable: true, provider })).rejects.toThrowError(
 				i18Mock.emulator.error_never_execute_openid_monitoring
 			);
 		});
@@ -95,7 +97,8 @@ describe('emulator.services', () => {
 			vi.stubEnv('MODE', 'skylab');
 
 			await emulatorToggleOpenIdMonitoring({
-				enable: true
+				enable: true,
+				provider
 			});
 
 			expect(emulatorObservatoryMonitoringOpenId).toHaveBeenCalledWith({ action: 'start' });
@@ -105,7 +108,8 @@ describe('emulator.services', () => {
 			vi.stubEnv('MODE', 'skylab');
 
 			await emulatorToggleOpenIdMonitoring({
-				enable: false
+				enable: false,
+				provider
 			});
 
 			expect(emulatorObservatoryMonitoringOpenId).toHaveBeenCalledWith({ action: 'stop' });
@@ -123,7 +127,8 @@ describe('emulator.services', () => {
 			const spy = vi.spyOn(toasts, 'error').mockImplementation(vi.fn());
 
 			await emulatorToggleOpenIdMonitoring({
-				enable: true
+				enable: true,
+				provider
 			});
 
 			expect(spy).toHaveBeenCalledWith({

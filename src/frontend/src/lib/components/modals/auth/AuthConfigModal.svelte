@@ -38,7 +38,7 @@
 		'core' in detail ? 'core' : 'internet_identity' in detail ? 'internet_identity' : 'openid'
 	);
 
-	let openidProvider = $derived("openid" in detail ? detail.openid.provider : null);
+	let openidProvider = $derived('openid' in detail ? detail.openid.provider : null);
 
 	let config = $derived(detail.config);
 
@@ -98,9 +98,10 @@
 
 		const { success } = await update();
 
-		if (isSkylab() && edit === 'google') {
+		if (isSkylab() && nonNullish(openidProvider)) {
 			await emulatorToggleOpenIdMonitoring({
-				enable: nonNullish(openidClientId)
+				enable: nonNullish(openidClientId),
+				provider: openidProvider
 			});
 		}
 

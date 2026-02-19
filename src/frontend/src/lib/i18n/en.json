@@ -1126,7 +1126,7 @@
 		"pushed_by": "pushed by",
 		"manually_run_by": "Manually run by",
 		"pr_run_by": "PR run by",
-		"no_workflow_info": "No workflow information available",
+		"no_workflow_info": "Unknown job",
 		"view_workflow": "View workflow run on GitHub",
 		"view_commit": "View commit on GitHub",
 		"view_branch": "View branch run on GitHub",

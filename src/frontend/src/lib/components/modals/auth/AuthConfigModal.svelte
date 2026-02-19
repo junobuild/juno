@@ -3,8 +3,8 @@
 	import type { PrincipalText } from '@dfinity/zod-schemas';
 	import type { Principal } from '@icp-sdk/core/principal';
 	import AuthConfigFormCore from '$lib/components/satellites/auth/AuthConfigFormCore.svelte';
-	import AuthConfigFormGoogle from '$lib/components/satellites/auth/AuthConfigFormGoogle.svelte';
 	import AuthConfigFormII from '$lib/components/satellites/auth/AuthConfigFormII.svelte';
+	import AuthConfigFormOpenId from '$lib/components/satellites/auth/AuthConfigFormOpenId.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import { authIdentity } from '$lib/derived/auth.derived';
@@ -34,9 +34,11 @@
 
 	let rule = $derived('core' in detail ? detail.core.rule : undefined);
 
-	let edit = $derived<'core' | 'internet_identity' | 'google'>(
-		'core' in detail ? 'core' : 'internet_identity' in detail ? 'internet_identity' : 'google'
+	let edit = $derived<'core' | 'internet_identity' | 'openid'>(
+		'core' in detail ? 'core' : 'internet_identity' in detail ? 'internet_identity' : 'openid'
 	);
+
+	let openidProvider = $derived('openid' in detail ? detail.openid.provider : null);
 
 	let config = $derived(detail.config);
 
@@ -48,10 +50,10 @@
 	let selectedDerivationOrigin = $state<URL | undefined>(undefined);
 	let externalAlternativeOrigins = $state('');
 
-	// Google
-	let googleClientId = $state<string | undefined>(undefined);
-	let googleMaxTimeToLive = $state<bigint | undefined>(undefined);
-	let googleAllowedTargets = $state<PrincipalText[] | null | undefined>(undefined);
+	// OpenId (Google and GitHub)
+	let openidClientId = $state<string | undefined>(undefined);
+	let openidMaxTimeToLive = $state<bigint | undefined>(undefined);
+	let openidAllowedTargets = $state<PrincipalText[] | null | undefined>(undefined);
 
 	let step: 'init' | 'in_progress' | 'ready' | 'error' = $state('init');
 
@@ -76,12 +78,13 @@
 				});
 			}
 
-			if (edit === 'google') {
+			if (edit === 'openid') {
 				return updateAuthConfigGoogle({
 					...commonPayload,
-					clientId: googleClientId,
-					maxTimeToLive: googleMaxTimeToLive,
-					allowedTargets: $state.snapshot(googleAllowedTargets)
+					provider: openidProvider,
+					clientId: openidClientId,
+					maxTimeToLive: openidMaxTimeToLive,
+					allowedTargets: $state.snapshot(openidAllowedTargets)
 				});
 			}
 
@@ -95,9 +98,10 @@
 
 		const { success } = await update();
 
-		if (isSkylab() && edit === 'google') {
+		if (isSkylab() && nonNullish(openidProvider)) {
 			await emulatorToggleOpenIdMonitoring({
-				enable: nonNullish(googleClientId)
+				enable: nonNullish(openidClientId),
+				provider: openidProvider
 			});
 		}
 
@@ -124,14 +128,15 @@
 		<SpinnerModal>
 			<p>{$i18n.core.updating_configuration}</p>
 		</SpinnerModal>
-	{:else if edit === 'google'}
-		<AuthConfigFormGoogle
+	{:else if edit === 'openid' && nonNullish(openidProvider)}
+		<AuthConfigFormOpenId
 			{config}
 			onsubmit={handleSubmit}
+			provider={openidProvider}
 			{satellite}
-			bind:clientId={googleClientId}
-			bind:maxTimeToLive={googleMaxTimeToLive}
-			bind:allowedTargets={googleAllowedTargets}
+			bind:clientId={openidClientId}
+			bind:maxTimeToLive={openidMaxTimeToLive}
+			bind:allowedTargets={openidAllowedTargets}
 		/>
 	{:else if edit === 'internet_identity'}
 		<AuthConfigFormII

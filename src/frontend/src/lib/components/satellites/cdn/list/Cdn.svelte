@@ -77,7 +77,10 @@
 		PaginationContext<SatelliteDid.AssetNoContent>
 	>(PAGINATION_CONTEXT_KEY);
 
-	setContext<ListParamsContext>(LIST_PARAMS_CONTEXT_KEY, initListParamsContext(ListParamsKey.CDN));
+	setContext<ListParamsContext>(
+		LIST_PARAMS_CONTEXT_KEY,
+		initListParamsContext({ key: ListParamsKey.CDN })
+	);
 
 	const { listParams } = getContext<ListParamsContext>(LIST_PARAMS_CONTEXT_KEY);
 

@@ -20,20 +20,25 @@
 	import { secondsToDuration } from '$lib/utils/date.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { satelliteName } from '$lib/utils/satellite.utils';
+	import type { OpenIdAuthProvider, SignInOpenIdProvider } from '$lib/types/auth';
+	import { findProviderGitHub, findProviderGoogle } from '$lib/utils/auth.openid.utils';
 
 	interface Props {
 		satellite: Satellite;
+		provider: SignInOpenIdProvider;
 		openModal: (params: JunoModalEditAuthConfigDetailType) => Promise<void>;
 	}
 
-	let { satellite, openModal }: Props = $props();
+	let { provider, satellite, openModal }: Props = $props();
 
 	const { config, supportConfig } = getContext<AuthConfigContext>(AUTH_CONFIG_CONTEXT_KEY);
 
-	let openid = $derived(fromNullable($config?.openid ?? []));
-	let google = $derived(openid?.providers.find(([key]) => 'Google' in key));
+	let findProvider = $derived(provider === 'github' ? findProviderGitHub : findProviderGoogle);
 
-	let providerData = $derived(google?.[1]);
+	let openid = $derived(fromNullable($config?.openid ?? []));
+	let openidProvider = $derived(findProvider(openid));
+
+	let providerData = $derived(openidProvider?.[1]);
 
 	let clientId = $derived(providerData?.client_id);
 
@@ -60,7 +65,7 @@
 </script>
 
 <div class="card-container with-title">
-	<span class="title">Google</span>
+	<span class="title">{provider}</span>
 
 	<div class="columns-3 fit-column-1">
 		<div>
@@ -147,6 +152,10 @@
 <style lang="scss">
 	@use '../../../styles/mixins/text';
 	@use '../../../styles/mixins/media';
+
+	.title {
+		text-transform: capitalize;
+	}
 
 	p {
 		&:not(.client-id) {

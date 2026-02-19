@@ -1136,6 +1136,7 @@
 		"edit_automation_keys": "Configure how your workflows access your Satellite and how long their keys remain valid.",
 		"empty_repositories": "No repositories configured for automation.",
 		"delete_title": "Delete repository",
-		"delete_question": "Are you sure you want to remove <mark>{0}</mark> from your automation configuration?"
+		"delete_question": "Are you sure you want to remove <mark>{0}</mark> from your automation configuration?",
+		"warn_skylab": "GitHub deployment is only available in production. GitHub Actions cannot communicate with an emulator."
 	}
 }

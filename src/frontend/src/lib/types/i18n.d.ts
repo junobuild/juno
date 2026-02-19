@@ -1175,6 +1175,7 @@ interface I18nAutomation {
 	empty_repositories: string;
 	delete_title: string;
 	delete_question: string;
+	warn_skylab: string;
 }
 
 interface I18n {

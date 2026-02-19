@@ -33,7 +33,10 @@
 
 	setContext<RulesContext>(RULES_CONTEXT_KEY, context);
 
-	setContext<ListParamsContext>(LIST_PARAMS_CONTEXT_KEY, initListParamsContext(ListParamsKey.DOCS));
+	setContext<ListParamsContext>(
+		LIST_PARAMS_CONTEXT_KEY,
+		initListParamsContext({ key: ListParamsKey.DOCS })
+	);
 
 	const { store: tabsStore }: TabsContext = getContext<TabsContext>(TABS_CONTEXT_KEY);
 </script>

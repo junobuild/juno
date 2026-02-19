@@ -6,6 +6,7 @@
 	import { listUsers } from '$lib/services/satellite/user/users.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { User as UserType } from '$lib/types/user';
+	import { ListParamsKey } from '$lib/types/list-params.context';
 
 	interface Props {
 		satelliteId: Principal;
@@ -19,6 +20,12 @@
 	const reload = () => listContextRef?.reload();
 </script>
 
-<ListContext bind:this={listContextRef} errorLabel={$i18n.errors.load_users} {listFn} {satelliteId}>
+<ListContext
+	bind:this={listContextRef}
+	errorLabel={$i18n.errors.load_users}
+	{listFn}
+	listKey={ListParamsKey.USERS}
+	{satelliteId}
+>
 	<Users {reload} {satelliteId} />
 </ListContext>

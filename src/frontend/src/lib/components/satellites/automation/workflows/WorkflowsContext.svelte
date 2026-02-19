@@ -6,6 +6,7 @@
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { Satellite } from '$lib/types/satellite';
 	import type { Workflow } from '$lib/types/workflow';
+	import { type ListParamsData, ListParamsKey } from '$lib/types/list-params.context';
 
 	interface Props {
 		satellite: Satellite;
@@ -19,8 +20,21 @@
 
 	let listContextRef = $state<ListContext<Workflow> | undefined>();
 	const reload = () => listContextRef?.reload();
+
+	// By default, we want the last deploys at the top
+	const defaultListParams: ListParamsData = {
+		order: { desc: true, field: 'keys' },
+		filter: {}
+	};
 </script>
 
-<ListContext bind:this={listContextRef} errorLabel={$i18n.errors.load_users} {listFn} {satelliteId}>
+<ListContext
+	bind:this={listContextRef}
+	errorLabel={$i18n.errors.load_users}
+	{listFn}
+	listKey={ListParamsKey.WORKFLOWS}
+	{defaultListParams}
+	{satelliteId}
+>
 	<Workflows {reload} />
 </ListContext>

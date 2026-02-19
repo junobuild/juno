@@ -101,7 +101,10 @@ describe('emulator.services', () => {
 				provider
 			});
 
-			expect(emulatorObservatoryMonitoringOpenId).toHaveBeenCalledWith({ action: 'start' });
+			expect(emulatorObservatoryMonitoringOpenId).toHaveBeenCalledWith({
+				action: 'start',
+				provider
+			});
 		});
 
 		it('should stop observatory monitoring openid when in skylab mode', async () => {
@@ -112,7 +115,10 @@ describe('emulator.services', () => {
 				provider
 			});
 
-			expect(emulatorObservatoryMonitoringOpenId).toHaveBeenCalledWith({ action: 'stop' });
+			expect(emulatorObservatoryMonitoringOpenId).toHaveBeenCalledWith({
+				action: 'stop',
+				provider
+			});
 		});
 
 		it('should toasts an error in skylab mode if admin server cannot be reached', async () => {

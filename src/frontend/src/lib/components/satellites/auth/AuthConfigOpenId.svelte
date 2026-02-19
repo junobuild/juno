@@ -14,14 +14,14 @@
 		TWO_WEEKS_NS
 	} from '$lib/constants/duration.constants';
 	import { i18n } from '$lib/stores/app/i18n.store';
+	import type { OpenIdAuthProvider } from '$lib/types/auth';
 	import { AUTH_CONFIG_CONTEXT_KEY, type AuthConfigContext } from '$lib/types/auth.context';
 	import type { JunoModalEditAuthConfigDetailType } from '$lib/types/modal';
 	import type { Satellite } from '$lib/types/satellite';
+	import { findProviderGitHub, findProviderGoogle } from '$lib/utils/auth.openid.utils';
 	import { secondsToDuration } from '$lib/utils/date.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { satelliteName } from '$lib/utils/satellite.utils';
-	import type { OpenIdAuthProvider } from '$lib/types/auth';
-	import { findProviderGitHub, findProviderGoogle } from '$lib/utils/auth.openid.utils';
 
 	interface Props {
 		satellite: Satellite;

@@ -1,10 +1,10 @@
 import type { LedgerIdText, WalletId } from '$lib/schemas/wallet.schema';
 import { i18n } from '$lib/stores/app/i18n.store';
+import type { OpenIdAuthProvider } from '$lib/types/auth';
 import { assertNonNullish, isNullish } from '@dfinity/utils';
 import { type PrincipalText, PrincipalTextSchema } from '@dfinity/zod-schemas';
 import { encodeIcrcAccount } from '@icp-sdk/canisters/ledger/icrc';
 import { get } from 'svelte/store';
-import type { OpenIdAuthProvider } from '$lib/types/auth';
 
 export const getEmulatorMainIdentity = async (): Promise<PrincipalText> => {
 	const { VITE_EMULATOR_ADMIN_URL } = import.meta.env;
@@ -60,7 +60,7 @@ export const emulatorObservatoryMonitoringOpenId = async ({
 	provider
 }: {
 	action: 'start' | 'stop';
-	provider: OpenIdAuthProvider
+	provider: OpenIdAuthProvider;
 }) => {
 	const { VITE_EMULATOR_ADMIN_URL } = import.meta.env;
 

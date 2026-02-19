@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { setContext } from 'svelte';
 	import AuthConfigCore from '$lib/components/satellites/auth/AuthConfigCore.svelte';
-	import AuthConfigOpenId from '$lib/components/satellites/auth/AuthConfigOpenId.svelte';
 	import AuthConfigII from '$lib/components/satellites/auth/AuthConfigII.svelte';
+	import AuthConfigOpenId from '$lib/components/satellites/auth/AuthConfigOpenId.svelte';
 	import AuthProviders from '$lib/components/satellites/auth/AuthProviders.svelte';
 	import AuthSettingsLoader from '$lib/components/satellites/auth/AuthSettingsLoader.svelte';
 	import { listCustomDomains } from '$lib/services/satellite/hosting/custom-domain.services';
@@ -53,9 +53,9 @@
 <AuthSettingsLoader {satellite}>
 	<AuthProviders />
 
-	<AuthConfigOpenId {openModal} {satellite} provider="google" />
+	<AuthConfigOpenId {openModal} provider="google" {satellite} />
 
-	<AuthConfigOpenId {openModal} {satellite} provider="github" />
+	<AuthConfigOpenId {openModal} provider="github" {satellite} />
 
 	<AuthConfigII {openModal} />
 

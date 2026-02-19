@@ -22,10 +22,10 @@
 	} from '$lib/constants/duration.constants';
 	import { isBusy } from '$lib/derived/app/busy.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import type { Satellite } from '$lib/types/satellite';
-	import { i18nCapitalize, i18nFormat } from '$lib/utils/i18n.utils';
 	import type { OpenIdAuthProvider } from '$lib/types/auth';
+	import type { Satellite } from '$lib/types/satellite';
 	import { findProviderGitHub, findProviderGoogle } from '$lib/utils/auth.openid.utils';
+	import { i18nCapitalize, i18nFormat } from '$lib/utils/i18n.utils';
 
 	interface Props {
 		satellite: Satellite;

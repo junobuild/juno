@@ -3,8 +3,8 @@
 	import type { PrincipalText } from '@dfinity/zod-schemas';
 	import type { Principal } from '@icp-sdk/core/principal';
 	import AuthConfigFormCore from '$lib/components/satellites/auth/AuthConfigFormCore.svelte';
-	import AuthConfigFormOpenId from '$lib/components/satellites/auth/AuthConfigFormOpenId.svelte';
 	import AuthConfigFormII from '$lib/components/satellites/auth/AuthConfigFormII.svelte';
+	import AuthConfigFormOpenId from '$lib/components/satellites/auth/AuthConfigFormOpenId.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import { authIdentity } from '$lib/derived/auth.derived';
@@ -132,8 +132,8 @@
 		<AuthConfigFormOpenId
 			{config}
 			onsubmit={handleSubmit}
-			{satellite}
 			provider={openidProvider}
+			{satellite}
 			bind:clientId={openidClientId}
 			bind:maxTimeToLive={openidMaxTimeToLive}
 			bind:allowedTargets={openidAllowedTargets}

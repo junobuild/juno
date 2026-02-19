@@ -14,26 +14,31 @@
 		TWO_WEEKS_NS
 	} from '$lib/constants/duration.constants';
 	import { i18n } from '$lib/stores/app/i18n.store';
+	import type { OpenIdAuthProvider } from '$lib/types/auth';
 	import { AUTH_CONFIG_CONTEXT_KEY, type AuthConfigContext } from '$lib/types/auth.context';
 	import type { JunoModalEditAuthConfigDetailType } from '$lib/types/modal';
 	import type { Satellite } from '$lib/types/satellite';
+	import { findProviderGitHub, findProviderGoogle } from '$lib/utils/auth.openid.utils';
 	import { secondsToDuration } from '$lib/utils/date.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { satelliteName } from '$lib/utils/satellite.utils';
 
 	interface Props {
 		satellite: Satellite;
+		provider: OpenIdAuthProvider;
 		openModal: (params: JunoModalEditAuthConfigDetailType) => Promise<void>;
 	}
 
-	let { satellite, openModal }: Props = $props();
+	let { provider, satellite, openModal }: Props = $props();
 
 	const { config, supportConfig } = getContext<AuthConfigContext>(AUTH_CONFIG_CONTEXT_KEY);
 
-	let openid = $derived(fromNullable($config?.openid ?? []));
-	let google = $derived(openid?.providers.find(([key]) => 'Google' in key));
+	let findProvider = $derived(provider === 'github' ? findProviderGitHub : findProviderGoogle);
 
-	let providerData = $derived(google?.[1]);
+	let openid = $derived(fromNullable($config?.openid ?? []));
+	let openidProvider = $derived(findProvider(openid));
+
+	let providerData = $derived(openidProvider?.[1]);
 
 	let clientId = $derived(providerData?.client_id);
 
@@ -55,12 +60,12 @@
 
 	const openEditModal = async () =>
 		await openModal({
-			google: null
+			openid: { provider }
 		});
 </script>
 
 <div class="card-container with-title">
-	<span class="title">Google</span>
+	<span class="title">{provider}</span>
 
 	<div class="columns-3 fit-column-1">
 		<div>
@@ -147,6 +152,10 @@
 <style lang="scss">
 	@use '../../../styles/mixins/text';
 	@use '../../../styles/mixins/media';
+
+	.title {
+		text-transform: capitalize;
+	}
 
 	p {
 		&:not(.client-id) {

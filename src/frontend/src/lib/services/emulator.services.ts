@@ -7,6 +7,7 @@ import { addSatellitesAdminAccessKey } from '$lib/services/access-keys/satellite
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
 import type { AddAdminAccessKeyParams } from '$lib/types/access-keys';
+import type { OpenIdAuthProvider } from '$lib/types/auth';
 import type { Identity } from '@icp-sdk/core/agent';
 import type { Principal } from '@icp-sdk/core/principal';
 import { get } from 'svelte/store';
@@ -56,14 +57,21 @@ const unsafeSetEmulatorController = async ({
 	});
 };
 
-export const emulatorToggleOpenIdMonitoring = async ({ enable }: { enable: boolean }) => {
+export const emulatorToggleOpenIdMonitoring = async ({
+	enable,
+	provider
+}: {
+	enable: boolean;
+	provider: OpenIdAuthProvider;
+}) => {
 	if (isNotSkylab()) {
 		throw new Error(get(i18n).emulator.error_never_execute_openid_monitoring);
 	}
 
 	try {
 		await emulatorObservatoryMonitoringOpenId({
-			action: enable ? 'start' : 'stop'
+			action: enable ? 'start' : 'stop',
+			provider
 		});
 	} catch (err: unknown) {
 		toasts.error({

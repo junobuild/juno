@@ -5,8 +5,8 @@
 	import type { ListDocsFn } from '$lib/services/satellite/_list-docs.services';
 	import { listUsers } from '$lib/services/satellite/user/users.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import type { User as UserType } from '$lib/types/user';
 	import { ListParamsKey } from '$lib/types/list-params.context';
+	import type { User as UserType } from '$lib/types/user';
 
 	interface Props {
 		satelliteId: Principal;

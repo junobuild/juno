@@ -4,9 +4,9 @@
 	import type { ListDocsFn } from '$lib/services/satellite/_list-docs.services';
 	import { listWorkflows } from '$lib/services/satellite/automation/workflows.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
+	import { type ListParamsData, ListParamsKey } from '$lib/types/list-params.context';
 	import type { Satellite } from '$lib/types/satellite';
 	import type { Workflow } from '$lib/types/workflow';
-	import { type ListParamsData, ListParamsKey } from '$lib/types/list-params.context';
 
 	interface Props {
 		satellite: Satellite;
@@ -30,10 +30,10 @@
 
 <ListContext
 	bind:this={listContextRef}
+	{defaultListParams}
 	errorLabel={$i18n.errors.load_users}
 	{listFn}
 	listKey={ListParamsKey.WORKFLOWS}
-	{defaultListParams}
 	{satelliteId}
 >
 	<Workflows {reload} />

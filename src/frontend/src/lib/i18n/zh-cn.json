@@ -723,6 +723,7 @@
 		"auth_domain_config": "更新身份认证配置时发生意外错误。",
 		"auth_external_alternative_origins": "外部备用源格式错误，请提供不含协议的合法域名。",
 		"auth_invalid_google_client_id": "检测到无效的 Google 客户端 ID 格式。",
+		"auth_undefined_provider": "配置 OpenID 身份验证的提供商未定义，这是意外情况。",
 		"mission_control_not_loaded": "任务控制中心未加载。",
 		"mission_control_not_found": "您没有任务控制中心。",
 		"mission_control_settings_not_loaded": "任务控制中心设置未加载。",
@@ -1127,7 +1128,7 @@
 		"pushed_by": "推送者",
 		"manually_run_by": "手动运行者",
 		"pr_run_by": "PR 运行者",
-		"no_workflow_info": "无可用的工作流信息",
+		"no_workflow_info": "未知任务",
 		"view_workflow": "在 GitHub 上查看工作流运行",
 		"view_commit": "在 GitHub 上查看提交",
 		"view_branch": "在 GitHub 上查看分支",
@@ -1137,6 +1138,7 @@
 		"edit_automation_keys": "配置工作流访问 Satellite 的方式及其密钥的有效期。",
 		"empty_repositories": "尚未配置用于自动化的仓库。",
 		"delete_title": "删除仓库",
-		"delete_question": "确定要从自动化配置中移除 <mark>{0}</mark> 吗？"
+		"delete_question": "确定要从自动化配置中移除 <mark>{0}</mark> 吗？",
+		"warn_skylab": "GitHub 部署仅在生产环境中可用。GitHub Actions 无法与模拟器通信。"
 	}
 }

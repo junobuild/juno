@@ -13,7 +13,7 @@ pub fn register_controller(
 ) -> Result<(), String> {
     let PreparedAutomation(controller_id, controller) = automation;
 
-    let controllers: [ControllerId; 1] = [controller_id.clone()];
+    let controllers: [ControllerId; 1] = [*controller_id];
 
     let automation_workflow_key = build_automation_workflow_key(provider, credential)?;
 

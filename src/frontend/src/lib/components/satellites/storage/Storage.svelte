@@ -35,7 +35,7 @@
 
 	setContext<ListParamsContext>(
 		LIST_PARAMS_CONTEXT_KEY,
-		initListParamsContext(ListParamsKey.STORAGE)
+		initListParamsContext({ key: ListParamsKey.STORAGE })
 	);
 
 	const { store: tabsStore }: TabsContext = getContext<TabsContext>(TABS_CONTEXT_KEY);

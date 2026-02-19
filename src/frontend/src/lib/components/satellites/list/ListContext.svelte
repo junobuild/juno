@@ -9,9 +9,10 @@
 	import { toasts } from '$lib/stores/app/toasts.store';
 	import { versionStore } from '$lib/stores/version.store';
 	import {
+		type ListParamsKey,
 		LIST_PARAMS_CONTEXT_KEY,
-		ListParamsKey,
-		type ListParamsContext
+		type ListParamsContext,
+		type ListParamsData
 	} from '$lib/types/list-params.context';
 	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
 	import { emit } from '$lib/utils/events.utils';
@@ -20,10 +21,12 @@
 		satelliteId: Principal;
 		children: Snippet;
 		listFn: ListDocsFn<T>;
+		listKey: ListParamsKey;
+		defaultListParams?: ListParamsData;
 		errorLabel: string;
 	}
 
-	let { satelliteId, children, listFn, errorLabel }: Props = $props();
+	let { satelliteId, children, listFn, listKey, defaultListParams, errorLabel }: Props = $props();
 
 	const list = async () => {
 		if (isNullish(satelliteId)) {
@@ -64,9 +67,10 @@
 	const { setItems, startAfter }: PaginationContext<T> =
 		getContext<PaginationContext<T>>(PAGINATION_CONTEXT_KEY);
 
+	// svelte-ignore state_referenced_locally
 	setContext<ListParamsContext>(
 		LIST_PARAMS_CONTEXT_KEY,
-		initListParamsContext(ListParamsKey.USERS)
+		initListParamsContext({ key: listKey, defaultListParams })
 	);
 
 	const { listParams } = getContext<ListParamsContext>(LIST_PARAMS_CONTEXT_KEY);

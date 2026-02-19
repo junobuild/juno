@@ -20,7 +20,7 @@ import {
 	type AuthenticationGitHubRedirect,
 	type RequestGitHubJwtRedirect,
 	requestJwt
-} from '@junobuild/auth';
+} from '@junobuild/auth/delegation';
 import { get } from 'svelte/store';
 
 export const signInWithGoogle = async () => {

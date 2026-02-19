@@ -721,6 +721,7 @@
 		"auth_domain_config": "Unexpected error(s) while trying to update your authentication configuration.",
 		"auth_external_alternative_origins": "External alternative origins are malformed. Please provide a valid domain without a protocol.",
 		"auth_invalid_google_client_id": "Invalid Google client ID pattern detected.",
+		"auth_undefined_provider": "The provider to configure the OpenId authentication is undefined, which is unexpected.",
 		"mission_control_not_loaded": "Your Mission Control is not yet loaded.",
 		"mission_control_not_found": "You don't have a Mission Control.",
 		"mission_control_settings_not_loaded": "The settings for the Mission Control are not yet loaded.",
@@ -1125,7 +1126,7 @@
 		"pushed_by": "pushed by",
 		"manually_run_by": "Manually run by",
 		"pr_run_by": "PR run by",
-		"no_workflow_info": "No workflow information available",
+		"no_workflow_info": "Unknown job",
 		"view_workflow": "View workflow run on GitHub",
 		"view_commit": "View commit on GitHub",
 		"view_branch": "View branch run on GitHub",
@@ -1135,6 +1136,7 @@
 		"edit_automation_keys": "Configure how your workflows access your Satellite and how long their keys remain valid.",
 		"empty_repositories": "No repositories configured for automation.",
 		"delete_title": "Delete repository",
-		"delete_question": "Are you sure you want to remove <mark>{0}</mark> from your automation configuration?"
+		"delete_question": "Are you sure you want to remove <mark>{0}</mark> from your automation configuration?",
+		"warn_skylab": "GitHub deployment is only available in production. GitHub Actions cannot communicate with an emulator."
 	}
 }

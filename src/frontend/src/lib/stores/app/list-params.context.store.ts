@@ -11,8 +11,14 @@ const saveListParams = ({ key, state }: { key: ListParamsKey; state: ListParamsD
 	setLocalStorageItem({ key: `list_params_${key}`, value: JSON.stringify(state) });
 
 // Key input is required for persistent (local) storage
-export const initListParamsContext = (key: ListParamsKey): ListParamsContext => {
-	const store = writable<ListParamsData>(getLocalListParams(key));
+export const initListParamsContext = ({
+	key,
+	defaultListParams
+}: {
+	key: ListParamsKey;
+	defaultListParams?: ListParamsData;
+}): ListParamsContext => {
+	const store = writable<ListParamsData>(getLocalListParams({ key, defaultListParams }));
 
 	const listParams = derived(store, (store) => store);
 

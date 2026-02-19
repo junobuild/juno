@@ -739,6 +739,7 @@ interface I18nErrors {
 	auth_domain_config: string;
 	auth_external_alternative_origins: string;
 	auth_invalid_google_client_id: string;
+	auth_undefined_provider: string;
 	mission_control_not_loaded: string;
 	mission_control_not_found: string;
 	mission_control_settings_not_loaded: string;
@@ -1174,6 +1175,7 @@ interface I18nAutomation {
 	empty_repositories: string;
 	delete_title: string;
 	delete_question: string;
+	warn_skylab: string;
 }
 
 interface I18n {

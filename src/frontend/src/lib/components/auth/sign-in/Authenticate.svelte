@@ -8,10 +8,10 @@
 	import { getAndClearAuthNavOrigin } from '$lib/services/console/auth/_auth.nav.services';
 	import { handleRedirectCallback } from '$lib/services/console/auth/auth.openid.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import type { SignInOpenIdProvider } from '$lib/types/auth';
+	import type { OpenIdAuthProvider } from '$lib/types/auth';
 
 	interface Props {
-		provider: SignInOpenIdProvider;
+		provider: OpenIdAuthProvider;
 	}
 
 	let { provider }: Props = $props();

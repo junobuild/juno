@@ -11,7 +11,7 @@ import {
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
 import { authStore } from '$lib/stores/auth.store';
-import type { SignInOpenIdProvider } from '$lib/types/auth';
+import type { OpenIdAuthProvider } from '$lib/types/auth';
 import { SignInInitError } from '$lib/types/errors';
 import { container } from '$lib/utils/juno.utils';
 import { isNullish, nonNullish } from '@dfinity/utils';
@@ -46,7 +46,7 @@ export const signInWithGitHub = async () => {
 
 interface SignInWithOpenIdParams<T> {
 	clientId: string | undefined;
-	provider: SignInOpenIdProvider;
+	provider: OpenIdAuthProvider;
 	extraArgs?: T;
 }
 
@@ -140,7 +140,7 @@ const authenticateWithOpenID = async (params: AuthenticateWithOpenIdRedirectPara
 export const handleRedirectCallback = async ({
 	provider
 }: {
-	provider: SignInOpenIdProvider;
+	provider: OpenIdAuthProvider;
 }): Promise<{
 	result: 'ok' | 'error';
 	err?: unknown;

@@ -1240,7 +1240,7 @@ dependencies = [
 
 [[package]]
 name = "junobuild-auth"
-version = "0.2.0"
+version = "0.3.0"
 dependencies = [
  "base64",
  "candid",
@@ -1259,7 +1259,7 @@ dependencies = [
 
 [[package]]
 name = "junobuild-cdn"
-version = "0.5.0"
+version = "0.6.0"
 dependencies = [
  "candid",
  "hex",
@@ -1274,7 +1274,7 @@ dependencies = [
 
 [[package]]
 name = "junobuild-collections"
-version = "0.3.0"
+version = "0.4.0"
 dependencies = [
  "candid",
  "ic-cdk",
@@ -1295,7 +1295,7 @@ dependencies = [
 
 [[package]]
 name = "junobuild-satellite"
-version = "0.4.0"
+version = "0.5.0"
 dependencies = [
  "candid",
  "ciborium",
@@ -1320,7 +1320,7 @@ dependencies = [
 
 [[package]]
 name = "junobuild-shared"
-version = "0.6.0"
+version = "0.7.0"
 dependencies = [
  "candid",
  "ciborium",
@@ -1338,7 +1338,7 @@ dependencies = [
 
 [[package]]
 name = "junobuild-storage"
-version = "0.5.0"
+version = "0.6.0"
 dependencies = [
  "base64",
  "candid",

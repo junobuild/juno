@@ -81,6 +81,7 @@
 			if (edit === 'openid') {
 				return updateAuthConfigGoogle({
 					...commonPayload,
+					provider: openidProvider,
 					clientId: openidClientId,
 					maxTimeToLive: openidMaxTimeToLive,
 					allowedTargets: $state.snapshot(openidAllowedTargets)

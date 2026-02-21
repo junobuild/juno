@@ -8,12 +8,8 @@ import {
 	listSnapshots,
 	restoreSnapshot as restoreSnapshotApi
 } from '$lib/api/ic.api';
-import {
-	resetAllIdbStore,
-	resetIdbStore,
-	setIdbStore,
-	syncIdbStore
-} from '$lib/services/_idb-store.services';
+import { setIdbStore, syncIdbStore } from '$lib/services/_idb-store.canister.services';
+import { resetAllIdbStore, resetIdbStore } from '$lib/services/_idb-store.services';
 import { execute } from '$lib/services/_progress.services';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { snapshotsIdbStore } from '$lib/stores/app/idb.store';

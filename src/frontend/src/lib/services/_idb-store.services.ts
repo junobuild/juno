@@ -1,4 +1,5 @@
 import type { CanisterStore } from '$lib/stores/_canister.store';
+import type { CertifiedCanisterStore } from '$lib/stores/_certified-canister.store';
 import type { CanisterIdText } from '$lib/types/canister';
 import { clear, del, entries as idbEntries, set, type UseStore } from 'idb-keyval';
 
@@ -49,7 +50,7 @@ export const resetIdbStore = async <T>({
 	canisterId
 }: {
 	customStore: UseStore;
-	store: CanisterStore<T>;
+	store: CanisterStore<T> | CertifiedCanisterStore<T>;
 	canisterId: CanisterIdText;
 }) => {
 	store.reset(canisterId);
@@ -62,7 +63,7 @@ export const resetAllIdbStore = async <T>({
 	store
 }: {
 	customStore: UseStore;
-	store: CanisterStore<T>;
+	store: CanisterStore<T> | CertifiedCanisterStore<T>;
 }) => {
 	store.resetAll();
 

@@ -1,5 +1,6 @@
 import { resetSnapshots } from '$lib/services/ic-mgmt/snapshots.services';
 import { resetSubnets } from '$lib/services/ic-mgmt/subnets.services';
+import { resetSatellitesConfig } from '$lib/services/satellite/satellite-config.services';
 import { busy } from '$lib/stores/app/busy.store';
 import { i18n } from '$lib/stores/app/i18n.store';
 import {
@@ -89,7 +90,8 @@ const logout = async ({
 			clear(icpToCyclesRateIdbStore),
 			resetSnapshots(),
 			resetSubnets(),
-			resetLocalStorage()
+			resetLocalStorage(),
+			resetSatellitesConfig()
 		]);
 	}
 

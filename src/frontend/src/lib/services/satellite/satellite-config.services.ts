@@ -4,9 +4,29 @@ import { nonNullish } from '@dfinity/utils';
 import { get } from 'svelte/store';
 
 import { getConfig } from '$lib/api/satellites.api';
+import { resetAllIdbStore, resetIdbStore } from '$lib/services/_idb-store.services';
+import {
+	setUncertifiedIdbStore,
+	syncUncertifiedIdbStore
+} from '$lib/services/_idb-store.uncertified.services';
+import { satellitesConfigIdbStore } from '$lib/stores/app/idb.store';
 import { uncertifiedSatellitesConfigsStore } from '$lib/stores/satellite/satellites-configs.store';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { SatelliteId } from '$lib/types/satellite';
+
+export const syncSatellitesConfig = async () => {
+	await syncUncertifiedIdbStore({
+		customStore: satellitesConfigIdbStore,
+		store: uncertifiedSatellitesConfigsStore
+	});
+};
+
+export const resetSatellitesConfig = async () => {
+	await resetAllIdbStore({
+		customStore: satellitesConfigIdbStore,
+		store: uncertifiedSatellitesConfigsStore
+	});
+};
 
 export const loadSatelliteConfig = async ({
 	satelliteId,
@@ -21,7 +41,7 @@ export const loadSatelliteConfig = async ({
 	const existingConfigs = get(uncertifiedSatellitesConfigsStore);
 	const existingConfig = existingConfigs?.[satelliteId.toText()];
 
-	if (nonNullish(existingConfig) && !reload) {
+	if (nonNullish(existingConfig) && existingConfig.certified !== undefined && !reload) {
 		return { result: 'skip' };
 	}
 
@@ -31,7 +51,9 @@ export const loadSatelliteConfig = async ({
 			satelliteId
 		});
 
-		uncertifiedSatellitesConfigsStore.set({
+		await setUncertifiedIdbStore({
+			store: uncertifiedSatellitesConfigsStore,
+			customStore: satellitesConfigIdbStore,
 			canisterId: satelliteId.toText(),
 			data: {
 				data: config,
@@ -41,7 +63,11 @@ export const loadSatelliteConfig = async ({
 
 		return { result: 'success' };
 	} catch (err: unknown) {
-		uncertifiedSatellitesConfigsStore.reset(satelliteId.toText());
+		await resetIdbStore({
+			store: uncertifiedSatellitesConfigsStore,
+			customStore: satellitesConfigIdbStore,
+			canisterId: satelliteId.toText()
+		});
 
 		const labels = get(i18n);
 

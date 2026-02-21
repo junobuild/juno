@@ -347,6 +347,7 @@ interface I18nSatellites {
 	create_satellite_price: string;
 	loading_satellites: string;
 	overview: string;
+	metadata: string;
 	id: string;
 	stock_version: string;
 	extended_version: string;

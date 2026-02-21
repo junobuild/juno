@@ -339,6 +339,7 @@
 		"create_satellite_price": "Starting a new Satellite requires {0}. Your current balance is {1}.",
 		"loading_satellites": "Loading your Satellites",
 		"overview": "Overview",
+		"metadata": "Metadata",
 		"id": "Satellite ID",
 		"stock_version": "Stock version",
 		"extended_version": "Extended version",

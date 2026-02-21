@@ -4,20 +4,18 @@
 	import type { Option } from '$lib/types/utils';
 	import { toasts } from '$lib/stores/app/toasts.store';
 	import { satelliteAutomationConfig } from '$lib/derived/satellite/satellite-configs.derived';
-	import { untrack } from 'svelte';
+    import {type Snippet, untrack} from 'svelte';
 	import { loadLastWorkflow } from '$lib/services/satellite/automation/workflows.services';
 	import { authIdentity } from '$lib/derived/auth.derived';
     import {isNullish, nonNullish} from '@dfinity/utils';
-	import { fade } from 'svelte/transition';
-    import Value from "$lib/components/ui/Value.svelte";
-    import {i18n} from "$lib/stores/app/i18n.store";
     import {versionStore} from "$lib/stores/version.store";
 
 	interface Props {
 		satellite: Satellite;
+        content: Snippet<[[WorkflowKey, Workflow]]>;
 	}
 
-	let { satellite }: Props = $props();
+	let { satellite, content }: Props = $props();
 
     let satelliteId = $derived(satellite.satellite_id);
 
@@ -64,13 +62,5 @@
 </script>
 
 {#if nonNullish(workflow)}
-	<div in:fade>
-        <Value>
-            {#snippet label()}
-                {$i18n.satellites.build}
-            {/snippet}
-
-            asd
-        </Value>
-    </div>
+    {@render content(workflow)}
 {/if}

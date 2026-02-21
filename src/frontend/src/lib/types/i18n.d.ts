@@ -1176,6 +1176,7 @@ interface I18nAutomation {
 	delete_title: string;
 	delete_question: string;
 	warn_skylab: string;
+	last_deployment: string;
 }
 
 interface I18n {

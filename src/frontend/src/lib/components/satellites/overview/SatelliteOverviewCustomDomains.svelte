@@ -55,6 +55,7 @@
 
 	div {
 		margin: 0 0 var(--padding-2_5x);
+		line-height: var(--line-height-title);
 
 		:global(a) {
 			width: 100%;
@@ -63,6 +64,9 @@
 	}
 
 	.host {
+		font-size: var(--font-size-small);
+		color: var(--value-color);
+
 		@include text.truncate;
 	}
 </style>

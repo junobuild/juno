@@ -28,7 +28,7 @@
 		aria-label={$i18n.automation.view_contributor}
 		href={`https://github.com/${actor}`}
 		rel="noopener noreferrer"
-		target="_blank">{actor}</a
+		target="_blank">{actor.length > 12 ? `${actor.slice(9)}...` : actor}</a
 	>
 {/snippet}
 

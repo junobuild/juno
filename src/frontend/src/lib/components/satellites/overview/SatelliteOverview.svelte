@@ -128,6 +128,10 @@
 		@include media.min-width(medium) {
 			grid-template-columns: auto repeat(2, 1fr);
 		}
+
+		@include media.min-width(large) {
+			grid-template-columns: auto 1fr minmax(200px, 300px);
+		}
 	}
 
 	.actions {
@@ -143,7 +147,7 @@
 	}
 
 	.workflows.card-container {
-		grid-row: 3 / 4;
+		grid-row: 4 / 5;
 
 		margin: 0 0 var(--padding-8x);
 

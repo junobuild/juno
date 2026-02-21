@@ -38,7 +38,7 @@
 </script>
 
 <IdentityGuard>
-	<Loaders monitoring>
+	<Loaders monitoring satelliteConfig>
 		<SatelliteGuard>
 			{#snippet content(satellite)}
 				<Tabs>

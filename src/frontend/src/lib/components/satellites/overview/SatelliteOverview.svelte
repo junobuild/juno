@@ -18,6 +18,7 @@
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { CanisterSyncData as CanisterSyncDataType } from '$lib/types/canister';
 	import type { Satellite, SatelliteIdText } from '$lib/types/satellite';
+	import SatelliteLastDeployment from "$lib/components/satellites/overview/SatelliteLastDeployment.svelte";
 
 	interface Props {
 		satellite: Satellite;
@@ -75,6 +76,8 @@
 			</Value>
 
 			<CanisterSubnet canisterId={satellite.satellite_id} />
+
+			<SatelliteLastDeployment {satellite} />
 		</div>
 
 		<div>

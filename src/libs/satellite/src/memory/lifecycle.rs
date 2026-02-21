@@ -6,7 +6,6 @@ use crate::memory::internal::{get_memory_for_upgrade, init_stable_state};
 use crate::memory::state::STATE;
 use crate::memory::utils::init_storage_heap_state;
 use crate::random::init::defer_init_random_seed;
-use crate::rules::upgrade::init_automation_collections;
 use crate::types::state::{HeapState, RuntimeState, State};
 use ciborium::{from_reader, into_writer};
 use junobuild_shared::memory::upgrade::{read_post_upgrade, write_pre_upgrade};
@@ -62,7 +61,4 @@ pub fn post_upgrade() {
     invoke_on_post_upgrade_sync();
 
     invoke_on_post_upgrade();
-
-    // TODO: to be removed - one time upgrade!
-    init_automation_collections();
 }

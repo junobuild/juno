@@ -33,6 +33,21 @@
 	}
 }
 
+@mixin columns-2 {
+	@include media.min-width(medium) {
+		display: grid;
+		grid-template-columns: repeat(2, calc(var(--columns-2-width) * 0.5));
+		grid-column-gap: var(--columns-2-gap);
+
+		--columns-2-gap: var(--padding-6x);
+		--columns-2-width: calc(100% - (var(--columns-2-gap)));
+	}
+
+	@include media.min-width(large) {
+		grid-template-columns: minmax(200px, auto) minmax(auto, 360px);
+	}
+}
+
 .card-container {
 	position: relative;
 
@@ -87,6 +102,7 @@
 			font-weight: var(--font-weight-bold);
 		}
 
+		.columns-2,
 		.columns-3,
 		.content {
 			padding: var(--padding-2x);
@@ -95,9 +111,17 @@
 		.columns-3 {
 			@include columns-3;
 		}
+
+		.columns-2 {
+			@include columns-2;
+		}
 	}
 
 	&.columns-3 {
 		@include columns-3;
+	}
+
+	&.columns-2 {
+		@include columns-2;
 	}
 }

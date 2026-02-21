@@ -18,7 +18,7 @@
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { CanisterSyncData as CanisterSyncDataType } from '$lib/types/canister';
 	import type { Satellite, SatelliteIdText } from '$lib/types/satellite';
-	import SatelliteLastDeployment from "$lib/components/satellites/overview/deployment/SatelliteLastDeployment.svelte";
+	import SatelliteLastDeployments from "$lib/components/satellites/overview/deployments/SatelliteLastDeployments.svelte";
 
 	interface Props {
 		satellite: Satellite;
@@ -48,45 +48,61 @@
 
 <CanisterSyncData canisterId={satellite.satellite_id} bind:canister />
 
-<div class="card-container with-title">
-	<span class="title">{$i18n.satellites.overview}</span>
+<div class="overview">
+	<div class="card-container with-title">
+		<span class="title">{$i18n.satellites.overview}</span>
 
-	<div class="columns-3">
-		<div>
-			<SatelliteName {satellite} />
+		<div class="columns-2">
+			<div>
+				<SatelliteName {satellite} />
 
-			<SatelliteEnvText {satellite} />
+				<SatelliteOverviewCustomDomains {satellite} />
+			</div>
 
-			<SatelliteTags {satellite} />
+			<div>
+				<SatelliteEnvText {satellite} />
 
-			<SatelliteOverviewCustomDomains {satellite} />
+				<SatelliteTags {satellite} />
+			</div>
 		</div>
+	</div>
 
-		<div>
-			<Value>
-				{#snippet label()}
-					{$i18n.satellites.id}
-				{/snippet}
-				<Identifier
-					identifier={satelliteId}
-					shorten={false}
-					small={false}
-					testId={testIds.satelliteOverview.copySatelliteId}
-				/>
-			</Value>
+	<div class="actions">
+		<SatelliteOverviewActions {monitoringEnabled} {satellite} />
+	</div>
 
-			<CanisterSubnet canisterId={satellite.satellite_id} />
+	<div class="card-container with-title metadata">
+		<span class="title">{$i18n.satellites.metadata}</span>
 
-			<SatelliteLastDeployment {satellite} />
+		<div class="content">
+			<div>
+				<Value>
+					{#snippet label()}
+						{$i18n.satellites.id}
+					{/snippet}
+					<Identifier
+						identifier={satelliteId}
+						shorten={false}
+						small={false}
+						testId={testIds.satelliteOverview.copySatelliteId}
+					/>
+				</Value>
+
+				<CanisterSubnet canisterId={satellite.satellite_id} />
+
+				<SatelliteOverviewVersion {satelliteId} />
+			</div>
 		</div>
+	</div>
 
-		<div>
-			<SatelliteOverviewVersion {satelliteId} />
+	<div class="card-container with-title workflows">
+		<span class="title">{$i18n.automation.last_deployments}</span>
+
+		<div class="content">
+			<SatelliteLastDeployments {satellite} />
 		</div>
 	</div>
 </div>
-
-<SatelliteOverviewActions {monitoringEnabled} {satellite} />
 
 <div class="card-container with-title">
 	<span class="title">{$i18n.monitoring.runtime}</span>
@@ -103,7 +119,38 @@
 <SatelliteRuntimeActions {canister} {monitoringEnabled} {satellite} />
 
 <style lang="scss">
-	.card-container:last-of-type {
-		margin: var(--padding-4x) 0 0;
+	@use '../../../styles/mixins/media';
+
+	.overview {
+		display: grid;
+		column-gap: var(--padding-4x);
+
+		@include media.min-width(medium) {
+			grid-template-columns: auto repeat(2, 1fr);
+		}
+	}
+
+	.actions {
+		grid-row: 2 / 3;
+	}
+
+	.metadata.card-container {
+		margin: 0 0 var(--padding-8x);
+
+		@include media.min-width(medium) {
+			margin: 0 0 var(--padding-3x);
+		}
+	}
+
+	.workflows.card-container {
+		grid-row: 3 / 4;
+
+		margin: 0 0 var(--padding-8x);
+
+		@include media.min-width(xlarge) {
+			grid-row: unset;
+
+			margin: 0 0 var(--padding-3x);
+		}
 	}
 </style>

@@ -29,13 +29,13 @@ export const listWorkflows = async (params: ListDocsParams): Promise<ListDocsRes
 	};
 };
 
-export const loadLastWorkflow = async ({
+export const listLastWorkflows = async ({
 	satelliteId,
 	identity
 }: {
 	satelliteId: SatelliteId;
 	identity: OptionIdentity;
-}): Promise<[WorkflowKey, Workflow] | null> => {
+}): Promise<[WorkflowKey, Workflow][] | null> => {
 	/**
 	 *
 	 * const { items } = await listDocs({
@@ -44,7 +44,7 @@ export const loadLastWorkflow = async ({
 	 * 		collection: '#automation-workflow',
 	 * 		order: { desc: true, field: 'keys' },
 	 * 		filter: {},
-	 * 		limit: 1n
+	 * 		limit: 3n
 	 * 	});
 	 *
 	 * 	if (items.length === 0) {
@@ -61,8 +61,8 @@ export const loadLastWorkflow = async ({
 		runAttempt: '1',
 		ref: 'refs/heads/main',
 		sha: 'abc123def456',
-		actor: 'david',
-		workflow: 'deploy.yml',
+		actor: 'davidldmasd asdklmasdklmasdlkmasdlkmasdlkasmlaksmdlaskmdas',
+		workflow: 'deploy.yml asldmasd asdklmasdklmasdlkmasdlkmasdlkasmlaksmdlaskmdas',
 		eventName: 'push'
 	};
 
@@ -75,5 +75,9 @@ export const loadLastWorkflow = async ({
 		data: mockWorkflowData
 	};
 
-	return ['GitHub#david/my-repo#run-42', mockWorkflow];
+	return [
+		['GitHub#david/my-repo#run-44', mockWorkflow],
+		['GitHub#david/my-repo#run-43', mockWorkflow],
+		['GitHub#david/my-repo#run-42', mockWorkflow]
+	];
 };

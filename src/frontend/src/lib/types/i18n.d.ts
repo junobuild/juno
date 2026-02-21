@@ -347,6 +347,7 @@ interface I18nSatellites {
 	create_satellite_price: string;
 	loading_satellites: string;
 	overview: string;
+	metadata: string;
 	id: string;
 	stock_version: string;
 	extended_version: string;
@@ -1176,7 +1177,8 @@ interface I18nAutomation {
 	delete_title: string;
 	delete_question: string;
 	warn_skylab: string;
-	last_deployment: string;
+	last_deployments: string;
+	no_deployments_yet: string;
 }
 
 interface I18n {

@@ -1,9 +1,9 @@
 <script lang="ts">
 	import DetachSegment from '$lib/components/modules/attach-detach/DetachSegment.svelte';
 	import SegmentActions from '$lib/components/modules/segments/SegmentActions.svelte';
-	import SatelliteEditDetails from '$lib/components/satellites/SatelliteEditDetails.svelte';
-	import SatelliteReloadVersion from '$lib/components/satellites/SatelliteReloadVersion.svelte';
-	import SatelliteVisit from '$lib/components/satellites/SatelliteVisit.svelte';
+	import SatelliteEditDetails from '$lib/components/satellites/overview/SatelliteEditDetails.svelte';
+	import SatelliteReloadVersion from '$lib/components/satellites/overview/SatelliteReloadVersion.svelte';
+	import SatelliteVisit from '$lib/components/satellites/overview/SatelliteVisit.svelte';
 	import type { Satellite } from '$lib/types/satellite';
 
 	interface Props {

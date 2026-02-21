@@ -125,7 +125,7 @@
 </Popover>
 
 <style lang="scss">
-	@use '../../styles/mixins/dialog';
+	@use '../../../styles/mixins/dialog';
 
 	@include dialog.edit;
 </style>

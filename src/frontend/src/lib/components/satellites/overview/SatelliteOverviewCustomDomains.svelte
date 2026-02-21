@@ -51,7 +51,7 @@
 </div>
 
 <style lang="scss">
-	@use '../../styles/mixins/text';
+	@use '../../../styles/mixins/text';
 
 	div {
 		margin: 0 0 var(--padding-2_5x);

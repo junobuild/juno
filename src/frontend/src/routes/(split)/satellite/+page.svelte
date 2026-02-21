@@ -4,8 +4,8 @@
 	import Loaders from '$lib/components/app/loaders/Loaders.svelte';
 	import IdentityGuard from '$lib/components/auth/guards/IdentityGuard.svelte';
 	import Warnings from '$lib/components/modules/warning/Warnings.svelte';
-	import SatelliteOverview from '$lib/components/satellites/SatelliteOverview.svelte';
 	import SatelliteGuard from '$lib/components/satellites/guards/SatelliteGuard.svelte';
+	import SatelliteOverview from '$lib/components/satellites/overview/SatelliteOverview.svelte';
 	import SatelliteSettings from '$lib/components/satellites/setup/SatelliteSettings.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
 	import {
@@ -38,7 +38,7 @@
 </script>
 
 <IdentityGuard>
-	<Loaders monitoring>
+	<Loaders monitoring satelliteConfig>
 		<SatelliteGuard>
 			{#snippet content(satellite)}
 				<Tabs>

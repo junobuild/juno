@@ -5,12 +5,12 @@
 	import CanisterOverview from '$lib/components/modules/canister/display/CanisterOverview.svelte';
 	import CanisterSubnet from '$lib/components/modules/canister/display/CanisterSubnet.svelte';
 	import SatelliteEnvText from '$lib/components/satellites/SatelliteEnvironmentText.svelte';
-	import SatelliteName from '$lib/components/satellites/SatelliteName.svelte';
-	import SatelliteOverviewActions from '$lib/components/satellites/SatelliteOverviewActions.svelte';
-	import SatelliteOverviewCustomDomains from '$lib/components/satellites/SatelliteOverviewCustomDomains.svelte';
-	import SatelliteOverviewVersion from '$lib/components/satellites/SatelliteOverviewVersion.svelte';
-	import SatelliteRuntimeActions from '$lib/components/satellites/SatelliteRuntimeActions.svelte';
-	import SatelliteTags from '$lib/components/satellites/SatelliteTags.svelte';
+	import SatelliteName from '$lib/components/satellites/overview/SatelliteName.svelte';
+	import SatelliteOverviewActions from '$lib/components/satellites/overview/SatelliteOverviewActions.svelte';
+	import SatelliteOverviewCustomDomains from '$lib/components/satellites/overview/SatelliteOverviewCustomDomains.svelte';
+	import SatelliteOverviewVersion from '$lib/components/satellites/overview/SatelliteOverviewVersion.svelte';
+	import SatelliteRuntimeActions from '$lib/components/satellites/overview/SatelliteRuntimeActions.svelte';
+	import SatelliteTags from '$lib/components/satellites/overview/SatelliteTags.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { testIds } from '$lib/constants/test-ids.constants';

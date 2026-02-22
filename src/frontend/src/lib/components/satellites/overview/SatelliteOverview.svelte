@@ -121,7 +121,6 @@
 <style lang="scss">
 	@use '../../../styles/mixins/media';
 
-
 	.overview {
 		display: grid;
 		column-gap: var(--padding-4x);

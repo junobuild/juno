@@ -1,20 +1,20 @@
 <script lang="ts">
+	import { isNullish } from '@dfinity/utils';
+	import { type Snippet, untrack } from 'svelte';
 	import { fade } from 'svelte/transition';
+	import Html from '$lib/components/ui/Html.svelte';
+	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
+	import { authIdentity } from '$lib/derived/auth.derived';
+	import { satelliteAutomationConfig } from '$lib/derived/satellite/satellite-configs.derived';
+	import { listLastWorkflows } from '$lib/services/satellite/automation/workflows.services';
+	import { i18n } from '$lib/stores/app/i18n.store';
+	import { toasts } from '$lib/stores/app/toasts.store';
+	import { versionStore } from '$lib/stores/version.store';
 	import type { Satellite } from '$lib/types/satellite';
 	import type { Workflow, WorkflowKey } from '$lib/types/workflow';
 	import type { Option } from '$lib/types/utils';
-	import { toasts } from '$lib/stores/app/toasts.store';
-	import { satelliteAutomationConfig } from '$lib/derived/satellite/satellite-configs.derived';
-	import { type Snippet, untrack } from 'svelte';
-	import { listLastWorkflows } from '$lib/services/satellite/automation/workflows.services';
-	import { authIdentity } from '$lib/derived/auth.derived';
-	import { isNullish } from '@dfinity/utils';
-	import { versionStore } from '$lib/stores/version.store';
-	import Html from '$lib/components/ui/Html.svelte';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
-	import { i18n } from '$lib/stores/app/i18n.store';
 	import { deploymentsLink } from '$lib/utils/nav.utils';
-	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 
 	interface Props {
 		satellite: Satellite;

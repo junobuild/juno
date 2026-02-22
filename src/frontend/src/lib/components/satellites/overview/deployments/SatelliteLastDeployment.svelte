@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { Workflow as WorkflowType, WorkflowKey } from '$lib/types/workflow';
 	import Workflow from '$lib/components/satellites/automation/workflows/Workflow.svelte';
+	import type { Workflow as WorkflowType, WorkflowKey } from '$lib/types/workflow';
 
 	interface Props {
 		key: WorkflowKey;
@@ -9,7 +9,7 @@
 
 	let { key, workflow }: Props = $props();
 
-	let workflowKey = $derived(key as WorkflowKey);
+	let workflowKey = $derived(key);
 </script>
 
 <Workflow key={workflowKey} {workflow} />

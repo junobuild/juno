@@ -11,6 +11,7 @@
 	import SatelliteOverviewVersion from '$lib/components/satellites/overview/SatelliteOverviewVersion.svelte';
 	import SatelliteRuntimeActions from '$lib/components/satellites/overview/SatelliteRuntimeActions.svelte';
 	import SatelliteTags from '$lib/components/satellites/overview/SatelliteTags.svelte';
+	import SatelliteLastDeployments from '$lib/components/satellites/overview/deployments/SatelliteLastDeployments.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { testIds } from '$lib/constants/test-ids.constants';
@@ -18,7 +19,6 @@
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { CanisterSyncData as CanisterSyncDataType } from '$lib/types/canister';
 	import type { Satellite, SatelliteIdText } from '$lib/types/satellite';
-	import SatelliteLastDeployments from '$lib/components/satellites/overview/deployments/SatelliteLastDeployments.svelte';
 
 	interface Props {
 		satellite: Satellite;

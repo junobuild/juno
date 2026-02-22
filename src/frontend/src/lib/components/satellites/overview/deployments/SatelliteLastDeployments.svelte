@@ -1,10 +1,8 @@
 <script lang="ts">
+	import SatelliteLastDeployment from '$lib/components/satellites/overview/deployments/SatelliteLastDeployment.svelte';
+	import SatelliteLastDeploymentsLoader from '$lib/components/satellites/overview/deployments/SatelliteLastDeploymentsLoader.svelte';
 	import type { Satellite } from '$lib/types/satellite';
 	import type { Workflow, WorkflowKey } from '$lib/types/workflow';
-	import SatelliteLastDeploymentsLoader from '$lib/components/satellites/overview/deployments/SatelliteLastDeploymentsLoader.svelte';
-	import SatelliteLastDeployment from '$lib/components/satellites/overview/deployments/SatelliteLastDeployment.svelte';
-	import { i18n } from '$lib/stores/app/i18n.store';
-	import { fade } from 'svelte/transition';
 
 	interface Props {
 		satellite: Satellite;

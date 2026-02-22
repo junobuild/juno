@@ -45,7 +45,7 @@
 				{/each}
 			</div>
 		{:else}
-			<SkeletonText />
+			<p class="skeleton"><SkeletonText /></p>
 		{/if}
 	</Value>
 </div>
@@ -64,5 +64,9 @@
 
 	.host {
 		@include text.truncate;
+	}
+
+	.skeleton {
+		height: 21px;
 	}
 </style>

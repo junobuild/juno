@@ -221,7 +221,7 @@ const postMessageWorkflowsError = (error: unknown) => {
 };
 
 const emitSavedWorkflows = ({ store }: { store: WorkflowsStore }) => {
-	const uiWorkflows = Object.entries(store.workflows).sort(([keyA], [keyB]) =>
+	const uiWorkflows = Object.values(store.workflows).sort(({ data: [keyA] }, { data: [keyB] }) =>
 		keyB.localeCompare(keyA)
 	);
 

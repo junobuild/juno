@@ -12,6 +12,9 @@ import { toKeyWorkflow } from '$lib/utils/workflow.utils';
 export const listWorkflows = async (params: ListDocsParams): Promise<ListDocsResult<Workflow>> => {
 	const { items, matches_length, items_length } = await listDocs({
 		...params,
+		// We use listDocs008 for listing users for backwards compatibility but, automation was introduced in v0.2.0
+		// and since we use it in a worker, where we want to avoid to check version, we just rely on the latest API
+		// for simplicity reasons.
 		listFn: listDocsApi,
 		collection: '#automation-workflow'
 	});

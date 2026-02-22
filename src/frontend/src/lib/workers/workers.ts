@@ -7,6 +7,7 @@ import { onIcpToCyclesRateMessage } from '$lib/workers/icp-cycles-rate.worker';
 import { onMonitoringMessage } from '$lib/workers/monitoring.worker';
 import { onRegistryMessage } from '$lib/workers/registry.worker';
 import { onWalletMessage } from '$lib/workers/wallet.worker';
+import { onWorkflowsMessage } from '$lib/workers/workflows.worker';
 
 onmessage = async (msg: MessageEvent<PostMessageRequest>) => {
 	await Promise.allSettled([
@@ -17,6 +18,7 @@ onmessage = async (msg: MessageEvent<PostMessageRequest>) => {
 		onWalletMessage(msg),
 		onExchangeMessage(msg),
 		onRegistryMessage(msg),
-		onIcpToCyclesRateMessage(msg)
+		onIcpToCyclesRateMessage(msg),
+		onWorkflowsMessage(msg)
 	]);
 };

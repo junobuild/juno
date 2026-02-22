@@ -13,6 +13,7 @@ import type {
 	PostMessageDataResponseRegistrySchema,
 	PostMessageDataResponseWalletCleanUpSchema,
 	PostMessageDataResponseWalletSchema,
+	PostMessageDataResponseWorkflowsSchema,
 	PostMessageRequestSchema
 } from '$lib/schemas/post-message.schema';
 import type * as z from 'zod';
@@ -54,6 +55,10 @@ export type PostMessageDataResponseIcpToCyclesRate = z.infer<
 >;
 
 export type PostMessageDataResponseWallet = z.infer<typeof PostMessageDataResponseWalletSchema>;
+
+export type PostMessageDataResponseWorkflows = z.infer<
+	typeof PostMessageDataResponseWorkflowsSchema
+>;
 
 export type PostMessageDataResponseWalletCleanUp = z.infer<
 	typeof PostMessageDataResponseWalletCleanUpSchema

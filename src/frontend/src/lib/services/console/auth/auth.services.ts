@@ -10,7 +10,8 @@ import {
 	monitoringIdbStore,
 	releasesIdbStore,
 	versionIdbStore,
-	walletIdbStore
+	walletIdbStore,
+	workflowsIdbStore
 } from '$lib/stores/app/idb.store';
 import { toasts } from '$lib/stores/app/toasts.store';
 import { authStore } from '$lib/stores/auth.store';
@@ -85,6 +86,7 @@ const logout = async ({
 			clear(monitoringIdbStore),
 			clear(exchangeIdbStore),
 			clear(walletIdbStore),
+			clear(workflowsIdbStore),
 			clear(versionIdbStore),
 			clear(releasesIdbStore),
 			clear(icpToCyclesRateIdbStore),

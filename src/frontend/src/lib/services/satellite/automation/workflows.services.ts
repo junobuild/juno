@@ -1,3 +1,4 @@
+import { listDocs as listDocsApi } from '$lib/api/satellites.api';
 import {
 	listDocs,
 	type ListDocsParams,
@@ -11,6 +12,7 @@ import { toKeyWorkflow } from '$lib/utils/workflow.utils';
 export const listWorkflows = async (params: ListDocsParams): Promise<ListDocsResult<Workflow>> => {
 	const { items, matches_length, items_length } = await listDocs({
 		...params,
+		listFn: listDocsApi,
 		collection: '#automation-workflow'
 	});
 
@@ -41,7 +43,8 @@ export const listLastWorkflows = async ({
 		collection: '#automation-workflow',
 		order: { desc: true, field: 'keys' },
 		filter: {},
-		limit: 3n
+		limit: 3n,
+		listFn: listDocsApi
 	});
 
 	if (items.length === 0) {

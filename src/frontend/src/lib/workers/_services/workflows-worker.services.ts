@@ -11,7 +11,7 @@ export interface RequestWorkflowsResponse {
 
 export const requestWorkflows = async ({
 	store,
-	identity,
+	identity
 }: RequestWorkerWorkflowsParams): Promise<RequestWorkflowsResponse> => {
 	// We query tip to discover the new transactions
 	const start = undefined;
@@ -21,7 +21,7 @@ export const requestWorkflows = async ({
 		satelliteId: store.satelliteId,
 		order: { desc: true, field: 'keys' },
 		filter: {},
-		startAfter: start,
+		startAfter: start
 		// TODO: certified from param the day we want to use update calls as well
 	});
 

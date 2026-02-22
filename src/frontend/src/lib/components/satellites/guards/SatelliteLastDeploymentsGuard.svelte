@@ -6,12 +6,12 @@
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import { satelliteAutomationConfig } from '$lib/derived/satellite/satellite-configs.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
+	import { workflowsCertifiedStore } from '$lib/stores/workflows/workflows.store';
 	import type { Satellite } from '$lib/types/satellite';
 	import type { Option } from '$lib/types/utils';
 	import type { CertifiedWorkflows } from '$lib/types/workflow';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { deploymentsLink } from '$lib/utils/nav.utils';
-	import { workflowsCertifiedStore } from '$lib/stores/workflows/workflows.store';
 
 	interface Props {
 		satellite: Satellite;
@@ -24,7 +24,7 @@
 
 	let workflows = $state<Option<CertifiedWorkflows>>(undefined);
 
-	const load = async () => {
+	const load = () => {
 		if ($satelliteAutomationConfig === undefined) {
 			workflows = undefined;
 			return;

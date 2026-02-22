@@ -22,7 +22,6 @@ export class WorkflowsWorker extends AppWorker {
 					onWorkflowsError({
 						error: (data.data as PostMessageDataResponseError).error
 					});
-					
 			}
 		};
 	}

@@ -8,10 +8,7 @@ type CertifiedWorkflowsStoreData = Option<
 >;
 
 interface CertifiedWorkflowsStore extends Readable<CertifiedWorkflowsStoreData> {
-	prepend: (params: {
-		satelliteId: SatelliteIdText;
-		workflows: CertifiedWorkflows;
-	}) => void;
+	prepend: (params: { satelliteId: SatelliteIdText; workflows: CertifiedWorkflows }) => void;
 	append: (params: { satelliteId: SatelliteIdText; workflows: CertifiedWorkflows }) => void;
 	reset: () => void;
 }

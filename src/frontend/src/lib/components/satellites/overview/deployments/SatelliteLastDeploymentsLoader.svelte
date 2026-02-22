@@ -11,8 +11,8 @@
 	import { toasts } from '$lib/stores/app/toasts.store';
 	import { versionStore } from '$lib/stores/version.store';
 	import type { Satellite } from '$lib/types/satellite';
-	import type { Workflow, WorkflowKey } from '$lib/types/workflow';
 	import type { Option } from '$lib/types/utils';
+	import type { Workflow, WorkflowKey } from '$lib/types/workflow';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { deploymentsLink } from '$lib/utils/nav.utils';
 

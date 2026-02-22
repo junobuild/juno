@@ -47,43 +47,53 @@
 
 <CanisterSyncData canisterId={satellite.satellite_id} bind:canister />
 
-<div class="card-container with-title">
-	<span class="title">{$i18n.satellites.overview}</span>
+<div class="overview">
+	<div class="card-container with-title">
+		<span class="title">{$i18n.satellites.overview}</span>
 
-	<div class="columns-3">
-		<div>
-			<SatelliteName {satellite} />
+		<div class="columns-2">
+			<div>
+				<SatelliteName {satellite} />
 
-			<SatelliteEnvText {satellite} />
+				<SatelliteOverviewCustomDomains {satellite} />
+			</div>
 
-			<SatelliteTags {satellite} />
+			<div>
+				<SatelliteEnvText {satellite} />
 
-			<SatelliteOverviewCustomDomains {satellite} />
+				<SatelliteTags {satellite} />
+			</div>
 		</div>
+	</div>
 
-		<div>
-			<Value>
-				{#snippet label()}
-					{$i18n.satellites.id}
-				{/snippet}
-				<Identifier
-					identifier={satelliteId}
-					shorten={false}
-					small={false}
-					testId={testIds.satelliteOverview.copySatelliteId}
-				/>
-			</Value>
+	<div class="actions">
+		<SatelliteOverviewActions {monitoringEnabled} {satellite} />
+	</div>
 
-			<CanisterSubnet canisterId={satellite.satellite_id} />
-		</div>
+	<div class="card-container with-title metadata">
+		<span class="title">{$i18n.satellites.metadata}</span>
 
-		<div>
-			<SatelliteOverviewVersion {satelliteId} />
+		<div class="content">
+			<div>
+				<Value>
+					{#snippet label()}
+						{$i18n.satellites.id}
+					{/snippet}
+					<Identifier
+						identifier={satelliteId}
+						shorten={false}
+						small={false}
+						testId={testIds.satelliteOverview.copySatelliteId}
+					/>
+				</Value>
+
+				<CanisterSubnet canisterId={satellite.satellite_id} />
+
+				<SatelliteOverviewVersion {satelliteId} />
+			</div>
 		</div>
 	</div>
 </div>
-
-<SatelliteOverviewActions {monitoringEnabled} {satellite} />
 
 <div class="card-container with-title">
 	<span class="title">{$i18n.monitoring.runtime}</span>
@@ -100,7 +110,26 @@
 <SatelliteRuntimeActions {canister} {monitoringEnabled} {satellite} />
 
 <style lang="scss">
-	.card-container:last-of-type {
-		margin: var(--padding-4x) 0 0;
+	@use '../../../styles/mixins/media';
+
+	.overview {
+		display: grid;
+		column-gap: var(--padding-4x);
+
+		@include media.min-width(medium) {
+			grid-template-columns: repeat(2, 1fr);
+		}
+	}
+
+	.actions {
+		grid-row: 2 / 3;
+	}
+
+	.metadata.card-container {
+		margin: 0 0 var(--padding-8x);
+
+		@include media.min-width(medium) {
+			margin: 0 0 var(--padding-3x);
+		}
 	}
 </style>

@@ -12,7 +12,7 @@
 	}
 
 	@include media.min-width(large) {
-		grid-template-columns: repeat(2, calc(var(--columns-3-width) * 0.26)) calc(
+		grid-template-columns: 250px calc(var(--columns-3-width) * 0.26) calc(
 				var(--columns-3-width) * 0.48
 			);
 		--columns-3-gap: var(--padding-12x);
@@ -44,7 +44,9 @@
 	}
 
 	@include media.min-width(large) {
-		grid-template-columns: minmax(200px, auto) minmax(auto, 360px);
+		grid-template-columns: 250px auto;
+		grid-column-gap: var(--columns-3-gap);
+		--columns-3-gap: var(--padding-12x);
 	}
 }
 

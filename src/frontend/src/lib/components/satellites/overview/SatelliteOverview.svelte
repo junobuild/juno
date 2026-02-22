@@ -56,35 +56,23 @@
 			<div>
 				<SatelliteName {satellite} />
 
-				<SatelliteOverviewCustomDomains {satellite} />
-			</div>
-
-			<div>
 				<SatelliteEnvText {satellite} />
 
 				<SatelliteTags {satellite} />
+
+				<SatelliteOverviewCustomDomains {satellite} />
 			</div>
-		</div>
-	</div>
 
-	<div class="actions">
-		<SatelliteOverviewActions {monitoringEnabled} {satellite} />
-	</div>
-
-	<div class="card-container with-title metadata">
-		<span class="title">{$i18n.satellites.metadata}</span>
-
-		<div class="content">
 			<div>
 				<Value>
 					{#snippet label()}
 						{$i18n.satellites.id}
 					{/snippet}
 					<Identifier
-						identifier={satelliteId}
-						shorten={false}
-						small={false}
-						testId={testIds.satelliteOverview.copySatelliteId}
+							identifier={satelliteId}
+							shorten={false}
+							small={false}
+							testId={testIds.satelliteOverview.copySatelliteId}
 					/>
 				</Value>
 
@@ -93,6 +81,10 @@
 				<SatelliteOverviewVersion {satelliteId} />
 			</div>
 		</div>
+	</div>
+
+	<div class="actions">
+		<SatelliteOverviewActions {monitoringEnabled} {satellite} />
 	</div>
 
 	<div class="card-container with-title workflows">
@@ -126,11 +118,11 @@
 		column-gap: var(--padding-4x);
 
 		@include media.min-width(medium) {
-			grid-template-columns: auto repeat(2, 1fr);
+			grid-template-columns: auto 1fr;
 		}
 
 		@include media.min-width(large) {
-			grid-template-columns: auto 1fr minmax(200px, 300px);
+			grid-template-columns: auto minmax(200px, 300px);
 		}
 	}
 
@@ -138,15 +130,7 @@
 		grid-row: 2 / 3;
 	}
 
-	.metadata.card-container {
-		margin: 0 0 var(--padding-8x);
-
-		@include media.min-width(medium) {
-			margin: 0 0 var(--padding-3x);
-		}
-	}
-
-	.workflows.card-container {
+	.workflows {
 		grid-row: 4 / 5;
 
 		margin: 0 0 var(--padding-8x);

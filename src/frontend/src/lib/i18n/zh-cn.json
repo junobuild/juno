@@ -340,7 +340,6 @@
 		"create_satellite_price": "启动新的 Satellite 需要 {0}。您当前的余额为 {1}。",
 		"loading_satellites": "正在加载所有卫星",
 		"overview": "概览",
-		"metadata": "元数据",
 		"id": "卫星ID",
 		"stock_version": "标准版",
 		"extended_version": "增强版",

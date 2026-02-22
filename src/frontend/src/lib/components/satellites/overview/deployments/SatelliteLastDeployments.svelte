@@ -1,6 +1,6 @@
 <script lang="ts">
 	import WorkflowsLoader from '$lib/components/satellites/automation/loaders/WorkflowsLoader.svelte';
-	import SatelliteLastDeploymentsLoader from '$lib/components/satellites/guards/SatelliteLastDeploymentsGuard.svelte';
+	import SatelliteLastDeploymentsLoader from '$lib/components/satellites/overview/deployments/SatelliteLastDeploymentsLoader.svelte';
 	import SatelliteLastDeployment from '$lib/components/satellites/overview/deployments/SatelliteLastDeployment.svelte';
 	import type { Satellite } from '$lib/types/satellite';
 	import type { CertifiedWorkflows } from '$lib/types/workflow';

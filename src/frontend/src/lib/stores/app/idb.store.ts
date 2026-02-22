@@ -11,6 +11,7 @@ export const icpToCyclesRateIdbStore = createStore(
 	'juno-icp-cycles-rate',
 	'juno-icp-cycles-rate-store'
 );
+export const workflowsIdbStore = createStore('juno-workflows', 'juno-workflows-store');
 
 // Loaded and set on the UI side
 export const snapshotsIdbStore = createStore('juno-snapshot', 'juno-snapshot-store');

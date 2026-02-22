@@ -1,6 +1,7 @@
 import type { SatelliteDid } from '$declarations';
+import type { CertifiedData } from '$lib/types/store';
 
-type WorkflowProvider = 'GitHub';
+export type WorkflowProvider = 'GitHub';
 
 type DocOwnerKey = string;
 type DocNameKey = string;
@@ -25,3 +26,9 @@ export type Workflow = Omit<SatelliteDid.Doc, 'data'> & {
 };
 
 export type WorkflowReferences = [string, ...string[]];
+
+export type WorkflowKeyValue = [WorkflowKey, Workflow];
+
+export type CertifiedWorkflowKeyValue = CertifiedData<WorkflowKeyValue>;
+
+export type CertifiedWorkflowsKeyValue = CertifiedWorkflowKeyValue[];

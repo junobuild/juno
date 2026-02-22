@@ -762,7 +762,8 @@
 		"build_repo_key_repo_not_found": "Repository name not found in URL. Please enter a complete GitHub repository URL.",
 		"repo_references_invalid": "The repository references are invalid. Each must start with refs/heads/, refs/tags/, or refs/pull/.",
 		"save_automation_config": "An error occurred while saving your automation configuration.",
-		"automation_config_undefined": "The automation configuration is undefined, which is unexpected. Try reloading the page."
+		"automation_config_undefined": "The automation configuration is undefined, which is unexpected. Try reloading the page.",
+		"workflows_loading": "Unexpected error while loading your deployment workflows."
 	},
 	"document": {
 		"owner": "Owner",

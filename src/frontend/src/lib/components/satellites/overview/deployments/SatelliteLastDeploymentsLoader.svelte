@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { fade } from 'svelte/transition';
+	import { fade } from 'svelte/transition';
 	import type { Satellite } from '$lib/types/satellite';
 	import type { Workflow, WorkflowKey } from '$lib/types/workflow';
 	import type { Option } from '$lib/types/utils';
@@ -14,7 +14,7 @@
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { deploymentsLink } from '$lib/utils/nav.utils';
-    import SkeletonText from "$lib/components/ui/SkeletonText.svelte";
+	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 
 	interface Props {
 		satellite: Satellite;
@@ -68,22 +68,22 @@
 </script>
 
 {#if workflows === undefined}
-    <SkeletonText tagName="p" />
-    <SkeletonText />
-    <SkeletonText />
+	<SkeletonText tagName="p" />
+	<SkeletonText />
+	<SkeletonText />
 {:else if workflows === null}
-    <p in:fade>
-        <Html
-                text={i18nFormat($i18n.automation.no_deployments_yet, [
-			{
-				placeholder: '{0}',
-				value: deploymentsLink(satelliteId)
-			}
-		])}
-        />
-    </p>
+	<p in:fade>
+		<Html
+			text={i18nFormat($i18n.automation.no_deployments_yet, [
+				{
+					placeholder: '{0}',
+					value: deploymentsLink(satelliteId)
+				}
+			])}
+		/>
+	</p>
 {:else}
 	<div in:fade>
-        {@render content(workflows)}
-    </div>
+		{@render content(workflows)}
+	</div>
 {/if}

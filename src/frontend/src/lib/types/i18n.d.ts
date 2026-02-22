@@ -781,6 +781,7 @@ interface I18nErrors {
 	repo_references_invalid: string;
 	save_automation_config: string;
 	automation_config_undefined: string;
+	workflows_loading: string;
 }
 
 interface I18nDocument {

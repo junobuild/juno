@@ -1,4 +1,5 @@
 <script lang="ts">
+	import WorkflowsLoader from '$lib/components/satellites/automation/loaders/WorkflowsLoader.svelte';
 	import SatelliteLastDeployment from '$lib/components/satellites/overview/deployments/SatelliteLastDeployment.svelte';
 	import SatelliteLastDeploymentsLoader from '$lib/components/satellites/overview/deployments/SatelliteLastDeploymentsLoader.svelte';
 	import type { Satellite } from '$lib/types/satellite';
@@ -11,10 +12,12 @@
 	let { satellite }: Props = $props();
 </script>
 
-<SatelliteLastDeploymentsLoader {satellite}>
-	{#snippet content(workflows: [WorkflowKey, Workflow][])}
-		{#each workflows as [key, workflow] (key)}
-			<SatelliteLastDeployment {key} {workflow} />
-		{/each}
-	{/snippet}
-</SatelliteLastDeploymentsLoader>
+<WorkflowsLoader>
+	<SatelliteLastDeploymentsLoader {satellite}>
+		{#snippet content(workflows: [WorkflowKey, Workflow][])}
+			{#each workflows as [key, workflow] (key)}
+				<SatelliteLastDeployment {key} {workflow} />
+			{/each}
+		{/snippet}
+	</SatelliteLastDeploymentsLoader>
+</WorkflowsLoader>

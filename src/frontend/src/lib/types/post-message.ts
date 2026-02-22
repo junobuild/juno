@@ -1,4 +1,5 @@
 import type {
+	PostMessageDataResponseWorkflowsSchema,
 	inferPostMessageSchema,
 	PostMessageDataRequestDataSchema,
 	PostMessageDataResponseAuthSchema,
@@ -54,6 +55,10 @@ export type PostMessageDataResponseIcpToCyclesRate = z.infer<
 >;
 
 export type PostMessageDataResponseWallet = z.infer<typeof PostMessageDataResponseWalletSchema>;
+
+export type PostMessageDataResponseWorkflows = z.infer<
+	typeof PostMessageDataResponseWorkflowsSchema
+>;
 
 export type PostMessageDataResponseWalletCleanUp = z.infer<
 	typeof PostMessageDataResponseWalletCleanUpSchema

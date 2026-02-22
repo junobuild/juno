@@ -764,7 +764,8 @@
 		"build_repo_key_repo_not_found": "在 URL 中未找到仓库名称。请输入完整的 GitHub 仓库 URL。",
 		"repo_references_invalid": "仓库引用无效。每个引用必须以 refs/heads/、refs/tags/ 或 refs/pull/ 开头。",
 		"save_automation_config": "保存自动化配置时发生错误。",
-		"automation_config_undefined": "自动化配置未定义，这是意外情况。请尝试重新加载页面。"
+		"automation_config_undefined": "自动化配置未定义，这是意外情况。请尝试重新加载页面。",
+		"workflows_loading": "加载部署工作流时发生意外错误。"
 	},
 	"document": {
 		"owner": "所有者",

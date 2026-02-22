@@ -14,6 +14,7 @@ import type {
 import type { CustomDomain } from '$lib/types/custom-domain';
 import type { CertifiedData } from '$lib/types/store';
 import type { VersionRegistry } from '$lib/types/version';
+import { PrincipalTextSchema } from '@dfinity/zod-schemas';
 import * as z from 'zod';
 
 export const PostMessageDataRequestDataSchema = z.object({
@@ -21,7 +22,8 @@ export const PostMessageDataRequestDataSchema = z.object({
 	customDomain: z.custom<CustomDomain>().optional(),
 	missionControlId: z.string().optional(),
 	walletIds: z.array(WalletIdTextSchema).optional(),
-	withMonitoringHistory: z.boolean().optional()
+	withMonitoringHistory: z.boolean().optional(),
+	satelliteId: PrincipalTextSchema.optional()
 });
 
 const JsonCertifiedIcTransactionUiTextSchema = z.string();
@@ -35,6 +37,17 @@ const PostMessageWalletDataSchema = z.object({
 
 export const PostMessageDataResponseWalletSchema = z.object({
 	wallet: PostMessageWalletDataSchema
+});
+
+const JsonCertifiedWorkflowsTextSchema = z.string();
+
+const PostMessageWorkflowsDataSchema = z.object({
+	satelliteId: PrincipalTextSchema,
+	newWorkflows: JsonCertifiedWorkflowsTextSchema
+});
+
+export const PostMessageDataResponseWorkflowsSchema = z.object({
+	workflows: PostMessageWorkflowsDataSchema
 });
 
 export const PostMessageDataResponseWalletCleanUpSchema = z.object({
@@ -102,7 +115,10 @@ export const PostMessageRequestMsgSchema = z.enum([
 	'startMonitoringTimer',
 	'stopMonitoringTimer',
 	'restartMonitoringTimer',
-	'loadRegistry'
+	'loadRegistry',
+	'stopWorkflowsTimer',
+	'startWorkflowsTimer',
+	'restartWorkflowsTimer'
 ]);
 
 export const PostMessageResponseMsgSchema = z.enum([
@@ -117,7 +133,9 @@ export const PostMessageResponseMsgSchema = z.enum([
 	'syncExchange',
 	'syncRegistry',
 	'syncRegistryError',
-	'syncIcpToCyclesRate'
+	'syncIcpToCyclesRate',
+	'syncWorkflows',
+	'syncWorkflowsError'
 ]);
 
 export const PostMessageRequestSchema = z.object({

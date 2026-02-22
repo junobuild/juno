@@ -35,7 +35,7 @@
 			return;
 		}
 
-		workflows = $workflowsCertifiedStore?.[satelliteId.toText()].GitHub;
+		workflows = $workflowsCertifiedStore?.[satelliteId.toText()]?.GitHub?.slice(0, 3);
 	};
 
 	$effect(() => {

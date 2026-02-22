@@ -74,12 +74,17 @@
 {:else if workflows === null}
 	<p in:fade>
 		<Html
-			text={i18nFormat($i18n.automation.no_deployments_yet, [
-				{
-					placeholder: '{0}',
-					value: deploymentsLink(satelliteId)
-				}
-			])}
+			text={i18nFormat(
+				isNullish($satelliteAutomationConfig)
+					? $i18n.automation.deployments_not_configured
+					: $i18n.automation.no_deployments_yet,
+				[
+					{
+						placeholder: '{0}',
+						value: deploymentsLink(satelliteId)
+					}
+				]
+			)}
 		/>
 	</p>
 {:else}

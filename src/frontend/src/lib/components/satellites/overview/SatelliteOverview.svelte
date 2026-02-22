@@ -69,10 +69,10 @@
 						{$i18n.satellites.id}
 					{/snippet}
 					<Identifier
-							identifier={satelliteId}
-							shorten={false}
-							small={false}
-							testId={testIds.satelliteOverview.copySatelliteId}
+						identifier={satelliteId}
+						shorten={false}
+						small={false}
+						testId={testIds.satelliteOverview.copySatelliteId}
 					/>
 				</Value>
 

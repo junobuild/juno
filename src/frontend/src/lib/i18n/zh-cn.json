@@ -1139,6 +1139,9 @@
 		"empty_repositories": "尚未配置用于自动化的仓库。",
 		"delete_title": "删除仓库",
 		"delete_question": "确定要从自动化配置中移除 <mark>{0}</mark> 吗？",
-		"warn_skylab": "GitHub 部署仅在生产环境中可用。GitHub Actions 无法与模拟器通信。"
+		"warn_skylab": "GitHub 部署仅在生产环境中可用。GitHub Actions 无法与模拟器通信。",
+		"last_deployments": "最近部署",
+		"deployments_not_configured": "休斯顿，我们还没有部署记录。<a href=\"{0}\">配置自动化</a>以启动发射序列。",
+		"no_deployments_yet": "发射器已<a href=\"{0}\">配置</a>。等待发射。"
 	}
 }

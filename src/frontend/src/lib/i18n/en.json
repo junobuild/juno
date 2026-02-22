@@ -1139,6 +1139,7 @@
 		"delete_question": "Are you sure you want to remove <mark>{0}</mark> from your automation configuration?",
 		"warn_skylab": "GitHub deployment is only available in production. GitHub Actions cannot communicate with an emulator.",
 		"last_deployments": "Last deployments",
-		"no_deployments_yet": "No deployments yet. <a href=\"{0}\">Configure automation</a> to get started."
+		"deployments_not_configured": "Houston, we have no deployments. <a href=\"{0}\">Configure automation</a> to init launch sequences.",
+		"no_deployments_yet": "Launcher <a href=\"{0}\">configured</a>. Waiting for liftoff."
 	}
 }

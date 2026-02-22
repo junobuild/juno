@@ -7,7 +7,7 @@ import type { OptionIdentity } from '$lib/types/itentity';
 import type { ListParams } from '$lib/types/list';
 import type { Principal } from '@icp-sdk/core/principal';
 
-export type ListDocsParams = Pick<ListParams, 'startAfter' | 'filter' | 'order'> & {
+export type ListDocsParams = ListParams & {
 	satelliteId: Principal;
 	identity: OptionIdentity;
 };
@@ -26,6 +26,7 @@ export const listDocs = async ({
 	satelliteId,
 	filter,
 	order,
+	limit,
 	identity
 }: ListDocsParams & {
 	collection: string;
@@ -50,7 +51,8 @@ export const listDocs = async ({
 				desc: true,
 				field: 'created_at'
 			},
-			filter
+			filter,
+			limit
 		},
 		identity
 	});

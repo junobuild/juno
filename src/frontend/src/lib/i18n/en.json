@@ -339,7 +339,6 @@
 		"create_satellite_price": "Starting a new Satellite requires {0}. Your current balance is {1}.",
 		"loading_satellites": "Loading your Satellites",
 		"overview": "Overview",
-		"metadata": "Metadata",
 		"id": "Satellite ID",
 		"stock_version": "Stock version",
 		"extended_version": "Extended version",
@@ -1138,6 +1137,9 @@
 		"empty_repositories": "No repositories configured for automation.",
 		"delete_title": "Delete repository",
 		"delete_question": "Are you sure you want to remove <mark>{0}</mark> from your automation configuration?",
-		"warn_skylab": "GitHub deployment is only available in production. GitHub Actions cannot communicate with an emulator."
+		"warn_skylab": "GitHub deployment is only available in production. GitHub Actions cannot communicate with an emulator.",
+		"last_deployments": "Last deployments",
+		"deployments_not_configured": "Houston, we have no deployments. <a href=\"{0}\">Configure automation</a> to init launch sequences.",
+		"no_deployments_yet": "Launcher <a href=\"{0}\">configured</a>. Waiting for liftoff."
 	}
 }

@@ -11,9 +11,11 @@
 	import SatelliteOverviewVersion from '$lib/components/satellites/overview/SatelliteOverviewVersion.svelte';
 	import SatelliteRuntimeActions from '$lib/components/satellites/overview/SatelliteRuntimeActions.svelte';
 	import SatelliteTags from '$lib/components/satellites/overview/SatelliteTags.svelte';
+	import SatelliteLastDeployments from '$lib/components/satellites/overview/deployments/SatelliteLastDeployments.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { testIds } from '$lib/constants/test-ids.constants';
+	import { isNotSkylab } from '$lib/env/app.env';
 	import { listCustomDomains } from '$lib/services/satellite/hosting/custom-domain.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { CanisterSyncData as CanisterSyncDataType } from '$lib/types/canister';
@@ -55,25 +57,13 @@
 			<div>
 				<SatelliteName {satellite} />
 
-				<SatelliteOverviewCustomDomains {satellite} />
-			</div>
-
-			<div>
 				<SatelliteEnvText {satellite} />
 
 				<SatelliteTags {satellite} />
+
+				<SatelliteOverviewCustomDomains {satellite} />
 			</div>
-		</div>
-	</div>
 
-	<div class="actions">
-		<SatelliteOverviewActions {monitoringEnabled} {satellite} />
-	</div>
-
-	<div class="card-container with-title metadata">
-		<span class="title">{$i18n.satellites.metadata}</span>
-
-		<div class="content">
 			<div>
 				<Value>
 					{#snippet label()}
@@ -93,6 +83,20 @@
 			</div>
 		</div>
 	</div>
+
+	<div class="actions">
+		<SatelliteOverviewActions {monitoringEnabled} {satellite} />
+	</div>
+
+	{#if isNotSkylab()}
+		<div class="card-container with-title workflows">
+			<span class="title">{$i18n.automation.last_deployments}</span>
+
+			<div class="content">
+				<SatelliteLastDeployments {satellite} />
+			</div>
+		</div>
+	{/if}
 </div>
 
 <div class="card-container with-title">
@@ -117,7 +121,11 @@
 		column-gap: var(--padding-4x);
 
 		@include media.min-width(medium) {
-			grid-template-columns: repeat(2, 1fr);
+			grid-template-columns: auto 1fr;
+		}
+
+		@include media.min-width(large) {
+			grid-template-columns: auto minmax(200px, 300px);
 		}
 	}
 
@@ -125,10 +133,14 @@
 		grid-row: 2 / 3;
 	}
 
-	.metadata.card-container {
+	.workflows {
+		grid-row: 4 / 5;
+
 		margin: 0 0 var(--padding-8x);
 
-		@include media.min-width(medium) {
+		@include media.min-width(xlarge) {
+			grid-row: unset;
+
 			margin: 0 0 var(--padding-3x);
 		}
 	}

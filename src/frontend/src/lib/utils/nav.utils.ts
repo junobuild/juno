@@ -8,6 +8,9 @@ import type { LoadEvent } from '@sveltejs/kit';
 export const overviewLink = (satelliteId: Option<Principal>): string =>
 	`/satellite/?s=${satelliteId?.toText() ?? ''}`;
 
+export const deploymentsLink = (satelliteId: Option<Principal>): string =>
+	`/deployments/?s=${satelliteId?.toText() ?? ''}`;
+
 export const monitoringLink = (satelliteId?: Option<Principal>): string =>
 	`/monitoring/${nonNullish(satelliteId) ? `?s=${satelliteId?.toText() ?? ''}` : ''}`;
 

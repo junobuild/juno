@@ -1,4 +1,3 @@
-import type { LedgerIdText } from '$lib/schemas/wallet.schema';
 import type { SatelliteIdText } from '$lib/types/satellite';
 import type { Option } from '$lib/types/utils';
 import type { CertifiedWorkflowsKeyValue, WorkflowProvider } from '$lib/types/workflow';
@@ -13,11 +12,7 @@ interface CertifiedWorkflowsStore extends Readable<CertifiedWorkflowsStoreData> 
 		satelliteId: SatelliteIdText;
 		workflows: CertifiedWorkflowsKeyValue;
 	}) => void;
-	append: (params: {
-		satelliteId: SatelliteIdText;
-		ledgerId: LedgerIdText;
-		workflows: CertifiedWorkflowsKeyValue;
-	}) => void;
+	append: (params: { satelliteId: SatelliteIdText; workflows: CertifiedWorkflowsKeyValue }) => void;
 	reset: () => void;
 }
 
@@ -30,10 +25,12 @@ const initCertifiedWorkflowsStore = (): CertifiedWorkflowsStore => {
 				...(state ?? {}),
 				[satelliteId]: {
 					...(state?.[satelliteId] ?? {}),
-					GitHub: [...workflows],
-					...((state ?? {})[satelliteId]?.GitHub ?? []).filter(
-						({ data: [key] }) => !workflows.some(({ data: [wKey] }) => wKey === key)
-					)
+					GitHub: [
+						...workflows,
+						...((state ?? {})[satelliteId]?.GitHub ?? []).filter(
+							({ data: [key] }) => !workflows.some(({ data: [wKey] }) => wKey === key)
+						)
+					]
 				}
 			})),
 

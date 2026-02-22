@@ -29,6 +29,6 @@ export type WorkflowReferences = [string, ...string[]];
 
 export type WorkflowKeyValue = [WorkflowKey, Workflow];
 
-export type CertifiedWorkflowKeyValue = CertifiedData<WorkflowKeyValue>;
+export type CertifiedWorkflow = CertifiedData<WorkflowKeyValue>;
 
-export type CertifiedWorkflowsKeyValue = CertifiedWorkflowKeyValue[];
+export type CertifiedWorkflows = CertifiedWorkflow[];

@@ -1,10 +1,10 @@
 import { workflowsIdbStore } from '$lib/stores/app/idb.store';
-import type { CertifiedWorkflowKeyValue, WorkflowKey, WorkflowKeyValue } from '$lib/types/workflow';
+import type { CertifiedWorkflow, WorkflowKey, WorkflowKeyValue } from '$lib/types/workflow';
 
 import type { SatelliteId } from '$lib/types/satellite';
 import { get, set } from 'idb-keyval';
 
-export type IndexedWorkflows = Record<WorkflowKey, CertifiedWorkflowKeyValue>;
+export type IndexedWorkflows = Record<WorkflowKey, CertifiedWorkflow>;
 
 // Not reactive, only used to hold values imperatively.
 interface WorkflowsState {
@@ -58,7 +58,7 @@ export class WorkflowsStore {
 		this.#store = {
 			workflows: {
 				...this.#store.workflows,
-				...newWorkflows.reduce<Record<WorkflowKey, CertifiedWorkflowKeyValue>>(
+				...newWorkflows.reduce<Record<WorkflowKey, CertifiedWorkflow>>(
 					(acc, [key, value]) => ({
 						...acc,
 						[`${key}`]: {

@@ -1,18 +1,18 @@
 import type { SatelliteIdText } from '$lib/types/satellite';
 import type { Option } from '$lib/types/utils';
-import type { CertifiedWorkflowsKeyValue, WorkflowProvider } from '$lib/types/workflow';
+import type { CertifiedWorkflows, WorkflowProvider } from '$lib/types/workflow';
 import { type Readable, writable } from 'svelte/store';
 
 type CertifiedWorkflowsStoreData = Option<
-	Record<SatelliteIdText, Record<WorkflowProvider, CertifiedWorkflowsKeyValue>>
+	Record<SatelliteIdText, Record<WorkflowProvider, CertifiedWorkflows>>
 >;
 
 interface CertifiedWorkflowsStore extends Readable<CertifiedWorkflowsStoreData> {
 	prepend: (params: {
 		satelliteId: SatelliteIdText;
-		workflows: CertifiedWorkflowsKeyValue;
+		workflows: CertifiedWorkflows;
 	}) => void;
-	append: (params: { satelliteId: SatelliteIdText; workflows: CertifiedWorkflowsKeyValue }) => void;
+	append: (params: { satelliteId: SatelliteIdText; workflows: CertifiedWorkflows }) => void;
 	reset: () => void;
 }
 

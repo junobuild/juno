@@ -89,14 +89,8 @@ fn verify_openid_credentials(
         Ok(())
     };
 
-    let token = verify_openid_jwt(
-        jwt,
-        provider.issuers(),
-        &jwks.keys,
-        salt,
-        assert_repository,
-    )
-    .map_err(VerifyOpenidCredentialsError::JwtVerify)?;
+    let token = verify_openid_jwt(jwt, provider.issuers(), &jwks.keys, salt, assert_repository)
+        .map_err(VerifyOpenidCredentialsError::JwtVerify)?;
 
     let credential = OpenIdAutomationCredential::from(token);
 

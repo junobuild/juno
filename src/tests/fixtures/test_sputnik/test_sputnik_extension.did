@@ -1,1 +1,1 @@
-service : {}
+service : { hello : () -> () query; world : () -> (principal) }

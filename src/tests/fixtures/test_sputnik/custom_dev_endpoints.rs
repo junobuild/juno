@@ -2,7 +2,7 @@ use ic_cdk::{update, query, print};
 use junobuild_satellite::{
     caller
 };
-use candid::Principal;
+pub use candid::Principal;
 
 #[query]
 fn hello() {

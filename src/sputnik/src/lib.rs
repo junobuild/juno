@@ -7,6 +7,8 @@ mod js;
 mod polyfill;
 mod state;
 
+include!(env!("DEV_CUSTOM_FUNCTIONS_PATH"));
+
 use junobuild_satellite::include_satellite;
 
 include_satellite!();

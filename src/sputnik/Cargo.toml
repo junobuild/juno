@@ -9,7 +9,7 @@ crate-type = ["cdylib"]
 
 [dependencies]
 candid.workspace = true
-ic-cdk.workspace = true
+ic-cdk = { workspace = true, features = ["transform-closure"] }
 junobuild-satellite = { path = "../libs/satellite", default-features = false, features = [
 	"on_init_sync",
 	"on_post_upgrade_sync",

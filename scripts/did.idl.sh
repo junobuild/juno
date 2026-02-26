@@ -50,7 +50,7 @@ done
 
 # Fixtures
 
-FIXTURES=test_satellite
+FIXTURES=test_satellite,test_sputnik
 
 for fixture in $(echo $FIXTURES | sed "s/,/ /g")
 do

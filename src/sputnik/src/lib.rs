@@ -12,10 +12,6 @@ mod generated;
 #[warn(unused_imports)]
 pub use generated::*;
 
-mod demo;
-#[warn(unused_imports)]
-pub use demo::*;
-
 use junobuild_satellite::include_satellite;
 
 include_satellite!();

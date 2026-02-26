@@ -1,15 +1,17 @@
-import { Principal } from '@icp-sdk/core/principal';
+import { RawPrincipalSchema } from '@junobuild/functions';
 import * as z from 'zod';
 
 const defineQuery = <T>(definition: T) => ({ ...definition, type: 'query' });
 
 const InputSchema = z.object({
-	value: Principal
-})
+	value: RawPrincipalSchema
+});
+
+type Input = z.infer<typeof InputSchema>;
 
 export const world_world = defineQuery({
 	input: InputSchema,
-	handler: (input: Principal) => {
-		console.log('Hello world', input.toText());
+	handler: (input: Input) => {
+		console.log('Hello world', input.value);
 	}
 });

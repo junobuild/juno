@@ -4,7 +4,6 @@ use crate::assets::constants::{
 use crate::memory::state::services::{
     with_db_rules, with_db_rules_mut, with_storage_rules, with_storage_rules_mut,
 };
-use ic_cdk::api::time;
 use junobuild_collections::constants::db::{
     COLLECTION_AUTOMATION_TOKEN_DEFAULT_RULE, COLLECTION_AUTOMATION_TOKEN_KEY,
     COLLECTION_AUTOMATION_WORKFLOW_DEFAULT_RULE, COLLECTION_AUTOMATION_WORKFLOW_KEY,
@@ -18,7 +17,6 @@ use junobuild_collections::constants::db::{
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::interface::SetRule;
 use junobuild_collections::types::rules::Rule;
-
 // ---------------------------------------------------------
 // One time upgrade
 // ---------------------------------------------------------
@@ -93,23 +91,8 @@ fn init_db_collection(collection: &CollectionKey, default_rule: SetRule) {
 
     if col.is_none() {
         with_db_rules_mut(|rules| {
-            let now = time();
-
-            let rule = Rule {
-                read: default_rule.read,
-                write: default_rule.write,
-                memory: default_rule.memory,
-                mutable_permissions: default_rule.mutable_permissions,
-                max_size: default_rule.max_size,
-                max_capacity: default_rule.max_capacity,
-                max_changes_per_user: default_rule.max_changes_per_user,
-                created_at: now,
-                updated_at: now,
-                version: default_rule.version,
-                rate_config: default_rule.rate_config,
-            };
-
-            rules.insert(collection.to_string(), rule.clone());
+            let rule: Rule = default_rule.into();
+            rules.insert(collection.to_string(), rule);
         });
     }
 }
@@ -126,23 +109,8 @@ fn init_storage_collection(collection: &CollectionKey, default_rule: SetRule) {
 
     if col.is_none() {
         with_storage_rules_mut(|rules| {
-            let now = time();
-
-            let rule = Rule {
-                read: default_rule.read,
-                write: default_rule.write,
-                memory: default_rule.memory,
-                mutable_permissions: default_rule.mutable_permissions,
-                max_size: default_rule.max_size,
-                max_capacity: default_rule.max_capacity,
-                max_changes_per_user: default_rule.max_changes_per_user,
-                created_at: now,
-                updated_at: now,
-                version: default_rule.version,
-                rate_config: default_rule.rate_config,
-            };
-
-            rules.insert(collection.to_string(), rule.clone());
+            let rule: Rule = default_rule.into();
+            rules.insert(collection.to_string(), rule);
         });
     }
 }

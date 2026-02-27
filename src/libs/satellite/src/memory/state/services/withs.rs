@@ -9,8 +9,19 @@ pub fn with_db_rules<R>(f: impl FnOnce(&Rules) -> R) -> R {
     })
 }
 
+pub fn with_storage_rules<R>(f: impl FnOnce(&Rules) -> R) -> R {
+    read_heap_state(|state| {
+        let storage = &state.storage;
+        f(&storage.rules)
+    })
+}
+
 pub fn with_db_rules_mut<R>(f: impl FnOnce(&mut Rules) -> R) -> R {
     mutate_heap_state(|state| f(&mut state.db.rules))
+}
+
+pub fn with_storage_rules_mut<R>(f: impl FnOnce(&mut Rules) -> R) -> R {
+    mutate_heap_state(|state| f(&mut state.storage.rules))
 }
 
 pub fn with_runtime_rng_mut<R>(f: impl FnOnce(&mut Option<StdRng>) -> R) -> R {

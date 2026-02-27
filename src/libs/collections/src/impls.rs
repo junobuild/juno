@@ -105,6 +105,26 @@ impl Rule {
     }
 }
 
+impl From<SetRule> for Rule {
+    fn from(rule: SetRule) -> Self {
+        let now = time();
+
+        Self {
+            read: rule.read,
+            write: rule.write,
+            memory: rule.memory,
+            mutable_permissions: rule.mutable_permissions,
+            max_size: rule.max_size,
+            max_capacity: rule.max_capacity,
+            max_changes_per_user: rule.max_changes_per_user,
+            created_at: now,
+            updated_at: now,
+            version: rule.version,
+            rate_config: rule.rate_config,
+        }
+    }
+}
+
 impl Versioned for &Rule {
     fn version(&self) -> Option<Version> {
         self.version

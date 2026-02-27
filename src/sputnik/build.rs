@@ -16,5 +16,7 @@ fn main() {
     let source = env::var("DEV_CUSTOM_FUNCTIONS_PATH")
         .unwrap_or_else(|_| "resources/functions.rs".to_string());
 
+    println!("cargo:rerun-if-changed={source}");
+
     fs::copy(&source, "src/generated.rs").expect("Failed to copy generated.rs");
 }

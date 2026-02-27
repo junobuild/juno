@@ -4,7 +4,6 @@ use crate::assets::constants::{
 use crate::memory::state::services::{
     with_db_rules, with_db_rules_mut, with_storage_rules, with_storage_rules_mut,
 };
-use crate::memory::state::STATE;
 use ic_cdk::api::time;
 use junobuild_collections::constants::db::{
     COLLECTION_AUTOMATION_TOKEN_DEFAULT_RULE, COLLECTION_AUTOMATION_TOKEN_KEY,
@@ -18,7 +17,8 @@ use junobuild_collections::constants::db::{
 };
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::interface::SetRule;
-use junobuild_collections::types::rules::{Memory, Rule, Rules};
+use junobuild_collections::types::rules::Rule;
+
 // ---------------------------------------------------------
 // One time upgrade
 // ---------------------------------------------------------
@@ -115,7 +115,7 @@ fn init_db_collection(collection: &CollectionKey, default_rule: SetRule) {
 }
 
 fn init_juno_releases_collection() {
-    init_db_collection(
+    init_storage_collection(
         &CDN_JUNO_RELEASES_COLLECTION_KEY.to_string(),
         COLLECTION_RELEASES_DEFAULT_RULE,
     );

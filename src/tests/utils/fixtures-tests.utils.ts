@@ -1,6 +1,8 @@
 import { type SputnikActor, idlFactorySputnik } from '$declarations';
 import type { _SERVICE as TestSatelliteActor } from '$test-declarations/test_satellite/test_satellite.did';
+import type { _SERVICE as TestSputnikActor } from '$test-declarations/test_sputnik/test_sputnik.did';
 import { idlFactory as idlTestFactorySatellite } from '$test-declarations/test_satellite/test_satellite.factory.did';
+import { idlFactory as idlTestFactorySputnik } from '$test-declarations/test_sputnik/test_sputnik.factory.did';
 import { type Actor, type ActorInterface, PocketIc } from '@dfinity/pic';
 import { nonNullish } from '@dfinity/utils';
 import type { Identity } from '@icp-sdk/core/agent';
@@ -34,11 +36,11 @@ export const setupTestSatellite = async (
 
 export const setupTestSputnik = async (
 	{ withUpgrade, currentDate }: { withUpgrade: boolean; currentDate?: Date } = { withUpgrade: true }
-): Promise<SetupFixtureCanister<SputnikActor>> =>
+): Promise<SetupFixtureCanister<TestSputnikActor>> =>
 	await setupFixtureCanister({
 		currentDate,
 		withUpgrade,
-		idlFactory: idlFactorySputnik,
+		idlFactory: idlTestFactorySputnik,
 		wasm: TEST_SPUTNIK_WASM_PATH
 	});
 

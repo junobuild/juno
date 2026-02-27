@@ -1,2 +1,2 @@
 type InputArgs = record { value : principal };
-service : { world_world : (InputArgs) -> () query }
+service : { hello_world : (InputArgs) -> () query }

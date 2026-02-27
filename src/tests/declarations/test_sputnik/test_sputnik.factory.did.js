@@ -614,7 +614,7 @@ export const idlFactory = ({ IDL }) => {
 		switch_storage_system_memory: IDL.Func([], [], []),
 		upload_asset_chunk: IDL.Func([UploadChunk], [UploadChunkResult], []),
 		upload_proposal_asset_chunk: IDL.Func([UploadChunk], [UploadChunkResult], []),
-		world_world: IDL.Func([InputArgs], [], ['query'])
+		hello_world: IDL.Func([InputArgs], [], ['query'])
 	});
 };
 

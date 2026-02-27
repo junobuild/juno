@@ -587,7 +587,7 @@ export interface _SERVICE {
 	switch_storage_system_memory: ActorMethod<[], undefined>;
 	upload_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;
 	upload_proposal_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;
-	world_world: ActorMethod<[InputArgs], undefined>;
+	hello_world: ActorMethod<[InputArgs], undefined>;
 }
 export declare const idlFactory: IDL.InterfaceFactory;
 export declare const init: (args: { IDL: typeof IDL }) => IDL.Type[];

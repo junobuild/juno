@@ -36,7 +36,10 @@ impl<'js> JsInputArgs<'js> {
 }
 
 #[ic_cdk::query]
-fn world_world(input: InputArgs) {
+fn hello_world(input: InputArgs) {
+
+    ic_cdk::print("--------> GO GO GO GO!");
+
     execute_sync_js(|ctx| {
         init_sdk(ctx).map_err(|e| e.to_string())?;
 
@@ -44,7 +47,7 @@ fn world_world(input: InputArgs) {
 
         ctx.globals().set("jsContext", input_args).map_err(|e| e.to_string())?;
 
-        let custom_function: &str = "world_world";
+        let custom_function: &str = "hello_world";
 
         let code = format!(
             r#"const {{ {custom_function} }} = await import("{DEV_MODULE_NAME}");
@@ -55,6 +58,8 @@ fn world_world(input: InputArgs) {
             }}
             "#,
         );
+
+        ic_cdk::print(format!("----> {}", code));
 
         evaluate_module(ctx, "@junobuild/sputnik/functions", &code).map_err(|e| e.to_string())?;
 

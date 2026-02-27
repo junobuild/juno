@@ -1,4 +1,4 @@
-use crate::memory::state::STATE;
+use crate::memory::state::services::{with_db_rules, with_db_rules_mut};
 use ic_cdk::api::time;
 use junobuild_collections::constants::db::{
     COLLECTION_AUTOMATION_TOKEN_DEFAULT_RULE, COLLECTION_AUTOMATION_TOKEN_KEY,
@@ -74,15 +74,10 @@ fn init_automation_workflow_collection() {
 }
 
 fn init_collection(collection: &CollectionKey, default_rule: SetRule) {
-    let col = STATE.with(|state| {
-        let rules = &state.borrow_mut().heap.db.rules;
-        rules.get(collection).cloned()
-    });
+    let col = with_db_rules(|rules| rules.get(collection).cloned());
 
     if col.is_none() {
-        STATE.with(|state| {
-            let rules = &mut state.borrow_mut().heap.db.rules;
-
+        with_db_rules_mut(|rules| {
             let now = time();
 
             let rule = Rule {

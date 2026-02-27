@@ -16,7 +16,7 @@ use junobuild_collections::constants::db::{
 };
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::interface::SetRule;
-
+use junobuild_collections::types::rules::Rule;
 // ---------------------------------------------------------
 // One time upgrade
 // ---------------------------------------------------------
@@ -86,12 +86,13 @@ fn init_automation_workflow_collection() {
     );
 }
 
-fn init_db_collection(collection: &CollectionKey, rule: SetRule) {
+fn init_db_collection(collection: &CollectionKey, default_rule: SetRule) {
     let col = with_db_rules(|rules| rules.get(collection).cloned());
 
     if col.is_none() {
         with_db_rules_mut(|rules| {
-            rules.insert(collection.to_string(), rule.into().clone());
+            let rule: Rule = default_rule.into();
+            rules.insert(collection.to_string(), rule);
         });
     }
 }
@@ -103,12 +104,13 @@ fn init_juno_releases_collection() {
     );
 }
 
-fn init_storage_collection(collection: &CollectionKey, rule: SetRule) {
+fn init_storage_collection(collection: &CollectionKey, default_rule: SetRule) {
     let col = with_storage_rules(|rules| rules.get(collection).cloned());
 
     if col.is_none() {
         with_storage_rules_mut(|rules| {
-            rules.insert(collection.to_string(), rule.into().clone());
+            let rule: Rule = default_rule.into();
+            rules.insert(collection.to_string(), rule);
         });
     }
 }

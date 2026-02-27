@@ -12,13 +12,20 @@ use junobuild_collections::constants::db::{
 };
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::interface::SetRule;
-use junobuild_collections::types::rules::Rule;
-
+use junobuild_collections::types::rules::{Memory, Rule, Rules};
+use crate::assets::constants::{CDN_JUNO_RELEASES_COLLECTION_KEY, COLLECTION_RELEASES_DEFAULT_RULE};
+use crate::memory::state::STATE;
 // ---------------------------------------------------------
 // One time upgrade
 // ---------------------------------------------------------
 
 pub fn init_system_collections() {
+    init_db_collections();
+
+    init_storage_collections();
+}
+
+fn init_db_collections() {
     // Logs
     init_log_collection();
 
@@ -32,6 +39,10 @@ pub fn init_system_collections() {
     // Automation
     init_automation_token_collection();
     init_automation_workflow_collection();
+}
+
+fn init_storage_collections() {
+    init_juno_collection();
 }
 
 fn init_log_collection() {
@@ -97,4 +108,36 @@ fn init_collection(collection: &CollectionKey, default_rule: SetRule) {
             rules.insert(collection.to_string(), rule.clone());
         });
     }
+}
+
+fn init_juno_collection() {
+    STATE.with(|state| {
+        let rules = &mut state.borrow_mut().heap.storage.rules;
+
+        if !rules.contains_key(CDN_JUNO_RELEASES_COLLECTION_KEY) {
+            init_juno_collection_impl(rules);
+        }
+    });
+}
+
+fn init_juno_collection_impl(rules: &mut Rules) {
+    let now = time();
+
+    let cdn_set_rule: SetRule = COLLECTION_RELEASES_DEFAULT_RULE.clone();
+
+    let cdn_rule: Rule = Rule {
+        read: cdn_set_rule.read,
+        write: cdn_set_rule.write,
+        memory: Some(cdn_set_rule.memory.unwrap_or(Memory::Heap)),
+        mutable_permissions: Some(cdn_set_rule.mutable_permissions.unwrap_or(false)),
+        max_size: cdn_set_rule.max_size,
+        max_capacity: cdn_set_rule.max_capacity,
+        max_changes_per_user: cdn_set_rule.max_changes_per_user,
+        created_at: now,
+        updated_at: now,
+        version: cdn_set_rule.version,
+        rate_config: cdn_set_rule.rate_config,
+    };
+
+    rules.insert(CDN_JUNO_RELEASES_COLLECTION_KEY.to_string(), cdn_rule);
 }

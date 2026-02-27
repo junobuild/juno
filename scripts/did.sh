@@ -35,15 +35,31 @@ generate_did sputnik "src/sputnik" sputnik_extension
 
 prepend_import_did $SATELLITE_CRATE_DID "src/sputnik" sputnik sputnik_extension
 
-#######################################
-# Fixtures (with serverless functions) #
-#######################################
+#############################################
+# Fixtures (with Rust serverless functions) #
+#############################################
 
-FIXTURES=test_satellite
+RUST_FIXTURES=test_satellite
 
-for fixture in $(echo $FIXTURES | sed "s/,/ /g")
+for fixture in $(echo $RUST_FIXTURES | sed "s/,/ /g")
 do
     generate_did "$fixture" "src/tests/fixtures/$fixture" "$fixture"_extension
 done
 
 prepend_import_did $SATELLITE_CRATE_DID "src/tests/fixtures/test_satellite" test_satellite test_satellite_extension
+
+#############################################
+# Fixtures (with TypeScript serverless functions) #
+#############################################
+
+TYPESCRIPT_FIXTURES=test_sputnik:sputnik
+
+for fixture in $(echo $TYPESCRIPT_FIXTURES | sed "s/,/ /g")
+do
+    canister=$(echo $fixture | cut -d: -f1)
+    wasm=$(echo $fixture | cut -d: -f2)
+
+    generate_did "$canister" "src/tests/fixtures/$canister" "$canister"_extension "$wasm"
+done
+
+prepend_import_did $SATELLITE_CRATE_DID "src/tests/fixtures/test_sputnik" test_sputnik test_sputnik_extension

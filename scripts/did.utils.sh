@@ -2,13 +2,14 @@ function generate_did() {
   local canister=$1
   local canister_root=$2
   local did_filename=$3
+  local wasm_filename=${4:-$canister}
 
   npm run build:"${canister//_/-}"
 
   if [ -z "$did_filename" ]; then
-    candid-extractor "target/wasm/$canister.wasm" > "$canister_root/$canister.did"
+    candid-extractor "target/wasm/$wasm_filename.wasm" > "$canister_root/$canister.did"
   else
-    candid-extractor "target/wasm/$canister.wasm" > "$canister_root/$did_filename.did"
+    candid-extractor "target/wasm/$wasm_filename.wasm" > "$canister_root/$did_filename.did"
   fi
 }
 

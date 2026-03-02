@@ -1,5 +1,6 @@
 import { KongSwapTokensSchema } from '$lib/schemas/kongswap.schema';
 import type { KongSwapTokens } from '$lib/types/kongswap';
+import { assertResponseOk } from '$lib/utils/rest.utils';
 import { isEmptyString } from '@dfinity/utils';
 
 export const fetchKongSwapTokens = async ({
@@ -22,9 +23,7 @@ export const fetchKongSwapTokens = async ({
 		}
 	});
 
-	if (!response.ok) {
-		throw new Error('Fetching KongSwap failed.');
-	}
+	assertResponseOk(response, 'Fetching KongSwap failed.');
 
 	const data = await response.json();
 

@@ -1,6 +1,7 @@
 import type { LedgerIdText, WalletId } from '$lib/schemas/wallet.schema';
 import { i18n } from '$lib/stores/app/i18n.store';
 import type { OpenIdAuthProvider } from '$lib/types/auth';
+import { assertResponseOk } from '$lib/utils/rest.utils';
 import { assertNonNullish, isNullish } from '@dfinity/utils';
 import { type PrincipalText, PrincipalTextSchema } from '@dfinity/zod-schemas';
 import { encodeIcrcAccount } from '@icp-sdk/canisters/ledger/icrc';
@@ -18,9 +19,7 @@ export const getEmulatorMainIdentity = async (): Promise<PrincipalText> => {
 		}
 	});
 
-	if (!response.ok) {
-		throw new Error(get(i18n).emulator.error_fetching_emulator, { cause: response });
-	}
+	assertResponseOk(response, get(i18n).emulator.error_fetching_emulator);
 
 	const result: Record<string, string> = await response.json();
 
@@ -50,9 +49,7 @@ export const emulatorLedgerTransfer = async ({
 		`${VITE_EMULATOR_ADMIN_URL}/ledger/transfer/?to=${encodeIcrcAccount(walletId)}&ledgerId=${ledgerId}&amount=${amount}`
 	);
 
-	if (!response.ok) {
-		throw new Error(get(i18n).emulator.error_fetching_emulator, { cause: response });
-	}
+	assertResponseOk(response, get(i18n).emulator.error_fetching_emulator);
 };
 
 export const emulatorObservatoryMonitoringOpenId = async ({
@@ -70,7 +67,5 @@ export const emulatorObservatoryMonitoringOpenId = async ({
 		`${VITE_EMULATOR_ADMIN_URL}/observatory/monitoring/openid/?action=${action}&provider=${provider}`
 	);
 
-	if (!response.ok) {
-		throw new Error(get(i18n).emulator.error_fetching_emulator, { cause: response });
-	}
+	assertResponseOk(response, get(i18n).emulator.error_fetching_emulator);
 };

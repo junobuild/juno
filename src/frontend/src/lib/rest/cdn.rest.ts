@@ -1,3 +1,4 @@
+import { assertResponseOk } from '$lib/utils/rest.utils';
 import { last } from '$lib/utils/utils';
 import { assertNonNullish } from '@dfinity/utils';
 import {
@@ -19,9 +20,7 @@ export const fetchReleasesMetadata = async ({
 		}
 	});
 
-	if (!response.ok) {
-		throw new Error(`Fetching releases metadata failed.`);
-	}
+	assertResponseOk(response, 'Fetching releases metadata failed.');
 
 	const result = await response.json();
 

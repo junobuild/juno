@@ -1,10 +1,10 @@
-import { RawPrincipalSchema } from '@junobuild/functions';
+import { PrincipalSchema } from '@junobuild/functions';
 import * as z from 'zod';
 
 const defineQuery = <T>(definition: T) => ({ ...definition, type: 'query' });
 
 const InputSchema = z.object({
-	value: RawPrincipalSchema
+	value: PrincipalSchema
 });
 
 type Input = z.infer<typeof InputSchema>;

@@ -1,6 +1,7 @@
 #![doc = include_str!("../README.md")]
 
 mod serializers;
+pub mod with;
 
 use serde::{Deserialize, Serialize};
 use serde_json::{from_slice, to_string, to_vec};

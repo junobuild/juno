@@ -2,28 +2,17 @@ use candid::{CandidType, Principal};
 use crate::hooks::js::sdk::init_sdk;
 use crate::js::runtime::execute_sync_js;
 use junobuild_shared::ic::UnwrapOrTrap;
-use junobuild_utils::{encode_doc_data, DocDataPrincipal};
+use junobuild_utils::{encode_doc_data};
 use serde::{Serialize, Deserialize};
 use crate::js::constants::DEV_MODULE_NAME;
 use crate::js::module::engine::evaluate_module;
 use crate::js::types::candid::JsUint8Array;
+use junobuild_macros::FunctionData;
 
-#[derive(CandidType, Serialize, Deserialize)]
+// Input must be a struct
+#[derive(CandidType, Serialize, Deserialize, FunctionData)]
 pub struct InputArgs {
     value: Principal,
-}
-
-#[derive(Serialize)]
-struct InputArgsSerialized {
-    value: DocDataPrincipal,
-}
-
-impl From<InputArgs> for InputArgsSerialized {
-    fn from(input: InputArgs) -> Self {
-        Self {
-            value: DocDataPrincipal { value: input.value },
-        }
-    }
 }
 
 #[ic_cdk::query]
@@ -31,8 +20,7 @@ fn hello_world(input: InputArgs) {
     execute_sync_js(|ctx| {
         init_sdk(ctx).map_err(|e| e.to_string())?;
 
-        let serialized = InputArgsSerialized::from(input);
-        let bytes = encode_doc_data(&serialized).map_err(|e| e.to_string())?;
+        let bytes = encode_doc_data(&input.into_doc_data()).map_err(|e| e.to_string())?;
         let raw = JsUint8Array::from_bytes(ctx, &bytes).map_err(|e| e.to_string())?;
 
         ctx.globals().set("jsContext", raw).map_err(|e| e.to_string())?;

@@ -5,9 +5,9 @@ extern crate proc_macro;
 #[doc(hidden)]
 mod error;
 #[doc(hidden)]
-mod parser;
+mod hooks;
 
-use parser::{hook_macro, Hook};
+use hooks::parser::{hook_macro, Hook};
 use proc_macro::TokenStream;
 
 /// The `on_set_doc` function is a procedural macro attribute for hooking into the `OnSetDoc` event.

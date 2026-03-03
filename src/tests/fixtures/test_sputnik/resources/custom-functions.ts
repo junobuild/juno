@@ -9,9 +9,18 @@ const InputSchema = z.object({
 
 type Input = z.infer<typeof InputSchema>;
 
+const OutputSchema = z.object({
+	value: PrincipalSchema,
+	text: z.string()
+});
+
+type Output = z.infer<typeof OutputSchema>;
+
 export const hello_world = defineQuery({
 	input: InputSchema,
+	output: OutputSchema,
 	handler: (input: Input) => {
 		console.log('Hello world', input.value);
+		return { value: input.value, text: 'Welcome' };
 	}
 });

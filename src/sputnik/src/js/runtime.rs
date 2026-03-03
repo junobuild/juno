@@ -40,16 +40,16 @@ where
     Ok(())
 }
 
-pub fn execute_sync_js<F>(f: F) -> Result<(), String>
+pub fn execute_sync_js<F, T>(f: F) -> Result<T, String>
 where
-    F: FnOnce(&Ctx) -> Result<(), String>,
+    F: FnOnce(&Ctx) -> Result<T, String>,
 {
     let rt =
         Runtime::new().map_err(|e| format_js_error(JUNO_SPUTNIK_ERROR_RUNTIME_SYNC_RUNTIME, e))?;
     let ctx = Context::full(&rt)
         .map_err(|e| format_js_error(JUNO_SPUTNIK_ERROR_RUNTIME_SYNC_CONTEXT, e))?;
 
-    ctx.with(|ctx| -> Result<(), String> {
+    ctx.with(|ctx| -> Result<T, String> {
         init_apis(&ctx).map_err(|e| format_js_error(JUNO_SPUTNIK_ERROR_RUNTIME_API_INIT, e))?;
 
         declare_dev_script(&ctx).map_err(|e| e.to_string())?;

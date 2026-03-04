@@ -1,3 +1,3 @@
 pub mod future;
-pub mod sync;
+pub mod instant;
 pub mod types;

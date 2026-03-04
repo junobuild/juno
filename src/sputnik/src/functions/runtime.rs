@@ -1,5 +1,5 @@
 use crate::functions::runner::future::CustomFunctionAsync;
-use crate::functions::runner::sync::CustomFunctionSync;
+use crate::functions::runner::instant::CustomFunctionSync;
 use crate::functions::runner::types::{JsCustomFunctionAsync, JsCustomFunctionSync};
 use crate::js::runtime::{execute_async_js, execute_sync_js, RunAsyncJsFn};
 use crate::sdk::js::init_sdk;

@@ -21,8 +21,9 @@ pub struct OutputArgs {
     text: String,
 }
 
+// We require or use a prefix to avoid clashes?
 #[ic_cdk::query]
-fn hello_world(input: InputArgs) -> OutputArgs {
+fn app_hello_world(input: InputArgs) -> OutputArgs {
     execute_sync_js(|ctx| {
         init_sdk(ctx).map_err(|e| e.to_string())?;
 
@@ -35,8 +36,6 @@ fn hello_world(input: InputArgs) -> OutputArgs {
 
         let code = format!(
             r#"const {{ {custom_function} }} = await import("{DEV_MODULE_NAME}");
-
-            console.log('=====', jsContext);
 
             if (typeof {custom_function} !== 'undefined') {{
                 const config = typeof {custom_function} === 'function' ? {custom_function}({{}}) : {custom_function};

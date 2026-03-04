@@ -332,6 +332,10 @@ export interface OpenIdPrepareDelegationArgs {
 	session_key: Uint8Array;
 	salt: Uint8Array;
 }
+export interface OutputArgs {
+	value: Principal;
+	text: string;
+}
 export type Permission =
 	| { Controllers: null }
 	| { Private: null }
@@ -587,7 +591,7 @@ export interface _SERVICE {
 	switch_storage_system_memory: ActorMethod<[], undefined>;
 	upload_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;
 	upload_proposal_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;
-	hello_world: ActorMethod<[InputArgs], undefined>;
+	app_hello_world: ActorMethod<[InputArgs], OutputArgs>;
 }
 export declare const idlFactory: IDL.InterfaceFactory;
 export declare const init: (args: { IDL: typeof IDL }) => IDL.Type[];

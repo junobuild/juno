@@ -1,2 +1,3 @@
 type InputArgs = record { value : principal };
-service : { hello_world : (InputArgs) -> () query }
+type OutputArgs = record { value : principal; "text" : text };
+service : { app_hello_world : (InputArgs) -> (OutputArgs) query }

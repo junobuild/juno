@@ -1,7 +1,7 @@
-use crate::hooks::js::types::db::JsDoc;
-use crate::hooks::js::types::hooks::JsKey;
-use crate::hooks::js::types::interface::JsAssetNoContent;
-use crate::hooks::js::types::list::{
+use crate::sdk::js::types::db::JsDoc;
+use crate::sdk::js::types::hooks::JsKey;
+use crate::sdk::js::types::interface::JsAssetNoContent;
+use crate::sdk::js::types::list::{
     JsListMatcher, JsListOrder, JsListOrderField, JsListPaginate, JsListParams, JsListResults,
     JsTimestampMatcher,
 };

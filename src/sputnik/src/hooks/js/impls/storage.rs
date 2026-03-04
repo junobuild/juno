@@ -1,7 +1,7 @@
-use crate::hooks::js::types::interface::{
+use crate::sdk::js::types::interface::{
     JsAssetEncodingNoContent, JsAssetEncodingNotContentRecord, JsAssetNoContent, JsCommitBatch,
 };
-use crate::hooks::js::types::storage::{
+use crate::sdk::js::types::storage::{
     JsAsset, JsAssetEncoding, JsAssetEncodingRecord, JsAssetKey, JsBatch, JsBlobOrKey, JsHash,
     JsHeaderFieldRecord, JsHeaderFields,
 };

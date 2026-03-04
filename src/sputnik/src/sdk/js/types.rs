@@ -52,10 +52,10 @@ pub mod rules {
 }
 
 pub mod hooks {
-    use crate::hooks::js::types::db::JsDoc;
-    use crate::hooks::js::types::interface::{JsCommitBatch, JsDelDoc, JsSetDoc};
-    use crate::hooks::js::types::shared::{JsCollectionKey, JsUserId};
-    use crate::hooks::js::types::storage::{JsAsset, JsBatch};
+    use crate::sdk::js::types::db::JsDoc;
+    use crate::sdk::js::types::interface::{JsCommitBatch, JsDelDoc, JsSetDoc};
+    use crate::sdk::js::types::shared::{JsCollectionKey, JsUserId};
+    use crate::sdk::js::types::storage::{JsAsset, JsBatch};
     use crate::js::types::candid::JsUint8Array;
     use junobuild_shared::types::core::Key;
 
@@ -103,8 +103,8 @@ pub mod hooks {
 }
 
 pub mod db {
-    use crate::hooks::js::types::hooks::JsRawData;
-    use crate::hooks::js::types::shared::{JsTimestamp, JsUserId, JsVersion};
+    use crate::sdk::js::types::hooks::JsRawData;
+    use crate::sdk::js::types::shared::{JsTimestamp, JsUserId, JsVersion};
 
     #[derive(Clone)]
     pub struct JsDoc<'js> {
@@ -118,7 +118,7 @@ pub mod db {
 }
 
 pub mod storage {
-    use crate::hooks::js::types::shared::{JsTimestamp, JsUserId, JsVersion};
+    use crate::sdk::js::types::shared::{JsTimestamp, JsUserId, JsVersion};
     use crate::js::types::candid::JsUint8Array;
     use crate::js::types::primitives::JsU128Compat;
     use junobuild_storage::types::state::{AssetAccessToken, FullPath};
@@ -182,9 +182,9 @@ pub mod storage {
 }
 
 pub mod interface {
-    use crate::hooks::js::types::hooks::JsRawData;
-    use crate::hooks::js::types::shared::{JsTimestamp, JsVersion};
-    use crate::hooks::js::types::storage::{JsAssetKey, JsHash, JsHeaderFields};
+    use crate::sdk::js::types::hooks::JsRawData;
+    use crate::sdk::js::types::shared::{JsTimestamp, JsVersion};
+    use crate::sdk::js::types::storage::{JsAssetKey, JsHash, JsHeaderFields};
     use crate::js::types::primitives::JsU128Compat;
     use junobuild_shared::types::state::Version;
 
@@ -232,8 +232,8 @@ pub mod interface {
 }
 
 pub mod list {
-    use crate::hooks::js::types::hooks::JsKey;
-    use crate::hooks::js::types::shared::{JsTimestamp, JsUserId};
+    use crate::sdk::js::types::hooks::JsKey;
+    use crate::sdk::js::types::shared::{JsTimestamp, JsUserId};
     use crate::js::types::primitives::JsUsize;
 
     #[derive(Clone)]

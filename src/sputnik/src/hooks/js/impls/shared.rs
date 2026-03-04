@@ -1,4 +1,4 @@
-use crate::hooks::js::types::shared::{
+use crate::sdk::js::types::shared::{
     JsController, JsControllerKind, JsControllerRecord, JsControllerScope, JsControllers,
     JsMetadataRecord,
 };

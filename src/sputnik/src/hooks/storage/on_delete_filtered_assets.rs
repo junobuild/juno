@@ -1,6 +1,6 @@
 use crate::hooks::js::runtime::storage::on_delete_filtered_assets::OnDeleteFilteredAssets;
 use crate::hooks::js::runtime::types::OnJsHook;
-use crate::hooks::js::sdk::init_sdk;
+use crate::sdk::js::init_sdk;
 use crate::js::runtime::{execute_async_js, RunAsyncJsFn};
 use crate::state::store::get_on_delete_filtered_assets_collections;
 use ic_cdk::futures::spawn;

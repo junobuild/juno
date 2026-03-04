@@ -1,9 +1,9 @@
 use crate::hooks::js::impls::hooks::utils::into_optional_jsdoc_js;
-use crate::hooks::js::types::db::JsDoc;
-use crate::hooks::js::types::hooks::{
+use crate::sdk::js::types::db::JsDoc;
+use crate::sdk::js::types::hooks::{
     JsDocAssertDelete, JsDocAssertSet, JsDocContext, JsDocUpsert, JsHookContext,
 };
-use crate::hooks::js::types::interface::{JsDelDoc, JsSetDoc};
+use crate::sdk::js::types::interface::{JsDelDoc, JsSetDoc};
 use crate::js::types::candid::JsRawPrincipal;
 use junobuild_satellite::{
     AssertDeleteDocContext, AssertSetDocContext, Doc, DocAssertDelete, DocAssertSet, DocContext,

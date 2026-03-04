@@ -1,7 +1,7 @@
 use crate::hooks::js::impls::hooks::utils::into_optional_jsasset_js;
-use crate::hooks::js::types::hooks::{JsAssetAssertUpload, JsHookContext};
-use crate::hooks::js::types::interface::JsCommitBatch;
-use crate::hooks::js::types::storage::{JsAsset, JsBatch};
+use crate::sdk::js::types::hooks::{JsAssetAssertUpload, JsHookContext};
+use crate::sdk::js::types::interface::JsCommitBatch;
+use crate::sdk::js::types::storage::{JsAsset, JsBatch};
 use crate::js::types::candid::JsRawPrincipal;
 use junobuild_satellite::{
     AssertDeleteAssetContext, AssertUploadAssetContext, OnDeleteAssetContext,

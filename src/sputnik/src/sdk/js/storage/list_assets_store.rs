@@ -1,6 +1,6 @@
-use crate::hooks::js::types::interface::JsAssetNoContent;
-use crate::hooks::js::types::list::{JsListParams, JsListResults};
-use crate::hooks::js::types::shared::{JsCollectionKey, JsUserId};
+use crate::sdk::js::types::interface::JsAssetNoContent;
+use crate::sdk::js::types::list::{JsListParams, JsListResults};
+use crate::sdk::js::types::shared::{JsCollectionKey, JsUserId};
 use junobuild_satellite::list_assets_store as list_assets_store_sdk;
 use rquickjs::{Ctx, Error as JsError, Exception, Result as JsResult};
 

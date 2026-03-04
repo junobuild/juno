@@ -1,4 +1,4 @@
-use crate::hooks::js::types::shared::{JsControllers, JsUserId};
+use crate::sdk::js::types::shared::{JsControllers, JsUserId};
 use junobuild_satellite::{
     get_admin_controllers as get_admin_controllers_sdk, get_controllers as get_controllers_sdk,
 };

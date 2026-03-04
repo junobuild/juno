@@ -1,3 +1,5 @@
-type InputArgs = record { value : principal };
-type OutputArgs = record { value : principal; "text" : text };
-service : { app_hello_world : (InputArgs) -> (OutputArgs) query }
+type AppHelloWorldArgs = record { value : principal };
+type AppHelloWorldResult = record { value : principal; "text" : text };
+service : {
+  app_hello_world : (AppHelloWorldArgs) -> (AppHelloWorldResult) query;
+}

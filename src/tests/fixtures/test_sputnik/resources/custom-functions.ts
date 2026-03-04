@@ -3,24 +3,24 @@ import * as z from 'zod';
 
 const defineQuery = <T>(definition: T) => ({ ...definition, type: 'query' });
 
-const InputSchema = z.object({
+const ArgsSchema = z.object({
 	value: PrincipalSchema
 });
 
-type Input = z.infer<typeof InputSchema>;
+type Args = z.infer<typeof ArgsSchema>;
 
-const OutputSchema = z.object({
+const ResultSchema = z.object({
 	value: PrincipalSchema,
 	text: z.string()
 });
 
-type Output = z.infer<typeof OutputSchema>;
+type Result = z.infer<typeof ResultSchema>;
 
-export const hello_world = defineQuery({
-	input: InputSchema,
-	output: OutputSchema,
-	handler: (input: Input) => {
-		console.log('Hello world', input.value);
+export const helloWorld = defineQuery({
+	args: ArgsSchema,
+	result: ResultSchema,
+	handler: (input: Args) => {
+		console.log('Hello world');
 		return { value: input.value, text: 'Welcome' };
 	}
 });

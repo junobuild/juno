@@ -514,8 +514,11 @@ export const idlFactory = ({ IDL }) => {
 		order_id: IDL.Opt(IDL.Nat)
 	});
 	const UploadChunkResult = IDL.Record({ chunk_id: IDL.Nat });
-	const InputArgs = IDL.Record({ value: IDL.Principal });
-	const OutputArgs = IDL.Record({ value: IDL.Principal, text: IDL.Text });
+	const AppHelloWorldArgs = IDL.Record({ value: IDL.Principal });
+	const AppHelloWorldResult = IDL.Record({
+		value: IDL.Principal,
+		text: IDL.Text
+	});
 
 	return IDL.Service({
 		authenticate: IDL.Func([AuthenticationArgs], [AuthenticateResultResponse], []),
@@ -615,7 +618,7 @@ export const idlFactory = ({ IDL }) => {
 		switch_storage_system_memory: IDL.Func([], [], []),
 		upload_asset_chunk: IDL.Func([UploadChunk], [UploadChunkResult], []),
 		upload_proposal_asset_chunk: IDL.Func([UploadChunk], [UploadChunkResult], []),
-		app_hello_world: IDL.Func([InputArgs], [OutputArgs], ['query'])
+		app_hello_world: IDL.Func([AppHelloWorldArgs], [AppHelloWorldResult], ['query'])
 	});
 };
 

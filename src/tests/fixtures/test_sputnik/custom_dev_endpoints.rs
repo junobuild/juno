@@ -10,20 +10,20 @@ use junobuild_macros::JsonData;
 
 // Input must be a struct
 #[derive(CandidType, Serialize, Deserialize, JsonData)]
-pub struct InputArgs {
+pub struct AppHelloWorldArgs {
     value: Principal,
 }
 
 // Output must be a struct
 #[derive(CandidType, Serialize, Deserialize, JsonData)]
-pub struct OutputArgs {
+pub struct AppHelloWorldResult {
     value: Principal,
     text: String,
 }
 
 // We require or use a prefix to avoid clashes?
 #[ic_cdk::query]
-fn app_hello_world(input: InputArgs) -> OutputArgs {
+fn app_hello_world(input: AppHelloWorldArgs) -> AppHelloWorldResult {
     execute_sync_js(|ctx| {
         init_sdk(ctx).map_err(|e| e.to_string())?;
 
@@ -32,7 +32,7 @@ fn app_hello_world(input: InputArgs) -> OutputArgs {
 
         ctx.globals().set("jsContext", raw).map_err(|e| e.to_string())?;
 
-        let custom_function: &str = "hello_world";
+        let custom_function: &str = "helloWorld";
 
         let code = format!(
             r#"const {{ {custom_function} }} = await import("{DEV_MODULE_NAME}");
@@ -50,7 +50,7 @@ fn app_hello_world(input: InputArgs) -> OutputArgs {
         let result = result.ok_or("No result returned from JS".to_string())?;
 
         let bytes = result.to_bytes().map_err(|e| e.to_string())?;
-        let output = OutputArgs::from_json_data(bytes).map_err(|e| e.to_string())?;
+        let output = AppHelloWorldResult::from_json_data(bytes).map_err(|e| e.to_string())?;
 
         Ok(output)
     }).unwrap_or_trap()

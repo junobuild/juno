@@ -10,6 +10,13 @@ import type { ActorMethod } from '@icp-sdk/core/agent';
 import type { IDL } from '@icp-sdk/core/candid';
 import type { Principal } from '@icp-sdk/core/principal';
 
+export interface AppHelloWorldArgs {
+	value: Principal;
+}
+export interface AppHelloWorldResult {
+	value: Principal;
+	text: string;
+}
 export interface AssetEncodingNoContent {
 	modified: bigint;
 	sha256: Uint8Array;
@@ -216,9 +223,6 @@ export interface InitStorageArgs {
 export interface InitUploadResult {
 	batch_id: bigint;
 }
-export interface InputArgs {
-	value: Principal;
-}
 export type JwtFindProviderError =
 	| { BadClaim: string }
 	| { BadSig: string }
@@ -331,10 +335,6 @@ export interface OpenIdPrepareDelegationArgs {
 	jwt: string;
 	session_key: Uint8Array;
 	salt: Uint8Array;
-}
-export interface OutputArgs {
-	value: Principal;
-	text: string;
 }
 export type Permission =
 	| { Controllers: null }
@@ -591,7 +591,7 @@ export interface _SERVICE {
 	switch_storage_system_memory: ActorMethod<[], undefined>;
 	upload_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;
 	upload_proposal_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;
-	app_hello_world: ActorMethod<[InputArgs], OutputArgs>;
+	app_hello_world: ActorMethod<[AppHelloWorldArgs], AppHelloWorldResult>;
 }
 export declare const idlFactory: IDL.InterfaceFactory;
 export declare const init: (args: { IDL: typeof IDL }) => IDL.Type[];

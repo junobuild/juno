@@ -3,11 +3,11 @@ import { decodeDocData, encodeDocData } from '@junobuild/functions/sdk';
 // @ts-ignore
 globalThis.__juno_invoke_endpoint = async (config, raw) => {
 	try {
-		const input = config.input.parse(decodeDocData(raw));
+		const args = config.args.parse(decodeDocData(raw));
 
-		const output = await config.handler(input);
+		const result = await config.handler(args);
 
-		const parsed = config.output.parse(output);
+		const parsed = config.result.parse(result);
 
 		// @ts-ignore
 		globalThis.jsResult = encodeDocData(parsed);

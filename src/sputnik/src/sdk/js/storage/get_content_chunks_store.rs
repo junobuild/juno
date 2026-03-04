@@ -1,6 +1,6 @@
+use crate::js::types::primitives::JsUsize;
 use crate::sdk::js::types::rules::JsMemory;
 use crate::sdk::js::types::storage::{JsAssetEncoding, JsBlob};
-use crate::js::types::primitives::JsUsize;
 use junobuild_satellite::get_content_chunks_store as get_content_chunks_store_sdk;
 use rquickjs::{Ctx, Error as JsError, Result as JsResult};
 

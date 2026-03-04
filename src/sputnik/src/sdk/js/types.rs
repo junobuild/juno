@@ -52,11 +52,11 @@ pub mod rules {
 }
 
 pub mod hooks {
+    use crate::js::types::candid::JsUint8Array;
     use crate::sdk::js::types::db::JsDoc;
     use crate::sdk::js::types::interface::{JsCommitBatch, JsDelDoc, JsSetDoc};
     use crate::sdk::js::types::shared::{JsCollectionKey, JsUserId};
     use crate::sdk::js::types::storage::{JsAsset, JsBatch};
-    use crate::js::types::candid::JsUint8Array;
     use junobuild_shared::types::core::Key;
 
     pub type JsKey = Key;
@@ -118,9 +118,9 @@ pub mod db {
 }
 
 pub mod storage {
-    use crate::sdk::js::types::shared::{JsTimestamp, JsUserId, JsVersion};
     use crate::js::types::candid::JsUint8Array;
     use crate::js::types::primitives::JsU128Compat;
+    use crate::sdk::js::types::shared::{JsTimestamp, JsUserId, JsVersion};
     use junobuild_storage::types::state::{AssetAccessToken, FullPath};
 
     pub type JsBlob<'js> = JsUint8Array<'js>;
@@ -182,10 +182,10 @@ pub mod storage {
 }
 
 pub mod interface {
+    use crate::js::types::primitives::JsU128Compat;
     use crate::sdk::js::types::hooks::JsRawData;
     use crate::sdk::js::types::shared::{JsTimestamp, JsVersion};
     use crate::sdk::js::types::storage::{JsAssetKey, JsHash, JsHeaderFields};
-    use crate::js::types::primitives::JsU128Compat;
     use junobuild_shared::types::state::Version;
 
     #[derive(Clone)]
@@ -232,9 +232,9 @@ pub mod interface {
 }
 
 pub mod list {
+    use crate::js::types::primitives::JsUsize;
     use crate::sdk::js::types::hooks::JsKey;
     use crate::sdk::js::types::shared::{JsTimestamp, JsUserId};
-    use crate::js::types::primitives::JsUsize;
 
     #[derive(Clone)]
     pub struct JsListPaginate {

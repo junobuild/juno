@@ -2,8 +2,9 @@ mod controllers;
 mod db;
 mod random;
 mod storage;
-mod utils;
 pub mod types;
+pub mod types;
+mod utils;
 
 use crate::sdk::js::controllers::init_controllers_sdk;
 use crate::sdk::js::random::init_random_sdk;

@@ -1,6 +1,6 @@
-use crate::sdk::js::types::hooks::JsHookContext;
 use crate::js::constants::{DEV_MODULE_NAME, HOOKS_MODULE_NAME};
 use crate::js::module::engine::{evaluate_async_module, evaluate_module};
+use crate::sdk::js::types::hooks::JsHookContext;
 use rquickjs::IntoJs;
 use rquickjs::{Ctx, Error as JsError};
 

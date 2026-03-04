@@ -1,12 +1,12 @@
 use crate::serializers::types::JsonDataUint8Array;
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
-pub fn serialize<S>(value: &Vec<u8>, s: S) -> Result<S::Ok, S::Error>
+pub fn serialize<S>(value: &[u8], s: S) -> Result<S::Ok, S::Error>
 where
     S: Serializer,
 {
     JsonDataUint8Array {
-        value: value.clone(),
+        value: value.to_owned(),
     }
     .serialize(s)
 }

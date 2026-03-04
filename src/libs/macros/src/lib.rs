@@ -9,7 +9,7 @@ mod functions;
 #[doc(hidden)]
 mod hooks;
 
-use functions::derive::derive_function_data;
+use functions::derive::derive_json_data;
 use hooks::parser::{hook_macro, Hook};
 use proc_macro::TokenStream;
 
@@ -531,30 +531,30 @@ pub fn on_init_random_seed(attr: TokenStream, item: TokenStream) -> TokenStream 
     hook_macro(Hook::OnInitRandomSeed, attr, item)
 }
 
-/// Derive macro that generates JS-compatible serialization for custom serverless function structs.
+/// Derive macro that generates JS-compatible JSON serialization for Juno serverless function structs.
 ///
-/// Automatically maps Candid types to their `DocData*` equivalents (`Principal` → `DocDataPrincipal`,
-/// `Vec<u8>` → `DocDataUint8Array`, `u64` → `DocDataBigInt`) and generates:
-/// - `into_doc_data()` — serializes the struct to bytes for passing to the JS runtime
-/// - `from_doc_data()` — deserializes bytes from the JS runtime back into the struct
+/// Automatically maps Candid types to their `JsonData*` equivalents (`Principal` → `JsonDataPrincipal`,
+/// `Vec<u8>` → `JsonDataUint8Array`, `u64` → `JsonDataBigInt`) and generates:
+/// - `into_json_data()` — serializes the struct to bytes for passing to the JS runtime
+/// - `from_json_data()` — deserializes bytes from the JS runtime back into the struct
 ///
 /// # Example
 ///
 /// ```rust
-/// #[derive(CandidType, Serialize, Deserialize, FunctionData)]
+/// #[derive(CandidType, Serialize, Deserialize, JsonData)]
 /// pub struct InputArgs {
 ///     value: Principal,
 /// }
 ///
-/// #[derive(CandidType, Serialize, Deserialize, FunctionData)]
+/// #[derive(CandidType, Serialize, Deserialize, JsonData)]
 /// pub struct OutputArgs {
 ///     value: Principal,
 ///     text: String,
 /// }
 ///
-/// // Generated: InputArgsDocData/OutputArgsDocData structs + From impls + into_doc_data() + from_doc_data()
+/// // Generated: InputArgsJsonData/OutputArgsJsonData structs + From impls + into_json_data() + from_json_data()
 /// ```
-#[proc_macro_derive(FunctionData)]
-pub fn function_data(input: TokenStream) -> TokenStream {
-    derive_function_data(input)
+#[proc_macro_derive(JsonData)]
+pub fn json_data(input: TokenStream) -> TokenStream {
+    derive_json_data(input)
 }

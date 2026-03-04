@@ -3,17 +3,17 @@ use proc_macro2::Span;
 use quote::quote;
 use syn::{parse_macro_input, Data, DeriveInput, Fields, Type};
 
-pub fn derive_function_data(input: TokenStream) -> TokenStream {
+pub fn derive_json_data(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as DeriveInput);
     let name = &input.ident;
-    let serialized_name = syn::Ident::new(&format!("{}DocData", name), Span::call_site());
+    let serialized_name = syn::Ident::new(&format!("{}JsonData", name), Span::call_site());
 
     let fields = match &input.data {
         Data::Struct(s) => match &s.fields {
             Fields::Named(f) => &f.named,
-            _ => panic!("FunctionData only supports named fields"),
+            _ => panic!("JsonData only supports named fields"),
         },
-        _ => panic!("FunctionData only supports structs"),
+        _ => panic!("JsonData only supports structs"),
     };
 
     let serialized_fields: Vec<_> = fields
@@ -46,7 +46,7 @@ pub fn derive_function_data(input: TokenStream) -> TokenStream {
         .iter()
         .map(|f| {
             let fname = &f.ident;
-            quote! { #fname: doc_data.#fname, }
+            quote! { #fname: json_data.#fname, }
         })
         .collect();
 
@@ -65,7 +65,7 @@ pub fn derive_function_data(input: TokenStream) -> TokenStream {
         }
 
         impl From<#serialized_name> for #name {
-            fn from(doc_data: #serialized_name) -> Self {
+            fn from(json_data: #serialized_name) -> Self {
                 Self {
                     #(#from_fields)*
                 }
@@ -73,12 +73,12 @@ pub fn derive_function_data(input: TokenStream) -> TokenStream {
         }
 
         impl #name {
-            pub fn into_doc_data(self) -> Result<Vec<u8>, String> {
-                junobuild_utils::encode_doc_data(&#serialized_name::from(self))
+            pub fn into_json_data(self) -> Result<Vec<u8>, String> {
+                junobuild_utils::encode_json_data(&#serialized_name::from(self))
             }
 
-            pub fn from_doc_data(bytes: &[u8]) -> Result<Self, String> {
-                junobuild_utils::decode_doc_data::<#serialized_name>(bytes)
+            pub fn from_json_data(bytes: &[u8]) -> Result<Self, String> {
+                junobuild_utils::decode_json_data::<#serialized_name>(bytes)
                     .map(#name::from)
             }
         }

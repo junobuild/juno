@@ -1,10 +1,10 @@
-use crate::hooks::js::types::shared::{
-    JsController, JsControllerKind, JsControllerRecord, JsControllerScope, JsControllers,
-    JsMetadataRecord,
-};
 use crate::js::types::candid::JsRawPrincipal;
 use crate::js::utils::primitives::{
     from_bigint_js, from_optional_bigint_js, into_bigint_js, into_optional_bigint_js,
+};
+use crate::sdk::js::types::shared::{
+    JsController, JsControllerKind, JsControllerRecord, JsControllerScope, JsControllers,
+    JsMetadataRecord,
 };
 use junobuild_shared::types::state::{
     Controller, ControllerKind, ControllerScope, Controllers, Timestamp,

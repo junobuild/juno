@@ -1,6 +1,6 @@
-use crate::hooks::js::types::list::JsListParams;
-use crate::hooks::js::types::shared::{JsCollectionKey, JsUserId};
 use crate::js::types::primitives::JsUsize;
+use crate::sdk::js::types::list::JsListParams;
+use crate::sdk::js::types::shared::{JsCollectionKey, JsUserId};
 use junobuild_satellite::count_assets_store as count_assets_store_sdk;
 use rquickjs::{Ctx, Error as JsError, Exception, Result as JsResult};
 

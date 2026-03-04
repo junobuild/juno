@@ -1,12 +1,12 @@
-use crate::hooks::js::types::db::JsDoc;
-use crate::hooks::js::types::hooks::JsKey;
-use crate::hooks::js::types::interface::JsAssetNoContent;
-use crate::hooks::js::types::list::{
+use crate::js::types::primitives::JsUsize;
+use crate::js::utils::primitives::from_bigint_js;
+use crate::sdk::js::types::db::JsDoc;
+use crate::sdk::js::types::hooks::JsKey;
+use crate::sdk::js::types::interface::JsAssetNoContent;
+use crate::sdk::js::types::list::{
     JsListMatcher, JsListOrder, JsListOrderField, JsListPaginate, JsListParams, JsListResults,
     JsTimestampMatcher,
 };
-use crate::js::types::primitives::JsUsize;
-use crate::js::utils::primitives::from_bigint_js;
 use junobuild_satellite::Doc;
 use junobuild_shared::types::list::{
     ListMatcher, ListOrder, ListOrderField, ListPaginate, ListParams, ListResults, TimestampMatcher,

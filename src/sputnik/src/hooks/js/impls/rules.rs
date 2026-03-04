@@ -1,4 +1,4 @@
-use crate::hooks::js::types::rules::JsMemory;
+use crate::sdk::js::types::rules::JsMemory;
 use junobuild_collections::types::rules::Memory;
 use rquickjs::{Ctx, Error as JsError, FromJs, Result as JsResult, Value};
 

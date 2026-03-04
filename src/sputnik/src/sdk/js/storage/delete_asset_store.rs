@@ -1,5 +1,5 @@
-use crate::hooks::js::types::shared::{JsCollectionKey, JsUserId};
-use crate::hooks::js::types::storage::{JsAsset, JsFullPath};
+use crate::sdk::js::types::shared::{JsCollectionKey, JsUserId};
+use crate::sdk::js::types::storage::{JsAsset, JsFullPath};
 use junobuild_satellite::delete_asset_store as delete_asset_store_sdk;
 use junobuild_storage::types::store::Asset;
 use rquickjs::{Ctx, Error as JsError, Exception, Result as JsResult};

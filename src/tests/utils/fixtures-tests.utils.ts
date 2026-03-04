@@ -1,7 +1,7 @@
-import { type SputnikActor, idlFactorySputnik } from '$declarations';
+import { type SputnikActor } from '$declarations';
 import type { _SERVICE as TestSatelliteActor } from '$test-declarations/test_satellite/test_satellite.did';
-import type { _SERVICE as TestSputnikActor } from '$test-declarations/test_sputnik/test_sputnik.did';
 import { idlFactory as idlTestFactorySatellite } from '$test-declarations/test_satellite/test_satellite.factory.did';
+import type { _SERVICE as TestSputnikActor } from '$test-declarations/test_sputnik/test_sputnik.did';
 import { idlFactory as idlTestFactorySputnik } from '$test-declarations/test_sputnik/test_sputnik.factory.did';
 import { type Actor, type ActorInterface, PocketIc } from '@dfinity/pic';
 import { nonNullish } from '@dfinity/utils';

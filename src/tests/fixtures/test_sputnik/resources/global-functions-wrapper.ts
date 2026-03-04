@@ -18,7 +18,7 @@ globalThis.__juno_invoke_endpoint = async (config, raw) => {
 
 		// @ts-ignore
 		globalThis.jsResult = result;
-	} catch(e) {
+	} catch (e) {
 		console.log('ERROR', e);
 	}
 

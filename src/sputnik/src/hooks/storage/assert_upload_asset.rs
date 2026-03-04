@@ -1,7 +1,7 @@
 use crate::hooks::js::runtime::storage::assert_upload_asset::AssertUploadAsset;
 use crate::hooks::js::runtime::types::AssertJsHook;
-use crate::hooks::js::sdk::init_sdk;
 use crate::js::runtime::execute_sync_js;
+use crate::sdk::js::init_sdk;
 use crate::state::store::get_assert_upload_asset_collections;
 use junobuild_satellite::AssertUploadAssetContext;
 use rquickjs::CatchResultExt;

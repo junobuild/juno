@@ -1,7 +1,7 @@
 use crate::hooks::js::runtime::storage::on_upload_asset::OnUploadAsset;
 use crate::hooks::js::runtime::types::OnJsHook;
-use crate::hooks::js::sdk::init_sdk;
 use crate::js::runtime::{execute_async_js, RunAsyncJsFn};
+use crate::sdk::js::init_sdk;
 use crate::state::store::get_on_upload_asset_collections;
 use ic_cdk::futures::spawn;
 use ic_cdk::trap;

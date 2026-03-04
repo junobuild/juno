@@ -1,4 +1,4 @@
-use crate::hooks::js::types::storage::{JsAssetKey, JsBlob, JsHeaderFields};
+use crate::sdk::js::types::storage::{JsAssetKey, JsBlob, JsHeaderFields};
 use junobuild_satellite::set_asset_handler as set_asset_handler_sdk;
 use rquickjs::{Ctx, Error as JsError, Exception, Result as JsResult};
 

@@ -1,5 +1,5 @@
-use crate::hooks::js::types::db::JsDoc;
-use crate::hooks::js::types::storage::JsAsset;
+use crate::sdk::js::types::db::JsDoc;
+use crate::sdk::js::types::storage::JsAsset;
 use rquickjs::{Ctx, IntoJs, Result as JsResult, Value};
 
 pub fn into_optional_jsdoc_js<'js>(

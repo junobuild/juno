@@ -160,11 +160,11 @@ pub mod interface {
     pub mod http {
         use crate::state::types::state::{Key, PerformanceData, PerformanceMetricName, SessionId};
         use junobuild_shared::types::state::Metadata;
-        use junobuild_utils::DocDataBigInt;
+        use junobuild_utils::JsonDataBigInt;
         use serde::{Deserialize, Serialize};
 
-        pub type TimestampPayload = DocDataBigInt;
-        pub type VersionPayload = Option<DocDataBigInt>;
+        pub type TimestampPayload = JsonDataBigInt;
+        pub type VersionPayload = Option<JsonDataBigInt>;
 
         // We use textual representation of Principal for performance reason on the client side.
         // This way the frontend can spare the need to bloat the JS bundle.

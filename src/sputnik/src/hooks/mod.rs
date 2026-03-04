@@ -1,4 +1,4 @@
 mod db;
-pub mod js;
+mod js;
 mod lifecycle;
 mod storage;

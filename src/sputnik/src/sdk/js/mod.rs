@@ -3,7 +3,6 @@ mod db;
 mod random;
 mod storage;
 pub mod types;
-pub mod types;
 mod utils;
 
 use crate::sdk::js::controllers::init_controllers_sdk;

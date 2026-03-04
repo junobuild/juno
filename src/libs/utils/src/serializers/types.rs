@@ -8,7 +8,7 @@ use candid::Principal as CandidPrincipal;
 /// # Fields
 /// - `value`: The `Principal` this struct wraps.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct DocDataPrincipal {
+pub struct JsonDataPrincipal {
     pub value: CandidPrincipal,
 }
 
@@ -18,7 +18,7 @@ pub struct DocDataPrincipal {
 /// # Fields
 /// - `value`: A `u64` integer representing the large numeric value encapsulated by this struct.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct DocDataBigInt {
+pub struct JsonDataBigInt {
     pub value: u64,
 }
 
@@ -30,6 +30,14 @@ pub struct DocDataBigInt {
 /// # Fields
 /// - `value`: The underlying bytes.
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct DocDataUint8Array {
+pub struct JsonDataUint8Array {
     pub value: Vec<u8>,
 }
+/// Alias for [`JsonDataPrincipal`].
+pub type DocDataPrincipal = JsonDataPrincipal;
+
+/// Alias for [`JsonDataBigInt`].
+pub type DocDataBigInt = JsonDataBigInt;
+
+/// Alias for [`JsonDataUint8Array`].
+pub type DocDataUint8Array = JsonDataUint8Array;

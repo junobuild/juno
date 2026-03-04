@@ -1,11 +1,11 @@
-use crate::serializers::types::DocDataUint8Array;
+use crate::serializers::types::JsonDataUint8Array;
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
 pub fn serialize<S>(value: &Vec<u8>, s: S) -> Result<S::Ok, S::Error>
 where
     S: Serializer,
 {
-    DocDataUint8Array {
+    JsonDataUint8Array {
         value: value.clone(),
     }
     .serialize(s)
@@ -15,7 +15,7 @@ pub fn deserialize<'de, D>(deserializer: D) -> Result<Vec<u8>, D::Error>
 where
     D: Deserializer<'de>,
 {
-    DocDataUint8Array::deserialize(deserializer).map(|d| d.value)
+    JsonDataUint8Array::deserialize(deserializer).map(|d| d.value)
 }
 
 #[cfg(test)]

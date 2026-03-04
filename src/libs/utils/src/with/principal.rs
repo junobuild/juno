@@ -1,4 +1,4 @@
-use crate::serializers::types::DocDataPrincipal;
+use crate::serializers::types::JsonDataPrincipal;
 use candid::Principal;
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
@@ -6,14 +6,14 @@ pub fn serialize<S>(principal: &Principal, s: S) -> Result<S::Ok, S::Error>
 where
     S: Serializer,
 {
-    DocDataPrincipal { value: *principal }.serialize(s)
+    JsonDataPrincipal { value: *principal }.serialize(s)
 }
 
 pub fn deserialize<'de, D>(deserializer: D) -> Result<Principal, D::Error>
 where
     D: Deserializer<'de>,
 {
-    DocDataPrincipal::deserialize(deserializer).map(|d| d.value)
+    JsonDataPrincipal::deserialize(deserializer).map(|d| d.value)
 }
 
 #[cfg(test)]

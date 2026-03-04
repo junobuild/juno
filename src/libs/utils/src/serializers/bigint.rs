@@ -1,16 +1,16 @@
-use crate::serializers::types::DocDataBigInt;
+use crate::serializers::types::JsonDataBigInt;
 use serde::de::{self, MapAccess, Visitor};
 use serde::ser::SerializeStruct;
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use std::fmt;
 
-impl fmt::Display for DocDataBigInt {
+impl fmt::Display for JsonDataBigInt {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{}", self.value)
     }
 }
 
-impl Serialize for DocDataBigInt {
+impl Serialize for JsonDataBigInt {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
@@ -21,7 +21,7 @@ impl Serialize for DocDataBigInt {
     }
 }
 
-impl<'de> Deserialize<'de> for DocDataBigInt {
+impl<'de> Deserialize<'de> for JsonDataBigInt {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>,
@@ -33,13 +33,13 @@ impl<'de> Deserialize<'de> for DocDataBigInt {
 struct DocDataBigIntVisitor;
 
 impl<'de> Visitor<'de> for DocDataBigIntVisitor {
-    type Value = DocDataBigInt;
+    type Value = JsonDataBigInt;
 
     fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
         formatter.write_str("an object with a key __bigint__")
     }
 
-    fn visit_map<V>(self, mut map: V) -> Result<DocDataBigInt, V::Error>
+    fn visit_map<V>(self, mut map: V) -> Result<JsonDataBigInt, V::Error>
     where
         V: MapAccess<'de>,
     {
@@ -56,7 +56,7 @@ impl<'de> Visitor<'de> for DocDataBigIntVisitor {
         let bigint_value = value_str
             .parse::<u64>()
             .map_err(|_| de::Error::custom("Invalid format for __bigint__"))?;
-        Ok(DocDataBigInt {
+        Ok(JsonDataBigInt {
             value: bigint_value,
         })
     }
@@ -69,7 +69,7 @@ mod tests {
 
     #[test]
     fn serialize_doc_data_bigint() {
-        let data = DocDataBigInt {
+        let data = JsonDataBigInt {
             value: 12345678901234,
         };
         let s = serde_json::to_string(&data).expect("serialize");
@@ -79,21 +79,21 @@ mod tests {
     #[test]
     fn deserialize_doc_data_bigint() {
         let s = r#"{"__bigint__":"12345678901234"}"#;
-        let data: DocDataBigInt = serde_json::from_str(s).expect("deserialize");
+        let data: JsonDataBigInt = serde_json::from_str(s).expect("deserialize");
         assert_eq!(data.value, 12345678901234);
     }
 
     #[test]
     fn round_trip() {
-        let original = DocDataBigInt { value: u64::MAX };
+        let original = JsonDataBigInt { value: u64::MAX };
         let json = serde_json::to_string(&original).unwrap();
-        let decoded: DocDataBigInt = serde_json::from_str(&json).unwrap();
+        let decoded: JsonDataBigInt = serde_json::from_str(&json).unwrap();
         assert_eq!(decoded.value, original.value);
     }
 
     #[test]
     fn error_on_missing_field() {
-        let err = serde_json::from_str::<DocDataBigInt>(r#"{}"#).unwrap_err();
+        let err = serde_json::from_str::<JsonDataBigInt>(r#"{}"#).unwrap_err();
         assert!(
             err.to_string().contains("missing field `__bigint__`"),
             "got: {err}"
@@ -103,7 +103,7 @@ mod tests {
     #[test]
     fn error_on_duplicate_field() {
         let s = r#"{"__bigint__":"123","__bigint__":"456"}"#;
-        let err = serde_json::from_str::<DocDataBigInt>(s).unwrap_err();
+        let err = serde_json::from_str::<JsonDataBigInt>(s).unwrap_err();
         assert!(
             err.to_string().contains("duplicate field `__bigint__`"),
             "got: {err}"
@@ -113,7 +113,7 @@ mod tests {
     #[test]
     fn error_on_invalid_bigint_format() {
         let s = r#"{"__bigint__":"not-a-number"}"#;
-        let err = serde_json::from_str::<DocDataBigInt>(s).unwrap_err();
+        let err = serde_json::from_str::<JsonDataBigInt>(s).unwrap_err();
         assert!(
             err.to_string().contains("Invalid format for __bigint__"),
             "got: {err}"
@@ -122,7 +122,7 @@ mod tests {
 
     #[test]
     fn test_display_implementation() {
-        let data = DocDataBigInt {
+        let data = JsonDataBigInt {
             value: 12345678901234,
         };
         assert_eq!(format!("{}", data), "12345678901234");

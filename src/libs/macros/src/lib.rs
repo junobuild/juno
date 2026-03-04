@@ -5,8 +5,11 @@ extern crate proc_macro;
 #[doc(hidden)]
 mod error;
 #[doc(hidden)]
+mod functions;
+#[doc(hidden)]
 mod hooks;
 
+use functions::derive::derive_json_data;
 use hooks::parser::{hook_macro, Hook};
 use proc_macro::TokenStream;
 
@@ -526,4 +529,32 @@ pub fn on_init_sync(attr: TokenStream, item: TokenStream) -> TokenStream {
 #[proc_macro_attribute]
 pub fn on_init_random_seed(attr: TokenStream, item: TokenStream) -> TokenStream {
     hook_macro(Hook::OnInitRandomSeed, attr, item)
+}
+
+/// Derive macro that generates JS-compatible JSON serialization for Juno serverless function structs.
+///
+/// Automatically maps Candid types to their `JsonData*` equivalents (`Principal` → `JsonDataPrincipal`,
+/// `Vec<u8>` → `JsonDataUint8Array`, `u64` → `JsonDataBigInt`) and generates:
+/// - `into_json_data()` — serializes the struct to bytes for passing to the JS runtime
+/// - `from_json_data()` — deserializes bytes from the JS runtime back into the struct
+///
+/// # Example
+///
+/// ```rust
+/// #[derive(CandidType, Serialize, Deserialize, JsonData)]
+/// pub struct InputArgs {
+///     value: Principal,
+/// }
+///
+/// #[derive(CandidType, Serialize, Deserialize, JsonData)]
+/// pub struct OutputArgs {
+///     value: Principal,
+///     text: String,
+/// }
+///
+/// // Generated: InputArgsJsonData/OutputArgsJsonData structs + From impls + into_json_data() + from_json_data()
+/// ```
+#[proc_macro_derive(JsonData)]
+pub fn json_data(input: TokenStream) -> TokenStream {
+    derive_json_data(input)
 }

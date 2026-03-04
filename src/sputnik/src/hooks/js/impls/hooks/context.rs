@@ -1,4 +1,4 @@
-use crate::hooks::js::types::hooks::JsHookContext;
+use crate::sdk::js::types::hooks::JsHookContext;
 use rquickjs::{Ctx, IntoJs, Object, Result as JsResult, Value};
 
 impl<'js, T> IntoJs<'js> for JsHookContext<'js, T>

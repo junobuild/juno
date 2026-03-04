@@ -1,4 +1,4 @@
-use crate::hooks::js::types::shared::JsCollectionKey;
+use crate::sdk::js::types::shared::JsCollectionKey;
 use junobuild_satellite::delete_docs_store as delete_docs_store_sdk;
 use rquickjs::{Ctx, Error as JsError, Exception, Result as JsResult};
 

@@ -1,4 +1,4 @@
-use crate::hooks::js::types::hooks::JsRawData;
+use crate::sdk::js::types::hooks::JsRawData;
 use rquickjs::{Ctx, Error as JsError, Result as JsResult};
 
 pub fn init_utils_sdk(ctx: &Ctx) -> Result<(), JsError> {

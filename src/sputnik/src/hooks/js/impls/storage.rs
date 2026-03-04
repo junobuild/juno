@@ -1,13 +1,13 @@
-use crate::hooks::js::types::interface::{
-    JsAssetEncodingNoContent, JsAssetEncodingNotContentRecord, JsAssetNoContent, JsCommitBatch,
-};
-use crate::hooks::js::types::storage::{
-    JsAsset, JsAssetEncoding, JsAssetEncodingRecord, JsAssetKey, JsBatch, JsBlobOrKey, JsHash,
-    JsHeaderFieldRecord, JsHeaderFields,
-};
 use crate::js::types::candid::JsRawPrincipal;
 use crate::js::types::primitives::JsU128Compat;
 use crate::js::utils::primitives::{from_bigint_js, into_bigint_js, into_optional_bigint_js};
+use crate::sdk::js::types::interface::{
+    JsAssetEncodingNoContent, JsAssetEncodingNotContentRecord, JsAssetNoContent, JsCommitBatch,
+};
+use crate::sdk::js::types::storage::{
+    JsAsset, JsAssetEncoding, JsAssetEncodingRecord, JsAssetKey, JsBatch, JsBlobOrKey, JsHash,
+    JsHeaderFieldRecord, JsHeaderFields,
+};
 use junobuild_storage::http::types::HeaderField;
 use junobuild_storage::types::interface::{AssetEncodingNoContent, AssetNoContent, CommitBatch};
 use junobuild_storage::types::store::{Asset, AssetEncoding, AssetKey, Batch, BlobOrKey};

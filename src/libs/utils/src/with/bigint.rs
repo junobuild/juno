@@ -1,18 +1,18 @@
-use crate::serializers::types::DocDataBigInt;
+use crate::serializers::types::JsonDataBigInt;
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
 pub fn serialize<S>(value: &u64, s: S) -> Result<S::Ok, S::Error>
 where
     S: Serializer,
 {
-    DocDataBigInt { value: *value }.serialize(s)
+    JsonDataBigInt { value: *value }.serialize(s)
 }
 
 pub fn deserialize<'de, D>(deserializer: D) -> Result<u64, D::Error>
 where
     D: Deserializer<'de>,
 {
-    DocDataBigInt::deserialize(deserializer).map(|d| d.value)
+    JsonDataBigInt::deserialize(deserializer).map(|d| d.value)
 }
 
 #[cfg(test)]

@@ -1,7 +1,7 @@
 use crate::functions::runner::sync::CustomFunction;
 use crate::functions::runner::types::JsCustomFunctionSync;
-use crate::sdk::js::init_sdk;
 use crate::js::runtime::execute_sync_js;
+use crate::sdk::js::init_sdk;
 use junobuild_utils::{FromJsonData, IntoJsonData};
 use rquickjs::CatchResultExt;
 

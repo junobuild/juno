@@ -1,9 +1,10 @@
-use crate::functions::{execute_sync_function, execute_async_function};
+#![allow(unused)]
+
+use crate::functions::{execute_sync_function, execute_async_function, types::{NoArgs}};
 use candid::{CandidType, Principal};
 use junobuild_macros::JsonData;
 use junobuild_shared::ic::UnwrapOrTrap;
 use serde::{Deserialize, Serialize};
-use junobuild_utils::IntoJsonData;
 
 // Input must be a struct
 #[derive(CandidType, Serialize, Deserialize, Clone, JsonData)]
@@ -29,16 +30,6 @@ fn app_hello_world(input: AppHelloWorldArgs) -> AppHelloWorldResult {
 pub struct AppWelcomeResult {
     caller: Principal,
     value: u64,
-}
-
-#[derive(Clone)]
-pub struct NoArgs;
-
-impl IntoJsonData for NoArgs {
-    fn into_json_data(self) -> Result<Vec<u8>, String> {
-        // Used only for compilation purposes. Is never used.
-        Ok(vec![])
-    }
 }
 
 // We require or use a prefix to avoid clashes?

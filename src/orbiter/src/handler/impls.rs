@@ -10,7 +10,7 @@ use crate::types::interface::http::{
 use crate::types::interface::{SetPageView, SetPerformanceMetric, SetTrackEvent};
 use candid::types::principal::PrincipalError;
 use candid::Principal;
-use junobuild_utils::DocDataBigInt;
+use junobuild_utils::JsonDataBigInt;
 
 impl AnalyticKeyPayload {
     pub fn into_domain(self) -> AnalyticKey {
@@ -90,15 +90,15 @@ impl PageViewPayload {
             time_zone: page_view.time_zone,
             session_id: page_view.session_id,
             campaign: page_view.campaign.map(PageViewCampaignPayload::from_domain),
-            created_at: DocDataBigInt {
+            created_at: JsonDataBigInt {
                 value: page_view.created_at,
             },
-            updated_at: DocDataBigInt {
+            updated_at: JsonDataBigInt {
                 value: page_view.updated_at,
             },
             version: page_view
                 .version
-                .map(|version| DocDataBigInt { value: version }),
+                .map(|version| JsonDataBigInt { value: version }),
         }
     }
 }
@@ -161,15 +161,15 @@ impl TrackEventPayload {
             name: track_event.name,
             metadata: track_event.metadata,
             session_id: track_event.session_id,
-            created_at: DocDataBigInt {
+            created_at: JsonDataBigInt {
                 value: track_event.created_at,
             },
-            updated_at: DocDataBigInt {
+            updated_at: JsonDataBigInt {
                 value: track_event.updated_at,
             },
             version: track_event
                 .version
-                .map(|version| DocDataBigInt { value: version }),
+                .map(|version| JsonDataBigInt { value: version }),
         }
     }
 }
@@ -200,15 +200,15 @@ impl PerformanceMetricPayload {
             metric_name: performance_metric.metric_name,
             data: performance_metric.data,
             session_id: performance_metric.session_id,
-            created_at: DocDataBigInt {
+            created_at: JsonDataBigInt {
                 value: performance_metric.created_at,
             },
-            updated_at: DocDataBigInt {
+            updated_at: JsonDataBigInt {
                 value: performance_metric.updated_at,
             },
             version: performance_metric
                 .version
-                .map(|version| DocDataBigInt { value: version }),
+                .map(|version| JsonDataBigInt { value: version }),
         }
     }
 }

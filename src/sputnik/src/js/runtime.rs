@@ -10,13 +10,13 @@ use rquickjs::{
     async_with, AsyncContext, AsyncRuntime, CatchResultExt, Context, Ctx, Error as JsError, Runtime,
 };
 
-pub trait RunAsyncJsFn {
-    async fn run<'js>(&self, ctx: &Ctx<'js>) -> Result<(), JsError>;
+pub trait RunAsyncJsFn<T = ()> {
+    async fn run<'js>(&self, ctx: &Ctx<'js>) -> Result<T, JsError>;
 }
 
-pub async fn execute_async_js<T>(f: T) -> Result<(), String>
+pub async fn execute_async_js<F, T: 'static>(f: F) -> Result<T, String>
 where
-    T: RunAsyncJsFn,
+    F: RunAsyncJsFn<T>,
 {
     let rt = AsyncRuntime::new()
         .map_err(|e| format_js_error(JUNO_SPUTNIK_ERROR_RUNTIME_ASYNC_RUNTIME, e))?;
@@ -24,20 +24,20 @@ where
         .await
         .map_err(|e| format_js_error(JUNO_SPUTNIK_ERROR_RUNTIME_ASYNC_CONTEXT, e))?;
 
-    async_with!(ctx => |ctx|{
+    let result = async_with!(ctx => |ctx|{
         init_apis(&ctx).map_err(|e| format_js_error(JUNO_SPUTNIK_ERROR_RUNTIME_API_INIT, e))?;
 
         declare_dev_script(&ctx).map_err(|e| e.to_string())?;
 
-        f.run(&ctx).await.catch(&ctx).map_err(|e| e.to_string())?;
+        let result = f.run(&ctx).await.catch(&ctx).map_err(|e| e.to_string())?;
 
-        Ok::<(), String>(())
+        Ok::<T, String>(result)
     })
     .await?;
 
     rt.idle().await;
 
-    Ok(())
+    Ok(result)
 }
 
 pub fn execute_sync_js<F, T>(f: F) -> Result<T, String>

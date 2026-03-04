@@ -1,22 +1,22 @@
-use crate::functions::runner::types::{JsCustomFunction, JsCustomFunctionSync};
+use crate::functions::runner::types::{JsCustomFunction, JsCustomFunctionAsync};
 use crate::js::constants::DEV_MODULE_NAME;
-use crate::js::module::engine::evaluate_module;
+use crate::js::module::engine::evaluate_async_module;
 use crate::js::types::candid::JsUint8Array;
 use junobuild_utils::{FromJsonData, IntoJsonData};
 use rquickjs::{Ctx, Error as JsError};
 
-pub struct CustomFunctionSync {
+pub struct CustomFunctionAsync {
     pub name: String,
 }
 
-impl JsCustomFunction for CustomFunctionSync {
+impl JsCustomFunction for CustomFunctionAsync {
     fn get_code(&self) -> String {
         format!(
             r#"const {{ {name} }} = await import("{DEV_MODULE_NAME}");
 
             if (typeof {name} !== 'undefined') {{
                 const config = typeof {name} === 'function' ? {name}({{}}) : {name};
-                __juno_invoke_endpoint(config, jsContext);
+                await __juno_invoke_endpoint_async(config, jsContext);
             }}
             "#,
             name = self.name
@@ -24,8 +24,8 @@ impl JsCustomFunction for CustomFunctionSync {
     }
 }
 
-impl<A: IntoJsonData, R: FromJsonData> JsCustomFunctionSync<A, R> for CustomFunctionSync {
-    fn execute<'js>(&self, ctx: &Ctx<'js>, args: A) -> Result<R, JsError> {
+impl<A: IntoJsonData, R: FromJsonData> JsCustomFunctionAsync<A, R> for CustomFunctionAsync {
+    async fn execute<'js>(&self, ctx: &Ctx<'js>, args: A) -> Result<R, JsError> {
         let bytes = args
             .into_json_data()
             .map_err(|e| JsError::new_from_js_message("Candid", "JsonData", e.to_string()))?;
@@ -35,7 +35,7 @@ impl<A: IntoJsonData, R: FromJsonData> JsCustomFunctionSync<A, R> for CustomFunc
 
         let code = &self.get_code();
 
-        evaluate_module(ctx, "@junobuild/sputnik/functions", code)?;
+        evaluate_async_module(ctx, "@junobuild/sputnik/functions", &code).await?;
 
         let result: Option<JsUint8Array> = ctx.globals().get("jsResult")?;
         let result = result.ok_or(JsError::new_from_js_message(

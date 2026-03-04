@@ -17,6 +17,13 @@ export interface AppHelloWorldResult {
 	value: Principal;
 	text: string;
 }
+export interface AppWelcomeArgs {
+	value: string;
+}
+export interface AppWelcomeResult {
+	value: bigint;
+	caller: Principal;
+}
 export interface AssetEncodingNoContent {
 	modified: bigint;
 	sha256: Uint8Array;
@@ -592,6 +599,7 @@ export interface _SERVICE {
 	upload_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;
 	upload_proposal_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;
 	app_hello_world: ActorMethod<[AppHelloWorldArgs], AppHelloWorldResult>;
+	app_welcome: ActorMethod<[AppWelcomeArgs], AppWelcomeResult>;
 }
 export declare const idlFactory: IDL.InterfaceFactory;
 export declare const init: (args: { IDL: typeof IDL }) => IDL.Type[];

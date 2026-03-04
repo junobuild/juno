@@ -1,7 +1,9 @@
 import { PrincipalSchema } from '@junobuild/functions';
+import { id } from '@junobuild/functions/ic-cdk';
 import * as z from 'zod';
 
 const defineQuery = <T>(definition: T) => ({ ...definition, type: 'query' });
+const defineUpdate = <T>(definition: T) => ({ ...definition, type: 'updated' });
 
 const ArgsSchema = z.object({
 	value: PrincipalSchema
@@ -22,5 +24,25 @@ export const helloWorld = defineQuery({
 	handler: (input: Args) => {
 		console.log('Hello world');
 		return { value: input.value, text: 'Welcome' };
+	}
+});
+
+const WelcomeArgsSchema = z.object({
+	value: z.string()
+});
+
+type WelcomeArgs = z.infer<typeof ArgsSchema>;
+
+const WelcomeResultSchema = z.object({
+	caller: PrincipalSchema,
+	value: z.bigint()
+});
+
+export const welcome = defineUpdate({
+	args: WelcomeArgsSchema,
+	result: WelcomeResultSchema,
+	handler: async (input: WelcomeArgs) => {
+		console.log('Welcome async', input);
+		return { caller: id(), value: 123n };
 	}
 });

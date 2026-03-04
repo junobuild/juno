@@ -39,7 +39,7 @@ const WelcomeResultSchema = z.object({
 });
 
 export const welcome = defineUpdate({
-	args: WelcomeArgsSchema,
+	// args: WelcomeArgsSchema,
 	result: WelcomeResultSchema,
 	handler: async (input: WelcomeArgs) => {
 		console.log('Welcome async', input);

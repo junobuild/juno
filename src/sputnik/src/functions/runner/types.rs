@@ -9,5 +9,5 @@ pub trait JsCustomFunctionSync<A, R> {
 }
 
 pub trait JsCustomFunctionAsync<A, R> {
-    async fn execute<'js>(&self, ctx: &Ctx<'js>, args: A) -> Result<R, JsError>;
+    async fn execute<'js>(&self, ctx: &Ctx<'js>, args: Option<A>) -> Result<R, JsError>;
 }

@@ -19,8 +19,11 @@ globalThis.__juno_invoke_endpoint = (config, raw) => {
 // @ts-ignore
 globalThis.__juno_invoke_endpoint_async = async (config, raw) => {
 	try {
-		const args = config.args.parse(raw !== null ? decodeDocData(raw) : null);
+		const args = config.args?.parse(raw !== undefined ? decodeDocData(raw) : undefined);
 
+		console.log('-----------------> ARGS:', raw, args === undefined);
+
+		// Maybe do not pass args if undefined
 		const result = await config.handler(args);
 
 		const parsed = config.result.parse(result);

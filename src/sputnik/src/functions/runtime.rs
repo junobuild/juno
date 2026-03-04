@@ -27,7 +27,7 @@ pub fn execute_sync_function<A: IntoJsonData, R: FromJsonData>(
 
 pub struct AsyncJsFnContext<A: IntoJsonData + Clone, R: FromJsonData> {
     pub name: String,
-    pub args: A,
+    pub args: Option<A>,
     _phantom: PhantomData<R>,
 }
 
@@ -48,7 +48,7 @@ pub async fn execute_async_function<
     R: FromJsonData + 'static,
 >(
     custom_function: &str,
-    args: A,
+    args: Option<A>,
 ) -> Result<R, String> {
     let execute_context = AsyncJsFnContext {
         name: custom_function.to_string(),

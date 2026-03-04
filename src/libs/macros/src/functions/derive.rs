@@ -72,12 +72,14 @@ pub fn derive_json_data(input: TokenStream) -> TokenStream {
             }
         }
 
-        impl #name {
-            pub fn into_json_data(self) -> Result<Vec<u8>, String> {
+        impl junobuild_utils::IntoJsonData for #name {
+            fn into_json_data(self) -> Result<Vec<u8>, String> {
                 junobuild_utils::encode_json_data(&#serialized_name::from(self))
             }
+        }
 
-            pub fn from_json_data(bytes: &[u8]) -> Result<Self, String> {
+        impl junobuild_utils::FromJsonData for #name {
+            fn from_json_data(bytes: &[u8]) -> Result<Self, String> {
                 junobuild_utils::decode_json_data::<#serialized_name>(bytes)
                     .map(#name::from)
             }

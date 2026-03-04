@@ -1,5 +1,6 @@
 import type {
-	InputArgs,
+	AppHelloWorldArgs,
+	AppHelloWorldResult,
 	_SERVICE as TestSputnikActor
 } from '$test-declarations/test_sputnik/test_sputnik.did';
 import type { Actor, PocketIc } from '@dfinity/pic';
@@ -25,7 +26,7 @@ describe('Sputnik > Custom Functions', () => {
 	it('should call the custom function', async () => {
 		const { app_hello_world } = actor;
 
-		const args: InputArgs = {
+		const args: AppHelloWorldArgs = {
 			value: mockPrincipal
 		};
 
@@ -35,11 +36,11 @@ describe('Sputnik > Custom Functions', () => {
 	it('should get a result from the custom function', async () => {
 		const { app_hello_world } = actor;
 
-		const args: InputArgs = {
+		const args: AppHelloWorldArgs = {
 			value: mockPrincipal
 		};
 
-		const result = await app_hello_world(args);
+		const result: AppHelloWorldResult = await app_hello_world(args);
 
 		expect(result.text).toEqual('Welcome');
 		expect(result.value.toText()).toEqual(mockPrincipal.toText());

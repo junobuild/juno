@@ -5,8 +5,11 @@ extern crate proc_macro;
 #[doc(hidden)]
 mod error;
 #[doc(hidden)]
+mod functions;
+#[doc(hidden)]
 mod hooks;
 
+use functions::derive::derive_function_data;
 use hooks::parser::{hook_macro, Hook};
 use proc_macro::TokenStream;
 
@@ -526,4 +529,32 @@ pub fn on_init_sync(attr: TokenStream, item: TokenStream) -> TokenStream {
 #[proc_macro_attribute]
 pub fn on_init_random_seed(attr: TokenStream, item: TokenStream) -> TokenStream {
     hook_macro(Hook::OnInitRandomSeed, attr, item)
+}
+
+/// Derive macro that generates JS-compatible serialization for custom serverless function structs.
+///
+/// Automatically maps Candid types to their `DocData*` equivalents (`Principal` → `DocDataPrincipal`,
+/// `Vec<u8>` → `DocDataUint8Array`, `u64` → `DocDataBigInt`) and generates:
+/// - `into_doc_data()` — serializes the struct to bytes for passing to the JS runtime
+/// - `from_doc_data()` — deserializes bytes from the JS runtime back into the struct
+///
+/// # Example
+///
+/// ```rust
+/// #[derive(CandidType, Serialize, Deserialize, FunctionData)]
+/// pub struct InputArgs {
+///     value: Principal,
+/// }
+///
+/// #[derive(CandidType, Serialize, Deserialize, FunctionData)]
+/// pub struct OutputArgs {
+///     value: Principal,
+///     text: String,
+/// }
+///
+/// // Generated: InputArgsDocData/OutputArgsDocData structs + From impls + into_doc_data() + from_doc_data()
+/// ```
+#[proc_macro_derive(FunctionData)]
+pub fn function_data(input: TokenStream) -> TokenStream {
+    derive_function_data(input)
 }

@@ -23,7 +23,7 @@ pub struct AppHelloWorldResult {
 // We require or use a prefix to avoid clashes?
 #[ic_cdk::query]
 fn app_hello_world(input: AppHelloWorldArgs) -> AppHelloWorldResult {
-    execute_sync_function("helloWorld", input).unwrap_or_trap()
+    execute_sync_function("helloWorld", Some(input)).unwrap_or_trap_result()
 }
 
 // Input must be a struct

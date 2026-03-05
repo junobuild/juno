@@ -1,9 +1,6 @@
-import { PrincipalSchema } from '@junobuild/functions';
+import { defineQuery, defineUpdate, PrincipalSchema } from '@junobuild/functions';
 import { id } from '@junobuild/functions/ic-cdk';
 import * as z from 'zod';
-
-const defineQuery = <T>(definition: T) => ({ ...definition, type: 'query' });
-const defineUpdate = <T>(definition: T) => ({ ...definition, type: 'updated' });
 
 const ArgsSchema = z.object({
 	value: PrincipalSchema
@@ -31,34 +28,31 @@ const WelcomeArgsSchema = z.object({
 	value: z.string()
 });
 
-type WelcomeArgs = z.infer<typeof ArgsSchema>;
+type WelcomeArgs = z.infer<typeof WelcomeArgsSchema>;
 
 const WelcomeResultSchema = z.object({
 	caller: PrincipalSchema,
 	value: z.bigint()
 });
 
-export const welcome = defineUpdate({
+export const welcome = defineUpdate(() => ({
 	args: WelcomeArgsSchema,
 	result: WelcomeResultSchema,
 	handler: async (input: WelcomeArgs) => {
 		console.log('Welcome async', input);
 		return { caller: id(), value: 123n };
 	}
-});
+}));
 
 export const welcome_without_args = defineUpdate({
-	// args: WelcomeArgsSchema,
 	result: WelcomeResultSchema,
-	handler: async (input: WelcomeArgs) => {
-		console.log('Welcome async', input);
+	handler: async () => {
+		console.log('Welcome async');
 		return { caller: id(), value: 123n };
 	}
 });
 
 export const yolo = defineUpdate({
-	// args: WelcomeArgsSchema,
-	// result: WelcomeResultSchema,
 	handler: async () => {
 		console.log('No args, no result, no problem');
 	}

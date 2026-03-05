@@ -8,14 +8,14 @@ pub fn set_args<'js, A: IntoJsonData>(ctx: &Ctx<'js>, args: Option<A>) -> Result
             .into_json_data()
             .map_err(|e| JsError::new_from_js_message("Candid", "JsonData", e.to_string()))?;
         let raw = JsUint8Array::from_bytes(ctx, &bytes)?;
-        ctx.globals().set("jsContext", raw)?;
+        ctx.globals().set("jsArgs", raw)?;
 
         return Ok(());
     }
 
     // If there is no arguments to use we still define a value this way the code that is defined in get_code
     // does not fail when accessing the global value.
-    ctx.globals().set("jsContext", rquickjs::Undefined)?;
+    ctx.globals().set("jsArgs", rquickjs::Undefined)?;
 
     Ok(())
 }

@@ -1,7 +1,7 @@
 import { decodeDocData, encodeDocData } from '@junobuild/functions/sdk';
 
 // @ts-ignore
-globalThis.__juno_invoke_endpoint = (config, raw) => {
+globalThis.__juno_satellite_fn_invoke_sync = (config, raw) => {
 	try {
 		const args = config.args.parse(decodeDocData(raw));
 
@@ -17,7 +17,7 @@ globalThis.__juno_invoke_endpoint = (config, raw) => {
 };
 
 // @ts-ignore
-globalThis.__juno_invoke_endpoint_async = async (config, raw) => {
+globalThis.__juno_satellite_fn_invoke_async = async (config, raw) => {
 	try {
 		const args = config.args?.parse(raw !== undefined ? decodeDocData(raw) : undefined);
 

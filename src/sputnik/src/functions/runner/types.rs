@@ -5,7 +5,7 @@ pub trait JsCustomFunction {
 }
 
 pub trait JsCustomFunctionSync<A, R> {
-    fn execute<'js>(&self, ctx: &Ctx<'js>, args: A) -> Result<R, JsError>;
+    fn execute<'js>(&self, ctx: &Ctx<'js>, args: Option<A>) -> Result<Option<R>, JsError>;
 }
 
 pub trait JsCustomFunctionAsync<A, R> {

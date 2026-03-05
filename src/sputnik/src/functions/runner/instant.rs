@@ -25,27 +25,32 @@ impl JsCustomFunction for CustomFunctionSync {
 }
 
 impl<A: IntoJsonData, R: FromJsonData> JsCustomFunctionSync<A, R> for CustomFunctionSync {
-    fn execute<'js>(&self, ctx: &Ctx<'js>, args: A) -> Result<R, JsError> {
-        let bytes = args
-            .into_json_data()
-            .map_err(|e| JsError::new_from_js_message("Candid", "JsonData", e.to_string()))?;
-        let raw = JsUint8Array::from_bytes(ctx, &bytes)?;
+    fn execute<'js>(&self, ctx: &Ctx<'js>, args: Option<A>) -> Result<Option<R>, JsError> {
+        if let Some(args) = args {
+            let bytes = args
+                .into_json_data()
+                .map_err(|e| JsError::new_from_js_message("Candid", "JsonData", e.to_string()))?;
+            let raw = JsUint8Array::from_bytes(ctx, &bytes)?;
 
-        ctx.globals().set("jsContext", raw)?;
+            ctx.globals().set("jsContext", raw)?;
+        } else {
+            ctx.globals().set("jsContext", rquickjs::Undefined)?;
+        }
 
         let code = &self.get_code();
 
         evaluate_module(ctx, "@junobuild/sputnik/functions", code)?;
 
         let result: Option<JsUint8Array> = ctx.globals().get("jsResult")?;
-        let result = result.ok_or(JsError::new_from_js_message(
-            "jsResult",
-            "JsUint8Array",
-            "No result returned from JS",
-        ))?;
-        let bytes = result.to_bytes()?;
 
-        R::from_json_data(bytes)
-            .map_err(|e| JsError::new_from_js_message("JsonData", "Candid", e.to_string()))
+        result
+            .map(|raw| {
+                raw.to_bytes().map_err(|e| e).and_then(|bytes| {
+                    R::from_json_data(bytes).map_err(|e| {
+                        JsError::new_from_js_message("JsonData", "Candid", e.to_string())
+                    })
+                })
+            })
+            .transpose()
     }
 }

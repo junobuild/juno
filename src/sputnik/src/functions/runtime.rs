@@ -9,8 +9,8 @@ use std::marker::PhantomData;
 
 pub fn execute_sync_function<A: IntoJsonData, R: FromJsonData>(
     custom_function: &str,
-    args: A,
-) -> Result<R, String> {
+    args: Option<A>,
+) -> Result<Option<R>, String> {
     let function = CustomFunctionSync {
         name: custom_function.to_string(),
     };

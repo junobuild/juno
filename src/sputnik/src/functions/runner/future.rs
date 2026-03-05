@@ -25,7 +25,7 @@ impl JsCustomFunction for CustomFunctionAsync {
 }
 
 impl<A: IntoJsonData, R: FromJsonData> JsCustomFunctionAsync<A, R> for CustomFunctionAsync {
-    async fn execute<'js>(&self, ctx: &Ctx<'js>, args: Option<A>) -> Result<R, JsError> {
+    async fn execute<'js>(&self, ctx: &Ctx<'js>, args: Option<A>) -> Result<Option<R>, JsError> {
         if let Some(args) = args {
             let bytes = args
                 .into_json_data()
@@ -42,14 +42,15 @@ impl<A: IntoJsonData, R: FromJsonData> JsCustomFunctionAsync<A, R> for CustomFun
         evaluate_async_module(ctx, "@junobuild/sputnik/functions", &code).await?;
 
         let result: Option<JsUint8Array> = ctx.globals().get("jsResult")?;
-        let result = result.ok_or(JsError::new_from_js_message(
-            "jsResult",
-            "JsUint8Array",
-            "No result returned from JS",
-        ))?;
-        let bytes = result.to_bytes()?;
 
-        R::from_json_data(bytes)
-            .map_err(|e| JsError::new_from_js_message("JsonData", "Candid", e.to_string()))
+        result
+            .map(|raw| {
+                raw.to_bytes().map_err(|e| e).and_then(|bytes| {
+                    R::from_json_data(bytes).map_err(|e| {
+                        JsError::new_from_js_message("JsonData", "Candid", e.to_string())
+                    })
+                })
+            })
+            .transpose()
     }
 }

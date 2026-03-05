@@ -31,8 +31,8 @@ pub struct AsyncJsFnContext<A: IntoJsonData + Clone, R: FromJsonData> {
     _phantom: PhantomData<R>,
 }
 
-impl<A: IntoJsonData + Clone, R: FromJsonData> RunAsyncJsFn<R> for AsyncJsFnContext<A, R> {
-    async fn run<'js>(&self, ctx: &Ctx<'js>) -> Result<R, JsError> {
+impl<A: IntoJsonData + Clone, R: FromJsonData> RunAsyncJsFn<Option<R>> for AsyncJsFnContext<A, R> {
+    async fn run<'js>(&self, ctx: &Ctx<'js>) -> Result<Option<R>, JsError> {
         init_sdk(ctx)?;
 
         let function = CustomFunctionAsync {
@@ -49,7 +49,7 @@ pub async fn execute_async_function<
 >(
     custom_function: &str,
     args: Option<A>,
-) -> Result<R, String> {
+) -> Result<Option<R>, String> {
     let execute_context = AsyncJsFnContext {
         name: custom_function.to_string(),
         args,

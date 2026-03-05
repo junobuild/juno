@@ -600,6 +600,8 @@ export interface _SERVICE {
 	upload_proposal_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;
 	app_hello_world: ActorMethod<[AppHelloWorldArgs], AppHelloWorldResult>;
 	app_welcome: ActorMethod<[AppWelcomeArgs], AppWelcomeResult>;
+	app_welcome_without_args: ActorMethod<[], AppWelcomeResult>;
+	app_yolo: ActorMethod<[], undefined>;
 }
 export declare const idlFactory: IDL.InterfaceFactory;
 export declare const init: (args: { IDL: typeof IDL }) => IDL.Type[];

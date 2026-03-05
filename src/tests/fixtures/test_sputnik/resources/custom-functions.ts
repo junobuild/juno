@@ -39,10 +39,27 @@ const WelcomeResultSchema = z.object({
 });
 
 export const welcome = defineUpdate({
+	args: WelcomeArgsSchema,
+	result: WelcomeResultSchema,
+	handler: async (input: WelcomeArgs) => {
+		console.log('Welcome async', input);
+		return { caller: id(), value: 123n };
+	}
+});
+
+export const welcome_without_args = defineUpdate({
 	// args: WelcomeArgsSchema,
 	result: WelcomeResultSchema,
 	handler: async (input: WelcomeArgs) => {
 		console.log('Welcome async', input);
 		return { caller: id(), value: 123n };
+	}
+});
+
+export const yolo = defineUpdate({
+	// args: WelcomeArgsSchema,
+	// result: WelcomeResultSchema,
+	handler: async () => {
+		console.log('No args, no result, no problem');
 	}
 });

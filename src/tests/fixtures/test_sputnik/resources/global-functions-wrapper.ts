@@ -26,10 +26,10 @@ globalThis.__juno_invoke_endpoint_async = async (config, raw) => {
 		// Maybe do not pass args if undefined
 		const result = await config.handler(args);
 
-		const parsed = config.result.parse(result);
+		const parsed = config.result?.parse(result);
 
 		// @ts-ignore
-		globalThis.jsResult = parsed !== null && parsed !== null ? encodeDocData(parsed) : parsed;
+		globalThis.jsResult = parsed !== null && parsed !== undefined ? encodeDocData(parsed) : parsed;
 	} catch (e) {
 		console.log('ERROR __juno_invoke_endpoint', e);
 	}

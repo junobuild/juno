@@ -624,7 +624,9 @@ export const idlFactory = ({ IDL }) => {
 		upload_asset_chunk: IDL.Func([UploadChunk], [UploadChunkResult], []),
 		upload_proposal_asset_chunk: IDL.Func([UploadChunk], [UploadChunkResult], []),
 		app_hello_world: IDL.Func([AppHelloWorldArgs], [AppHelloWorldResult], ['query']),
-		app_welcome: IDL.Func([AppWelcomeArgs], [AppWelcomeResult], [])
+		app_welcome: IDL.Func([AppWelcomeArgs], [AppWelcomeResult], []),
+		app_welcome_without_args: IDL.Func([], [AppWelcomeResult], []),
+		app_yolo: IDL.Func([], [], [])
 	});
 };
 

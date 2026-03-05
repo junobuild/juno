@@ -1,7 +1,7 @@
+use crate::functions::runner::context::{get_result, set_args};
 use crate::functions::runner::types::{JsCustomFunction, JsCustomFunctionSync};
 use crate::js::constants::DEV_MODULE_NAME;
 use crate::js::module::engine::evaluate_module;
-use crate::js::types::candid::JsUint8Array;
 use junobuild_utils::{FromJsonData, IntoJsonData};
 use rquickjs::{Ctx, Error as JsError};
 
@@ -26,31 +26,12 @@ impl JsCustomFunction for CustomFunctionSync {
 
 impl<A: IntoJsonData, R: FromJsonData> JsCustomFunctionSync<A, R> for CustomFunctionSync {
     fn execute<'js>(&self, ctx: &Ctx<'js>, args: Option<A>) -> Result<Option<R>, JsError> {
-        if let Some(args) = args {
-            let bytes = args
-                .into_json_data()
-                .map_err(|e| JsError::new_from_js_message("Candid", "JsonData", e.to_string()))?;
-            let raw = JsUint8Array::from_bytes(ctx, &bytes)?;
-
-            ctx.globals().set("jsContext", raw)?;
-        } else {
-            ctx.globals().set("jsContext", rquickjs::Undefined)?;
-        }
+        set_args(ctx, args)?;
 
         let code = &self.get_code();
 
         evaluate_module(ctx, "@junobuild/sputnik/functions", code)?;
 
-        let result: Option<JsUint8Array> = ctx.globals().get("jsResult")?;
-
-        result
-            .map(|raw| {
-                raw.to_bytes().map_err(|e| e).and_then(|bytes| {
-                    R::from_json_data(bytes).map_err(|e| {
-                        JsError::new_from_js_message("JsonData", "Candid", e.to_string())
-                    })
-                })
-            })
-            .transpose()
+        get_result(ctx)
     }
 }

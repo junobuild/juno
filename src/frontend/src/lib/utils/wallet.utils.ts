@@ -13,6 +13,7 @@ import type { IcTransactionUi } from '$lib/types/ic-transaction';
 import { emit } from '$lib/utils/events.utils';
 import { toAccountIdentifier } from '$lib/utils/icp-icrc-account.utils';
 import { waitForMilliseconds } from '$lib/utils/timeout.utils';
+import { uint8ArrayToBigInt, uint8ArrayToHexString } from '@dfinity/utils';
 import { encodeIcrcAccount } from '@icp-sdk/canisters/ledger/icrc';
 import { get } from 'svelte/store';
 
@@ -40,6 +41,73 @@ export const transactionMemo = ({
 
 	const { memo, from } = transaction;
 
+	if (memo instanceof Uint8Array) {
+		return icrcTransactionMemo({ memo, walletId, from });
+	}
+
+	return icpTransactionMemo({ memo, walletId, from });
+};
+
+const icpTransactionMemo = ({
+	memo,
+	walletId,
+	from
+}: { memo: bigint; walletId: WalletId } & Pick<IcTransactionUi, 'from'>): string => {
+	const labels = get(i18n);
+
+	return knownTransactionMemo({
+		memo,
+		fallback: () => {
+			// TODO: likely not performant to encode on each matching transaction...
+			const walletIdText = encodeIcrcAccount(walletId);
+			const accountIdentifier = toAccountIdentifier(walletId);
+
+			if (from === walletIdText || from === accountIdentifier.toHex()) {
+				return labels.wallet.memo_sent;
+			}
+
+			return labels.wallet.memo_received;
+		}
+	});
+};
+
+const icrcTransactionMemo = ({
+	memo,
+	walletId,
+	from
+}: { memo: Uint8Array; walletId: WalletId } & Pick<IcTransactionUi, 'from'>): string => {
+	// Source NNS dapp
+	const decodeIcrc1Memo = (): string => {
+		try {
+			return new TextDecoder('utf-8', { fatal: true }).decode(memo);
+		} catch {
+			return uint8ArrayToHexString(memo);
+		}
+	};
+
+	// ICRC memos can be 1–32 bytes, so they may not fit in a u64 (8 bytes).
+	// e.g. OpenChat sends 7-byte memos such as 4f435f53454e44 ("OC_SEND").
+	if (memo.length !== 8) {
+		return decodeIcrc1Memo();
+	}
+
+	const encodedMemo = uint8ArrayToBigInt(memo);
+
+	return knownTransactionMemo({
+		memo: encodedMemo,
+		fallback: decodeIcrc1Memo
+	});
+};
+
+const knownTransactionMemo = ({
+	memo,
+	fallback
+}: {
+	memo: bigint;
+	fallback: () => string;
+}): string => {
+	const labels = get(i18n);
+
 	switch (memo) {
 		case MEMO_CANISTER_CREATE:
 			return labels.wallet.memo_create;
@@ -54,15 +122,7 @@ export const transactionMemo = ({
 		case MEMO_CMC_MINT_CYCLES:
 			return labels.wallet.memo_convert_icp_to_cycles;
 		default: {
-			// TODO: likely not performant to encode on each matching transaction...
-			const walletIdText = encodeIcrcAccount(walletId);
-			const accountIdentifier = toAccountIdentifier(walletId);
-
-			if (from === walletIdText || from === accountIdentifier.toHex()) {
-				return labels.wallet.memo_sent;
-			}
-
-			return labels.wallet.memo_received;
+			return fallback();
 		}
 	}
 };

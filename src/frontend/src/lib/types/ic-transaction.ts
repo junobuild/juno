@@ -23,5 +23,5 @@ export interface IcTransactionUi {
 	approveSpender?: string;
 	approveSpenderExplorerUrl?: string;
 	approveExpiresAt?: bigint;
-	memo: bigint;
+	memo: bigint | Uint8Array;
 }

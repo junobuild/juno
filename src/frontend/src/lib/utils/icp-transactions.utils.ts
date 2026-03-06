@@ -1,5 +1,5 @@
 import type { IcTransactionUi } from '$lib/types/ic-transaction';
-import { fromNullable, jsonReplacer, nonNullish, uint8ArrayToBigInt } from '@dfinity/utils';
+import { fromNullable, jsonReplacer, nonNullish } from '@dfinity/utils';
 import type { AccountIdentifierHex, IcpIndexDid } from '@icp-sdk/canisters/ledger/icp';
 
 export const mapIcpTransaction = ({
@@ -18,7 +18,7 @@ export const mapIcpTransaction = ({
 			const icrc1Memo = fromNullable(icrc1_memo);
 
 			if (nonNullish(icrc1Memo)) {
-				return { memo: uint8ArrayToBigInt(icrc1Memo) };
+				return { memo: icrc1Memo };
 			}
 		}
 

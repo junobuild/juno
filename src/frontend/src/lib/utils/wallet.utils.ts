@@ -85,7 +85,8 @@ const icrcTransactionMemo = ({
 		}
 	};
 
-	// e.g. OpenChat uses 7 length memo like 4f435f53454e44
+	// ICRC memos can be 1–32 bytes, so they may not fit in a u64 (8 bytes).
+	// e.g. OpenChat sends 7-byte memos such as 4f435f53454e44 ("OC_SEND").
 	if (memo.length !== 8) {
 		return decodeIcrc1Memo();
 	}

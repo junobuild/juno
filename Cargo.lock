@@ -2108,8 +2108,10 @@ dependencies = [
  "junobuild-satellite",
  "junobuild-shared",
  "junobuild-storage",
+ "junobuild-utils",
  "rquickjs",
  "ryu",
+ "serde",
 ]
 
 [[package]]

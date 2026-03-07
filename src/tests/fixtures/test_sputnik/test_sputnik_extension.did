@@ -1,1 +1,10 @@
-service : { hello : () -> () query; world : () -> (principal) }
+type AppHelloWorldArgs = record { value : principal };
+type AppHelloWorldResult = record { value : principal; "text" : text };
+type AppWelcomeArgs = record { value : text };
+type AppWelcomeResult = record { value : nat64; caller : principal };
+service : {
+  app_hello_world : (AppHelloWorldArgs) -> (AppHelloWorldResult) query;
+  app_welcome : (AppWelcomeArgs) -> (AppWelcomeResult);
+  app_welcome_without_args : () -> (AppWelcomeResult);
+  app_yolo : () -> ();
+}

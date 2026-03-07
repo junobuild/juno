@@ -2,6 +2,7 @@
 #![deny(clippy::disallowed_methods)]
 
 mod errors;
+mod functions;
 mod hooks;
 mod js;
 mod polyfill;

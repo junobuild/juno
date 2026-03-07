@@ -37,12 +37,10 @@ export const transactionMemo = ({
 	transaction: IcTransactionUi;
 	walletId: WalletId;
 }): string => {
-	const labels = get(i18n);
-
 	const { memo, from } = transaction;
 
 	if (memo instanceof Uint8Array) {
-		return icrcTransactionMemo({ memo, walletId, from });
+		return icrcTransactionMemo({ memo });
 	}
 
 	return icpTransactionMemo({ memo, walletId, from });
@@ -71,11 +69,7 @@ const icpTransactionMemo = ({
 	});
 };
 
-const icrcTransactionMemo = ({
-	memo,
-	walletId,
-	from
-}: { memo: Uint8Array; walletId: WalletId } & Pick<IcTransactionUi, 'from'>): string => {
+const icrcTransactionMemo = ({ memo }: { memo: Uint8Array }): string => {
 	// Source NNS dapp
 	const decodeIcrc1Memo = (): string => {
 		try {

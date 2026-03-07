@@ -2,6 +2,8 @@ import { defineQuery, defineUpdate, PrincipalSchema } from '@junobuild/functions
 import { id } from '@junobuild/functions/ic-cdk';
 import * as z from 'zod';
 
+/* eslint-disable no-console */
+
 const ArgsSchema = z.object({
 	value: PrincipalSchema
 });
@@ -12,8 +14,6 @@ const ResultSchema = z.object({
 	value: PrincipalSchema,
 	text: z.string()
 });
-
-type Result = z.infer<typeof ResultSchema>;
 
 export const helloWorld = defineQuery({
 	args: ArgsSchema,
@@ -57,3 +57,5 @@ export const yolo = defineUpdate({
 		console.log('No args, no result, no problem');
 	}
 });
+
+/* eslint-enable */

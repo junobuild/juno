@@ -2,7 +2,7 @@ import { defineQuery, defineUpdate, PrincipalSchema } from '@junobuild/functions
 import { id } from '@junobuild/functions/ic-cdk';
 import * as z from 'zod';
 
-/* eslint-disable no-console */
+/* eslint-disable no-console, require-await */
 
 const ArgsSchema = z.object({
 	value: PrincipalSchema

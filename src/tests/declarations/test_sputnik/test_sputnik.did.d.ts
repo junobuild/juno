@@ -10,12 +10,27 @@ import type { ActorMethod } from '@icp-sdk/core/agent';
 import type { IDL } from '@icp-sdk/core/candid';
 import type { Principal } from '@icp-sdk/core/principal';
 
-export interface AppHelloWorldArgs {
+export interface AppAsyncQueryArgs {
 	value: Principal;
 }
-export interface AppHelloWorldResult {
+export interface AppAsyncQueryResult {
 	value: Principal;
 	text: string;
+}
+export interface AppReadDocTestArgs {
+	key: string;
+	collection: string;
+}
+export interface AppReadDocTestResult {
+	value: bigint;
+}
+export interface AppSetDocTestArgs {
+	key: string;
+	collection: string;
+	value: bigint;
+}
+export interface AppUpdateArgsOnlyArgs {
+	value: string;
 }
 export interface AppWelcomeArgs {
 	value: string;
@@ -598,7 +613,14 @@ export interface _SERVICE {
 	switch_storage_system_memory: ActorMethod<[], undefined>;
 	upload_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;
 	upload_proposal_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;
-	app_hello_world: ActorMethod<[AppHelloWorldArgs], AppHelloWorldResult>;
+	app_async_query: ActorMethod<[AppAsyncQueryArgs], AppAsyncQueryResult>;
+	app_hello_world: ActorMethod<[AppAsyncQueryArgs], AppAsyncQueryResult>;
+	app_query_no_args: ActorMethod<[], AppAsyncQueryResult>;
+	app_query_no_args_no_result: ActorMethod<[], undefined>;
+	app_read_doc_test: ActorMethod<[AppReadDocTestArgs], AppReadDocTestResult>;
+	app_set_doc_test: ActorMethod<[AppSetDocTestArgs], undefined>;
+	app_sync_update: ActorMethod<[], undefined>;
+	app_update_args_only: ActorMethod<[AppUpdateArgsOnlyArgs], undefined>;
 	app_welcome: ActorMethod<[AppWelcomeArgs], AppWelcomeResult>;
 	app_welcome_without_args: ActorMethod<[], AppWelcomeResult>;
 	app_yolo: ActorMethod<[], undefined>;

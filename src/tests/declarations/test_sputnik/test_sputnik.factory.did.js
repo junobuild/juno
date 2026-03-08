@@ -514,11 +514,22 @@ export const idlFactory = ({ IDL }) => {
 		order_id: IDL.Opt(IDL.Nat)
 	});
 	const UploadChunkResult = IDL.Record({ chunk_id: IDL.Nat });
-	const AppHelloWorldArgs = IDL.Record({ value: IDL.Principal });
-	const AppHelloWorldResult = IDL.Record({
+	const AppAsyncQueryArgs = IDL.Record({ value: IDL.Principal });
+	const AppAsyncQueryResult = IDL.Record({
 		value: IDL.Principal,
 		text: IDL.Text
 	});
+	const AppReadDocTestArgs = IDL.Record({
+		key: IDL.Text,
+		collection: IDL.Text
+	});
+	const AppReadDocTestResult = IDL.Record({ value: IDL.Nat64 });
+	const AppSetDocTestArgs = IDL.Record({
+		key: IDL.Text,
+		collection: IDL.Text,
+		value: IDL.Nat64
+	});
+	const AppUpdateArgsOnlyArgs = IDL.Record({ value: IDL.Text });
 	const AppWelcomeArgs = IDL.Record({ value: IDL.Text });
 	const AppWelcomeResult = IDL.Record({
 		value: IDL.Nat64,
@@ -623,7 +634,14 @@ export const idlFactory = ({ IDL }) => {
 		switch_storage_system_memory: IDL.Func([], [], []),
 		upload_asset_chunk: IDL.Func([UploadChunk], [UploadChunkResult], []),
 		upload_proposal_asset_chunk: IDL.Func([UploadChunk], [UploadChunkResult], []),
-		app_hello_world: IDL.Func([AppHelloWorldArgs], [AppHelloWorldResult], ['query']),
+		app_async_query: IDL.Func([AppAsyncQueryArgs], [AppAsyncQueryResult], ['query']),
+		app_hello_world: IDL.Func([AppAsyncQueryArgs], [AppAsyncQueryResult], ['query']),
+		app_query_no_args: IDL.Func([], [AppAsyncQueryResult], ['query']),
+		app_query_no_args_no_result: IDL.Func([], [], ['query']),
+		app_read_doc_test: IDL.Func([AppReadDocTestArgs], [AppReadDocTestResult], ['query']),
+		app_set_doc_test: IDL.Func([AppSetDocTestArgs], [], []),
+		app_sync_update: IDL.Func([], [], []),
+		app_update_args_only: IDL.Func([AppUpdateArgsOnlyArgs], [], []),
 		app_welcome: IDL.Func([AppWelcomeArgs], [AppWelcomeResult], []),
 		app_welcome_without_args: IDL.Func([], [AppWelcomeResult], []),
 		app_yolo: IDL.Func([], [], [])

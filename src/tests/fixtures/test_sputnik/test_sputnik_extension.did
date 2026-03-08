@@ -1,9 +1,24 @@
-type AppHelloWorldArgs = record { value : principal };
-type AppHelloWorldResult = record { value : principal; "text" : text };
+type AppAsyncQueryArgs = record { value : principal };
+type AppAsyncQueryResult = record { value : principal; "text" : text };
+type AppReadDocTestArgs = record { key : text; collection : text };
+type AppReadDocTestResult = record { value : nat64 };
+type AppSetDocTestArgs = record {
+  key : text;
+  collection : text;
+  value : nat64;
+};
+type AppUpdateArgsOnlyArgs = record { value : text };
 type AppWelcomeArgs = record { value : text };
 type AppWelcomeResult = record { value : nat64; caller : principal };
 service : {
-  app_hello_world : (AppHelloWorldArgs) -> (AppHelloWorldResult) query;
+  app_async_query : (AppAsyncQueryArgs) -> (AppAsyncQueryResult) query;
+  app_hello_world : (AppAsyncQueryArgs) -> (AppAsyncQueryResult) query;
+  app_query_no_args : () -> (AppAsyncQueryResult) query;
+  app_query_no_args_no_result : () -> () query;
+  app_read_doc_test : (AppReadDocTestArgs) -> (AppReadDocTestResult) query;
+  app_set_doc_test : (AppSetDocTestArgs) -> ();
+  app_sync_update : () -> ();
+  app_update_args_only : (AppUpdateArgsOnlyArgs) -> ();
   app_welcome : (AppWelcomeArgs) -> (AppWelcomeResult);
   app_welcome_without_args : () -> (AppWelcomeResult);
   app_yolo : () -> ();

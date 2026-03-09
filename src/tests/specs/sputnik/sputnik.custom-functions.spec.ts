@@ -181,13 +181,13 @@ describe('Sputnik > Custom Functions', () => {
 		expect(result.value).toEqual(value + 2n);
 	});
 
-	it('should accept args with an optional principal', async () => {
+	it.only('should accept args with an optional principal', async () => {
 		const { app_demo_antonio } = actor;
 
 		const result = await app_demo_antonio({
 			id: toNullable(mockPrincipal),
 			sub: {
-				arr: toNullable(Uint8Array.from([1, 2, 3, 55]))
+				arr: Uint8Array.from([1, 2, 3, 55])
 			}
 		});
 

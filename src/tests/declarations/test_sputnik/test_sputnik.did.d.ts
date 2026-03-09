@@ -22,7 +22,7 @@ export interface AppDemoAntonioArgs {
 	sub: AppDemoAntonioArgsSub;
 }
 export interface AppDemoAntonioArgsSub {
-	arr: [] | [Uint8Array];
+	arr: Uint8Array;
 }
 export interface AppDemoAntonioResult {
 	id: [] | [Principal];

@@ -4,7 +4,7 @@ type AppDemoAntonioArgs = record {
   id : opt principal;
   sub : AppDemoAntonioArgsSub;
 };
-type AppDemoAntonioArgsSub = record { arr : opt blob };
+type AppDemoAntonioArgsSub = record { arr : blob };
 type AppDemoAntonioResult = record {
   id : opt principal;
   sub : AppDemoAntonioResultSub;

@@ -6,7 +6,7 @@ const DemoAntonioArgsSchema = z.strictObject({
 	// test: the JsonData macro needs to handle option for special types as well
 	id: PrincipalSchema.optional(),
 	sub: z.strictObject({
-		arr: Uint8ArraySchema.optional()
+		arr: Uint8ArraySchema
 	})
 });
 

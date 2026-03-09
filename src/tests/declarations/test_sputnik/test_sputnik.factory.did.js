@@ -519,8 +519,19 @@ export const idlFactory = ({ IDL }) => {
 		value: IDL.Principal,
 		text: IDL.Text
 	});
-	const AppDemoAntonioArgs = IDL.Record({ id: IDL.Opt(IDL.Principal) });
-	const AppDemoAntonioResult = IDL.Record({ world: IDL.Text });
+	const AppDemoAntonioArgsSub = IDL.Record({
+		arr: IDL.Opt(IDL.Vec(IDL.Nat8))
+	});
+	const AppDemoAntonioArgs = IDL.Record({
+		id: IDL.Opt(IDL.Principal),
+		sub: AppDemoAntonioArgsSub
+	});
+	const AppDemoAntonioResultSub = IDL.Record({ value: IDL.Opt(IDL.Nat64) });
+	const AppDemoAntonioResult = IDL.Record({
+		id: IDL.Opt(IDL.Principal),
+		sub: AppDemoAntonioResultSub,
+		world: IDL.Text
+	});
 	const AppReadDocTestArgs = IDL.Record({
 		key: IDL.Text,
 		collection: IDL.Text

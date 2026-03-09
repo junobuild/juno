@@ -21,13 +21,11 @@ const DemoAntonioResultSchema = z.strictObject({
 export const demoAntonio = defineQuery({
 	args: DemoAntonioArgsSchema,
 	result: DemoAntonioResultSchema,
-	handler: ({ id }) => {
-		return {
-			world: `${id?.toText() ?? ''} - ${satelliteId().toText()}`,
-			id: satelliteId(),
-			sub: {
-				value: 123n
-			}
-		};
-	}
+	handler: ({ id }) => ({
+		world: `${id?.toText() ?? ''} - ${satelliteId().toText()}`,
+		id: satelliteId(),
+		sub: {
+			value: 123n
+		}
+	})
 });

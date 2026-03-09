@@ -1,7 +1,16 @@
 type AppAsyncQueryArgs = record { value : principal };
 type AppAsyncQueryResult = record { value : principal; "text" : text };
-type AppDemoAntonioArgs = record { id : opt principal };
-type AppDemoAntonioResult = record { world : text };
+type AppDemoAntonioArgs = record {
+  id : opt principal;
+  sub : AppDemoAntonioArgsSub;
+};
+type AppDemoAntonioArgsSub = record { arr : opt blob };
+type AppDemoAntonioResult = record {
+  id : opt principal;
+  sub : AppDemoAntonioResultSub;
+  world : text;
+};
+type AppDemoAntonioResultSub = record { value : opt nat64 };
 type AppReadDocTestArgs = record { key : text; collection : text };
 type AppReadDocTestResult = record { value : nat64 };
 type AppSetDocTestArgs = record {

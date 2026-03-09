@@ -6,13 +6,13 @@ import type {
 	_SERVICE as TestSputnikActor
 } from '$test-declarations/test_sputnik/test_sputnik.did';
 import type { Actor, PocketIc } from '@dfinity/pic';
+import { fromNullable, toNullable } from '@dfinity/utils';
 import type { Identity } from '@icp-sdk/core/agent';
 import { Principal } from '@icp-sdk/core/principal';
 import { mockPrincipal } from '../../../frontend/tests/mocks/identity.mock';
 import { mockSetRule } from '../../mocks/collection.mocks';
 import { setupTestSputnik } from '../../utils/fixtures-tests.utils';
 import { fetchLogs } from '../../utils/mgmt-tests.utils';
-import { toNullable } from '@dfinity/utils';
 
 describe('Sputnik > Custom Functions', () => {
 	let pic: PocketIc;
@@ -181,13 +181,18 @@ describe('Sputnik > Custom Functions', () => {
 		expect(result.value).toEqual(value + 2n);
 	});
 
-	it.only('should accept args with an optional principal', async () => {
+	it('should accept args with an optional principal', async () => {
 		const { app_demo_antonio } = actor;
 
 		const result = await app_demo_antonio({
-			id: toNullable(mockPrincipal)
+			id: toNullable(mockPrincipal),
+			sub: {
+				arr: toNullable(Uint8Array.from([1, 2, 3, 55]))
+			}
 		});
 
 		expect(result.world).toEqual(`${mockPrincipal.toText()} - ${canisterId.toText()}`);
+		expect(fromNullable(result.id)?.toText()).toEqual(canisterId.toText());
+		expect(fromNullable(result.sub.value)).toEqual(123n);
 	});
 });

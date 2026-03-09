@@ -19,9 +19,18 @@ export interface AppAsyncQueryResult {
 }
 export interface AppDemoAntonioArgs {
 	id: [] | [Principal];
+	sub: AppDemoAntonioArgsSub;
+}
+export interface AppDemoAntonioArgsSub {
+	arr: [] | [Uint8Array];
 }
 export interface AppDemoAntonioResult {
+	id: [] | [Principal];
+	sub: AppDemoAntonioResultSub;
 	world: string;
+}
+export interface AppDemoAntonioResultSub {
+	value: [] | [bigint];
 }
 export interface AppReadDocTestArgs {
 	key: string;

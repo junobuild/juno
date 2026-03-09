@@ -554,7 +554,7 @@ pub fn on_init_random_seed(attr: TokenStream, item: TokenStream) -> TokenStream 
 ///
 /// // Generated: InputArgsJsonData/OutputArgsJsonData structs + From impls + into_json_data() + from_json_data()
 /// ```
-#[proc_macro_derive(JsonData)]
+#[proc_macro_derive(JsonData, attributes(json_data))]
 pub fn json_data(input: TokenStream) -> TokenStream {
     derive_json_data(input)
 }

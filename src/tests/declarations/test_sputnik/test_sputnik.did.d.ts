@@ -30,6 +30,7 @@ export interface AppDemoAntonioResult {
 	world: string;
 }
 export interface AppDemoAntonioResultSub {
+	arr: [] | [Uint8Array];
 	value: [] | [bigint];
 }
 export interface AppReadDocTestArgs {

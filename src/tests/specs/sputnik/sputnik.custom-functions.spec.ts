@@ -181,7 +181,7 @@ describe('Sputnik > Custom Functions', () => {
 		expect(result.value).toEqual(value + 2n);
 	});
 
-	it.only('should accept args with an optional principal', async () => {
+	it('should accept args with an optional principal', async () => {
 		const { app_demo_antonio } = actor;
 
 		const result = await app_demo_antonio({
@@ -194,5 +194,6 @@ describe('Sputnik > Custom Functions', () => {
 		expect(result.world).toEqual(`${mockPrincipal.toText()} - ${canisterId.toText()}`);
 		expect(fromNullable(result.id)?.toText()).toEqual(canisterId.toText());
 		expect(fromNullable(result.sub.value)).toEqual(123n);
+		expect(fromNullable(result.sub.arr)).toEqual(Uint8Array.from([5, 6, 7]));
 	});
 });

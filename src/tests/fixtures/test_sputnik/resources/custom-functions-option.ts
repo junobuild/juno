@@ -14,7 +14,8 @@ const DemoAntonioResultSchema = z.strictObject({
 	world: z.string(),
 	id: PrincipalSchema.optional(),
 	sub: z.strictObject({
-		value: z.bigint().optional()
+		value: z.bigint().optional(),
+		arr: Uint8ArraySchema.optional()
 	})
 });
 
@@ -25,7 +26,8 @@ export const demoAntonio = defineQuery({
 		world: `${id?.toText() ?? ''} - ${satelliteId().toText()}`,
 		id: satelliteId(),
 		sub: {
-			value: 123n
+			value: 123n,
+			arr: Uint8Array.from([5, 6, 7])
 		}
 	})
 });

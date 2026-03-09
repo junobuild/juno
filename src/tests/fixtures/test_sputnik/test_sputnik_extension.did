@@ -10,7 +10,7 @@ type AppDemoAntonioResult = record {
   sub : AppDemoAntonioResultSub;
   world : text;
 };
-type AppDemoAntonioResultSub = record { value : opt nat64 };
+type AppDemoAntonioResultSub = record { arr : opt blob; value : opt nat64 };
 type AppReadDocTestArgs = record { key : text; collection : text };
 type AppReadDocTestResult = record { value : nat64 };
 type AppSetDocTestArgs = record {

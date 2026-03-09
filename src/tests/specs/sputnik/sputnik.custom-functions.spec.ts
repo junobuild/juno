@@ -12,6 +12,7 @@ import { mockPrincipal } from '../../../frontend/tests/mocks/identity.mock';
 import { mockSetRule } from '../../mocks/collection.mocks';
 import { setupTestSputnik } from '../../utils/fixtures-tests.utils';
 import { fetchLogs } from '../../utils/mgmt-tests.utils';
+import { toNullable } from '@dfinity/utils';
 
 describe('Sputnik > Custom Functions', () => {
 	let pic: PocketIc;
@@ -178,5 +179,15 @@ describe('Sputnik > Custom Functions', () => {
 		const result = await app_read_doc_test({ key, collection });
 
 		expect(result.value).toEqual(value + 2n);
+	});
+
+	it.only('should accept args with an optional principal', async () => {
+		const { app_demo_antonio } = actor;
+
+		const result = await app_demo_antonio({
+			id: toNullable(mockPrincipal)
+		});
+
+		expect(result.world).toEqual(`${mockPrincipal.toText()} - ${canisterId.toText()}`);
 	});
 });

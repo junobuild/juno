@@ -1,5 +1,7 @@
 type AppAsyncQueryArgs = record { value : principal };
 type AppAsyncQueryResult = record { value : principal; "text" : text };
+type AppDemoAntonioArgs = record { id : opt principal };
+type AppDemoAntonioResult = record { world : text };
 type AppReadDocTestArgs = record { key : text; collection : text };
 type AppReadDocTestResult = record { value : nat64 };
 type AppSetDocTestArgs = record {
@@ -12,6 +14,7 @@ type AppWelcomeArgs = record { value : text };
 type AppWelcomeResult = record { value : nat64; caller : principal };
 service : {
   app_async_query : (AppAsyncQueryArgs) -> (AppAsyncQueryResult) query;
+  app_demo_antonio : (AppDemoAntonioArgs) -> (AppDemoAntonioResult) query;
   app_hello_world : (AppAsyncQueryArgs) -> (AppAsyncQueryResult) query;
   app_query_no_args : () -> (AppAsyncQueryResult) query;
   app_query_no_args_no_result : () -> () query;

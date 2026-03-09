@@ -26,6 +26,11 @@ pub fn derive_json_data(input: TokenStream) -> TokenStream {
                     #[serde(with = #with_path)]
                     pub #fname: #ftype,
                 }
+            } else if has_nested_attr(f) {
+                let nested_type = nested_json_data_ident(ftype);
+                quote! {
+                    pub #fname: #nested_type,
+                }
             } else {
                 quote! {
                     pub #fname: #ftype,
@@ -38,7 +43,11 @@ pub fn derive_json_data(input: TokenStream) -> TokenStream {
         .iter()
         .map(|f| {
             let fname = &f.ident;
-            quote! { #fname: input.#fname, }
+            if has_nested_attr(f) {
+                quote! { #fname: input.#fname.into(), }
+            } else {
+                quote! { #fname: input.#fname, }
+            }
         })
         .collect();
 
@@ -46,7 +55,11 @@ pub fn derive_json_data(input: TokenStream) -> TokenStream {
         .iter()
         .map(|f| {
             let fname = &f.ident;
-            quote! { #fname: json_data.#fname, }
+            if has_nested_attr(f) {
+                quote! { #fname: json_data.#fname.into(), }
+            } else {
+                quote! { #fname: json_data.#fname, }
+            }
         })
         .collect();
 
@@ -86,6 +99,33 @@ pub fn derive_json_data(input: TokenStream) -> TokenStream {
         }
     }
     .into()
+}
+
+// Handles #[json_data(nested)] for inner structs
+fn has_nested_attr(field: &syn::Field) -> bool {
+    field.attrs.iter().any(|attr| {
+        attr.path().is_ident("json_data")
+            && attr
+                .parse_args::<syn::Ident>()
+                .map_or(false, |i| i == "nested")
+    })
+}
+
+fn nested_json_data_ident(ty: &Type) -> Type {
+    if let Type::Path(mut tp) = ty.clone() {
+        let seg = tp.path.segments.last_mut().unwrap();
+        if seg.ident == "Option" {
+            if let syn::PathArguments::AngleBracketed(ref mut args) = seg.arguments {
+                if let Some(syn::GenericArgument::Type(inner)) = args.args.first_mut() {
+                    *inner = nested_json_data_ident(inner);
+                }
+            }
+            return Type::Path(tp);
+        }
+        seg.ident = syn::Ident::new(&format!("{}JsonData", seg.ident), seg.ident.span());
+        return Type::Path(tp);
+    }
+    ty.clone()
 }
 
 fn map_with_path(ty: &Type) -> Option<String> {

@@ -3,6 +3,7 @@ export * from './assert-delete-doc';
 export * from './assert-set-doc';
 export * from './assert-upload-asset';
 export * from './custom-functions';
+export * from './custom-functions-option';
 export * from './on-delete-asset';
 export * from './on-delete-doc';
 export * from './on-delete-filtered-assets';

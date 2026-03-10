@@ -13,8 +13,8 @@ fn main() {
 
     println!("cargo:rustc-env=DEV_SCRIPT_PATH={script_path}");
 
-    let source = env::var("DEV_FUNCTIONS_PATH")
-        .unwrap_or_else(|_| "resources/functions.rs".to_string());
+    let source =
+        env::var("DEV_FUNCTIONS_PATH").unwrap_or_else(|_| "resources/functions.rs".to_string());
 
     println!("cargo:rerun-if-changed={source}");
 

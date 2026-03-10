@@ -6,6 +6,7 @@ import type {
 	_SERVICE as TestSputnikActor
 } from '$test-declarations/test_sputnik/test_sputnik.did';
 import type { Actor, PocketIc } from '@dfinity/pic';
+import { fromNullable, toNullable } from '@dfinity/utils';
 import type { Identity } from '@icp-sdk/core/agent';
 import { Principal } from '@icp-sdk/core/principal';
 import { mockPrincipal } from '../../../frontend/tests/mocks/identity.mock';
@@ -178,5 +179,21 @@ describe('Sputnik > Custom Functions', () => {
 		const result = await app_read_doc_test({ key, collection });
 
 		expect(result.value).toEqual(value + 2n);
+	});
+
+	it('should accept args with an optional principal', async () => {
+		const { app_demo_antonio } = actor;
+
+		const result = await app_demo_antonio({
+			id: toNullable(mockPrincipal),
+			sub: {
+				arr: Uint8Array.from([1, 2, 3, 55])
+			}
+		});
+
+		expect(result.world).toEqual(`${mockPrincipal.toText()} - ${canisterId.toText()}`);
+		expect(fromNullable(result.id)?.toText()).toEqual(canisterId.toText());
+		expect(fromNullable(result.sub.value)).toEqual(123n);
+		expect(fromNullable(result.sub.arr)).toEqual(Uint8Array.from([5, 6, 7]));
 	});
 });

@@ -630,6 +630,7 @@ export interface _SERVICE {
 	upload_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;
 	upload_proposal_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;
 	app_async_query: ActorMethod<[AppAsyncQueryArgs], AppAsyncQueryResult>;
+	app_check_caller: ActorMethod<[], undefined>;
 	app_demo_antonio: ActorMethod<[AppDemoAntonioArgs], AppDemoAntonioResult>;
 	app_hello_world: ActorMethod<[AppAsyncQueryArgs], AppAsyncQueryResult>;
 	app_query_no_args: ActorMethod<[], AppAsyncQueryResult>;

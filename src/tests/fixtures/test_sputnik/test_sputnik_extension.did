@@ -23,6 +23,7 @@ type AppWelcomeArgs = record { value : text };
 type AppWelcomeResult = record { value : nat64; caller : principal };
 service : {
   app_async_query : (AppAsyncQueryArgs) -> (AppAsyncQueryResult) query;
+  app_check_caller : () -> ();
   app_demo_antonio : (AppDemoAntonioArgs) -> (AppDemoAntonioResult) query;
   app_hello_world : (AppAsyncQueryArgs) -> (AppAsyncQueryResult) query;
   app_query_no_args : () -> (AppAsyncQueryResult) query;

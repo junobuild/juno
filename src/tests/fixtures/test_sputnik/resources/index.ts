@@ -1,3 +1,4 @@
+export * from './apis/ic-cdk/ic-cdk-caller';
 export * from './assert-delete-asset';
 export * from './assert-delete-doc';
 export * from './assert-set-doc';

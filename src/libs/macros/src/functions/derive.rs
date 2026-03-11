@@ -129,6 +129,10 @@ fn nested_json_data_ident(ty: &Type) -> Type {
 }
 
 fn map_with_path(ty: &Type) -> Option<String> {
+    if let Some(inner) = unwrap_option(ty) {
+        return map_with_path(inner).map(|path| format!("{}_opt", path));
+    }
+
     let type_str = quote!(#ty).to_string();
     match type_str.as_str() {
         "Principal" | "candid :: Principal" => Some("junobuild_utils::with::principal".to_string()),
@@ -136,4 +140,18 @@ fn map_with_path(ty: &Type) -> Option<String> {
         "u64" => Some("junobuild_utils::with::bigint".to_string()),
         _ => None,
     }
+}
+
+fn unwrap_option(ty: &Type) -> Option<&Type> {
+    if let Type::Path(tp) = ty {
+        let seg = tp.path.segments.last()?;
+        if seg.ident == "Option" {
+            if let syn::PathArguments::AngleBracketed(ref args) = seg.arguments {
+                if let Some(syn::GenericArgument::Type(inner)) = args.args.first() {
+                    return Some(inner);
+                }
+            }
+        }
+    }
+    None
 }

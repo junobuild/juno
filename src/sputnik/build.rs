@@ -1,5 +1,6 @@
 use std::env;
 use std::fs;
+use std::path;
 
 fn main() {
     // Re-run a build if env variable DEV_SCRIPT_PATH changes.
@@ -16,7 +17,10 @@ fn main() {
     let source =
         env::var("DEV_FUNCTIONS_PATH").unwrap_or_else(|_| "resources/functions.rs".to_string());
 
-    println!("cargo:rerun-if-changed={source}");
-
-    fs::copy(&source, "src/generated.rs").expect("Failed to copy generated.rs");
+    if path::Path::new(&source).exists() {
+        println!("cargo:rerun-if-changed={source}");
+        fs::copy(&source, "src/generated.rs").expect("Failed to copy generated.rs");
+    } else {
+        fs::copy("src/functions.rs", "src/generated.rs").expect("Failed to copy generated.rs");
+    }
 }

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
-	import type { PrincipalText } from '@dfinity/zod-schemas';
+	import type { PrincipalText } from '@junobuild/zod';
 	import type { MissionControlDid } from '$declarations';
 	import FactoryAdvancedOptions from '$lib/components/modules/factory/create/FactoryAdvancedOptions.svelte';
 	import FactoryContinue from '$lib/components/modules/factory/create/FactoryContinue.svelte';

@@ -3,8 +3,8 @@ import { i18n } from '$lib/stores/app/i18n.store';
 import type { OpenIdAuthProvider } from '$lib/types/auth';
 import { assertResponseOk } from '$lib/utils/rest.utils';
 import { assertNonNullish, isNullish } from '@dfinity/utils';
-import { type PrincipalText, PrincipalTextSchema } from '@dfinity/zod-schemas';
 import { encodeIcrcAccount } from '@icp-sdk/canisters/ledger/icrc';
+import { type PrincipalText, PrincipalTextSchema } from '@junobuild/zod';
 import { get } from 'svelte/store';
 
 export const getEmulatorMainIdentity = async (): Promise<PrincipalText> => {

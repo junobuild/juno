@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { fromNullishNullable, nonNullish, notEmptyString } from '@dfinity/utils';
-	import { PrincipalTextSchema } from '@dfinity/zod-schemas';
+	import { PrincipalTextSchema } from '@junobuild/zod';
 	import { Principal } from '@icp-sdk/core/principal';
 	import type { SatelliteDid } from '$declarations';
 	import Input from '$lib/components/ui/Input.svelte';

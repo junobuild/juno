@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
-	import type { PrincipalText } from '@dfinity/zod-schemas';
+	import type { PrincipalText } from '@junobuild/zod';
 	import type { Principal } from '@icp-sdk/core/principal';
 	import AuthConfigFormCore from '$lib/components/satellites/auth/AuthConfigFormCore.svelte';
 	import AuthConfigFormII from '$lib/components/satellites/auth/AuthConfigFormII.svelte';

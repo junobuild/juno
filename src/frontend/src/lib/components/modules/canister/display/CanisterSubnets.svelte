@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
-	import type { PrincipalText } from '@dfinity/zod-schemas';
+	import type { PrincipalText } from '@junobuild/zod';
 	import { run } from 'svelte/legacy';
 	import { getDefaultSubnets } from '$lib/api/cmc.api';
 	import Value from '$lib/components/ui/Value.svelte';

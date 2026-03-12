@@ -13,9 +13,9 @@ import { bigintStringify } from '$lib/utils/number.utils';
 import { orbiterName } from '$lib/utils/orbiter.utils';
 import { satelliteName } from '$lib/utils/satellite.utils';
 import { nonNullish, notEmptyString } from '@dfinity/utils';
-import type { PrincipalText } from '@dfinity/zod-schemas';
 import type { Identity } from '@icp-sdk/core/agent';
 import type { Principal } from '@icp-sdk/core/principal';
+import type { PrincipalText } from '@junobuild/zod';
 
 interface SetCliControllersParams {
 	// If set, then controllers are set with the Mission Control

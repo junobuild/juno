@@ -1,4 +1,4 @@
-/* eslint-disable require-await, no-console */
+/* eslint-disable no-console */
 
 import { Principal } from '@icp-sdk/core/principal';
 import { defineUpdate } from '@junobuild/functions';

@@ -105,9 +105,7 @@ pub fn derive_json_data(input: TokenStream) -> TokenStream {
 fn has_nested_attr(field: &syn::Field) -> bool {
     field.attrs.iter().any(|attr| {
         attr.path().is_ident("json_data")
-            && attr
-                .parse_args::<syn::Ident>()
-                .map_or(false, |i| i == "nested")
+            && attr.parse_args::<syn::Ident>().is_ok_and(|i| i == "nested")
     })
 }
 

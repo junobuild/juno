@@ -1,4 +1,4 @@
-use crate::controllers::store::get_controllers;
+use crate::access_keys::store::get_access_keys;
 use crate::errors::auth::{
     JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER, JUNO_AUTH_ERROR_NOT_CONTROLLER,
     JUNO_AUTH_ERROR_NOT_WRITE_CONTROLLER,
@@ -11,7 +11,7 @@ use junobuild_shared::types::state::Controllers;
 
 pub fn caller_is_admin_controller() -> Result<(), String> {
     let caller = caller();
-    let controllers: Controllers = get_controllers();
+    let controllers: Controllers = get_access_keys();
 
     if is_admin_controller(caller, &controllers) {
         Ok(())
@@ -22,7 +22,7 @@ pub fn caller_is_admin_controller() -> Result<(), String> {
 
 pub fn caller_is_controller_with_write() -> Result<(), String> {
     let caller = caller();
-    let controllers: Controllers = get_controllers();
+    let controllers: Controllers = get_access_keys();
 
     if controller_can_write(caller, &controllers) {
         Ok(())
@@ -33,7 +33,7 @@ pub fn caller_is_controller_with_write() -> Result<(), String> {
 
 pub fn caller_is_valid_controller() -> Result<(), String> {
     let caller = caller();
-    let controllers: Controllers = get_controllers();
+    let controllers: Controllers = get_access_keys();
 
     if is_valid_controller(caller, &controllers) {
         Ok(())

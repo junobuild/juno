@@ -1,4 +1,4 @@
-use crate::get_controllers;
+use crate::get_access_keys;
 use junobuild_auth::strategies::AuthAutomationStrategy;
 use junobuild_shared::types::state::Controllers;
 
@@ -6,6 +6,6 @@ pub struct AuthAutomation;
 
 impl AuthAutomationStrategy for AuthAutomation {
     fn get_controllers(&self) -> Controllers {
-        get_controllers()
+        get_access_keys()
     }
 }

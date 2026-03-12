@@ -1,5 +1,5 @@
-use crate::controllers::store::{delete_controllers, set_controllers as set_controllers_store};
-use crate::{caller, get_controllers};
+use crate::access_keys::store::{delete_access_keys, set_access_keys as set_controllers_store};
+use crate::{caller, get_access_keys};
 use junobuild_shared::ic::UnwrapOrTrap;
 use junobuild_shared::segments::controllers::{
     assert_controller_expiration, assert_controllers, assert_max_number_of_controllers,
@@ -13,7 +13,7 @@ pub fn set_controllers(
         controller,
     }: SetControllersArgs,
 ) -> Controllers {
-    assert_max_number_of_controllers(&get_controllers(), &controllers, &controller.scope, None)
+    assert_max_number_of_controllers(&get_access_keys(), &controllers, &controller.scope, None)
         .unwrap_or_trap();
 
     assert_controllers(&controllers).unwrap_or_trap();
@@ -22,24 +22,24 @@ pub fn set_controllers(
 
     set_controllers_store(&controllers, &controller);
 
-    get_controllers()
+    get_access_keys()
 }
 
 pub fn del_controllers(
     DeleteControllersArgs { controllers }: DeleteControllersArgs,
 ) -> Controllers {
-    delete_controllers(&controllers);
+    delete_access_keys(&controllers);
 
-    get_controllers()
+    get_access_keys()
 }
 
 pub fn del_controller_self() {
     let caller = caller();
     let controllers: [ControllerId; 1] = [caller];
 
-    delete_controllers(&controllers);
+    delete_access_keys(&controllers);
 }
 
 pub fn list_controllers() -> Controllers {
-    get_controllers()
+    get_access_keys()
 }

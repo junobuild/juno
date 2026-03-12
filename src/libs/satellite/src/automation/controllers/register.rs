@@ -1,5 +1,5 @@
 use crate::automation::workflow::build_automation_workflow_key;
-use crate::controllers::store::set_controllers;
+use crate::access_keys::store::set_access_keys;
 use junobuild_auth::automation::types::PreparedAutomation;
 use junobuild_auth::openid::credentials::automation::types::interface::OpenIdAutomationCredential;
 use junobuild_auth::openid::types::provider::OpenIdAutomationProvider;
@@ -27,7 +27,7 @@ pub fn register_controller(
         kind: Some(ControllerKind::Automation),
     };
 
-    set_controllers(&controllers, &controller);
+    set_access_keys(&controllers, &controller);
 
     Ok(())
 }

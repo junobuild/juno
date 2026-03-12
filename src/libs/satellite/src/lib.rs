@@ -5,7 +5,7 @@ mod assets;
 mod auth;
 mod automation;
 mod certification;
-mod controllers;
+mod access_keys;
 mod db;
 mod errors;
 mod guards;

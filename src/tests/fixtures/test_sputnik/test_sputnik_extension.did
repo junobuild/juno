@@ -1,5 +1,21 @@
 type AppAsyncQueryArgs = record { value : principal };
 type AppAsyncQueryResult = record { value : principal; "text" : text };
+type AppCheckDiscriminatedPrimitivesArgs = record {
+  data : AppCheckDiscriminatedPrimitivesArgsData;
+};
+type AppCheckDiscriminatedPrimitivesArgsData = variant {
+  flag : record { value : bool };
+  "text" : record { value : text };
+  number : record { value : float64 };
+};
+type AppCheckDiscriminatedUnionEchoArgs = record {
+  status : AppCheckDiscriminatedUnionEchoArgsStatus;
+};
+type AppCheckDiscriminatedUnionEchoArgsStatus = variant {
+  active : record { owner : principal };
+  pending : record { assignee : principal };
+  inactive;
+};
 type AppCheckEnumsArgs = record {
   status : AppCheckEnumsArgsStatus;
   username : text;
@@ -10,6 +26,28 @@ type AppCheckEnumsArgsStatus = variant {
   inactive;
 };
 type AppCheckEnumsResult = record { status : text };
+type AppCheckNestedDiscriminatedArgs = record {
+  id : text;
+  status : AppCheckEnumsArgsStatus;
+};
+type AppCheckSimpleVariantArgs = record {
+  value : AppCheckSimpleVariantArgsValue;
+};
+type AppCheckSimpleVariantArgsValue = variant { Inactive; Active; Pending };
+type AppCheckVariantRecordsArgs = record {
+  data : AppCheckVariantRecordsArgsData;
+};
+type AppCheckVariantRecordsArgsData = variant {
+  Variant0 : record { count : int32; label : text };
+  Variant1 : record { value : float64 };
+};
+type AppCheckVariantRecordsOptVecArgs = record {
+  data : AppCheckVariantRecordsOptVecArgsData;
+};
+type AppCheckVariantRecordsOptVecArgsData = variant {
+  Variant0 : record { note : opt text; tags : vec text };
+  Variant1 : record { active : bool; count : int32 };
+};
 type AppDemoAntonioArgs = record {
   id : opt principal;
   sub : AppDemoAntonioArgsSub;
@@ -34,7 +72,25 @@ type AppWelcomeResult = record { value : nat64; caller : principal };
 service : {
   app_async_query : (AppAsyncQueryArgs) -> (AppAsyncQueryResult) query;
   app_check_caller : () -> ();
+  app_check_discriminated_primitives : (
+      AppCheckDiscriminatedPrimitivesArgs,
+    ) -> (AppCheckDiscriminatedPrimitivesArgs);
+  app_check_discriminated_union_echo : (AppCheckDiscriminatedUnionEchoArgs) -> (
+      AppCheckDiscriminatedUnionEchoArgs,
+    );
   app_check_enums : (AppCheckEnumsArgs) -> (AppCheckEnumsResult);
+  app_check_nested_discriminated : (AppCheckNestedDiscriminatedArgs) -> (
+      AppCheckNestedDiscriminatedArgs,
+    );
+  app_check_simple_variant : (AppCheckSimpleVariantArgs) -> (
+      AppCheckSimpleVariantArgs,
+    );
+  app_check_variant_records : (AppCheckVariantRecordsArgs) -> (
+      AppCheckVariantRecordsArgs,
+    );
+  app_check_variant_records_opt_vec : (AppCheckVariantRecordsOptVecArgs) -> (
+      AppCheckVariantRecordsOptVecArgs,
+    );
   app_demo_antonio : (AppDemoAntonioArgs) -> (AppDemoAntonioResult) query;
   app_hello_world : (AppAsyncQueryArgs) -> (AppAsyncQueryResult) query;
   app_query_no_args : () -> (AppAsyncQueryResult) query;

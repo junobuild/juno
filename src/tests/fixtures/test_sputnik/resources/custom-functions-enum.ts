@@ -32,3 +32,62 @@ export const checkEnums = defineUpdate({
 		return { status: 'ok' as const };
 	}
 });
+
+const SimpleVariantSchema = z.enum(['active', 'inactive', 'pending']);
+
+export const checkSimpleVariant = defineUpdate({
+	args: z.object({ value: SimpleVariantSchema }),
+	result: z.object({ value: SimpleVariantSchema }),
+	handler: (data) => data
+});
+
+export const checkDiscriminatedUnionEcho = defineUpdate({
+	args: z.object({ status: StatusSchema }),
+	result: z.object({ status: StatusSchema }),
+	handler: (data) => data
+});
+
+const VariantRecordsSchema = z.union([
+	z.object({ count: z.number().int(), label: z.string() }),
+	z.object({ value: z.number() })
+]);
+
+export const checkVariantRecords = defineUpdate({
+	args: z.object({ data: VariantRecordsSchema }),
+	result: z.object({ data: VariantRecordsSchema }),
+	handler: (data) => data
+});
+
+const DiscriminatedPrimitivesSchema = z.discriminatedUnion('kind', [
+	z.object({ kind: z.literal('text'), value: z.string() }),
+	z.object({ kind: z.literal('number'), value: z.number() }),
+	z.object({ kind: z.literal('flag'), value: z.boolean() })
+]);
+
+export const checkDiscriminatedPrimitives = defineUpdate({
+	args: z.object({ data: DiscriminatedPrimitivesSchema }),
+	result: z.object({ data: DiscriminatedPrimitivesSchema }),
+	handler: (data) => data
+});
+
+const NestedDiscriminatedSchema = z.object({
+	id: z.string(),
+	status: StatusSchema
+});
+
+export const checkNestedDiscriminated = defineUpdate({
+	args: NestedDiscriminatedSchema,
+	result: NestedDiscriminatedSchema,
+	handler: (data) => data
+});
+
+const VariantRecordsOptVecSchema = z.union([
+	z.object({ tags: z.array(z.string()), note: z.string().optional() }),
+	z.object({ count: z.number().int(), active: z.boolean() })
+]);
+
+export const checkVariantRecordsOptVec = defineUpdate({
+	args: z.object({ data: VariantRecordsOptVecSchema }),
+	result: z.object({ data: VariantRecordsOptVecSchema }),
+	handler: (data) => data
+});

@@ -519,6 +519,22 @@ export const idlFactory = ({ IDL }) => {
 		value: IDL.Principal,
 		text: IDL.Text
 	});
+	const AppCheckDiscriminatedPrimitivesArgsData = IDL.Variant({
+		flag: IDL.Record({ value: IDL.Bool }),
+		text: IDL.Record({ value: IDL.Text }),
+		number: IDL.Record({ value: IDL.Float64 })
+	});
+	const AppCheckDiscriminatedPrimitivesArgs = IDL.Record({
+		data: AppCheckDiscriminatedPrimitivesArgsData
+	});
+	const AppCheckDiscriminatedUnionEchoArgsStatus = IDL.Variant({
+		active: IDL.Record({ owner: IDL.Principal }),
+		pending: IDL.Record({ assignee: IDL.Principal }),
+		inactive: IDL.Null
+	});
+	const AppCheckDiscriminatedUnionEchoArgs = IDL.Record({
+		status: AppCheckDiscriminatedUnionEchoArgsStatus
+	});
 	const AppCheckEnumsArgsStatus = IDL.Variant({
 		active: IDL.Record({ owner: IDL.Principal }),
 		pending: IDL.Record({ assignee: IDL.Principal }),
@@ -529,6 +545,35 @@ export const idlFactory = ({ IDL }) => {
 		username: IDL.Text
 	});
 	const AppCheckEnumsResult = IDL.Record({ status: IDL.Text });
+	const AppCheckNestedDiscriminatedArgs = IDL.Record({
+		id: IDL.Text,
+		status: AppCheckEnumsArgsStatus
+	});
+	const AppCheckSimpleVariantArgsValue = IDL.Variant({
+		Inactive: IDL.Null,
+		Active: IDL.Null,
+		Pending: IDL.Null
+	});
+	const AppCheckSimpleVariantArgs = IDL.Record({
+		value: AppCheckSimpleVariantArgsValue
+	});
+	const AppCheckVariantRecordsArgsData = IDL.Variant({
+		Variant0: IDL.Record({ count: IDL.Int32, label: IDL.Text }),
+		Variant1: IDL.Record({ value: IDL.Float64 })
+	});
+	const AppCheckVariantRecordsArgs = IDL.Record({
+		data: AppCheckVariantRecordsArgsData
+	});
+	const AppCheckVariantRecordsOptVecArgsData = IDL.Variant({
+		Variant0: IDL.Record({
+			note: IDL.Opt(IDL.Text),
+			tags: IDL.Vec(IDL.Text)
+		}),
+		Variant1: IDL.Record({ active: IDL.Bool, count: IDL.Int32 })
+	});
+	const AppCheckVariantRecordsOptVecArgs = IDL.Record({
+		data: AppCheckVariantRecordsOptVecArgsData
+	});
 	const AppDemoAntonioArgsSub = IDL.Record({ arr: IDL.Vec(IDL.Nat8) });
 	const AppDemoAntonioArgs = IDL.Record({
 		id: IDL.Opt(IDL.Principal),
@@ -660,7 +705,37 @@ export const idlFactory = ({ IDL }) => {
 		upload_proposal_asset_chunk: IDL.Func([UploadChunk], [UploadChunkResult], []),
 		app_async_query: IDL.Func([AppAsyncQueryArgs], [AppAsyncQueryResult], ['query']),
 		app_check_caller: IDL.Func([], [], []),
+		app_check_discriminated_primitives: IDL.Func(
+			[AppCheckDiscriminatedPrimitivesArgs],
+			[AppCheckDiscriminatedPrimitivesArgs],
+			[]
+		),
+		app_check_discriminated_union_echo: IDL.Func(
+			[AppCheckDiscriminatedUnionEchoArgs],
+			[AppCheckDiscriminatedUnionEchoArgs],
+			[]
+		),
 		app_check_enums: IDL.Func([AppCheckEnumsArgs], [AppCheckEnumsResult], []),
+		app_check_nested_discriminated: IDL.Func(
+			[AppCheckNestedDiscriminatedArgs],
+			[AppCheckNestedDiscriminatedArgs],
+			[]
+		),
+		app_check_simple_variant: IDL.Func(
+			[AppCheckSimpleVariantArgs],
+			[AppCheckSimpleVariantArgs],
+			[]
+		),
+		app_check_variant_records: IDL.Func(
+			[AppCheckVariantRecordsArgs],
+			[AppCheckVariantRecordsArgs],
+			[]
+		),
+		app_check_variant_records_opt_vec: IDL.Func(
+			[AppCheckVariantRecordsOptVecArgs],
+			[AppCheckVariantRecordsOptVecArgs],
+			[]
+		),
 		app_demo_antonio: IDL.Func([AppDemoAntonioArgs], [AppDemoAntonioResult], ['query']),
 		app_hello_world: IDL.Func([AppAsyncQueryArgs], [AppAsyncQueryResult], ['query']),
 		app_query_no_args: IDL.Func([], [AppAsyncQueryResult], ['query']),

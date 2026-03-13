@@ -1,17 +1,17 @@
-import { i18n } from '$lib/stores/app/i18n.store';
-import { toasts } from '$lib/stores/app/toasts.store';
-import { nonNullish } from '@dfinity/utils';
-import { get } from 'svelte/store';
 import { getConfig } from '$lib/api/satellites.api';
 import { resetAllIdbStore, resetIdbStore } from '$lib/services/_idb-store.services';
 import {
 	setUncertifiedIdbStore,
 	syncUncertifiedIdbStore
 } from '$lib/services/_idb-store.uncertified.services';
+import { i18n } from '$lib/stores/app/i18n.store';
 import { satellitesConfigIdbStore } from '$lib/stores/app/idb.store';
+import { toasts } from '$lib/stores/app/toasts.store';
 import { uncertifiedSatellitesConfigsStore } from '$lib/stores/satellite/satellites-configs.store';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { SatelliteId } from '$lib/types/satellite';
+import { nonNullish } from '@dfinity/utils';
+import { get } from 'svelte/store';
 
 export const syncSatellitesConfig = async () => {
 	await syncUncertifiedIdbStore({

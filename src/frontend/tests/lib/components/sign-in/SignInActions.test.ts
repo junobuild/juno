@@ -1,6 +1,6 @@
 import SignInActions from '$lib/components/auth/sign-in/SignInActions.svelte';
-import { render } from '@testing-library/svelte';
 import { testIds } from '$lib/constants/test-ids.constants';
+import { render } from '@testing-library/svelte';
 
 describe('SignInActions', () => {
 	beforeEach(() => {

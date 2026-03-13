@@ -205,9 +205,8 @@ describe('Sputnik > Custom Functions', () => {
 		const result = await app_check_enums({
 			username: 'Hello',
 			status: {
-				Variant0: {
-					owner: mockPrincipal,
-					type: 'yolo'
+				active: {
+					owner: mockPrincipal
 				}
 			}
 		});

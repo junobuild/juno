@@ -520,9 +520,9 @@ export const idlFactory = ({ IDL }) => {
 		text: IDL.Text
 	});
 	const AppCheckEnumsArgsStatus = IDL.Variant({
-		Variant0: IDL.Record({ owner: IDL.Principal, type: IDL.Text }),
-		Variant1: IDL.Record({ type: IDL.Text }),
-		Variant2: IDL.Record({ assignee: IDL.Principal, type: IDL.Text })
+		active: IDL.Record({ owner: IDL.Principal }),
+		pending: IDL.Record({ assignee: IDL.Principal }),
+		inactive: IDL.Null
 	});
 	const AppCheckEnumsArgs = IDL.Record({
 		status: AppCheckEnumsArgsStatus,

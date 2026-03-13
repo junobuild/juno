@@ -13,7 +13,7 @@ pub fn derive_json_data(input: TokenStream) -> TokenStream {
             Fields::Named(f) => derive_struct(name, &serialized_name, &f.named),
             _ => panic!("JsonData only supports named fields"),
         },
-        Data::Enum(e) => derive_enum(name, &serialized_name, &e.variants),
+        Data::Enum(e) => derive_enum(name, &serialized_name, &e.variants, &input.attrs),
         _ => panic!("JsonData only supports structs and enums"),
     }
 }
@@ -28,18 +28,26 @@ fn derive_struct(
         .map(|f| {
             let fname = &f.ident;
             let ftype = &f.ty;
+            let serde_attrs: Vec<_> = f
+                .attrs
+                .iter()
+                .filter(|a| a.path().is_ident("serde"))
+                .collect();
             if let Some(with_path) = map_with_path(ftype) {
                 quote! {
                     #[serde(with = #with_path)]
+                    #(#serde_attrs)*
                     pub #fname: #ftype,
                 }
             } else if has_nested_attr(f) {
                 let nested_type = nested_json_data_ident(ftype);
                 quote! {
+                    #(#serde_attrs)*
                     pub #fname: #nested_type,
                 }
             } else {
                 quote! {
+                    #(#serde_attrs)*
                     pub #fname: #ftype,
                 }
             }
@@ -105,14 +113,20 @@ fn derive_struct(
             }
         }
     }
-        .into()
+    .into()
 }
 
 fn derive_enum(
     name: &syn::Ident,
     serialized_name: &syn::Ident,
     variants: &syn::punctuated::Punctuated<syn::Variant, syn::token::Comma>,
+    attrs: &[syn::Attribute],
 ) -> TokenStream {
+    let serde_container_attrs: Vec<_> = attrs
+        .iter()
+        .filter(|a| a.path().is_ident("serde"))
+        .collect();
+
     let serialized_variants: Vec<_> = variants
         .iter()
         .map(|v| {
@@ -125,23 +139,38 @@ fn derive_enum(
                         .map(|f| {
                             let fname = &f.ident;
                             let ftype = &f.ty;
+                            let serde_attrs: Vec<_> = f
+                                .attrs
+                                .iter()
+                                .filter(|a| a.path().is_ident("serde"))
+                                .collect();
                             if let Some(with_path) = map_with_path(ftype) {
                                 quote! {
                                     #[serde(with = #with_path)]
+                                    #(#serde_attrs)*
                                     #fname: #ftype,
                                 }
                             } else if has_nested_attr(f) {
                                 let nested_type = nested_json_data_ident(ftype);
-                                quote! { #fname: #nested_type, }
+                                quote! {
+                                    #(#serde_attrs)*
+                                    #fname: #nested_type,
+                                }
                             } else {
-                                quote! { #fname: #ftype, }
+                                quote! {
+                                    #(#serde_attrs)*
+                                    #fname: #ftype,
+                                }
                             }
                         })
                         .collect();
                     quote! { #vname { #(#fields)* }, }
                 }
                 Fields::Unnamed(f) => {
-                    let field = f.unnamed.first().expect("tuple variant must have one field");
+                    let field = f
+                        .unnamed
+                        .first()
+                        .expect("tuple variant must have one field");
                     let ftype = &field.ty;
                     if let Some(with_path) = map_with_path(ftype) {
                         quote! { #vname(#[serde(with = #with_path)] #ftype), }
@@ -235,6 +264,7 @@ fn derive_enum(
 
     quote! {
         #[derive(serde::Serialize, serde::Deserialize)]
+        #(#serde_container_attrs)*
         enum #serialized_name {
             #(#serialized_variants)*
         }
@@ -268,7 +298,7 @@ fn derive_enum(
             }
         }
     }
-        .into()
+    .into()
 }
 
 fn has_nested_attr(field: &syn::Field) -> bool {

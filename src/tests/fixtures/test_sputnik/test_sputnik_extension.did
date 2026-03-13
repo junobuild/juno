@@ -5,9 +5,9 @@ type AppCheckEnumsArgs = record {
   username : text;
 };
 type AppCheckEnumsArgsStatus = variant {
-  Variant0 : record { owner : principal; "type" : text };
-  Variant1 : record { "type" : text };
-  Variant2 : record { assignee : principal; "type" : text };
+  active : record { owner : principal };
+  pending : record { assignee : principal };
+  inactive;
 };
 type AppCheckEnumsResult = record { status : text };
 type AppDemoAntonioArgs = record {

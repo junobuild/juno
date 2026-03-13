@@ -22,11 +22,9 @@ export interface AppCheckEnumsArgs {
 	username: string;
 }
 export type AppCheckEnumsArgsStatus =
-	| {
-			Variant0: { owner: Principal; type: string };
-	  }
-	| { Variant1: { type: string } }
-	| { Variant2: { assignee: Principal; type: string } };
+	| { active: { owner: Principal } }
+	| { pending: { assignee: Principal } }
+	| { inactive: null };
 export interface AppCheckEnumsResult {
 	status: string;
 }

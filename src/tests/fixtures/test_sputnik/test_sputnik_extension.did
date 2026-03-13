@@ -34,20 +34,6 @@ type AppCheckSimpleVariantArgs = record {
   value : AppCheckSimpleVariantArgsValue;
 };
 type AppCheckSimpleVariantArgsValue = variant { active; pending; inactive };
-type AppCheckVariantRecordsArgs = record {
-  data : AppCheckVariantRecordsArgsData;
-};
-type AppCheckVariantRecordsArgsData = variant {
-  Variant0 : record { count : int32; label : text };
-  Variant1 : record { value : float64 };
-};
-type AppCheckVariantRecordsOptVecArgs = record {
-  data : AppCheckVariantRecordsOptVecArgsData;
-};
-type AppCheckVariantRecordsOptVecArgsData = variant {
-  Variant0 : record { note : opt text; tags : vec text };
-  Variant1 : record { active : bool; count : int32 };
-};
 type AppDemoAntonioArgs = record {
   id : opt principal;
   sub : AppDemoAntonioArgsSub;
@@ -84,12 +70,6 @@ service : {
     );
   app_check_simple_variant : (AppCheckSimpleVariantArgs) -> (
       AppCheckSimpleVariantArgs,
-    );
-  app_check_variant_records : (AppCheckVariantRecordsArgs) -> (
-      AppCheckVariantRecordsArgs,
-    );
-  app_check_variant_records_opt_vec : (AppCheckVariantRecordsOptVecArgs) -> (
-      AppCheckVariantRecordsOptVecArgs,
     );
   app_demo_antonio : (AppDemoAntonioArgs) -> (AppDemoAntonioResult) query;
   app_hello_world : (AppAsyncQueryArgs) -> (AppAsyncQueryResult) query;

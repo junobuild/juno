@@ -242,18 +242,6 @@ describe('Sputnik > Custom Functions', () => {
 		expect(pending.status).toEqual({ pending: { assignee: mockPrincipal } });
 	});
 
-	it('should support variant records echo', async () => {
-		const { app_check_variant_records } = actor;
-
-		const r1 = await app_check_variant_records({
-			data: { Variant0: { count: 42, label: 'hello' } }
-		});
-		expect(r1.data).toEqual({ Variant0: { count: 42, label: 'hello' } });
-
-		const r2 = await app_check_variant_records({ data: { Variant1: { value: 3.14 } } });
-		expect(r2.data).toEqual({ Variant1: { value: 3.14 } });
-	});
-
 	it('should support discriminated union with primitive fields', async () => {
 		const { app_check_discriminated_primitives } = actor;
 
@@ -275,24 +263,5 @@ describe('Sputnik > Custom Functions', () => {
 			status: { active: { owner: mockPrincipal } }
 		});
 		expect(result).toEqual({ id: 'abc123', status: { active: { owner: mockPrincipal } } });
-	});
-
-	it('should support variant records with opt and vec fields', async () => {
-		const { app_check_variant_records_opt_vec } = actor;
-
-		const r1 = await app_check_variant_records_opt_vec({
-			data: { Variant0: { tags: ['a', 'b'], note: ['hello'] } }
-		});
-		expect(r1.data).toEqual({ Variant0: { tags: ['a', 'b'], note: ['hello'] } });
-
-		const r2 = await app_check_variant_records_opt_vec({
-			data: { Variant0: { tags: ['x'], note: [] } }
-		});
-		expect(r2.data).toEqual({ Variant0: { tags: ['x'], note: [] } });
-
-		const r3 = await app_check_variant_records_opt_vec({
-			data: { Variant1: { count: 5, active: true } }
-		});
-		expect(r3.data).toEqual({ Variant1: { count: 5, active: true } });
 	});
 });

@@ -557,23 +557,6 @@ export const idlFactory = ({ IDL }) => {
 	const AppCheckSimpleVariantArgs = IDL.Record({
 		value: AppCheckSimpleVariantArgsValue
 	});
-	const AppCheckVariantRecordsArgsData = IDL.Variant({
-		Variant0: IDL.Record({ count: IDL.Int32, label: IDL.Text }),
-		Variant1: IDL.Record({ value: IDL.Float64 })
-	});
-	const AppCheckVariantRecordsArgs = IDL.Record({
-		data: AppCheckVariantRecordsArgsData
-	});
-	const AppCheckVariantRecordsOptVecArgsData = IDL.Variant({
-		Variant0: IDL.Record({
-			note: IDL.Opt(IDL.Text),
-			tags: IDL.Vec(IDL.Text)
-		}),
-		Variant1: IDL.Record({ active: IDL.Bool, count: IDL.Int32 })
-	});
-	const AppCheckVariantRecordsOptVecArgs = IDL.Record({
-		data: AppCheckVariantRecordsOptVecArgsData
-	});
 	const AppDemoAntonioArgsSub = IDL.Record({ arr: IDL.Vec(IDL.Nat8) });
 	const AppDemoAntonioArgs = IDL.Record({
 		id: IDL.Opt(IDL.Principal),
@@ -724,16 +707,6 @@ export const idlFactory = ({ IDL }) => {
 		app_check_simple_variant: IDL.Func(
 			[AppCheckSimpleVariantArgs],
 			[AppCheckSimpleVariantArgs],
-			[]
-		),
-		app_check_variant_records: IDL.Func(
-			[AppCheckVariantRecordsArgs],
-			[AppCheckVariantRecordsArgs],
-			[]
-		),
-		app_check_variant_records_opt_vec: IDL.Func(
-			[AppCheckVariantRecordsOptVecArgs],
-			[AppCheckVariantRecordsOptVecArgs],
 			[]
 		),
 		app_demo_antonio: IDL.Func([AppDemoAntonioArgs], [AppDemoAntonioResult], ['query']),

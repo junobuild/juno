@@ -57,22 +57,6 @@ export type AppCheckSimpleVariantArgsValue =
 	| { active: null }
 	| { pending: null }
 	| { inactive: null };
-export interface AppCheckVariantRecordsArgs {
-	data: AppCheckVariantRecordsArgsData;
-}
-export type AppCheckVariantRecordsArgsData =
-	| {
-			Variant0: { count: number; label: string };
-	  }
-	| { Variant1: { value: number } };
-export interface AppCheckVariantRecordsOptVecArgs {
-	data: AppCheckVariantRecordsOptVecArgsData;
-}
-export type AppCheckVariantRecordsOptVecArgsData =
-	| {
-			Variant0: { note: [] | [string]; tags: Array<string> };
-	  }
-	| { Variant1: { active: boolean; count: number } };
 export interface AppDemoAntonioArgs {
 	id: [] | [Principal];
 	sub: AppDemoAntonioArgsSub;
@@ -701,11 +685,6 @@ export interface _SERVICE {
 		AppCheckNestedDiscriminatedArgs
 	>;
 	app_check_simple_variant: ActorMethod<[AppCheckSimpleVariantArgs], AppCheckSimpleVariantArgs>;
-	app_check_variant_records: ActorMethod<[AppCheckVariantRecordsArgs], AppCheckVariantRecordsArgs>;
-	app_check_variant_records_opt_vec: ActorMethod<
-		[AppCheckVariantRecordsOptVecArgs],
-		AppCheckVariantRecordsOptVecArgs
-	>;
 	app_demo_antonio: ActorMethod<[AppDemoAntonioArgs], AppDemoAntonioResult>;
 	app_hello_world: ActorMethod<[AppAsyncQueryArgs], AppAsyncQueryResult>;
 	app_query_no_args: ActorMethod<[], AppAsyncQueryResult>;

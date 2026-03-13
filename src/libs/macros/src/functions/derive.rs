@@ -140,17 +140,21 @@ fn derive_enum(
             None
         });
 
+    if serde_tag_attr.is_none() {
+        return derive_enum_flat(name, variants);
+    }
+
+    // ── tagged enum (discriminatedUnion) ─────────────────────────────────────
+
     let serialized_variants: Vec<_> = variants
         .iter()
         .map(|v| {
             let vname = &v.ident;
-
             let variant_serde_attrs: Vec<_> = v
                 .attrs
                 .iter()
                 .filter(|a| a.path().is_ident("serde"))
                 .collect();
-
             match &v.fields {
                 Fields::Named(f) => {
                     let fields: Vec<_> = f
@@ -166,31 +170,28 @@ fn derive_enum(
                                 .collect();
                             if let Some(with_path) = map_with_path(ftype) {
                                 quote! {
-                                #[serde(with = #with_path)]
-                                #(#serde_attrs)*
-                                #fname: #ftype,
-                            }
+                                    #[serde(with = #with_path)]
+                                    #(#serde_attrs)*
+                                    #fname: #ftype,
+                                }
                             } else if has_nested_attr(f) {
                                 let nested_type = nested_json_data_ident(ftype);
                                 quote! {
-                                #(#serde_attrs)*
-                                #fname: #nested_type,
-                            }
+                                    #(#serde_attrs)*
+                                    #fname: #nested_type,
+                                }
                             } else {
                                 quote! {
-                                #(#serde_attrs)*
-                                #fname: #ftype,
-                            }
+                                    #(#serde_attrs)*
+                                    #fname: #ftype,
+                                }
                             }
                         })
                         .collect();
                     quote! { #(#variant_serde_attrs)* #vname { #(#fields)* }, }
                 }
                 Fields::Unnamed(f) => {
-                    let field = f
-                        .unnamed
-                        .first()
-                        .expect("tuple variant must have one field");
+                    let field = f.unnamed.first().expect("tuple variant must have one field");
                     let ftype = &field.ty;
                     if let Some(with_path) = map_with_path(ftype) {
                         quote! { #(#variant_serde_attrs)* #vname(#[serde(with = #with_path)] #ftype), }
@@ -319,6 +320,205 @@ fn derive_enum(
         }
     }
     .into()
+}
+
+fn derive_enum_flat(
+    name: &syn::Ident,
+    variants: &syn::punctuated::Punctuated<syn::Variant, syn::token::Comma>,
+) -> TokenStream {
+    let serialized_name = syn::Ident::new(&format!("{}JsonData", name), Span::call_site());
+
+    let into_arms: Vec<_> = variants
+        .iter()
+        .enumerate()
+        .map(|(i, v)| {
+            let vname = &v.ident;
+            let helper_name = syn::Ident::new(
+                &format!("__{}{}Helper", name, i),
+                Span::call_site(),
+            );
+            match &v.fields {
+                Fields::Named(f) => {
+                    let fnames: Vec<_> = f.named.iter().map(|f| &f.ident).collect();
+                    let helper_fields: Vec<_> = f
+                        .named
+                        .iter()
+                        .map(|field| {
+                            let fname = &field.ident;
+                            let ftype = &field.ty;
+                            let serde_attrs: Vec<_> = field
+                                .attrs
+                                .iter()
+                                .filter(|a| a.path().is_ident("serde"))
+                                .collect();
+                            if let Some(with_path) = map_with_path(ftype) {
+                                quote! {
+                                    #[serde(with = #with_path)]
+                                    #(#serde_attrs)*
+                                    #fname: #ftype,
+                                }
+                            } else {
+                                quote! {
+                                    #(#serde_attrs)*
+                                    #fname: #ftype,
+                                }
+                            }
+                        })
+                        .collect();
+                    quote! {
+                        #name::#vname { #(#fnames,)* } => {
+                            #[derive(serde::Serialize)]
+                            struct #helper_name {
+                                #(#helper_fields)*
+                            }
+                            let helper = #helper_name { #(#fnames,)* };
+                            junobuild_utils::encode_json_data(&helper)
+                        }
+                    }
+                }
+                Fields::Unit => {
+                    quote! {
+                        #name::#vname => {
+                            #[derive(serde::Serialize)]
+                            struct #helper_name {}
+                            junobuild_utils::encode_json_data(&#helper_name {})
+                        }
+                    }
+                }
+                Fields::Unnamed(f) => {
+                    let field = f.unnamed.first().expect("tuple variant must have one field");
+                    let ftype = &field.ty;
+                    if let Some(with_path) = map_with_path(ftype) {
+                        quote! {
+                            #name::#vname(v) => {
+                                #[derive(serde::Serialize)]
+                                struct #helper_name(#[serde(with = #with_path)] #ftype);
+                                junobuild_utils::encode_json_data(&#helper_name(v))
+                            }
+                        }
+                    } else {
+                        quote! {
+                            #name::#vname(v) => {
+                                junobuild_utils::encode_json_data(&v)
+                            }
+                        }
+                    }
+                }
+            }
+        })
+        .collect();
+
+    let from_arms: Vec<_> = variants
+        .iter()
+        .enumerate()
+        .map(|(i, v)| {
+            let vname = &v.ident;
+            let helper_name = syn::Ident::new(
+                &format!("__{}{}DeHelper", name, i),
+                Span::call_site(),
+            );
+            match &v.fields {
+                Fields::Named(f) => {
+                    let fnames: Vec<_> = f.named.iter().map(|f| &f.ident).collect();
+                    let helper_fields: Vec<_> = f.named.iter().map(|field| {
+                        let fname = &field.ident;
+                        let ftype = &field.ty;
+                        let serde_attrs: Vec<_> = field.attrs.iter()
+                            .filter(|a| a.path().is_ident("serde"))
+                            .collect();
+                        if let Some(with_path) = map_with_path(ftype) {
+                            quote! {
+                                #[serde(with = #with_path)]
+                                #(#serde_attrs)*
+                                #fname: #ftype,
+                            }
+                        } else {
+                            quote! {
+                                #(#serde_attrs)*
+                                #fname: #ftype,
+                            }
+                        }
+                    }).collect();
+                    quote! {
+                        {
+                            #[derive(serde::Deserialize)]
+                            struct #helper_name {
+                                #(#helper_fields)*
+                            }
+                            if let Ok(h) = junobuild_utils::decode_json_data::<#helper_name>(bytes) {
+                                return Ok(#name::#vname { #(#fnames: h.#fnames,)* });
+                            }
+                        }
+                    }
+                }
+                Fields::Unit => quote! {},
+                Fields::Unnamed(f) => {
+                    let field = f.unnamed.first().expect("tuple variant must have one field");
+                    let ftype = &field.ty;
+                    if let Some(with_path) = map_with_path(ftype) {
+                        quote! {
+                            {
+                                #[derive(serde::Deserialize)]
+                                struct #helper_name(#[serde(with = #with_path)] #ftype);
+                                if let Ok(h) = junobuild_utils::decode_json_data::<#helper_name>(bytes) {
+                                    return Ok(#name::#vname(h.0));
+                                }
+                            }
+                        }
+                    } else {
+                        quote! {
+                            if let Ok(v) = junobuild_utils::decode_json_data::<#ftype>(bytes) {
+                                return Ok(#name::#vname(v));
+                            }
+                        }
+                    }
+                }
+            }
+        })
+        .collect();
+
+    let unit_arms: Vec<_> = variants
+        .iter()
+        .filter(|v| matches!(v.fields, Fields::Unit))
+        .enumerate()
+        .map(|(i, v)| {
+            let vname = &v.ident;
+            let helper_name = syn::Ident::new(
+                &format!("__{}{}UnitDeHelper", name, i),
+                Span::call_site(),
+            );
+            quote! {
+                {
+                    #[derive(serde::Deserialize)]
+                    struct #helper_name {}
+                    if let Ok(_) = junobuild_utils::decode_json_data::<#helper_name>(bytes) {
+                        return Ok(#name::#vname);
+                    }
+                }
+            }
+        })
+        .collect();
+
+    quote! {
+        type #serialized_name = #name;
+
+        impl junobuild_utils::IntoJsonData for #name {
+            fn into_json_data(self) -> Result<Vec<u8>, String> {
+                match self {
+                    #(#into_arms)*
+                }
+            }
+        }
+
+        impl junobuild_utils::FromJsonData for #name {
+            fn from_json_data(bytes: &[u8]) -> Result<Self, String> {
+                #(#from_arms)*
+                #(#unit_arms)*
+                Err(format!("No matching variant for {}", std::str::from_utf8(bytes).unwrap_or("invalid utf8")))
+            }
+        }
+    }
+        .into()
 }
 
 fn has_nested_attr(field: &syn::Field) -> bool {

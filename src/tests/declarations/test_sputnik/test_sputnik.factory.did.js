@@ -550,9 +550,9 @@ export const idlFactory = ({ IDL }) => {
 		status: AppCheckEnumsArgsStatus
 	});
 	const AppCheckSimpleVariantArgsValue = IDL.Variant({
-		Inactive: IDL.Null,
-		Active: IDL.Null,
-		Pending: IDL.Null
+		active: IDL.Null,
+		pending: IDL.Null,
+		inactive: IDL.Null
 	});
 	const AppCheckSimpleVariantArgs = IDL.Record({
 		value: AppCheckSimpleVariantArgsValue

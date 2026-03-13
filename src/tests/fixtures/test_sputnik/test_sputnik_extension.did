@@ -33,7 +33,7 @@ type AppCheckNestedDiscriminatedArgs = record {
 type AppCheckSimpleVariantArgs = record {
   value : AppCheckSimpleVariantArgsValue;
 };
-type AppCheckSimpleVariantArgsValue = variant { Inactive; Active; Pending };
+type AppCheckSimpleVariantArgsValue = variant { active; pending; inactive };
 type AppCheckVariantRecordsArgs = record {
   data : AppCheckVariantRecordsArgsData;
 };

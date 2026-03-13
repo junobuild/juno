@@ -217,7 +217,7 @@ describe('Sputnik > Custom Functions', () => {
 	it('should support simple variant echo', async () => {
 		const { app_check_simple_variant } = actor;
 
-		for (const value of [{ Active: null }, { Inactive: null }, { Pending: null }] as const) {
+		for (const value of [{ active: null }, { inactive: null }, { pending: null }] as const) {
 			const result = await app_check_simple_variant({ value });
 			expect(result.value).toEqual(value);
 		}

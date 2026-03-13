@@ -54,9 +54,9 @@ export interface AppCheckSimpleVariantArgs {
 	value: AppCheckSimpleVariantArgsValue;
 }
 export type AppCheckSimpleVariantArgsValue =
-	| { Inactive: null }
-	| { Active: null }
-	| { Pending: null };
+	| { active: null }
+	| { pending: null }
+	| { inactive: null };
 export interface AppCheckVariantRecordsArgs {
 	data: AppCheckVariantRecordsArgsData;
 }

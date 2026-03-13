@@ -219,6 +219,7 @@ describe('Sputnik > Custom Functions', () => {
 
 		for (const value of [{ active: null }, { inactive: null }, { pending: null }] as const) {
 			const result = await app_check_simple_variant({ value });
+
 			expect(result.value).toEqual(value);
 		}
 	});
@@ -229,16 +230,19 @@ describe('Sputnik > Custom Functions', () => {
 		const active = await app_check_discriminated_union_echo({
 			status: { active: { owner: mockPrincipal } }
 		});
+
 		expect(active.status).toEqual({ active: { owner: mockPrincipal } });
 
 		const inactive = await app_check_discriminated_union_echo({
 			status: { inactive: null }
 		});
+
 		expect(inactive.status).toEqual({ inactive: null });
 
 		const pending = await app_check_discriminated_union_echo({
 			status: { pending: { assignee: mockPrincipal } }
 		});
+
 		expect(pending.status).toEqual({ pending: { assignee: mockPrincipal } });
 	});
 
@@ -246,12 +250,15 @@ describe('Sputnik > Custom Functions', () => {
 		const { app_check_discriminated_primitives } = actor;
 
 		const r1 = await app_check_discriminated_primitives({ data: { text: { value: 'hello' } } });
+
 		expect(r1.data).toEqual({ text: { value: 'hello' } });
 
 		const r2 = await app_check_discriminated_primitives({ data: { number: { value: 42.5 } } });
+
 		expect(r2.data).toEqual({ number: { value: 42.5 } });
 
 		const r3 = await app_check_discriminated_primitives({ data: { flag: { value: true } } });
+
 		expect(r3.data).toEqual({ flag: { value: true } });
 	});
 
@@ -262,6 +269,7 @@ describe('Sputnik > Custom Functions', () => {
 			id: 'abc123',
 			status: { active: { owner: mockPrincipal } }
 		});
+
 		expect(result).toEqual({ id: 'abc123', status: { active: { owner: mockPrincipal } } });
 	});
 });

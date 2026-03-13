@@ -16,16 +16,19 @@ export const checkEnums = defineUpdate({
 		username: z.string(),
 		status: StatusSchema
 	}),
+	result: z.object({ status: z.literal('ok', 'error') }),
 	handler: (data) => {
 		const caller = msgCaller();
 
 		setDocStore({
 			caller: caller,
-			collection: 'notes',
+			collection: 'test-notes',
 			key: msgCaller().toText(),
 			doc: {
 				data: encodeDocData(data)
 			}
 		});
+
+		return { status: 'ok' as const };
 	}
 });

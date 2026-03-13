@@ -17,6 +17,19 @@ export interface AppAsyncQueryResult {
 	value: Principal;
 	text: string;
 }
+export interface AppCheckEnumsArgs {
+	status: AppCheckEnumsArgsStatus;
+	username: string;
+}
+export type AppCheckEnumsArgsStatus =
+	| {
+			Variant0: { owner: Principal; type: string };
+	  }
+	| { Variant1: { type: string } }
+	| { Variant2: { assignee: Principal; type: string } };
+export interface AppCheckEnumsResult {
+	status: string;
+}
 export interface AppDemoAntonioArgs {
 	id: [] | [Principal];
 	sub: AppDemoAntonioArgsSub;
@@ -631,6 +644,7 @@ export interface _SERVICE {
 	upload_proposal_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;
 	app_async_query: ActorMethod<[AppAsyncQueryArgs], AppAsyncQueryResult>;
 	app_check_caller: ActorMethod<[], undefined>;
+	app_check_enums: ActorMethod<[AppCheckEnumsArgs], AppCheckEnumsResult>;
 	app_demo_antonio: ActorMethod<[AppDemoAntonioArgs], AppDemoAntonioResult>;
 	app_hello_world: ActorMethod<[AppAsyncQueryArgs], AppAsyncQueryResult>;
 	app_query_no_args: ActorMethod<[], AppAsyncQueryResult>;

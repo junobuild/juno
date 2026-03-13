@@ -1,5 +1,15 @@
 type AppAsyncQueryArgs = record { value : principal };
 type AppAsyncQueryResult = record { value : principal; "text" : text };
+type AppCheckEnumsArgs = record {
+  status : AppCheckEnumsArgsStatus;
+  username : text;
+};
+type AppCheckEnumsArgsStatus = variant {
+  Variant0 : record { owner : principal; "type" : text };
+  Variant1 : record { "type" : text };
+  Variant2 : record { assignee : principal; "type" : text };
+};
+type AppCheckEnumsResult = record { status : text };
 type AppDemoAntonioArgs = record {
   id : opt principal;
   sub : AppDemoAntonioArgsSub;
@@ -24,6 +34,7 @@ type AppWelcomeResult = record { value : nat64; caller : principal };
 service : {
   app_async_query : (AppAsyncQueryArgs) -> (AppAsyncQueryResult) query;
   app_check_caller : () -> ();
+  app_check_enums : (AppCheckEnumsArgs) -> (AppCheckEnumsResult);
   app_demo_antonio : (AppDemoAntonioArgs) -> (AppDemoAntonioResult) query;
   app_hello_world : (AppAsyncQueryArgs) -> (AppAsyncQueryResult) query;
   app_query_no_args : () -> (AppAsyncQueryResult) query;

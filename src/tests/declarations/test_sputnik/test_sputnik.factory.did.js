@@ -519,6 +519,16 @@ export const idlFactory = ({ IDL }) => {
 		value: IDL.Principal,
 		text: IDL.Text
 	});
+	const AppCheckEnumsArgsStatus = IDL.Variant({
+		Variant0: IDL.Record({ owner: IDL.Principal, type: IDL.Text }),
+		Variant1: IDL.Record({ type: IDL.Text }),
+		Variant2: IDL.Record({ assignee: IDL.Principal, type: IDL.Text })
+	});
+	const AppCheckEnumsArgs = IDL.Record({
+		status: AppCheckEnumsArgsStatus,
+		username: IDL.Text
+	});
+	const AppCheckEnumsResult = IDL.Record({ status: IDL.Text });
 	const AppDemoAntonioArgsSub = IDL.Record({ arr: IDL.Vec(IDL.Nat8) });
 	const AppDemoAntonioArgs = IDL.Record({
 		id: IDL.Opt(IDL.Principal),
@@ -650,6 +660,7 @@ export const idlFactory = ({ IDL }) => {
 		upload_proposal_asset_chunk: IDL.Func([UploadChunk], [UploadChunkResult], []),
 		app_async_query: IDL.Func([AppAsyncQueryArgs], [AppAsyncQueryResult], ['query']),
 		app_check_caller: IDL.Func([], [], []),
+		app_check_enums: IDL.Func([AppCheckEnumsArgs], [AppCheckEnumsResult], []),
 		app_demo_antonio: IDL.Func([AppDemoAntonioArgs], [AppDemoAntonioResult], ['query']),
 		app_hello_world: IDL.Func([AppAsyncQueryArgs], [AppAsyncQueryResult], ['query']),
 		app_query_no_args: IDL.Func([], [AppAsyncQueryResult], ['query']),

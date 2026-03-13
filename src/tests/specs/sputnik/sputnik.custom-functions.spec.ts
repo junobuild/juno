@@ -21,6 +21,7 @@ describe('Sputnik > Custom Functions', () => {
 	let controller: Identity;
 
 	const TEST_COLLECTION = 'test-custom-update-query';
+	const TEST_COLLECTION_ENUM = 'test-notes';
 
 	beforeAll(async () => {
 		const { pic: p, actor: a, canisterId: cId, controller: c } = await setupTestSputnik();
@@ -32,6 +33,7 @@ describe('Sputnik > Custom Functions', () => {
 
 		const { set_rule } = actor;
 		await set_rule({ Db: null }, TEST_COLLECTION, mockSetRule);
+		await set_rule({ Db: null }, TEST_COLLECTION_ENUM, mockSetRule);
 	});
 
 	afterAll(async () => {
@@ -195,5 +197,21 @@ describe('Sputnik > Custom Functions', () => {
 		expect(fromNullable(result.id)?.toText()).toEqual(canisterId.toText());
 		expect(fromNullable(result.sub.value)).toEqual(123n);
 		expect(fromNullable(result.sub.arr)).toEqual(Uint8Array.from([5, 6, 7]));
+	});
+
+	it('should support building complex enum', async () => {
+		const { app_check_enums } = actor;
+
+		const result = await app_check_enums({
+			username: 'Hello',
+			status: {
+				Variant0: {
+					owner: mockPrincipal,
+					type: 'yolo'
+				}
+			}
+		});
+
+		expect(result.status).toEqual('ok');
 	});
 });

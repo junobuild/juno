@@ -1,6 +1,5 @@
 import WalletGetToken from '$lib/components/wallet/WalletGetToken.svelte';
 import { render } from '@testing-library/svelte';
-
 import { testIds } from '$lib/constants/test-ids.constants';
 import { mockSelectedWallet } from '../../../mocks/modules.mock';
 

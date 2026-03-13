@@ -1,6 +1,5 @@
 import { workflowsIdbStore } from '$lib/stores/app/idb.store';
 import type { CertifiedWorkflow, WorkflowKey, WorkflowKeyValue } from '$lib/types/workflow';
-
 import type { SatelliteId } from '$lib/types/satellite';
 import { get, set } from 'idb-keyval';
 

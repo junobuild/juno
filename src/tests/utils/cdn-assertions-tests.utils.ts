@@ -27,7 +27,6 @@ import {
 	JUNO_ERROR_NO_VERSION_PROVIDED,
 	JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE
 } from '@junobuild/errors';
-
 import { nanoid } from 'nanoid';
 import { mockListProposalsParams } from '../mocks/list.mocks';
 import { mockBlob, mockHtml } from '../mocks/storage.mocks';

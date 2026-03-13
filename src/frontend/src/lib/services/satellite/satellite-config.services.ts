@@ -2,7 +2,6 @@ import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
 import { nonNullish } from '@dfinity/utils';
 import { get } from 'svelte/store';
-
 import { getConfig } from '$lib/api/satellites.api';
 import { resetAllIdbStore, resetIdbStore } from '$lib/services/_idb-store.services';
 import {

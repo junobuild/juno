@@ -21,7 +21,7 @@ export const checkEnums = defineUpdate({
 		const caller = msgCaller();
 
 		setDocStore({
-			caller: caller,
+			caller,
 			collection: 'test-notes',
 			key: msgCaller().toText(),
 			doc: {

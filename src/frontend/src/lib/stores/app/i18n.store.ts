@@ -1,5 +1,4 @@
 import en from '$lib/i18n/en.json';
-
 import type { Languages } from '$lib/types/languages';
 import { switchLanguage } from '$lib/utils/i18n.utils';
 import { getLocalStorageLang } from '$lib/utils/local-storage.utils';

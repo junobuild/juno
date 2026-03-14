@@ -1,20 +1,20 @@
 import { assertNonNullish } from '@dfinity/utils';
-import { defineQuery, defineUpdate, PrincipalSchema } from '@junobuild/functions';
+import { defineQuery, defineUpdate } from '@junobuild/functions';
 import { id } from '@junobuild/functions/ic-cdk';
 import { decodeDocData, encodeDocData, getDocStore, setDocStore } from '@junobuild/functions/sdk';
-import * as z from 'zod';
+import { j } from '@junobuild/schema';
 
 /* eslint-disable no-console, require-await */
 
-const ArgsSchema = z.object({
-	value: PrincipalSchema
+const ArgsSchema = j.object({
+	value: j.principal()
 });
 
-type Args = z.infer<typeof ArgsSchema>;
+type Args = j.infer<typeof ArgsSchema>;
 
-const ResultSchema = z.object({
-	value: PrincipalSchema,
-	text: z.string()
+const ResultSchema = j.object({
+	value: j.principal(),
+	text: j.string()
 });
 
 export const helloWorld = defineQuery({
@@ -26,15 +26,15 @@ export const helloWorld = defineQuery({
 	}
 });
 
-const WelcomeArgsSchema = z.object({
-	value: z.string()
+const WelcomeArgsSchema = j.object({
+	value: j.string()
 });
 
-type WelcomeArgs = z.infer<typeof WelcomeArgsSchema>;
+type WelcomeArgs = j.infer<typeof WelcomeArgsSchema>;
 
-const WelcomeResultSchema = z.object({
-	caller: PrincipalSchema,
-	value: z.bigint()
+const WelcomeResultSchema = j.object({
+	caller: j.principal(),
+	value: j.bigint()
 });
 
 export const welcome = defineUpdate(() => ({
@@ -97,7 +97,7 @@ export const updateArgsOnly = defineUpdate({
 });
 
 export const setDocTest = defineUpdate({
-	args: z.strictObject({ key: z.string(), collection: z.string(), value: z.bigint() }),
+	args: j.strictObject({ key: j.string(), collection: j.string(), value: j.bigint() }),
 	handler: ({ value, key, collection }) => {
 		const updatedData = encodeDocData({
 			value: value + 2n
@@ -114,10 +114,10 @@ export const setDocTest = defineUpdate({
 	}
 });
 
-const ReadDocTestResultSchema = z.strictObject({ value: z.bigint() });
+const ReadDocTestResultSchema = j.strictObject({ value: j.bigint() });
 
 export const readDocTest = defineQuery({
-	args: z.strictObject({ key: z.string(), collection: z.string() }),
+	args: j.strictObject({ key: j.string(), collection: j.string() }),
 	result: ReadDocTestResultSchema,
 	handler: ({ key, collection }) => {
 		const doc = getDocStore({
@@ -129,7 +129,7 @@ export const readDocTest = defineQuery({
 		assertNonNullish(doc);
 		assertNonNullish(doc?.data);
 
-		const readData = decodeDocData<z.infer<typeof ReadDocTestResultSchema>>(doc.data);
+		const readData = decodeDocData<j.infer<typeof ReadDocTestResultSchema>>(doc.data);
 		return { value: readData.value };
 	}
 });

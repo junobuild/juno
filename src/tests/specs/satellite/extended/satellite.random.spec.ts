@@ -5,7 +5,6 @@ import type {
 import type { Actor, PocketIc } from '@dfinity/pic';
 import type { Identity } from '@icp-sdk/core/agent';
 import type { Principal } from '@icp-sdk/core/principal';
-
 import { mockSetRule } from '../../../mocks/collection.mocks';
 import { setupTestSatellite, upgradeTestSatellite } from '../../../utils/fixtures-tests.utils';
 import { tick } from '../../../utils/pic-tests.utils';

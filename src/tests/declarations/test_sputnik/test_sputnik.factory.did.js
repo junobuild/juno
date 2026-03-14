@@ -519,6 +519,44 @@ export const idlFactory = ({ IDL }) => {
 		value: IDL.Principal,
 		text: IDL.Text
 	});
+	const AppCheckDiscriminatedPrimitivesArgsData = IDL.Variant({
+		flag: IDL.Record({ value: IDL.Bool }),
+		text: IDL.Record({ value: IDL.Text }),
+		number: IDL.Record({ value: IDL.Float64 })
+	});
+	const AppCheckDiscriminatedPrimitivesArgs = IDL.Record({
+		data: AppCheckDiscriminatedPrimitivesArgsData
+	});
+	const AppCheckDiscriminatedUnionEchoArgsStatus = IDL.Variant({
+		active: IDL.Record({ owner: IDL.Principal }),
+		pending: IDL.Record({ assignee: IDL.Principal }),
+		inactive: IDL.Null
+	});
+	const AppCheckDiscriminatedUnionEchoArgs = IDL.Record({
+		status: AppCheckDiscriminatedUnionEchoArgsStatus
+	});
+	const AppCheckEnumsArgsStatus = IDL.Variant({
+		active: IDL.Record({ owner: IDL.Principal }),
+		pending: IDL.Record({ assignee: IDL.Principal }),
+		inactive: IDL.Null
+	});
+	const AppCheckEnumsArgs = IDL.Record({
+		status: AppCheckEnumsArgsStatus,
+		username: IDL.Text
+	});
+	const AppCheckEnumsResult = IDL.Record({ status: IDL.Text });
+	const AppCheckNestedDiscriminatedArgs = IDL.Record({
+		id: IDL.Text,
+		status: AppCheckEnumsArgsStatus
+	});
+	const AppCheckSimpleVariantArgsValue = IDL.Variant({
+		active: IDL.Null,
+		pending: IDL.Null,
+		inactive: IDL.Null
+	});
+	const AppCheckSimpleVariantArgs = IDL.Record({
+		value: AppCheckSimpleVariantArgsValue
+	});
 	const AppDemoAntonioArgsSub = IDL.Record({ arr: IDL.Vec(IDL.Nat8) });
 	const AppDemoAntonioArgs = IDL.Record({
 		id: IDL.Opt(IDL.Principal),
@@ -650,6 +688,27 @@ export const idlFactory = ({ IDL }) => {
 		upload_proposal_asset_chunk: IDL.Func([UploadChunk], [UploadChunkResult], []),
 		app_async_query: IDL.Func([AppAsyncQueryArgs], [AppAsyncQueryResult], ['query']),
 		app_check_caller: IDL.Func([], [], []),
+		app_check_discriminated_primitives: IDL.Func(
+			[AppCheckDiscriminatedPrimitivesArgs],
+			[AppCheckDiscriminatedPrimitivesArgs],
+			[]
+		),
+		app_check_discriminated_union_echo: IDL.Func(
+			[AppCheckDiscriminatedUnionEchoArgs],
+			[AppCheckDiscriminatedUnionEchoArgs],
+			[]
+		),
+		app_check_enums: IDL.Func([AppCheckEnumsArgs], [AppCheckEnumsResult], []),
+		app_check_nested_discriminated: IDL.Func(
+			[AppCheckNestedDiscriminatedArgs],
+			[AppCheckNestedDiscriminatedArgs],
+			[]
+		),
+		app_check_simple_variant: IDL.Func(
+			[AppCheckSimpleVariantArgs],
+			[AppCheckSimpleVariantArgs],
+			[]
+		),
 		app_demo_antonio: IDL.Func([AppDemoAntonioArgs], [AppDemoAntonioResult], ['query']),
 		app_hello_world: IDL.Func([AppAsyncQueryArgs], [AppAsyncQueryResult], ['query']),
 		app_query_no_args: IDL.Func([], [AppAsyncQueryResult], ['query']),

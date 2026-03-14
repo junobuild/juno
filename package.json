@@ -125,7 +125,7 @@
 		"@junobuild/cdn": "^2.3.0",
 		"@junobuild/core": "^5.2.1",
 		"@junobuild/ic-client": "^8.0.1",
-		"@junobuild/schema": "^1.0.0",
+		"@junobuild/schema": "^1.0.1",
 		"@junobuild/storage": "^2.3.0",
 		"@junobuild/utils": "^0.3.0",
 		"@zip.js/zip.js": "^2.8.11",

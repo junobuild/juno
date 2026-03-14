@@ -128,7 +128,6 @@
 		"@junobuild/schema": "^1.0.0",
 		"@junobuild/storage": "^2.3.0",
 		"@junobuild/utils": "^0.3.0",
-		"@junobuild/zod": "^1.0.0",
 		"@zip.js/zip.js": "^2.8.11",
 		"date-fns": "^4.1.0",
 		"dompurify": "^3.3.0",

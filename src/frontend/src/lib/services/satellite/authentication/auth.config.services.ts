@@ -37,7 +37,7 @@ import {
 	toNullable
 } from '@dfinity/utils';
 import { Principal } from '@icp-sdk/core/principal';
-import type { PrincipalText } from '@junobuild/zod';
+import type { PrincipalText } from '@junobuild/schema';
 import { get } from 'svelte/store';
 
 interface UpdateAuthConfigParams {

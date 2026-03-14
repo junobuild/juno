@@ -1,22 +1,22 @@
-import { defineUpdate, PrincipalSchema } from '@junobuild/functions';
+import { defineUpdate } from '@junobuild/functions';
 import { msgCaller } from '@junobuild/functions/ic-cdk';
 import { encodeDocData, setDocStore } from '@junobuild/functions/sdk';
-import * as z from 'zod';
+import { j } from '@junobuild/schema';
 
-const StatusSchema = z.discriminatedUnion('type', [
-	z.object({ type: z.literal('active'), owner: PrincipalSchema }),
-	z.object({ type: z.literal('inactive') }),
-	z.object({ type: z.literal('pending'), assignee: PrincipalSchema })
+const StatusSchema = j.discriminatedUnion('type', [
+	j.object({ type: j.literal('active'), owner: j.principal() }),
+	j.object({ type: j.literal('inactive') }),
+	j.object({ type: j.literal('pending'), assignee: j.principal() })
 ]);
 
 // The proc macros should support for enums associated with struct data (variantRecords)
 // i.e. json_data should be supported not only in struct but in enum too
 export const checkEnums = defineUpdate({
-	args: z.object({
-		username: z.string(),
+	args: j.object({
+		username: j.string(),
 		status: StatusSchema
 	}),
-	result: z.object({ status: z.literal('ok', 'error') }),
+	result: j.object({ status: j.literal('ok', 'error') }),
 	handler: (data) => {
 		const caller = msgCaller();
 
@@ -33,34 +33,34 @@ export const checkEnums = defineUpdate({
 	}
 });
 
-const SimpleVariantSchema = z.enum(['active', 'inactive', 'pending']);
+const SimpleVariantSchema = j.enum(['active', 'inactive', 'pending']);
 
 export const checkSimpleVariant = defineUpdate({
-	args: z.object({ value: SimpleVariantSchema }),
-	result: z.object({ value: SimpleVariantSchema }),
+	args: j.object({ value: SimpleVariantSchema }),
+	result: j.object({ value: SimpleVariantSchema }),
 	handler: (data) => data
 });
 
 export const checkDiscriminatedUnionEcho = defineUpdate({
-	args: z.object({ status: StatusSchema }),
-	result: z.object({ status: StatusSchema }),
+	args: j.object({ status: StatusSchema }),
+	result: j.object({ status: StatusSchema }),
 	handler: (data) => data
 });
 
-const DiscriminatedPrimitivesSchema = z.discriminatedUnion('kind', [
-	z.object({ kind: z.literal('text'), value: z.string() }),
-	z.object({ kind: z.literal('number'), value: z.number() }),
-	z.object({ kind: z.literal('flag'), value: z.boolean() })
+const DiscriminatedPrimitivesSchema = j.discriminatedUnion('kind', [
+	j.object({ kind: j.literal('text'), value: j.string() }),
+	j.object({ kind: j.literal('number'), value: j.number() }),
+	j.object({ kind: j.literal('flag'), value: j.boolean() })
 ]);
 
 export const checkDiscriminatedPrimitives = defineUpdate({
-	args: z.object({ data: DiscriminatedPrimitivesSchema }),
-	result: z.object({ data: DiscriminatedPrimitivesSchema }),
+	args: j.object({ data: DiscriminatedPrimitivesSchema }),
+	result: j.object({ data: DiscriminatedPrimitivesSchema }),
 	handler: (data) => data
 });
 
-const NestedDiscriminatedSchema = z.object({
-	id: z.string(),
+const NestedDiscriminatedSchema = j.object({
+	id: j.string(),
 	status: StatusSchema
 });
 

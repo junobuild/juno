@@ -1,5 +1,5 @@
 use proc_macro::TokenStream;
-use proc_macro2::Span;
+use proc_macro2::{Span, TokenStream as TokenStream2};
 use quote::quote;
 use syn::{parse_macro_input, Data, DeriveInput, Fields, Type};
 
@@ -122,11 +122,13 @@ fn derive_enum(
     variants: &syn::punctuated::Punctuated<syn::Variant, syn::token::Comma>,
     attrs: &[syn::Attribute],
 ) -> TokenStream {
-    let serde_tag_attr: proc_macro2::TokenStream = attrs
+    // Extracts the #[json_data(tag = "type")] attribute and converts it to #[serde(tag = "type")] for the mirror enum.
+    let serde_tag_attr: TokenStream2 = attrs
         .iter()
         .find(|a| a.path().is_ident("json_data"))
         .and_then(|a| {
             let meta = a.parse_args::<syn::MetaNameValue>().ok()?;
+
             if meta.path.is_ident("tag") {
                 if let syn::Expr::Lit(syn::ExprLit {
                     lit: syn::Lit::Str(s),
@@ -141,6 +143,10 @@ fn derive_enum(
         })
         .expect("JsonData on enums requires #[json_data(tag = \"...\")]");
 
+    // carries through any #[serde(...)] attributes (like #[serde(rename = "active")])
+    // maps field types to their JSON-safe equivalents:
+    // - replacing Principal with #[serde(with = "...")]
+    // - replacing nested struct types with their XxxJsonData mirror types
     let serialized_variants: Vec<_> = variants
         .iter()
         .map(|v| {
@@ -158,11 +164,14 @@ fn derive_enum(
                         .map(|f| {
                             let fname = &f.ident;
                             let ftype = &f.ty;
+
+                            // Support field rename e.g. #[serde(rename = "type")] for used in discriminatedUnion
                             let serde_attrs: Vec<_> = f
                                 .attrs
                                 .iter()
                                 .filter(|a| a.path().is_ident("serde"))
                                 .collect();
+
                             if let Some(with_path) = map_with_path(ftype) {
                                 quote! {
                                     #[serde(with = #with_path)]
@@ -202,6 +211,7 @@ fn derive_enum(
         })
         .collect();
 
+    // converts each variant of the original enum into the corresponding mirror enum variant
     let into_variants: Vec<_> = variants
         .iter()
         .map(|v| {
@@ -240,6 +250,7 @@ fn derive_enum(
         })
         .collect();
 
+    // Same as into_variants but reverse direction
     let from_variants: Vec<_> = variants
         .iter()
         .map(|v| {

@@ -14,7 +14,7 @@ import type {
 import type { CustomDomain } from '$lib/types/custom-domain';
 import type { CertifiedData } from '$lib/types/store';
 import type { VersionRegistry } from '$lib/types/version';
-import { PrincipalTextSchema } from '@dfinity/zod-schemas';
+import { PrincipalTextSchema } from '@junobuild/schema';
 import * as z from 'zod';
 
 export const PostMessageDataRequestDataSchema = z.object({

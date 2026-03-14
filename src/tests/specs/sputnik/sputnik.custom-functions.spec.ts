@@ -21,6 +21,7 @@ describe('Sputnik > Custom Functions', () => {
 	let controller: Identity;
 
 	const TEST_COLLECTION = 'test-custom-update-query';
+	const TEST_COLLECTION_ENUM = 'test-notes';
 
 	beforeAll(async () => {
 		const { pic: p, actor: a, canisterId: cId, controller: c } = await setupTestSputnik();
@@ -32,6 +33,7 @@ describe('Sputnik > Custom Functions', () => {
 
 		const { set_rule } = actor;
 		await set_rule({ Db: null }, TEST_COLLECTION, mockSetRule);
+		await set_rule({ Db: null }, TEST_COLLECTION_ENUM, mockSetRule);
 	});
 
 	afterAll(async () => {
@@ -195,5 +197,79 @@ describe('Sputnik > Custom Functions', () => {
 		expect(fromNullable(result.id)?.toText()).toEqual(canisterId.toText());
 		expect(fromNullable(result.sub.value)).toEqual(123n);
 		expect(fromNullable(result.sub.arr)).toEqual(Uint8Array.from([5, 6, 7]));
+	});
+
+	it('should support building complex enum', async () => {
+		const { app_check_enums } = actor;
+
+		const result = await app_check_enums({
+			username: 'Hello',
+			status: {
+				active: {
+					owner: mockPrincipal
+				}
+			}
+		});
+
+		expect(result.status).toEqual('ok');
+	});
+
+	it('should support simple variant echo', async () => {
+		const { app_check_simple_variant } = actor;
+
+		for (const value of [{ active: null }, { inactive: null }, { pending: null }] as const) {
+			const result = await app_check_simple_variant({ value });
+
+			expect(result.value).toEqual(value);
+		}
+	});
+
+	it('should support discriminated union echo', async () => {
+		const { app_check_discriminated_union_echo } = actor;
+
+		const active = await app_check_discriminated_union_echo({
+			status: { active: { owner: mockPrincipal } }
+		});
+
+		expect(active.status).toEqual({ active: { owner: mockPrincipal } });
+
+		const inactive = await app_check_discriminated_union_echo({
+			status: { inactive: null }
+		});
+
+		expect(inactive.status).toEqual({ inactive: null });
+
+		const pending = await app_check_discriminated_union_echo({
+			status: { pending: { assignee: mockPrincipal } }
+		});
+
+		expect(pending.status).toEqual({ pending: { assignee: mockPrincipal } });
+	});
+
+	it('should support discriminated union with primitive fields', async () => {
+		const { app_check_discriminated_primitives } = actor;
+
+		const r1 = await app_check_discriminated_primitives({ data: { text: { value: 'hello' } } });
+
+		expect(r1.data).toEqual({ text: { value: 'hello' } });
+
+		const r2 = await app_check_discriminated_primitives({ data: { number: { value: 42.5 } } });
+
+		expect(r2.data).toEqual({ number: { value: 42.5 } });
+
+		const r3 = await app_check_discriminated_primitives({ data: { flag: { value: true } } });
+
+		expect(r3.data).toEqual({ flag: { value: true } });
+	});
+
+	it('should support nested discriminated union', async () => {
+		const { app_check_nested_discriminated } = actor;
+
+		const result = await app_check_nested_discriminated({
+			id: 'abc123',
+			status: { active: { owner: mockPrincipal } }
+		});
+
+		expect(result).toEqual({ id: 'abc123', status: { active: { owner: mockPrincipal } } });
 	});
 });

@@ -1,4 +1,4 @@
-import { PrincipalTextSchema } from '@dfinity/zod-schemas';
+import { PrincipalTextSchema } from '@junobuild/schema';
 import * as z from 'zod';
 
 const DateTimeSchema = z.string().refine(

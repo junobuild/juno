@@ -17,6 +17,46 @@ export interface AppAsyncQueryResult {
 	value: Principal;
 	text: string;
 }
+export interface AppCheckDiscriminatedPrimitivesArgs {
+	data: AppCheckDiscriminatedPrimitivesArgsData;
+}
+export type AppCheckDiscriminatedPrimitivesArgsData =
+	| {
+			flag: { value: boolean };
+	  }
+	| { text: { value: string } }
+	| { number: { value: number } };
+export interface AppCheckDiscriminatedUnionEchoArgs {
+	status: AppCheckDiscriminatedUnionEchoArgsStatus;
+}
+export type AppCheckDiscriminatedUnionEchoArgsStatus =
+	| {
+			active: { owner: Principal };
+	  }
+	| { pending: { assignee: Principal } }
+	| { inactive: null };
+export interface AppCheckEnumsArgs {
+	status: AppCheckEnumsArgsStatus;
+	username: string;
+}
+export type AppCheckEnumsArgsStatus =
+	| { active: { owner: Principal } }
+	| { pending: { assignee: Principal } }
+	| { inactive: null };
+export interface AppCheckEnumsResult {
+	status: string;
+}
+export interface AppCheckNestedDiscriminatedArgs {
+	id: string;
+	status: AppCheckEnumsArgsStatus;
+}
+export interface AppCheckSimpleVariantArgs {
+	value: AppCheckSimpleVariantArgsValue;
+}
+export type AppCheckSimpleVariantArgsValue =
+	| { active: null }
+	| { pending: null }
+	| { inactive: null };
 export interface AppDemoAntonioArgs {
 	id: [] | [Principal];
 	sub: AppDemoAntonioArgsSub;
@@ -631,6 +671,20 @@ export interface _SERVICE {
 	upload_proposal_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;
 	app_async_query: ActorMethod<[AppAsyncQueryArgs], AppAsyncQueryResult>;
 	app_check_caller: ActorMethod<[], undefined>;
+	app_check_discriminated_primitives: ActorMethod<
+		[AppCheckDiscriminatedPrimitivesArgs],
+		AppCheckDiscriminatedPrimitivesArgs
+	>;
+	app_check_discriminated_union_echo: ActorMethod<
+		[AppCheckDiscriminatedUnionEchoArgs],
+		AppCheckDiscriminatedUnionEchoArgs
+	>;
+	app_check_enums: ActorMethod<[AppCheckEnumsArgs], AppCheckEnumsResult>;
+	app_check_nested_discriminated: ActorMethod<
+		[AppCheckNestedDiscriminatedArgs],
+		AppCheckNestedDiscriminatedArgs
+	>;
+	app_check_simple_variant: ActorMethod<[AppCheckSimpleVariantArgs], AppCheckSimpleVariantArgs>;
 	app_demo_antonio: ActorMethod<[AppDemoAntonioArgs], AppDemoAntonioResult>;
 	app_hello_world: ActorMethod<[AppAsyncQueryArgs], AppAsyncQueryResult>;
 	app_query_no_args: ActorMethod<[], AppAsyncQueryResult>;

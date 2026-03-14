@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+npm rm @junobuild/{cli-tools,config,config-loader,errors,functions,schema,admin,cdn,core,ic-client,storage,utils,auth}
+
+npm i @junobuild/{cli-tools,config,config-loader,errors,functions} --save-dev
+
+npm i @junobuild/{schema,admin,cdn,core,ic-client,storage,utils,auth}

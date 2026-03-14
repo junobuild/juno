@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { nonNullish, notEmptyString } from '@dfinity/utils';
 	import type { Principal } from '@icp-sdk/core/principal';
-	import type { PrincipalText } from '@junobuild/zod';
+	import type { PrincipalText } from '@junobuild/schema';
 	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import Identifier from '$lib/components/ui/Identifier.svelte';

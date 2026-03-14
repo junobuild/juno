@@ -15,7 +15,7 @@ import { satelliteName } from '$lib/utils/satellite.utils';
 import { nonNullish, notEmptyString } from '@dfinity/utils';
 import type { Identity } from '@icp-sdk/core/agent';
 import type { Principal } from '@icp-sdk/core/principal';
-import type { PrincipalText } from '@junobuild/zod';
+import type { PrincipalText } from '@junobuild/schema';
 
 interface SetCliControllersParams {
 	// If set, then controllers are set with the Mission Control

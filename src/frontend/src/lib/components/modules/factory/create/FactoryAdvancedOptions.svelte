@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { PrincipalText } from '@junobuild/zod';
+	import type { PrincipalText } from '@junobuild/schema';
 	import type { MissionControlDid } from '$declarations';
 	import CanisterSubnets from '$lib/components/modules/canister/display/CanisterSubnets.svelte';
 	import CanisterMonitoringDefaultStrategy from '$lib/components/modules/canister/monitoring/CanisterMonitoringDefaultStrategy.svelte';

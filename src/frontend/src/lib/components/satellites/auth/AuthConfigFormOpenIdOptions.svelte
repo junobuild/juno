@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { fromNullable, nonNullish, notEmptyString } from '@dfinity/utils';
-	import { type PrincipalText, PrincipalTextSchema } from '@junobuild/zod';
+	import { type PrincipalText, PrincipalTextSchema } from '@junobuild/schema';
 	import { onMount } from 'svelte';
 	import { quintOut } from 'svelte/easing';
 	import { slide } from 'svelte/transition';

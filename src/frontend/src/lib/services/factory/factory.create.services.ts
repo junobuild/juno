@@ -57,7 +57,7 @@ import { waitAndRestartWallet } from '$lib/utils/wallet.utils';
 import { assertNonNullish, isEmptyString, isNullish, nonNullish, toNullable } from '@dfinity/utils';
 import type { Identity } from '@icp-sdk/core/agent';
 import { Principal } from '@icp-sdk/core/principal';
-import type { PrincipalText } from '@junobuild/zod';
+import type { PrincipalText } from '@junobuild/schema';
 import { get } from 'svelte/store';
 
 type GetFeeBalance =

@@ -1,4 +1,4 @@
-import type { PrincipalText } from '@junobuild/zod';
+import type { PrincipalText } from '@junobuild/schema';
 
 export interface SubnetMetadata {
 	type: 'application' | string;

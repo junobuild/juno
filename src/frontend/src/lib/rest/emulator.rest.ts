@@ -4,7 +4,7 @@ import type { OpenIdAuthProvider } from '$lib/types/auth';
 import { assertResponseOk } from '$lib/utils/rest.utils';
 import { assertNonNullish, isNullish } from '@dfinity/utils';
 import { encodeIcrcAccount } from '@icp-sdk/canisters/ledger/icrc';
-import { type PrincipalText, PrincipalTextSchema } from '@junobuild/zod';
+import { type PrincipalText, PrincipalTextSchema } from '@junobuild/schema';
 import { get } from 'svelte/store';
 
 export const getEmulatorMainIdentity = async (): Promise<PrincipalText> => {

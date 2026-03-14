@@ -1,6 +1,6 @@
 import { PrincipalSchema } from '$lib/schemas/principal.schema';
 import type { Token } from '@dfinity/utils';
-import { PrincipalTextSchema } from '@junobuild/zod';
+import { PrincipalTextSchema } from '@junobuild/schema';
 import * as z from 'zod';
 
 export const IcrcAccountTextSchema = z.string();

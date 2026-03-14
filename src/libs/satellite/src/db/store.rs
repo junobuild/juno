@@ -1,5 +1,5 @@
 use crate::auth::store::get_config as get_auth_config;
-use crate::controllers::store::get_controllers;
+use crate::access_keys::store::get_access_keys;
 use crate::db::assert::{
     assert_delete_doc, assert_get_doc, assert_get_docs, assert_set_config, assert_set_doc,
 };
@@ -84,7 +84,7 @@ pub fn get_doc_store(
     collection: CollectionKey,
     key: Key,
 ) -> Result<Option<Doc>, String> {
-    let controllers: Controllers = get_controllers();
+    let controllers: Controllers = get_access_keys();
 
     let context = StoreContext {
         caller,
@@ -154,7 +154,7 @@ pub fn set_doc_store(
     key: Key,
     value: SetDoc,
 ) -> Result<DocContext<DocUpsert>, String> {
-    let controllers: Controllers = get_controllers();
+    let controllers: Controllers = get_access_keys();
     let config = get_config();
 
     let context = StoreContext {
@@ -189,7 +189,7 @@ pub fn internal_set_doc_store(
     value: SetDoc,
     assert_options: &AssertSetDocOptions,
 ) -> Result<DocContext<DocUpsert>, String> {
-    let controllers: Controllers = get_controllers();
+    let controllers: Controllers = get_access_keys();
     let config = get_config();
 
     let context = StoreContext {
@@ -281,7 +281,7 @@ pub fn list_docs_store(
     collection: CollectionKey,
     filter: &ListParams,
 ) -> Result<ListResults<Doc>, String> {
-    let controllers: Controllers = get_controllers();
+    let controllers: Controllers = get_access_keys();
 
     secure_get_docs(caller, &controllers, collection, filter)
 }
@@ -395,7 +395,7 @@ pub fn delete_doc_store(
     key: Key,
     value: DelDoc,
 ) -> Result<DocContext<Option<Doc>>, String> {
-    let controllers: Controllers = get_controllers();
+    let controllers: Controllers = get_access_keys();
 
     let context = StoreContext {
         caller,
@@ -540,7 +540,7 @@ pub fn delete_filtered_docs_store(
     collection: CollectionKey,
     filter: &ListParams,
 ) -> Result<Vec<DocContext<Option<Doc>>>, String> {
-    let controllers: Controllers = get_controllers();
+    let controllers: Controllers = get_access_keys();
 
     let docs = secure_get_docs(caller, &controllers, collection.clone(), filter)?;
 

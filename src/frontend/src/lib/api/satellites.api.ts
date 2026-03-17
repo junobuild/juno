@@ -143,7 +143,7 @@ export const listControllers = async ({
 }: {
 	satelliteId: Principal;
 	identity: OptionIdentity;
-}): Promise<[Principal, MissionControlDid.Controller][]> => {
+}): Promise<[Principal, MissionControlDid.AccessKey][]> => {
 	const actor = await getSatelliteActor({ satelliteId, identity });
 	return actor.list_controllers();
 };
@@ -323,7 +323,7 @@ export const setControllers = async ({
 	args: SatelliteDid.SetControllersArgs;
 	satelliteId: Principal;
 	identity: OptionIdentity;
-}): Promise<[Principal, SatelliteDid.Controller][]> => {
+}): Promise<[Principal, SatelliteDid.AccessKey][]> => {
 	const { set_controllers } = await getSatelliteActor(rest);
 	return set_controllers(args);
 };
@@ -335,7 +335,7 @@ export const deleteControllers = async ({
 	args: SatelliteDid.DeleteControllersArgs;
 	satelliteId: Principal;
 	identity: OptionIdentity;
-}): Promise<[Principal, SatelliteDid.Controller][]> => {
+}): Promise<[Principal, SatelliteDid.AccessKey][]> => {
 	const { del_controllers } = await getSatelliteActor(rest);
 	return del_controllers(args);
 };

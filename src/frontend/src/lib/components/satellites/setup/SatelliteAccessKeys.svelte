@@ -28,7 +28,7 @@
 
 	let { satellite }: Props = $props();
 
-	const list = (): Promise<[Principal, MissionControlDid.Controller][]> =>
+	const list = (): Promise<[Principal, MissionControlDid.AccessKey][]> =>
 		listControllers({ satelliteId: satellite.satellite_id, identity: $authIdentity });
 
 	const remove = async (accessKey: AccessKeyIdParam): Promise<AddAccessKeyResult> => {

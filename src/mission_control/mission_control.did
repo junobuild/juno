@@ -1,15 +1,15 @@
-type Account = record { owner : principal; subaccount : opt blob };
-type Config = record { monitoring : opt MonitoringConfig };
-type Controller = record {
+type AccessKey = record {
   updated_at : nat64;
   metadata : vec record { text; text };
-  kind : opt ControllerKind;
+  kind : opt AccessKeyKind;
   created_at : nat64;
-  scope : ControllerScope;
+  scope : AccessKeyScope;
   expires_at : opt nat64;
 };
-type ControllerKind = variant { Emulator; Automation };
-type ControllerScope = variant { Write; Admin; Submit };
+type AccessKeyKind = variant { Emulator; Automation };
+type AccessKeyScope = variant { Write; Admin; Submit };
+type Account = record { owner : principal; subaccount : opt blob };
+type Config = record { monitoring : opt MonitoringConfig };
 type CreateCanisterConfig = record {
   subnet_id : opt principal;
   name : opt text;
@@ -115,8 +115,8 @@ type SegmentsMonitoringStrategy = record {
 };
 type SetController = record {
   metadata : vec record { text; text };
-  kind : opt ControllerKind;
-  scope : ControllerScope;
+  kind : opt AccessKeyKind;
+  scope : AccessKeyScope;
   expires_at : opt nat64;
 };
 type Settings = record { monitoring : opt Monitoring };
@@ -185,7 +185,7 @@ service : (InitMissionControlArgs) -> {
   icp_transfer : (TransferArgs) -> (Result);
   icrc_transfer : (principal, TransferArg) -> (Result_1);
   list_mission_control_controllers : () -> (
-      vec record { principal; Controller },
+      vec record { principal; AccessKey },
     ) query;
   list_orbiters : () -> (vec record { principal; Orbiter }) query;
   list_satellites : () -> (vec record { principal; Satellite }) query;

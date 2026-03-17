@@ -366,21 +366,21 @@ export const idlFactory = ({ IDL }) => {
 		items: IDL.Vec(IDL.Tuple(IDL.Text, AssetNoContent)),
 		items_length: IDL.Nat64
 	});
-	const ControllerKind = IDL.Variant({
+	const AccessKeyKind = IDL.Variant({
 		Emulator: IDL.Null,
 		Automation: IDL.Null
 	});
-	const ControllerScope = IDL.Variant({
+	const AccessKeyScope = IDL.Variant({
 		Write: IDL.Null,
 		Admin: IDL.Null,
 		Submit: IDL.Null
 	});
-	const Controller = IDL.Record({
+	const AccessKey = IDL.Record({
 		updated_at: IDL.Nat64,
 		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
-		kind: IDL.Opt(ControllerKind),
+		kind: IDL.Opt(AccessKeyKind),
 		created_at: IDL.Nat64,
-		scope: ControllerScope,
+		scope: AccessKeyScope,
 		expires_at: IDL.Opt(IDL.Nat64)
 	});
 	const CustomDomain = IDL.Record({
@@ -459,8 +459,8 @@ export const idlFactory = ({ IDL }) => {
 	});
 	const SetController = IDL.Record({
 		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
-		kind: IDL.Opt(ControllerKind),
-		scope: ControllerScope,
+		kind: IDL.Opt(AccessKeyKind),
+		scope: AccessKeyScope,
 		expires_at: IDL.Opt(IDL.Nat64)
 	});
 	const SetControllersArgs = IDL.Record({
@@ -543,7 +543,7 @@ export const idlFactory = ({ IDL }) => {
 		),
 		list_accounts: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Principal, Account))], ['query']),
 		list_assets: IDL.Func([IDL.Text, ListParams], [ListResults], ['query']),
-		list_controllers: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Principal, Controller))], ['query']),
+		list_controllers: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Principal, AccessKey))], ['query']),
 		list_custom_domains: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Text, CustomDomain))], ['query']),
 		list_icp_payments: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Nat64, IcpPayment))], ['query']),
 		list_icrc_payments: IDL.Func([], [IDL.Vec(IDL.Tuple(IcrcPaymentKey, IcrcPayment))], ['query']),

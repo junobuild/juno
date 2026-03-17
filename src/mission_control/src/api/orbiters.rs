@@ -11,7 +11,7 @@ use crate::types::state::{Orbiter, Orbiters};
 use ic_cdk_macros::{query, update};
 use junobuild_shared::ic::UnwrapOrTrap;
 use junobuild_shared::types::interface::SetController;
-use junobuild_shared::types::state::{ControllerId, Metadata, OrbiterId, UserId};
+use junobuild_shared::types::state::{AccessKeyId, Metadata, OrbiterId, UserId};
 
 #[query(guard = "caller_is_user_or_admin_controller")]
 fn list_orbiters() -> Orbiters {
@@ -48,7 +48,7 @@ fn set_orbiter_metadata(orbiter_id: OrbiterId, metadata: Metadata) -> Orbiter {
 #[update(guard = "caller_is_user_or_admin_controller")]
 async fn set_orbiters_controllers(
     orbiter_ids: Vec<OrbiterId>,
-    controller_ids: Vec<ControllerId>,
+    controller_ids: Vec<AccessKeyId>,
     controller: SetController,
 ) {
     for orbiter_id in orbiter_ids {

@@ -5,7 +5,7 @@ pub mod state {
     use ic_stable_structures::StableBTreeMap;
     use junobuild_shared::types::memory::Memory;
     use junobuild_shared::types::state::{
-        Controllers, Metadata, OrbiterSatelliteConfig, SatelliteId, Timestamp, Version,
+        AccessKeys, Metadata, OrbiterSatelliteConfig, SatelliteId, Timestamp, Version,
     };
     use serde::{Deserialize, Serialize};
     use std::collections::HashMap;
@@ -47,7 +47,7 @@ pub mod state {
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
     pub struct HeapState {
-        pub controllers: Controllers,
+        pub controllers: AccessKeys,
         pub config: SatelliteConfigs,
     }
 

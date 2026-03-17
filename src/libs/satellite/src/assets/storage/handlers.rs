@@ -1,13 +1,13 @@
+use crate::access_keys::store::get_access_keys;
 use crate::assets::storage::state::{
     get_asset, get_config, get_rule, insert_asset, insert_asset_encoding,
 };
 use crate::certification::strategy_impls::StorageCertificate;
-use crate::controllers::store::get_controllers;
 use junobuild_collections::assert::stores::assert_permission;
 use junobuild_collections::types::rules::Rule;
 use junobuild_shared::ic::api::id;
 use junobuild_shared::types::core::Blob;
-use junobuild_shared::types::state::Controllers;
+use junobuild_shared::types::state::AccessKeys;
 use junobuild_storage::constants::ASSET_ENCODING_NO_COMPRESSION;
 use junobuild_storage::errors::JUNO_STORAGE_ERROR_SET_NOT_ALLOWED;
 use junobuild_storage::http::types::HeaderField;
@@ -49,7 +49,7 @@ pub fn set_asset_handler(
     let existing_asset = get_asset(&key.collection, &key.full_path, &rule);
 
     if let Some(ref existing_asset) = existing_asset {
-        let controllers: Controllers = get_controllers();
+        let controllers: AccessKeys = get_access_keys();
         // The handler is used in Serverless Functions therefore the caller is itself.
         // This allows to assert for permission. Useful for collection set as "Private".
         let caller = id();

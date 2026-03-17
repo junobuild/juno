@@ -23,7 +23,7 @@
 
 	let { missionControlId }: Props = $props();
 
-	const list = (): Promise<[Principal, MissionControlDid.Controller][]> =>
+	const list = (): Promise<[Principal, MissionControlDid.AccessKey][]> =>
 		listMissionControlControllers({ missionControlId, identity: $authIdentity });
 
 	const remove = async (accessKey: AccessKeyIdParam): Promise<AddAccessKeyResult> =>
@@ -40,7 +40,7 @@
 			...accessKey
 		});
 
-	const pseudoAdminController: MissionControlDid.Controller = {
+	const pseudoAdminController: MissionControlDid.AccessKey = {
 		created_at: 0n,
 		updated_at: 0n,
 		expires_at: [],
@@ -49,13 +49,13 @@
 		scope: { Admin: null }
 	};
 
-	let extraControllers = $derived<[Principal, MissionControlDid.Controller][]>([
+	let extraControllers = $derived<[Principal, MissionControlDid.AccessKey][]>([
 		[missionControlId, pseudoAdminController],
 		...(nonNullish($authIdentity)
 			? [
 					[$authIdentity.getPrincipal(), pseudoAdminController] as [
 						Principal,
-						MissionControlDid.Controller
+						MissionControlDid.AccessKey
 					]
 				]
 			: [])

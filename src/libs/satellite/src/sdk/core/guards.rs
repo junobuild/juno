@@ -1,13 +1,13 @@
-use crate::controllers::store::get_controllers;
+use crate::access_keys::store::get_access_keys;
 use crate::errors::auth::{
     JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER, JUNO_AUTH_ERROR_NOT_CONTROLLER,
     JUNO_AUTH_ERROR_NOT_WRITE_CONTROLLER,
 };
 use junobuild_shared::ic::api::caller;
-use junobuild_shared::segments::controllers::{
-    controller_can_write, is_admin_controller, is_valid_controller,
+use junobuild_shared::segments::access_keys::{
+    access_key_can_write, is_admin_controller, is_valid_access_key,
 };
-use junobuild_shared::types::state::Controllers;
+use junobuild_shared::types::state::AccessKeys;
 
 /// Guard that succeeds if the caller is an admin access key of this satellite.
 ///
@@ -25,7 +25,7 @@ use junobuild_shared::types::state::Controllers;
 /// Returns an error string if the caller is not an admin access key.
 pub fn caller_is_admin() -> Result<(), String> {
     let caller = caller();
-    let controllers: Controllers = get_controllers();
+    let controllers: AccessKeys = get_access_keys();
 
     if is_admin_controller(caller, &controllers) {
         Ok(())
@@ -47,9 +47,9 @@ pub fn caller_is_admin() -> Result<(), String> {
 /// Returns an error string if the caller does not have write permission.
 pub fn caller_has_write_permission() -> Result<(), String> {
     let caller = caller();
-    let controllers: Controllers = get_controllers();
+    let controllers: AccessKeys = get_access_keys();
 
-    if controller_can_write(caller, &controllers) {
+    if access_key_can_write(caller, &controllers) {
         Ok(())
     } else {
         Err(JUNO_AUTH_ERROR_NOT_WRITE_CONTROLLER.to_string())
@@ -69,9 +69,9 @@ pub fn caller_has_write_permission() -> Result<(), String> {
 /// Returns an error string if the caller is not a recognized access key.
 pub fn caller_is_access_key() -> Result<(), String> {
     let caller = caller();
-    let controllers: Controllers = get_controllers();
+    let controllers: AccessKeys = get_access_keys();
 
-    if is_valid_controller(caller, &controllers) {
+    if is_valid_access_key(caller, &controllers) {
         Ok(())
     } else {
         Err(JUNO_AUTH_ERROR_NOT_CONTROLLER.to_string())

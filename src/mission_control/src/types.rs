@@ -4,7 +4,7 @@ pub mod state {
     use ic_stable_structures::StableBTreeMap;
     use junobuild_shared::types::memory::Memory;
     use junobuild_shared::types::monitoring::{CyclesBalance, FundingFailure};
-    use junobuild_shared::types::state::{Controllers, Metadata, OrbiterId, SegmentId, Timestamp};
+    use junobuild_shared::types::state::{AccessKeys, Metadata, OrbiterId, SegmentId, Timestamp};
     use junobuild_shared::types::state::{SatelliteId, UserId};
     use serde::{Deserialize, Serialize};
     use std::collections::HashMap;
@@ -32,7 +32,7 @@ pub mod state {
     pub struct HeapState {
         pub user: User,
         pub satellites: Satellites,
-        pub controllers: Controllers,
+        pub controllers: AccessKeys,
         pub orbiters: Orbiters,
         pub settings: Option<MissionControlSettings>,
     }

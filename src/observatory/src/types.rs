@@ -6,7 +6,7 @@ pub mod state {
     use junobuild_shared::rate::types::{RateConfig, RateTokens};
     use junobuild_shared::types::memory::Memory;
     use junobuild_shared::types::state::{
-        Controllers, NotificationKind, Segment, SegmentId, Timestamp,
+        AccessKeys, NotificationKind, Segment, SegmentId, Timestamp,
     };
     use serde::Serialize;
     use std::collections::HashMap;
@@ -28,7 +28,7 @@ pub mod state {
 
     #[derive(Default, CandidType, Serialize, Deserialize)]
     pub struct HeapState {
-        pub controllers: Controllers,
+        pub controllers: AccessKeys,
         pub env: Option<Env>,
         pub openid: Option<OpenId>,
         pub rates: Option<Rates>,

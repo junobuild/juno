@@ -7,26 +7,23 @@ use crate::guards::caller_is_user_or_admin_controller;
 use ic_cdk_macros::{query, update};
 use junobuild_shared::ic::UnwrapOrTrap;
 use junobuild_shared::types::interface::SetController;
-use junobuild_shared::types::state::{ControllerId, Controllers};
+use junobuild_shared::types::state::{AccessKeyId, AccessKeys};
 
 #[update(guard = "caller_is_user_or_admin_controller")]
-async fn set_mission_control_controllers(
-    controllers: Vec<ControllerId>,
-    controller: SetController,
-) {
+async fn set_mission_control_controllers(controllers: Vec<AccessKeyId>, controller: SetController) {
     set_controllers_to_mission_control(&controllers, &controller)
         .await
         .unwrap_or_trap();
 }
 
 #[update(guard = "caller_is_user_or_admin_controller")]
-async fn del_mission_control_controllers(controllers: Vec<ControllerId>) {
+async fn del_mission_control_controllers(controllers: Vec<AccessKeyId>) {
     delete_controllers_to_mission_control(&controllers)
         .await
         .unwrap_or_trap();
 }
 
 #[query(guard = "caller_is_user_or_admin_controller")]
-fn list_mission_control_controllers() -> Controllers {
+fn list_mission_control_controllers() -> AccessKeys {
     get_controllers()
 }

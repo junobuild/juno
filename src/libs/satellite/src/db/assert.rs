@@ -26,7 +26,7 @@ use junobuild_collections::assert::stores::{
 use junobuild_collections::types::rules::Permission;
 use junobuild_shared::assert::{assert_description_length, assert_max_memory_size, assert_version};
 use junobuild_shared::types::core::Key;
-use junobuild_shared::types::state::{Controllers, Version};
+use junobuild_shared::types::state::{AccessKeys, Version};
 
 pub fn assert_get_doc(
     &StoreContext {
@@ -169,7 +169,7 @@ fn assert_memory_size(config: &Option<DbConfig>) -> Result<(), String> {
 
 fn assert_read_permission(
     caller: Principal,
-    controllers: &Controllers,
+    controllers: &AccessKeys,
     current_doc: &Doc,
     rule: &Permission,
 ) -> Result<(), String> {
@@ -182,7 +182,7 @@ fn assert_read_permission(
 
 fn assert_write_permission(
     caller: Principal,
-    controllers: &Controllers,
+    controllers: &AccessKeys,
     current_doc: &Option<Doc>,
     rule: &Permission,
 ) -> Result<(), String> {

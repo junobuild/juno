@@ -8,7 +8,7 @@ use crate::assets::storage::store::{
 };
 use crate::assets::storage::strategy_impls::StorageState;
 use crate::types::interface::DeleteProposalAssets;
-use crate::{caller, get_controllers};
+use crate::{caller, get_access_keys};
 use junobuild_cdn::proposals::{
     CommitProposal, ListProposalResults, ListProposalsParams, Proposal, ProposalId, ProposalType,
     RejectProposal,
@@ -17,7 +17,7 @@ use junobuild_shared::ic::response::ManualReply;
 use junobuild_shared::ic::UnwrapOrTrap;
 use junobuild_shared::types::core::DomainName;
 use junobuild_shared::types::domain::CustomDomains;
-use junobuild_shared::types::state::Controllers;
+use junobuild_shared::types::state::AccessKeys;
 use junobuild_storage::store::{commit_batch as commit_batch_storage, create_chunk};
 use junobuild_storage::types::interface::{
     CommitBatch, InitAssetKey, InitUploadResult, UploadChunk, UploadChunkResult,
@@ -123,7 +123,7 @@ pub fn upload_proposal_asset_chunk(chunk: UploadChunk) -> UploadChunkResult {
 pub fn commit_proposal_asset_upload(commit: CommitBatch) {
     let caller = caller();
 
-    let controllers: Controllers = get_controllers();
+    let controllers: AccessKeys = get_access_keys();
     let config = get_config_store();
 
     commit_batch_storage(
@@ -141,7 +141,7 @@ pub fn commit_proposal_asset_upload(commit: CommitBatch) {
 pub fn commit_proposal_many_assets_upload(commits: Vec<CommitBatch>) {
     let caller = caller();
 
-    let controllers: Controllers = get_controllers();
+    let controllers: AccessKeys = get_access_keys();
     let config = get_config_store();
 
     for commit in commits {

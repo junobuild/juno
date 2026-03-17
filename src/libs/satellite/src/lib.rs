@@ -1,11 +1,11 @@
 #![doc = include_str!("../README.md")]
 
+mod access_keys;
 mod api;
 mod assets;
 mod auth;
 mod automation;
 mod certification;
-mod controllers;
 mod db;
 mod errors;
 mod hooks;
@@ -49,7 +49,7 @@ use junobuild_shared::types::interface::{
 };
 use junobuild_shared::types::list::ListParams;
 use junobuild_shared::types::list::ListResults;
-use junobuild_shared::types::state::Controllers;
+use junobuild_shared::types::state::AccessKeys;
 use junobuild_storage::http::types::{
     HttpRequest, HttpResponse, StreamingCallbackHttpResponse, StreamingCallbackToken,
 };
@@ -223,13 +223,13 @@ pub fn switch_storage_system_memory() {
 
 #[doc(hidden)]
 #[update(guard = "caller_is_admin")]
-pub fn set_controllers(args: SetControllersArgs) -> Controllers {
+pub fn set_controllers(args: SetControllersArgs) -> AccessKeys {
     api::controllers::set_controllers(args)
 }
 
 #[doc(hidden)]
 #[update(guard = "caller_is_admin")]
-pub fn del_controllers(args: DeleteControllersArgs) -> Controllers {
+pub fn del_controllers(args: DeleteControllersArgs) -> AccessKeys {
     api::controllers::del_controllers(args)
 }
 
@@ -241,7 +241,7 @@ pub fn del_controller_self() {
 
 #[doc(hidden)]
 #[query(guard = "caller_is_admin")]
-pub fn list_controllers() -> Controllers {
+pub fn list_controllers() -> AccessKeys {
     api::controllers::list_controllers()
 }
 

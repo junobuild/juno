@@ -1,5 +1,15 @@
 import service "satellite_extension.did";
 
+type AccessKey = record {
+  updated_at : nat64;
+  metadata : vec record { text; text };
+  kind : opt AccessKeyKind;
+  created_at : nat64;
+  scope : AccessKeyScope;
+  expires_at : opt nat64;
+};
+type AccessKeyKind = variant { Emulator; Automation };
+type AccessKeyScope = variant { Write; Admin; Submit };
 type AssetEncodingNoContent = record {
   modified : nat64;
   sha256 : blob;
@@ -94,16 +104,6 @@ type Config = record {
   automation : opt AutomationConfig;
 };
 type ConfigMaxMemorySize = record { stable : opt nat64; heap : opt nat64 };
-type Controller = record {
-  updated_at : nat64;
-  metadata : vec record { text; text };
-  kind : opt ControllerKind;
-  created_at : nat64;
-  scope : ControllerScope;
-  expires_at : opt nat64;
-};
-type ControllerKind = variant { Emulator; Automation };
-type ControllerScope = variant { Write; Admin; Submit };
 type CustomDomain = record {
   updated_at : nat64;
   created_at : nat64;
@@ -353,8 +353,8 @@ type SetAutomationConfig = record {
 };
 type SetController = record {
   metadata : vec record { text; text };
-  kind : opt ControllerKind;
-  scope : ControllerScope;
+  kind : opt AccessKeyKind;
+  scope : AccessKeyScope;
   expires_at : opt nat64;
 };
 type SetControllersArgs = record {
@@ -454,7 +454,7 @@ service : (InitSatelliteArgs) -> {
   del_assets : (text) -> ();
   del_controller_self : () -> ();
   del_controllers : (DeleteControllersArgs) -> (
-      vec record { principal; Controller },
+      vec record { principal; AccessKey },
     );
   del_custom_domain : (text) -> ();
   del_doc : (text, text, DelDoc) -> ();
@@ -493,7 +493,7 @@ service : (InitSatelliteArgs) -> {
       vec record { text; InitUploadResult },
     );
   list_assets : (text, ListParams) -> (ListResults) query;
-  list_controllers : () -> (vec record { principal; Controller }) query;
+  list_controllers : () -> (vec record { principal; AccessKey }) query;
   list_custom_domains : () -> (vec record { text; CustomDomain }) query;
   list_docs : (text, ListParams) -> (ListResults_1) query;
   list_proposals : (ListProposalsParams) -> (ListProposalResults) query;
@@ -504,7 +504,7 @@ service : (InitSatelliteArgs) -> {
   set_auth_config : (SetAuthenticationConfig) -> (AuthenticationConfig);
   set_automation_config : (SetAutomationConfig) -> (AutomationConfig);
   set_controllers : (SetControllersArgs) -> (
-      vec record { principal; Controller },
+      vec record { principal; AccessKey },
     );
   set_custom_domain : (text, opt text) -> ();
   set_db_config : (SetDbConfig) -> (DbConfig);

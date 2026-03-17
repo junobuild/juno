@@ -1,6 +1,6 @@
 use candid::Principal;
 use junobuild_shared::mgmt::ic::update_canister_controllers;
-use junobuild_shared::types::state::ControllerId;
+use junobuild_shared::types::state::AccessKeyId;
 use junobuild_shared::types::state::UserId;
 
 /// Once mission control is created:
@@ -23,7 +23,7 @@ pub async fn update_mission_control_controllers(
 // Note: we install the code the first time with the console as a controller to avoid to have to populate the satellite wasm in each mission control center.
 pub async fn remove_console_controller(
     canister_id: &Principal,
-    controllers: &Vec<ControllerId>,
+    controllers: &Vec<AccessKeyId>,
 ) -> Result<(), String> {
     let result = update_canister_controllers(*canister_id, controllers.to_owned()).await;
 

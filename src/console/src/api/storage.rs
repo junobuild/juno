@@ -9,7 +9,7 @@ use junobuild_collections::types::core::CollectionKey;
 use junobuild_shared::ic::api::caller;
 use junobuild_shared::ic::UnwrapOrTrap;
 use junobuild_shared::types::list::{ListParams, ListResults};
-use junobuild_shared::types::state::Controllers;
+use junobuild_shared::types::state::AccessKeys;
 use junobuild_storage::store::{commit_batch as commit_batch_storage, create_chunk};
 use junobuild_storage::types::interface::{
     AssetNoContent, CommitBatch, InitAssetKey, InitUploadResult, UploadChunk, UploadChunkResult,
@@ -64,7 +64,7 @@ fn upload_proposal_asset_chunk(chunk: UploadChunk) -> UploadChunkResult {
 fn commit_proposal_asset_upload(commit: CommitBatch) {
     let caller = caller();
 
-    let controllers: Controllers = get_controllers();
+    let controllers: AccessKeys = get_controllers();
     let config = junobuild_cdn::storage::heap::get_config(&CdnHeap);
 
     commit_batch_storage(
@@ -83,7 +83,7 @@ fn commit_proposal_asset_upload(commit: CommitBatch) {
 fn commit_proposal_many_assets_upload(commits: Vec<CommitBatch>) {
     let caller = caller();
 
-    let controllers: Controllers = get_controllers();
+    let controllers: AccessKeys = get_controllers();
     let config = junobuild_cdn::storage::heap::get_config(&CdnHeap);
 
     for commit in commits {

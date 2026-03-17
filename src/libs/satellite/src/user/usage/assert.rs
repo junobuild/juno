@@ -9,8 +9,8 @@ use crate::SetDoc;
 use junobuild_collections::assert::collection::is_system_collection;
 use junobuild_collections::constants::db::COLLECTION_USER_USAGE_KEY;
 use junobuild_collections::types::core::CollectionKey;
-use junobuild_shared::segments::controllers::controller_can_write;
-use junobuild_shared::types::state::{Controllers, UserId};
+use junobuild_shared::segments::access_keys::access_key_can_write;
+use junobuild_shared::types::state::{AccessKeys, UserId};
 use junobuild_utils::decode_doc_data;
 // ---------------------------------------------------------
 // Increment user usage - i.e. when a user edit, create or delete
@@ -18,7 +18,7 @@ use junobuild_utils::decode_doc_data;
 
 pub fn increment_and_assert_db_usage(
     caller: UserId,
-    controllers: &Controllers,
+    controllers: &AccessKeys,
     collection: &CollectionKey,
     max_changes_per_user: Option<u32>,
 ) -> Result<(), String> {
@@ -33,7 +33,7 @@ pub fn increment_and_assert_db_usage(
 
 pub fn increment_and_assert_storage_usage(
     caller: UserId,
-    controllers: &Controllers,
+    controllers: &AccessKeys,
     collection: &CollectionKey,
     max_changes_per_user: Option<u32>,
 ) -> Result<(), String> {
@@ -48,7 +48,7 @@ pub fn increment_and_assert_storage_usage(
 
 fn increment_and_assert_usage(
     caller: UserId,
-    controllers: &Controllers,
+    controllers: &AccessKeys,
     collection: &CollectionKey,
     collection_type: &CollectionType,
     max_changes_per_user: Option<u32>,
@@ -59,7 +59,7 @@ fn increment_and_assert_usage(
     }
 
     // We only collect usage for users
-    if controller_can_write(caller, controllers) {
+    if access_key_can_write(caller, controllers) {
         return Ok(());
     }
 

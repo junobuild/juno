@@ -21,17 +21,17 @@
 	import { metadataProfile } from '$lib/utils/metadata.utils';
 
 	interface Props {
-		list: () => Promise<[Principal, MissionControlDid.Controller][]>;
+		list: () => Promise<[Principal, MissionControlDid.AccessKey][]>;
 		remove: (params: AccessKeyIdParam) => Promise<AddAccessKeyResult>;
 		add: (params: AddAccessKeyParams) => Promise<AddAccessKeyResult>;
 		segment: CanisterSegmentWithLabel;
 		// The canister and user are controllers of the mission control but not added in its state per default
-		extraControllers?: [Principal, MissionControlDid.Controller][];
+		extraControllers?: [Principal, MissionControlDid.AccessKey][];
 	}
 
 	let { list, remove, add, segment, extraControllers = [] }: Props = $props();
 
-	let controllers = $state<[Principal, MissionControlDid.Controller][]>([]);
+	let controllers = $state<[Principal, MissionControlDid.AccessKey][]>([]);
 
 	const load = async () => {
 		try {
@@ -52,9 +52,9 @@
 
 	let visibleDelete = $state(false);
 	let visibleInfo = $state(false);
-	let selectedController = $state<
-		[Principal, MissionControlDid.Controller | undefined] | undefined
-	>(undefined);
+	let selectedController = $state<[Principal, MissionControlDid.AccessKey | undefined] | undefined>(
+		undefined
+	);
 
 	const isMissionControl = (controllerId: Principal): boolean =>
 		nonNullish($missionControlId) && $missionControlId.toText() === controllerId.toText();

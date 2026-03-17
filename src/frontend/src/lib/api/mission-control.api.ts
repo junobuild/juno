@@ -101,7 +101,7 @@ export const listMissionControlControllers = async ({
 }: {
 	missionControlId: MissionControlId;
 	identity: OptionIdentity;
-}): Promise<[Principal, MissionControlDid.Controller][]> => {
+}): Promise<[Principal, MissionControlDid.AccessKey][]> => {
 	const { list_mission_control_controllers } = await getMissionControlActor({
 		missionControlId,
 		identity

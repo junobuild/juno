@@ -1,4 +1,4 @@
-use crate::memory::manager::STATE;
+use crate::memory::state::STATE;
 use junobuild_shared::segments::access_keys::{
     delete_access_keys as delete_controllers_impl, filter_admin_access_keys,
     set_access_keys as set_controllers_impl,
@@ -7,10 +7,10 @@ use junobuild_shared::types::interface::SetController;
 use junobuild_shared::types::state::{AccessKeyId, AccessKeys};
 
 // ---------------------------------------------------------
-// Controllers
+// Access keys
 // ---------------------------------------------------------
 
-pub fn set_controllers(new_controllers: &[AccessKeyId], controller: &SetController) {
+pub fn set_access_keys(new_controllers: &[AccessKeyId], controller: &SetController) {
     STATE.with(|state| {
         set_controllers_impl(
             new_controllers,
@@ -20,16 +20,25 @@ pub fn set_controllers(new_controllers: &[AccessKeyId], controller: &SetControll
     })
 }
 
-pub fn delete_controllers(remove_controllers: &[AccessKeyId]) {
+pub fn delete_access_keys(remove_controllers: &[AccessKeyId]) {
     STATE.with(|state| {
         delete_controllers_impl(remove_controllers, &mut state.borrow_mut().heap.controllers)
     })
 }
 
-pub fn get_controllers() -> AccessKeys {
+/// Returns all access keys of this satellite.
+///
+/// Each entry is a `ControllerId` (a `Principal`) mapped to a `Controller` struct
+/// containing metadata, scope, and optional expiry.
+pub fn get_access_keys() -> AccessKeys {
     STATE.with(|state| state.borrow().heap.controllers.clone())
 }
 
-pub fn get_admin_controllers() -> AccessKeys {
+/// Returns all admin access keys of this satellite.
+///
+/// Filters the full access key list to only those with `ControllerScope::Admin`.
+/// Admin access keys never expire and are also controllers of the canister
+/// as defined by the Internet Computer.
+pub fn get_admin_access_keys() -> AccessKeys {
     STATE.with(|state| filter_admin_access_keys(&state.borrow().heap.controllers))
 }

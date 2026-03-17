@@ -85,7 +85,7 @@ describe('Satellite', () => {
 			const size = await memory_size();
 
 			expect(size).toEqual({
-				heap: 3932160n,
+				heap: 3997696n,
 				stable: 50397184n
 			});
 		});

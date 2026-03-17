@@ -10,6 +10,16 @@ import type { ActorMethod } from '@icp-sdk/core/agent';
 import type { IDL } from '@icp-sdk/core/candid';
 import type { Principal } from '@icp-sdk/core/principal';
 
+export interface AccessKey {
+	updated_at: bigint;
+	metadata: Array<[string, string]>;
+	kind: [] | [AccessKeyKind];
+	created_at: bigint;
+	scope: AccessKeyScope;
+	expires_at: [] | [bigint];
+}
+export type AccessKeyKind = { Emulator: null } | { Automation: null };
+export type AccessKeyScope = { Write: null } | { Admin: null } | { Submit: null };
 export interface Account {
 	updated_at: bigint;
 	credits: Tokens;
@@ -96,16 +106,6 @@ export interface ConfigMaxMemorySize {
 	stable: [] | [bigint];
 	heap: [] | [bigint];
 }
-export interface Controller {
-	updated_at: bigint;
-	metadata: Array<[string, string]>;
-	kind: [] | [ControllerKind];
-	created_at: bigint;
-	scope: ControllerScope;
-	expires_at: [] | [bigint];
-}
-export type ControllerKind = { Emulator: null } | { Automation: null };
-export type ControllerScope = { Write: null } | { Admin: null } | { Submit: null };
 export interface CreateMissionControlArgs {
 	subnet_id: [] | [Principal];
 }
@@ -381,8 +381,8 @@ export interface SetAuthenticationConfig {
 }
 export interface SetController {
 	metadata: Array<[string, string]>;
-	kind: [] | [ControllerKind];
-	scope: ControllerScope;
+	kind: [] | [AccessKeyKind];
+	scope: AccessKeyScope;
 	expires_at: [] | [bigint];
 }
 export interface SetControllersArgs {
@@ -509,7 +509,7 @@ export interface _SERVICE {
 	>;
 	list_accounts: ActorMethod<[], Array<[Principal, Account]>>;
 	list_assets: ActorMethod<[string, ListParams], ListResults>;
-	list_controllers: ActorMethod<[], Array<[Principal, Controller]>>;
+	list_controllers: ActorMethod<[], Array<[Principal, AccessKey]>>;
 	list_custom_domains: ActorMethod<[], Array<[string, CustomDomain]>>;
 	list_icp_payments: ActorMethod<[], Array<[bigint, IcpPayment]>>;
 	list_icrc_payments: ActorMethod<[], Array<[IcrcPaymentKey, IcrcPayment]>>;

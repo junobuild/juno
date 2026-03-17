@@ -10,6 +10,16 @@ import type { ActorMethod } from '@icp-sdk/core/agent';
 import type { IDL } from '@icp-sdk/core/candid';
 import type { Principal } from '@icp-sdk/core/principal';
 
+export interface AccessKey {
+	updated_at: bigint;
+	metadata: Array<[string, string]>;
+	kind: [] | [AccessKeyKind];
+	created_at: bigint;
+	scope: AccessKeyScope;
+	expires_at: [] | [bigint];
+}
+export type AccessKeyKind = { Emulator: null } | { Automation: null };
+export type AccessKeyScope = { Write: null } | { Admin: null } | { Submit: null };
 export interface Account {
 	owner: Principal;
 	subaccount: [] | [Uint8Array];
@@ -17,16 +27,6 @@ export interface Account {
 export interface Config {
 	monitoring: [] | [MonitoringConfig];
 }
-export interface Controller {
-	updated_at: bigint;
-	metadata: Array<[string, string]>;
-	kind: [] | [ControllerKind];
-	created_at: bigint;
-	scope: ControllerScope;
-	expires_at: [] | [bigint];
-}
-export type ControllerKind = { Emulator: null } | { Automation: null };
-export type ControllerScope = { Write: null } | { Admin: null } | { Submit: null };
 export interface CreateCanisterConfig {
 	subnet_id: [] | [Principal];
 	name: [] | [string];
@@ -152,8 +152,8 @@ export interface SegmentsMonitoringStrategy {
 }
 export interface SetController {
 	metadata: Array<[string, string]>;
-	kind: [] | [ControllerKind];
-	scope: ControllerScope;
+	kind: [] | [AccessKeyKind];
+	scope: AccessKeyScope;
 	expires_at: [] | [bigint];
 }
 export interface Settings {
@@ -230,7 +230,7 @@ export interface _SERVICE {
 	get_user_data: ActorMethod<[], User>;
 	icp_transfer: ActorMethod<[TransferArgs], Result>;
 	icrc_transfer: ActorMethod<[Principal, TransferArg], Result_1>;
-	list_mission_control_controllers: ActorMethod<[], Array<[Principal, Controller]>>;
+	list_mission_control_controllers: ActorMethod<[], Array<[Principal, AccessKey]>>;
 	list_orbiters: ActorMethod<[], Array<[Principal, Orbiter]>>;
 	list_satellites: ActorMethod<[], Array<[Principal, Satellite]>>;
 	set_config: ActorMethod<[[] | [Config]], undefined>;

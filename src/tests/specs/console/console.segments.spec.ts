@@ -64,7 +64,7 @@ describe('Console > Segments', () => {
 						segment_kind: [],
 						segment_id: []
 					})
-				).rejects.toThrowError('User does not have an account.');
+				).rejects.toThrow('User does not have an account.');
 			};
 
 			it('should not list segments if anonymous', async () => {
@@ -107,7 +107,7 @@ describe('Console > Segments', () => {
 						segment_kind: { Satellite: null },
 						metadata
 					})
-				).rejects.toThrowError('User does not have an account.');
+				).rejects.toThrow('User does not have an account.');
 			};
 
 			const assertUnknownSegment = async (params: Omit<SetSegmentMetadataArgs, 'metadata'>) => {
@@ -118,7 +118,7 @@ describe('Console > Segments', () => {
 						...params,
 						metadata
 					})
-				).rejects.toThrowError('Segment not found.');
+				).rejects.toThrow('Segment not found.');
 			};
 
 			it('should not set segment if anonymous', async () => {
@@ -194,7 +194,7 @@ describe('Console > Segments', () => {
 						segment_kind: { Satellite: null },
 						metadata: toNullable(metadata)
 					})
-				).rejects.toThrowError('User does not have an account.');
+				).rejects.toThrow('User does not have an account.');
 			};
 
 			it('should not set segment if anonymous', async () => {
@@ -231,13 +231,13 @@ describe('Console > Segments', () => {
 			it('should set segment', async () => {
 				const { set_segment } = actor;
 
-				await expect(set_segment(payload)).resolves.not.toThrowError();
+				await expect(set_segment(payload)).resolves.not.toThrow();
 			});
 
 			it('should not set segment if already exists', async () => {
 				const { set_segment } = actor;
 
-				await expect(set_segment(payload)).rejects.toThrowError('Segment already attached.');
+				await expect(set_segment(payload)).rejects.toThrow('Segment already attached.');
 			});
 		});
 	});
@@ -252,7 +252,7 @@ describe('Console > Segments', () => {
 						segment_id: segmentId,
 						segment_kind: { Satellite: null }
 					})
-				).rejects.toThrowError('User does not have an account.');
+				).rejects.toThrow('User does not have an account.');
 			};
 
 			it('should not unset segment if anonymous', async () => {
@@ -281,13 +281,13 @@ describe('Console > Segments', () => {
 			it('should unset segment', async () => {
 				const { unset_segment } = actor;
 
-				await expect(unset_segment(payload)).resolves.not.toThrowError();
+				await expect(unset_segment(payload)).resolves.not.toThrow();
 			});
 
 			it('should not unset segment if already detached', async () => {
 				const { unset_segment } = actor;
 
-				await expect(unset_segment(payload)).rejects.toThrowError('Segment not found.');
+				await expect(unset_segment(payload)).rejects.toThrow('Segment not found.');
 			});
 		});
 	});
@@ -326,7 +326,7 @@ describe('Console > Segments', () => {
 								metadata: toNullable(metadata)
 							}
 						])
-					).rejects.toThrowError('User does not have an account.');
+					).rejects.toThrow('User does not have an account.');
 				};
 
 				it('should not set many segments if anonymous', async () => {
@@ -363,7 +363,7 @@ describe('Console > Segments', () => {
 				it('should set many segments', async () => {
 					const { set_many_segments, list_segments } = actor;
 
-					await expect(set_many_segments(payload)).resolves.not.toThrowError();
+					await expect(set_many_segments(payload)).resolves.not.toThrow();
 
 					const segments = await list_segments({
 						segment_kind: [],
@@ -392,9 +392,7 @@ describe('Console > Segments', () => {
 				it('should not set segment if already exists', async () => {
 					const { set_many_segments } = actor;
 
-					await expect(set_many_segments(payload)).rejects.toThrowError(
-						'Segment already attached.'
-					);
+					await expect(set_many_segments(payload)).rejects.toThrow('Segment already attached.');
 				});
 			});
 		});
@@ -411,7 +409,7 @@ describe('Console > Segments', () => {
 								segment_kind: { Satellite: null }
 							}
 						])
-					).rejects.toThrowError('User does not have an account.');
+					).rejects.toThrow('User does not have an account.');
 				};
 
 				it('should not unset many segments if anonymous', async () => {
@@ -446,7 +444,7 @@ describe('Console > Segments', () => {
 				it('should unset segment', async () => {
 					const { unset_many_segments, list_segments } = actor;
 
-					await expect(unset_many_segments(payload)).resolves.not.toThrowError();
+					await expect(unset_many_segments(payload)).resolves.not.toThrow();
 
 					const segments = await list_segments({
 						segment_kind: [],
@@ -459,7 +457,7 @@ describe('Console > Segments', () => {
 				it('should not unset segment if already detached', async () => {
 					const { unset_many_segments } = actor;
 
-					await expect(unset_many_segments(payload)).rejects.toThrowError('Segment not found.');
+					await expect(unset_many_segments(payload)).rejects.toThrow('Segment not found.');
 				});
 			});
 		});

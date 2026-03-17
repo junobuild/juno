@@ -49,7 +49,7 @@ describe('Satellite > Upgrade > v0.1.0', () => {
 
 		await upgradeSatelliteVersion({ version: '0.1.0', controller, canisterId, pic });
 
-		await expect(actor.build_version()).rejects.toThrowError(
+		await expect(actor.build_version()).rejects.toThrow(
 			new RegExp("Canister has no query method 'build_version'.", 'i')
 		);
 	});
@@ -59,7 +59,7 @@ describe('Satellite > Upgrade > v0.1.0', () => {
 
 		await upgradeSatelliteVersion({ version: '0.1.0', controller, canisterId, pic });
 
-		await expect(actor.version()).rejects.toThrowError(
+		await expect(actor.version()).rejects.toThrow(
 			new RegExp("Canister has no query method 'version'.", 'i')
 		);
 	});

@@ -66,7 +66,7 @@ describe('Orbiter', () => {
 							}
 						]
 					])
-				).resolves.not.toThrowError();
+				).resolves.not.toThrow();
 			});
 
 			it('should not configure satellite if no version', async () => {
@@ -83,7 +83,7 @@ describe('Orbiter', () => {
 							}
 						]
 					])
-				).rejects.toThrowError(JUNO_ERROR_NO_VERSION_PROVIDED);
+				).rejects.toThrow(JUNO_ERROR_NO_VERSION_PROVIDED);
 			});
 
 			it('should not configure satellite if invalid version', async () => {
@@ -100,7 +100,7 @@ describe('Orbiter', () => {
 							}
 						]
 					])
-				).rejects.toThrowError(new RegExp(JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE, 'i'));
+				).rejects.toThrow(new RegExp(JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE, 'i'));
 			});
 		});
 
@@ -116,7 +116,7 @@ describe('Orbiter', () => {
 			it('should throw on set page view', async () => {
 				const { set_page_view } = actor;
 
-				await expect(set_page_view({ key, collected_at: 123n }, pageViewMock)).rejects.toThrowError(
+				await expect(set_page_view({ key, collected_at: 123n }, pageViewMock)).rejects.toThrow(
 					'Caller is not a controller of the orbiter.'
 				);
 			});
@@ -129,7 +129,7 @@ describe('Orbiter', () => {
 					[{ key: nanoid(), collected_at: 123n }, pageViewMock]
 				];
 
-				await expect(set_page_views(pagesViews)).rejects.toThrowError(
+				await expect(set_page_views(pagesViews)).rejects.toThrow(
 					'Caller is not a controller of the orbiter.'
 				);
 			});
@@ -137,9 +137,9 @@ describe('Orbiter', () => {
 			it('should throw on set track event', async () => {
 				const { set_track_event } = actor;
 
-				await expect(
-					set_track_event({ key, collected_at: 123n }, trackEventMock)
-				).rejects.toThrowError('Caller is not a controller of the orbiter.');
+				await expect(set_track_event({ key, collected_at: 123n }, trackEventMock)).rejects.toThrow(
+					'Caller is not a controller of the orbiter.'
+				);
 			});
 
 			it('should throw on set track events', async () => {
@@ -150,7 +150,7 @@ describe('Orbiter', () => {
 					[{ key: nanoid(), collected_at: 123n }, trackEventMock]
 				];
 
-				await expect(set_track_events(trackEvents)).rejects.toThrowError(
+				await expect(set_track_events(trackEvents)).rejects.toThrow(
 					'Caller is not a controller of the orbiter.'
 				);
 			});
@@ -160,7 +160,7 @@ describe('Orbiter', () => {
 
 				await expect(
 					set_performance_metric({ key, collected_at: 123n }, performanceMetricMock)
-				).rejects.toThrowError('Caller is not a controller of the orbiter.');
+				).rejects.toThrow('Caller is not a controller of the orbiter.');
 			});
 
 			it('should throw on set performance metrics', async () => {
@@ -171,7 +171,7 @@ describe('Orbiter', () => {
 					[{ key: nanoid(), collected_at: 123n }, performanceMetricMock]
 				];
 
-				await expect(set_performance_metrics(performanceMetrics)).rejects.toThrowError(
+				await expect(set_performance_metrics(performanceMetrics)).rejects.toThrow(
 					'Caller is not a controller of the orbiter.'
 				);
 			});
@@ -185,7 +185,7 @@ describe('Orbiter', () => {
 						to: [500n],
 						satellite_id: [satelliteIdMock]
 					})
-				).rejects.toThrowError('Caller is not a controller of the orbiter.');
+				).rejects.toThrow('Caller is not a controller of the orbiter.');
 			});
 
 			it('should throw on retrieve track events if not controller', async () => {
@@ -197,7 +197,7 @@ describe('Orbiter', () => {
 						to: [500n],
 						satellite_id: [satelliteIdMock]
 					})
-				).rejects.toThrowError('Caller is not a controller of the orbiter.');
+				).rejects.toThrow('Caller is not a controller of the orbiter.');
 			});
 
 			it('should throw on retrieve performance metrics if not controller', async () => {
@@ -209,15 +209,13 @@ describe('Orbiter', () => {
 						to: [500n],
 						satellite_id: [satelliteIdMock]
 					})
-				).rejects.toThrowError('Caller is not a controller of the orbiter.');
+				).rejects.toThrow('Caller is not a controller of the orbiter.');
 			});
 
 			it('should throw on memory size', async () => {
 				const { memory_size } = actor;
 
-				await expect(memory_size()).rejects.toThrowError(
-					'Caller is not a controller of the orbiter.'
-				);
+				await expect(memory_size()).rejects.toThrow('Caller is not a controller of the orbiter.');
 			});
 		});
 
@@ -245,7 +243,7 @@ describe('Orbiter', () => {
 
 					await expect(
 						set_page_view({ key: nanoid(), collected_at: 123567890n }, pageViewMock)
-					).resolves.not.toThrowError();
+					).resolves.not.toThrow();
 				});
 
 				it('should set page views', async () => {
@@ -256,7 +254,7 @@ describe('Orbiter', () => {
 						[{ key: nanoid(), collected_at: 123n }, pageViewMock]
 					];
 
-					await expect(set_page_views(pagesViews)).resolves.not.toThrowError();
+					await expect(set_page_views(pagesViews)).resolves.not.toThrow();
 				});
 
 				it('should not set page views if no version', async () => {
@@ -302,7 +300,7 @@ describe('Orbiter', () => {
 
 					await expect(
 						set_track_event({ key, collected_at: 1234567890n }, trackEventMock)
-					).resolves.not.toThrowError();
+					).resolves.not.toThrow();
 				});
 
 				it('should set track events', async () => {
@@ -313,7 +311,7 @@ describe('Orbiter', () => {
 						[{ key: nanoid(), collected_at: 123n }, trackEventMock]
 					];
 
-					await expect(set_track_events(trackEvents)).resolves.not.toThrowError();
+					await expect(set_track_events(trackEvents)).resolves.not.toThrow();
 				});
 
 				it('should not set track events if no version', async () => {
@@ -359,7 +357,7 @@ describe('Orbiter', () => {
 
 					await expect(
 						set_performance_metric({ key, collected_at: 1234567890n }, performanceMetricMock)
-					).resolves.not.toThrowError();
+					).resolves.not.toThrow();
 				});
 
 				it('should set performance metrics', async () => {
@@ -370,7 +368,7 @@ describe('Orbiter', () => {
 						[{ key: nanoid(), collected_at: 123n }, performanceMetricMock]
 					];
 
-					await expect(set_performance_metrics(performanceMetrics)).resolves.not.toThrowError();
+					await expect(set_performance_metrics(performanceMetrics)).resolves.not.toThrow();
 				});
 
 				it('should not set performance metrics if no version', async () => {

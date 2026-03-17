@@ -58,7 +58,7 @@ describe('Console > Authentication > Guard', () => {
 						salt
 					}
 				})
-			).rejects.toThrowError(ANONYMOUS_ERROR_MSG);
+			).rejects.toThrow(ANONYMOUS_ERROR_MSG);
 		});
 
 		it('should throw error on get_delegation', async () => {
@@ -73,7 +73,7 @@ describe('Console > Authentication > Guard', () => {
 						expiration: mockExpiration
 					}
 				})
-			).rejects.toThrowError(ANONYMOUS_ERROR_MSG);
+			).rejects.toThrow(ANONYMOUS_ERROR_MSG);
 		});
 	});
 });

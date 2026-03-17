@@ -66,7 +66,7 @@ describe('Console > Credits', () => {
 
 		it('should not create a satellite without credits', async () => {
 			// No credits -> with payments -> no ICP
-			await expect(createSatelliteWithConsole({ user, actor })).rejects.toThrowError(
+			await expect(createSatelliteWithConsole({ user, actor })).rejects.toThrow(
 				'InsufficientAllowance'
 			);
 		});

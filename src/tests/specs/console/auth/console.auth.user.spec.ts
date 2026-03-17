@@ -218,6 +218,6 @@ describe('Satellite > Auth > User', () => {
 
 		await expect(
 			createSatelliteWithConsole({ user: mockIdentity, actor: consoleActor })
-		).resolves.not.toThrowError();
+		).resolves.not.toThrow();
 	});
 });

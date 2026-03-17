@@ -169,7 +169,7 @@ describe('Console > Upgrade > OpenIdProvider > v0.3.3 -> v0.4.0', () => {
 	});
 
 	it('should migrate heap OpenIdState.certificates to OpenIdProvider.GitHubAuth', async () => {
-		await expect(upgrade()).resolves.not.toThrowError();
+		await expect(upgrade()).resolves.not.toThrow();
 	});
 
 	it('should still be configured with GitHub respectively newly OpenIdDelegationProvider.GitHub', async () => {

@@ -91,7 +91,7 @@ export const testControllers = ({
 						expires_at: [1n]
 					}
 				})
-			).rejects.toThrowError(JUNO_ERROR_CONTROLLERS_ADMIN_NO_EXPIRY);
+			).rejects.toThrow(JUNO_ERROR_CONTROLLERS_ADMIN_NO_EXPIRY);
 		});
 
 		it('should throw error when creating too many admin controllers', async () => {
@@ -109,7 +109,7 @@ export const testControllers = ({
 						scope: { Admin: null }
 					}
 				})
-			).rejects.toThrowError(JUNO_ERROR_CONTROLLERS_MAX_NUMBER);
+			).rejects.toThrow(JUNO_ERROR_CONTROLLERS_MAX_NUMBER);
 		});
 
 		it.each([
@@ -136,7 +136,7 @@ export const testControllers = ({
 							expires_at: [now]
 						}
 					})
-				).rejects.toThrowError(JUNO_ERROR_CONTROLLERS_EXPIRY_IN_PAST);
+				).rejects.toThrow(JUNO_ERROR_CONTROLLERS_EXPIRY_IN_PAST);
 			}
 		);
 
@@ -154,7 +154,7 @@ export const testControllers = ({
 						expires_at: [1n]
 					}
 				})
-			).rejects.toThrowError(JUNO_ERROR_CONTROLLERS_ANONYMOUS_NOT_ALLOWED);
+			).rejects.toThrow(JUNO_ERROR_CONTROLLERS_ANONYMOUS_NOT_ALLOWED);
 		});
 
 		it.each([
@@ -175,7 +175,7 @@ export const testControllers = ({
 						scope
 					}
 				})
-			).rejects.toThrowError(JUNO_ERROR_CONTROLLERS_MAX_NUMBER);
+			).rejects.toThrow(JUNO_ERROR_CONTROLLERS_MAX_NUMBER);
 		});
 	});
 };

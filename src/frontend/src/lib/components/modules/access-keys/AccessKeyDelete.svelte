@@ -11,7 +11,7 @@
 
 	interface Props {
 		visible?: boolean;
-		selectedController: [Principal, SatelliteDid.Controller | undefined] | undefined;
+		selectedController: [Principal, SatelliteDid.AccessKey | undefined] | undefined;
 		remove: (params: AccessKeyIdParam) => Promise<AddAccessKeyResult>;
 		load: () => Promise<void>;
 	}

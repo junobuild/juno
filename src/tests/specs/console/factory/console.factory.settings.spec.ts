@@ -111,7 +111,7 @@ describe('Console > Factory > Settings', () => {
 	}: {
 		user: Identity;
 		missionControlId: Principal;
-		controllers: [Principal, ConsoleDid.Controller][];
+		controllers: [Principal, ConsoleDid.AccessKey][];
 	}) => {
 		const maybeUser = controllers.find(
 			([controller]) => controller.toText() === user.getPrincipal().toText()

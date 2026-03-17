@@ -21,7 +21,7 @@ describe('Sputnik > sdk > controllers', () => {
 		keyword
 	}: {
 		keyword: string;
-	}): Promise<[Uint8Array, SputnikDid.Controller][]> => {
+	}): Promise<[Uint8Array, SputnikDid.AccessKey][]> => {
 		const { logs } = await setDocAndFetchLogs({
 			collection: TEST_COLLECTION,
 			actor,
@@ -36,7 +36,7 @@ describe('Sputnik > sdk > controllers', () => {
 
 		const [_, { message }] = log;
 
-		const data: [Uint8Array, SputnikDid.Controller][] = JSON.parse(
+		const data: [Uint8Array, SputnikDid.AccessKey][] = JSON.parse(
 			message.replace(`${keyword}:`, '').trim(),
 			jsonReviver
 		);

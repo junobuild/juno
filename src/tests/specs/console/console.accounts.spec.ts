@@ -46,18 +46,18 @@ describe('Console > Accounts', () => {
 			it('should throw error on get_account', async () => {
 				const { get_account } = actor;
 
-				await expect(get_account()).rejects.toThrowError(ANONYMOUS_ERROR_MSG);
+				await expect(get_account()).rejects.toThrow(ANONYMOUS_ERROR_MSG);
 			});
 
 			it('should throw error on get_or_init_account', async () => {
 				const { get_or_init_account } = actor;
 
-				await expect(get_or_init_account()).rejects.toThrowError(ANONYMOUS_ERROR_MSG);
+				await expect(get_or_init_account()).rejects.toThrow(ANONYMOUS_ERROR_MSG);
 			});
 		});
 
 		it('should throw errors if too many accounts are created quickly', async () => {
-			await expect(initAccounts({ actor, pic, length: 2 })).rejects.toThrowError(
+			await expect(initAccounts({ actor, pic, length: 2 })).rejects.toThrow(
 				new RegExp('Rate limit reached, try again later', 'i')
 			);
 		});

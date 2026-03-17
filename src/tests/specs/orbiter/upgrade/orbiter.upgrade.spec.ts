@@ -273,7 +273,7 @@ describe('Orbiter > Upgrade', () => {
 						}
 					]
 				])
-			).resolves.not.toThrowError();
+			).resolves.not.toThrow();
 		});
 
 		describe('Page views', { timeout: 1200000 }, () => {
@@ -469,7 +469,7 @@ describe('Orbiter > Upgrade', () => {
 						}
 					]
 				])
-			).resolves.not.toThrowError();
+			).resolves.not.toThrow();
 		});
 
 		it('should still list all page views after upgrade (with new optional fields)', async () => {

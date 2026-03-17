@@ -97,7 +97,7 @@ describe.each([
 	it('should throw on set document', async () => {
 		await pic.advanceTime(100);
 
-		await expect(createDoc()).rejects.toThrowError(JUNO_DATASTORE_ERROR_CANNOT_WRITE);
+		await expect(createDoc()).rejects.toThrow(JUNO_DATASTORE_ERROR_CANNOT_WRITE);
 	});
 
 	it('should return empty on get document', async () => {
@@ -123,7 +123,7 @@ describe.each([
 
 		const { del_doc } = actor;
 
-		await expect(del_doc(TEST_COLLECTION, key, { version: [1n] })).rejects.toThrowError(
+		await expect(del_doc(TEST_COLLECTION, key, { version: [1n] })).rejects.toThrow(
 			JUNO_DATASTORE_ERROR_CANNOT_WRITE
 		);
 	});
@@ -148,7 +148,7 @@ describe.each([
 				...doc,
 				version: doc.version
 			})
-		).rejects.toThrowError(JUNO_DATASTORE_ERROR_CANNOT_WRITE);
+		).rejects.toThrow(JUNO_DATASTORE_ERROR_CANNOT_WRITE);
 	});
 
 	it('should return empty on list documents', async () => {

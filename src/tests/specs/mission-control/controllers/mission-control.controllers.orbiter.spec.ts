@@ -69,7 +69,7 @@ describe('Mission Control > Controllers > Orbiter', () => {
 	it('should not be able to set an orbiter because mission control is effectively not a controller', async () => {
 		const { set_orbiter } = actor;
 
-		await expect(set_orbiter(orbiterId, ['Hello'])).rejects.toThrowError(
+		await expect(set_orbiter(orbiterId, ['Hello'])).rejects.toThrow(
 			new RegExp(ORBITER_CONTROLLER_ERR_MSG)
 		);
 	});
@@ -95,7 +95,7 @@ describe('Mission Control > Controllers > Orbiter', () => {
 					...CONTROLLER_METADATA,
 					scope: { Admin: null }
 				})
-			).rejects.toThrowError(JUNO_ERROR_CONTROLLERS_MAX_NUMBER);
+			).rejects.toThrow(JUNO_ERROR_CONTROLLERS_MAX_NUMBER);
 		});
 
 		describe('assert', () => {
@@ -110,7 +110,7 @@ describe('Mission Control > Controllers > Orbiter', () => {
 						scope: { Admin: null },
 						expires_at: [1n]
 					})
-				).rejects.toThrowError(JUNO_ERROR_CONTROLLERS_ADMIN_NO_EXPIRY);
+				).rejects.toThrow(JUNO_ERROR_CONTROLLERS_ADMIN_NO_EXPIRY);
 			});
 
 			it.each([
@@ -134,7 +134,7 @@ describe('Mission Control > Controllers > Orbiter', () => {
 							scope,
 							expires_at: [now]
 						})
-					).rejects.toThrowError(JUNO_ERROR_CONTROLLERS_EXPIRY_IN_PAST);
+					).rejects.toThrow(JUNO_ERROR_CONTROLLERS_EXPIRY_IN_PAST);
 				}
 			);
 
@@ -149,7 +149,7 @@ describe('Mission Control > Controllers > Orbiter', () => {
 						scope: { Admin: null },
 						expires_at: [1n]
 					})
-				).rejects.toThrowError(JUNO_ERROR_CONTROLLERS_ANONYMOUS_NOT_ALLOWED);
+				).rejects.toThrow(JUNO_ERROR_CONTROLLERS_ANONYMOUS_NOT_ALLOWED);
 			});
 
 			it.each([
@@ -167,7 +167,7 @@ describe('Mission Control > Controllers > Orbiter', () => {
 						...CONTROLLER_METADATA,
 						scope
 					})
-				).rejects.toThrowError(JUNO_ERROR_CONTROLLERS_MAX_NUMBER);
+				).rejects.toThrow(JUNO_ERROR_CONTROLLERS_MAX_NUMBER);
 			});
 		});
 	});

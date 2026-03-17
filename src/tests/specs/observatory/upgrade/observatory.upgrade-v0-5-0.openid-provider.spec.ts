@@ -82,7 +82,7 @@ describe('Observatory > Upgrade', () => {
 	});
 
 	it('should migrate heap OpenId.certificates and OpenId.Schedulers to OpenIdProvider.GitHubAuth', async () => {
-		await expect(upgrade()).resolves.not.toThrowError();
+		await expect(upgrade()).resolves.not.toThrow();
 	});
 
 	it('should still return certificate', async () => {

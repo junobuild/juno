@@ -1,5 +1,5 @@
 <script lang="ts" module>
-	import type { CustomDomain } from '$lib/types/custom-domain';
+	import type { CustomDomain, CustomDomainState } from '$lib/types/custom-domain';
 
 	export interface SelectedCustomDomain {
 		customDomain: CustomDomain | undefined;
@@ -18,7 +18,6 @@
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import type { CustomDomainState } from '$lib/types/custom-domain';
 	import type { Option } from '$lib/types/utils';
 	import { keyOf } from '$lib/utils/utils';
 

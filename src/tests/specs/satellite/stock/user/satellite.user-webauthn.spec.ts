@@ -109,7 +109,7 @@ describe('Satellite > User Webauthn', () => {
 						description: toNullable(),
 						version: toNullable()
 					})
-				).rejects.toThrowError(
+				).rejects.toThrow(
 					new RegExp(
 						`${JUNO_DATASTORE_ERROR_USER_WEBAUTHN_INVALID_DATA}: unknown field \`unknown\`, expected \`publicKey\``,
 						'i'
@@ -128,7 +128,7 @@ describe('Satellite > User Webauthn', () => {
 						description: toNullable(),
 						version: toNullable()
 					})
-				).rejects.toThrowError(
+				).rejects.toThrow(
 					new RegExp(
 						`${JUNO_DATASTORE_ERROR_USER_WEBAUTHN_INVALID_DATA}: missing field \`publicKey\` at line 1 column 2`,
 						'i'
@@ -149,7 +149,7 @@ describe('Satellite > User Webauthn', () => {
 						description: toNullable(),
 						version: toNullable(1n)
 					})
-				).rejects.toThrowError(JUNO_DATASTORE_ERROR_USER_WEBAUTHN_CANNOT_UPDATE);
+				).rejects.toThrow(JUNO_DATASTORE_ERROR_USER_WEBAUTHN_CANNOT_UPDATE);
 			});
 		});
 
@@ -202,7 +202,7 @@ describe('Satellite > User Webauthn', () => {
 				// Some other public key
 				const publicKey = arrayOfNumberToUint8Array([1, 3, 5, 7, 8, 9]);
 
-				await expect(createUserWebAuthn({ publicKey, credentialId })).rejects.toThrowError(
+				await expect(createUserWebAuthn({ publicKey, credentialId })).rejects.toThrow(
 					JUNO_DATASTORE_ERROR_USER_WEBAUTHN_CALLER_KEY
 				);
 			});

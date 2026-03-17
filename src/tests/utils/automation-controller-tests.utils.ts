@@ -65,7 +65,7 @@ export const assertAutomationController = async ({
 
 	expect(count).toEqual(1n);
 
-	await expect(list_controllers()).rejects.toThrowError(JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER);
+	await expect(list_controllers()).rejects.toThrow(JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER);
 
 	satelliteActor.setIdentity(controller);
 

@@ -6,10 +6,10 @@ use crate::automation::utils::scope::build_scope;
 use crate::openid::types::provider::OpenIdAutomationProvider;
 use crate::strategies::{AuthAutomationStrategy, AuthHeapStrategy};
 use junobuild_shared::ic::api::caller;
-use junobuild_shared::segments::controllers::{
-    assert_controllers, assert_max_number_of_controllers,
+use junobuild_shared::segments::access_keys::{
+    assert_controllers, assert_max_number_of_access_keys,
 };
-use junobuild_shared::types::state::ControllerId;
+use junobuild_shared::types::state::AccessKeyId;
 
 pub fn openid_prepare_automation(
     provider: &OpenIdAutomationProvider,
@@ -24,14 +24,14 @@ pub fn openid_prepare_automation(
         return Err(PrepareAutomationError::ControllerAlreadyExists);
     }
 
-    let submitted_controllers: [ControllerId; 1] = [controller_id];
+    let submitted_controllers: [AccessKeyId; 1] = [controller_id];
 
     assert_controllers(&submitted_controllers)
         .map_err(PrepareAutomationError::InvalidController)?;
 
     let scope = build_scope(provider, auth_heap);
 
-    assert_max_number_of_controllers(
+    assert_max_number_of_access_keys(
         &existing_controllers,
         &submitted_controllers,
         &scope.clone().into(),

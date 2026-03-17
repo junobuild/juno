@@ -15,10 +15,10 @@ use junobuild_cdn::storage::errors::{
 use junobuild_collections::assert::stores::{assert_create_permission, assert_permission};
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::{Memory, Permission, Rule};
-use junobuild_shared::segments::controllers::controller_can_write;
+use junobuild_shared::segments::access_keys::access_key_can_write;
 use junobuild_shared::types::core::Blob;
 use junobuild_shared::types::domain::CustomDomains;
-use junobuild_shared::types::state::Controllers;
+use junobuild_shared::types::state::AccessKeys;
 use junobuild_storage::strategies::{
     StorageAssertionsStrategy, StorageStateStrategy, StorageUploadStrategy,
 };
@@ -41,21 +41,17 @@ impl StorageAssertionsStrategy for StorageAssertions {
         assert_cdn_asset_keys(full_path, description, collection)
     }
 
-    fn assert_write_on_dapp_collection(
-        &self,
-        caller: Principal,
-        controllers: &Controllers,
-    ) -> bool {
-        controller_can_write(caller, controllers)
+    fn assert_write_on_dapp_collection(&self, caller: Principal, controllers: &AccessKeys) -> bool {
+        access_key_can_write(caller, controllers)
     }
 
     fn assert_write_on_system_collection(
         &self,
         caller: Principal,
         _collection: &CollectionKey,
-        controllers: &Controllers,
+        controllers: &AccessKeys,
     ) -> bool {
-        controller_can_write(caller, controllers)
+        access_key_can_write(caller, controllers)
     }
 
     fn assert_create_permission(
@@ -63,7 +59,7 @@ impl StorageAssertionsStrategy for StorageAssertions {
         permission: &Permission,
         caller: Principal,
         _collection: &CollectionKey,
-        controllers: &Controllers,
+        controllers: &AccessKeys,
     ) -> bool {
         assert_create_permission(permission, caller, controllers)
     }
@@ -74,7 +70,7 @@ impl StorageAssertionsStrategy for StorageAssertions {
         owner: Principal,
         caller: Principal,
         _collection: &CollectionKey,
-        controllers: &Controllers,
+        controllers: &AccessKeys,
     ) -> bool {
         assert_permission(permission, owner, caller, controllers)
     }
@@ -85,7 +81,7 @@ impl StorageAssertionsStrategy for StorageAssertions {
         owner: Principal,
         caller: Principal,
         _collection: &CollectionKey,
-        controllers: &Controllers,
+        controllers: &AccessKeys,
     ) -> bool {
         assert_permission(permission, owner, caller, controllers)
     }
@@ -102,7 +98,7 @@ impl StorageAssertionsStrategy for StorageAssertions {
     fn increment_and_assert_storage_usage(
         &self,
         _caller: &Principal,
-        _controllers: &Controllers,
+        _controllers: &AccessKeys,
         _collection: &CollectionKey,
         _max_changes_per_user: Option<u32>,
     ) -> Result<(), String> {

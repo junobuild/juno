@@ -9,7 +9,7 @@ use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::{Memory, Permission, Rule};
 use junobuild_shared::types::core::Blob;
 use junobuild_shared::types::domain::CustomDomains;
-use junobuild_shared::types::state::Controllers;
+use junobuild_shared::types::state::AccessKeys;
 
 pub trait StorageAssertionsStrategy {
     fn assert_key(
@@ -19,14 +19,13 @@ pub trait StorageAssertionsStrategy {
         collection: &CollectionKey,
     ) -> Result<(), String>;
 
-    fn assert_write_on_dapp_collection(&self, caller: Principal, controllers: &Controllers)
-        -> bool;
+    fn assert_write_on_dapp_collection(&self, caller: Principal, controllers: &AccessKeys) -> bool;
 
     fn assert_write_on_system_collection(
         &self,
         caller: Principal,
         collection: &CollectionKey,
-        controllers: &Controllers,
+        controllers: &AccessKeys,
     ) -> bool;
 
     fn assert_create_permission(
@@ -34,7 +33,7 @@ pub trait StorageAssertionsStrategy {
         permission: &Permission,
         caller: Principal,
         collection: &CollectionKey,
-        controllers: &Controllers,
+        controllers: &AccessKeys,
     ) -> bool;
 
     fn assert_update_permission(
@@ -43,7 +42,7 @@ pub trait StorageAssertionsStrategy {
         owner: Principal,
         caller: Principal,
         collection: &CollectionKey,
-        controllers: &Controllers,
+        controllers: &AccessKeys,
     ) -> bool;
 
     fn assert_list_permission(
@@ -52,7 +51,7 @@ pub trait StorageAssertionsStrategy {
         owner: Principal,
         caller: Principal,
         collection: &CollectionKey,
-        controllers: &Controllers,
+        controllers: &AccessKeys,
     ) -> bool;
 
     fn invoke_assert_upload_asset(
@@ -64,7 +63,7 @@ pub trait StorageAssertionsStrategy {
     fn increment_and_assert_storage_usage(
         &self,
         caller: &Principal,
-        controllers: &Controllers,
+        controllers: &AccessKeys,
         collection: &CollectionKey,
         max_changes_per_user: Option<u32>,
     ) -> Result<(), String>;

@@ -8,7 +8,7 @@ use ciborium::{from_reader, into_writer};
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade};
 use junobuild_shared::ic::api::caller;
 use junobuild_shared::memory::upgrade::{read_post_upgrade, write_pre_upgrade};
-use junobuild_shared::segments::controllers::init_admin_controllers;
+use junobuild_shared::segments::access_keys::init_admin_access_keys;
 use std::collections::HashMap;
 
 #[init]
@@ -19,7 +19,7 @@ fn init() {
         mission_controls: HashMap::new(),
         payments: HashMap::new(),
         invitation_codes: HashMap::new(),
-        controllers: init_admin_controllers(&[manager]),
+        controllers: init_admin_access_keys(&[manager]),
         factory_fees: Some(init_factory_fees()),
         factory_rates: Some(init_factory_rates()),
         storage: init_cdn_storage_heap_state(),

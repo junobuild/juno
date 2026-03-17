@@ -1,2 +1,2 @@
-pub mod controllers;
+pub mod access_keys;
 pub mod utils;

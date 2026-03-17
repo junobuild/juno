@@ -7,7 +7,7 @@ use ciborium::{from_reader, into_writer};
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade};
 use junobuild_shared::ic::api::caller;
 use junobuild_shared::memory::upgrade::{read_post_upgrade, write_pre_upgrade};
-use junobuild_shared::segments::controllers::init_admin_controllers;
+use junobuild_shared::segments::access_keys::init_admin_access_keys;
 
 #[init]
 fn init() {
@@ -16,7 +16,7 @@ fn init() {
     STATE.with(|state| {
         *state.borrow_mut() = State {
             heap: HeapState {
-                controllers: init_admin_controllers(&[manager]),
+                controllers: init_admin_access_keys(&[manager]),
                 env: None,
                 openid: None,
                 rates: None,

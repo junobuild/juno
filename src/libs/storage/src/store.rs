@@ -25,7 +25,7 @@ use candid::Principal;
 use ic_cdk::api::time;
 use junobuild_collections::types::rules::Rule;
 use junobuild_shared::types::core::Blob;
-use junobuild_shared::types::state::Controllers;
+use junobuild_shared::types::state::AccessKeys;
 use std::ptr::addr_of;
 
 // ---------------------------------------------------------
@@ -39,7 +39,7 @@ static mut NEXT_CHUNK_ID: ChunkId = 0;
 
 pub fn create_batch(
     caller: Principal,
-    controllers: &Controllers,
+    controllers: &AccessKeys,
     config: &StorageConfig,
     init: InitAssetKey,
     reference_id: Option<ReferenceId>,
@@ -150,7 +150,7 @@ pub fn create_chunk(
 
 pub fn commit_batch(
     caller: Principal,
-    controllers: &Controllers,
+    controllers: &AccessKeys,
     config: &StorageConfig,
     commit_batch: CommitBatch,
     assertions: &impl StorageAssertionsStrategy,
@@ -180,7 +180,7 @@ pub fn commit_batch(
 #[allow(clippy::too_many_arguments)]
 fn secure_commit_chunks(
     caller: Principal,
-    controllers: &Controllers,
+    controllers: &AccessKeys,
     config: &StorageConfig,
     commit_batch: CommitBatch,
     batch: &Batch,
@@ -236,7 +236,7 @@ fn secure_commit_chunks(
 #[allow(clippy::too_many_arguments)]
 fn secure_commit_chunks_update(
     caller: Principal,
-    controllers: &Controllers,
+    controllers: &AccessKeys,
     config: &StorageConfig,
     commit_batch: CommitBatch,
     batch: &Batch,
@@ -270,7 +270,7 @@ fn secure_commit_chunks_update(
 #[allow(clippy::too_many_arguments)]
 fn commit_chunks(
     caller: Principal,
-    controllers: &Controllers,
+    controllers: &AccessKeys,
     commit_batch: CommitBatch,
     batch: &Batch,
     rule: &Rule,

@@ -1,6 +1,6 @@
 use crate::automation::types::{AutomationScope, PrepareAutomationError};
 use crate::openid::credentials::types::errors::VerifyOpenidCredentialsError;
-use junobuild_shared::types::state::ControllerScope;
+use junobuild_shared::types::state::AccessKeyScope;
 
 impl From<VerifyOpenidCredentialsError> for PrepareAutomationError {
     fn from(e: VerifyOpenidCredentialsError) -> Self {
@@ -20,11 +20,11 @@ impl From<VerifyOpenidCredentialsError> for PrepareAutomationError {
     }
 }
 
-impl From<AutomationScope> for ControllerScope {
+impl From<AutomationScope> for AccessKeyScope {
     fn from(scope: AutomationScope) -> Self {
         match scope {
-            AutomationScope::Write => ControllerScope::Write,
-            AutomationScope::Submit => ControllerScope::Submit,
+            AutomationScope::Write => AccessKeyScope::Write,
+            AutomationScope::Submit => AccessKeyScope::Submit,
         }
     }
 }

@@ -11,9 +11,7 @@ pub mod state {
     use junobuild_shared::ledger::types::cycles::CyclesTokens;
     use junobuild_shared::rate::types::{RateConfig, RateTokens};
     use junobuild_shared::types::memory::Memory;
-    use junobuild_shared::types::state::{
-        Controllers, Metadata, SegmentId, SegmentKind, Timestamp,
-    };
+    use junobuild_shared::types::state::{AccessKeys, Metadata, SegmentId, SegmentKind, Timestamp};
     use junobuild_shared::types::state::{MissionControlId, UserId};
     use junobuild_storage::types::state::StorageHeapState;
     use serde::{Deserialize, Serialize};
@@ -57,7 +55,7 @@ pub mod state {
         #[deprecated(note = "Deprecated. Use stable memory instead.")]
         pub payments: IcpPayments,
         pub invitation_codes: InvitationCodes,
-        pub controllers: Controllers,
+        pub controllers: AccessKeys,
         pub factory_fees: Option<FactoryFees>,
         pub factory_rates: Option<FactoryRates>,
         pub storage: StorageHeapState,

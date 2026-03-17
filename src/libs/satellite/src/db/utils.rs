@@ -5,12 +5,12 @@ use junobuild_collections::types::rules::Permission;
 use junobuild_shared::data::list::{filter_timestamps, matcher_regex};
 use junobuild_shared::types::core::Key;
 use junobuild_shared::types::list::ListParams;
-use junobuild_shared::types::state::{Controllers, UserId};
+use junobuild_shared::types::state::{AccessKeys, UserId};
 use regex::Regex;
 
 pub fn filter_values<'a>(
     caller: Principal,
-    controllers: &'a Controllers,
+    controllers: &'a AccessKeys,
     rule: &'a Permission,
     col: &'a [(&'a Key, &'a Doc)],
     ListParams {

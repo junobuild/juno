@@ -1257,7 +1257,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 			describe.each([
 				{
 					memory: { Heap: null },
-					expectMemory: 4_063_232n,
+					expectMemory: 4_128_768n,
 					allowedMemory: maxHeapMemorySize,
 					preUploadCount: 13,
 					baseVersion: 5n

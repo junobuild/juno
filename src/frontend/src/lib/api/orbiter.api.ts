@@ -143,7 +143,7 @@ export const listOrbiterControllers = async ({
 }: {
 	orbiterId: Principal;
 	identity: OptionIdentity;
-}): Promise<[Principal, OrbiterDid.Controller][]> => {
+}): Promise<[Principal, OrbiterDid.AccessKey][]> => {
 	const actor = await getOrbiterActor({ orbiterId, identity });
 	return actor.list_controllers();
 };
@@ -197,7 +197,7 @@ export const setControllers = async ({
 	args: OrbiterDid.SetControllersArgs;
 	orbiterId: Principal;
 	identity: OptionIdentity;
-}): Promise<[Principal, OrbiterDid.Controller][]> => {
+}): Promise<[Principal, OrbiterDid.AccessKey][]> => {
 	const { set_controllers } = await getOrbiterActor(rest);
 	return set_controllers(args);
 };
@@ -209,7 +209,7 @@ export const deleteControllers = async ({
 	args: OrbiterDid.DeleteControllersArgs;
 	orbiterId: Principal;
 	identity: OptionIdentity;
-}): Promise<[Principal, OrbiterDid.Controller][]> => {
+}): Promise<[Principal, OrbiterDid.AccessKey][]> => {
 	const { del_controllers } = await getOrbiterActor(rest);
 	return del_controllers(args);
 };

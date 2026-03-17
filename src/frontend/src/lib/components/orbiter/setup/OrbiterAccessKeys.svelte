@@ -24,7 +24,7 @@
 
 	let { orbiterId }: Props = $props();
 
-	const list = (): Promise<[Principal, MissionControlDid.Controller][]> =>
+	const list = (): Promise<[Principal, MissionControlDid.AccessKey][]> =>
 		listOrbiterControllers({ orbiterId, identity: $authIdentity });
 
 	const remove = async (accessKey: AccessKeyIdParam): Promise<AddAccessKeyResult> => {

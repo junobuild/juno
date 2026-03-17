@@ -151,21 +151,21 @@ export const idlFactory = ({ IDL }) => {
 	const DeleteControllersArgs = IDL.Record({
 		controllers: IDL.Vec(IDL.Principal)
 	});
-	const ControllerKind = IDL.Variant({
+	const AccessKeyKind = IDL.Variant({
 		Emulator: IDL.Null,
 		Automation: IDL.Null
 	});
-	const ControllerScope = IDL.Variant({
+	const AccessKeyScope = IDL.Variant({
 		Write: IDL.Null,
 		Admin: IDL.Null,
 		Submit: IDL.Null
 	});
-	const Controller = IDL.Record({
+	const AccessKey = IDL.Record({
 		updated_at: IDL.Nat64,
 		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
-		kind: IDL.Opt(ControllerKind),
+		kind: IDL.Opt(AccessKeyKind),
 		created_at: IDL.Nat64,
-		scope: ControllerScope,
+		scope: AccessKeyScope,
 		expires_at: IDL.Opt(IDL.Nat64)
 	});
 	const DelDoc = IDL.Record({ version: IDL.Opt(IDL.Nat64) });
@@ -471,8 +471,8 @@ export const idlFactory = ({ IDL }) => {
 	});
 	const SetController = IDL.Record({
 		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
-		kind: IDL.Opt(ControllerKind),
-		scope: ControllerScope,
+		kind: IDL.Opt(AccessKeyKind),
+		scope: AccessKeyScope,
 		expires_at: IDL.Opt(IDL.Nat64)
 	});
 	const SetControllersArgs = IDL.Record({
@@ -537,7 +537,7 @@ export const idlFactory = ({ IDL }) => {
 		del_controller_self: IDL.Func([], [], []),
 		del_controllers: IDL.Func(
 			[DeleteControllersArgs],
-			[IDL.Vec(IDL.Tuple(IDL.Principal, Controller))],
+			[IDL.Vec(IDL.Tuple(IDL.Principal, AccessKey))],
 			[]
 		),
 		del_custom_domain: IDL.Func([IDL.Text], [], []),
@@ -585,7 +585,7 @@ export const idlFactory = ({ IDL }) => {
 			[]
 		),
 		list_assets: IDL.Func([IDL.Text, ListParams], [ListResults], ['query']),
-		list_controllers: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Principal, Controller))], ['query']),
+		list_controllers: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Principal, AccessKey))], ['query']),
 		list_custom_domains: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Text, CustomDomain))], ['query']),
 		list_docs: IDL.Func([IDL.Text, ListParams], [ListResults_1], ['query']),
 		list_proposals: IDL.Func([ListProposalsParams], [ListProposalResults], ['query']),
@@ -597,7 +597,7 @@ export const idlFactory = ({ IDL }) => {
 		set_automation_config: IDL.Func([SetAutomationConfig], [AutomationConfig], []),
 		set_controllers: IDL.Func(
 			[SetControllersArgs],
-			[IDL.Vec(IDL.Tuple(IDL.Principal, Controller))],
+			[IDL.Vec(IDL.Tuple(IDL.Principal, AccessKey))],
 			[]
 		),
 		set_custom_domain: IDL.Func([IDL.Text, IDL.Opt(IDL.Text)], [], []),

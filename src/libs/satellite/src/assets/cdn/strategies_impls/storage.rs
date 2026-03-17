@@ -13,7 +13,7 @@ use junobuild_cdn::storage::errors::{
 use junobuild_collections::assert::stores::assert_permission;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::{Permission, Rule};
-use junobuild_shared::types::state::Controllers;
+use junobuild_shared::types::state::AccessKeys;
 use junobuild_storage::strategies::{StorageAssertionsStrategy, StorageUploadStrategy};
 use junobuild_storage::types::state::FullPath;
 use junobuild_storage::types::store::{
@@ -32,11 +32,7 @@ impl StorageAssertionsStrategy for CdnStorageAssertions {
         assert_cdn_asset_keys(full_path, description, collection)
     }
 
-    fn assert_write_on_dapp_collection(
-        &self,
-        caller: Principal,
-        controllers: &Controllers,
-    ) -> bool {
+    fn assert_write_on_dapp_collection(&self, caller: Principal, controllers: &AccessKeys) -> bool {
         assert_cdn_write_on_dapp_collection(caller, controllers)
     }
 
@@ -44,7 +40,7 @@ impl StorageAssertionsStrategy for CdnStorageAssertions {
         &self,
         caller: Principal,
         collection: &CollectionKey,
-        controllers: &Controllers,
+        controllers: &AccessKeys,
     ) -> bool {
         assert_cdn_write_on_system_collection(caller, collection, controllers)
     }
@@ -54,7 +50,7 @@ impl StorageAssertionsStrategy for CdnStorageAssertions {
         permission: &Permission,
         caller: Principal,
         collection: &CollectionKey,
-        controllers: &Controllers,
+        controllers: &AccessKeys,
     ) -> bool {
         assert_cdn_create_permission(permission, caller, collection, controllers)
     }
@@ -65,7 +61,7 @@ impl StorageAssertionsStrategy for CdnStorageAssertions {
         owner: Principal,
         caller: Principal,
         collection: &CollectionKey,
-        controllers: &Controllers,
+        controllers: &AccessKeys,
     ) -> bool {
         assert_cdn_update_permission(permission, owner, caller, collection, controllers)
     }
@@ -76,7 +72,7 @@ impl StorageAssertionsStrategy for CdnStorageAssertions {
         owner: Principal,
         caller: Principal,
         _collection: &CollectionKey,
-        controllers: &Controllers,
+        controllers: &AccessKeys,
     ) -> bool {
         assert_permission(permission, owner, caller, controllers)
     }
@@ -93,7 +89,7 @@ impl StorageAssertionsStrategy for CdnStorageAssertions {
     fn increment_and_assert_storage_usage(
         &self,
         _caller: &Principal,
-        _controllers: &Controllers,
+        _controllers: &AccessKeys,
         _collection: &CollectionKey,
         _max_changes_per_user: Option<u32>,
     ) -> Result<(), String> {

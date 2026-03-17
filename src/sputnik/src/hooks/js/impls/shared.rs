@@ -7,14 +7,14 @@ use crate::sdk::js::types::shared::{
     JsMetadataRecord,
 };
 use junobuild_shared::types::state::{
-    Controller, ControllerKind, ControllerScope, Controllers, Timestamp,
+    AccessKey, AccessKeyKind, AccessKeyScope, AccessKeys, Timestamp,
 };
 use rquickjs::{
     Array, BigInt, Ctx, Error as JsError, FromJs, IntoJs, Object, Result as JsResult, Value,
 };
 
 impl<'js> JsController {
-    pub fn from_controller(_ctx: &Ctx<'js>, controller: Controller) -> JsResult<Self> {
+    pub fn from_controller(_ctx: &Ctx<'js>, controller: AccessKey) -> JsResult<Self> {
         Ok(Self {
             metadata: controller
                 .metadata
@@ -25,19 +25,19 @@ impl<'js> JsController {
             updated_at: controller.updated_at,
             expires_at: controller.expires_at,
             scope: match controller.scope {
-                ControllerScope::Write => JsControllerScope::Write,
-                ControllerScope::Admin => JsControllerScope::Admin,
-                ControllerScope::Submit => JsControllerScope::Submit,
+                AccessKeyScope::Write => JsControllerScope::Write,
+                AccessKeyScope::Admin => JsControllerScope::Admin,
+                AccessKeyScope::Submit => JsControllerScope::Submit,
             },
             kind: controller.kind.map(|kind| match kind {
-                ControllerKind::Automation => JsControllerKind::Automation,
-                ControllerKind::Emulator => JsControllerKind::Emulator,
+                AccessKeyKind::Automation => JsControllerKind::Automation,
+                AccessKeyKind::Emulator => JsControllerKind::Emulator,
             }),
         })
     }
 
-    pub fn to_controller(&self) -> JsResult<Controller> {
-        Ok(Controller {
+    pub fn to_controller(&self) -> JsResult<AccessKey> {
+        Ok(AccessKey {
             metadata: self
                 .metadata
                 .iter()
@@ -47,20 +47,20 @@ impl<'js> JsController {
             updated_at: self.updated_at,
             expires_at: self.expires_at,
             scope: match self.scope {
-                JsControllerScope::Write => ControllerScope::Write,
-                JsControllerScope::Admin => ControllerScope::Admin,
-                JsControllerScope::Submit => ControllerScope::Submit,
+                JsControllerScope::Write => AccessKeyScope::Write,
+                JsControllerScope::Admin => AccessKeyScope::Admin,
+                JsControllerScope::Submit => AccessKeyScope::Submit,
             },
             kind: self.kind.as_ref().map(|kind| match kind {
-                JsControllerKind::Automation => ControllerKind::Automation,
-                JsControllerKind::Emulator => ControllerKind::Emulator,
+                JsControllerKind::Automation => AccessKeyKind::Automation,
+                JsControllerKind::Emulator => AccessKeyKind::Emulator,
             }),
         })
     }
 }
 
 impl<'js> JsControllers<'js> {
-    pub fn from_controllers(ctx: &Ctx<'js>, controllers: Controllers) -> JsResult<Self> {
+    pub fn from_controllers(ctx: &Ctx<'js>, controllers: AccessKeys) -> JsResult<Self> {
         let records = controllers
             .into_iter()
             .map(|(id, controller)| {
@@ -76,7 +76,7 @@ impl<'js> JsControllers<'js> {
 }
 
 impl<'js> JsControllers<'js> {
-    pub fn to_controllers(&self) -> JsResult<Controllers> {
+    pub fn to_controllers(&self) -> JsResult<AccessKeys> {
         self.0
             .iter()
             .map(|JsControllerRecord(id, controller)| {

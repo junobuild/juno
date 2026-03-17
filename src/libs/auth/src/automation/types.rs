@@ -2,7 +2,7 @@ use crate::openid::jwkset::types::errors::GetOrRefreshJwksError;
 use crate::openid::jwt::types::errors::{JwtFindProviderError, JwtVerifyError};
 use crate::state::types::state::Salt;
 use candid::{CandidType, Deserialize};
-use junobuild_shared::types::state::ControllerId;
+use junobuild_shared::types::state::AccessKeyId;
 use serde::Serialize;
 
 #[derive(CandidType, Serialize, Deserialize)]
@@ -14,7 +14,7 @@ pub struct OpenIdPrepareAutomationArgs {
 pub type PrepareAutomationResult = Result<PreparedAutomation, PrepareAutomationError>;
 
 #[derive(CandidType, Serialize, Deserialize)]
-pub struct PreparedAutomation(pub ControllerId, pub AutomationController);
+pub struct PreparedAutomation(pub AccessKeyId, pub AutomationController);
 
 #[derive(CandidType, Serialize, Deserialize)]
 pub struct AutomationController {

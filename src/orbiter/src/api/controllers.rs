@@ -5,11 +5,11 @@ use crate::controllers::store::{
 use crate::guards::caller_is_admin_controller;
 use ic_cdk_macros::{query, update};
 use junobuild_shared::ic::UnwrapOrTrap;
-use junobuild_shared::segments::controllers::{
-    assert_controller_expiration, assert_controllers, assert_max_number_of_controllers,
+use junobuild_shared::segments::access_keys::{
+    assert_access_key_expiration, assert_controllers, assert_max_number_of_access_keys,
 };
 use junobuild_shared::types::interface::{DeleteControllersArgs, SetControllersArgs};
-use junobuild_shared::types::state::Controllers;
+use junobuild_shared::types::state::AccessKeys;
 
 #[update(guard = "caller_is_admin_controller")]
 fn set_controllers(
@@ -17,25 +17,25 @@ fn set_controllers(
         controllers,
         controller,
     }: SetControllersArgs,
-) -> Controllers {
-    assert_max_number_of_controllers(&get_controllers(), &controllers, &controller.scope, None)
+) -> AccessKeys {
+    assert_max_number_of_access_keys(&get_controllers(), &controllers, &controller.scope, None)
         .unwrap_or_trap();
 
     assert_controllers(&controllers).unwrap_or_trap();
 
-    assert_controller_expiration(&controller).unwrap_or_trap();
+    assert_access_key_expiration(&controller).unwrap_or_trap();
 
     set_controllers_store(&controllers, &controller);
     get_controllers()
 }
 
 #[update(guard = "caller_is_admin_controller")]
-fn del_controllers(DeleteControllersArgs { controllers }: DeleteControllersArgs) -> Controllers {
+fn del_controllers(DeleteControllersArgs { controllers }: DeleteControllersArgs) -> AccessKeys {
     delete_controllers_store(&controllers);
     get_controllers()
 }
 
 #[query(guard = "caller_is_admin_controller")]
-fn list_controllers() -> Controllers {
+fn list_controllers() -> AccessKeys {
     get_controllers()
 }

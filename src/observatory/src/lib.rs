@@ -23,6 +23,6 @@ use junobuild_auth::openid::types::provider::OpenIdProvider;
 use junobuild_shared::rate::types::RateConfig;
 use junobuild_shared::types::interface::NotifyArgs;
 use junobuild_shared::types::interface::{DeleteControllersArgs, SetControllersArgs};
-use junobuild_shared::types::state::Controllers;
+use junobuild_shared::types::state::AccessKeys;
 
 export_candid!();

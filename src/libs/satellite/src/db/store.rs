@@ -24,7 +24,7 @@ use junobuild_collections::types::rules::{Memory, Rule};
 use junobuild_shared::data::list::list_values;
 use junobuild_shared::types::core::Key;
 use junobuild_shared::types::list::{ListParams, ListResults};
-use junobuild_shared::types::state::{Controllers, UserId};
+use junobuild_shared::types::state::{AccessKeys, UserId};
 // ---------------------------------------------------------
 // Collection
 // ---------------------------------------------------------
@@ -84,7 +84,7 @@ pub fn get_doc_store(
     collection: CollectionKey,
     key: Key,
 ) -> Result<Option<Doc>, String> {
-    let controllers: Controllers = get_access_keys();
+    let controllers: AccessKeys = get_access_keys();
 
     let context = StoreContext {
         caller,
@@ -154,7 +154,7 @@ pub fn set_doc_store(
     key: Key,
     value: SetDoc,
 ) -> Result<DocContext<DocUpsert>, String> {
-    let controllers: Controllers = get_access_keys();
+    let controllers: AccessKeys = get_access_keys();
     let config = get_config();
 
     let context = StoreContext {
@@ -189,7 +189,7 @@ pub fn internal_set_doc_store(
     value: SetDoc,
     assert_options: &AssertSetDocOptions,
 ) -> Result<DocContext<DocUpsert>, String> {
-    let controllers: Controllers = get_access_keys();
+    let controllers: AccessKeys = get_access_keys();
     let config = get_config();
 
     let context = StoreContext {
@@ -281,7 +281,7 @@ pub fn list_docs_store(
     collection: CollectionKey,
     filter: &ListParams,
 ) -> Result<ListResults<Doc>, String> {
-    let controllers: Controllers = get_access_keys();
+    let controllers: AccessKeys = get_access_keys();
 
     secure_get_docs(caller, &controllers, collection, filter)
 }
@@ -316,7 +316,7 @@ pub fn count_docs_store(
 
 fn secure_get_docs(
     caller: Principal,
-    controllers: &Controllers,
+    controllers: &AccessKeys,
     collection: CollectionKey,
     filter: &ListParams,
 ) -> Result<ListResults<Doc>, String> {
@@ -353,7 +353,7 @@ fn secure_get_docs(
 fn get_docs_impl<'a>(
     docs: &[(&'a Key, &'a Doc)],
     caller: Principal,
-    controllers: &Controllers,
+    controllers: &AccessKeys,
     filters: &ListParams,
     rule: &Rule,
 ) -> Result<ListResults<Doc>, String> {
@@ -395,7 +395,7 @@ pub fn delete_doc_store(
     key: Key,
     value: DelDoc,
 ) -> Result<DocContext<Option<Doc>>, String> {
-    let controllers: Controllers = get_access_keys();
+    let controllers: AccessKeys = get_access_keys();
 
     let context = StoreContext {
         caller,
@@ -540,7 +540,7 @@ pub fn delete_filtered_docs_store(
     collection: CollectionKey,
     filter: &ListParams,
 ) -> Result<Vec<DocContext<Option<Doc>>>, String> {
-    let controllers: Controllers = get_access_keys();
+    let controllers: AccessKeys = get_access_keys();
 
     let docs = secure_get_docs(caller, &controllers, collection.clone(), filter)?;
 

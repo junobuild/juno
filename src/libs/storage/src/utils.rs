@@ -12,7 +12,7 @@ use junobuild_collections::types::rules::Permission;
 use junobuild_shared::data::list::{filter_timestamps, matcher_regex};
 use junobuild_shared::types::core::Blob;
 use junobuild_shared::types::list::ListParams;
-use junobuild_shared::types::state::{Controllers, UserId};
+use junobuild_shared::types::state::{AccessKeys, UserId};
 use regex::Regex;
 
 pub fn map_asset_no_content(asset: &Asset) -> (FullPath, AssetNoContent) {
@@ -21,7 +21,7 @@ pub fn map_asset_no_content(asset: &Asset) -> (FullPath, AssetNoContent) {
 
 pub fn filter_values<'a>(
     caller: Principal,
-    controllers: &'a Controllers,
+    controllers: &'a AccessKeys,
     permission: &'a Permission,
     collection: CollectionKey,
     ListParams {

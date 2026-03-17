@@ -1,13 +1,13 @@
 use crate::memory::state::services::{mutate_heap_state, mutate_runtime_state, read_heap_state};
 use crate::types::state::{OpenId, Rates};
-use junobuild_shared::types::state::Controllers;
+use junobuild_shared::types::state::AccessKeys;
 use rand::prelude::StdRng;
 
 pub fn with_runtime_rng_mut<R>(f: impl FnOnce(&mut Option<StdRng>) -> R) -> R {
     mutate_runtime_state(|state| f(&mut state.rng))
 }
 
-pub fn with_controllers<R>(f: impl FnOnce(&Controllers) -> R) -> R {
+pub fn with_controllers<R>(f: impl FnOnce(&AccessKeys) -> R) -> R {
     read_heap_state(|heap| f(&heap.controllers))
 }
 

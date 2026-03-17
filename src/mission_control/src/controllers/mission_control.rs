@@ -6,18 +6,18 @@ use junobuild_shared::constants::shared::MAX_NUMBER_OF_MISSION_CONTROL_ADMIN_CON
 use junobuild_shared::ic::api::id;
 use junobuild_shared::ic::UnwrapOrTrap;
 use junobuild_shared::mgmt::ic::update_canister_controllers;
-use junobuild_shared::segments::controllers::{
-    assert_controller_expiration, assert_controllers, assert_max_number_of_controllers,
-    into_controller_ids,
+use junobuild_shared::segments::access_keys::{
+    assert_access_key_expiration, assert_controllers, assert_max_number_of_access_keys,
+    into_access_key_ids,
 };
 use junobuild_shared::types::interface::SetController;
-use junobuild_shared::types::state::{ControllerId, Controllers};
+use junobuild_shared::types::state::{AccessKeyId, AccessKeys};
 
 pub async fn set_mission_control_controllers(
-    controllers: &[ControllerId],
+    controllers: &[AccessKeyId],
     controller: &SetController,
 ) -> Result<(), String> {
-    assert_max_number_of_controllers(
+    assert_max_number_of_access_keys(
         &get_controllers(),
         controllers,
         &controller.scope,
@@ -27,7 +27,7 @@ pub async fn set_mission_control_controllers(
 
     assert_controllers(controllers)?;
 
-    assert_controller_expiration(controller)?;
+    assert_access_key_expiration(controller)?;
 
     set_controllers(controllers, controller);
 
@@ -37,9 +37,7 @@ pub async fn set_mission_control_controllers(
     update_controllers_settings(&updated_controllers).await
 }
 
-pub async fn delete_mission_control_controllers(
-    controllers: &[ControllerId],
-) -> Result<(), String> {
+pub async fn delete_mission_control_controllers(controllers: &[AccessKeyId]) -> Result<(), String> {
     delete_controllers(controllers);
 
     // For simplicity reason we update the list of controllers even if we removed only Write scoped controllers.
@@ -47,14 +45,14 @@ pub async fn delete_mission_control_controllers(
     update_controllers_settings(&updated_controllers).await
 }
 
-async fn update_controllers_settings(controllers: &Controllers) -> Result<(), String> {
+async fn update_controllers_settings(controllers: &AccessKeys) -> Result<(), String> {
     // Because the mission control updates its own settings it needs to be a controller
     let mission_control_id = id();
 
     // So do the owner / user
     let user = get_user();
 
-    let controller_ids = into_controller_ids(controllers);
+    let controller_ids = into_access_key_ids(controllers);
 
     let result = update_canister_controllers(
         mission_control_id,

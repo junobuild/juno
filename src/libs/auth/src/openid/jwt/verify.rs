@@ -52,6 +52,7 @@ where
 
     // We use the library to enforce "not before" (`nbf`) if present.
     // Not strictly required (we already check `iat` freshness), but it doesn't hurt.
+    // Note: jsonwebtoken skips this validation when `nbf` is absent from the token.
     val.validate_nbf = true;
 
     // Let the lib check issuer

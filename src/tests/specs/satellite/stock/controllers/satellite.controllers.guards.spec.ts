@@ -73,19 +73,19 @@ describe('Satellite > Controllers > Guards', () => {
 		it('should throw on del_controller_self', async () => {
 			const { del_controller_self } = actor;
 
-			await expect(del_controller_self()).rejects.toThrowError(JUNO_AUTH_ERROR_NOT_CONTROLLER);
+			await expect(del_controller_self()).rejects.toThrow(JUNO_AUTH_ERROR_NOT_CONTROLLER);
 		});
 
 		it('should throw on get_proposal', async () => {
 			const { get_proposal } = actor;
 
-			await expect(get_proposal(123n)).rejects.toThrowError(JUNO_AUTH_ERROR_NOT_CONTROLLER);
+			await expect(get_proposal(123n)).rejects.toThrow(JUNO_AUTH_ERROR_NOT_CONTROLLER);
 		});
 
 		it('should throw on list_proposals', async () => {
 			const { list_proposals } = actor;
 
-			await expect(list_proposals(mockListProposalsParams)).rejects.toThrowError(
+			await expect(list_proposals(mockListProposalsParams)).rejects.toThrow(
 				JUNO_AUTH_ERROR_NOT_CONTROLLER
 			);
 		});
@@ -93,7 +93,7 @@ describe('Satellite > Controllers > Guards', () => {
 		it('should throw on count_proposals', async () => {
 			const { count_proposals } = actor;
 
-			await expect(count_proposals()).rejects.toThrowError(JUNO_AUTH_ERROR_NOT_CONTROLLER);
+			await expect(count_proposals()).rejects.toThrow(JUNO_AUTH_ERROR_NOT_CONTROLLER);
 		});
 
 		it('should throw on init_proposal', async () => {
@@ -105,13 +105,13 @@ describe('Satellite > Controllers > Guards', () => {
 						clear_existing_assets: toNullable()
 					}
 				})
-			).rejects.toThrowError(JUNO_AUTH_ERROR_NOT_CONTROLLER);
+			).rejects.toThrow(JUNO_AUTH_ERROR_NOT_CONTROLLER);
 		});
 
 		it('should throw on submit_proposal', async () => {
 			const { submit_proposal } = actor;
 
-			await expect(submit_proposal(123n)).rejects.toThrowError(JUNO_AUTH_ERROR_NOT_CONTROLLER);
+			await expect(submit_proposal(123n)).rejects.toThrow(JUNO_AUTH_ERROR_NOT_CONTROLLER);
 		});
 
 		it('should throw on init_proposal_asset_upload', async () => {
@@ -129,7 +129,7 @@ describe('Satellite > Controllers > Guards', () => {
 					},
 					123n
 				)
-			).rejects.toThrowError(JUNO_AUTH_ERROR_NOT_CONTROLLER);
+			).rejects.toThrow(JUNO_AUTH_ERROR_NOT_CONTROLLER);
 		});
 
 		it('should throw on init_proposal_many_assets_upload', async () => {
@@ -149,7 +149,7 @@ describe('Satellite > Controllers > Guards', () => {
 					],
 					123n
 				)
-			).rejects.toThrowError(JUNO_AUTH_ERROR_NOT_CONTROLLER);
+			).rejects.toThrow(JUNO_AUTH_ERROR_NOT_CONTROLLER);
 		});
 
 		it('should throw on upload_proposal_asset_chunk', async () => {
@@ -161,7 +161,7 @@ describe('Satellite > Controllers > Guards', () => {
 					content: Uint8Array.from([1, 2]),
 					order_id: [0n]
 				})
-			).rejects.toThrowError(JUNO_AUTH_ERROR_NOT_CONTROLLER);
+			).rejects.toThrow(JUNO_AUTH_ERROR_NOT_CONTROLLER);
 		});
 
 		it('should throw on commit_proposal_asset_upload', async () => {
@@ -173,7 +173,7 @@ describe('Satellite > Controllers > Guards', () => {
 					chunk_ids: [1n],
 					headers: []
 				})
-			).rejects.toThrowError(JUNO_AUTH_ERROR_NOT_CONTROLLER);
+			).rejects.toThrow(JUNO_AUTH_ERROR_NOT_CONTROLLER);
 		});
 
 		it('should throw on commit_proposal_many_assets_upload', async () => {
@@ -187,13 +187,13 @@ describe('Satellite > Controllers > Guards', () => {
 						headers: []
 					}
 				])
-			).rejects.toThrowError(JUNO_AUTH_ERROR_NOT_CONTROLLER);
+			).rejects.toThrow(JUNO_AUTH_ERROR_NOT_CONTROLLER);
 		});
 
 		it('should throw on memory_size', async () => {
 			const { memory_size } = actor;
 
-			await expect(memory_size()).rejects.toThrowError(JUNO_AUTH_ERROR_NOT_CONTROLLER);
+			await expect(memory_size()).rejects.toThrow(JUNO_AUTH_ERROR_NOT_CONTROLLER);
 		});
 	});
 
@@ -222,15 +222,13 @@ describe('Satellite > Controllers > Guards', () => {
 		it('should throw on del_docs', async () => {
 			const { del_docs } = actor;
 
-			await expect(del_docs(TEST_COLLECTION)).rejects.toThrowError(
-				JUNO_AUTH_ERROR_NOT_WRITE_CONTROLLER
-			);
+			await expect(del_docs(TEST_COLLECTION)).rejects.toThrow(JUNO_AUTH_ERROR_NOT_WRITE_CONTROLLER);
 		});
 
 		it('should throw on count_collection_docs', async () => {
 			const { count_collection_docs } = actor;
 
-			await expect(count_collection_docs(TEST_COLLECTION)).rejects.toThrowError(
+			await expect(count_collection_docs(TEST_COLLECTION)).rejects.toThrow(
 				JUNO_AUTH_ERROR_NOT_WRITE_CONTROLLER
 			);
 		});
@@ -243,7 +241,7 @@ describe('Satellite > Controllers > Guards', () => {
 					proposal_id: 1123n,
 					sha256: Uint8Array.from([1, 2])
 				})
-			).rejects.toThrowError(JUNO_AUTH_ERROR_NOT_WRITE_CONTROLLER);
+			).rejects.toThrow(JUNO_AUTH_ERROR_NOT_WRITE_CONTROLLER);
 		});
 
 		it('should throw on commit_proposal', async () => {
@@ -254,7 +252,7 @@ describe('Satellite > Controllers > Guards', () => {
 					proposal_id: 1123n,
 					sha256: Uint8Array.from([1, 2])
 				})
-			).rejects.toThrowError(JUNO_AUTH_ERROR_NOT_WRITE_CONTROLLER);
+			).rejects.toThrow(JUNO_AUTH_ERROR_NOT_WRITE_CONTROLLER);
 		});
 
 		it('should throw on delete_proposal_assets', async () => {
@@ -264,13 +262,13 @@ describe('Satellite > Controllers > Guards', () => {
 				delete_proposal_assets({
 					proposal_ids: [1n]
 				})
-			).rejects.toThrowError(JUNO_AUTH_ERROR_NOT_WRITE_CONTROLLER);
+			).rejects.toThrow(JUNO_AUTH_ERROR_NOT_WRITE_CONTROLLER);
 		});
 
 		it('should throw on del_assets', async () => {
 			const { del_assets } = actor;
 
-			await expect(del_assets(TEST_COLLECTION)).rejects.toThrowError(
+			await expect(del_assets(TEST_COLLECTION)).rejects.toThrow(
 				JUNO_AUTH_ERROR_NOT_WRITE_CONTROLLER
 			);
 		});
@@ -278,7 +276,7 @@ describe('Satellite > Controllers > Guards', () => {
 		it('should throw on count_collection_assets', async () => {
 			const { count_collection_assets } = actor;
 
-			await expect(count_collection_assets(TEST_COLLECTION)).rejects.toThrowError(
+			await expect(count_collection_assets(TEST_COLLECTION)).rejects.toThrow(
 				JUNO_AUTH_ERROR_NOT_WRITE_CONTROLLER
 			);
 		});

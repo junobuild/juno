@@ -47,7 +47,7 @@ describe('Sputnik > Custom Functions', () => {
 			value: mockPrincipal
 		};
 
-		await expect(app_hello_world(args)).resolves.not.toThrowError();
+		await expect(app_hello_world(args)).resolves.not.toThrow();
 	});
 
 	it('should get a result from a custom function', async () => {
@@ -89,7 +89,7 @@ describe('Sputnik > Custom Functions', () => {
 	it('should handle calls to void', async () => {
 		const { app_yolo } = actor;
 
-		await expect(app_yolo()).resolves.not.toThrowError();
+		await expect(app_yolo()).resolves.not.toThrow();
 
 		const logs = await fetchLogs({
 			canisterId,
@@ -105,7 +105,7 @@ describe('Sputnik > Custom Functions', () => {
 	it('should handle a sync update', async () => {
 		const { app_sync_update } = actor;
 
-		await expect(app_sync_update()).resolves.not.toThrowError();
+		await expect(app_sync_update()).resolves.not.toThrow();
 
 		const logs = await fetchLogs({
 			canisterId,
@@ -132,7 +132,7 @@ describe('Sputnik > Custom Functions', () => {
 	it('should handle a query with no args and no result', async () => {
 		const { app_query_no_args_no_result } = actor;
 
-		await expect(app_query_no_args_no_result()).resolves.not.toThrowError();
+		await expect(app_query_no_args_no_result()).resolves.not.toThrow();
 	});
 
 	it('should handle an async query', async () => {
@@ -156,7 +156,7 @@ describe('Sputnik > Custom Functions', () => {
 			value: 'yolo'
 		};
 
-		await expect(app_update_args_only(args)).resolves.not.toThrowError();
+		await expect(app_update_args_only(args)).resolves.not.toThrow();
 
 		const logs = await fetchLogs({
 			canisterId,

@@ -47,11 +47,11 @@ describe('Console > Rates', () => {
 			time_per_token_ns: 60n
 		};
 
-		await expect(set_rate_config({ Satellite: null }, config)).rejects.toThrowError(
+		await expect(set_rate_config({ Satellite: null }, config)).rejects.toThrow(
 			CONTROLLER_ERROR_MSG
 		);
 
-		await expect(get_rate_config({ Satellite: null })).rejects.toThrowError(CONTROLLER_ERROR_MSG);
+		await expect(get_rate_config({ Satellite: null })).rejects.toThrow(CONTROLLER_ERROR_MSG);
 	};
 
 	it('should throw on set_fee with some identity', async () => {
@@ -63,7 +63,7 @@ describe('Console > Rates', () => {
 	});
 
 	it('should throw errors if too many users are created quickly', async () => {
-		await expect(initUserAccounts({ actor, pic, length: 2 })).rejects.toThrowError(
+		await expect(initUserAccounts({ actor, pic, length: 2 })).rejects.toThrow(
 			new RegExp('Rate limit reached, try again later', 'i')
 		);
 	});

@@ -110,7 +110,7 @@ describe.each([
 		const name = 'hello.html';
 		const full_path = `/${TEST_COLLECTION}/${name}`;
 
-		await expect(upload({ full_path, name, collection: TEST_COLLECTION })).rejects.toThrowError(
+		await expect(upload({ full_path, name, collection: TEST_COLLECTION })).rejects.toThrow(
 			JUNO_STORAGE_ERROR_UPLOAD_NOT_ALLOWED
 		);
 	});
@@ -144,7 +144,7 @@ describe.each([
 
 		const { del_asset } = actor;
 
-		await expect(del_asset(TEST_COLLECTION, full_path)).rejects.toThrowError(
+		await expect(del_asset(TEST_COLLECTION, full_path)).rejects.toThrow(
 			JUNO_STORAGE_ERROR_ASSET_NOT_FOUND
 		);
 	});
@@ -165,7 +165,7 @@ describe.each([
 
 		actor.setIdentity(testSubmitController);
 
-		await expect(upload({ full_path, name, collection: TEST_COLLECTION })).rejects.toThrowError(
+		await expect(upload({ full_path, name, collection: TEST_COLLECTION })).rejects.toThrow(
 			JUNO_STORAGE_ERROR_UPLOAD_NOT_ALLOWED
 		);
 	});

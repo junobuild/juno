@@ -1,7 +1,7 @@
 <script lang="ts" module>
 	import type { Principal } from '@icp-sdk/core/principal';
-	import type { UpgradeCodeParams } from '@junobuild/admin';
-	import type { Snippet } from 'svelte';
+	import type { UpgradeCodeParams, UpgradeCodeProgress } from '@junobuild/admin';
+	import { type Snippet, onMount } from 'svelte';
 	import type { Wasm } from '$lib/types/upgrade';
 
 	export interface CanisterUpgradeWizardProps {
@@ -30,8 +30,6 @@
 </script>
 
 <script lang="ts">
-	import type { UpgradeCodeProgress } from '@junobuild/admin';
-	import { onMount } from 'svelte';
 	import ConfirmUpgradeVersion from '$lib/components/modules/upgrade/wizard/ConfirmUpgradeVersion.svelte';
 	import ProgressUpgradeVersion from '$lib/components/modules/upgrade/wizard/ProgressUpgradeVersion.svelte';
 	import ReviewUpgradeVersion from '$lib/components/modules/upgrade/wizard/ReviewUpgradeVersion.svelte';

@@ -72,9 +72,7 @@ describe('Observatory > OpenId > Rate', async () => {
 
 	const assertControllers = (actor: () => ObservatoryActor) => {
 		it('should throw errors on updating rate config for not a controller', async () => {
-			await expect(setRateConfig(actor())).rejects.toThrowError(
-				CALLER_NOT_CONTROLLER_OBSERVATORY_MSG
-			);
+			await expect(setRateConfig(actor())).rejects.toThrow(CALLER_NOT_CONTROLLER_OBSERVATORY_MSG);
 		});
 	};
 
@@ -101,7 +99,7 @@ describe('Observatory > OpenId > Rate', async () => {
 					get_openid_certificate({
 						provider: { Google: null }
 					})
-				).rejects.toThrowError(
+				).rejects.toThrow(
 					'Cannot increment OpenID certificate requests: rates are not configured.'
 				);
 			});
@@ -133,7 +131,7 @@ describe('Observatory > OpenId > Rate', async () => {
 						get_openid_certificate({
 							provider: { Google: null }
 						})
-					).rejects.toThrowError('Rate limit reached, try again later.');
+					).rejects.toThrow('Rate limit reached, try again later.');
 				});
 
 				it('should provide certificate', async () => {

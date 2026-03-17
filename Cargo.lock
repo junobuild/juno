@@ -1217,9 +1217,8 @@ checksum = "b1a46d1a171d865aa5f83f92695765caa047a9b4cbae2cbf37dbd613a793fd4c"
 
 [[package]]
 name = "jsonwebtoken-ic"
-version = "10.2.0-ic.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "61afa40c6d5df5e17e149b52f5ce72cb2d80755daed474ed7c2b9cd95736bffa"
+version = "10.3.0-ic.1"
+source = "git+https://github.com/peterpeterparker/jsonwebtoken-ic?branch=upstream-sync#4608b063515921e7f3c5571578ab668ba84ee26c"
 dependencies = [
  "base64",
  "ed25519-dalek",

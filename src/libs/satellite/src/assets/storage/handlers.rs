@@ -1,8 +1,8 @@
+use crate::access_keys::store::get_access_keys;
 use crate::assets::storage::state::{
     get_asset, get_config, get_rule, insert_asset, insert_asset_encoding,
 };
 use crate::certification::strategy_impls::StorageCertificate;
-use crate::access_keys::store::get_access_keys;
 use junobuild_collections::assert::stores::assert_permission;
 use junobuild_collections::types::rules::Rule;
 use junobuild_shared::ic::api::id;

@@ -1,3 +1,4 @@
+use crate::access_keys::store::get_access_keys;
 use crate::assets::storage::assert::{
     assert_create_batch, assert_delete_asset, assert_get_asset, assert_list_assets,
     assert_set_config, assert_write_asset,
@@ -14,7 +15,6 @@ use crate::assets::storage::state::{
 use crate::assets::storage::strategy_impls::{StorageAssertions, StorageState, StorageUpload};
 use crate::auth::store::get_config as get_auth_config;
 use crate::certification::strategy_impls::StorageCertificate;
-use crate::access_keys::store::get_access_keys;
 use crate::memory::state::STATE;
 use crate::types::store::{AssertContext, StoreContext};
 use candid::Principal;

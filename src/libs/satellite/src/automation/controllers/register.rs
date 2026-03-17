@@ -1,5 +1,5 @@
-use crate::automation::workflow::build_automation_workflow_key;
 use crate::access_keys::store::set_access_keys;
+use crate::automation::workflow::build_automation_workflow_key;
 use junobuild_auth::automation::types::PreparedAutomation;
 use junobuild_auth::openid::credentials::automation::types::interface::OpenIdAutomationCredential;
 use junobuild_auth::openid::types::provider::OpenIdAutomationProvider;

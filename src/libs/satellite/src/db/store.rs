@@ -1,5 +1,5 @@
-use crate::auth::store::get_config as get_auth_config;
 use crate::access_keys::store::get_access_keys;
+use crate::auth::store::get_config as get_auth_config;
 use crate::db::assert::{
     assert_delete_doc, assert_get_doc, assert_get_docs, assert_set_config, assert_set_doc,
 };

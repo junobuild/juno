@@ -1,11 +1,11 @@
 #![doc = include_str!("../README.md")]
 
+mod access_keys;
 mod api;
 mod assets;
 mod auth;
 mod automation;
 mod certification;
-mod controllers;
 mod db;
 mod errors;
 mod hooks;

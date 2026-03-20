@@ -35,7 +35,7 @@ export const testControllers = ({
 
 		const newController = Ed25519KeyIdentity.generate();
 
-		const controllerData: OrbiterDid.SetController = {
+		const controllerData: OrbiterDid.SetAccessKey = {
 			scope: { Admin: null },
 			expires_at: [],
 			kind: [{ Automation: null }],

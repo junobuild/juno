@@ -1,6 +1,6 @@
 use crate::types::rules::Permission;
 use candid::Principal;
-use junobuild_shared::segments::access_keys::access_key_can_write;
+use junobuild_shared::segments::access_keys::check_caller_can_write;
 use junobuild_shared::types::state::{AccessKeys, UserId};
 use junobuild_shared::utils::{principal_not_anonymous, principal_not_anonymous_and_equal};
 
@@ -10,7 +10,13 @@ pub fn assert_permission(
     caller: Principal,
     controllers: &AccessKeys,
 ) -> bool {
-    assert_permission_with(permission, owner, caller, controllers, access_key_can_write)
+    assert_permission_with(
+        permission,
+        owner,
+        caller,
+        controllers,
+        check_caller_can_write,
+    )
 }
 
 pub fn assert_permission_with(
@@ -27,7 +33,7 @@ pub fn assert_permission_with(
             // if owner, then it's either not a controller or a valid controller
             // else if valid controller
             is_owner_and_valid(caller, owner, controllers)
-                || access_key_can_write(caller, controllers)
+                || check_caller_can_write(caller, controllers)
         }
         Permission::Controllers => is_allowed_controller(caller, controllers),
     }
@@ -40,7 +46,7 @@ pub fn assert_create_permission(
     caller: Principal,
     controllers: &AccessKeys,
 ) -> bool {
-    assert_create_permission_with(permission, caller, controllers, access_key_can_write)
+    assert_create_permission_with(permission, caller, controllers, check_caller_can_write)
 }
 
 pub fn assert_create_permission_with(
@@ -55,7 +61,7 @@ pub fn assert_create_permission_with(
         _ => {
             assert_not_anonymous(caller)
                 && (is_not_controller(caller, controllers)
-                    || access_key_can_write(caller, controllers))
+                    || check_caller_can_write(caller, controllers))
         }
     }
 }
@@ -82,7 +88,7 @@ fn is_not_controller(caller: Principal, controllers: &AccessKeys) -> bool {
 
 fn is_owner_and_valid(caller: Principal, owner: Principal, controllers: &AccessKeys) -> bool {
     is_owner(caller, owner)
-        && (is_not_controller(caller, controllers) || access_key_can_write(caller, controllers))
+        && (is_not_controller(caller, controllers) || check_caller_can_write(caller, controllers))
 }
 
 #[cfg(test)]

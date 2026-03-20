@@ -1,6 +1,6 @@
 use crate::state::memory::manager::STATE;
 use junobuild_shared::ic::api::caller;
-use junobuild_shared::segments::access_keys::{access_key_can_write, is_admin_controller};
+use junobuild_shared::segments::access_keys::{check_caller_can_write, is_admin_controller};
 use junobuild_shared::types::state::AccessKeys;
 
 pub fn caller_is_admin_controller() -> Result<(), String> {
@@ -18,7 +18,7 @@ pub fn caller_is_controller() -> Result<(), String> {
     let caller = caller();
     let controllers: AccessKeys = STATE.with(|state| state.borrow().heap.controllers.clone());
 
-    if access_key_can_write(caller, &controllers) {
+    if check_caller_can_write(caller, &controllers) {
         Ok(())
     } else {
         Err("Caller is not a controller of the orbiter.".to_string())

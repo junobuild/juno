@@ -22,7 +22,7 @@ pub fn execute_sync_function<A: IntoJsonData, R: FromJsonData>(
 }
 
 #[allow(dead_code)]
-pub fn execute_guard(
+pub fn execute_sync_guard(
     custom_function: &str,
 ) -> Result<(), String> {
     let function = CustomFunctionSync {

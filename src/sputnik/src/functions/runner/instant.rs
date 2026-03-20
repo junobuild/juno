@@ -21,7 +21,7 @@ impl CustomFunctionSyncKind {
 
 pub struct CustomFunctionSync {
     pub name: String,
-    pub kind: CustomFunctionSyncKind
+    pub kind: CustomFunctionSyncKind,
 }
 
 impl JsCustomFunction for CustomFunctionSync {

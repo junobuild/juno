@@ -10,7 +10,7 @@ use crate::types::interface::CreateCanisterConfig;
 use crate::types::state::{Orbiter, Orbiters};
 use ic_cdk_macros::{query, update};
 use junobuild_shared::ic::UnwrapOrTrap;
-use junobuild_shared::types::interface::SetController;
+use junobuild_shared::types::interface::SetAccessKey;
 use junobuild_shared::types::state::{AccessKeyId, Metadata, OrbiterId, UserId};
 
 #[query(guard = "caller_is_user_or_admin_controller")]
@@ -49,7 +49,7 @@ fn set_orbiter_metadata(orbiter_id: OrbiterId, metadata: Metadata) -> Orbiter {
 async fn set_orbiters_controllers(
     orbiter_ids: Vec<OrbiterId>,
     controller_ids: Vec<AccessKeyId>,
-    controller: SetController,
+    controller: SetAccessKey,
 ) {
     for orbiter_id in orbiter_ids {
         set_orbiter_controllers(&orbiter_id, &controller_ids, &controller)

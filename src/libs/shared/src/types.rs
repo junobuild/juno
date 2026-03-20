@@ -172,7 +172,7 @@ pub mod interface {
     }
 
     #[derive(CandidType, Deserialize, Clone)]
-    pub struct SetController {
+    pub struct SetAccessKey {
         pub metadata: Metadata,
         pub expires_at: Option<Timestamp>,
         pub scope: AccessKeyScope,
@@ -180,11 +180,24 @@ pub mod interface {
     }
 
     #[derive(CandidType, Deserialize)]
-    pub struct SetControllersArgs {
-        pub controllers: Vec<AccessKeyId>,
-        pub controller: SetController,
+    pub struct SetAccessKeysArgs {
+        pub access_key_ids: Vec<AccessKeyId>,
+        pub access_key: SetAccessKey,
     }
 
+    #[deprecated(note = "use SetAccessKeysArgs instead")]
+    #[derive(CandidType, Deserialize)]
+    pub struct SetControllersArgs {
+        pub controllers: Vec<AccessKeyId>,
+        pub controller: SetAccessKey,
+    }
+
+    #[derive(CandidType, Deserialize)]
+    pub struct DeleteAccessKeysArgs {
+        pub access_key_ids: Vec<AccessKeyId>,
+    }
+
+    #[deprecated(note = "use DeleteAccessKeysArgs instead")]
     #[derive(CandidType, Deserialize)]
     pub struct DeleteControllersArgs {
         pub controllers: Vec<AccessKeyId>,

@@ -7,6 +7,7 @@ use junobuild_utils::{FromJsonData, IntoJsonData};
 use rquickjs::{CatchResultExt, Ctx, Error as JsError};
 use std::marker::PhantomData;
 
+#[allow(dead_code)]
 pub fn execute_sync_function<A: IntoJsonData, R: FromJsonData>(
     custom_function: &str,
     args: Option<A>,
@@ -43,6 +44,7 @@ impl<A: IntoJsonData + Clone, R: FromJsonData> RunAsyncJsFn<Option<R>> for Async
     }
 }
 
+#[allow(dead_code)]
 pub async fn execute_async_function<
     A: IntoJsonData + Clone + 'static,
     R: FromJsonData + 'static,

@@ -30,7 +30,7 @@ impl<A: IntoJsonData, R: FromJsonData> JsCustomFunctionAsync<A, R> for CustomFun
 
         let code = &self.get_code();
 
-        evaluate_async_module(ctx, FUNCTIONS_MODULE_NAME, &code).await?;
+        evaluate_async_module(ctx, FUNCTIONS_MODULE_NAME, code).await?;
 
         get_result(ctx)
     }

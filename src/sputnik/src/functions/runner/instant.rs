@@ -5,8 +5,23 @@ use crate::js::module::engine::evaluate_module;
 use junobuild_utils::{FromJsonData, IntoJsonData};
 use rquickjs::{Ctx, Error as JsError};
 
+pub enum CustomFunctionSyncKind {
+    Invoke,
+    Guard,
+}
+
+impl CustomFunctionSyncKind {
+    fn fn_name(&self) -> &str {
+        match self {
+            CustomFunctionSyncKind::Invoke => "__juno_satellite_fn_invoke_sync",
+            CustomFunctionSyncKind::Guard => "__juno_satellite_fn_guard_sync",
+        }
+    }
+}
+
 pub struct CustomFunctionSync {
     pub name: String,
+    pub kind: CustomFunctionSyncKind
 }
 
 impl JsCustomFunction for CustomFunctionSync {
@@ -16,10 +31,11 @@ impl JsCustomFunction for CustomFunctionSync {
 
             if (typeof {name} !== 'undefined') {{
                 const config = typeof {name} === 'function' ? {name}({{}}) : {name};
-                __juno_satellite_fn_invoke_sync(config, jsArgs);
+                {function}(config, jsArgs);
             }}
             "#,
-            name = self.name
+            name = self.name,
+            function = self.kind.fn_name(),
         )
     }
 }

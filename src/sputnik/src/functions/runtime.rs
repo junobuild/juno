@@ -1,11 +1,12 @@
 use crate::functions::runner::future::CustomFunctionAsync;
-use crate::functions::runner::instant::CustomFunctionSync;
+use crate::functions::runner::instant::{CustomFunctionSync, CustomFunctionSyncKind};
 use crate::functions::runner::types::{JsCustomFunctionAsync, JsCustomFunctionSync};
 use crate::js::runtime::{execute_async_js, execute_sync_js, RunAsyncJsFn};
 use crate::sdk::js::init_sdk;
 use junobuild_utils::{FromJsonData, IntoJsonData};
 use rquickjs::{CatchResultExt, Ctx, Error as JsError};
 use std::marker::PhantomData;
+use crate::functions::types::{NoArgs, NoResult};
 
 #[allow(dead_code)]
 pub fn execute_sync_function<A: IntoJsonData, R: FromJsonData>(
@@ -14,8 +15,28 @@ pub fn execute_sync_function<A: IntoJsonData, R: FromJsonData>(
 ) -> Result<Option<R>, String> {
     let function = CustomFunctionSync {
         name: custom_function.to_string(),
+        kind: CustomFunctionSyncKind::Invoke,
     };
 
+    execute_sync(function, args)
+}
+
+#[allow(dead_code)]
+pub fn execute_guard(
+    custom_function: &str,
+) -> Result<(), String> {
+    let function = CustomFunctionSync {
+        name: custom_function.to_string(),
+        kind: CustomFunctionSyncKind::Guard,
+    };
+
+    execute_sync::<NoArgs, NoResult>(function, None).map(|_|())
+}
+
+fn execute_sync<A: IntoJsonData, R: FromJsonData>(
+    function: CustomFunctionSync,
+    args: Option<A>,
+) -> Result<Option<R>, String> {
     execute_sync_js(|ctx| {
         init_sdk(ctx).map_err(|e| e.to_string())?;
 

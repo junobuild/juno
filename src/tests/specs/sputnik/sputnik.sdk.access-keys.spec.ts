@@ -1,4 +1,5 @@
 import type { SputnikActor, SputnikDid } from '$declarations';
+import type { AccessKeyScope } from '$declarations/sputnik/sputnik.did';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import { assertNonNullish, jsonReplacer, jsonReviver } from '@dfinity/utils';
 import type { Identity } from '@icp-sdk/core/agent';
@@ -9,15 +10,15 @@ import { setupTestSputnik } from '../../utils/fixtures-tests.utils';
 import { createUser as createUserUtils } from '../../utils/satellite-doc-tests.utils';
 import { setDocAndFetchLogs } from '../../utils/sputnik-tests.utils';
 
-describe('Sputnik > sdk > controllers', () => {
+describe('Sputnik > sdk > access keys', () => {
 	let pic: PocketIc;
 	let actor: Actor<SputnikActor>;
 	let canisterId: Principal;
 	let controller: Identity;
 
-	const TEST_COLLECTION = 'test-sdk-controllers';
+	const TEST_COLLECTION = 'test-sdk-access-keys';
 
-	const assertControllers = async ({
+	const assertAccessKeys = async ({
 		keyword
 	}: {
 		keyword: string;
@@ -41,20 +42,20 @@ describe('Sputnik > sdk > controllers', () => {
 			jsonReviver
 		);
 
-		const controllerData = data.find(
+		const accessKeyData = data.find(
 			(c) => Principal.fromUint8Array(c[0]).toText() === controller.getPrincipal().toText()
 		);
 
-		assertNonNullish(controllerData);
+		assertNonNullish(accessKeyData);
 
-		const [__, controllerMetadata] = controllerData;
+		const [__, accessKeyMetadata] = accessKeyData;
 
-		expect(controllerMetadata.metadata).toEqual([]);
-		expect(controllerMetadata.created_at).not.toBeUndefined();
-		expect(controllerMetadata.created_at).toBeGreaterThan(0n);
-		expect(controllerMetadata.updated_at).not.toBeUndefined();
-		expect(controllerMetadata.updated_at).toBeGreaterThan(0n);
-		expect(controllerMetadata.scope).toEqual('admin');
+		expect(accessKeyMetadata.metadata).toEqual([]);
+		expect(accessKeyMetadata.created_at).not.toBeUndefined();
+		expect(accessKeyMetadata.created_at).toBeGreaterThan(0n);
+		expect(accessKeyMetadata.updated_at).not.toBeUndefined();
+		expect(accessKeyMetadata.updated_at).toBeGreaterThan(0n);
+		expect(accessKeyMetadata.scope).toEqual('admin');
 
 		return data;
 	};
@@ -75,7 +76,7 @@ describe('Sputnik > sdk > controllers', () => {
 		await pic?.tearDown();
 	});
 
-	describe('controller', () => {
+	describe('accessKey', () => {
 		const caller = (): string =>
 			JSON.stringify(controller.getPrincipal().toUint8Array(), jsonReplacer);
 
@@ -97,7 +98,7 @@ describe('Sputnik > sdk > controllers', () => {
 			expect(log).not.toBeUndefined();
 		});
 
-		it('should be a controller', async () => {
+		it('should be a access key', async () => {
 			const { logs } = await setDocAndFetchLogs({
 				collection: TEST_COLLECTION,
 				actor,
@@ -107,7 +108,23 @@ describe('Sputnik > sdk > controllers', () => {
 			});
 
 			const log = logs.find(([_, { message }]) =>
-				message.includes(`${callerText()} isController: true`)
+				message.includes(`${callerText()} isValidAccessKey: true`)
+			);
+
+			expect(log).not.toBeUndefined();
+		});
+
+		it('should be a access key with write permission', async () => {
+			const { logs } = await setDocAndFetchLogs({
+				collection: TEST_COLLECTION,
+				actor,
+				controller,
+				canisterId,
+				pic
+			});
+
+			const log = logs.find(([_, { message }]) =>
+				message.includes(`${callerText()} isWriteAccessKey: true`)
 			);
 
 			expect(log).not.toBeUndefined();
@@ -129,16 +146,16 @@ describe('Sputnik > sdk > controllers', () => {
 			expect(log).not.toBeUndefined();
 		});
 
-		it('should get controllers', async () => {
-			const keyword = `${callerText()} getControllers`;
+		it('should get access keys', async () => {
+			const keyword = `${callerText()} getAccessKeys`;
 
-			await assertControllers({ keyword });
+			await assertAccessKeys({ keyword });
 		});
 
-		it('should get admin controllers', async () => {
-			const keyword = `${callerText()} getAdminControllers`;
+		it('should get admin access keys', async () => {
+			const keyword = `${callerText()} getAdminAccessKeys`;
 
-			await assertControllers({ keyword });
+			await assertAccessKeys({ keyword });
 		});
 	});
 
@@ -172,7 +189,7 @@ describe('Sputnik > sdk > controllers', () => {
 			expect(log).not.toBeUndefined();
 		});
 
-		it('should not be a controller', async () => {
+		it('should not be a access key', async () => {
 			const { logs } = await setDocAndFetchLogs({
 				collection: TEST_COLLECTION,
 				actor,
@@ -182,7 +199,23 @@ describe('Sputnik > sdk > controllers', () => {
 			});
 
 			const log = logs.find(([_, { message }]) =>
-				message.includes(`${callerText()} isController: false`)
+				message.includes(`${callerText()} isValidAccessKey: false`)
+			);
+
+			expect(log).not.toBeUndefined();
+		});
+
+		it('should not be a access key with write permission', async () => {
+			const { logs } = await setDocAndFetchLogs({
+				collection: TEST_COLLECTION,
+				actor,
+				controller,
+				canisterId,
+				pic
+			});
+
+			const log = logs.find(([_, { message }]) =>
+				message.includes(`${callerText()} isWriteAccessKey: false`)
 			);
 
 			expect(log).not.toBeUndefined();
@@ -205,10 +238,10 @@ describe('Sputnik > sdk > controllers', () => {
 		});
 	});
 
-	describe('anoter controller', () => {
+	describe('other access key with write', () => {
 		let user: Identity;
 
-		beforeAll(async () => {
+		const createAccessKey = async (scope: AccessKeyScope) => {
 			const { user: u } = await createUserUtils({ actor });
 			user = u;
 
@@ -219,18 +252,41 @@ describe('Sputnik > sdk > controllers', () => {
 			await set_controllers({
 				controller: {
 					...CONTROLLER_METADATA,
-					scope: { Write: null },
+					scope,
 					metadata: [['hello', 'world']]
 				},
 				controllers: [user.getPrincipal()]
 			});
 
 			actor.setIdentity(user);
-		});
+		};
 
 		const caller = (): string => JSON.stringify(user.getPrincipal().toUint8Array(), jsonReplacer);
 
 		const callerText = (): string => `[${user.getPrincipal().toText()}]`;
+
+		const assertWriteAccessKey = async ({ keyword }: { keyword: string }) => {
+			const data = await assertAccessKeys({ keyword });
+
+			const accessKeyData = data.find(
+				(c) => Principal.fromUint8Array(c[0]).toText() === user.getPrincipal().toText()
+			);
+
+			assertNonNullish(accessKeyData);
+
+			const [___, accessKeyMetadata] = accessKeyData;
+
+			expect(accessKeyMetadata.metadata).toEqual([['hello', 'world']]);
+			expect(accessKeyMetadata.created_at).not.toBeUndefined();
+			expect(accessKeyMetadata.created_at).toBeGreaterThan(0n);
+			expect(accessKeyMetadata.updated_at).not.toBeUndefined();
+			expect(accessKeyMetadata.updated_at).toBeGreaterThan(0n);
+			expect(accessKeyMetadata.scope).toEqual('write');
+		};
+
+		beforeAll(async () => {
+			await createAccessKey({ Write: null });
+		});
 
 		it('should be the caller', async () => {
 			const { logs } = await setDocAndFetchLogs({
@@ -248,7 +304,7 @@ describe('Sputnik > sdk > controllers', () => {
 			expect(log).not.toBeUndefined();
 		});
 
-		it('should be a controller', async () => {
+		it('should be a access key', async () => {
 			const { logs } = await setDocAndFetchLogs({
 				collection: TEST_COLLECTION,
 				actor,
@@ -258,7 +314,23 @@ describe('Sputnik > sdk > controllers', () => {
 			});
 
 			const log = logs.find(([_, { message }]) =>
-				message.includes(`${callerText()} isController: true`)
+				message.includes(`${callerText()} isValidAccessKey: true`)
+			);
+
+			expect(log).not.toBeUndefined();
+		});
+
+		it('should be a access key with write permission', async () => {
+			const { logs } = await setDocAndFetchLogs({
+				collection: TEST_COLLECTION,
+				actor,
+				controller,
+				canisterId,
+				pic
+			});
+
+			const log = logs.find(([_, { message }]) =>
+				message.includes(`${callerText()} isWriteAccessKey: true`)
 			);
 
 			expect(log).not.toBeUndefined();
@@ -280,43 +352,24 @@ describe('Sputnik > sdk > controllers', () => {
 			expect(log).not.toBeUndefined();
 		});
 
-		const assertWriteController = async ({ keyword }: { keyword: string }) => {
-			const data = await assertControllers({ keyword });
+		it('should get accessKeys', async () => {
+			const keyword = `${callerText()} getAccessKeys`;
 
-			const controllerData = data.find(
-				(c) => Principal.fromUint8Array(c[0]).toText() === user.getPrincipal().toText()
-			);
-
-			assertNonNullish(controllerData);
-
-			const [___, controllerMetadata] = controllerData;
-
-			expect(controllerMetadata.metadata).toEqual([['hello', 'world']]);
-			expect(controllerMetadata.created_at).not.toBeUndefined();
-			expect(controllerMetadata.created_at).toBeGreaterThan(0n);
-			expect(controllerMetadata.updated_at).not.toBeUndefined();
-			expect(controllerMetadata.updated_at).toBeGreaterThan(0n);
-			expect(controllerMetadata.scope).toEqual('write');
-		};
-
-		it('should get controllers', async () => {
-			const keyword = `${callerText()} getControllers`;
-
-			await assertWriteController({ keyword });
+			await assertWriteAccessKey({ keyword });
 		});
 
-		it('should get admin controllers', async () => {
-			const keyword = `${callerText()} getAdminControllers`;
+		it('should get admin access keys', async () => {
+			const keyword = `${callerText()} getAdminAccessKeys`;
 
-			const data = await assertControllers({ keyword });
+			const data = await assertAccessKeys({ keyword });
 
 			actor.setIdentity(controller);
 
 			const { list_controllers } = actor;
 
-			const controllers = await list_controllers();
+			const accessKeys = await list_controllers();
 
-			expect(data).toHaveLength(controllers.filter((c) => 'Admin' in c[1].scope).length);
+			expect(data).toHaveLength(accessKeys.filter((c) => 'Admin' in c[1].scope).length);
 		});
 	});
 });

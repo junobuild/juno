@@ -3,9 +3,8 @@ use junobuild_satellite::{
     get_access_keys as get_access_keys_sdk, get_admin_access_keys as get_admin_access_keys_sdk,
 };
 use junobuild_shared::segments::access_keys::{
-    check_caller_can_write as is_write_access_key_sdk,
-    is_admin_controller as is_admin_controller_sdk,
-    is_caller_valid_access_key as is_valid_access_key_sdk,
+    is_admin_controller as is_admin_controller_sdk, is_valid_access_key as is_valid_access_key_sdk,
+    is_write_access_key as is_write_access_key_sdk,
 };
 use rquickjs::{Ctx, Error as JsError, Result as JsResult};
 

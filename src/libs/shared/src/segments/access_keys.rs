@@ -90,16 +90,16 @@ pub fn delete_access_keys(remove_access_keys: &[AccessKeyId], access_keys: &mut 
 ///
 /// # Returns
 /// `true` if the caller is an access key (not anonymous, calling itself or one of the known write or admin access keys), otherwise `false`.
-pub fn check_caller_can_write(caller: UserId, access_keys: &AccessKeys) -> bool {
-    principal_not_anonymous(caller)
-        && (caller_is_self(caller)
+pub fn check_caller_can_write(id: UserId, access_keys: &AccessKeys) -> bool {
+    // TODO: rename to is_write_access_key
+    principal_not_anonymous(id)
+        && (caller_is_self(id)
             || access_keys
                 .iter()
                 .any(|(&access_key_id, access_key)| match access_key.scope {
                     AccessKeyScope::Submit => false,
                     _ => {
-                        principal_equal(access_key_id, caller)
-                            && is_access_key_not_expired(access_key)
+                        principal_equal(access_key_id, id) && is_access_key_not_expired(access_key)
                     }
                 }))
 }
@@ -112,11 +112,12 @@ pub fn check_caller_can_write(caller: UserId, access_keys: &AccessKeys) -> bool 
 ///
 /// # Returns
 /// `true` if the caller is an access key (not anonymous, calling itself or one of the known controllers), otherwise `false`.
-pub fn is_caller_valid_access_key(caller: UserId, access_keys: &AccessKeys) -> bool {
-    principal_not_anonymous(caller)
-        && (caller_is_self(caller)
+pub fn is_caller_valid_access_key(id: UserId, access_keys: &AccessKeys) -> bool {
+    // TODO: rename to is_valid_access_key
+    principal_not_anonymous(id)
+        && (caller_is_self(id)
             || access_keys.iter().any(|(&access_key_id, access_key)| {
-                principal_equal(access_key_id, caller) && is_access_key_not_expired(access_key)
+                principal_equal(access_key_id, id) && is_access_key_not_expired(access_key)
             }))
 }
 
@@ -166,13 +167,13 @@ fn is_access_key_expired(access_key: &AccessKey) -> bool {
 ///
 /// # Returns
 /// `true` if the caller is an admin access key and a controller, otherwise `false`.
-pub fn is_admin_controller(caller: UserId, access_keys: &AccessKeys) -> bool {
-    is_canister_controller(&caller)
-        && principal_not_anonymous(caller)
+pub fn is_admin_controller(id: UserId, access_keys: &AccessKeys) -> bool {
+    is_canister_controller(&id)
+        && principal_not_anonymous(id)
         && access_keys
             .iter()
             .any(|(&access_key_id, access_key)| match access_key.scope {
-                AccessKeyScope::Admin => principal_equal(access_key_id, caller),
+                AccessKeyScope::Admin => principal_equal(access_key_id, id),
                 _ => false,
             })
 }

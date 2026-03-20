@@ -10,6 +10,7 @@ import { testIcCdkTime } from './apis/ic-cdk/ic-cdk-time';
 import { testBlob } from './apis/node/blob';
 import { testMathRandom } from './apis/node/math';
 import { testTextEncoding } from './apis/node/text-encoding';
+import { testSdkAccessKeys } from './sdk/access-keys';
 import {
 	testSdkCountAssetsStore,
 	testSdkCountCollectionAssetsStore,
@@ -22,7 +23,6 @@ import {
 	testSdkSetAssetHandler,
 	testSdkSetAssetTokenStore
 } from './sdk/assets';
-import { testSdkControllers } from './sdk/controllers';
 import {
 	testSdkCountCollectionDocsStore,
 	testSdkCountDocsStore,
@@ -53,7 +53,7 @@ const collections = [
 	'test-blob',
 	'test-deletedoc',
 	'test-getdoc',
-	'test-sdk-controllers',
+	'test-sdk-access-keys',
 	'test-listdocs',
 	'test-countcollectiondocs',
 	'test-countdocs',
@@ -88,7 +88,7 @@ export const onSetDoc = defineHook<OnSetDoc>({
 			'test-deletedoc': testSdkDeleteDocStore,
 			'test-getdoc': testSdkGetDocStore,
 			'test-listdocs': testSdkListDocsStore,
-			'test-sdk-controllers': testSdkControllers,
+			'test-sdk-access-keys': testSdkAccessKeys,
 			'test-countcollectiondocs': testSdkCountCollectionDocsStore,
 			'test-countdocs': testSdkCountDocsStore,
 			'test-countcollectionassets': testSdkCountCollectionAssetsStore,

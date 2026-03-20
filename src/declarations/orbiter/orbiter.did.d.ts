@@ -193,14 +193,14 @@ export type Result = { Ok: PageView } | { Err: string };
 export type Result_1 = { Ok: null } | { Err: Array<[AnalyticKey, string]> };
 export type Result_2 = { Ok: PerformanceMetric } | { Err: string };
 export type Result_3 = { Ok: TrackEvent } | { Err: string };
-export interface SetController {
+export interface SetAccessKey {
 	metadata: Array<[string, string]>;
 	kind: [] | [AccessKeyKind];
 	scope: AccessKeyScope;
 	expires_at: [] | [bigint];
 }
 export interface SetControllersArgs {
-	controller: SetController;
+	controller: SetAccessKey;
 	controllers: Array<Principal>;
 }
 export interface SetPageView {

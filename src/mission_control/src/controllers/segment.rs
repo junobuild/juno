@@ -5,15 +5,13 @@ use junobuild_shared::mgmt::ic::update_canister_controllers;
 use junobuild_shared::segments::access_keys::{
     assert_access_key_expiration, assert_controllers, filter_admin_access_keys, into_access_key_ids,
 };
-use junobuild_shared::types::interface::{
-    DeleteControllersArgs, SetController, SetControllersArgs,
-};
+use junobuild_shared::types::interface::{DeleteControllersArgs, SetAccessKey, SetControllersArgs};
 use junobuild_shared::types::state::{AccessKeyId, AccessKeys};
 
 pub async fn set_segment_controllers(
     segment_id: &Principal,
     controllers: &[AccessKeyId],
-    controller: &SetController,
+    controller: &SetAccessKey,
 ) -> Result<(), String> {
     assert_controllers(controllers)?;
 
@@ -39,7 +37,7 @@ pub async fn delete_segment_controllers(
 async fn set_controllers(
     segment_id: &Principal,
     controllers: &[AccessKeyId],
-    controller: &SetController,
+    controller: &SetAccessKey,
 ) -> Result<Vec<AccessKeyId>, String> {
     let args = SetControllersArgs {
         controllers: controllers.to_owned(),

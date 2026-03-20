@@ -10,12 +10,12 @@ use junobuild_shared::segments::access_keys::{
     assert_access_key_expiration, assert_controllers, assert_max_number_of_access_keys,
     into_access_key_ids,
 };
-use junobuild_shared::types::interface::SetController;
+use junobuild_shared::types::interface::SetAccessKey;
 use junobuild_shared::types::state::{AccessKeyId, AccessKeys};
 
 pub async fn set_mission_control_controllers(
     controllers: &[AccessKeyId],
-    controller: &SetController,
+    controller: &SetAccessKey,
 ) -> Result<(), String> {
     assert_max_number_of_access_keys(
         &get_controllers(),

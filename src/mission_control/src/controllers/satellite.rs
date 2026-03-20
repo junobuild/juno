@@ -1,11 +1,11 @@
 use crate::controllers::segment::{delete_segment_controllers, set_segment_controllers};
-use junobuild_shared::types::interface::SetController;
+use junobuild_shared::types::interface::SetAccessKey;
 use junobuild_shared::types::state::{AccessKeyId, SatelliteId};
 
 pub async fn set_satellite_controllers(
     satellite_id: &SatelliteId,
     controllers: &[AccessKeyId],
-    controller: &SetController,
+    controller: &SetAccessKey,
 ) -> Result<(), String> {
     set_segment_controllers(satellite_id, controllers, controller).await
 }

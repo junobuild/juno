@@ -457,14 +457,14 @@ export const idlFactory = ({ IDL }) => {
 		internet_identity: IDL.Opt(AuthenticationConfigInternetIdentity),
 		rules: IDL.Opt(AuthenticationRules)
 	});
-	const SetController = IDL.Record({
+	const SetAccessKey = IDL.Record({
 		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
 		kind: IDL.Opt(AccessKeyKind),
 		scope: AccessKeyScope,
 		expires_at: IDL.Opt(IDL.Nat64)
 	});
 	const SetControllersArgs = IDL.Record({
-		controller: SetController,
+		controller: SetAccessKey,
 		controllers: IDL.Vec(IDL.Principal)
 	});
 	const FeesArgs = IDL.Record({

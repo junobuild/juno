@@ -3,14 +3,14 @@ use junobuild_shared::segments::access_keys::{
     delete_access_keys as delete_controllers_impl, filter_admin_access_keys,
     set_access_keys as set_controllers_impl,
 };
-use junobuild_shared::types::interface::SetController;
+use junobuild_shared::types::interface::SetAccessKey;
 use junobuild_shared::types::state::{AccessKeyId, AccessKeys};
 
 // ---------------------------------------------------------
 // Access keys
 // ---------------------------------------------------------
 
-pub fn set_access_keys(new_controllers: &[AccessKeyId], controller: &SetController) {
+pub fn set_access_keys(new_controllers: &[AccessKeyId], controller: &SetAccessKey) {
     STATE.with(|state| {
         set_controllers_impl(
             new_controllers,

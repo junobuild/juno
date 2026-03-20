@@ -7,7 +7,7 @@ use crate::errors::{
     JUNO_ERROR_CONTROLLERS_REVOKED_NOT_ALLOWED,
 };
 use crate::ic::api::{id, is_canister_controller, time};
-use crate::types::interface::SetController;
+use crate::types::interface::SetAccessKey;
 use crate::types::state::{AccessKey, AccessKeyId, AccessKeyScope, AccessKeys, UserId};
 use crate::utils::{principal_anonymous, principal_equal, principal_not_anonymous};
 use candid::Principal;
@@ -23,7 +23,7 @@ use std::collections::HashMap;
 pub fn init_admin_access_keys(new_access_keys: &[UserId]) -> AccessKeys {
     let mut access_keys: AccessKeys = AccessKeys::new();
 
-    let access_key_data: SetController = SetController {
+    let access_key_data: SetAccessKey = SetAccessKey {
         metadata: HashMap::new(),
         expires_at: None,
         scope: AccessKeyScope::Admin,
@@ -43,7 +43,7 @@ pub fn init_admin_access_keys(new_access_keys: &[UserId]) -> AccessKeys {
 /// - `access_keys`: Mutable reference to the current set of access keys to update.
 pub fn set_access_keys(
     new_access_keys: &[UserId],
-    access_key_data: &SetController,
+    access_key_data: &SetAccessKey,
     access_keys: &mut AccessKeys,
 ) {
     for access_key_id in new_access_keys {
@@ -308,7 +308,7 @@ fn assert_no_revoked_controller(access_keys_ids: &[AccessKeyId]) -> Result<(), S
 ///
 /// # Returns
 /// `Ok(())` if validation passes, or `Err(String)` with error message if validation fails
-pub fn assert_access_key_expiration(access_key: &SetController) -> Result<(), String> {
+pub fn assert_access_key_expiration(access_key: &SetAccessKey) -> Result<(), String> {
     if matches!(access_key.scope, AccessKeyScope::Admin) && access_key.expires_at.is_some() {
         return Err(JUNO_ERROR_CONTROLLERS_ADMIN_NO_EXPIRY.to_string());
     }
@@ -613,7 +613,7 @@ mod tests {
         let mut access_keys = AccessKeys::new();
         let principals = vec![test_principal(1)];
 
-        let access_key_data = SetController {
+        let access_key_data = SetAccessKey {
             metadata: HashMap::new(),
             expires_at: Some(mock_time() + 1000),
             scope: AccessKeyScope::Write,
@@ -635,7 +635,7 @@ mod tests {
         let principal = test_principal(1);
 
         // First insert
-        let initial_data = SetController {
+        let initial_data = SetAccessKey {
             metadata: HashMap::new(),
             expires_at: None,
             scope: AccessKeyScope::Write,
@@ -645,7 +645,7 @@ mod tests {
         let original_created_at = access_keys.get(&principal).unwrap().created_at;
 
         // Update
-        let update_data = SetController {
+        let update_data = SetAccessKey {
             metadata: HashMap::new(),
             expires_at: Some(mock_time() + 1000),
             scope: AccessKeyScope::Admin,
@@ -778,7 +778,7 @@ mod tests {
 
     #[test]
     fn test_assert_expiration_access_key_admin_with_expiry_rejected() {
-        let access_key = SetController {
+        let access_key = SetAccessKey {
             metadata: HashMap::new(),
             expires_at: Some(time() + 1000),
             scope: AccessKeyScope::Admin,
@@ -795,7 +795,7 @@ mod tests {
 
     #[test]
     fn test_assert_expiration_access_key_admin_without_expiry_allowed() {
-        let access_key = SetController {
+        let access_key = SetAccessKey {
             metadata: HashMap::new(),
             expires_at: None,
             scope: AccessKeyScope::Admin,
@@ -808,7 +808,7 @@ mod tests {
 
     #[test]
     fn test_assert_expiration_access_key_past_expiry_rejected() {
-        let access_key = SetController {
+        let access_key = SetAccessKey {
             metadata: HashMap::new(),
             expires_at: Some(time() - 1000),
             scope: AccessKeyScope::Write,
@@ -825,7 +825,7 @@ mod tests {
 
     #[test]
     fn test_assert_expiration_access_key_future_expiry_allowed() {
-        let access_key = SetController {
+        let access_key = SetAccessKey {
             metadata: HashMap::new(),
             expires_at: Some(time() + 1000),
             scope: AccessKeyScope::Write,
@@ -838,7 +838,7 @@ mod tests {
 
     #[test]
     fn test_assert_expiration_access_key_no_expiry_allowed() {
-        let access_key = SetController {
+        let access_key = SetAccessKey {
             metadata: HashMap::new(),
             expires_at: None,
             scope: AccessKeyScope::Write,
@@ -851,7 +851,7 @@ mod tests {
 
     #[test]
     fn test_assert_expiration_access_key_submit_scope_with_future_expiry() {
-        let access_key = SetController {
+        let access_key = SetAccessKey {
             metadata: HashMap::new(),
             expires_at: Some(time() + 1000),
             scope: AccessKeyScope::Submit,

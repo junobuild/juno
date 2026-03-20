@@ -12,7 +12,7 @@ use crate::types::interface::CreateSatelliteConfig;
 use crate::types::state::{Satellite, Satellites};
 use ic_cdk_macros::{query, update};
 use junobuild_shared::ic::UnwrapOrTrap;
-use junobuild_shared::types::interface::SetController;
+use junobuild_shared::types::interface::SetAccessKey;
 use junobuild_shared::types::state::{AccessKeyId, SatelliteId};
 use junobuild_shared::types::state::{Metadata, UserId};
 
@@ -42,7 +42,7 @@ fn set_satellite_metadata(satellite_id: SatelliteId, metadata: Metadata) -> Sate
 async fn set_satellites_controllers(
     satellite_ids: Vec<SatelliteId>,
     controller_ids: Vec<AccessKeyId>,
-    controller: SetController,
+    controller: SetAccessKey,
 ) {
     for satellite_id in satellite_ids {
         set_satellite_controllers(&satellite_id, &controller_ids, &controller)

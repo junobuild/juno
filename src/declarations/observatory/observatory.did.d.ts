@@ -120,14 +120,14 @@ export interface Segment {
 	kind: SegmentKind;
 }
 export type SegmentKind = { Orbiter: null } | { MissionControl: null } | { Satellite: null };
-export interface SetController {
+export interface SetAccessKey {
 	metadata: Array<[string, string]>;
 	kind: [] | [AccessKeyKind];
 	scope: AccessKeyScope;
 	expires_at: [] | [bigint];
 }
 export interface SetControllersArgs {
-	controller: SetController;
+	controller: SetAccessKey;
 	controllers: Array<Principal>;
 }
 export interface _SERVICE {

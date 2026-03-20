@@ -152,14 +152,14 @@ type Result = variant { Ok : PageView; Err : text };
 type Result_1 = variant { Ok; Err : vec record { AnalyticKey; text } };
 type Result_2 = variant { Ok : PerformanceMetric; Err : text };
 type Result_3 = variant { Ok : TrackEvent; Err : text };
-type SetController = record {
+type SetAccessKey = record {
   metadata : vec record { text; text };
   kind : opt AccessKeyKind;
   scope : AccessKeyScope;
   expires_at : opt nat64;
 };
 type SetControllersArgs = record {
-  controller : SetController;
+  controller : SetAccessKey;
   controllers : vec principal;
 };
 type SetPageView = record {

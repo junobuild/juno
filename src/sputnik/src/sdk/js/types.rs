@@ -11,14 +11,14 @@ pub mod shared {
     pub type JsUserId<'js> = JsRawPrincipal<'js>;
 
     #[derive(Clone)]
-    pub enum JsControllerScope {
+    pub enum JsAccessKeyScope {
         Write,
         Admin,
         Submit,
     }
 
     #[derive(Clone)]
-    pub enum JsControllerKind {
+    pub enum JsAccessKeyKind {
         Automation,
         Emulator,
     }
@@ -27,20 +27,20 @@ pub mod shared {
     pub struct JsMetadataRecord(pub String, pub String);
 
     #[derive(Clone)]
-    pub struct JsController {
+    pub struct JsAccessKey {
         pub metadata: Vec<JsMetadataRecord>,
         pub created_at: JsTimestamp,
         pub updated_at: JsTimestamp,
         pub expires_at: Option<JsTimestamp>,
-        pub scope: JsControllerScope,
-        pub kind: Option<JsControllerKind>,
+        pub scope: JsAccessKeyScope,
+        pub kind: Option<JsAccessKeyKind>,
     }
 
     #[derive(Clone)]
-    pub struct JsControllerRecord<'js>(pub JsRawPrincipal<'js>, pub JsController);
+    pub struct JsAccessKeyRecord<'js>(pub JsRawPrincipal<'js>, pub JsAccessKey);
 
     #[derive(Clone)]
-    pub struct JsControllers<'js>(pub Vec<JsControllerRecord<'js>>);
+    pub struct JsAccessKeys<'js>(pub Vec<JsAccessKeyRecord<'js>>);
 }
 
 pub mod rules {

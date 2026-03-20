@@ -11,7 +11,7 @@ use candid::Principal;
 use junobuild_collections::assert::stores::{assert_create_permission, assert_permission};
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::{Memory, Permission, Rule};
-use junobuild_shared::segments::access_keys::check_caller_can_write;
+use junobuild_shared::segments::access_keys::is_write_access_key;
 use junobuild_shared::types::core::Blob;
 use junobuild_shared::types::domain::CustomDomains;
 use junobuild_shared::types::state::AccessKeys;
@@ -37,7 +37,7 @@ impl StorageAssertionsStrategy for StorageAssertions {
     }
 
     fn assert_write_on_dapp_collection(&self, caller: Principal, controllers: &AccessKeys) -> bool {
-        check_caller_can_write(caller, controllers)
+        is_write_access_key(caller, controllers)
     }
 
     fn assert_write_on_system_collection(
@@ -46,7 +46,7 @@ impl StorageAssertionsStrategy for StorageAssertions {
         _collection: &CollectionKey,
         controllers: &AccessKeys,
     ) -> bool {
-        check_caller_can_write(caller, controllers)
+        is_write_access_key(caller, controllers)
     }
 
     fn assert_create_permission(

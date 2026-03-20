@@ -339,6 +339,12 @@ type SegmentsDeploymentOptions = record {
   mission_control_version : opt text;
   satellite_version : opt text;
 };
+type SetAccessKey = record {
+  metadata : vec record { text; text };
+  kind : opt AccessKeyKind;
+  scope : AccessKeyScope;
+  expires_at : opt nat64;
+};
 type SetAuthenticationConfig = record {
   openid : opt AuthenticationConfigOpenId;
   version : opt nat64;
@@ -349,14 +355,8 @@ type SetAutomationConfig = record {
   openid : opt AutomationConfigOpenId;
   version : opt nat64;
 };
-type SetController = record {
-  metadata : vec record { text; text };
-  kind : opt AccessKeyKind;
-  scope : AccessKeyScope;
-  expires_at : opt nat64;
-};
 type SetControllersArgs = record {
-  controller : SetController;
+  controller : SetAccessKey;
   controllers : vec principal;
 };
 type SetDbConfig = record {

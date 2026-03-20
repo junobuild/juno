@@ -407,6 +407,12 @@ export interface SegmentsDeploymentOptions {
 	mission_control_version: [] | [string];
 	satellite_version: [] | [string];
 }
+export interface SetAccessKey {
+	metadata: Array<[string, string]>;
+	kind: [] | [AccessKeyKind];
+	scope: AccessKeyScope;
+	expires_at: [] | [bigint];
+}
 export interface SetAuthenticationConfig {
 	openid: [] | [AuthenticationConfigOpenId];
 	version: [] | [bigint];
@@ -417,14 +423,8 @@ export interface SetAutomationConfig {
 	openid: [] | [AutomationConfigOpenId];
 	version: [] | [bigint];
 }
-export interface SetController {
-	metadata: Array<[string, string]>;
-	kind: [] | [AccessKeyKind];
-	scope: AccessKeyScope;
-	expires_at: [] | [bigint];
-}
 export interface SetControllersArgs {
-	controller: SetController;
+	controller: SetAccessKey;
 	controllers: Array<Principal>;
 }
 export interface SetDbConfig {

@@ -150,7 +150,7 @@ export interface SegmentsMonitoringStrategy {
 	ids: Array<Principal>;
 	strategy: CyclesMonitoringStrategy;
 }
-export interface SetController {
+export interface SetAccessKey {
 	metadata: Array<[string, string]>;
 	kind: [] | [AccessKeyKind];
 	scope: AccessKeyScope;
@@ -235,17 +235,17 @@ export interface _SERVICE {
 	list_satellites: ActorMethod<[], Array<[Principal, Satellite]>>;
 	set_config: ActorMethod<[[] | [Config]], undefined>;
 	set_metadata: ActorMethod<[Array<[string, string]>], undefined>;
-	set_mission_control_controllers: ActorMethod<[Array<Principal>, SetController], undefined>;
+	set_mission_control_controllers: ActorMethod<[Array<Principal>, SetAccessKey], undefined>;
 	set_orbiter: ActorMethod<[Principal, [] | [string]], Orbiter>;
 	set_orbiter_metadata: ActorMethod<[Principal, Array<[string, string]>], Orbiter>;
 	set_orbiters_controllers: ActorMethod<
-		[Array<Principal>, Array<Principal>, SetController],
+		[Array<Principal>, Array<Principal>, SetAccessKey],
 		undefined
 	>;
 	set_satellite: ActorMethod<[Principal, [] | [string]], Satellite>;
 	set_satellite_metadata: ActorMethod<[Principal, Array<[string, string]>], Satellite>;
 	set_satellites_controllers: ActorMethod<
-		[Array<Principal>, Array<Principal>, SetController],
+		[Array<Principal>, Array<Principal>, SetAccessKey],
 		undefined
 	>;
 	start_monitoring: ActorMethod<[], undefined>;

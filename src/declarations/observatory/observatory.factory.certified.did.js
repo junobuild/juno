@@ -118,14 +118,14 @@ export const idlFactory = ({ IDL }) => {
 		user: IDL.Principal,
 		segment: Segment
 	});
-	const SetController = IDL.Record({
+	const SetAccessKey = IDL.Record({
 		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
 		kind: IDL.Opt(AccessKeyKind),
 		scope: AccessKeyScope,
 		expires_at: IDL.Opt(IDL.Nat64)
 	});
 	const SetControllersArgs = IDL.Record({
-		controller: SetController,
+		controller: SetAccessKey,
 		controllers: IDL.Vec(IDL.Principal)
 	});
 	const Env = IDL.Record({ email_api_key: IDL.Opt(IDL.Text) });

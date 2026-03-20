@@ -79,14 +79,14 @@ type Segment = record {
   kind : SegmentKind;
 };
 type SegmentKind = variant { Orbiter; MissionControl; Satellite };
-type SetController = record {
+type SetAccessKey = record {
   metadata : vec record { text; text };
   kind : opt AccessKeyKind;
   scope : AccessKeyScope;
   expires_at : opt nat64;
 };
 type SetControllersArgs = record {
-  controller : SetController;
+  controller : SetAccessKey;
   controllers : vec principal;
 };
 service : () -> {

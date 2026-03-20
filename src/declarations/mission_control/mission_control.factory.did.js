@@ -180,7 +180,7 @@ export const idlFactory = ({ IDL }) => {
 		scope: AccessKeyScope,
 		expires_at: IDL.Opt(IDL.Nat64)
 	});
-	const SetController = IDL.Record({
+	const SetAccessKey = IDL.Record({
 		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
 		kind: IDL.Opt(AccessKeyKind),
 		scope: AccessKeyScope,
@@ -240,7 +240,7 @@ export const idlFactory = ({ IDL }) => {
 		list_satellites: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Principal, Satellite))], ['query']),
 		set_config: IDL.Func([IDL.Opt(Config)], [], []),
 		set_metadata: IDL.Func([IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))], [], []),
-		set_mission_control_controllers: IDL.Func([IDL.Vec(IDL.Principal), SetController], [], []),
+		set_mission_control_controllers: IDL.Func([IDL.Vec(IDL.Principal), SetAccessKey], [], []),
 		set_orbiter: IDL.Func([IDL.Principal, IDL.Opt(IDL.Text)], [Orbiter], []),
 		set_orbiter_metadata: IDL.Func(
 			[IDL.Principal, IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))],
@@ -248,7 +248,7 @@ export const idlFactory = ({ IDL }) => {
 			[]
 		),
 		set_orbiters_controllers: IDL.Func(
-			[IDL.Vec(IDL.Principal), IDL.Vec(IDL.Principal), SetController],
+			[IDL.Vec(IDL.Principal), IDL.Vec(IDL.Principal), SetAccessKey],
 			[],
 			[]
 		),
@@ -259,7 +259,7 @@ export const idlFactory = ({ IDL }) => {
 			[]
 		),
 		set_satellites_controllers: IDL.Func(
-			[IDL.Vec(IDL.Principal), IDL.Vec(IDL.Principal), SetController],
+			[IDL.Vec(IDL.Principal), IDL.Vec(IDL.Principal), SetAccessKey],
 			[],
 			[]
 		),

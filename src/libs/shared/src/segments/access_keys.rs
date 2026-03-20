@@ -8,7 +8,7 @@ use crate::errors::{
 };
 use crate::ic::api::{id, is_canister_controller, time};
 use crate::types::interface::SetAccessKey;
-use crate::types::state::{AccessKey, AccessKeyId, AccessKeyScope, AccessKeys, UserId};
+use crate::types::state::{AccessKey, AccessKeyId, AccessKeyScope, AccessKeys};
 use crate::utils::{principal_anonymous, principal_equal, principal_not_anonymous};
 use candid::Principal;
 use std::collections::HashMap;
@@ -16,11 +16,11 @@ use std::collections::HashMap;
 /// Initializes a set of access keys with default administrative scope.
 ///
 /// # Arguments
-/// - `new_access_keys`: Slice of `UserId` representing the new access keys to be initialized.
+/// - `new_access_keys`: Slice of `AccessKeyId` representing the new access keys to be initialized.
 ///
 /// # Returns
 /// A `AccessKeys` collection populated with the specified new access keys.
-pub fn init_admin_access_keys(new_access_keys: &[UserId]) -> AccessKeys {
+pub fn init_admin_access_keys(new_access_keys: &[AccessKeyId]) -> AccessKeys {
     let mut access_keys: AccessKeys = AccessKeys::new();
 
     let access_key_data: SetAccessKey = SetAccessKey {
@@ -38,15 +38,15 @@ pub fn init_admin_access_keys(new_access_keys: &[UserId]) -> AccessKeys {
 /// Sets or updates access keys with specified data.
 ///
 /// # Arguments
-/// - `new_access_keys`: Slice of `UserId` for the access keys to be set or updated.
+/// - `new_access_key_ids`: Slice of `AccessKeyId` for the access keys to be set or updated.
 /// - `access_key_data`: `SetController` data to apply to the access keys.
 /// - `access_keys`: Mutable reference to the current set of access keys to update.
 pub fn set_access_keys(
-    new_access_keys: &[UserId],
+    new_access_key_ids: &[AccessKeyId],
     access_key_data: &SetAccessKey,
     access_keys: &mut AccessKeys,
 ) {
-    for access_key_id in new_access_keys {
+    for access_key_id in new_access_key_ids {
         let existing_access_key = access_keys.get(access_key_id);
 
         let now = time();
@@ -74,49 +74,48 @@ pub fn set_access_keys(
 /// Removes specified access keys from the set.
 ///
 /// # Arguments
-/// - `remove_access_keys`: Slice of `UserId` for the access keys to be removed.
+/// - `remove_access_key_ids`: Slice of `AccessKeyId` for the access keys to be removed.
 /// - `access_keys`: Mutable reference to the current set of access keys to update.
-pub fn delete_access_keys(remove_access_keys: &[AccessKeyId], access_keys: &mut AccessKeys) {
-    for id in remove_access_keys {
+pub fn delete_access_keys(remove_access_key_ids: &[AccessKeyId], access_keys: &mut AccessKeys) {
+    for id in remove_access_key_ids {
         access_keys.remove(id);
     }
 }
 
-/// Checks if a caller is a non-expired access key with admin or write scope (permissions).
+/// Checks if an id is a non-expired access key with admin or write scope (permissions).
 ///
 /// # Arguments
-/// - `caller`: `UserId` of the caller.
+/// - `id`: `Principal` of e.g. the caller.
 /// - `access_keys`: Reference to the current set of access keys.
 ///
 /// # Returns
-/// `true` if the caller is an access key (not anonymous, calling itself or one of the known write or admin access keys), otherwise `false`.
-pub fn check_caller_can_write(caller: UserId, access_keys: &AccessKeys) -> bool {
-    principal_not_anonymous(caller)
-        && (caller_is_self(caller)
+/// `true` if the id is an access key (not anonymous, calling itself or one of the known write or admin access keys), otherwise `false`.
+pub fn is_write_access_key(id: Principal, access_keys: &AccessKeys) -> bool {
+    principal_not_anonymous(id)
+        && (is_self(id)
             || access_keys
                 .iter()
                 .any(|(&access_key_id, access_key)| match access_key.scope {
                     AccessKeyScope::Submit => false,
                     _ => {
-                        principal_equal(access_key_id, caller)
-                            && is_access_key_not_expired(access_key)
+                        principal_equal(access_key_id, id) && is_access_key_not_expired(access_key)
                     }
                 }))
 }
 
-/// Checks if a caller is a non-expired access key regardless of scope (admin, write, or submit).
+/// Checks if an id is a non-expired access key regardless of scope (admin, write, or submit).
 ///
 /// # Arguments
-/// - `caller`: `UserId` of the caller.
+/// - `id`: `Principal` e.g. of the caller.
 /// - `access_keys`: Reference to the current set of access keys.
 ///
 /// # Returns
-/// `true` if the caller is an access key (not anonymous, calling itself or one of the known controllers), otherwise `false`.
-pub fn is_caller_valid_access_key(caller: UserId, access_keys: &AccessKeys) -> bool {
-    principal_not_anonymous(caller)
-        && (caller_is_self(caller)
+/// `true` if the id is an access key (not anonymous, calling itself or one of the known controllers), otherwise `false`.
+pub fn is_valid_access_key(id: Principal, access_keys: &AccessKeys) -> bool {
+    principal_not_anonymous(id)
+        && (is_self(id)
             || access_keys.iter().any(|(&access_key_id, access_key)| {
-                principal_equal(access_key_id, caller) && is_access_key_not_expired(access_key)
+                principal_equal(access_key_id, id) && is_access_key_not_expired(access_key)
             }))
 }
 
@@ -158,21 +157,21 @@ fn is_access_key_expired(access_key: &AccessKey) -> bool {
         .is_some_and(|expires_at| expires_at < time())
 }
 
-/// Checks if a caller is an admin access key and a controller has known by the Internet Computer.
+/// Checks if an id is an admin access key and a controller has known by the Internet Computer.
 ///
 /// # Arguments
-/// - `caller`: `UserId` of the caller.
+/// - `id`: `Principal` e.g. of the caller.
 /// - `access_keys`: Reference to the current set of access_keys.
 ///
 /// # Returns
-/// `true` if the caller is an admin access key and a controller, otherwise `false`.
-pub fn is_admin_controller(caller: UserId, access_keys: &AccessKeys) -> bool {
-    is_canister_controller(&caller)
-        && principal_not_anonymous(caller)
+/// `true` if the id is an admin access key and a controller, otherwise `false`.
+pub fn is_admin_controller(id: Principal, access_keys: &AccessKeys) -> bool {
+    is_canister_controller(&id)
+        && principal_not_anonymous(id)
         && access_keys
             .iter()
             .any(|(&access_key_id, access_key)| match access_key.scope {
-                AccessKeyScope::Admin => principal_equal(access_key_id, caller),
+                AccessKeyScope::Admin => principal_equal(access_key_id, id),
                 _ => false,
             })
 }
@@ -322,43 +321,43 @@ pub fn assert_access_key_expiration(access_key: &SetAccessKey) -> Result<(), Str
     Ok(())
 }
 
-/// Checks if the caller is the console.
+/// Checks if the id is the console.
 ///
 /// # Arguments
-/// - `caller`: `UserId` of the caller.
+/// - `id`: `Principal` e.g. of the caller.
 ///
 /// # Returns
-/// `true` if the caller matches the console's principal, otherwise `false`.
-pub fn caller_is_console(caller: UserId) -> bool {
+/// `true` if the id matches the console's principal, otherwise `false`.
+pub fn is_console(id: Principal) -> bool {
     let console = Principal::from_text(CONSOLE).unwrap();
 
-    principal_equal(caller, console)
+    principal_equal(id, console)
 }
 
-/// Checks if the caller is the observatory.
+/// Checks if the id is the observatory.
 ///
 /// # Arguments
-/// - `caller`: `UserId` of the caller.
+/// - `id`: `Principal` e.g. of the caller.
 ///
 /// # Returns
-/// `true` if the caller matches the observatory's principal, otherwise `false`.
-pub fn caller_is_observatory(caller: UserId) -> bool {
+/// `true` if the id matches the observatory's principal, otherwise `false`.
+pub fn is_observatory(id: Principal) -> bool {
     let observatory = Principal::from_text(OBSERVATORY).unwrap();
 
-    principal_equal(caller, observatory)
+    principal_equal(id, observatory)
 }
 
-/// Checks if the caller is the canister itself.
+/// Checks if an id (e.g. a caller, a user or a principal) is the canister itself.
 ///
 /// # Arguments
-/// - `caller`: `UserId` of the caller.
+/// - `id`: `Principal` of the id.
 ///
 /// # Returns
-/// `true` if the caller is calling itself, if the canister is the caller, otherwise `false`.
-pub fn caller_is_self(caller: UserId) -> bool {
+/// `true` if the id is calling itself, if the canister is the caller, otherwise `false`.
+pub fn is_self(provided_id: Principal) -> bool {
     let itself = id();
 
-    principal_equal(caller, itself)
+    principal_equal(provided_id, itself)
 }
 
 /// Filters the set of access keys, returning only those with administrative scope.
@@ -471,17 +470,14 @@ mod tests {
     #[test]
     fn test_access_key_can_write_anonymous_rejected() {
         let access_keys = AccessKeys::new();
-        assert!(!check_caller_can_write(
-            Principal::anonymous(),
-            &access_keys
-        ));
+        assert!(!is_write_access_key(Principal::anonymous(), &access_keys));
     }
 
     #[test]
     fn test_access_key_can_write_self_allowed() {
         let access_keys = AccessKeys::new();
         let self_principal = id();
-        assert!(check_caller_can_write(self_principal, &access_keys));
+        assert!(is_write_access_key(self_principal, &access_keys));
     }
 
     #[test]
@@ -494,7 +490,7 @@ mod tests {
             create_access_key(AccessKeyScope::Admin, None, None),
         );
 
-        assert!(check_caller_can_write(admin_principal, &access_keys));
+        assert!(is_write_access_key(admin_principal, &access_keys));
     }
 
     #[test]
@@ -507,7 +503,7 @@ mod tests {
             create_access_key(AccessKeyScope::Write, None, None),
         );
 
-        assert!(check_caller_can_write(write_principal, &access_keys));
+        assert!(is_write_access_key(write_principal, &access_keys));
     }
 
     #[test]
@@ -520,7 +516,7 @@ mod tests {
             create_access_key(AccessKeyScope::Submit, None, None),
         );
 
-        assert!(!check_caller_can_write(submit_principal, &access_keys));
+        assert!(!is_write_access_key(submit_principal, &access_keys));
     }
 
     #[test]
@@ -533,23 +529,20 @@ mod tests {
             create_access_key(AccessKeyScope::Write, Some(mock_time() - 1), None),
         );
 
-        assert!(!check_caller_can_write(expired_principal, &access_keys));
+        assert!(!is_write_access_key(expired_principal, &access_keys));
     }
 
     #[test]
     fn test_is_valid_access_key_anonymous_rejected() {
         let access_keys = AccessKeys::new();
-        assert!(!is_caller_valid_access_key(
-            Principal::anonymous(),
-            &access_keys
-        ));
+        assert!(!is_valid_access_key(Principal::anonymous(), &access_keys));
     }
 
     #[test]
     fn test_is_valid_access_key_self_allowed() {
         let access_keys = AccessKeys::new();
         let self_principal = id();
-        assert!(is_caller_valid_access_key(self_principal, &access_keys));
+        assert!(is_valid_access_key(self_principal, &access_keys));
     }
 
     #[test]
@@ -567,9 +560,9 @@ mod tests {
             create_access_key(AccessKeyScope::Submit, None, None),
         );
 
-        assert!(is_caller_valid_access_key(admin, &access_keys));
-        assert!(is_caller_valid_access_key(write, &access_keys));
-        assert!(is_caller_valid_access_key(submit, &access_keys));
+        assert!(is_valid_access_key(admin, &access_keys));
+        assert!(is_valid_access_key(write, &access_keys));
+        assert!(is_valid_access_key(submit, &access_keys));
     }
 
     #[test]
@@ -582,7 +575,7 @@ mod tests {
             create_access_key(AccessKeyScope::Write, Some(mock_time() - 1), None),
         );
 
-        assert!(!is_caller_valid_access_key(expired_principal, &access_keys));
+        assert!(!is_valid_access_key(expired_principal, &access_keys));
     }
 
     #[test]
@@ -596,7 +589,7 @@ mod tests {
             create_access_key(AccessKeyScope::Admin, Some(mock_time() - 1000), None),
         );
 
-        assert!(is_caller_valid_access_key(admin_principal, &access_keys));
+        assert!(is_valid_access_key(admin_principal, &access_keys));
     }
 
     #[test]

@@ -11,7 +11,7 @@ use junobuild_collections::constants::assets::COLLECTION_ASSET_KEY;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::Permission;
 use junobuild_shared::assert::assert_version;
-use junobuild_shared::segments::access_keys::{check_caller_can_write, is_caller_valid_access_key};
+use junobuild_shared::segments::access_keys::{is_valid_access_key, is_write_access_key};
 use junobuild_shared::types::state::AccessKeys;
 use junobuild_storage::errors::{
     JUNO_STORAGE_ERROR_ASSET_NOT_FOUND, JUNO_STORAGE_ERROR_CANNOT_READ_ASSET,
@@ -67,13 +67,7 @@ pub fn assert_storage_list_permission(
     // because when used with the CLI, it needs to know which assets are currently deployed in order to only submit those
     // that are different.
     if collection == COLLECTION_ASSET_KEY {
-        return assert_permission_with(
-            permission,
-            owner,
-            caller,
-            controllers,
-            is_caller_valid_access_key,
-        );
+        return assert_permission_with(permission, owner, caller, controllers, is_valid_access_key);
     }
 
     assert_permission(permission, owner, caller, controllers)
@@ -89,7 +83,7 @@ pub fn assert_create_batch(
 
     if !(public_permission(&rule.write)
         || is_known_user(caller)
-        || check_caller_can_write(caller, controllers))
+        || is_write_access_key(caller, controllers))
     {
         return Err(JUNO_STORAGE_ERROR_UPLOAD_NOT_ALLOWED.to_string());
     }

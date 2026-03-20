@@ -5,7 +5,7 @@ use candid::Principal;
 use junobuild_auth::state::types::config::AuthenticationConfig;
 use junobuild_collections::constants::db::COLLECTION_USER_KEY;
 use junobuild_collections::msg::msg_db_collection_not_found;
-use junobuild_shared::segments::access_keys::access_key_can_write;
+use junobuild_shared::segments::access_keys::check_caller_can_write;
 use junobuild_shared::types::state::AccessKeys;
 use junobuild_shared::utils::principal_equal;
 
@@ -28,7 +28,7 @@ pub fn assert_caller_is_allowed(
 
     // Admins do not need to be allowed. The permission scheme of the collections rules their access.
     // It could also lead to some weird effects if admins were disallowed as soon as a set of users is allowed.
-    if access_key_can_write(caller, controllers) {
+    if check_caller_can_write(caller, controllers) {
         return Ok(());
     }
 

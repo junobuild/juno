@@ -90,7 +90,7 @@ pub fn delete_access_keys(remove_access_keys: &[AccessKeyId], access_keys: &mut 
 ///
 /// # Returns
 /// `true` if the caller is an access key (not anonymous, calling itself or one of the known write or admin access keys), otherwise `false`.
-pub fn access_key_can_write(caller: UserId, access_keys: &AccessKeys) -> bool {
+pub fn check_caller_can_write(caller: UserId, access_keys: &AccessKeys) -> bool {
     principal_not_anonymous(caller)
         && (caller_is_self(caller)
             || access_keys
@@ -112,7 +112,7 @@ pub fn access_key_can_write(caller: UserId, access_keys: &AccessKeys) -> bool {
 ///
 /// # Returns
 /// `true` if the caller is an access key (not anonymous, calling itself or one of the known controllers), otherwise `false`.
-pub fn is_valid_access_key(caller: UserId, access_keys: &AccessKeys) -> bool {
+pub fn is_caller_valid_access_key(caller: UserId, access_keys: &AccessKeys) -> bool {
     principal_not_anonymous(caller)
         && (caller_is_self(caller)
             || access_keys.iter().any(|(&access_key_id, access_key)| {
@@ -471,14 +471,17 @@ mod tests {
     #[test]
     fn test_access_key_can_write_anonymous_rejected() {
         let access_keys = AccessKeys::new();
-        assert!(!access_key_can_write(Principal::anonymous(), &access_keys));
+        assert!(!check_caller_can_write(
+            Principal::anonymous(),
+            &access_keys
+        ));
     }
 
     #[test]
     fn test_access_key_can_write_self_allowed() {
         let access_keys = AccessKeys::new();
         let self_principal = id();
-        assert!(access_key_can_write(self_principal, &access_keys));
+        assert!(check_caller_can_write(self_principal, &access_keys));
     }
 
     #[test]
@@ -491,7 +494,7 @@ mod tests {
             create_access_key(AccessKeyScope::Admin, None, None),
         );
 
-        assert!(access_key_can_write(admin_principal, &access_keys));
+        assert!(check_caller_can_write(admin_principal, &access_keys));
     }
 
     #[test]
@@ -504,7 +507,7 @@ mod tests {
             create_access_key(AccessKeyScope::Write, None, None),
         );
 
-        assert!(access_key_can_write(write_principal, &access_keys));
+        assert!(check_caller_can_write(write_principal, &access_keys));
     }
 
     #[test]
@@ -517,7 +520,7 @@ mod tests {
             create_access_key(AccessKeyScope::Submit, None, None),
         );
 
-        assert!(!access_key_can_write(submit_principal, &access_keys));
+        assert!(!check_caller_can_write(submit_principal, &access_keys));
     }
 
     #[test]
@@ -530,20 +533,23 @@ mod tests {
             create_access_key(AccessKeyScope::Write, Some(mock_time() - 1), None),
         );
 
-        assert!(!access_key_can_write(expired_principal, &access_keys));
+        assert!(!check_caller_can_write(expired_principal, &access_keys));
     }
 
     #[test]
     fn test_is_valid_access_key_anonymous_rejected() {
         let access_keys = AccessKeys::new();
-        assert!(!is_valid_access_key(Principal::anonymous(), &access_keys));
+        assert!(!is_caller_valid_access_key(
+            Principal::anonymous(),
+            &access_keys
+        ));
     }
 
     #[test]
     fn test_is_valid_access_key_self_allowed() {
         let access_keys = AccessKeys::new();
         let self_principal = id();
-        assert!(is_valid_access_key(self_principal, &access_keys));
+        assert!(is_caller_valid_access_key(self_principal, &access_keys));
     }
 
     #[test]
@@ -561,9 +567,9 @@ mod tests {
             create_access_key(AccessKeyScope::Submit, None, None),
         );
 
-        assert!(is_valid_access_key(admin, &access_keys));
-        assert!(is_valid_access_key(write, &access_keys));
-        assert!(is_valid_access_key(submit, &access_keys));
+        assert!(is_caller_valid_access_key(admin, &access_keys));
+        assert!(is_caller_valid_access_key(write, &access_keys));
+        assert!(is_caller_valid_access_key(submit, &access_keys));
     }
 
     #[test]
@@ -576,7 +582,7 @@ mod tests {
             create_access_key(AccessKeyScope::Write, Some(mock_time() - 1), None),
         );
 
-        assert!(!is_valid_access_key(expired_principal, &access_keys));
+        assert!(!is_caller_valid_access_key(expired_principal, &access_keys));
     }
 
     #[test]
@@ -590,7 +596,7 @@ mod tests {
             create_access_key(AccessKeyScope::Admin, Some(mock_time() - 1000), None),
         );
 
-        assert!(is_valid_access_key(admin_principal, &access_keys));
+        assert!(is_caller_valid_access_key(admin_principal, &access_keys));
     }
 
     #[test]

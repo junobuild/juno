@@ -5,7 +5,7 @@ use crate::errors::auth::{
 };
 use junobuild_shared::ic::api::caller;
 use junobuild_shared::segments::access_keys::{
-    access_key_can_write, is_admin_controller, is_valid_access_key,
+    check_caller_can_write, is_admin_controller, is_caller_valid_access_key,
 };
 use junobuild_shared::types::state::AccessKeys;
 
@@ -49,7 +49,7 @@ pub fn caller_has_write_permission() -> Result<(), String> {
     let caller = caller();
     let controllers: AccessKeys = get_access_keys();
 
-    if access_key_can_write(caller, &controllers) {
+    if check_caller_can_write(caller, &controllers) {
         Ok(())
     } else {
         Err(JUNO_AUTH_ERROR_NOT_WRITE_CONTROLLER.to_string())
@@ -71,7 +71,7 @@ pub fn caller_is_access_key() -> Result<(), String> {
     let caller = caller();
     let controllers: AccessKeys = get_access_keys();
 
-    if is_valid_access_key(caller, &controllers) {
+    if is_caller_valid_access_key(caller, &controllers) {
         Ok(())
     } else {
         Err(JUNO_AUTH_ERROR_NOT_CONTROLLER.to_string())

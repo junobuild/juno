@@ -7,12 +7,12 @@ use junobuild_collections::assert::stores::{
 use junobuild_collections::constants::assets::COLLECTION_ASSET_KEY;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::Permission;
-use junobuild_shared::segments::access_keys::{access_key_can_write, is_valid_access_key};
+use junobuild_shared::segments::access_keys::{check_caller_can_write, is_caller_valid_access_key};
 use junobuild_shared::types::state::AccessKeys;
 
 pub fn assert_cdn_write_on_dapp_collection(caller: Principal, controllers: &AccessKeys) -> bool {
     // When using proposals, we allow any controllers to upload - submit - an asset to be served from #dapp collection
-    is_valid_access_key(caller, controllers)
+    is_caller_valid_access_key(caller, controllers)
 }
 
 pub fn assert_cdn_write_on_system_collection(
@@ -23,10 +23,10 @@ pub fn assert_cdn_write_on_system_collection(
     // Only controllers with scope "Admin" or "Write" can write in reserved collections starting with #
     // ...unless the collection is #_juno and the controller is "Submit".
     if collection == CDN_JUNO_RELEASES_COLLECTION_KEY {
-        return is_valid_access_key(caller, controllers);
+        return is_caller_valid_access_key(caller, controllers);
     }
 
-    access_key_can_write(caller, controllers)
+    check_caller_can_write(caller, controllers)
 }
 
 pub fn assert_cdn_create_permission(
@@ -37,7 +37,12 @@ pub fn assert_cdn_create_permission(
 ) -> bool {
     // Through a proposal, any controller - including "Submit" - can provide an asset for the #_juno or #dapp collections.
     if collection == CDN_JUNO_RELEASES_COLLECTION_KEY || collection == COLLECTION_ASSET_KEY {
-        return assert_create_permission_with(permission, caller, controllers, is_valid_access_key);
+        return assert_create_permission_with(
+            permission,
+            caller,
+            controllers,
+            is_caller_valid_access_key,
+        );
     }
 
     assert_create_permission(permission, caller, controllers)
@@ -52,7 +57,13 @@ pub fn assert_cdn_update_permission(
 ) -> bool {
     // Through a proposal, any controller - including "Submit" - can provide an update of an asset for the #_juno or #dapp collections.
     if collection == CDN_JUNO_RELEASES_COLLECTION_KEY || collection == COLLECTION_ASSET_KEY {
-        return assert_permission_with(permission, owner, caller, controllers, is_valid_access_key);
+        return assert_permission_with(
+            permission,
+            owner,
+            caller,
+            controllers,
+            is_caller_valid_access_key,
+        );
     }
 
     assert_permission(permission, owner, caller, controllers)

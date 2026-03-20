@@ -9,7 +9,7 @@ use candid::Principal;
 use junobuild_collections::constants::db::COLLECTION_USER_KEY;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_shared::ic::api::id;
-use junobuild_shared::segments::access_keys::access_key_can_write;
+use junobuild_shared::segments::access_keys::check_caller_can_write;
 use junobuild_shared::types::core::Key;
 use junobuild_shared::types::state::AccessKeys;
 use junobuild_shared::utils::principal_not_equal;
@@ -69,7 +69,7 @@ pub fn assert_user_collection_write_permission(
         return Ok(());
     }
 
-    if access_key_can_write(caller, controllers) {
+    if check_caller_can_write(caller, controllers) {
         return Ok(());
     }
 
@@ -87,7 +87,7 @@ pub fn assert_user_is_not_banned(
     controllers: &AccessKeys,
 ) -> Result<(), String> {
     // This way we spare loading the user for controllers calls and, we for example allow controllers to delete banned users
-    if access_key_can_write(caller, controllers) {
+    if check_caller_can_write(caller, controllers) {
         return Ok(());
     }
 

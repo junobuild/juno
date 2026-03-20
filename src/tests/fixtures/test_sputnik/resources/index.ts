@@ -5,6 +5,7 @@ export * from './assert-set-doc';
 export * from './assert-upload-asset';
 export * from './custom-functions';
 export * from './custom-functions-enum';
+export * from './custom-functions-guard';
 export * from './custom-functions-option';
 export * from './on-delete-asset';
 export * from './on-delete-doc';

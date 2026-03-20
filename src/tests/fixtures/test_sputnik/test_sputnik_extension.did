@@ -45,6 +45,8 @@ type AppDemoAntonioResult = record {
   world : text;
 };
 type AppDemoAntonioResultSub = record { arr : opt blob; value : opt nat64 };
+type AppOnlyAdminArgs = record { value : principal };
+type AppOnlyAdminResult = record { value : principal; "text" : text };
 type AppReadDocTestArgs = record { key : text; collection : text };
 type AppReadDocTestResult = record { value : nat64 };
 type AppSetDocTestArgs = record {
@@ -56,6 +58,8 @@ type AppUpdateArgsOnlyArgs = record { value : text };
 type AppWelcomeArgs = record { value : text };
 type AppWelcomeResult = record { value : nat64; caller : principal };
 service : {
+  app_admin_or_writer : () -> () query;
+  app_admin_or_writer_or_submit : () -> ();
   app_async_query : (AppAsyncQueryArgs) -> (AppAsyncQueryResult) query;
   app_check_caller : () -> ();
   app_check_discriminated_primitives : (
@@ -71,9 +75,11 @@ service : {
   app_check_simple_variant : (AppCheckSimpleVariantArgs) -> (
       AppCheckSimpleVariantArgs,
     );
+  app_custom_guard : () -> ();
   app_demo_antonio : (AppDemoAntonioArgs) -> (AppDemoAntonioResult) query;
   app_hello_world : (AppAsyncQueryArgs) -> (AppAsyncQueryResult) query;
-  app_query_no_args : () -> (AppAsyncQueryResult) query;
+  app_only_admin : (AppOnlyAdminArgs) -> (AppOnlyAdminResult) query;
+  app_query_no_args : () -> (AppOnlyAdminResult) query;
   app_query_no_args_no_result : () -> () query;
   app_read_doc_test : (AppReadDocTestArgs) -> (AppReadDocTestResult) query;
   app_set_doc_test : (AppSetDocTestArgs) -> ();

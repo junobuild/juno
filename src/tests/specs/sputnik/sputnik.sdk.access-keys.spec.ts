@@ -1,5 +1,4 @@
 import type { SputnikActor, SputnikDid } from '$declarations';
-import type { AccessKeyScope } from '$declarations/sputnik/sputnik.did';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import { assertNonNullish, jsonReplacer, jsonReviver } from '@dfinity/utils';
 import type { Identity } from '@icp-sdk/core/agent';
@@ -241,7 +240,7 @@ describe('Sputnik > sdk > access keys', () => {
 	describe('other access key with write', () => {
 		let user: Identity;
 
-		const createAccessKey = async (scope: AccessKeyScope) => {
+		const createAccessKey = async (scope: SputnikDid.AccessKeyScope) => {
 			const { user: u } = await createUserUtils({ actor });
 			user = u;
 

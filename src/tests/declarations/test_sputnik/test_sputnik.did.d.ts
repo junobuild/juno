@@ -83,6 +83,13 @@ export interface AppDemoAntonioResultSub {
 	arr: [] | [Uint8Array];
 	value: [] | [bigint];
 }
+export interface AppOnlyAdminArgs {
+	value: Principal;
+}
+export interface AppOnlyAdminResult {
+	value: Principal;
+	text: string;
+}
 export interface AppReadDocTestArgs {
 	key: string;
 	collection: string;
@@ -669,6 +676,8 @@ export interface _SERVICE {
 	switch_storage_system_memory: ActorMethod<[], undefined>;
 	upload_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;
 	upload_proposal_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;
+	app_admin_or_writer: ActorMethod<[], undefined>;
+	app_admin_or_writer_or_submit: ActorMethod<[], undefined>;
 	app_async_query: ActorMethod<[AppAsyncQueryArgs], AppAsyncQueryResult>;
 	app_check_caller: ActorMethod<[], undefined>;
 	app_check_discriminated_primitives: ActorMethod<
@@ -685,9 +694,11 @@ export interface _SERVICE {
 		AppCheckNestedDiscriminatedArgs
 	>;
 	app_check_simple_variant: ActorMethod<[AppCheckSimpleVariantArgs], AppCheckSimpleVariantArgs>;
+	app_custom_guard: ActorMethod<[], undefined>;
 	app_demo_antonio: ActorMethod<[AppDemoAntonioArgs], AppDemoAntonioResult>;
 	app_hello_world: ActorMethod<[AppAsyncQueryArgs], AppAsyncQueryResult>;
-	app_query_no_args: ActorMethod<[], AppAsyncQueryResult>;
+	app_only_admin: ActorMethod<[AppOnlyAdminArgs], AppOnlyAdminResult>;
+	app_query_no_args: ActorMethod<[], AppOnlyAdminResult>;
 	app_query_no_args_no_result: ActorMethod<[], undefined>;
 	app_read_doc_test: ActorMethod<[AppReadDocTestArgs], AppReadDocTestResult>;
 	app_set_doc_test: ActorMethod<[AppSetDocTestArgs], undefined>;

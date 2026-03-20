@@ -571,6 +571,11 @@ export const idlFactory = ({ IDL }) => {
 		sub: AppDemoAntonioResultSub,
 		world: IDL.Text
 	});
+	const AppOnlyAdminArgs = IDL.Record({ value: IDL.Principal });
+	const AppOnlyAdminResult = IDL.Record({
+		value: IDL.Principal,
+		text: IDL.Text
+	});
 	const AppReadDocTestArgs = IDL.Record({
 		key: IDL.Text,
 		collection: IDL.Text
@@ -686,6 +691,8 @@ export const idlFactory = ({ IDL }) => {
 		switch_storage_system_memory: IDL.Func([], [], []),
 		upload_asset_chunk: IDL.Func([UploadChunk], [UploadChunkResult], []),
 		upload_proposal_asset_chunk: IDL.Func([UploadChunk], [UploadChunkResult], []),
+		app_admin_or_writer: IDL.Func([], [], ['query']),
+		app_admin_or_writer_or_submit: IDL.Func([], [], []),
 		app_async_query: IDL.Func([AppAsyncQueryArgs], [AppAsyncQueryResult], ['query']),
 		app_check_caller: IDL.Func([], [], []),
 		app_check_discriminated_primitives: IDL.Func(
@@ -709,9 +716,11 @@ export const idlFactory = ({ IDL }) => {
 			[AppCheckSimpleVariantArgs],
 			[]
 		),
+		app_custom_guard: IDL.Func([], [], []),
 		app_demo_antonio: IDL.Func([AppDemoAntonioArgs], [AppDemoAntonioResult], ['query']),
 		app_hello_world: IDL.Func([AppAsyncQueryArgs], [AppAsyncQueryResult], ['query']),
-		app_query_no_args: IDL.Func([], [AppAsyncQueryResult], ['query']),
+		app_only_admin: IDL.Func([AppOnlyAdminArgs], [AppOnlyAdminResult], ['query']),
+		app_query_no_args: IDL.Func([], [AppOnlyAdminResult], ['query']),
 		app_query_no_args_no_result: IDL.Func([], [], ['query']),
 		app_read_doc_test: IDL.Func([AppReadDocTestArgs], [AppReadDocTestResult], ['query']),
 		app_set_doc_test: IDL.Func([AppSetDocTestArgs], [], []),

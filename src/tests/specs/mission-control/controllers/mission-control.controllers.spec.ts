@@ -63,7 +63,7 @@ describe('Mission Control > Controllers', () => {
 
 		const newController = Ed25519KeyIdentity.generate();
 
-		const controllerData: MissionControlDid.SetController = {
+		const controllerData: MissionControlDid.SetAccessKey = {
 			scope: { Admin: null },
 			expires_at: [],
 			kind: [{ Automation: null }],

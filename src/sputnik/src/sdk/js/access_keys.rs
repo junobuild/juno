@@ -11,7 +11,7 @@ pub fn init_access_keys_sdk(ctx: &Ctx) -> Result<(), JsError> {
     let global = ctx.globals();
 
     global.set(
-        "__juno_satellite_admin_access_keys",
+        "__juno_satellite_get_admin_access_keys",
         js_get_admin_access_keys,
     )?;
     global.set("__juno_satellite_get_access_keys", js_get_access_keys)?;

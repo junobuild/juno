@@ -1,11 +1,13 @@
 mod access_keys;
 mod db;
+mod guards;
 mod random;
 mod storage;
 pub mod types;
 mod utils;
 
 use crate::sdk::js::access_keys::init_access_keys_sdk;
+use crate::sdk::js::guards::init_guards_sdk;
 use crate::sdk::js::random::init_random_sdk;
 use crate::sdk::js::storage::init_storage_sdk;
 use crate::sdk::js::utils::init_utils_sdk;
@@ -17,6 +19,7 @@ pub fn init_sdk(ctx: &Ctx) -> Result<(), JsError> {
     init_storage_sdk(ctx)?;
     init_utils_sdk(ctx)?;
     init_access_keys_sdk(ctx)?;
+    init_guards_sdk(ctx)?;
     init_random_sdk(ctx)?;
 
     Ok(())

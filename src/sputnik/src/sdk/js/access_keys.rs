@@ -1,4 +1,4 @@
-use crate::sdk::js::types::shared::{JsControllers, JsUserId};
+use crate::sdk::js::types::shared::{JsAccessKeys, JsUserId};
 use junobuild_satellite::{
     get_access_keys as get_access_keys_sdk, get_admin_access_keys as get_admin_access_keys_sdk,
 };
@@ -26,24 +26,24 @@ pub fn init_access_keys_sdk(ctx: &Ctx) -> Result<(), JsError> {
 }
 
 #[rquickjs::function]
-fn get_admin_access_keys<'js>(ctx: Ctx<'js>) -> JsResult<JsControllers<'js>> {
+fn get_admin_access_keys<'js>(ctx: Ctx<'js>) -> JsResult<JsAccessKeys<'js>> {
     let access_keys = get_admin_access_keys_sdk();
-    JsControllers::from_controllers(&ctx, access_keys)
+    JsAccessKeys::from_access_keys(&ctx, access_keys)
 }
 
 #[rquickjs::function]
-fn get_access_keys<'js>(ctx: Ctx<'js>) -> JsResult<JsControllers<'js>> {
+fn get_access_keys<'js>(ctx: Ctx<'js>) -> JsResult<JsAccessKeys<'js>> {
     let access_keys = get_access_keys_sdk();
-    JsControllers::from_controllers(&ctx, access_keys)
+    JsAccessKeys::from_access_keys(&ctx, access_keys)
 }
 
 #[rquickjs::function]
 fn is_admin_controller<'js>(
     _ctx: Ctx<'js>,
     caller: JsUserId<'js>,
-    controllers: JsControllers<'js>,
+    controllers: JsAccessKeys<'js>,
 ) -> JsResult<bool> {
-    let result = is_admin_controller_sdk(caller.to_principal()?, &controllers.to_controllers()?);
+    let result = is_admin_controller_sdk(caller.to_principal()?, &controllers.to_access_keys()?);
     Ok(result)
 }
 
@@ -51,8 +51,8 @@ fn is_admin_controller<'js>(
 fn is_controller<'js>(
     _ctx: Ctx<'js>,
     caller: JsUserId<'js>,
-    controllers: JsControllers<'js>,
+    controllers: JsAccessKeys<'js>,
 ) -> JsResult<bool> {
-    let result = is_controller_sdk(caller.to_principal()?, &controllers.to_controllers()?);
+    let result = is_controller_sdk(caller.to_principal()?, &controllers.to_access_keys()?);
     Ok(result)
 }

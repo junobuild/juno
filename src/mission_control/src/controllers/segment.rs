@@ -2,22 +2,20 @@ use candid::Principal;
 use ic_cdk::call::Call;
 use junobuild_shared::ic::DecodeCandid;
 use junobuild_shared::mgmt::ic::update_canister_controllers;
-use junobuild_shared::segments::controllers::{
-    assert_controller_expiration, assert_controllers, filter_admin_controllers, into_controller_ids,
+use junobuild_shared::segments::access_keys::{
+    assert_access_key_expiration, assert_controllers, filter_admin_access_keys, into_access_key_ids,
 };
-use junobuild_shared::types::interface::{
-    DeleteControllersArgs, SetController, SetControllersArgs,
-};
-use junobuild_shared::types::state::{ControllerId, Controllers};
+use junobuild_shared::types::interface::{DeleteControllersArgs, SetAccessKey, SetControllersArgs};
+use junobuild_shared::types::state::{AccessKeyId, AccessKeys};
 
 pub async fn set_segment_controllers(
     segment_id: &Principal,
-    controllers: &[ControllerId],
-    controller: &SetController,
+    controllers: &[AccessKeyId],
+    controller: &SetAccessKey,
 ) -> Result<(), String> {
     assert_controllers(controllers)?;
 
-    assert_controller_expiration(controller)?;
+    assert_access_key_expiration(controller)?;
 
     let satellite_admin_controllers = set_controllers(segment_id, controllers, controller).await?;
 
@@ -28,7 +26,7 @@ pub async fn set_segment_controllers(
 
 pub async fn delete_segment_controllers(
     segment_id: &Principal,
-    controllers: &[ControllerId],
+    controllers: &[AccessKeyId],
 ) -> Result<(), String> {
     let satellite_admin_controllers = delete_controllers(segment_id, controllers).await?;
 
@@ -38,9 +36,9 @@ pub async fn delete_segment_controllers(
 
 async fn set_controllers(
     segment_id: &Principal,
-    controllers: &[ControllerId],
-    controller: &SetController,
-) -> Result<Vec<ControllerId>, String> {
+    controllers: &[AccessKeyId],
+    controller: &SetAccessKey,
+) -> Result<Vec<AccessKeyId>, String> {
     let args = SetControllersArgs {
         controllers: controllers.to_owned(),
         controller: controller.clone(),
@@ -49,15 +47,15 @@ async fn set_controllers(
     let controllers = Call::unbounded_wait(*segment_id, "set_controllers")
         .with_arg(args)
         .await
-        .decode_candid::<Controllers>()?;
+        .decode_candid::<AccessKeys>()?;
 
-    Ok(into_controller_ids(&filter_admin_controllers(&controllers)))
+    Ok(into_access_key_ids(&filter_admin_access_keys(&controllers)))
 }
 
 async fn delete_controllers(
     segment_id: &Principal,
-    controllers: &[ControllerId],
-) -> Result<Vec<ControllerId>, String> {
+    controllers: &[AccessKeyId],
+) -> Result<Vec<AccessKeyId>, String> {
     let args = DeleteControllersArgs {
         controllers: controllers.to_owned(),
     };
@@ -65,14 +63,14 @@ async fn delete_controllers(
     let controllers = Call::unbounded_wait(*segment_id, "del_controllers")
         .with_arg(args)
         .await
-        .decode_candid::<Controllers>()?;
+        .decode_candid::<AccessKeys>()?;
 
-    Ok(into_controller_ids(&filter_admin_controllers(&controllers)))
+    Ok(into_access_key_ids(&filter_admin_access_keys(&controllers)))
 }
 
 pub async fn update_segment_controllers_settings(
     segment_id: &Principal,
-    controllers: &[ControllerId],
+    controllers: &[AccessKeyId],
 ) -> Result<(), String> {
     let result = update_canister_controllers(*segment_id, controllers.to_owned()).await;
 

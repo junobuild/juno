@@ -1,16 +1,16 @@
 use crate::memory::manager::STATE;
-use junobuild_shared::segments::controllers::{
-    delete_controllers as delete_controllers_impl, filter_admin_controllers,
-    set_controllers as set_controllers_impl,
+use junobuild_shared::segments::access_keys::{
+    delete_access_keys as delete_controllers_impl, filter_admin_access_keys,
+    set_access_keys as set_controllers_impl,
 };
-use junobuild_shared::types::interface::SetController;
-use junobuild_shared::types::state::{ControllerId, Controllers};
+use junobuild_shared::types::interface::SetAccessKey;
+use junobuild_shared::types::state::{AccessKeyId, AccessKeys};
 
 // ---------------------------------------------------------
 // Controllers
 // ---------------------------------------------------------
 
-pub fn set_controllers(new_controllers: &[ControllerId], controller: &SetController) {
+pub fn set_controllers(new_controllers: &[AccessKeyId], controller: &SetAccessKey) {
     STATE.with(|state| {
         set_controllers_impl(
             new_controllers,
@@ -20,16 +20,16 @@ pub fn set_controllers(new_controllers: &[ControllerId], controller: &SetControl
     })
 }
 
-pub fn delete_controllers(remove_controllers: &[ControllerId]) {
+pub fn delete_controllers(remove_controllers: &[AccessKeyId]) {
     STATE.with(|state| {
         delete_controllers_impl(remove_controllers, &mut state.borrow_mut().heap.controllers)
     })
 }
 
-pub fn get_controllers() -> Controllers {
+pub fn get_controllers() -> AccessKeys {
     STATE.with(|state| state.borrow().heap.controllers.clone())
 }
 
-pub fn get_admin_controllers() -> Controllers {
-    STATE.with(|state| filter_admin_controllers(&state.borrow().heap.controllers))
+pub fn get_admin_controllers() -> AccessKeys {
+    STATE.with(|state| filter_admin_access_keys(&state.borrow().heap.controllers))
 }

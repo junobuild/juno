@@ -39,6 +39,6 @@ use junobuild_shared::types::interface::MemorySize;
 use junobuild_shared::types::interface::{
     DeleteControllersArgs, DepositCyclesArgs, SetControllersArgs,
 };
-use junobuild_shared::types::state::{Controllers, SatelliteId};
+use junobuild_shared::types::state::{AccessKeys, SatelliteId};
 
 export_candid!();

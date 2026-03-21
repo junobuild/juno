@@ -1,14 +1,13 @@
 #![doc = include_str!("../README.md")]
 
+mod access_keys;
 mod api;
 mod assets;
 mod auth;
 mod automation;
 mod certification;
-mod controllers;
 mod db;
 mod errors;
-mod guards;
 mod hooks;
 mod impls;
 mod logs;
@@ -21,9 +20,6 @@ mod user;
 
 use crate::db::types::config::DbConfig;
 use crate::db::types::interface::SetDbConfig;
-use crate::guards::{
-    caller_is_admin_controller, caller_is_controller_with_write, caller_is_valid_controller,
-};
 use crate::types::interface::{
     AuthenticateAutomationResultResponse, AuthenticateResultResponse, AuthenticationArgs, Config,
     DeleteProposalAssets, GetDelegationArgs, GetDelegationResultResponse,
@@ -53,7 +49,7 @@ use junobuild_shared::types::interface::{
 };
 use junobuild_shared::types::list::ListParams;
 use junobuild_shared::types::list::ListResults;
-use junobuild_shared::types::state::Controllers;
+use junobuild_shared::types::state::AccessKeys;
 use junobuild_storage::http::types::{
     HttpRequest, HttpResponse, StreamingCallbackHttpResponse, StreamingCallbackToken,
 };
@@ -152,13 +148,13 @@ pub fn del_filtered_docs(collection: CollectionKey, filter: ListParams) {
 }
 
 #[doc(hidden)]
-#[update(guard = "caller_is_controller_with_write")]
+#[update(guard = "caller_has_write_permission")]
 pub fn del_docs(collection: CollectionKey) {
     api::db::del_docs(collection)
 }
 
 #[doc(hidden)]
-#[query(guard = "caller_is_controller_with_write")]
+#[query(guard = "caller_has_write_permission")]
 pub fn count_collection_docs(collection: CollectionKey) -> usize {
     api::db::count_collection_docs(collection)
 }
@@ -192,31 +188,31 @@ pub async fn authenticate_automation(
 // ---------------------------------------------------------
 
 #[doc(hidden)]
-#[query(guard = "caller_is_admin_controller")]
+#[query(guard = "caller_is_admin")]
 pub fn get_rule(collection_type: CollectionType, collection: CollectionKey) -> Option<Rule> {
     api::rules::get_rule(&collection_type, &collection)
 }
 
 #[doc(hidden)]
-#[query(guard = "caller_is_admin_controller")]
+#[query(guard = "caller_is_admin")]
 pub fn list_rules(collection_type: CollectionType, filter: ListRulesParams) -> ListRulesResults {
     api::rules::list_rules(&collection_type, &filter)
 }
 
 #[doc(hidden)]
-#[update(guard = "caller_is_admin_controller")]
+#[update(guard = "caller_is_admin")]
 pub fn set_rule(collection_type: CollectionType, collection: CollectionKey, rule: SetRule) -> Rule {
     api::rules::set_rule(collection_type, collection, rule)
 }
 
 #[doc(hidden)]
-#[update(guard = "caller_is_admin_controller")]
+#[update(guard = "caller_is_admin")]
 pub fn del_rule(collection_type: CollectionType, collection: CollectionKey, rule: DelRule) {
     api::rules::del_rule(collection_type, collection, rule)
 }
 
 #[doc(hidden)]
-#[update(guard = "caller_is_admin_controller")]
+#[update(guard = "caller_is_admin")]
 pub fn switch_storage_system_memory() {
     api::rules::switch_storage_system_memory()
 }
@@ -226,26 +222,26 @@ pub fn switch_storage_system_memory() {
 // ---------------------------------------------------------
 
 #[doc(hidden)]
-#[update(guard = "caller_is_admin_controller")]
-pub fn set_controllers(args: SetControllersArgs) -> Controllers {
+#[update(guard = "caller_is_admin")]
+pub fn set_controllers(args: SetControllersArgs) -> AccessKeys {
     api::controllers::set_controllers(args)
 }
 
 #[doc(hidden)]
-#[update(guard = "caller_is_admin_controller")]
-pub fn del_controllers(args: DeleteControllersArgs) -> Controllers {
+#[update(guard = "caller_is_admin")]
+pub fn del_controllers(args: DeleteControllersArgs) -> AccessKeys {
     api::controllers::del_controllers(args)
 }
 
 #[doc(hidden)]
-#[update(guard = "caller_is_valid_controller")]
+#[update(guard = "caller_is_access_key")]
 pub fn del_controller_self() {
     api::controllers::del_controller_self()
 }
 
 #[doc(hidden)]
-#[query(guard = "caller_is_admin_controller")]
-pub fn list_controllers() -> Controllers {
+#[query(guard = "caller_is_admin")]
+pub fn list_controllers() -> AccessKeys {
     api::controllers::list_controllers()
 }
 
@@ -254,49 +250,49 @@ pub fn list_controllers() -> Controllers {
 // ---------------------------------------------------------
 
 #[doc(hidden)]
-#[query(guard = "caller_is_valid_controller")]
+#[query(guard = "caller_is_access_key")]
 pub fn get_proposal(proposal_id: ProposalId) -> Option<Proposal> {
     api::cdn::get_proposal(&proposal_id)
 }
 
 #[doc(hidden)]
-#[query(guard = "caller_is_valid_controller")]
+#[query(guard = "caller_is_access_key")]
 pub fn list_proposals(filter: ListProposalsParams) -> ListProposalResults {
     api::cdn::list_proposals(&filter)
 }
 
 #[doc(hidden)]
-#[query(guard = "caller_is_valid_controller")]
+#[query(guard = "caller_is_access_key")]
 pub fn count_proposals() -> usize {
     api::cdn::count_proposals()
 }
 
 #[doc(hidden)]
-#[update(guard = "caller_is_valid_controller")]
+#[update(guard = "caller_is_access_key")]
 pub fn init_proposal(proposal_type: ProposalType) -> (ProposalId, Proposal) {
     api::cdn::init_proposal(&proposal_type)
 }
 
 #[doc(hidden)]
-#[update(guard = "caller_is_valid_controller")]
+#[update(guard = "caller_is_access_key")]
 pub fn submit_proposal(proposal_id: ProposalId) -> (ProposalId, Proposal) {
     api::cdn::submit_proposal(&proposal_id)
 }
 
 #[doc(hidden)]
-#[update(guard = "caller_is_controller_with_write", manual_reply = true)]
+#[update(guard = "caller_has_write_permission", manual_reply = true)]
 pub fn reject_proposal(proposal: RejectProposal) -> ManualReply<()> {
     api::cdn::reject_proposal(&proposal)
 }
 
 #[doc(hidden)]
-#[update(guard = "caller_is_controller_with_write", manual_reply = true)]
+#[update(guard = "caller_has_write_permission", manual_reply = true)]
 pub fn commit_proposal(proposal: CommitProposal) -> ManualReply<()> {
     api::cdn::commit_proposal(&proposal)
 }
 
 #[doc(hidden)]
-#[update(guard = "caller_is_controller_with_write")]
+#[update(guard = "caller_has_write_permission")]
 pub fn delete_proposal_assets(params: DeleteProposalAssets) {
     api::cdn::delete_proposal_assets(&params)
 }
@@ -306,13 +302,13 @@ pub fn delete_proposal_assets(params: DeleteProposalAssets) {
 // ---------------------------------------------------------
 
 #[doc(hidden)]
-#[update(guard = "caller_is_valid_controller")]
+#[update(guard = "caller_is_access_key")]
 pub fn init_proposal_asset_upload(init: InitAssetKey, proposal_id: ProposalId) -> InitUploadResult {
     api::cdn::init_proposal_asset_upload(init, proposal_id)
 }
 
 #[doc(hidden)]
-#[update(guard = "caller_is_valid_controller")]
+#[update(guard = "caller_is_access_key")]
 pub fn init_proposal_many_assets_upload(
     init_asset_keys: Vec<InitAssetKey>,
     proposal_id: ProposalId,
@@ -321,19 +317,19 @@ pub fn init_proposal_many_assets_upload(
 }
 
 #[doc(hidden)]
-#[update(guard = "caller_is_valid_controller")]
+#[update(guard = "caller_is_access_key")]
 pub fn upload_proposal_asset_chunk(chunk: UploadChunk) -> UploadChunkResult {
     api::cdn::upload_proposal_asset_chunk(chunk)
 }
 
 #[doc(hidden)]
-#[update(guard = "caller_is_valid_controller")]
+#[update(guard = "caller_is_access_key")]
 pub fn commit_proposal_asset_upload(commit: CommitBatch) {
     api::cdn::commit_proposal_asset_upload(commit)
 }
 
 #[doc(hidden)]
-#[update(guard = "caller_is_valid_controller")]
+#[update(guard = "caller_is_access_key")]
 pub fn commit_proposal_many_assets_upload(commits: Vec<CommitBatch>) {
     api::cdn::commit_proposal_many_assets_upload(commits)
 }
@@ -343,19 +339,19 @@ pub fn commit_proposal_many_assets_upload(commits: Vec<CommitBatch>) {
 // ---------------------------------------------------------
 
 #[doc(hidden)]
-#[query(guard = "caller_is_admin_controller")]
+#[query(guard = "caller_is_admin")]
 pub fn list_custom_domains() -> CustomDomains {
     api::cdn::list_custom_domains()
 }
 
 #[doc(hidden)]
-#[update(guard = "caller_is_admin_controller")]
+#[update(guard = "caller_is_admin")]
 pub fn set_custom_domain(domain_name: DomainName, bn_id: Option<String>) {
     api::cdn::set_custom_domain(domain_name, bn_id);
 }
 
 #[doc(hidden)]
-#[update(guard = "caller_is_admin_controller")]
+#[update(guard = "caller_is_admin")]
 pub fn del_custom_domain(domain_name: DomainName) {
     api::cdn::del_custom_domain(domain_name);
 }
@@ -365,7 +361,7 @@ pub fn del_custom_domain(domain_name: DomainName) {
 // ---------------------------------------------------------
 
 #[doc(hidden)]
-#[update(guard = "caller_is_admin_controller")]
+#[update(guard = "caller_is_admin")]
 pub fn get_config() -> Config {
     api::config::get_config()
 }
@@ -375,13 +371,13 @@ pub fn get_config() -> Config {
 // ---------------------------------------------------------
 
 #[doc(hidden)]
-#[update(guard = "caller_is_admin_controller")]
+#[update(guard = "caller_is_admin")]
 pub async fn set_auth_config(config: SetAuthenticationConfig) -> AuthenticationConfig {
     api::config::set_auth_config(config).await
 }
 
 #[doc(hidden)]
-#[query(guard = "caller_is_admin_controller")]
+#[query(guard = "caller_is_admin")]
 pub fn get_auth_config() -> Option<AuthenticationConfig> {
     api::config::get_auth_config()
 }
@@ -391,13 +387,13 @@ pub fn get_auth_config() -> Option<AuthenticationConfig> {
 // ---------------------------------------------------------
 
 #[doc(hidden)]
-#[update(guard = "caller_is_admin_controller")]
+#[update(guard = "caller_is_admin")]
 pub async fn set_automation_config(config: SetAutomationConfig) -> AutomationConfig {
     api::config::set_automation_config(config).await
 }
 
 #[doc(hidden)]
-#[query(guard = "caller_is_admin_controller")]
+#[query(guard = "caller_is_admin")]
 pub fn get_automation_config() -> Option<AutomationConfig> {
     api::config::get_automation_config()
 }
@@ -407,13 +403,13 @@ pub fn get_automation_config() -> Option<AutomationConfig> {
 // ---------------------------------------------------------
 
 #[doc(hidden)]
-#[update(guard = "caller_is_admin_controller")]
+#[update(guard = "caller_is_admin")]
 pub fn set_db_config(config: SetDbConfig) -> DbConfig {
     api::config::set_db_config(config)
 }
 
 #[doc(hidden)]
-#[query(guard = "caller_is_admin_controller")]
+#[query(guard = "caller_is_admin")]
 pub fn get_db_config() -> Option<DbConfig> {
     api::config::get_db_config()
 }
@@ -423,13 +419,13 @@ pub fn get_db_config() -> Option<DbConfig> {
 // ---------------------------------------------------------
 
 #[doc(hidden)]
-#[update(guard = "caller_is_admin_controller")]
+#[update(guard = "caller_is_admin")]
 pub fn set_storage_config(config: SetStorageConfig) -> StorageConfig {
     api::config::set_storage_config(config)
 }
 
 #[doc(hidden)]
-#[query(guard = "caller_is_admin_controller")]
+#[query(guard = "caller_is_admin")]
 pub fn get_storage_config() -> StorageConfig {
     api::config::get_storage_config()
 }
@@ -505,7 +501,7 @@ pub fn del_filtered_assets(collection: CollectionKey, filter: ListParams) {
 }
 
 #[doc(hidden)]
-#[update(guard = "caller_is_controller_with_write")]
+#[update(guard = "caller_has_write_permission")]
 pub fn del_assets(collection: CollectionKey) {
     api::storage::del_assets(collection);
 }
@@ -517,7 +513,7 @@ pub fn set_asset_token(collection: CollectionKey, full_path: FullPath, token: As
 }
 
 #[doc(hidden)]
-#[query(guard = "caller_is_controller_with_write")]
+#[query(guard = "caller_has_write_permission")]
 pub fn count_collection_assets(collection: CollectionKey) -> usize {
     api::storage::count_collection_assets(collection)
 }
@@ -541,7 +537,7 @@ pub fn get_many_assets(
 // ---------------------------------------------------------
 
 #[doc(hidden)]
-#[update(guard = "caller_is_admin_controller")]
+#[update(guard = "caller_is_admin")]
 pub async fn deposit_cycles(args: DepositCyclesArgs) {
     junobuild_shared::mgmt::ic::deposit_cycles(args)
         .await
@@ -549,7 +545,7 @@ pub async fn deposit_cycles(args: DepositCyclesArgs) {
 }
 
 #[doc(hidden)]
-#[query(guard = "caller_is_valid_controller")]
+#[query(guard = "caller_is_access_key")]
 pub fn memory_size() -> MemorySize {
     junobuild_shared::segments::utils::memory_size()
 }

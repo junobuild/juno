@@ -63,7 +63,7 @@ describe('Mission Control > Controllers', () => {
 
 		const newController = Ed25519KeyIdentity.generate();
 
-		const controllerData: MissionControlDid.SetController = {
+		const controllerData: MissionControlDid.SetAccessKey = {
 			scope: { Admin: null },
 			expires_at: [],
 			kind: [{ Automation: null }],
@@ -106,7 +106,7 @@ describe('Mission Control > Controllers', () => {
 				...CONTROLLER_METADATA,
 				scope: { Admin: null }
 			})
-		).rejects.toThrowError(JUNO_ERROR_CONTROLLERS_MAX_NUMBER);
+		).rejects.toThrow(JUNO_ERROR_CONTROLLERS_MAX_NUMBER);
 	});
 
 	describe('assert', () => {
@@ -121,7 +121,7 @@ describe('Mission Control > Controllers', () => {
 					scope: { Admin: null },
 					expires_at: [1n]
 				})
-			).rejects.toThrowError(JUNO_ERROR_CONTROLLERS_ADMIN_NO_EXPIRY);
+			).rejects.toThrow(JUNO_ERROR_CONTROLLERS_ADMIN_NO_EXPIRY);
 		});
 
 		it.each([
@@ -145,7 +145,7 @@ describe('Mission Control > Controllers', () => {
 						scope,
 						expires_at: [now]
 					})
-				).rejects.toThrowError(JUNO_ERROR_CONTROLLERS_EXPIRY_IN_PAST);
+				).rejects.toThrow(JUNO_ERROR_CONTROLLERS_EXPIRY_IN_PAST);
 			}
 		);
 
@@ -160,7 +160,7 @@ describe('Mission Control > Controllers', () => {
 					scope: { Admin: null },
 					expires_at: [1n]
 				})
-			).rejects.toThrowError(JUNO_ERROR_CONTROLLERS_ANONYMOUS_NOT_ALLOWED);
+			).rejects.toThrow(JUNO_ERROR_CONTROLLERS_ANONYMOUS_NOT_ALLOWED);
 		});
 
 		it.each([
@@ -178,7 +178,7 @@ describe('Mission Control > Controllers', () => {
 					...CONTROLLER_METADATA,
 					scope
 				})
-			).rejects.toThrowError(JUNO_ERROR_CONTROLLERS_MAX_NUMBER);
+			).rejects.toThrow(JUNO_ERROR_CONTROLLERS_MAX_NUMBER);
 		});
 	});
 });

@@ -167,7 +167,7 @@ describe('Console > Factory > Canister', () => {
 					createFn({
 						user
 					})
-				).rejects.toThrowError(NO_ACCOUNT_ERROR_MSG);
+				).rejects.toThrow(NO_ACCOUNT_ERROR_MSG);
 			});
 
 			it('should fail with no mission control', async () => {
@@ -181,7 +181,7 @@ describe('Console > Factory > Canister', () => {
 					createFn({
 						user
 					})
-				).rejects.toThrowError('No mission control center found');
+				).rejects.toThrow('No mission control center found');
 
 				actor.setIdentity(user);
 			});
@@ -202,7 +202,7 @@ describe('Console > Factory > Canister', () => {
 					createFn({
 						user
 					})
-				).rejects.toThrowError('Unknown caller');
+				).rejects.toThrow('Unknown caller');
 
 				actor.setIdentity(user);
 			});
@@ -242,7 +242,7 @@ describe('Console > Factory > Canister', () => {
 					createFn({
 						user
 					})
-				).rejects.toThrowError('InsufficientAllowance');
+				).rejects.toThrow('InsufficientAllowance');
 			});
 
 			it('should fail without enough payment', async () => {
@@ -279,7 +279,7 @@ describe('Console > Factory > Canister', () => {
 					createFn({
 						user
 					})
-				).rejects.toThrowError('InsufficientAllowance');
+				).rejects.toThrow('InsufficientAllowance');
 			});
 
 			it('should succeed with payment', async () => {
@@ -380,7 +380,7 @@ describe('Console > Factory > Canister', () => {
 						user,
 						missionControlId
 					})
-				).rejects.toThrowError('InsufficientFunds');
+				).rejects.toThrow('InsufficientFunds');
 			});
 
 			it('should fail without enough payment', async () => {
@@ -407,7 +407,7 @@ describe('Console > Factory > Canister', () => {
 						user,
 						missionControlId
 					})
-				).rejects.toThrowError('InsufficientFunds');
+				).rejects.toThrow('InsufficientFunds');
 			});
 
 			it('should succeed with payment', async () => {

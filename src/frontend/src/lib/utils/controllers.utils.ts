@@ -5,7 +5,7 @@ import { nonNullish, toNullable } from '@dfinity/utils';
 export const toSetController = ({
 	metadata,
 	scope
-}: Omit<AddAccessKeyParams, 'accessKeyId'>): MissionControlDid.SetController => {
+}: Omit<AddAccessKeyParams, 'accessKeyId'>): MissionControlDid.SetAccessKey => {
 	const profile = nonNullish(metadata) && 'profile' in metadata ? metadata.profile : undefined;
 	const kind = nonNullish(metadata) && 'kind' in metadata ? metadata.kind : undefined;
 

@@ -1,3 +1,3 @@
-import { PrincipalTextSchema } from '@dfinity/zod-schemas';
+import { PrincipalTextSchema } from '@junobuild/schema';
 
 export const CanisterIdTextSchema = PrincipalTextSchema;

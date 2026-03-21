@@ -74,9 +74,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 			it('should throw errors on delete all assets', async () => {
 				const { del_assets } = actor;
 
-				await expect(del_assets('#dapp')).rejects.toThrowError(
-					JUNO_AUTH_ERROR_NOT_WRITE_CONTROLLER
-				);
+				await expect(del_assets('#dapp')).rejects.toThrow(JUNO_AUTH_ERROR_NOT_WRITE_CONTROLLER);
 			});
 
 			it('should throw errors on setting config', async () => {
@@ -92,13 +90,13 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 						max_memory_size: toNullable(),
 						version: toNullable()
 					})
-				).rejects.toThrowError(JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER);
+				).rejects.toThrow(JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER);
 			});
 
 			it('should throw errors on getting config', async () => {
 				const { get_config } = actor;
 
-				await expect(get_config()).rejects.toThrowError(JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER);
+				await expect(get_config()).rejects.toThrow(JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER);
 			});
 		});
 
@@ -129,7 +127,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 						content: Uint8Array.from([]),
 						order_id: [0n]
 					})
-				).rejects.toThrowError('Bach initializer does not match chunk uploader.');
+				).rejects.toThrow('Bach initializer does not match chunk uploader.');
 			});
 
 			it('should throw errors on trying to commit admin batch', async () => {
@@ -158,7 +156,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 						chunk_ids: [chunk.chunk_id],
 						headers: []
 					})
-				).rejects.toThrowError(JUNO_STORAGE_ERROR_CANNOT_COMMIT_BATCH);
+				).rejects.toThrow(JUNO_STORAGE_ERROR_CANNOT_COMMIT_BATCH);
 			});
 		});
 
@@ -230,21 +228,21 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 						...storage,
 						version: [0n]
 					})
-				).rejects.toThrowError(JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE);
+				).rejects.toThrow(JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE);
 
 				await expect(
 					set_storage_config({
 						...storage,
 						version: [99n]
 					})
-				).rejects.toThrowError(JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE);
+				).rejects.toThrow(JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE);
 
 				await expect(
 					set_storage_config({
 						...storage,
 						version: []
 					})
-				).rejects.toThrowError(JUNO_ERROR_NO_VERSION_PROVIDED);
+				).rejects.toThrow(JUNO_ERROR_NO_VERSION_PROVIDED);
 			});
 
 			it('should deploy asset to dapp', async () => {
@@ -315,7 +313,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 								name: 'ic-domains',
 								token: toNullable()
 							})
-						).rejects.toThrowError(`${JUNO_STORAGE_ERROR_RESERVED_ASSET} (${full_path})`);
+						).rejects.toThrow(`${JUNO_STORAGE_ERROR_RESERVED_ASSET} (${full_path})`);
 					});
 				}
 			);
@@ -333,7 +331,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 							name: 'something.txt',
 							token: toNullable()
 						})
-					).rejects.toThrowError(
+					).rejects.toThrow(
 						`${JUNO_CDN_STORAGE_ERROR_INVALID_COLLECTION} (/_juno/something.txt - #dapp)`
 					);
 				});
@@ -397,7 +395,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 								name: 'hello.html',
 								token: toNullable()
 							})
-						).rejects.toThrowError(JUNO_STORAGE_ERROR_UPLOAD_PATH_COLLECTION_PREFIX);
+						).rejects.toThrow(JUNO_STORAGE_ERROR_UPLOAD_PATH_COLLECTION_PREFIX);
 					});
 
 					it('should deploy asset', async () => {
@@ -479,7 +477,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 
 						const full_path = `/${collection}/update.html`;
 
-						await expect(del_asset(collection, full_path)).resolves.not.toThrowError();
+						await expect(del_asset(collection, full_path)).resolves.not.toThrow();
 
 						const asset = fromNullable(await get_asset(collection, full_path));
 
@@ -1257,7 +1255,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 			describe.each([
 				{
 					memory: { Heap: null },
-					expectMemory: 4_063_232n,
+					expectMemory: 4_128_768n,
 					allowedMemory: maxHeapMemorySize,
 					preUploadCount: 13,
 					baseVersion: 5n
@@ -1367,7 +1365,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 									name,
 									token: toNullable()
 								})
-							).rejects.toThrowError(errorMsg);
+							).rejects.toThrow(errorMsg);
 						});
 
 						it('should not allow to upload a chunk', async () => {
@@ -1395,7 +1393,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 									content: arrayBufferToUint8Array(await blob.arrayBuffer()),
 									order_id: [0n]
 								})
-							).rejects.toThrowError(errorMsg);
+							).rejects.toThrow(errorMsg);
 						});
 
 						it('should not allow to commit a batch', async () => {
@@ -1429,7 +1427,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 									chunk_ids: [chunk_id],
 									headers: []
 								})
-							).rejects.toThrowError(errorMsg);
+							).rejects.toThrow(errorMsg);
 						});
 					});
 				}

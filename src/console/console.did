@@ -1,3 +1,13 @@
+type AccessKey = record {
+  updated_at : nat64;
+  metadata : vec record { text; text };
+  kind : opt AccessKeyKind;
+  created_at : nat64;
+  scope : AccessKeyScope;
+  expires_at : opt nat64;
+};
+type AccessKeyKind = variant { Emulator; Automation };
+type AccessKeyScope = variant { Write; Admin; Submit };
 type Account = record {
   updated_at : nat64;
   credits : Tokens;
@@ -70,16 +80,6 @@ type Config = record {
   storage : StorageConfig;
 };
 type ConfigMaxMemorySize = record { stable : opt nat64; heap : opt nat64 };
-type Controller = record {
-  updated_at : nat64;
-  metadata : vec record { text; text };
-  kind : opt ControllerKind;
-  created_at : nat64;
-  scope : ControllerScope;
-  expires_at : opt nat64;
-};
-type ControllerKind = variant { Emulator; Automation };
-type ControllerScope = variant { Write; Admin; Submit };
 type CreateMissionControlArgs = record { subnet_id : opt principal };
 type CreateOrbiterArgs = record {
   block_index : opt nat64;
@@ -310,20 +310,20 @@ type SegmentsDeploymentOptions = record {
   mission_control_version : opt text;
   satellite_version : opt text;
 };
+type SetAccessKey = record {
+  metadata : vec record { text; text };
+  kind : opt AccessKeyKind;
+  scope : AccessKeyScope;
+  expires_at : opt nat64;
+};
 type SetAuthenticationConfig = record {
   openid : opt AuthenticationConfigOpenId;
   version : opt nat64;
   internet_identity : opt AuthenticationConfigInternetIdentity;
   rules : opt AuthenticationRules;
 };
-type SetController = record {
-  metadata : vec record { text; text };
-  kind : opt ControllerKind;
-  scope : ControllerScope;
-  expires_at : opt nat64;
-};
 type SetControllersArgs = record {
-  controller : SetController;
+  controller : SetAccessKey;
   controllers : vec principal;
 };
 type SetSegmentMetadataArgs = record {
@@ -435,7 +435,7 @@ service : () -> {
     );
   list_accounts : () -> (vec record { principal; Account }) query;
   list_assets : (text, ListParams) -> (ListResults) query;
-  list_controllers : () -> (vec record { principal; Controller }) query;
+  list_controllers : () -> (vec record { principal; AccessKey }) query;
   list_custom_domains : () -> (vec record { text; CustomDomain }) query;
   list_icp_payments : () -> (vec record { nat64; IcpPayment }) query;
   list_icrc_payments : () -> (vec record { IcrcPaymentKey; IcrcPayment }) query;

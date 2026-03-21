@@ -156,7 +156,7 @@ describe('Satellite > Upgrade > v0.0.17', () => {
 					version: toNullable()
 				};
 
-				await expect(set_rule({ Db: null }, 'test', setUpdateRule)).resolves.not.toThrowError();
+				await expect(set_rule({ Db: null }, 'test', setUpdateRule)).resolves.not.toThrow();
 			});
 
 			it('should be able to update rule after upgrade only once without version provided', async () => {
@@ -166,7 +166,7 @@ describe('Satellite > Upgrade > v0.0.17', () => {
 				await set_rule_deprecated({ Db: null }, 'test', setRule);
 
 				// We do not provide the version again so it should failed
-				await expect(set_rule_deprecated({ Db: null }, 'test', setRule)).rejects.toThrowError(
+				await expect(set_rule_deprecated({ Db: null }, 'test', setRule)).rejects.toThrow(
 					'error_no_version_provided'
 				);
 
@@ -182,7 +182,7 @@ describe('Satellite > Upgrade > v0.0.17', () => {
 				};
 
 				// We do not provide the version so it counts as a first set
-				await expect(set_rule({ Db: null }, 'test', setNewRule)).resolves.not.toThrowError();
+				await expect(set_rule({ Db: null }, 'test', setNewRule)).resolves.not.toThrow();
 			});
 		});
 
@@ -230,7 +230,7 @@ describe('Satellite > Upgrade > v0.0.17', () => {
 					version: toNullable()
 				};
 
-				await expect(set_doc(collection, key, setUpdateDoc)).resolves.not.toThrowError();
+				await expect(set_doc(collection, key, setUpdateDoc)).resolves.not.toThrow();
 			});
 
 			it('should be able to update doc after upgrade only once without version provided', async () => {
@@ -240,7 +240,7 @@ describe('Satellite > Upgrade > v0.0.17', () => {
 				await set_doc_deprecated(collection, key, setDoc);
 
 				// We do not provide the version again so it should failed
-				await expect(set_doc_deprecated(collection, key, setDoc)).rejects.toThrowError(
+				await expect(set_doc_deprecated(collection, key, setDoc)).rejects.toThrow(
 					'error_no_version_provided'
 				);
 
@@ -260,7 +260,7 @@ describe('Satellite > Upgrade > v0.0.17', () => {
 				};
 
 				// We do not provide the version so it counts as a first set
-				await expect(set_doc(collection, key, setNewDoc)).resolves.not.toThrowError();
+				await expect(set_doc(collection, key, setNewDoc)).resolves.not.toThrow();
 			});
 		});
 

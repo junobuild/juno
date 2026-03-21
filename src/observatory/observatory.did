@@ -1,13 +1,13 @@
-type Controller = record {
+type AccessKey = record {
   updated_at : nat64;
   metadata : vec record { text; text };
-  kind : opt ControllerKind;
+  kind : opt AccessKeyKind;
   created_at : nat64;
-  scope : ControllerScope;
+  scope : AccessKeyScope;
   expires_at : opt nat64;
 };
-type ControllerKind = variant { Emulator; Automation };
-type ControllerScope = variant { Write; Admin; Submit };
+type AccessKeyKind = variant { Emulator; Automation };
+type AccessKeyScope = variant { Write; Admin; Submit };
 type CyclesBalance = record { timestamp : nat64; amount : nat };
 type DeleteControllersArgs = record { controllers : vec principal };
 type DepositedCyclesEmailNotification = record {
@@ -79,14 +79,14 @@ type Segment = record {
   kind : SegmentKind;
 };
 type SegmentKind = variant { Orbiter; MissionControl; Satellite };
-type SetController = record {
+type SetAccessKey = record {
   metadata : vec record { text; text };
-  kind : opt ControllerKind;
-  scope : ControllerScope;
+  kind : opt AccessKeyKind;
+  scope : AccessKeyScope;
   expires_at : opt nat64;
 };
 type SetControllersArgs = record {
-  controller : SetController;
+  controller : SetAccessKey;
   controllers : vec principal;
 };
 service : () -> {
@@ -96,7 +96,7 @@ service : () -> {
       opt OpenIdCertificate,
     );
   is_openid_monitoring_enabled : (OpenIdProvider) -> (bool);
-  list_controllers : () -> (vec record { principal; Controller }) query;
+  list_controllers : () -> (vec record { principal; AccessKey }) query;
   notify : (NotifyArgs) -> ();
   ping : (NotifyArgs) -> ();
   set_controllers : (SetControllersArgs) -> ();

@@ -89,14 +89,8 @@ fn verify_openid_credentials(
         Ok(())
     };
 
-    let token = verify_openid_jwt(
-        jwt,
-        provider.issuers(),
-        &jwks.keys,
-        salt,
-        assert_repository,
-    )
-    .map_err(VerifyOpenidCredentialsError::JwtVerify)?;
+    let token = verify_openid_jwt(jwt, provider.issuers(), &jwks.keys, salt, assert_repository)
+        .map_err(VerifyOpenidCredentialsError::JwtVerify)?;
 
     let credential = OpenIdAutomationCredential::from(token);
 
@@ -193,7 +187,7 @@ mod tests {
             aud: nonce.clone(),
             iat: Some(now),
             exp: Some(now + 600),
-            nbf: None,
+            nbf: Some(now - 5),
             jti: Some("example-id".into()),
             repository: Some("octo-org/octo-repo".into()),
             repository_owner: Some("octo-org".into()),
@@ -241,7 +235,7 @@ mod tests {
             aud: "wrong-nonce".into(),
             iat: Some(now),
             exp: Some(now + 600),
-            nbf: None,
+            nbf: Some(now - 5),
             jti: Some("example-id".into()),
             repository: Some("octo-org/octo-repo".into()),
             repository_owner: Some("octo-org".into()),
@@ -286,7 +280,7 @@ mod tests {
             aud: nonce,
             iat: Some(now),
             exp: Some(now + 600),
-            nbf: None,
+            nbf: Some(now - 5),
             jti: Some("example-id".into()),
             repository: Some("other-org/other-repo".into()),
             repository_owner: Some("other-org".into()),
@@ -331,7 +325,7 @@ mod tests {
             aud: nonce,
             iat: Some(now),
             exp: Some(now + 600),
-            nbf: None,
+            nbf: Some(now - 5),
             jti: Some("example-id".into()),
             repository: Some("octo-org/octo-repo".into()),
             repository_owner: Some("octo-org".into()),
@@ -390,7 +384,7 @@ mod tests {
             aud: nonce,
             iat: Some(now),
             exp: Some(now + 600),
-            nbf: None,
+            nbf: Some(now - 5),
             jti: Some("example-id".into()),
             repository: Some("octo-org/octo-repo".into()),
             repository_owner: Some("octo-org".into()),
@@ -430,7 +424,7 @@ mod tests {
             aud: nonce,
             iat: Some(now),
             exp: Some(now + 600),
-            nbf: None,
+            nbf: Some(now - 5),
             jti: Some("example-id".into()),
             repository: Some("octo-org/octo-repo".into()),
             repository_owner: Some("octo-org".into()),
@@ -471,7 +465,7 @@ mod tests {
             aud: nonce,
             iat: Some(now),
             exp: Some(now + 600),
-            nbf: None,
+            nbf: Some(now - 5),
             jti: Some("example-id".into()),
             repository: Some("octo-org/octo-repo".into()),
             repository_owner: Some("octo-org".into()),
@@ -516,7 +510,7 @@ mod tests {
             aud: nonce,
             iat: Some(now),
             exp: Some(now + 600),
-            nbf: None,
+            nbf: Some(now - 5),
             jti: Some("example-id".into()),
             repository: None, // Missing
             repository_owner: Some("octo-org".into()),

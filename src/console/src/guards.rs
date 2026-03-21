@@ -3,7 +3,7 @@ use crate::store::heap::get_controllers;
 use candid::Principal;
 use junobuild_shared::env::OBSERVATORY;
 use junobuild_shared::ic::api::caller;
-use junobuild_shared::segments::controllers::is_admin_controller;
+use junobuild_shared::segments::access_keys::is_admin_controller;
 use junobuild_shared::utils::{principal_equal, principal_not_anonymous};
 
 pub fn caller_is_admin_controller() -> Result<(), String> {

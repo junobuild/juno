@@ -1,6 +1,6 @@
 import type { SatelliteDid } from '$declarations';
 
-export const CONTROLLER_METADATA: Omit<SatelliteDid.SetController, 'scope'> = {
+export const CONTROLLER_METADATA: Omit<SatelliteDid.SetAccessKey, 'scope'> = {
 	expires_at: [],
 	kind: [],
 	metadata: []

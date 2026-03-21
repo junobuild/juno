@@ -17,12 +17,12 @@ use junobuild_collections::constants::core::SYS_COLLECTION_PREFIX;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::Rule;
 use junobuild_shared::assert::{assert_description_length, assert_max_memory_size};
-use junobuild_shared::types::state::Controllers;
+use junobuild_shared::types::state::AccessKeys;
 use junobuild_shared::utils::principal_not_equal;
 
 pub fn assert_create_batch(
     caller: Principal,
-    controllers: &Controllers,
+    controllers: &AccessKeys,
     config: &StorageConfig,
     init: &InitAssetKey,
     assertions: &impl StorageAssertionsStrategy,
@@ -64,7 +64,7 @@ pub fn assert_create_chunk(
 
 pub fn assert_commit_batch(
     caller: Principal,
-    controllers: &Controllers,
+    controllers: &AccessKeys,
     batch: &Batch,
     assertions: &impl StorageAssertionsStrategy,
     storage_state: &impl StorageStateStrategy,
@@ -96,7 +96,7 @@ pub fn assert_commit_batch(
 pub fn assert_commit_chunks_new_asset(
     caller: Principal,
     collection: &CollectionKey,
-    controllers: &Controllers,
+    controllers: &AccessKeys,
     config: &StorageConfig,
     rule: &Rule,
     assertions: &impl StorageAssertionsStrategy,
@@ -112,7 +112,7 @@ pub fn assert_commit_chunks_new_asset(
 
 pub fn assert_commit_chunks_update(
     caller: Principal,
-    controllers: &Controllers,
+    controllers: &AccessKeys,
     config: &StorageConfig,
     batch: &Batch,
     rule: &Rule,
@@ -141,7 +141,7 @@ pub fn assert_commit_chunks_update(
 
 pub fn assert_commit_chunks(
     caller: Principal,
-    controllers: &Controllers,
+    controllers: &AccessKeys,
     commit_batch: &CommitBatch,
     batch: &Batch,
     current: &Option<Asset>,
@@ -203,7 +203,7 @@ fn assert_key(
     description: &Option<String>,
     collection: &CollectionKey,
     assertions: &impl StorageAssertionsStrategy,
-    controllers: &Controllers,
+    controllers: &AccessKeys,
 ) -> Result<(), String> {
     // /.well-known/ic-domains is automatically generated for custom domains
     assert_well_known_key(full_path, WELL_KNOWN_CUSTOM_DOMAINS)?;

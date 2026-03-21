@@ -10,6 +10,16 @@ import type { ActorMethod } from '@icp-sdk/core/agent';
 import type { IDL } from '@icp-sdk/core/candid';
 import type { Principal } from '@icp-sdk/core/principal';
 
+export interface AccessKey {
+	updated_at: bigint;
+	metadata: Array<[string, string]>;
+	kind: [] | [AccessKeyKind];
+	created_at: bigint;
+	scope: AccessKeyScope;
+	expires_at: [] | [bigint];
+}
+export type AccessKeyKind = { Emulator: null } | { Automation: null };
+export type AccessKeyScope = { Write: null } | { Admin: null } | { Submit: null };
 export interface AnalyticKey {
 	key: string;
 	collected_at: bigint;
@@ -75,16 +85,6 @@ export interface CalendarDate {
 	month: number;
 	year: number;
 }
-export interface Controller {
-	updated_at: bigint;
-	metadata: Array<[string, string]>;
-	kind: [] | [ControllerKind];
-	created_at: bigint;
-	scope: ControllerScope;
-	expires_at: [] | [bigint];
-}
-export type ControllerKind = { Emulator: null } | { Automation: null };
-export type ControllerScope = { Write: null } | { Admin: null } | { Submit: null };
 export interface DelSatelliteConfig {
 	version: [] | [bigint];
 }
@@ -193,14 +193,14 @@ export type Result = { Ok: PageView } | { Err: string };
 export type Result_1 = { Ok: null } | { Err: Array<[AnalyticKey, string]> };
 export type Result_2 = { Ok: PerformanceMetric } | { Err: string };
 export type Result_3 = { Ok: TrackEvent } | { Err: string };
-export interface SetController {
+export interface SetAccessKey {
 	metadata: Array<[string, string]>;
-	kind: [] | [ControllerKind];
-	scope: ControllerScope;
+	kind: [] | [AccessKeyKind];
+	scope: AccessKeyScope;
 	expires_at: [] | [bigint];
 }
 export interface SetControllersArgs {
-	controller: SetController;
+	controller: SetAccessKey;
 	controllers: Array<Principal>;
 }
 export interface SetPageView {
@@ -256,7 +256,7 @@ export interface WebVitalsMetric {
 	delta: number;
 }
 export interface _SERVICE {
-	del_controllers: ActorMethod<[DeleteControllersArgs], Array<[Principal, Controller]>>;
+	del_controllers: ActorMethod<[DeleteControllersArgs], Array<[Principal, AccessKey]>>;
 	del_satellite_config: ActorMethod<[Principal, DelSatelliteConfig], undefined>;
 	deposit_cycles: ActorMethod<[DepositCyclesArgs], undefined>;
 	get_page_views: ActorMethod<[GetAnalytics], Array<[AnalyticKey, PageView]>>;
@@ -272,10 +272,10 @@ export interface _SERVICE {
 	get_track_events_analytics: ActorMethod<[GetAnalytics], AnalyticsTrackEvents>;
 	http_request: ActorMethod<[HttpRequest], HttpResponse>;
 	http_request_update: ActorMethod<[HttpRequest], HttpResponse>;
-	list_controllers: ActorMethod<[], Array<[Principal, Controller]>>;
+	list_controllers: ActorMethod<[], Array<[Principal, AccessKey]>>;
 	list_satellite_configs: ActorMethod<[], Array<[Principal, OrbiterSatelliteConfig]>>;
 	memory_size: ActorMethod<[], MemorySize>;
-	set_controllers: ActorMethod<[SetControllersArgs], Array<[Principal, Controller]>>;
+	set_controllers: ActorMethod<[SetControllersArgs], Array<[Principal, AccessKey]>>;
 	set_page_view: ActorMethod<[AnalyticKey, SetPageView], Result>;
 	set_page_views: ActorMethod<[Array<[AnalyticKey, SetPageView]>], Result_1>;
 	set_performance_metric: ActorMethod<[AnalyticKey, SetPerformanceMetric], Result_2>;

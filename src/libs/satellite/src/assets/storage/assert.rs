@@ -11,8 +11,8 @@ use junobuild_collections::constants::assets::COLLECTION_ASSET_KEY;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::Permission;
 use junobuild_shared::assert::assert_version;
-use junobuild_shared::segments::controllers::{controller_can_write, is_valid_controller};
-use junobuild_shared::types::state::Controllers;
+use junobuild_shared::segments::access_keys::{is_valid_access_key, is_write_access_key};
+use junobuild_shared::types::state::AccessKeys;
 use junobuild_storage::errors::{
     JUNO_STORAGE_ERROR_ASSET_NOT_FOUND, JUNO_STORAGE_ERROR_CANNOT_READ_ASSET,
     JUNO_STORAGE_ERROR_UPLOAD_NOT_ALLOWED,
@@ -61,13 +61,13 @@ pub fn assert_storage_list_permission(
     owner: Principal,
     caller: Principal,
     collection: &CollectionKey,
-    controllers: &Controllers,
+    controllers: &AccessKeys,
 ) -> bool {
     // Special case. We need to allow controllers with the "Submit" scope to list #dapp assets — which are public anyway —
     // because when used with the CLI, it needs to know which assets are currently deployed in order to only submit those
     // that are different.
     if collection == COLLECTION_ASSET_KEY {
-        return assert_permission_with(permission, owner, caller, controllers, is_valid_controller);
+        return assert_permission_with(permission, owner, caller, controllers, is_valid_access_key);
     }
 
     assert_permission(permission, owner, caller, controllers)
@@ -75,7 +75,7 @@ pub fn assert_storage_list_permission(
 
 pub fn assert_create_batch(
     caller: Principal,
-    controllers: &Controllers,
+    controllers: &AccessKeys,
     &AssertContext { rule, auth_config }: &AssertContext,
 ) -> Result<(), String> {
     assert_caller_is_allowed(caller, controllers, auth_config)?;
@@ -83,7 +83,7 @@ pub fn assert_create_batch(
 
     if !(public_permission(&rule.write)
         || is_known_user(caller)
-        || controller_can_write(caller, controllers))
+        || is_write_access_key(caller, controllers))
     {
         return Err(JUNO_STORAGE_ERROR_UPLOAD_NOT_ALLOWED.to_string());
     }
@@ -126,7 +126,7 @@ pub fn assert_delete_asset(context: &StoreContext, asset: &Asset) -> Result<(), 
 
 fn assert_read_permission(
     caller: Principal,
-    controllers: &Controllers,
+    controllers: &AccessKeys,
     current_asset: &Asset,
     rule: &Permission,
 ) -> Result<(), String> {

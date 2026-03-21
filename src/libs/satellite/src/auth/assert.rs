@@ -5,13 +5,13 @@ use candid::Principal;
 use junobuild_auth::state::types::config::AuthenticationConfig;
 use junobuild_collections::constants::db::COLLECTION_USER_KEY;
 use junobuild_collections::msg::msg_db_collection_not_found;
-use junobuild_shared::segments::controllers::controller_can_write;
-use junobuild_shared::types::state::Controllers;
+use junobuild_shared::segments::access_keys::is_write_access_key;
+use junobuild_shared::types::state::AccessKeys;
 use junobuild_shared::utils::principal_equal;
 
 pub fn assert_caller_is_allowed(
     caller: Principal,
-    controllers: &Controllers,
+    controllers: &AccessKeys,
     config: &Option<AuthenticationConfig>,
 ) -> Result<(), String> {
     let Some(auth_config) = config else {
@@ -28,7 +28,7 @@ pub fn assert_caller_is_allowed(
 
     // Admins do not need to be allowed. The permission scheme of the collections rules their access.
     // It could also lead to some weird effects if admins were disallowed as soon as a set of users is allowed.
-    if controller_can_write(caller, controllers) {
+    if is_write_access_key(caller, controllers) {
         return Ok(());
     }
 

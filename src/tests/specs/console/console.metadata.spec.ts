@@ -122,7 +122,7 @@ describe('Console > Metadata', () => {
 					},
 					proposalId
 				)
-			).rejects.toThrowError(`${JUNO_STORAGE_ERROR_RESERVED_ASSET} (/releases/metadata.json)`);
+			).rejects.toThrow(`${JUNO_STORAGE_ERROR_RESERVED_ASSET} (/releases/metadata.json)`);
 		});
 	});
 });

@@ -59,21 +59,21 @@ export const idlFactory = ({ IDL }) => {
 		created_at: IDL.Nat64,
 		version: IDL.Opt(IDL.Nat64)
 	});
-	const ControllerKind = IDL.Variant({
+	const AccessKeyKind = IDL.Variant({
 		Emulator: IDL.Null,
 		Automation: IDL.Null
 	});
-	const ControllerScope = IDL.Variant({
+	const AccessKeyScope = IDL.Variant({
 		Write: IDL.Null,
 		Admin: IDL.Null,
 		Submit: IDL.Null
 	});
-	const Controller = IDL.Record({
+	const AccessKey = IDL.Record({
 		updated_at: IDL.Nat64,
 		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
-		kind: IDL.Opt(ControllerKind),
+		kind: IDL.Opt(AccessKeyKind),
 		created_at: IDL.Nat64,
-		scope: ControllerScope,
+		scope: AccessKeyScope,
 		expires_at: IDL.Opt(IDL.Nat64)
 	});
 	const CyclesBalance = IDL.Record({
@@ -118,14 +118,14 @@ export const idlFactory = ({ IDL }) => {
 		user: IDL.Principal,
 		segment: Segment
 	});
-	const SetController = IDL.Record({
+	const SetAccessKey = IDL.Record({
 		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
-		kind: IDL.Opt(ControllerKind),
-		scope: ControllerScope,
+		kind: IDL.Opt(AccessKeyKind),
+		scope: AccessKeyScope,
 		expires_at: IDL.Opt(IDL.Nat64)
 	});
 	const SetControllersArgs = IDL.Record({
-		controller: SetController,
+		controller: SetAccessKey,
 		controllers: IDL.Vec(IDL.Principal)
 	});
 	const Env = IDL.Record({ email_api_key: IDL.Opt(IDL.Text) });
@@ -140,7 +140,7 @@ export const idlFactory = ({ IDL }) => {
 		get_notify_status: IDL.Func([GetNotifications], [NotifyStatus], []),
 		get_openid_certificate: IDL.Func([GetOpenIdCertificateArgs], [IDL.Opt(OpenIdCertificate)], []),
 		is_openid_monitoring_enabled: IDL.Func([OpenIdProvider], [IDL.Bool], []),
-		list_controllers: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Principal, Controller))], []),
+		list_controllers: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Principal, AccessKey))], []),
 		notify: IDL.Func([NotifyArgs], [], []),
 		ping: IDL.Func([NotifyArgs], [], []),
 		set_controllers: IDL.Func([SetControllersArgs], [], []),

@@ -94,7 +94,7 @@ describe('Orbiter > Upgrade > Configuration', () => {
 						}
 					]
 				])
-			).resolves.not.toThrowError();
+			).resolves.not.toThrow();
 
 			await upgradeVersion();
 
@@ -125,7 +125,7 @@ describe('Orbiter > Upgrade > Configuration', () => {
 						}
 					]
 				])
-			).resolves.not.toThrowError();
+			).resolves.not.toThrow();
 
 			await upgradeVersion();
 
@@ -162,7 +162,7 @@ describe('Orbiter > Upgrade > Configuration', () => {
 						}
 					]
 				])
-			).resolves.not.toThrowError();
+			).resolves.not.toThrow();
 
 			await upgradeVersion();
 

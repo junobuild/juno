@@ -20,7 +20,7 @@ pub mod state {
         pub run_number: Option<String>, // The number of times this workflow has been run.
         pub run_attempt: Option<String>, // The number of times this workflow run has been retried.
         pub r#ref: Option<String>, // (Reference) The latest git ref that triggered the workflow run. e.g. "refs/heads/main"
-        pub sha: Option<String>, // The commit SHA that triggered the workflow
+        pub sha: Option<String>,   // The commit SHA that triggered the workflow
         pub actor: Option<String>, // The user who triggered the workflow
         pub workflow: Option<String>, // The workflow name
         pub event_name: Option<String>, // What triggered the workflow (push, workflow_dispatch, pull_request, etc.)

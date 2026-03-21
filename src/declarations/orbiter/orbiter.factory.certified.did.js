@@ -13,21 +13,21 @@ export const idlFactory = ({ IDL }) => {
 	const DeleteControllersArgs = IDL.Record({
 		controllers: IDL.Vec(IDL.Principal)
 	});
-	const ControllerKind = IDL.Variant({
+	const AccessKeyKind = IDL.Variant({
 		Emulator: IDL.Null,
 		Automation: IDL.Null
 	});
-	const ControllerScope = IDL.Variant({
+	const AccessKeyScope = IDL.Variant({
 		Write: IDL.Null,
 		Admin: IDL.Null,
 		Submit: IDL.Null
 	});
-	const Controller = IDL.Record({
+	const AccessKey = IDL.Record({
 		updated_at: IDL.Nat64,
 		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
-		kind: IDL.Opt(ControllerKind),
+		kind: IDL.Opt(AccessKeyKind),
 		created_at: IDL.Nat64,
-		scope: ControllerScope,
+		scope: AccessKeyScope,
 		expires_at: IDL.Opt(IDL.Nat64)
 	});
 	const DelSatelliteConfig = IDL.Record({ version: IDL.Opt(IDL.Nat64) });
@@ -205,14 +205,14 @@ export const idlFactory = ({ IDL }) => {
 		version: IDL.Opt(IDL.Nat64)
 	});
 	const MemorySize = IDL.Record({ stable: IDL.Nat64, heap: IDL.Nat64 });
-	const SetController = IDL.Record({
+	const SetAccessKey = IDL.Record({
 		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
-		kind: IDL.Opt(ControllerKind),
-		scope: ControllerScope,
+		kind: IDL.Opt(AccessKeyKind),
+		scope: AccessKeyScope,
 		expires_at: IDL.Opt(IDL.Nat64)
 	});
 	const SetControllersArgs = IDL.Record({
-		controller: SetController,
+		controller: SetAccessKey,
 		controllers: IDL.Vec(IDL.Principal)
 	});
 	const SetPageView = IDL.Record({
@@ -263,7 +263,7 @@ export const idlFactory = ({ IDL }) => {
 	return IDL.Service({
 		del_controllers: IDL.Func(
 			[DeleteControllersArgs],
-			[IDL.Vec(IDL.Tuple(IDL.Principal, Controller))],
+			[IDL.Vec(IDL.Tuple(IDL.Principal, AccessKey))],
 			[]
 		),
 		del_satellite_config: IDL.Func([IDL.Principal, DelSatelliteConfig], [], []),
@@ -286,7 +286,7 @@ export const idlFactory = ({ IDL }) => {
 		get_track_events_analytics: IDL.Func([GetAnalytics], [AnalyticsTrackEvents], []),
 		http_request: IDL.Func([HttpRequest], [HttpResponse], []),
 		http_request_update: IDL.Func([HttpRequest], [HttpResponse], []),
-		list_controllers: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Principal, Controller))], []),
+		list_controllers: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Principal, AccessKey))], []),
 		list_satellite_configs: IDL.Func(
 			[],
 			[IDL.Vec(IDL.Tuple(IDL.Principal, OrbiterSatelliteConfig))],
@@ -295,7 +295,7 @@ export const idlFactory = ({ IDL }) => {
 		memory_size: IDL.Func([], [MemorySize], []),
 		set_controllers: IDL.Func(
 			[SetControllersArgs],
-			[IDL.Vec(IDL.Tuple(IDL.Principal, Controller))],
+			[IDL.Vec(IDL.Tuple(IDL.Principal, AccessKey))],
 			[]
 		),
 		set_page_view: IDL.Func([AnalyticKey, SetPageView], [Result], []),

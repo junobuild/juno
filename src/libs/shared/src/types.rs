@@ -9,7 +9,7 @@ pub mod state {
 
     pub type UserId = Principal;
 
-    pub type ControllerId = Principal;
+    pub type AccessKeyId = Principal;
 
     pub type SegmentId = Principal;
     pub type MissionControlId = SegmentId;
@@ -18,7 +18,7 @@ pub mod state {
 
     pub type Metadata = HashMap<String, String>;
 
-    pub type Controllers = HashMap<ControllerId, Controller>;
+    pub type AccessKeys = HashMap<AccessKeyId, AccessKey>;
 
     pub type Timestamp = u64;
 
@@ -36,24 +36,24 @@ pub mod state {
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub struct Controller {
+    pub struct AccessKey {
         pub metadata: Metadata,
         pub created_at: Timestamp,
         pub updated_at: Timestamp,
         pub expires_at: Option<Timestamp>,
-        pub scope: ControllerScope,
-        pub kind: Option<ControllerKind>,
+        pub scope: AccessKeyScope,
+        pub kind: Option<AccessKeyKind>,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub enum ControllerScope {
+    pub enum AccessKeyScope {
         Write,
         Admin,
         Submit,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub enum ControllerKind {
+    pub enum AccessKeyKind {
         Automation,
         Emulator,
     }
@@ -110,8 +110,8 @@ pub mod state {
 pub mod interface {
     use crate::mgmt::types::cmc::SubnetId;
     use crate::types::state::{
-        ControllerId, ControllerKind, ControllerScope, Metadata, MissionControlId,
-        NotificationKind, Segment, Timestamp, UserId,
+        AccessKeyId, AccessKeyKind, AccessKeyScope, Metadata, MissionControlId, NotificationKind,
+        Segment, Timestamp, UserId,
     };
     use candid::{CandidType, Principal};
     use ic_ledger_types::BlockIndex;
@@ -151,12 +151,12 @@ pub mod interface {
 
     #[derive(CandidType, Deserialize)]
     pub struct InitOrbiterArgs {
-        pub controllers: Vec<ControllerId>,
+        pub controllers: Vec<AccessKeyId>,
     }
 
     #[derive(CandidType, Deserialize)]
     pub struct InitSatelliteArgs {
-        pub controllers: Vec<ControllerId>,
+        pub controllers: Vec<AccessKeyId>,
         pub storage: Option<InitStorageArgs>,
     }
 
@@ -172,22 +172,35 @@ pub mod interface {
     }
 
     #[derive(CandidType, Deserialize, Clone)]
-    pub struct SetController {
+    pub struct SetAccessKey {
         pub metadata: Metadata,
         pub expires_at: Option<Timestamp>,
-        pub scope: ControllerScope,
-        pub kind: Option<ControllerKind>,
+        pub scope: AccessKeyScope,
+        pub kind: Option<AccessKeyKind>,
     }
 
+    #[derive(CandidType, Deserialize)]
+    pub struct SetAccessKeysArgs {
+        pub access_key_ids: Vec<AccessKeyId>,
+        pub access_key: SetAccessKey,
+    }
+
+    #[deprecated(note = "use SetAccessKeysArgs instead")]
     #[derive(CandidType, Deserialize)]
     pub struct SetControllersArgs {
-        pub controllers: Vec<ControllerId>,
-        pub controller: SetController,
+        pub controllers: Vec<AccessKeyId>,
+        pub controller: SetAccessKey,
     }
 
     #[derive(CandidType, Deserialize)]
+    pub struct DeleteAccessKeysArgs {
+        pub access_key_ids: Vec<AccessKeyId>,
+    }
+
+    #[deprecated(note = "use DeleteAccessKeysArgs instead")]
+    #[derive(CandidType, Deserialize)]
     pub struct DeleteControllersArgs {
-        pub controllers: Vec<ControllerId>,
+        pub controllers: Vec<AccessKeyId>,
     }
 
     #[derive(CandidType, Deserialize)]

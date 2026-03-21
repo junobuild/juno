@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { fromNullable, isEmptyString, nonNullish, notEmptyString } from '@dfinity/utils';
-	import type { PrincipalText } from '@dfinity/zod-schemas';
+	import type { PrincipalText } from '@junobuild/schema';
 	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import type { SatelliteDid } from '$declarations';

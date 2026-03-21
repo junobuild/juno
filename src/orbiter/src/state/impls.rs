@@ -20,7 +20,7 @@ use ic_stable_structures::Storable;
 use junobuild_shared::memory::serializers::{
     deserialize_from_bytes, serialize_into_bytes, serialize_to_bytes,
 };
-use junobuild_shared::types::state::{Controllers, SatelliteId, Version, Versioned};
+use junobuild_shared::types::state::{AccessKeys, SatelliteId, Version, Versioned};
 use std::borrow::Cow;
 
 impl Default for State {
@@ -28,7 +28,7 @@ impl Default for State {
         Self {
             stable: init_stable_state(),
             heap: HeapState {
-                controllers: Controllers::default(),
+                controllers: AccessKeys::default(),
                 config: SatelliteConfigs::default(),
             },
         }

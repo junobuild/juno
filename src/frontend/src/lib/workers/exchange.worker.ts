@@ -1,6 +1,6 @@
 import { ICP_LEDGER_CANISTER_ID, SYNC_TOKENS_TIMER_INTERVAL } from '$lib/constants/app.constants';
 import { PRICE_VALIDITY_TIMEFRAME } from '$lib/constants/exchange.constants';
-import { fetchKongSwapTokens } from '$lib/rest/kongswap.rest';
+import { fetchKongSwapToken } from '$lib/rest/kongswap.rest';
 import { exchangeIdbStore } from '$lib/stores/app/idb.store';
 import type { CanisterIdText } from '$lib/types/canister';
 import type { ExchangePrice } from '$lib/types/exchange';
@@ -111,27 +111,8 @@ const exchangeRateICPToUsd = async (): Promise<ExchangePrice | undefined> => {
 	};
 };
 
-const findICPToken = async (page = 1): Promise<KongSwapToken | undefined> => {
-	const kongTokens = await fetchKongSwapTokens({ page, limit });
-
-	if (isNullish(kongTokens)) {
-		return undefined;
-	}
-
-	const { items, total_count } = kongTokens;
-
-	const icp = items.find(({ canister_id }) => canister_id === ICP_LEDGER_CANISTER_ID);
-
-	if (nonNullish(icp)) {
-		return icp;
-	}
-
-	if (page * limit < total_count) {
-		return await findICPToken(page + 1);
-	}
-
-	return undefined;
-};
+const findICPToken = async (): Promise<KongSwapToken | undefined> =>
+	await fetchKongSwapToken({ ledgerId: ICP_LEDGER_CANISTER_ID });
 
 const syncExchangePrice = async (exchangePrice: ExchangePrice) => {
 	// Save information in indexed-db as well to load previous values on navigation and refresh

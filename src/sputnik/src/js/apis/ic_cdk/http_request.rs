@@ -1,6 +1,10 @@
-use rquickjs::{Ctx, Error as JsError, Result as JsResult, Function as JsFunction};
-use ic_cdk::management_canister::{http_request_with_closure, HttpMethod, HttpRequestArgs, HttpRequestResult};
-use crate::js::types::candid::JsHttpRequestResult;
+use crate::errors::js::{
+    JUNO_SPUTNIK_ERROR_IC_CDK_CALL_RAW, JUNO_SPUTNIK_ERROR_IC_CDK_HTTP_REQUEST,
+};
+use crate::js::inner_utils::throw_js_exception;
+use crate::js::types::candid::{JsCallRawResult, JsHttpRequestResult};
+use ic_cdk::management_canister::{http_request, HttpMethod, HttpRequestArgs};
+use rquickjs::{Ctx, Error as JsError, Function as JsFunction, Result as JsResult};
 
 pub fn init_ic_cdk_http_request(ctx: &Ctx) -> anyhow::Result<(), JsError> {
     let global = ctx.globals();
@@ -14,22 +18,25 @@ pub fn init_ic_cdk_http_request(ctx: &Ctx) -> anyhow::Result<(), JsError> {
 async fn ic_cdk_http_request<'js>(
     ctx: Ctx<'js>,
     transform: JsFunction<'js>,
-) -> JsResult<()> {
+) -> JsResult<JsHttpRequestResult> {
     let request = HttpRequestArgs {
         url: "http://localhost:8000".to_string(),
         method: HttpMethod::POST,
         body: None,
         max_response_bytes: None,
         transform: None,
-        headers: vec!(),
+        headers: vec![],
         is_replicated: Some(false),
     };
 
-    let _ = http_request_with_closure(&request, move |response| {
-        let js_response = JsHttpRequestResult::from_result(&ctx, response).unwrap();
-        let transformed: JsHttpRequestResult = transform.call((js_response,)).unwrap();
-        transformed.to_result().unwrap()
-    }).await;
+    let result = http_request(&request).await;
 
-    Ok(())
+    match result {
+        Err(err) => Err(throw_js_exception(
+            &ctx,
+            JUNO_SPUTNIK_ERROR_IC_CDK_HTTP_REQUEST,
+            err,
+        )),
+        Ok(result) => JsHttpRequestResult::from_result(&ctx, &result),
+    }
 }

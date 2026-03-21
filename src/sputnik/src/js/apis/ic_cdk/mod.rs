@@ -1,18 +1,18 @@
 mod call;
 mod caller;
+mod http_request;
 mod id;
 mod impls;
 mod print;
 mod time;
 pub mod types;
-mod http_request;
 
 use crate::js::apis::ic_cdk::call::init_ic_cdk_call_raw;
 use crate::js::apis::ic_cdk::caller::init_ic_cdk_caller;
+use crate::js::apis::ic_cdk::http_request::init_ic_cdk_http_request;
 use crate::js::apis::ic_cdk::id::init_ic_cdk_id;
 use crate::js::apis::ic_cdk::print::init_ic_cdk_print;
 use crate::js::apis::ic_cdk::time::init_ic_cdk_time;
-use crate::js::apis::ic_cdk::http_request::init_ic_cdk_http_request;
 use rquickjs::{Ctx, Error as JsError};
 
 pub fn init_ic_cdk_apis(ctx: &Ctx) -> Result<(), JsError> {

@@ -1562,17 +1562,14 @@ export const testUploadProposalEmptyAsset = ({
 		full_path,
 		name,
 		token: toNullable()
-	}
+	};
 
 	const uploadProposalEmptyAsset = async (proposalId: bigint) => {
-		const {
-			init_proposal_many_assets_upload,
-			commit_proposal_many_assets_upload
-		} = actor();
+		const { init_proposal_many_assets_upload, commit_proposal_many_assets_upload } = actor();
 
 		const files = await init_proposal_many_assets_upload([key], proposalId);
 
-		const [_, { batch_id }] = files[0];
+		const [[_, { batch_id }]] = files;
 
 		await commit_proposal_many_assets_upload([
 			{
@@ -1654,7 +1651,7 @@ export const testUploadProposalEmptyAsset = ({
 
 		const decoder = new TextDecoder();
 
-		expect(decoder.decode(body)).toEqual("");
+		expect(decoder.decode(body)).toEqual('');
 		expect(body).toHaveLength(0);
 	});
 };

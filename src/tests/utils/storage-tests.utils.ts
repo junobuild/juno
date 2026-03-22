@@ -1,4 +1,10 @@
-export const assertHeaders = ({ headers, etag }: { headers: [string, string][], etag?: string }) => {
+export const assertHeaders = ({
+	headers,
+	etag
+}: {
+	headers: [string, string][];
+	etag?: string;
+}) => {
 	const rest = headers.filter(([header, _]) => header !== 'IC-Certificate');
 
 	const sortHeaders = (headers: [string, string][]): [string, string][] =>

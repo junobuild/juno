@@ -1568,9 +1568,9 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 			});
 		});
 
-		describe("More admin", () => {
+		describe('More admin', () => {
 			it('should deploy empty asset to dapp', async () => {
-				const { http_request, commit_asset_upload, upload_asset_chunk, init_asset_upload } = actor;
+				const { http_request, commit_asset_upload, init_asset_upload } = actor;
 
 				const full_path = '/hello-empty.html';
 
@@ -1621,6 +1621,6 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 				expect(decoder.decode(body)).toEqual('');
 				expect(body).toHaveLength(0);
 			});
-		})
+		});
 	}
 );

@@ -161,8 +161,11 @@ pub fn create_asset_with_content(
     (asset, encoding)
 }
 
-pub fn clone_asset_encoding_content_chunks(encoding: &AssetEncoding, chunk_index: usize) -> Blob {
-    encoding.content_chunks[chunk_index].clone()
+pub fn clone_asset_encoding_content_chunks(
+    encoding: &AssetEncoding,
+    chunk_index: usize,
+) -> Option<Blob> {
+    encoding.content_chunks.get(chunk_index).cloned()
 }
 
 /// With heap memory the encodings are part of the asset struct.

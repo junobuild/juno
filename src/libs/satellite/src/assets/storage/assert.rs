@@ -21,7 +21,7 @@ use junobuild_storage::runtime::increment_and_assert_rate as increment_and_asser
 use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::interface::SetStorageConfig;
 use junobuild_storage::types::store::Asset;
-use junobuild_storage::well_known::assert::assert_not_well_known_keys;
+use junobuild_storage::well_known::assert::assert_not_well_known_asset;
 
 pub fn assert_get_asset(
     &StoreContext {
@@ -122,7 +122,7 @@ pub fn assert_write_asset(
 }
 
 pub fn assert_delete_asset(context: &StoreContext, asset: &Asset) -> Result<(), String> {
-    assert_not_well_known_keys(&asset.key.full_path)?;
+    assert_not_well_known_asset(&asset.key.full_path)?;
 
     invoke_assert_delete_asset(&context.caller, asset)
 }

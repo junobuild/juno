@@ -8,7 +8,7 @@ use crate::types::config::StorageConfig;
 use crate::types::interface::{CommitBatch, InitAssetKey};
 use crate::types::state::FullPath;
 use crate::types::store::{Asset, AssetAssertUpload, Batch};
-use crate::well_known::assert::assert_not_well_known_keys;
+use crate::well_known::assert::assert_not_well_known_asset;
 use candid::Principal;
 use junobuild_collections::assert::collection::is_system_collection;
 use junobuild_collections::constants::assets::COLLECTION_ASSET_KEY;
@@ -204,7 +204,7 @@ fn assert_key(
     assertions: &impl StorageAssertionsStrategy,
     controllers: &AccessKeys,
 ) -> Result<(), String> {
-    assert_not_well_known_keys(full_path)?;
+    assert_not_well_known_asset(full_path)?;
 
     let dapp_collection = COLLECTION_ASSET_KEY;
 

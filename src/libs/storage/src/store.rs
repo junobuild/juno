@@ -6,7 +6,7 @@ use crate::constants::{ASSET_ENCODING_NO_COMPRESSION, ENCODING_CERTIFICATION_ORD
 use crate::errors::{
     JUNO_STORAGE_ERROR_ASSET_MAX_ALLOWED_SIZE, JUNO_STORAGE_ERROR_BATCH_NOT_FOUND,
     JUNO_STORAGE_ERROR_CANNOT_COMMIT_BATCH, JUNO_STORAGE_ERROR_CHUNK_NOT_FOUND,
-    JUNO_STORAGE_ERROR_CHUNK_NOT_INCLUDED_IN_BATCH, JUNO_STORAGE_ERROR_CHUNK_TO_COMMIT_NOT_FOUND,
+    JUNO_STORAGE_ERROR_CHUNK_NOT_INCLUDED_IN_BATCH,
 };
 use crate::runtime::{
     clear_batch as clear_runtime_batch, clear_expired_batches as clear_expired_runtime_batches,
@@ -329,10 +329,6 @@ fn commit_chunks(
     // Collect content
     for c in chunks.iter() {
         content_chunks.push(c.content.clone());
-    }
-
-    if content_chunks.is_empty() {
-        return Err(JUNO_STORAGE_ERROR_CHUNK_TO_COMMIT_NOT_FOUND.to_string());
     }
 
     // We clone the key with the new information provided by the upload (name, full_path, token, etc.) to set the new key.

@@ -14,8 +14,6 @@ pub const JUNO_STORAGE_ERROR_BATCH_NOT_FOUND: &str = "juno.storage.error.batch_n
 pub const JUNO_STORAGE_ERROR_CHUNK_NOT_FOUND: &str = "juno.storage.error.chunk_not_found";
 pub const JUNO_STORAGE_ERROR_CHUNK_NOT_INCLUDED_IN_BATCH: &str =
     "juno.storage.error.chunk_not_included_in_batch";
-pub const JUNO_STORAGE_ERROR_CHUNK_TO_COMMIT_NOT_FOUND: &str =
-    "juno.storage.error.chunk_to_commit_not_found";
 // Asset exceed max allowed size
 pub const JUNO_STORAGE_ERROR_ASSET_MAX_ALLOWED_SIZE: &str =
     "juno.storage.error.asset_max_allowed_size";

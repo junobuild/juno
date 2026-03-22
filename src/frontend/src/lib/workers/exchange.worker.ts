@@ -84,9 +84,6 @@ const syncExchange = async () => {
 	}
 };
 
-// It seems KongSwap always returns ICP currently in second position. Maybe the answer is sorted?
-const limit = 2;
-
 const exchangeRateICPToUsd = async (): Promise<ExchangePrice | undefined> => {
 	const icp = await findICPToken();
 

@@ -105,10 +105,7 @@ pub fn get_content_chunks(
     memory: &Memory,
 ) -> Option<Blob> {
     match memory {
-        Memory::Heap => {
-            let content_chunks = clone_asset_encoding_content_chunks(encoding, chunk_index);
-            Some(content_chunks)
-        }
+        Memory::Heap => clone_asset_encoding_content_chunks(encoding, chunk_index),
         Memory::Stable => STATE.with(|state| {
             get_content_chunks_stable(encoding, chunk_index, &state.borrow().stable.content_chunks)
         }),
@@ -188,8 +185,9 @@ fn get_content_chunks_stable(
     chunk_index: usize,
     content_chunks: &ContentChunksStable,
 ) -> Option<Blob> {
-    let key: StableEncodingChunkKey =
-        deserialize_from_bytes(Cow::Owned(encoding.content_chunks[chunk_index].clone()));
+    let key: StableEncodingChunkKey = deserialize_from_bytes(Cow::Owned(
+        encoding.content_chunks.get(chunk_index)?.clone(),
+    ));
     content_chunks.get(&key)
 }
 

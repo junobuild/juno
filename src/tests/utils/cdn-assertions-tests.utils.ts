@@ -1537,4 +1537,123 @@ export const testUploadProposalManyAssets = ({
 	});
 };
 
+export const testUploadProposalEmptyAsset = ({
+	actor,
+	pic,
+	canisterId,
+	currentDate,
+	expectedProposalId
+}: {
+	actor: (params?: { requireController: boolean }) => Actor<SatelliteActor | ConsoleActor>;
+	pic: () => PocketIc;
+	canisterId: () => Principal;
+	currentDate: Date;
+	expectedProposalId: bigint;
+}) => {
+	const collection = '#dapp';
+
+	const name = `hello-batch-empty-${nanoid()}.html`;
+	const full_path = `/hello/${name}`;
+
+	const key: ConsoleDid.InitAssetKey = {
+		collection,
+		description: toNullable(),
+		encoding_type: [],
+		full_path,
+		name,
+		token: toNullable()
+	};
+
+	const uploadProposalEmptyAsset = async (proposalId: bigint) => {
+		const { init_proposal_many_assets_upload, commit_proposal_many_assets_upload } = actor();
+
+		const files = await init_proposal_many_assets_upload([key], proposalId);
+
+		const [[_, { batch_id }]] = files;
+
+		await commit_proposal_many_assets_upload([
+			{
+				batch_id,
+				// No chunks
+				chunk_ids: [],
+				// Expected by assertHeads in serve test
+				headers: [['cache-control', 'no-cache']]
+			}
+		]);
+	};
+
+	const proposal_type: ConsoleDid.ProposalType = {
+		AssetsUpgrade: {
+			clear_existing_assets: toNullable()
+		}
+	};
+
+	it('should upload an empty asset', async () => {
+		const { init_proposal, submit_proposal } = actor();
+
+		const [proposalId, proposal] = await init_proposal(proposal_type);
+
+		expect(proposalId).toEqual(expectedProposalId);
+
+		expect(proposal.status).toEqual({ Initialized: null });
+
+		await uploadProposalEmptyAsset(proposalId);
+
+		const [_, submittedProposal] = await submit_proposal(proposalId);
+
+		expect(submittedProposal.status).toEqual({ Open: null });
+
+		const { commit_proposal } = actor({ requireController: true });
+
+		const sha = fromNullable(submittedProposal.sha256);
+
+		assertNonNullish(sha);
+
+		await expect(
+			commit_proposal({
+				sha256: sha,
+				proposal_id: proposalId
+			})
+		).resolves.not.toThrow();
+	});
+
+	it('should serve asset with empty content', async () => {
+		const { http_request } = actor();
+
+		await tick(pic());
+
+		const request: ConsoleDid.HttpRequest = {
+			body: Uint8Array.from([]),
+			certificate_version: toNullable(2),
+			headers: [],
+			method: 'GET',
+			url: full_path
+		};
+
+		const response = await http_request(request);
+
+		const { status_code, headers, body } = response;
+
+		expect(status_code).toBe(200);
+
+		assertHeaders({
+			headers,
+			etag: '"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"'
+		});
+
+		await assertCertification({
+			canisterId: canisterId(),
+			pic: pic(),
+			request,
+			response,
+			currentDate
+		});
+
+		const decoder = new TextDecoder();
+
+		expect(decoder.decode(body)).toEqual('');
+		expect(body).toHaveLength(0);
+	});
+};
+
 /* eslint-enable */

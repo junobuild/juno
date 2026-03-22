@@ -3,7 +3,10 @@ import { PocketIc, type Actor } from '@dfinity/pic';
 import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import type { Principal } from '@icp-sdk/core/principal';
 import { inject } from 'vitest';
-import { testUploadProposalManyAssets } from '../../../utils/cdn-assertions-tests.utils';
+import {
+	testUploadProposalEmptyAsset,
+	testUploadProposalManyAssets
+} from '../../../utils/cdn-assertions-tests.utils';
 import { CONSOLE_WASM_PATH } from '../../../utils/setup-tests.utils';
 
 describe('Console > Cdn > Batch', () => {
@@ -48,6 +51,14 @@ describe('Console > Cdn > Batch', () => {
 			currentDate,
 			canisterId: () => canisterId,
 			caller: () => controller,
+			pic: () => pic
+		});
+
+		testUploadProposalEmptyAsset({
+			expectedProposalId: 2n,
+			actor: () => actor,
+			currentDate,
+			canisterId: () => canisterId,
 			pic: () => pic
 		});
 	});

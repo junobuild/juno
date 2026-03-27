@@ -214,6 +214,7 @@ pub mod interface {
         pub sha256: Hash,
     }
 
+
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
     pub struct SetStorageConfig {
         pub headers: StorageConfigHeaders,

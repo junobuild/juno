@@ -47,10 +47,12 @@ describe('Satellite > Storage > certify_assets_chunk', () => {
 
 	const certifyChunks = async ({
 		cursor,
-		strategy
+		strategy,
+		appendStrategy = { AppendWithRouting: null }
 	}: {
 		cursor: SatelliteDid.CertifyAssetsCursor;
 		strategy: SatelliteDid.CertifyAssetsStrategy;
+		appendStrategy?: SatelliteDid.CertifyAssetsStrategy;
 	}) => {
 		const { certify_assets_chunk } = actor;
 
@@ -63,7 +65,7 @@ describe('Satellite > Storage > certify_assets_chunk', () => {
 		const next = fromNullable(result.next_cursor);
 
 		if (nonNullish(next)) {
-			await certifyChunks({ cursor: next, strategy: { AppendWithRouting: null } });
+			await certifyChunks({ cursor: next, strategy: appendStrategy });
 		}
 	};
 
@@ -177,23 +179,11 @@ describe('Satellite > Storage > certify_assets_chunk', () => {
 					strategy: { Clear: null }
 				});
 
-				const certifyWithoutRouting = async (cursor: SatelliteDid.CertifyAssetsCursor) => {
-					const result = await certify_assets_chunk({
-						cursor,
-						chunk_size: toNullable(2),
-						strategy: { Append: null }
-					});
-
-					const next = fromNullable(result.next_cursor);
-
-					if (nonNullish(next)) {
-						await certifyWithoutRouting(next);
-					}
-				};
-
-				await certifyWithoutRouting(
-					'Heap' in memory ? { Heap: { offset: 0n } } : { Stable: { key: [] } }
-				);
+				await certifyChunks({
+					cursor: 'Heap' in memory ? { Heap: { offset: 0n } } : { Stable: { key: [] } },
+					strategy: { Clear: null },
+					appendStrategy: { Append: null }
+				});
 
 				const request: SatelliteDid.HttpRequest = {
 					body: Uint8Array.from([]),

@@ -25,7 +25,7 @@ pub fn set_config_store(
 
     insert_config(cdn_heap, &config);
 
-    storage_state.init_certified_assets();
+    storage_state.certify_all_assets();
 
     Ok(config)
 }

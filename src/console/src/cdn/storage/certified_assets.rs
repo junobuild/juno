@@ -4,7 +4,7 @@ use crate::store::{with_assets, with_config};
 use junobuild_storage::certification::types::certified::CertifiedAssetHashes;
 use junobuild_storage::certified_assets::extend_and_init_certified_assets;
 
-pub fn init_certified_assets() {
+pub fn certify_all_assets() {
     let mut asset_hashes = CertifiedAssetHashes::default();
 
     with_config(|config| {

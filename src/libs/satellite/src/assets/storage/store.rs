@@ -3,7 +3,7 @@ use crate::assets::storage::assert::{
     assert_create_batch, assert_delete_asset, assert_get_asset, assert_list_assets,
     assert_set_config, assert_write_asset,
 };
-use crate::assets::storage::certified_assets::runtime::init_certified_assets as init_runtime_certified_assets;
+use crate::assets::storage::certified_assets::all::certify_all_assets as init_runtime_certified_assets;
 use crate::assets::storage::state::{
     count_assets_stable, delete_asset as delete_state_asset, delete_domain as delete_state_domain,
     get_asset as get_state_asset, get_assets_stable, get_config as get_state_config, get_config,

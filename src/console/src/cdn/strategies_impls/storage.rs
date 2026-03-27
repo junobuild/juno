@@ -5,7 +5,7 @@ use crate::cdn::helpers::heap::{
 use crate::cdn::helpers::stable::{
     get_asset_stable, insert_asset_encoding_stable, insert_asset_stable,
 };
-use crate::cdn::storage::init_certified_assets;
+use crate::cdn::storage::certify_all_assets;
 use candid::Principal;
 use junobuild_cdn::storage::errors::{
     JUNO_CDN_STORAGE_ERROR_CANNOT_GET_ASSET_UNKNOWN_REFERENCE_ID,
@@ -178,8 +178,8 @@ impl StorageStateStrategy for StorageState {
         delete_asset(full_path)
     }
 
-    fn init_certified_assets(&self) {
-        init_certified_assets();
+    fn certify_all_assets(&self) {
+        certify_all_assets();
     }
 }
 

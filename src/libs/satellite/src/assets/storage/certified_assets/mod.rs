@@ -1,3 +1,3 @@
-pub mod runtime;
+pub mod all;
 pub mod upgrade;
 mod chunk;

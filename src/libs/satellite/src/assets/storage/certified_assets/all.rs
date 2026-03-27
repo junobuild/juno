@@ -5,11 +5,11 @@ use crate::types::state::State;
 use junobuild_storage::certification::types::certified::CertifiedAssetHashes;
 use junobuild_storage::certified_assets::extend_and_init_certified_assets;
 
-pub fn init_certified_assets() {
-    STATE.with(|state| init_certified_assets_impl(&state.borrow()));
+pub fn certify_all_assets() {
+    STATE.with(|state| certify_all_assets_impl(&state.borrow()));
 }
 
-fn init_certified_assets_impl(state: &State) {
+fn certify_all_assets_impl(state: &State) {
     let mut asset_hashes = CertifiedAssetHashes::default();
 
     let config = &state.heap.storage.config;

@@ -8,6 +8,7 @@ use crate::types::state::State;
 use junobuild_storage::certification::types::certified::CertifiedAssetHashes;
 use junobuild_storage::certified_assets::extend_and_init_certified_assets;
 use junobuild_storage::types::config::StorageConfig;
+use junobuild_storage::types::store::AssetKey;
 
 const DEFAULT_CHUNK_SIZE: usize = 1000;
 
@@ -77,25 +78,32 @@ fn process_heap_chunk(
 fn process_stable_chunk(
     state: &State,
     config: &StorageConfig,
-    from_key: Option<StableKey>,
+    from_key: Option<AssetKey>,
     chunk_size: usize,
 ) -> ProcessChunkResult {
     let mut asset_hashes = CertifiedAssetHashes::default();
     let mut count = 0;
 
-    let iter = match &from_key {
+    let stable_key = from_key.map(|key| StableKey {
+        collection: key.collection,
+        full_path: key.full_path,
+    });
+
+    let iter = match &stable_key {
         None => state.stable.assets.iter(),
         Some(key) => state.stable.assets.iter_from_prev_key(key),
     };
 
-    let mut last_key: Option<StableKey> = None;
+    let mut last_key: Option<AssetKey> = None;
 
     for entry in iter.take(chunk_size) {
-        asset_hashes.insert(&entry.value(), config);
+        let asset = entry.value();
+
+        asset_hashes.insert(&asset, config);
         count += 1;
 
         if count == chunk_size {
-            last_key = Some(entry.key().clone());
+            last_key = Some(asset.key);
         }
     }
 

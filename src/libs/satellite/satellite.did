@@ -88,6 +88,17 @@ type AutomationController = record {
   expires_at : nat64;
 };
 type AutomationScope = variant { Write; Submit };
+type CertifyAssetsArgs = record {
+  cursor : CertifyAssetsCursor;
+  strategy : CertifyAssetsStrategy;
+  chunk_size : opt nat32;
+};
+type CertifyAssetsCursor = variant {
+  Heap : record { offset : nat64 };
+  Stable : record { key : opt AssetKey };
+};
+type CertifyAssetsResult = record { next_cursor : opt CertifyAssetsCursor };
+type CertifyAssetsStrategy = variant { Append; Clear; AppendWithRouting };
 type CollectionType = variant { Db; Storage };
 type CommitBatch = record {
   batch_id : nat;
@@ -439,6 +450,7 @@ service : (InitSatelliteArgs) -> {
   authenticate_automation : (AuthenticateAutomationArgs) -> (
       AuthenticateAutomationResultResponse,
     );
+  certify_assets_chunk : (CertifyAssetsArgs) -> (CertifyAssetsResult);
   commit_asset_upload : (CommitBatch) -> ();
   commit_proposal : (CommitProposal) -> (null);
   commit_proposal_asset_upload : (CommitBatch) -> ();

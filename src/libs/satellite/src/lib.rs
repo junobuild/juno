@@ -21,8 +21,9 @@ mod user;
 use crate::db::types::config::DbConfig;
 use crate::db::types::interface::SetDbConfig;
 use crate::types::interface::{
-    AuthenticateAutomationResultResponse, AuthenticateResultResponse, AuthenticationArgs, Config,
-    DeleteProposalAssets, GetDelegationArgs, GetDelegationResultResponse,
+    AuthenticateAutomationResultResponse, AuthenticateResultResponse, AuthenticationArgs,
+    CertifyAssetsArgs, CertifyAssetsResult, Config, DeleteProposalAssets, GetDelegationArgs,
+    GetDelegationResultResponse,
 };
 use crate::types::state::CollectionType;
 use automation::types::AuthenticateAutomationArgs;
@@ -532,6 +533,12 @@ pub fn get_many_assets(
     api::storage::get_many_assets(assets)
 }
 
+#[doc(hidden)]
+#[update(guard = "caller_is_admin")]
+pub fn certify_assets_chunk(args: CertifyAssetsArgs) -> CertifyAssetsResult {
+    api::storage::certify_assets_chunk(args)
+}
+
 // ---------------------------------------------------------
 // Mgmt
 // ---------------------------------------------------------
@@ -569,21 +576,22 @@ pub fn memory_size() -> MemorySize {
 macro_rules! include_satellite {
     () => {
         use junobuild_satellite::{
-            authenticate, authenticate_automation, commit_asset_upload, commit_proposal,
-            commit_proposal_asset_upload, commit_proposal_many_assets_upload, count_assets,
-            count_collection_assets, count_collection_docs, count_docs, count_proposals, del_asset,
-            del_assets, del_controller_self, del_controllers, del_custom_domain, del_doc, del_docs,
-            del_filtered_assets, del_filtered_docs, del_many_assets, del_many_docs, del_rule,
-            delete_proposal_assets, deposit_cycles, get_asset, get_auth_config,
-            get_automation_config, get_config, get_db_config, get_delegation, get_doc,
-            get_many_assets, get_many_docs, get_proposal, get_storage_config, http_request,
-            http_request_streaming_callback, init, init_asset_upload, init_proposal,
-            init_proposal_asset_upload, init_proposal_many_assets_upload, list_assets,
-            list_controllers, list_custom_domains, list_docs, list_proposals, list_rules,
-            post_upgrade, pre_upgrade, reject_proposal, set_asset_token, set_auth_config,
-            set_automation_config, set_controllers, set_custom_domain, set_db_config, set_doc,
-            set_many_docs, set_rule, set_storage_config, submit_proposal,
-            switch_storage_system_memory, upload_asset_chunk, upload_proposal_asset_chunk,
+            authenticate, authenticate_automation, certify_assets_chunk, commit_asset_upload,
+            commit_proposal, commit_proposal_asset_upload, commit_proposal_many_assets_upload,
+            count_assets, count_collection_assets, count_collection_docs, count_docs,
+            count_proposals, del_asset, del_assets, del_controller_self, del_controllers,
+            del_custom_domain, del_doc, del_docs, del_filtered_assets, del_filtered_docs,
+            del_many_assets, del_many_docs, del_rule, delete_proposal_assets, deposit_cycles,
+            get_asset, get_auth_config, get_automation_config, get_config, get_db_config,
+            get_delegation, get_doc, get_many_assets, get_many_docs, get_proposal,
+            get_storage_config, http_request, http_request_streaming_callback, init,
+            init_asset_upload, init_proposal, init_proposal_asset_upload,
+            init_proposal_many_assets_upload, list_assets, list_controllers, list_custom_domains,
+            list_docs, list_proposals, list_rules, post_upgrade, pre_upgrade, reject_proposal,
+            set_asset_token, set_auth_config, set_automation_config, set_controllers,
+            set_custom_domain, set_db_config, set_doc, set_many_docs, set_rule, set_storage_config,
+            submit_proposal, switch_storage_system_memory, upload_asset_chunk,
+            upload_proposal_asset_chunk,
         };
 
         ic_cdk::export_candid!();

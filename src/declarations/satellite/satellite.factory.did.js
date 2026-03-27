@@ -111,6 +111,31 @@ export const idlFactory = ({ IDL }) => {
 		Ok: IDL.Tuple(IDL.Principal, AutomationController),
 		Err: AuthenticationAutomationError
 	});
+	const AssetKey = IDL.Record({
+		token: IDL.Opt(IDL.Text),
+		collection: IDL.Text,
+		owner: IDL.Principal,
+		name: IDL.Text,
+		description: IDL.Opt(IDL.Text),
+		full_path: IDL.Text
+	});
+	const CertifyAssetsCursor = IDL.Variant({
+		Heap: IDL.Record({ offset: IDL.Nat64 }),
+		Stable: IDL.Record({ key: IDL.Opt(AssetKey) })
+	});
+	const CertifyAssetsStrategy = IDL.Variant({
+		Append: IDL.Null,
+		Clear: IDL.Null,
+		AppendWithRouting: IDL.Null
+	});
+	const CertifyAssetsArgs = IDL.Record({
+		cursor: CertifyAssetsCursor,
+		strategy: CertifyAssetsStrategy,
+		chunk_size: IDL.Opt(IDL.Nat32)
+	});
+	const CertifyAssetsResult = IDL.Record({
+		next_cursor: IDL.Opt(CertifyAssetsCursor)
+	});
 	const CommitBatch = IDL.Record({
 		batch_id: IDL.Nat,
 		headers: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
@@ -177,14 +202,6 @@ export const idlFactory = ({ IDL }) => {
 	const DepositCyclesArgs = IDL.Record({
 		cycles: IDL.Nat,
 		destination_id: IDL.Principal
-	});
-	const AssetKey = IDL.Record({
-		token: IDL.Opt(IDL.Text),
-		collection: IDL.Text,
-		owner: IDL.Principal,
-		name: IDL.Text,
-		description: IDL.Opt(IDL.Text),
-		full_path: IDL.Text
 	});
 	const AssetEncodingNoContent = IDL.Record({
 		modified: IDL.Nat64,
@@ -522,6 +539,7 @@ export const idlFactory = ({ IDL }) => {
 			[AuthenticateAutomationResultResponse],
 			[]
 		),
+		certify_assets_chunk: IDL.Func([CertifyAssetsArgs], [CertifyAssetsResult], []),
 		commit_asset_upload: IDL.Func([CommitBatch], [], []),
 		commit_proposal: IDL.Func([CommitProposal], [IDL.Null], []),
 		commit_proposal_asset_upload: IDL.Func([CommitBatch], [], []),

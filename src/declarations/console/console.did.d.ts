@@ -407,6 +407,7 @@ export interface SetStorageConfig {
 	max_memory_size: [] | [ConfigMaxMemorySize];
 	raw_access: [] | [StorageConfigRawAccess];
 	redirects: [] | [Array<[string, StorageConfigRedirect]>];
+	skip_certification: [] | [boolean];
 }
 export interface SignedDelegation {
 	signature: Uint8Array;

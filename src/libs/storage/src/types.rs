@@ -223,6 +223,7 @@ pub mod interface {
         pub raw_access: Option<StorageConfigRawAccess>,
         pub max_memory_size: Option<StorageConfigMaxMemorySize>,
         pub version: Option<Version>,
+        pub skip_certification: Option<bool>,
     }
 
     #[derive(CandidType, Serialize, Deserialize)]

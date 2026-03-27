@@ -121,7 +121,8 @@ export const testNotAllowedCdnMethods = ({
 				rewrites: [],
 				raw_access: toNullable(),
 				max_memory_size: toNullable(),
-				version: toNullable()
+				version: toNullable(),
+				skip_certification: toNullable()
 			})
 		).rejects.toThrow(errorMsgAdminController);
 	});
@@ -218,7 +219,8 @@ export const testCdnConfig = ({
 			rewrites: [],
 			raw_access: toNullable(),
 			max_memory_size: toNullable(),
-			version: toNullable(configBaseVersion)
+			version: toNullable(configBaseVersion),
+			skip_certification: toNullable()
 		};
 
 		await set_storage_config(config);
@@ -247,7 +249,8 @@ export const testCdnConfig = ({
 			redirects: [],
 			rewrites: [],
 			raw_access: toNullable(),
-			max_memory_size: toNullable()
+			max_memory_size: toNullable(),
+			skip_certification: toNullable()
 		};
 
 		await expect(

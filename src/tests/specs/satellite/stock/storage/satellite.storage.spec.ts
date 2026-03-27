@@ -88,7 +88,8 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 						rewrites: [],
 						raw_access: toNullable(),
 						max_memory_size: toNullable(),
-						version: toNullable()
+						version: toNullable(),
+						skip_certification: toNullable()
 					})
 				).rejects.toThrow(JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER);
 			});
@@ -187,7 +188,8 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 					rewrites: [],
 					raw_access: toNullable(),
 					max_memory_size: toNullable(),
-					version: toNullable()
+					version: toNullable(),
+					skip_certification: toNullable()
 				};
 
 				await set_storage_config(storage);
@@ -220,7 +222,8 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 					rewrites: [],
 					raw_access: toNullable(),
 					max_memory_size: toNullable(),
-					version: toNullable(1n)
+					version: toNullable(1n),
+					skip_certification: toNullable()
 				};
 
 				await expect(
@@ -553,7 +556,8 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 						rewrites: [['/hello.html', '/hello.html']],
 						raw_access: toNullable(),
 						max_memory_size: toNullable(),
-						version: toNullable(1n)
+						version: toNullable(1n),
+						skip_certification: toNullable()
 					};
 
 					await set_storage_config(storage);
@@ -640,7 +644,8 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 						rewrites: [],
 						raw_access: toNullable({ Allow: null }),
 						max_memory_size: toNullable(),
-						version: toNullable(2n)
+						version: toNullable(2n),
+						skip_certification: toNullable()
 					};
 
 					await set_storage_config(storage);
@@ -670,7 +675,8 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 						rewrites: [],
 						raw_access: toNullable({ Deny: null }),
 						max_memory_size: toNullable(),
-						version: toNullable(3n)
+						version: toNullable(3n),
+						skip_certification: toNullable()
 					};
 
 					await set_storage_config(storage);
@@ -696,7 +702,8 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 						rewrites: [],
 						raw_access: toNullable({ Allow: null }),
 						max_memory_size: toNullable(),
-						version: toNullable(4n)
+						version: toNullable(4n),
+						skip_certification: toNullable()
 					};
 
 					await set_storage_config(storage);
@@ -1338,7 +1345,8 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 								heap: max === 'heap' ? [maxHeapMemorySize] : [],
 								stable: max === 'stable' ? [maxStableMemorySize] : []
 							}),
-							version: toNullable(version)
+							version: toNullable(version),
+							skip_certification: toNullable()
 						};
 
 						await set_storage_config(storage);
@@ -1448,7 +1456,8 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 						heap: [],
 						stable: []
 					}),
-					version: toNullable(15n)
+					version: toNullable(15n),
+					skip_certification: toNullable()
 				};
 
 				await set_storage_config(storage);
@@ -1548,7 +1557,8 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 					rewrites: [],
 					raw_access: toNullable(),
 					max_memory_size: toNullable(),
-					version: toNullable(16n)
+					version: toNullable(16n),
+					skip_certification: toNullable()
 				};
 
 				const result = await set_storage_config(config);

@@ -133,6 +133,7 @@ pub mod interface {
     #[derive(CandidType, Serialize, Deserialize)]
     pub struct CertifyAssetsArgs {
         pub cursor: CertifyAssetsCursor,
+        pub chunk_size: Option<u32>,
     }
 
     #[derive(CandidType, Serialize, Deserialize)]

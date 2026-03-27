@@ -100,29 +100,12 @@ describe('Satellite > Storage > certify_assets_chunk', () => {
 			await upload();
 		});
 
-		it('should certify all assets chunk by chunk', async () => {
-			await certifyChunks({
+		it('should not certify assets beyond current chunk', async () => {
+			const { certify_assets_chunk, http_request } = actor;
+
+			await certify_assets_chunk({
 				cursor: 'Heap' in memory ? { Heap: { offset: 0n } } : { Stable: { key: [] } },
-				strategy: { Clear: null }
-			});
-			await assertAssets();
-		});
-
-		it('should apply routing on last chunk', async () => {
-			const { set_storage_config, http_request } = actor;
-
-			await set_storage_config({
-				headers: [],
-				iframe: toNullable(),
-				redirects: [],
-				rewrites: [['/unknown.html', '/hello1.html']],
-				raw_access: toNullable(),
-				max_memory_size: toNullable(),
-				version: toNullable(1n)
-			});
-
-			await certifyChunks({
-				cursor: 'Heap' in memory ? { Heap: { offset: 0n } } : { Stable: { key: [] } },
+				chunk_size: toNullable(2),
 				strategy: { Clear: null }
 			});
 
@@ -131,12 +114,101 @@ describe('Satellite > Storage > certify_assets_chunk', () => {
 				certificate_version: toNullable(2),
 				headers: [],
 				method: 'GET',
-				url: '/unknown.html'
+				url: '/hello3.html'
 			};
 
 			const response = await http_request(request);
 
-			await assertCertification({ canisterId, pic, request, response, currentDate });
+			await expect(
+				assertCertification({ canisterId, pic, request, response, currentDate })
+			).rejects.toThrow();
+		});
+
+		it('should certify all assets chunk by chunk', async () => {
+			await certifyChunks({
+				cursor: 'Heap' in memory ? { Heap: { offset: 0n } } : { Stable: { key: [] } },
+				strategy: { Clear: null }
+			});
+			await assertAssets();
+		});
+
+		describe('With routing', () => {
+			beforeAll(async () => {
+				const { set_storage_config } = actor;
+
+				await set_storage_config({
+					headers: [],
+					iframe: toNullable(),
+					redirects: [],
+					rewrites: [['/unknown.html', '/hello1.html']],
+					raw_access: toNullable(),
+					max_memory_size: toNullable(),
+					version: toNullable(1n)
+				});
+			});
+
+			it('should apply routing on last chunk', async () => {
+				const { http_request } = actor;
+
+				await certifyChunks({
+					cursor: 'Heap' in memory ? { Heap: { offset: 0n } } : { Stable: { key: [] } },
+					strategy: { Clear: null }
+				});
+
+				const request: SatelliteDid.HttpRequest = {
+					body: Uint8Array.from([]),
+					certificate_version: toNullable(2),
+					headers: [],
+					method: 'GET',
+					url: '/unknown.html'
+				};
+
+				const response = await http_request(request);
+
+				await assertCertification({ canisterId, pic, request, response, currentDate });
+			});
+
+			it('should not apply routing without AppendWithRouting strategy', async () => {
+				const { certify_assets_chunk, http_request } = actor;
+
+				await certify_assets_chunk({
+					cursor: 'Heap' in memory ? { Heap: { offset: 0n } } : { Stable: { key: [] } },
+					chunk_size: toNullable(2),
+					strategy: { Clear: null }
+				});
+
+				const certifyWithoutRouting = async (cursor: SatelliteDid.CertifyAssetsCursor) => {
+					const result = await certify_assets_chunk({
+						cursor,
+						chunk_size: toNullable(2),
+						strategy: { Append: null }
+					});
+
+					const next = fromNullable(result.next_cursor);
+
+					if (nonNullish(next)) {
+						await certifyWithoutRouting(next);
+					}
+				};
+
+				await certifyWithoutRouting(
+					'Heap' in memory ? { Heap: { offset: 0n } } : { Stable: { key: [] } }
+				);
+
+				const request: SatelliteDid.HttpRequest = {
+					body: Uint8Array.from([]),
+					certificate_version: toNullable(2),
+					headers: [],
+					method: 'GET',
+					url: '/unknown.html'
+				};
+
+				const response = await http_request(request);
+
+				await expect(
+					assertCertification({ canisterId, pic, request, response, currentDate })
+				).rejects.toThrow();
+			});
 		});
 	});
 });

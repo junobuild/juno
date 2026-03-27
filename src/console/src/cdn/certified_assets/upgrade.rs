@@ -1,4 +1,4 @@
-use crate::cdn::storage::init_certified_assets as init_runtime_certified_assets;
+use crate::cdn::storage::certify_all_assets;
 use ic_cdk_timers::set_timer;
 use std::time::Duration;
 
@@ -11,5 +11,5 @@ pub fn defer_init_certified_assets() {
 }
 
 async fn init_certified_assets() {
-    init_runtime_certified_assets();
+    certify_all_assets();
 }

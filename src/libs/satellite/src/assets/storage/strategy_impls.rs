@@ -171,7 +171,7 @@ impl StorageStateStrategy for StorageState {
         delete_asset(collection, full_path, rule)
     }
 
-    fn init_certified_assets(&self) {
+    fn certify_all_assets(&self) {
         certify_all_assets();
     }
 }

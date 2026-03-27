@@ -120,7 +120,7 @@ pub trait StorageStateStrategy {
         rule: &Rule,
     ) -> Option<Asset>;
 
-    fn init_certified_assets(&self);
+    fn certify_all_assets(&self);
 }
 
 pub trait StorageUploadStrategy {

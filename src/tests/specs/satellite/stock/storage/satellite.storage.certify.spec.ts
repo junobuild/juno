@@ -3,6 +3,7 @@ import type { Actor, PocketIc } from '@dfinity/pic';
 import { fromNullable, nonNullish, toNullable } from '@dfinity/utils';
 import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import type { Principal } from '@icp-sdk/core/principal';
+import { JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER } from '@junobuild/errors';
 import { MEMORIES } from '../../../../constants/satellite-tests.constants';
 import { assertCertification } from '../../../../utils/certification-tests.utils';
 import { uploadAsset } from '../../../../utils/satellite-storage-tests.utils';
@@ -199,6 +200,25 @@ describe('Satellite > Storage > certify_assets_chunk', () => {
 					assertCertification({ canisterId, pic, request, response, currentDate })
 				).rejects.toThrow();
 			});
+		});
+	});
+
+	describe('Some identity', () => {
+		beforeAll(() => {
+			const user = Ed25519KeyIdentity.generate();
+			actor.setIdentity(user);
+		});
+
+		it('should throw if not admin', async () => {
+			const { certify_assets_chunk } = actor;
+
+			await expect(
+				certify_assets_chunk({
+					cursor: { Heap: { offset: 0n } },
+					chunk_size: toNullable(2),
+					strategy: { Clear: null }
+				})
+			).rejects.toThrow(JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER);
 		});
 	});
 });

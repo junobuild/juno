@@ -1,8 +1,10 @@
+use crate::assets::storage::certified_assets::chunk::certify_assets_chunk as init_certify_assets_chunk;
 use crate::assets::storage::store::{commit_batch_store, create_batch_store, create_chunk_store};
 use crate::hooks::storage::{
     invoke_on_delete_asset, invoke_on_delete_filtered_assets, invoke_on_delete_many_assets,
     invoke_upload_asset,
 };
+use crate::types::interface::{CertifyAssetsArgs, CertifyAssetsResult};
 use crate::{
     caller, count_assets_store, count_collection_assets_store, delete_asset_store,
     delete_assets_store, delete_filtered_assets_store, get_asset_store, list_assets_store,
@@ -117,4 +119,8 @@ pub fn set_asset_token(collection: CollectionKey, full_path: FullPath, token: As
 
     // No hook currently available for this function for simplicity reasons,
     // but not against adding one if it proves useful.
+}
+
+pub fn certify_assets_chunk(args: CertifyAssetsArgs) -> CertifyAssetsResult {
+    init_certify_assets_chunk(args)
 }

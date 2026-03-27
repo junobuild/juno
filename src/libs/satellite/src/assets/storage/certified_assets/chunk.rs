@@ -9,6 +9,7 @@ use junobuild_storage::certification::types::certified::CertifiedAssetHashes;
 use junobuild_storage::certified_assets::extend_and_init_certified_assets;
 use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::store::AssetKey;
+use std::ops::Bound;
 
 const DEFAULT_CHUNK_SIZE: usize = 1000;
 
@@ -91,7 +92,7 @@ fn process_stable_chunk(
 
     let iter = match &stable_key {
         None => state.stable.assets.iter(),
-        Some(key) => state.stable.assets.iter_from_prev_key(key),
+        Some(key) => state.stable.assets.range((Bound::Excluded(key.clone()), Bound::Unbounded)),
     };
 
     let mut last_key: Option<AssetKey> = None;

@@ -1,7 +1,7 @@
 use crate::proposals::errors::{
     JUNO_CDN_PROPOSALS_ERROR_CANNOT_COMMIT, JUNO_CDN_PROPOSALS_ERROR_CANNOT_COMMIT_INVALID_STATUS,
-    JUNO_CDN_PROPOSALS_ERROR_EMPTY_ASSETS, JUNO_CDN_PROPOSALS_ERROR_EMPTY_CONTENT_CHUNKS,
-    JUNO_CDN_PROPOSALS_ERROR_INVALID_HASH, JUNO_CDN_PROPOSALS_ERROR_NOT_CONTENT_CHUNKS_AT_INDEX,
+    JUNO_CDN_PROPOSALS_ERROR_EMPTY_ASSETS, JUNO_CDN_PROPOSALS_ERROR_INVALID_HASH,
+    JUNO_CDN_PROPOSALS_ERROR_NOT_CONTENT_CHUNKS_AT_INDEX,
 };
 use crate::proposals::workflows::assert::assert_known_proposal_type;
 use crate::proposals::{get_proposal, insert_proposal};
@@ -144,12 +144,6 @@ fn copy_committed_assets(
                 })?;
 
                 content_chunks.push(chunks);
-            }
-
-            if content_chunks.is_empty() {
-                return Err(format!(
-                    "{JUNO_CDN_PROPOSALS_ERROR_EMPTY_CONTENT_CHUNKS} ({encoding_type})"
-                ));
             }
 
             let encoding_with_content = AssetEncoding {

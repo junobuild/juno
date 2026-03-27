@@ -1567,5 +1567,60 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 				);
 			});
 		});
+
+		describe('More admin', () => {
+			it('should deploy empty asset to dapp', async () => {
+				const { http_request, commit_asset_upload, init_asset_upload } = actor;
+
+				const full_path = '/hello-empty.html';
+
+				const file = await init_asset_upload({
+					collection: '#dapp',
+					description: toNullable(),
+					encoding_type: [],
+					full_path,
+					name: 'hello-empty.html',
+					token: toNullable()
+				});
+
+				await commit_asset_upload({
+					batch_id: file.batch_id,
+					chunk_ids: [],
+					headers: []
+				});
+
+				const request: SatelliteDid.HttpRequest = {
+					body: Uint8Array.from([]),
+					certificate_version: toNullable(2),
+					headers: [],
+					method: 'GET',
+					url: full_path
+				};
+
+				const response = await http_request(request);
+
+				const { headers, body, status_code } = response;
+
+				expect(status_code).toBe(200);
+
+				assertHeaders({
+					headers,
+					etag: '"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"'
+				});
+
+				await assertCertification({
+					canisterId,
+					pic,
+					request,
+					response,
+					currentDate
+				});
+
+				const decoder = new TextDecoder();
+
+				expect(decoder.decode(body)).toEqual('');
+				expect(body).toHaveLength(0);
+			});
+		});
 	}
 );

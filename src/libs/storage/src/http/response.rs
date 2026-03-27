@@ -70,10 +70,12 @@ pub fn build_asset_response(
                                     }
                                 }
                                 None => {
-                                    error_response(
-                                        RESPONSE_STATUS_CODE_500,
-                                        "No chunks found.".to_string(),
-                                    );
+                                    return HttpResponse {
+                                        body: vec![],
+                                        headers: headers.clone(),
+                                        status_code,
+                                        streaming_strategy: None,
+                                    }
                                 }
                             }
                         }

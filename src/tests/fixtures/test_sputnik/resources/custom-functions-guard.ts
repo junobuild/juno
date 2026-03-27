@@ -6,7 +6,7 @@ import {
 } from '@junobuild/functions/sdk';
 import { j } from '@junobuild/schema';
 
-/* eslint-disable no-console, require-await */
+/* eslint-disable no-console */
 
 const ArgsSchema = j.object({
 	value: j.principal()

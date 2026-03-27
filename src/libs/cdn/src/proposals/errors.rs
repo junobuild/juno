@@ -22,9 +22,6 @@ pub const JUNO_CDN_PROPOSALS_ERROR_INVALID_HASH: &str = "juno.cdn.proposals.erro
 // Proposal type is not supported.
 pub const JUNO_CDN_PROPOSALS_ERROR_UNKNOWN_TYPE: &str = "juno.cdn.proposals.error.unknown_type";
 
-// Empty content chunks for encoding
-pub const JUNO_CDN_PROPOSALS_ERROR_EMPTY_CONTENT_CHUNKS: &str =
-    "juno.cdn.proposals.error.empty_content_chunks";
 // No content chunks found for encoding {} at index {}
 pub const JUNO_CDN_PROPOSALS_ERROR_NOT_CONTENT_CHUNKS_AT_INDEX: &str =
     "juno.cdn.proposals.error.no_content_chunks_at_index";

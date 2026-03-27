@@ -116,8 +116,7 @@ impl StorageStateStrategy for StorageState {
         chunk_index: usize,
         _memory: &Memory,
     ) -> Option<Blob> {
-        let content_chunks = clone_asset_encoding_content_chunks(encoding, chunk_index);
-        Some(content_chunks)
+        clone_asset_encoding_content_chunks(encoding, chunk_index)
     }
 
     fn get_public_asset(

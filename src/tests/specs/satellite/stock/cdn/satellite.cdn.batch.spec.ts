@@ -4,7 +4,10 @@ import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import type { Principal } from '@icp-sdk/core/principal';
 import { inject } from 'vitest';
 import { CONTROLLER_METADATA } from '../../../../constants/controller-tests.constants';
-import { testUploadProposalManyAssets } from '../../../../utils/cdn-assertions-tests.utils';
+import {
+	testUploadProposalEmptyAsset,
+	testUploadProposalManyAssets
+} from '../../../../utils/cdn-assertions-tests.utils';
 import { controllersInitArgs, SATELLITE_WASM_PATH } from '../../../../utils/setup-tests.utils';
 
 describe('Satellite > Cdn > Batch', () => {
@@ -57,6 +60,14 @@ describe('Satellite > Cdn > Batch', () => {
 			caller: () => controller,
 			pic: () => pic
 		});
+
+		testUploadProposalEmptyAsset({
+			expectedProposalId: 2n,
+			actor: () => actor,
+			currentDate,
+			canisterId: () => canisterId,
+			pic: () => pic
+		});
 	});
 
 	describe('Read+write controller', () => {
@@ -81,11 +92,19 @@ describe('Satellite > Cdn > Batch', () => {
 		});
 
 		testUploadProposalManyAssets({
-			expectedProposalId: 2n,
+			expectedProposalId: 3n,
 			actor: () => actor,
 			currentDate,
 			canisterId: () => canisterId,
 			caller: () => controllerReadWrite,
+			pic: () => pic
+		});
+
+		testUploadProposalEmptyAsset({
+			expectedProposalId: 4n,
+			actor: () => actor,
+			currentDate,
+			canisterId: () => canisterId,
 			pic: () => pic
 		});
 	});

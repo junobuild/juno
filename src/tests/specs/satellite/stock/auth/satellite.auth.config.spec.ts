@@ -1,10 +1,13 @@
 import type { SatelliteActor, SatelliteDid } from '$declarations';
 import type { Actor, PocketIc } from '@dfinity/pic';
-import { toNullable } from '@dfinity/utils';
+import { fromNullable, toNullable } from '@dfinity/utils';
 import { AnonymousIdentity } from '@icp-sdk/core/agent';
 import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import type { Principal } from '@icp-sdk/core/principal';
-import { JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER } from '@junobuild/errors';
+import {
+	JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER,
+	JUNO_STORAGE_ERROR_RESERVED_ASSET
+} from '@junobuild/errors';
 import {
 	EXTERNAL_ALTERNATIVE_ORIGINS,
 	EXTERNAL_ALTERNATIVE_ORIGINS_URLS
@@ -96,6 +99,22 @@ describe('Satellite > Authentication > Configuration', () => {
 				}).toStrictEqual({
 					alternativeOrigins: [...httpsUrls, canisterIdUrl].sort()
 				});
+			});
+
+			it('should not delete reserved /.well-known/ii-alternative-origins', async () => {
+				const { del_asset, get_asset } = actor;
+
+				const full_path = '/.well-known/ii-alternative-origins';
+
+				const collection = '#dapp';
+
+				await expect(del_asset(collection, full_path)).rejects.toThrow(
+					`${JUNO_STORAGE_ERROR_RESERVED_ASSET} (/.well-known/ii-alternative-origins)`
+				);
+
+				const asset = fromNullable(await get_asset(collection, full_path));
+
+				expect(asset).not.toBeUndefined();
 			});
 
 			it('should not expose canister id if canister id is the derivation origin', async () => {

@@ -79,7 +79,7 @@
 		"@dfinity/pic": "^0.21.0",
 		"@dfinity/response-verification": "^3.0.3",
 		"@icp-sdk/bindgen": "^0.2.1",
-		"@junobuild/cli-tools": "^0.12.4-next-2026-03-20.3",
+		"@junobuild/cli-tools": "^0.12.4-next-2026-03-22",
 		"@junobuild/config-loader": "^0.4.9-next-2026-03-20.3",
 		"@junobuild/errors": "^0.2.4-next-2026-03-20.3",
 		"@junobuild/functions": "^0.7.2-next-2026-03-20.3",

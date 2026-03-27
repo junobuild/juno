@@ -30,7 +30,7 @@ pub fn switch_storage_memory() -> Result<(), String> {
         WELL_KNOWN_II_ALTERNATIVE_ORIGINS.to_string(),
     ];
 
-    // For simplicity and performance reasons, we delete without previous assertion.
+    // We delete without assertion because those files cannot be deleted from external calls.
     // Any potential changes is rolled back if an error occurs later on in the function.
     for well_known_path in &well_known_paths {
         unsafe_delete_asset(&dapp_collection, well_known_path, &dapp_rule);

@@ -10,6 +10,6 @@ const ExchangePriceSchema = z.strictObject({
 	fetchedAt: z.iso.datetime()
 });
 
-export const ApiExchangePriceResponseSchema=  z.strictObject({
+export const ApiExchangePriceResponseSchema = z.strictObject({
 	price: ExchangePriceSchema
-})
+});

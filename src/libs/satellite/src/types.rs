@@ -56,6 +56,7 @@ pub mod state {
 }
 
 pub mod interface {
+    use crate::assets::storage::certified_assets::types::CertifyAssetsCursor;
     use crate::automation::types::AuthenticationAutomationError;
     use crate::db::types::config::DbConfig;
     use crate::Doc;
@@ -127,6 +128,16 @@ pub mod interface {
     pub enum AuthenticateAutomationResultResponse {
         Ok(PreparedAutomation),
         Err(AuthenticationAutomationError),
+    }
+
+    #[derive(CandidType, Serialize, Deserialize)]
+    pub struct CertifyAssetsArgs {
+        pub cursor: CertifyAssetsCursor,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize)]
+    pub struct CertifyAssetsResult {
+        pub next_cursor: Option<CertifyAssetsCursor>,
     }
 }
 

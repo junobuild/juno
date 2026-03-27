@@ -1,44 +1,28 @@
-use junobuild_storage::certification::types::certified::CertifiedAssetHashes;
-use junobuild_storage::certified_assets::extend_and_init_certified_assets;
-use junobuild_storage::types::config::StorageConfig;
+use crate::assets::storage::certified_assets::types::CertifyAssetsCursor;
 use crate::assets::storage::strategy_impls::StorageState;
 use crate::assets::storage::types::state::StableKey;
 use crate::certification::strategy_impls::StorageCertificate;
 use crate::memory::state::STATE;
+use crate::types::interface::{CertifyAssetsArgs, CertifyAssetsResult};
 use crate::types::state::State;
+use junobuild_storage::certification::types::certified::CertifiedAssetHashes;
+use junobuild_storage::certified_assets::extend_and_init_certified_assets;
+use junobuild_storage::types::config::StorageConfig;
 
-pub struct InitCertifiedAssetsArgs {
-    pub cursor: InitCertifiedAssetsCursor,
+pub fn certify_assets_chunk(args: CertifyAssetsArgs) -> CertifyAssetsResult {
+    STATE.with(|state| certify_assets_chunk_impl(&state.borrow(), args))
 }
 
-pub enum InitCertifiedAssetsCursor {
-    Heap { offset: usize },
-    Stable { key: Option<StableKey> },
-}
-
-pub struct InitCertifiedAssetsResult {
-    pub next_cursor: Option<InitCertifiedAssetsCursor>,
-}
-
-pub fn certify_assets_chunk(args: InitCertifiedAssetsArgs) -> InitCertifiedAssetsResult {
-    STATE.with(|state| {
-        certify_assets_chunk_impl(&state.borrow(), args)
-    })
-}
-
-fn certify_assets_chunk_impl(
-    state: &State,
-    args: InitCertifiedAssetsArgs,
-) -> InitCertifiedAssetsResult {
+fn certify_assets_chunk_impl(state: &State, args: CertifyAssetsArgs) -> CertifyAssetsResult {
     let mut asset_hashes = CertifiedAssetHashes::default();
 
     let config = &state.heap.storage.config;
 
     let next_cursor = match args.cursor {
-        InitCertifiedAssetsCursor::Heap { offset } => {
+        CertifyAssetsCursor::Heap { offset } => {
             process_heap_chunk(state, &mut asset_hashes, config, offset)
         }
-        InitCertifiedAssetsCursor::Stable { key } => {
+        CertifyAssetsCursor::Stable { key } => {
             process_stable_chunk(state, &mut asset_hashes, config, key)
         }
     };
@@ -50,7 +34,7 @@ fn certify_assets_chunk_impl(
         &StorageCertificate,
     );
 
-    InitCertifiedAssetsResult { next_cursor }
+    CertifyAssetsResult { next_cursor }
 }
 
 const CHUNK_SIZE: usize = 1000;
@@ -60,16 +44,25 @@ fn process_heap_chunk(
     asset_hashes: &mut CertifiedAssetHashes,
     config: &StorageConfig,
     offset: usize,
-) -> Option<InitCertifiedAssetsCursor> {
+) -> Option<CertifyAssetsCursor> {
     let mut count = 0;
 
-    for asset in state.heap.storage.assets.values().skip(offset).take(CHUNK_SIZE) {
+    for asset in state
+        .heap
+        .storage
+        .assets
+        .values()
+        .skip(offset)
+        .take(CHUNK_SIZE)
+    {
         asset_hashes.insert(asset, config);
         count += 1;
     }
 
     if count == CHUNK_SIZE {
-        Some(InitCertifiedAssetsCursor::Heap { offset: offset + CHUNK_SIZE })
+        Some(CertifyAssetsCursor::Heap {
+            offset: offset + CHUNK_SIZE,
+        })
     } else {
         None
     }
@@ -80,7 +73,7 @@ fn process_stable_chunk(
     asset_hashes: &mut CertifiedAssetHashes,
     config: &StorageConfig,
     from_key: Option<StableKey>,
-) -> Option<InitCertifiedAssetsCursor> {
+) -> Option<CertifyAssetsCursor> {
     let iter = match &from_key {
         None => state.stable.assets.iter(),
         Some(key) => state.stable.assets.iter_from_prev_key(key),
@@ -100,7 +93,7 @@ fn process_stable_chunk(
     }
 
     if count == CHUNK_SIZE {
-        Some(InitCertifiedAssetsCursor::Stable { key: last_key })
+        Some(CertifyAssetsCursor::Stable { key: last_key })
     } else {
         None
     }

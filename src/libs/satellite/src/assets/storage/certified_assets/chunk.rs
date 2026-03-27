@@ -16,21 +16,18 @@ pub fn certify_assets_chunk(args: CertifyAssetsArgs) -> CertifyAssetsResult {
 }
 
 fn certify_assets_chunk_impl(state: &State, args: CertifyAssetsArgs) -> CertifyAssetsResult {
-    let mut asset_hashes = CertifiedAssetHashes::default();
-
     let config = &state.heap.storage.config;
 
-    let chunk_size = args.chunk_size
+    let chunk_size = args
+        .chunk_size
         .map(|s| usize::try_from(s).unwrap_or(DEFAULT_CHUNK_SIZE))
         .unwrap_or(DEFAULT_CHUNK_SIZE);
 
-    let next_cursor = match args.cursor {
+    let (mut asset_hashes, next_cursor) = match args.cursor {
         CertifyAssetsCursor::Heap { offset } => {
-            process_heap_chunk(state, &mut asset_hashes, config, offset, chunk_size)
+            process_heap_chunk(state, config, offset, chunk_size)
         }
-        CertifyAssetsCursor::Stable { key } => {
-            process_stable_chunk(state, &mut asset_hashes, config, key, chunk_size)
-        }
+        CertifyAssetsCursor::Stable { key } => process_stable_chunk(state, config, key, chunk_size),
     };
 
     extend_and_init_certified_assets(
@@ -43,13 +40,15 @@ fn certify_assets_chunk_impl(state: &State, args: CertifyAssetsArgs) -> CertifyA
     CertifyAssetsResult { next_cursor }
 }
 
+type ProcessChunkResult = (CertifiedAssetHashes, Option<CertifyAssetsCursor>);
+
 fn process_heap_chunk(
     state: &State,
-    asset_hashes: &mut CertifiedAssetHashes,
     config: &StorageConfig,
     offset: usize,
     chunk_size: usize,
-) -> Option<CertifyAssetsCursor> {
+) -> ProcessChunkResult {
+    let mut asset_hashes = CertifiedAssetHashes::default();
     let mut count = 0;
 
     for asset in state
@@ -64,30 +63,32 @@ fn process_heap_chunk(
         count += 1;
     }
 
-    if count == chunk_size {
+    let next_cursor = if count == chunk_size {
         Some(CertifyAssetsCursor::Heap {
             offset: offset + chunk_size,
         })
     } else {
         None
-    }
+    };
+
+    (asset_hashes, next_cursor)
 }
 
 fn process_stable_chunk(
     state: &State,
-    asset_hashes: &mut CertifiedAssetHashes,
     config: &StorageConfig,
     from_key: Option<StableKey>,
     chunk_size: usize,
-) -> Option<CertifyAssetsCursor> {
+) -> ProcessChunkResult {
+    let mut asset_hashes = CertifiedAssetHashes::default();
+    let mut count = 0;
+
     let iter = match &from_key {
         None => state.stable.assets.iter(),
         Some(key) => state.stable.assets.iter_from_prev_key(key),
     };
 
     let mut last_key: Option<StableKey> = None;
-
-    let mut count = 0;
 
     for entry in iter.take(chunk_size) {
         asset_hashes.insert(&entry.value(), config);
@@ -98,9 +99,11 @@ fn process_stable_chunk(
         }
     }
 
-    if count == chunk_size {
+    let next_cursor = if count == chunk_size {
         Some(CertifyAssetsCursor::Stable { key: last_key })
     } else {
         None
-    }
+    };
+
+    (asset_hashes, next_cursor)
 }

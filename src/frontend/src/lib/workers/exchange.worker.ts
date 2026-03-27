@@ -91,7 +91,7 @@ const exchangeRateICPToUsd = async (): Promise<ExchangePrice | undefined> => {
 	}
 
 	const {
-		price: { price, fetchedAt }
+		exchange: { price, fetchedAt }
 	} = icp;
 
 	return {

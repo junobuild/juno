@@ -11,5 +11,5 @@ const ExchangePriceSchema = z.strictObject({
 });
 
 export const ApiExchangePriceResponseSchema = z.strictObject({
-	price: ExchangePriceSchema
+	exchange: ExchangePriceSchema
 });

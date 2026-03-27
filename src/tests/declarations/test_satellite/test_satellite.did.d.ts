@@ -106,6 +106,7 @@ export interface AutomationController {
 export type AutomationScope = { Write: null } | { Submit: null };
 export interface CertifyAssetsArgs {
 	cursor: CertifyAssetsCursor;
+	strategy: CertifyAssetsStrategy;
 	chunk_size: [] | [number];
 }
 export type CertifyAssetsCursor =
@@ -114,6 +115,7 @@ export type CertifyAssetsCursor =
 export interface CertifyAssetsResult {
 	next_cursor: [] | [CertifyAssetsCursor];
 }
+export type CertifyAssetsStrategy = { Reset: null } | { Accumulate: null };
 export type CollectionType = { Db: null } | { Storage: null };
 export interface CommitBatch {
 	batch_id: bigint;

@@ -45,18 +45,25 @@ describe('Satellite > Storage > certify_assets_chunk', () => {
 		}
 	};
 
-	const certifyChunks = async (cursor: SatelliteDid.CertifyAssetsCursor) => {
+	const certifyChunks = async ({
+		cursor,
+		strategy
+	}: {
+		cursor: SatelliteDid.CertifyAssetsCursor;
+		strategy: SatelliteDid.CertifyAssetsStrategy;
+	}) => {
 		const { certify_assets_chunk } = actor;
 
 		const result = await certify_assets_chunk({
 			cursor,
-			chunk_size: toNullable(2)
+			chunk_size: toNullable(2),
+			strategy
 		});
 
 		const next = fromNullable(result.next_cursor);
 
 		if (nonNullish(next)) {
-			await certifyChunks(next);
+			await certifyChunks({ cursor: next, strategy: { Accumulate: null } });
 		}
 	};
 
@@ -94,7 +101,10 @@ describe('Satellite > Storage > certify_assets_chunk', () => {
 		});
 
 		it('should certify all assets chunk by chunk', async () => {
-			await certifyChunks('Heap' in memory ? { Heap: { offset: 0n } } : { Stable: { key: [] } });
+			await certifyChunks({
+				cursor: 'Heap' in memory ? { Heap: { offset: 0n } } : { Stable: { key: [] } },
+				strategy: { Reset: null }
+			});
 			await assertAssets();
 		});
 	});

@@ -123,8 +123,13 @@ export const idlFactory = ({ IDL }) => {
 		Heap: IDL.Record({ offset: IDL.Nat64 }),
 		Stable: IDL.Record({ key: IDL.Opt(AssetKey) })
 	});
+	const CertifyAssetsStrategy = IDL.Variant({
+		Reset: IDL.Null,
+		Accumulate: IDL.Null
+	});
 	const CertifyAssetsArgs = IDL.Record({
 		cursor: CertifyAssetsCursor,
+		strategy: CertifyAssetsStrategy,
 		chunk_size: IDL.Opt(IDL.Nat32)
 	});
 	const CertifyAssetsResult = IDL.Record({

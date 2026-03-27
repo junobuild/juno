@@ -56,7 +56,6 @@ pub mod state {
 }
 
 pub mod interface {
-    use crate::assets::storage::certified_assets::types::CertifyAssetsCursor;
     use crate::automation::types::AuthenticationAutomationError;
     use crate::db::types::config::DbConfig;
     use crate::Doc;
@@ -71,6 +70,7 @@ pub mod interface {
     use junobuild_cdn::proposals::ProposalId;
     use junobuild_storage::types::config::StorageConfig;
     use serde::{Deserialize, Serialize};
+    use junobuild_storage::types::interface::{CertifyAssetsCursor, CertifyAssetsStrategy};
 
     #[derive(CandidType, Deserialize)]
     pub struct Config {
@@ -134,6 +134,7 @@ pub mod interface {
     pub struct CertifyAssetsArgs {
         pub cursor: CertifyAssetsCursor,
         pub chunk_size: Option<u32>,
+        pub strategy: CertifyAssetsStrategy,
     }
 
     #[derive(CandidType, Serialize, Deserialize)]

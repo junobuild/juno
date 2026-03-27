@@ -224,6 +224,18 @@ pub mod interface {
         pub max_memory_size: Option<StorageConfigMaxMemorySize>,
         pub version: Option<Version>,
     }
+
+    #[derive(CandidType, Serialize, Deserialize)]
+    pub enum CertifyAssetsCursor {
+        Heap { offset: usize },
+        Stable { key: Option<AssetKey> },
+    }
+
+    #[derive(CandidType, Serialize, Deserialize)]
+    pub enum CertifyAssetsStrategy {
+        Reset,
+        Accumulate,
+    }
 }
 
 pub mod config {

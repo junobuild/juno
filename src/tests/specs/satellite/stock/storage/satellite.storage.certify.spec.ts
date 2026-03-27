@@ -63,7 +63,7 @@ describe('Satellite > Storage > certify_assets_chunk', () => {
 		const next = fromNullable(result.next_cursor);
 
 		if (nonNullish(next)) {
-			await certifyChunks({ cursor: next, strategy: { Accumulate: null } });
+			await certifyChunks({ cursor: next, strategy: { AppendWithRouting: null } });
 		}
 	};
 
@@ -103,9 +103,40 @@ describe('Satellite > Storage > certify_assets_chunk', () => {
 		it('should certify all assets chunk by chunk', async () => {
 			await certifyChunks({
 				cursor: 'Heap' in memory ? { Heap: { offset: 0n } } : { Stable: { key: [] } },
-				strategy: { Reset: null }
+				strategy: { Clear: null }
 			});
 			await assertAssets();
+		});
+
+		it('should apply routing on last chunk', async () => {
+			const { set_storage_config, http_request } = actor;
+
+			await set_storage_config({
+				headers: [],
+				iframe: toNullable(),
+				redirects: [],
+				rewrites: [['/unknown.html', '/hello1.html']],
+				raw_access: toNullable(),
+				max_memory_size: toNullable(),
+				version: toNullable(1n)
+			});
+
+			await certifyChunks({
+				cursor: 'Heap' in memory ? { Heap: { offset: 0n } } : { Stable: { key: [] } },
+				strategy: { Clear: null }
+			});
+
+			const request: SatelliteDid.HttpRequest = {
+				body: Uint8Array.from([]),
+				certificate_version: toNullable(2),
+				headers: [],
+				method: 'GET',
+				url: '/unknown.html'
+			};
+
+			const response = await http_request(request);
+
+			await assertCertification({ canisterId, pic, request, response, currentDate });
 		});
 	});
 });

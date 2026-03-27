@@ -98,7 +98,7 @@ type CertifyAssetsCursor = variant {
   Stable : record { key : opt AssetKey };
 };
 type CertifyAssetsResult = record { next_cursor : opt CertifyAssetsCursor };
-type CertifyAssetsStrategy = variant { Reset; Accumulate };
+type CertifyAssetsStrategy = variant { Append; Clear; AppendWithRouting };
 type CollectionType = variant { Db; Storage };
 type CommitBatch = record {
   batch_id : nat;

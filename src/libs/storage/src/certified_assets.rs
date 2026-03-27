@@ -38,14 +38,18 @@ where
     let next_cursor = STATE.with(|state| {
         let asset_hashes = &mut state.borrow_mut().runtime.storage.asset_hashes;
 
-        if let CertifyAssetsStrategy::Reset = strategy {
+        if let CertifyAssetsStrategy::Clear = strategy {
             *asset_hashes = CertifiedAssetHashes::default();
         }
 
         let next_cursor = insert(asset_hashes);
 
         // 2. Extend with rewrite etc.
-        extend_certified_assets(asset_hashes, config, storage_state);
+        if next_cursor.is_none() {
+            if let CertifyAssetsStrategy::AppendWithRouting = strategy {
+                extend_certified_assets(asset_hashes, config, storage_state);
+            }
+        }
 
         next_cursor
     });

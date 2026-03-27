@@ -124,8 +124,9 @@ export const idlFactory = ({ IDL }) => {
 		Stable: IDL.Record({ key: IDL.Opt(AssetKey) })
 	});
 	const CertifyAssetsStrategy = IDL.Variant({
-		Reset: IDL.Null,
-		Accumulate: IDL.Null
+		Append: IDL.Null,
+		Clear: IDL.Null,
+		AppendWithRouting: IDL.Null
 	});
 	const CertifyAssetsArgs = IDL.Record({
 		cursor: CertifyAssetsCursor,

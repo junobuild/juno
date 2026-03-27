@@ -115,7 +115,10 @@ export type CertifyAssetsCursor =
 export interface CertifyAssetsResult {
 	next_cursor: [] | [CertifyAssetsCursor];
 }
-export type CertifyAssetsStrategy = { Reset: null } | { Accumulate: null };
+export type CertifyAssetsStrategy =
+	| { Append: null }
+	| { Clear: null }
+	| { AppendWithRouting: null };
 export type CollectionType = { Db: null } | { Storage: null };
 export interface CommitBatch {
 	batch_id: bigint;

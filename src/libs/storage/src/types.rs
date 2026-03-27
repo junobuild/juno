@@ -233,8 +233,9 @@ pub mod interface {
 
     #[derive(CandidType, Serialize, Deserialize)]
     pub enum CertifyAssetsStrategy {
-        Reset,
-        Accumulate,
+        Clear,
+        Append,
+        AppendWithRouting
     }
 }
 

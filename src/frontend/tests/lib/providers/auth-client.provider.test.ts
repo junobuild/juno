@@ -86,7 +86,9 @@ describe('auth-client.provider', () => {
 				expect.any(Object)
 			);
 
-			expect(authClientStorage.remove).toHaveBeenCalledExactlyOnceWith(KEY_STORAGE_KEY);
+			expect(authClientStorage.remove).toHaveBeenCalledTimes(2);
+			expect(authClientStorage.remove).toHaveBeenCalledWith(KEY_STORAGE_KEY);
+			expect(authClientStorage.remove).toHaveBeenCalledWith(KEY_STORAGE_DELEGATION);
 		});
 
 		it('should create a new key when called a second time', async () => {
@@ -109,7 +111,9 @@ describe('auth-client.provider', () => {
 				expect.any(Object)
 			);
 
-			expect(authClientStorage.remove).toHaveBeenCalledExactlyOnceWith(KEY_STORAGE_KEY);
+			expect(authClientStorage.remove).toHaveBeenCalledTimes(2);
+			expect(authClientStorage.remove).toHaveBeenCalledWith(KEY_STORAGE_KEY);
+			expect(authClientStorage.remove).toHaveBeenCalledWith(KEY_STORAGE_DELEGATION);
 		});
 	});
 });

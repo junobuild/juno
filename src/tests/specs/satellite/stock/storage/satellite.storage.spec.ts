@@ -181,18 +181,20 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 			it('should set and get config', async () => {
 				const { set_storage_config, get_config } = actor;
 
-				const storage: SatelliteDid.SetStorageConfig = {
+				const storage: Omit<SatelliteDid.SetStorageConfig, 'skip_certification'> = {
 					headers: [['*', [['cache-control', 'no-cache']]]],
 					iframe: toNullable({ Deny: null }),
 					redirects: [],
 					rewrites: [],
 					raw_access: toNullable(),
 					max_memory_size: toNullable(),
-					version: toNullable(),
-					skip_certification: toNullable()
+					version: toNullable()
 				};
 
-				await set_storage_config(storage);
+				await set_storage_config({
+					...storage,
+					skip_certification: toNullable()
+				});
 
 				const configs = await get_config();
 

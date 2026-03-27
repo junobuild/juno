@@ -146,7 +146,7 @@ describe('Satellite > Storage > certify_assets_chunk', () => {
 					rewrites: [['/unknown.html', '/hello1.html']],
 					raw_access: toNullable(),
 					max_memory_size: toNullable(),
-					version: toNullable('Heap' in memory ? 1n : 2n),
+					version: toNullable('Heap' in memory ? 1n : 3n),
 					skip_certification: []
 				});
 			});
@@ -220,7 +220,7 @@ describe('Satellite > Storage > certify_assets_chunk', () => {
 					rewrites: [],
 					raw_access: toNullable(),
 					max_memory_size: toNullable(),
-					version: toNullable('Heap' in memory ? 1n : 3n),
+					version: toNullable('Heap' in memory ? 1n : 4n),
 					skip_certification: toNullable(false)
 				});
 
@@ -255,7 +255,7 @@ describe('Satellite > Storage > certify_assets_chunk', () => {
 					rewrites: [],
 					raw_access: toNullable(),
 					max_memory_size: toNullable(),
-					version: toNullable('Heap' in memory ? 2n : 4n),
+					version: toNullable('Heap' in memory ? 2n : 5n),
 					skip_certification: toNullable()
 				});
 

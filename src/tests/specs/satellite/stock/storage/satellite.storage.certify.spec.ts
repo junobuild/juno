@@ -146,7 +146,7 @@ describe('Satellite > Storage > certify_assets_chunk', () => {
 					rewrites: [['/unknown.html', '/hello1.html']],
 					raw_access: toNullable(),
 					max_memory_size: toNullable(),
-					version: toNullable("Heap" in memory ? 1n : 3n),
+					version: toNullable('Heap' in memory ? 1n : 2n),
 					skip_certification: []
 				});
 			});
@@ -203,39 +203,74 @@ describe('Satellite > Storage > certify_assets_chunk', () => {
 			});
 		});
 
-		it('should not re-certify assets when skip_certification is set', async () => {
-			const { certify_assets_chunk, set_storage_config, http_request } = actor;
+		describe('Set storage config', () => {
+			it('should not re-certify assets when skip_certification is set', async () => {
+				const { certify_assets_chunk, set_storage_config, http_request } = actor;
 
-			await certify_assets_chunk({
-				cursor: 'Heap' in memory ? { Heap: { offset: 0n } } : { Stable: { key: [] } },
-				chunk_size: toNullable(2),
-				strategy: { Clear: null }
+				await certify_assets_chunk({
+					cursor: 'Heap' in memory ? { Heap: { offset: 0n } } : { Stable: { key: [] } },
+					chunk_size: toNullable(2),
+					strategy: { Clear: null }
+				});
+
+				await set_storage_config({
+					headers: [],
+					iframe: toNullable(),
+					redirects: [],
+					rewrites: [],
+					raw_access: toNullable(),
+					max_memory_size: toNullable(),
+					version: toNullable('Heap' in memory ? 1n : 3n),
+					skip_certification: toNullable(false)
+				});
+
+				const request: SatelliteDid.HttpRequest = {
+					body: Uint8Array.from([]),
+					certificate_version: toNullable(2),
+					headers: [],
+					method: 'GET',
+					url: '/hello3.html'
+				};
+
+				const response = await http_request(request);
+
+				await expect(
+					assertCertification({ canisterId, pic, request, response, currentDate })
+				).rejects.toThrow();
 			});
 
-			await set_storage_config({
-				headers: [],
-				iframe: toNullable(),
-				redirects: [],
-				rewrites: [],
-				raw_access: toNullable(),
-				max_memory_size: toNullable(),
-				version: toNullable('Heap' in memory ? 2n : 4n),
-				skip_certification: toNullable(true)
+			it('should re-certify assets when skip_certification is not set', async () => {
+				const { certify_assets_chunk, set_storage_config, http_request } = actor;
+
+				await certify_assets_chunk({
+					cursor: 'Heap' in memory ? { Heap: { offset: 0n } } : { Stable: { key: [] } },
+					chunk_size: toNullable(2),
+					strategy: { Clear: null }
+				});
+
+				await set_storage_config({
+					headers: [],
+					iframe: toNullable(),
+					redirects: [],
+					rewrites: [],
+					raw_access: toNullable(),
+					max_memory_size: toNullable(),
+					version: toNullable('Heap' in memory ? 2n : 4n),
+					skip_certification: toNullable()
+				});
+
+				const request: SatelliteDid.HttpRequest = {
+					body: Uint8Array.from([]),
+					certificate_version: toNullable(2),
+					headers: [],
+					method: 'GET',
+					url: '/hello3.html'
+				};
+
+				const response = await http_request(request);
+
+				await assertCertification({ canisterId, pic, request, response, currentDate });
 			});
-
-			const request: SatelliteDid.HttpRequest = {
-				body: Uint8Array.from([]),
-				certificate_version: toNullable(2),
-				headers: [],
-				method: 'GET',
-				url: '/hello3.html'
-			};
-
-			const response = await http_request(request);
-
-			await expect(
-				assertCertification({ canisterId, pic, request, response, currentDate })
-			).rejects.toThrow();
 		});
 	});
 

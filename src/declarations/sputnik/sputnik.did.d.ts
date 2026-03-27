@@ -104,6 +104,16 @@ export interface AutomationController {
 	expires_at: bigint;
 }
 export type AutomationScope = { Write: null } | { Submit: null };
+export interface CertifyAssetsArgs {
+	cursor: CertifyAssetsCursor;
+	chunk_size: [] | [number];
+}
+export type CertifyAssetsCursor =
+	| { Heap: { offset: bigint } }
+	| { Stable: { key: [] | [AssetKey] } };
+export interface CertifyAssetsResult {
+	next_cursor: [] | [CertifyAssetsCursor];
+}
 export type CollectionType = { Db: null } | { Storage: null };
 export interface CommitBatch {
 	batch_id: bigint;
@@ -515,6 +525,7 @@ export interface _SERVICE {
 		[AuthenticateAutomationArgs],
 		AuthenticateAutomationResultResponse
 	>;
+	certify_assets_chunk: ActorMethod<[CertifyAssetsArgs], CertifyAssetsResult>;
 	commit_asset_upload: ActorMethod<[CommitBatch], undefined>;
 	commit_proposal: ActorMethod<[CommitProposal], null>;
 	commit_proposal_asset_upload: ActorMethod<[CommitBatch], undefined>;

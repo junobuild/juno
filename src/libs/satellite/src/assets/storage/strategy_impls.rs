@@ -1,6 +1,6 @@
 use crate::assets::assert::assert_cdn_asset_keys;
 use crate::assets::storage::assert::assert_storage_list_permission;
-use crate::assets::storage::certified_assets::runtime::init_certified_assets;
+use crate::assets::storage::certified_assets::all::certify_all_assets;
 use crate::assets::storage::state::{
     delete_asset, get_asset, get_config, get_domains, get_rule, insert_asset, insert_asset_encoding,
 };
@@ -172,7 +172,7 @@ impl StorageStateStrategy for StorageState {
     }
 
     fn init_certified_assets(&self) {
-        init_certified_assets();
+        certify_all_assets();
     }
 }
 

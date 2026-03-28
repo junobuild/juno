@@ -1,7 +1,8 @@
 import {
 	CONSOLE_CANISTER_ID,
 	GITHUB_CLIENT_ID,
-	GOOGLE_CLIENT_ID
+	GOOGLE_CLIENT_ID,
+	JUNO_API_URL
 } from '$lib/constants/app.constants';
 import { AuthClientProvider } from '$lib/providers/auth-client.provider';
 import {
@@ -31,8 +32,6 @@ export const signInWithGoogle = async () => {
 };
 
 export const signInWithGitHub = async () => {
-	const JUNO_API_URL = import.meta.env.VITE_JUNO_API_URL;
-
 	await signInWithOpenId<Pick<RequestGitHubJwtRedirect, 'initUrl'>>({
 		clientId: GITHUB_CLIENT_ID,
 		provider: 'github',
@@ -150,8 +149,6 @@ export const handleRedirectCallback = async ({
 			if (provider === 'google') {
 				return { google: null };
 			}
-
-			const JUNO_API_URL = import.meta.env.VITE_JUNO_API_URL;
 
 			return {
 				github: nonNullish(JUNO_API_URL)

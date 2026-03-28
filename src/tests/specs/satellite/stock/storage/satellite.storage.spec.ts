@@ -541,7 +541,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 				it('should set a config for a rewrite and redirect', async () => {
 					const { set_storage_config, get_config } = actor;
 
-					const storage: SatelliteDid.SetStorageConfig = {
+					const storage: Omit<SatelliteDid.SetStorageConfig, 'skip_certification'> = {
 						headers: [['*', [['cache-control', 'no-cache']]]],
 						iframe: toNullable({ Deny: null }),
 						redirects: [
@@ -558,11 +558,13 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 						rewrites: [['/hello.html', '/hello.html']],
 						raw_access: toNullable(),
 						max_memory_size: toNullable(),
-						version: toNullable(1n),
-						skip_certification: toNullable()
+						version: toNullable(1n)
 					};
 
-					await set_storage_config(storage);
+					await set_storage_config({
+						...storage,
+						skip_certification: toNullable()
+					});
 
 					const configs = await get_config();
 
@@ -1552,18 +1554,20 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 			it('should return config after set', async () => {
 				const { set_storage_config } = actor;
 
-				const config: SatelliteDid.SetStorageConfig = {
+				const config: Omit<SatelliteDid.SetStorageConfig, 'skip_certification'> = {
 					headers: [['*', [['cache-control', 'no-cache']]]],
 					iframe: toNullable({ Deny: null }),
 					redirects: [],
 					rewrites: [],
 					raw_access: toNullable(),
 					max_memory_size: toNullable(),
-					version: toNullable(16n),
-					skip_certification: toNullable()
+					version: toNullable(16n)
 				};
 
-				const result = await set_storage_config(config);
+				const result = await set_storage_config({
+					...config,
+					skip_certification: toNullable()
+				});
 
 				expect(result).toEqual(
 					expect.objectContaining({

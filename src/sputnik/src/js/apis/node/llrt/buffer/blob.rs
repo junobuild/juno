@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 use std::ops::RangeInclusive;
 
-use crate::js::apis::node::blob::llrt::utils::{
+use crate::js::apis::node::llrt::utils::{
     bytes::ObjectBytes,
     primordials::{BasePrimordials, Primordial},
     result::ResultExt,

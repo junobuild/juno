@@ -11,6 +11,7 @@ use junobuild_shared::ic::api::id;
 use rquickjs::{
     Array, Ctx, Error as JsError, FromJs, IntoJs, Object, Result as JsResult, TypedArray, Value,
 };
+use crate::js::utils::primitives::into_bigint_js;
 
 impl<'js> JsUint8Array<'js> {
     pub fn from_bytes(ctx: &Ctx<'js>, bytes: &[u8]) -> JsResult<Self> {
@@ -130,7 +131,7 @@ impl<'js> JsHttpRequestResult<'js> {
 impl<'js> IntoJs<'js> for JsHttpRequestResult<'js> {
     fn into_js(self, ctx: &Ctx<'js>) -> JsResult<Value<'js>> {
         let obj = Object::new(ctx.clone())?;
-        obj.set("status", self.status)?;
+        obj.set("status", into_bigint_js(ctx, self.status)?)?;
 
         let headers_arr = Array::new(ctx.clone())?;
         for (i, h) in self.headers.into_iter().enumerate() {

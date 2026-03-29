@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { nonNullish, notEmptyString, fromNullishNullable } from '@dfinity/utils';
+	import { nonNullish, notEmptyString, fromNullishNullable, NullishError } from '@dfinity/utils';
 	import type { Principal } from '@icp-sdk/core/principal';
 	import type { MissionControlDid } from '$declarations';
 	import MonitoringCreateSelectStrategy from '$lib/components/monitoring/MonitoringCreateSelectStrategy.svelte';
@@ -21,6 +21,7 @@
 	import type { MissionControlId } from '$lib/types/mission-control';
 	import type { MonitoringStrategyProgress } from '$lib/types/progress-strategy';
 	import { metadataEmail } from '$lib/utils/metadata.utils';
+	import type { Nullish } from '@dfinity/zod-schemas';
 
 	interface Props {
 		missionControlId: MissionControlId;
@@ -93,7 +94,7 @@
 	let metadata = $derived(user.metadata);
 	let missionControlEmail = $derived(metadataEmail(metadata));
 	let hasMissionControlEmail = $derived(nonNullish(missionControlEmail));
-	let userEmail = $state(undefined);
+	let userEmail = $state<Nullish<string>>(undefined);
 
 	// Strategy choice
 

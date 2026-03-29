@@ -3,7 +3,7 @@
 
 	export interface SelectedCustomDomain {
 		customDomain: CustomDomain | undefined;
-		registrationState: Option<CustomDomainState>;
+		registrationState: Nullish<CustomDomainState>;
 		mainDomain: boolean;
 	}
 </script>

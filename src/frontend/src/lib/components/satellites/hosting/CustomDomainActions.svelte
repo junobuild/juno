@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { isNullish, nonNullish, fromNullishNullable } from '@dfinity/utils';
+	import type { Nullish } from '@dfinity/zod-schemas';
 	import { run, stopPropagation } from 'svelte/legacy';
 	import type { SatelliteDid } from '$declarations';
 	import { setAuthConfig } from '$lib/api/satellites.api';
@@ -20,7 +21,6 @@
 	import { buildDeleteAuthenticationConfig } from '$lib/utils/auth.config.utils';
 	import { emit } from '$lib/utils/events.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
-	import type { Nullish } from '@dfinity/zod-schemas';
 
 	interface Props {
 		satellite: Satellite;

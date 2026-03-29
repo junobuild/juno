@@ -1,7 +1,7 @@
 use std::str;
 
-use crate::js::apis::node::text_encoding::javy::impls::Args;
-use crate::js::apis::node::text_encoding::javy::utils::{to_js_error, to_string_lossy};
+use crate::js::apis::node::javy::text_encoding::impls::Args;
+use crate::js::apis::node::javy::text_encoding::utils::{to_js_error, to_string_lossy};
 use crate::{hold, hold_and_release};
 use anyhow::{anyhow, bail, Error, Result};
 use rquickjs::{

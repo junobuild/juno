@@ -1,7 +1,7 @@
-mod javy;
+mod text_encoding;
 
 use crate::errors::js::JUNO_SPUTNIK_ERROR_JS_API_TEXT_ENCODING;
-use crate::js::apis::node::text_encoding::javy::polyfill::register;
+use crate::js::apis::node::javy::text_encoding::polyfill::register;
 use crate::js::inner_utils::throw_js_exception;
 use rquickjs::{Ctx, Error as JsError};
 

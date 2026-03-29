@@ -128,6 +128,16 @@ const resources = [
 		src: '/awslabs/llrt/refs/heads/main/libs/llrt_utils/src/bytes.rs',
 		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/llrt/llrt_utils/bytes.rs'),
 		transform: transformLlrtUtils
+	},
+	{
+		src: '/awslabs/llrt/refs/heads/main/modules/llrt_url/src/url_class.rs',
+		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/llrt/llrt_url/url_class.rs'),
+		transform: transformLlrtUtilsPath
+	},
+	{
+		src: '/awslabs/llrt/refs/heads/main/modules/llrt_url/src/url_search_params.rs',
+		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/llrt/llrt_url/url_search_params.rs'),
+		transform: transformLlrtUtilsPath
 	}
 ];
 

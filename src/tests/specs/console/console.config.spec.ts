@@ -49,7 +49,8 @@ describe('Console > Storage', () => {
 					rewrites: [],
 					raw_access: toNullable(),
 					max_memory_size: toNullable(),
-					version: toNullable()
+					version: toNullable(),
+					skip_certification: toNullable(),
 				})
 			).rejects.toThrow(CONTROLLER_ERROR_MSG);
 		});

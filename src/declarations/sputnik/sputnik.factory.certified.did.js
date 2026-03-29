@@ -523,7 +523,8 @@ export const idlFactory = ({ IDL }) => {
 		version: IDL.Opt(IDL.Nat64),
 		max_memory_size: IDL.Opt(ConfigMaxMemorySize),
 		raw_access: IDL.Opt(StorageConfigRawAccess),
-		redirects: IDL.Opt(IDL.Vec(IDL.Tuple(IDL.Text, StorageConfigRedirect)))
+		redirects: IDL.Opt(IDL.Vec(IDL.Tuple(IDL.Text, StorageConfigRedirect))),
+		skip_certification: IDL.Opt(IDL.Bool)
 	});
 	const UploadChunk = IDL.Record({
 		content: IDL.Vec(IDL.Nat8),

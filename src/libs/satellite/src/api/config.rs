@@ -1,6 +1,5 @@
-use crate::assets::storage::store::{
-    get_config_store as get_storage_config_store, set_config_store as set_storage_config_store,
-};
+use crate::assets::storage::services::apply_storage_config;
+use crate::assets::storage::store::get_config_store as get_storage_config_store;
 use crate::auth::store::{
     get_config as get_auth_config_store, set_config as set_auth_config_store,
 };
@@ -19,7 +18,6 @@ use junobuild_auth::state::types::interface::{SetAuthenticationConfig, SetAutoma
 use junobuild_shared::ic::UnwrapOrTrap;
 use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::interface::SetStorageConfig;
-
 // ---------------------------------------------------------
 // Config
 // ---------------------------------------------------------
@@ -79,7 +77,7 @@ pub fn get_db_config() -> Option<DbConfig> {
 // ---------------------------------------------------------
 
 pub fn set_storage_config(config: SetStorageConfig) -> StorageConfig {
-    set_storage_config_store(&config).unwrap_or_trap()
+    apply_storage_config(&config).unwrap_or_trap()
 }
 
 pub fn get_storage_config() -> StorageConfig {

@@ -30,6 +30,11 @@ const saveJS = async ({ dest, content }) => {
 	await writeFile(dest, noCheckContent, 'utf-8');
 };
 
+const transformFilterTest = (content) => {
+	const startTest = content.indexOf('#[cfg(test)]');
+	return startTest > -1 ? content.slice(0, startTest) : content;
+};
+
 const transformTextEncodingPolyfill = (content) => {
 	const startIndex = content.indexOf('/// Register `TextDecoder` and `TextEncoder` classes.');
 
@@ -41,10 +46,7 @@ const transformTextEncodingPolyfill = (content) => {
 
 	const withoutUseContent = content.slice(startIndex);
 
-	const startTest = withoutUseContent.indexOf('#[cfg(test)]');
-
-	const filteredContent =
-		startTest > -1 ? withoutUseContent.slice(0, startTest) : withoutUseContent;
+	const filteredContent = transformFilterTest(withoutUseContent);
 
 	return `use std::str;
 
@@ -66,6 +68,11 @@ const transformLlrtUtilsPath = (content) =>
 const transformLlrtUtils = (content) => {
 	const parsedContent = content.replace(/^use crate::\s*\n?/m, 'use super::');
 	return `#![allow(dead_code)]\n\n${parsedContent}`;
+};
+
+const transformLlrtUrlSearchParams = (content) => {
+	const filteredContent = transformFilterTest(content);
+	return transformLlrtUtilsPath(filteredContent);
 };
 
 const savePolyfill = async ({ dest, content, transform }) => {
@@ -137,7 +144,7 @@ const resources = [
 	{
 		src: '/awslabs/llrt/refs/heads/main/modules/llrt_url/src/url_search_params.rs',
 		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/llrt/llrt_url/url_search_params.rs'),
-		transform: transformLlrtUtilsPath
+		transform: transformLlrtUrlSearchParams
 	}
 ];
 

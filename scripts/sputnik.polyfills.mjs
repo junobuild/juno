@@ -60,10 +60,8 @@ ${filteredContent.trim()}
 `;
 };
 
-const transformLlrtBlob = (content) =>
-	content
-		.replace(/^use llrt_utils::\s*\n?/m, 'use crate::js::apis::node::blob::llrt::utils::')
-		.replace(/^use super::blob::Blob;\s*\n?/m, 'use super::polyfill::Blob;\n\n');
+const transformLlrtUtilsPath = (content) =>
+	content.replace(/^use llrt_utils::\s*\n?/m, 'use crate::js::apis::node::llrt::llrt_utils::');
 
 const transformLlrtUtils = (content) => {
 	const parsedContent = content.replace(/^use crate::\s*\n?/m, 'use super::');
@@ -89,12 +87,12 @@ const resources = [
 	{
 		src: '/awslabs/llrt/refs/heads/main/modules/llrt_buffer/src/blob.rs',
 		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/llrt/llrt_buffer/blob.rs'),
-		transform: transformLlrtBlob
+		transform: transformLlrtUtilsPath
 	},
 	{
 		src: '/awslabs/llrt/refs/heads/main/modules/llrt_buffer/src/file.rs',
 		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/llrt/llrt_buffer/file.rs'),
-		transform: transformLlrtBlob
+		transform: transformLlrtUtilsPath
 	},
 	{
 		src: '/awslabs/llrt/refs/heads/main/libs/llrt_utils/src/time.rs',

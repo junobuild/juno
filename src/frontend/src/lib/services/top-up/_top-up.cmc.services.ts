@@ -2,7 +2,7 @@ import { notifyTopUp } from '$lib/api/cmc.api';
 import { MEMO_CMC_TOP_UP } from '$lib/constants/wallet.constants';
 import { pollNotifyCmc, sendIcpToCmc } from '$lib/services/cmc.services';
 import { i18n } from '$lib/stores/app/i18n.store';
-import type { OptionIdentity } from '$lib/types/itentity';
+import type { NullishIdentity } from '$lib/types/itentity';
 import { i18nFormat } from '$lib/utils/i18n.utils';
 import type { TokenAmountV2 } from '@dfinity/utils';
 import { ProcessingError } from '@icp-sdk/canisters/cmc';
@@ -12,7 +12,7 @@ import { get } from 'svelte/store';
 
 interface TopUpWithCmcParams {
 	canisterId: Principal;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 	tokenAmount: TokenAmountV2;
 }
 

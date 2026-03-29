@@ -8,7 +8,7 @@ import { accountErrorSignOut } from '$lib/services/console/auth/auth.services';
 import { accountCertifiedStore } from '$lib/stores/account.store';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
-import type { OptionIdentity } from '$lib/types/itentity';
+import type { NullishIdentity } from '$lib/types/itentity';
 import { isNullish, nonNullish } from '@dfinity/utils';
 import type { Identity } from '@icp-sdk/core/agent';
 import { get } from 'svelte/store';
@@ -16,7 +16,7 @@ import { get } from 'svelte/store';
 export const initAccount = async ({
 	identity
 }: {
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<{ result: 'skip' | 'success' | 'error' }> => {
 	// If not signed in, we are not going to init and load a mission control.
 	if (isNullish(identity)) {

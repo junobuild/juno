@@ -6,7 +6,7 @@ import type {
 	CreateWithConfig,
 	CreateWithConfigAndName
 } from '$lib/types/factory';
-import type { OptionIdentity } from '$lib/types/itentity';
+import type { NullishIdentity } from '$lib/types/itentity';
 import type { Metadata } from '$lib/types/metadata';
 import type { OrbiterId } from '$lib/types/orbiter';
 import type { SatelliteId } from '$lib/types/satellite';
@@ -30,7 +30,7 @@ export const getAccount = async (
 	return fromNullable(await get_account());
 };
 
-export const getCredits = async (identity: OptionIdentity): Promise<bigint> => {
+export const getCredits = async (identity: NullishIdentity): Promise<bigint> => {
 	const { get_credits } = await getConsoleActor({ identity });
 	const { e8s } = await get_credits();
 	return e8s;
@@ -39,19 +39,19 @@ export const getCredits = async (identity: OptionIdentity): Promise<bigint> => {
 export const getSatelliteFee = async ({
 	identity
 }: {
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<ConsoleDid.FactoryFee> => await getFee({ identity, segmentKind: { Satellite: null } });
 
 export const getOrbiterFee = async ({
 	identity
 }: {
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<ConsoleDid.FactoryFee> => await getFee({ identity, segmentKind: { Orbiter: null } });
 
 export const getMissionControlFee = async ({
 	identity
 }: {
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<ConsoleDid.FactoryFee> =>
 	await getFee({ identity, segmentKind: { MissionControl: null } });
 
@@ -59,7 +59,7 @@ const getFee = async ({
 	identity,
 	segmentKind
 }: {
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 	segmentKind: ConsoleDid.SegmentKind;
 }): Promise<ConsoleDid.FactoryFee> => {
 	const { get_fee } = await getConsoleActor({ identity });
@@ -75,7 +75,7 @@ export const setSegmentMetadata = async ({
 	segmentId: Principal;
 	segmentKind: ConsoleDid.StorableSegmentKind;
 	metadata: Metadata;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<ConsoleDid.Segment> => {
 	const { set_segment_metadata } = await getConsoleActor({ identity });
 	return set_segment_metadata({
@@ -90,7 +90,7 @@ export const unsetSegment = async ({
 	identity
 }: {
 	args: ConsoleDid.UnsetSegmentsArgs;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<void> => {
 	const { unset_segment } = await getConsoleActor({ identity });
 	await unset_segment(args);
@@ -101,7 +101,7 @@ export const setSegment = async ({
 	identity
 }: {
 	args: ConsoleDid.SetSegmentsArgs;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<ConsoleDid.Segment> => {
 	const { set_segment } = await getConsoleActor({ identity });
 	return set_segment(args);
@@ -112,7 +112,7 @@ export const setManySegments = async ({
 	identity
 }: {
 	args: ConsoleDid.SetSegmentsArgs[];
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<ConsoleDid.Segment[]> => {
 	const { set_many_segments } = await getConsoleActor({ identity });
 	return set_many_segments(args);
@@ -122,7 +122,7 @@ export const createMissionControlWithConfig = async ({
 	identity,
 	config: { subnetId }
 }: {
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 	config: CreateWithConfig;
 }): Promise<SatelliteId> => {
 	assertNonNullish(identity);
@@ -140,7 +140,7 @@ export const createSatelliteWithConfig = async ({
 	identity,
 	config: { name, subnetId, kind }
 }: {
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 	config: CreateSatelliteConfig;
 }): Promise<SatelliteId> => {
 	assertNonNullish(identity);
@@ -173,7 +173,7 @@ export const createOrbiterWithConfig = async ({
 	identity,
 	config: { name, subnetId }
 }: {
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 	config: CreateWithConfigAndName;
 }): Promise<OrbiterId> => {
 	assertNonNullish(identity);

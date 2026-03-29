@@ -1,7 +1,7 @@
 import { icpTransfer as icpTransferWithDev } from '$lib/api/icp-ledger.api';
 import { CMC_CANISTER_ID } from '$lib/constants/app.constants';
 import { ICP_TOP_UP_FEE, ICP_TRANSACTION_FEE } from '$lib/constants/token.constants';
-import type { OptionIdentity } from '$lib/types/itentity';
+import type { NullishIdentity } from '$lib/types/itentity';
 import { nowInBigIntNanoSeconds } from '$lib/utils/date.utils';
 import { waitForMilliseconds } from '$lib/utils/timeout.utils';
 import { principalToSubAccount, type TokenAmountV2 } from '@dfinity/utils';
@@ -15,7 +15,7 @@ import { Principal } from '@icp-sdk/core/principal';
 
 interface SendIcpToCmcParams {
 	subAccount: Principal;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 	tokenAmount: TokenAmountV2;
 	memo: bigint;
 }

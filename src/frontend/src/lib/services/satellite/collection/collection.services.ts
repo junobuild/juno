@@ -13,7 +13,7 @@ import { SATELLITE_v0_0_21, SATELLITE_v0_1_4 } from '$lib/constants/version.cons
 import { isSatelliteFeatureSupported } from '$lib/services/_feature.services';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
-import type { OptionIdentity } from '$lib/types/itentity';
+import type { NullishIdentity } from '$lib/types/itentity';
 import { memoryFromText, permissionFromText } from '$lib/utils/rules.utils';
 import { fromNullable, isNullish, nonNullish, toNullable } from '@dfinity/utils';
 import type { Principal } from '@icp-sdk/core/principal';
@@ -34,7 +34,7 @@ export const setRule = async ({
 	satelliteId: Principal;
 	collection: string;
 	type: SatelliteDid.CollectionType;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 	read: PermissionText;
 	write: PermissionText;
 	memory: MemoryText;
@@ -76,7 +76,7 @@ export const setRule = async ({
 
 export const getRuleUser = (params: {
 	satelliteId: Principal;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<{ result: 'success' | 'error' | 'skip'; rule?: SatelliteDid.Rule | undefined }> =>
 	getRuleForCollection({
 		...params,
@@ -87,7 +87,7 @@ export const getRuleUser = (params: {
 
 export const getRuleDapp = (params: {
 	satelliteId: Principal;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<{ result: 'success' | 'error' | 'skip'; rule?: SatelliteDid.Rule | undefined }> =>
 	getRuleForCollection({
 		...params,
@@ -104,7 +104,7 @@ const getRuleForCollection = async ({
 	type
 }: {
 	satelliteId: Principal;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 	requiredMinVersion: string;
 	collection: string;
 	type: SatelliteDid.CollectionType;

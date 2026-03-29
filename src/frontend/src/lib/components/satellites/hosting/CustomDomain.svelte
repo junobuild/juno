@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { isNullish, nonNullish, fromNullishNullable } from '@dfinity/utils';
+	import type { Nullish } from '@dfinity/zod-schemas';
 	import { createEventDispatcher, onDestroy, onMount } from 'svelte';
 	import { run } from 'svelte/legacy';
 	import type { SatelliteDid } from '$declarations';
@@ -13,7 +14,6 @@
 	import type { CustomDomain, CustomDomainState } from '$lib/types/custom-domain';
 	import type { PostMessageDataResponseHosting } from '$lib/types/post-message';
 	import type { Satellite } from '$lib/types/satellite';
-	import type { Option } from '$lib/types/utils';
 	import { emit } from '$lib/utils/events.utils';
 	import { keyOf } from '$lib/utils/utils';
 
@@ -23,7 +23,7 @@
 		type?: 'default' | 'custom';
 		customDomain?: CustomDomain | undefined;
 		satellite?: Satellite | undefined;
-		config?: Option<SatelliteDid.AuthenticationConfig>;
+		config?: Nullish<SatelliteDid.AuthenticationConfig>;
 	}
 
 	let {
@@ -40,13 +40,13 @@
 		({ host } = new URL(url));
 	});
 
-	let authDomain: string | undefined = $derived(
+	let authDomain = $derived(
 		fromNullishNullable(fromNullishNullable(config?.internet_identity)?.derivation_origin)
 	);
 
-	let mainDomain: boolean = $derived(host === authDomain && nonNullish(authDomain));
+	let mainDomain = $derived(host === authDomain && nonNullish(authDomain));
 
-	let registrationState: Option<CustomDomainState> = $state(undefined);
+	let registrationState = $state<Nullish<CustomDomainState>>(undefined);
 
 	let worker = $state<HostingWorker | undefined>();
 

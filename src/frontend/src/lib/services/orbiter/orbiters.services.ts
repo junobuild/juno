@@ -14,7 +14,7 @@ import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
 import { authStore } from '$lib/stores/auth.store';
 import { orbitersConfigsStore } from '$lib/stores/orbiter/orbiter-configs.store';
-import type { OptionIdentity } from '$lib/types/itentity';
+import type { NullishIdentity } from '$lib/types/itentity';
 import type { OrbiterSatelliteConfigEntry } from '$lib/types/orbiter';
 import type { SatelliteIdText } from '$lib/types/satellite';
 import { nonNullish, toNullable } from '@dfinity/utils';
@@ -76,7 +76,7 @@ const listOrbiterSatelliteConfigs = async ({
 	...rest
 }: {
 	orbiterId: Principal;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 	orbiterVersion: string;
 }): Promise<[Principal, OrbiterDid.OrbiterSatelliteConfig][]> => {
 	if (compare(orbiterVersion, ORBITER_v0_0_8) >= 0) {
@@ -105,7 +105,7 @@ export const setOrbiterSatelliteConfigs = async ({
 }: {
 	orbiterId: Principal;
 	config: Record<SatelliteIdText, OrbiterSatelliteConfigEntry>;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 	orbiterVersion: string;
 	features: OrbiterDid.OrbiterSatelliteFeatures | undefined;
 }): Promise<[Principal, OrbiterDid.OrbiterSatelliteConfig][]> => {

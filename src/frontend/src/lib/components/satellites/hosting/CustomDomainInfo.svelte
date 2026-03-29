@@ -3,13 +3,14 @@
 
 	export interface SelectedCustomDomain {
 		customDomain: CustomDomain | undefined;
-		registrationState: Option<CustomDomainState>;
+		registrationState: Nullish<CustomDomainState>;
 		mainDomain: boolean;
 	}
 </script>
 
 <script lang="ts">
 	import { nonNullish, fromNullishNullable } from '@dfinity/utils';
+	import type { Nullish } from '@dfinity/zod-schemas';
 	import { createEventDispatcher } from 'svelte';
 	import { run, stopPropagation } from 'svelte/legacy';
 	import { fade } from 'svelte/transition';
@@ -18,7 +19,6 @@
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import type { Option } from '$lib/types/utils';
 	import { keyOf } from '$lib/utils/utils';
 
 	interface Props {
@@ -30,7 +30,7 @@
 	let { customDomain, mainDomain } = $derived(info);
 
 	// svelte-ignore state_referenced_locally
-	let registrationState = $state<Option<CustomDomainState>>(info.registrationState);
+	let registrationState = $state<Nullish<CustomDomainState>>(info.registrationState);
 
 	let visible = $state(true);
 

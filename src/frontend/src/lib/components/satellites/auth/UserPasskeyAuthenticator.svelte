@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { isNullish, nonNullish, notEmptyString } from '@dfinity/utils';
+	import type { Nullish } from '@dfinity/zod-schemas';
 	import { bytesToAAGUID } from '@junobuild/ic-client/webauthn';
 	import Value from '$lib/components/ui/Value.svelte';
 	import aaguids from '$lib/env/aaguids.json';
@@ -8,7 +9,6 @@
 	import { theme } from '$lib/stores/app/theme.store';
 	import { Theme } from '$lib/types/theme';
 	import type { User } from '$lib/types/user';
-	import type { Option } from '$lib/types/utils';
 
 	interface Props {
 		user: User;
@@ -16,7 +16,7 @@
 
 	let { user }: Props = $props();
 
-	const mapAaguid = (user: User): Option<Aaguid> => {
+	const mapAaguid = (user: User): Nullish<Aaguid> => {
 		const {
 			data: { providerData }
 		} = user;
@@ -44,7 +44,7 @@
 		return aaguidText;
 	};
 
-	const mapAaguidText = (aaguid: Option<Aaguid>): Option<AaguidName> => {
+	const mapAaguidText = (aaguid: Nullish<Aaguid>): Nullish<AaguidName> => {
 		if (isNullish(aaguid)) {
 			return null;
 		}

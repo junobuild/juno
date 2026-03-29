@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
+	import type { Nullish } from '@dfinity/zod-schemas';
 	import type { PrincipalText } from '@junobuild/schema';
 	import FactoryAdvancedOptions from '$lib/components/modules/factory/create/FactoryAdvancedOptions.svelte';
 	import FactoryCredits from '$lib/components/modules/factory/create/FactoryCredits.svelte';
@@ -12,7 +13,6 @@
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { JunoModalDetail } from '$lib/types/modal';
 	import type { FactoryCreateProgress } from '$lib/types/progress-factory-create';
-	import type { Option } from '$lib/types/utils';
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -22,7 +22,7 @@
 
 	let { detail, onclose, oncontinue }: Props = $props();
 
-	let withFee = $state<Option<bigint>>(undefined);
+	let withFee = $state<Nullish<bigint>>(undefined);
 	let insufficientFunds = $state(true);
 
 	let step: 'init' | 'in_progress' | 'ready' | 'error' = $state('init');

@@ -1,7 +1,7 @@
 import type { DataStore } from '$lib/stores/_data.store';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
-import type { OptionIdentity } from '$lib/types/itentity';
+import type { NullishIdentity } from '$lib/types/itentity';
 import { assertNonNullish } from '@dfinity/utils';
 import type { Identity } from '@icp-sdk/core/agent';
 import { get } from 'svelte/store';
@@ -13,7 +13,7 @@ export const loadDataStore = async <T>({
 	errorLabel,
 	reload = false
 }: {
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 	store: DataStore<T>;
 	load: (identity: Identity) => Promise<T>;
 	errorLabel: keyof I18nErrors;

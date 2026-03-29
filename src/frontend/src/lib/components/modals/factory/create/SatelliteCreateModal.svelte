@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
+	import type { Nullish } from '@dfinity/zod-schemas';
 	import type { PrincipalText } from '@junobuild/schema';
 	import type { MissionControlDid } from '$declarations';
 	import FactoryAdvancedOptions from '$lib/components/modules/factory/create/FactoryAdvancedOptions.svelte';
@@ -19,7 +20,6 @@
 	import type { JunoModalDetail } from '$lib/types/modal';
 	import type { FactoryCreateProgress } from '$lib/types/progress-factory-create';
 	import type { SatelliteId } from '$lib/types/satellite';
-	import type { Option } from '$lib/types/utils';
 	import { navigateToSatellite } from '$lib/utils/nav.utils';
 	import { testId } from '$lib/utils/test.utils';
 
@@ -30,7 +30,7 @@
 
 	let { detail, onclose }: Props = $props();
 
-	let withFee = $state<Option<bigint>>(undefined);
+	let withFee = $state<Nullish<bigint>>(undefined);
 	let insufficientFunds = $state(true);
 
 	let step: 'init' | 'in_progress' | 'ready' | 'error' = $state('init');

@@ -4,9 +4,9 @@ import { loadDataStore } from '$lib/services/_loader.services';
 import { authStore } from '$lib/stores/auth.store';
 import { satellitesUncertifiedStore } from '$lib/stores/mission-control/satellites.store';
 import type { CreateSatelliteConfig } from '$lib/types/factory';
-import type { OptionIdentity } from '$lib/types/itentity';
-import type { Option } from '$lib/types/utils';
+import type { NullishIdentity } from '$lib/types/itentity';
 import { assertNonNullish, toNullable } from '@dfinity/utils';
+import type { Nullish } from '@dfinity/zod-schemas';
 import type { Identity } from '@icp-sdk/core/agent';
 import type { Principal } from '@icp-sdk/core/principal';
 import { get } from 'svelte/store';
@@ -19,8 +19,8 @@ export const createSatellite = async ({
 	missionControlId,
 	config: { name }
 }: {
-	identity: OptionIdentity;
-	missionControlId: Option<Principal>;
+	identity: NullishIdentity;
+	missionControlId: Nullish<Principal>;
 	config: Required<Pick<CreateSatelliteConfig, 'name'>>;
 }): Promise<MissionControlDid.Satellite> => {
 	assertNonNullish(missionControlId);
@@ -38,8 +38,8 @@ export const createSatelliteWithConfig = async ({
 	missionControlId,
 	config: { name, subnetId, kind }
 }: {
-	identity: OptionIdentity;
-	missionControlId: Option<Principal>;
+	identity: NullishIdentity;
+	missionControlId: Nullish<Principal>;
 	config: CreateSatelliteConfig;
 }): Promise<MissionControlDid.Satellite> => {
 	assertNonNullish(missionControlId);
@@ -68,7 +68,7 @@ export const loadSatellites = async ({
 	missionControlId,
 	reload = false
 }: {
-	missionControlId: Option<Principal>;
+	missionControlId: Nullish<Principal>;
 	reload?: boolean;
 }): Promise<{ result: 'skip' | 'success' | 'error' }> => {
 	if (missionControlId === undefined) {

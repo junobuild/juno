@@ -14,9 +14,8 @@ import { DbCollectionType } from '$lib/constants/rules.constants';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
 import type { OpenIdAuthProvider } from '$lib/types/auth';
-import type { OptionIdentity } from '$lib/types/itentity';
+import type { NullishIdentity } from '$lib/types/itentity';
 import type { Satellite } from '$lib/types/satellite';
-import type { Option } from '$lib/types/utils';
 import {
 	assertExternalAlternativeOrigins,
 	buildDeleteAuthenticationConfig,
@@ -36,6 +35,7 @@ import {
 	notEmptyString,
 	toNullable
 } from '@dfinity/utils';
+import type { Nullish } from '@dfinity/zod-schemas';
 import { Principal } from '@icp-sdk/core/principal';
 import type { PrincipalText } from '@junobuild/schema';
 import { get } from 'svelte/store';
@@ -43,7 +43,7 @@ import { get } from 'svelte/store';
 interface UpdateAuthConfigParams {
 	satellite: Satellite;
 	config: SatelliteDid.AuthenticationConfig | undefined;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }
 
 export interface UpdateAuthConfigResult {
@@ -64,7 +64,7 @@ interface UpdateAuthConfigRulesParams extends UpdateAuthConfigParams {
 
 interface UpdateAuthConfigIIParams extends UpdateAuthConfigParams {
 	externalAlternativeOrigins: string;
-	derivationOrigin: Option<URL>;
+	derivationOrigin: Nullish<URL>;
 }
 
 interface UpdateAuthConfigOpenIdParams extends UpdateAuthConfigParams {

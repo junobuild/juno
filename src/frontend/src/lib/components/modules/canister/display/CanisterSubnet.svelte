@@ -10,8 +10,6 @@
 	import { loadSubnetId } from '$lib/services/ic-mgmt/subnets.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { subnetStore } from '$lib/stores/ic-mgmt/subnet.store';
-	import type { Subnet } from '$lib/types/subnet';
-	import type { Option } from '$lib/types/utils';
 
 	interface Props {
 		canisterId: Principal;
@@ -25,7 +23,7 @@
 		});
 	});
 
-	let subnet: Option<Subnet> = $derived($subnetStore?.[canisterId.toText()]);
+	let subnet = $derived($subnetStore?.[canisterId.toText()]);
 
 	let subnetId: PrincipalText | undefined = $derived(subnet?.subnetId);
 </script>

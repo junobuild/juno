@@ -1,3 +1,5 @@
+/* eslint-disable require-await, no-console */
+
 import { defineQuery, defineUpdate } from '@junobuild/functions';
 import {
 	HttpRequestArgsSchema,
@@ -9,17 +11,15 @@ import {
 export const httpRequest = defineUpdate({
 	args: HttpRequestArgsSchema,
 	result: HttpRequestResultSchema,
-	handler: async (args) => {
-		return await httpRequestLib(args);
-	}
+	handler: async (args) => await httpRequestLib(args)
 });
 
 export const myHttpTransform = defineQuery({
 	hidden: true,
 	args: TransformArgsSchema,
 	result: HttpRequestResultSchema,
-	handler: async (raw) => {
-		const response = raw.response;
+	handler: (raw) => {
+		const {response} = raw;
 
 		console.log('myHttpTransform', response);
 
@@ -30,3 +30,5 @@ export const myHttpTransform = defineQuery({
 		};
 	}
 });
+
+/* eslint-enable */

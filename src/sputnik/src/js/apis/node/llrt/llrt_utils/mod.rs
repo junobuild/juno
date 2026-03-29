@@ -1,5 +1,5 @@
 pub mod bytes;
-mod class;
+pub mod class;
 mod error_messages;
 mod object;
 pub mod primordials;

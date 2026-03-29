@@ -80,6 +80,7 @@ fn derive_struct(
 
     quote! {
         #[derive(serde::Serialize, serde::Deserialize)]
+        #[serde(rename_all = "camelCase")]
         struct #serialized_name {
             #(#serialized_fields)*
         }

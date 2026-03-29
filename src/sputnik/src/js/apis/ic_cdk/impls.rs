@@ -52,6 +52,22 @@ impl<'js> JsRawPrincipal<'js> {
 
 /// JsHttpHeader <> HttpHeader
 
+impl JsHttpHeader {
+    pub fn from_header(header: &HttpHeader) -> Self {
+        Self {
+            name: header.name.clone(),
+            value: header.value.clone(),
+        }
+    }
+
+    pub fn to_header(self) -> HttpHeader {
+        HttpHeader {
+            name: self.name,
+            value: self.value,
+        }
+    }
+}
+
 impl<'js> IntoJs<'js> for JsHttpHeader {
     fn into_js(self, ctx: &Ctx<'js>) -> JsResult<Value<'js>> {
         let obj = Object::new(ctx.clone())?;
@@ -71,50 +87,15 @@ impl<'js> FromJs<'js> for JsHttpHeader {
     }
 }
 
-impl JsHttpHeader {
-    pub fn from_header(header: &HttpHeader) -> Self {
-        Self {
-            name: header.name.clone(),
-            value: header.value.clone(),
-        }
-    }
-
-    pub fn to_header(self) -> HttpHeader {
-        HttpHeader {
-            name: self.name,
-            value: self.value,
-        }
-    }
-}
+/// JsHttpMethod <> HttpMethod
 
 impl JsHttpMethod {
-    pub fn from_method(method: &HttpMethod) -> Self {
-        match method {
-            HttpMethod::GET => Self::Get,
-            HttpMethod::POST => Self::Post,
-            HttpMethod::HEAD => Self::Head,
-        }
-    }
-
     pub fn to_method(self) -> HttpMethod {
         match self {
             Self::Get => HttpMethod::GET,
             Self::Post => HttpMethod::POST,
             Self::Head => HttpMethod::HEAD,
         }
-    }
-}
-
-/// JsHttpMethod <> HttpMethod
-
-impl<'js> IntoJs<'js> for JsHttpMethod {
-    fn into_js(self, ctx: &Ctx<'js>) -> JsResult<Value<'js>> {
-        let s = match self {
-            Self::Get => "GET",
-            Self::Post => "POST",
-            Self::Head => "HEAD",
-        };
-        s.into_js(ctx)
     }
 }
 
@@ -135,7 +116,7 @@ impl<'js> FromJs<'js> for JsHttpMethod {
 impl<'js> JsHttpRequestResult<'js> {
     pub fn from_result(ctx: &Ctx<'js>, result: &HttpRequestResult) -> JsResult<Self> {
         Ok(Self {
-            status: result.status.0.try_into().unwrap_or(0),
+            status: u64::try_from(&result.status.0).unwrap_or(0),
             headers: result
                 .headers
                 .iter()
@@ -156,36 +137,14 @@ impl<'js> IntoJs<'js> for JsHttpRequestResult<'js> {
             headers_arr.set(i, h)?;
         }
         obj.set("headers", headers_arr)?;
+
         obj.set("body", self.body)?;
 
         Ok(obj.into_value())
     }
 }
 
-/// JsHttpRequestResult <> HttpRequestResult
-
-impl<'js> FromJs<'js> for JsHttpRequestArgs<'js> {
-    fn from_js(ctx: &Ctx<'js>, value: Value<'js>) -> JsResult<Self> {
-        let obj = Object::from_value(value)?;
-
-        let headers: Vec<JsHttpHeader> = {
-            let arr: Array = obj.get("headers")?;
-            arr.iter()
-                .map(|v| JsHttpHeader::from_js(ctx, v?))
-                .collect::<JsResult<Vec<JsHttpHeader>>>()?
-        };
-
-        Ok(Self {
-            url: obj.get("url")?,
-            max_response_bytes: obj.get("maxResponseBytes")?,
-            method: obj.get("method")?,
-            headers,
-            body: obj.get("body")?,
-            transform: obj.get("transform")?,
-            is_replicated: obj.get("isReplicated")?,
-        })
-    }
-}
+/// JsHttpRequestArgs <> HttpRequestArgs
 
 impl<'js> JsHttpRequestArgs<'js> {
     pub fn to_args(self) -> JsResult<HttpRequestArgs> {
@@ -212,6 +171,29 @@ impl<'js> JsHttpRequestArgs<'js> {
                 .transpose()?,
             transform,
             is_replicated: self.is_replicated,
+        })
+    }
+}
+
+impl<'js> FromJs<'js> for JsHttpRequestArgs<'js> {
+    fn from_js(ctx: &Ctx<'js>, value: Value<'js>) -> JsResult<Self> {
+        let obj = Object::from_value(value)?;
+
+        let headers: Vec<JsHttpHeader> = {
+            let arr: Array = obj.get("headers")?;
+            arr.iter()
+                .map(|v| JsHttpHeader::from_js(ctx, v?))
+                .collect::<JsResult<Vec<JsHttpHeader>>>()?
+        };
+
+        Ok(Self {
+            url: obj.get("url")?,
+            max_response_bytes: obj.get("maxResponseBytes")?,
+            method: obj.get("method")?,
+            headers,
+            body: obj.get("body")?,
+            transform: obj.get("transform")?,
+            is_replicated: obj.get("isReplicated")?,
         })
     }
 }

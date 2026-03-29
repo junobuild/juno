@@ -1,12 +1,10 @@
-use crate::errors::js::{
-    JUNO_SPUTNIK_ERROR_IC_CDK_CALL_RAW, JUNO_SPUTNIK_ERROR_IC_CDK_HTTP_REQUEST,
-};
+use crate::errors::js::JUNO_SPUTNIK_ERROR_IC_CDK_HTTP_REQUEST;
+use crate::js::apis::types::http_request::{JsHttpRequestArgs, JsHttpRequestResult};
 use crate::js::inner_utils::throw_js_exception;
-use crate::js::types::candid::{JsCallRawResult, JsHttpRequestResult};
-use ic_cdk::management_canister::{http_request, HttpMethod, HttpRequestArgs};
-use rquickjs::{Ctx, Error as JsError, Function as JsFunction, Result as JsResult};
+use ic_cdk::management_canister::http_request;
+use rquickjs::{Ctx, Error as JsError, Result as JsResult};
 
-pub fn init_ic_cdk_http_request(ctx: &Ctx) -> anyhow::Result<(), JsError> {
+pub fn init_ic_cdk_http_request(ctx: &Ctx) -> Result<(), JsError> {
     let global = ctx.globals();
 
     global.set("__ic_cdk_http_request", js_ic_cdk_http_request)?;
@@ -17,19 +15,9 @@ pub fn init_ic_cdk_http_request(ctx: &Ctx) -> anyhow::Result<(), JsError> {
 #[rquickjs::function]
 async fn ic_cdk_http_request<'js>(
     ctx: Ctx<'js>,
-    transform: JsFunction<'js>,
-) -> JsResult<JsHttpRequestResult> {
-    let request = HttpRequestArgs {
-        url: "http://localhost:8000".to_string(),
-        method: HttpMethod::POST,
-        body: None,
-        max_response_bytes: None,
-        transform: None,
-        headers: vec![],
-        is_replicated: Some(false),
-    };
-
-    let result = http_request(&request).await;
+    args: JsHttpRequestArgs<'js>,
+) -> JsResult<JsHttpRequestResult<'js>> {
+    let result = http_request(&args.to_args()?).await;
 
     match result {
         Err(err) => Err(throw_js_exception(

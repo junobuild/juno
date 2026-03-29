@@ -1,5 +1,5 @@
 pub mod candid {
-    use rquickjs::{Object, TypedArray};
+    use rquickjs::TypedArray;
 
     #[derive(Clone)]
     pub struct JsUint8Array<'js>(pub TypedArray<'js, u8>);

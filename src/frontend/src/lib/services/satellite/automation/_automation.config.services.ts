@@ -3,7 +3,7 @@ import { setAutomationConfig } from '$lib/api/satellites.api';
 import { loadSatelliteConfig } from '$lib/services/satellite/satellite-config.services';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
-import type { OptionIdentity } from '$lib/types/itentity';
+import type { NullishIdentity } from '$lib/types/itentity';
 import type { Satellite } from '$lib/types/satellite';
 import { isNullish, toNullable } from '@dfinity/utils';
 import { get } from 'svelte/store';
@@ -27,7 +27,7 @@ export const updateConfig = async ({
 	satellite: Satellite;
 	automationConfig: SatelliteDid.AutomationConfig;
 	providerConfig: SatelliteDid.OpenIdAutomationProviderConfig;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<UpdateAutomationConfigResult> => {
 	const updateAutomationConfig: SatelliteDid.SetAutomationConfig = {
 		...automationConfig,
@@ -69,7 +69,7 @@ export const setConfig = async ({
 }: {
 	satellite: Satellite;
 	config: SatelliteDid.SetAutomationConfig;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<UpdateResult> => {
 	const labels = get(i18n);
 

@@ -1,5 +1,5 @@
 import type { SatelliteDid } from '$declarations';
-import type { Option } from '$lib/types/utils';
+import type { Nullish } from '@dfinity/zod-schemas';
 import type { Readable } from 'svelte/store';
 
 export interface AuthConfigData {
@@ -12,7 +12,7 @@ export interface AuthConfigContext {
 		rule?: SatelliteDid.Rule | undefined;
 	}) => void;
 
-	config: Readable<Option<SatelliteDid.AuthenticationConfig>>;
+	config: Readable<Nullish<SatelliteDid.AuthenticationConfig>>;
 	rule: Readable<SatelliteDid.Rule | undefined>;
 	supportSettings: Readable<boolean>;
 	supportConfig: Readable<boolean>;

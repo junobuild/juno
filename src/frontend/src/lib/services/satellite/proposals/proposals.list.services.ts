@@ -4,7 +4,7 @@ import { reloadSatelliteProposals } from '$lib/services/satellite/proposals/prop
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
 import { proposalsStore } from '$lib/stores/satellite/proposals.store';
-import type { OptionIdentity } from '$lib/types/itentity';
+import type { NullishIdentity } from '$lib/types/itentity';
 import type { Satellite } from '$lib/types/satellite';
 import { get } from 'svelte/store';
 
@@ -13,7 +13,7 @@ export const loadProposals = async ({
 	satellites
 }: {
 	satellites: Satellite[];
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<{ result: 'loaded' | 'error' }> => {
 	// Split those Satellites that do not support proposals.
 	const [newSatellites, oldSatellites] = satellites.reduce<[Satellite[], Satellite[]]>(

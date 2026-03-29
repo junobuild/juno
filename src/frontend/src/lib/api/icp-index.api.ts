@@ -1,5 +1,5 @@
 import { getAgent } from '$lib/api/_agent/_agent.api';
-import type { OptionIdentity } from '$lib/types/itentity';
+import type { NullishIdentity } from '$lib/types/itentity';
 import { toAccountIdentifier } from '$lib/utils/icp-icrc-account.utils';
 import { assertNonNullish } from '@dfinity/utils';
 import { IcpIndexCanister, type IcpIndexDid } from '@icp-sdk/canisters/ledger/icp';
@@ -13,7 +13,7 @@ export const getIcpTransactions = async ({
 	certified
 }: {
 	account: IcrcAccount;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 	start?: bigint;
 	maxResults?: bigint;
 	certified: boolean;

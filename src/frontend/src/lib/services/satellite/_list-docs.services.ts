@@ -1,13 +1,13 @@
 import type { SatelliteDid } from '$declarations';
 import type { listDocs as listDocsApi } from '$lib/api/satellites.api';
 import type { listDocs008 } from '$lib/api/satellites.deprecated.api';
-import type { OptionIdentity } from '$lib/types/itentity';
+import type { NullishIdentity } from '$lib/types/itentity';
 import type { ListParams } from '$lib/types/list';
 import type { Principal } from '@icp-sdk/core/principal';
 
 export type ListDocsParams = ListParams & {
 	satelliteId: Principal;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 };
 
 export interface ListDocsResult<T> {

@@ -1,7 +1,7 @@
 import { accountCertifiedStore } from '$lib/stores/account.store';
 import type { MissionControlCertifiedId, MissionControlId } from '$lib/types/mission-control';
-import type { Option } from '$lib/types/utils';
 import { fromNullable, isNullish } from '@dfinity/utils';
+import type { Nullish } from '@dfinity/zod-schemas';
 import { derived } from 'svelte/store';
 
 export const missionControlCertifiedId = derived(
@@ -23,7 +23,7 @@ export const missionControlCertifiedId = derived(
 
 export const missionControlId = derived(
 	[accountCertifiedStore],
-	([$accountCertifiedStore]): Option<MissionControlId> => {
+	([$accountCertifiedStore]): Nullish<MissionControlId> => {
 		if (isNullish($accountCertifiedStore)) {
 			return undefined;
 		}

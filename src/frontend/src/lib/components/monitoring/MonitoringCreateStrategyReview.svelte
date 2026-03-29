@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { nonNullish, notEmptyString } from '@dfinity/utils';
+	import type { Nullish } from '@dfinity/zod-schemas';
 	import type { Principal } from '@icp-sdk/core/principal';
 	import type { MissionControlDid } from '$declarations';
 	import MonitoringSelectedModules from '$lib/components/monitoring/MonitoringSelectedModules.svelte';
 	import MonitoringStepReview from '$lib/components/monitoring/MonitoringStepReview.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import type { Option } from '$lib/types/utils';
 	import { formatTCycles } from '$lib/utils/cycles.utils';
 
 	interface Props {
@@ -21,7 +21,7 @@
 			monitored: boolean;
 			strategy: MissionControlDid.CyclesMonitoringStrategy | undefined;
 		};
-		userEmail: Option<string>;
+		userEmail: Nullish<string>;
 		reuseStrategy: MissionControlDid.CyclesMonitoringStrategy | undefined;
 		onback: () => void;
 		onsubmit: ($event: MouseEvent | TouchEvent) => Promise<void>;

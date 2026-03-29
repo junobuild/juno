@@ -1,4 +1,4 @@
-import type { Option } from '$lib/types/utils';
+import type { Nullish } from '@dfinity/zod-schemas';
 import type { Identity } from '@icp-sdk/core/agent';
 
-export type OptionIdentity = Option<Identity>;
+export type NullishIdentity = Nullish<Identity>;

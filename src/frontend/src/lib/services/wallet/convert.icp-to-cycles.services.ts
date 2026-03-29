@@ -6,7 +6,7 @@ import { sendIcpToCmc } from '$lib/services/cmc.services';
 import { convertIcpWithCmc } from '$lib/services/wallet/_convert.cmc.services';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
-import type { OptionIdentity } from '$lib/types/itentity';
+import type { NullishIdentity } from '$lib/types/itentity';
 import { type ConvertIcpProgress, ConvertIcpProgressStep } from '$lib/types/progress-convert-icp';
 import { assertAndConvertAmountToToken } from '$lib/utils/token.utils';
 import { waitAndRestartWallet } from '$lib/utils/wallet.utils';
@@ -20,7 +20,7 @@ export const convertIcpToCycles = async ({
 	amount,
 	onProgress
 }: {
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 	selectedWallet: SelectedWallet;
 	balance: bigint;
 	amount: string | undefined;

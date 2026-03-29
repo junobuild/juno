@@ -3,20 +3,20 @@ import { setOrbiter, setSatellite } from '$lib/api/mission-control.api';
 import { loadSegments } from '$lib/services/segments.services';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
-import type { OptionIdentity } from '$lib/types/itentity';
+import type { NullishIdentity } from '$lib/types/itentity';
 import type { MissionControlId } from '$lib/types/mission-control';
-import type { Option } from '$lib/types/utils';
 import { i18nCapitalize, i18nFormat } from '$lib/utils/i18n.utils';
 import { container } from '$lib/utils/juno.utils';
 import { isNullish, nonNullish, toNullable } from '@dfinity/utils';
+import type { Nullish } from '@dfinity/zod-schemas';
 import type { Identity } from '@icp-sdk/core/agent';
 import type { Principal } from '@icp-sdk/core/principal';
 import { orbiterVersion, satelliteVersion } from '@junobuild/admin';
 import { get } from 'svelte/store';
 
 interface AttachParams {
-	identity: OptionIdentity;
-	missionControlId: Option<MissionControlId>;
+	identity: NullishIdentity;
+	missionControlId: Nullish<MissionControlId>;
 	segment: 'satellite' | 'orbiter';
 	segmentId: Principal;
 }
@@ -24,7 +24,7 @@ interface AttachParams {
 interface AttachWithMissionControlParams {
 	missionControlId: MissionControlId;
 	canisterId: Principal;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }
 
 export const attachSegment = async ({

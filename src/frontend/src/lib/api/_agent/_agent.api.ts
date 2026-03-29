@@ -1,14 +1,14 @@
 import { LOCAL_REPLICA_HOST } from '$lib/constants/app.constants';
 import { isDev } from '$lib/env/app.env';
-import type { Option } from '$lib/types/utils';
 import { isNullish } from '@dfinity/utils';
+import type { Nullish } from '@dfinity/zod-schemas';
 import { HttpAgent, type Identity } from '@icp-sdk/core/agent';
 
 export interface GetAgentParams {
 	identity: Identity;
 }
 
-let agents: Option<Record<string, HttpAgent>> = undefined;
+let agents: Nullish<Record<string, HttpAgent>> = undefined;
 
 // Attempt to prevent the random IC issue triggered by agent-js at the end of the Satellite creation process in the UI.
 // Note: The process of creation works as expected; the module is successfully created. It's really the calls from the UI that fails randomly, "fortunately".

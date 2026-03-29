@@ -1,9 +1,9 @@
 <script lang="ts" module>
+	import type { Nullish } from '@dfinity/zod-schemas';
 	import type { SatelliteDid } from '$declarations';
-	import type { Option } from '$lib/types/utils';
 
 	export interface AddCustomDomainAuthProps {
-		config: Option<SatelliteDid.AuthenticationConfig>;
+		config: Nullish<SatelliteDid.AuthenticationConfig>;
 		useDomainForDerivationOrigin: boolean;
 	}
 </script>

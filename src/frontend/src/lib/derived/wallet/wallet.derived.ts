@@ -4,11 +4,11 @@ import {
 } from '$lib/derived/console/account.mission-control.derived';
 import { devId } from '$lib/derived/dev.derived';
 import type { WalletId } from '$lib/schemas/wallet.schema';
-import type { Option } from '$lib/types/utils';
 import { isNullish, nonNullish } from '@dfinity/utils';
+import type { Nullish } from '@dfinity/zod-schemas';
 import { derived, type Readable } from 'svelte/store';
 
-export const walletIds: Readable<Option<WalletId[]>> = derived(
+export const walletIds: Readable<Nullish<WalletId[]>> = derived(
 	[missionControlId, missionControlIdNotLoaded, devId],
 	([$missionControlId, $missionControlIdNotLoaded, $devId]) => {
 		if (isNullish($devId)) {

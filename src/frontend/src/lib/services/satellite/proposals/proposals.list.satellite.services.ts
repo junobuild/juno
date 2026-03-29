@@ -1,7 +1,7 @@
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
 import { proposalsStore } from '$lib/stores/satellite/proposals.store';
-import type { OptionIdentity } from '$lib/types/itentity';
+import type { NullishIdentity } from '$lib/types/itentity';
 import type { LoadProposalsBaseParams, LoadProposalsResult } from '$lib/types/proposals';
 import { container } from '$lib/utils/juno.utils';
 import { assertNonNullish, nonNullish } from '@dfinity/utils';
@@ -38,7 +38,7 @@ const loadSatelliteProposals = async ({
 }: {
 	satelliteId: Principal;
 	skipReload: boolean;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<{ result: 'loaded' } | { result: 'skipped' } | { result: 'error'; err: unknown }> => {
 	// We load the satellite proposals when needed
 	const store = get(proposalsStore);

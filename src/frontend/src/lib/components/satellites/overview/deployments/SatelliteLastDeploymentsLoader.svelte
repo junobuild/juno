@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { isNullish } from '@dfinity/utils';
+	import type { Nullish } from '@dfinity/zod-schemas';
 	import { type Snippet, untrack } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import Html from '$lib/components/ui/Html.svelte';
@@ -8,7 +9,6 @@
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { workflowsCertifiedStore } from '$lib/stores/workflows/workflows.store';
 	import type { Satellite } from '$lib/types/satellite';
-	import type { Option } from '$lib/types/utils';
 	import type { CertifiedWorkflows } from '$lib/types/workflow';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { deploymentsLink } from '$lib/utils/nav.utils';
@@ -22,7 +22,7 @@
 
 	let satelliteId = $derived(satellite.satellite_id);
 
-	let workflows = $state<Option<CertifiedWorkflows>>(undefined);
+	let workflows = $state<Nullish<CertifiedWorkflows>>(undefined);
 
 	const load = () => {
 		if ($satelliteAutomationConfig === undefined) {

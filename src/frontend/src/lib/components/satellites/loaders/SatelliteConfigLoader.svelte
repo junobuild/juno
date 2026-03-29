@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { isNullish } from '@dfinity/utils';
+	import type { Nullish } from '@dfinity/zod-schemas';
 	import { type Snippet, untrack } from 'svelte';
 	import { authIdentity } from '$lib/derived/auth.derived';
 	import { satellite } from '$lib/derived/satellite.derived';
 	import { loadSatelliteConfig } from '$lib/services/satellite/satellite-config.services';
 	import type { Satellite } from '$lib/types/satellite';
-	import type { Option } from '$lib/types/utils';
 
 	interface Props {
 		children: Snippet;
@@ -15,7 +15,7 @@
 
 	let loading = $state(false);
 
-	const load = async (satellite: Option<Satellite>) => {
+	const load = async (satellite: Nullish<Satellite>) => {
 		// Satellite is either not loaded or not found
 		if (isNullish(satellite)) {
 			return;

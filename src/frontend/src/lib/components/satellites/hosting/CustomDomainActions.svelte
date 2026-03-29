@@ -17,16 +17,16 @@
 	import type { CustomDomain } from '$lib/types/custom-domain';
 	import type { JunoModalCustomDomainDetail } from '$lib/types/modal';
 	import type { Satellite } from '$lib/types/satellite';
-	import type { Option } from '$lib/types/utils';
 	import { buildDeleteAuthenticationConfig } from '$lib/utils/auth.config.utils';
 	import { emit } from '$lib/utils/events.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
+	import type { Nullish } from '@dfinity/zod-schemas';
 
 	interface Props {
 		satellite: Satellite;
 		customDomain: CustomDomain | undefined;
-		displayState: Option<string>;
-		config: Option<SatelliteDid.AuthenticationConfig>;
+		displayState: Nullish<string>;
+		config: Nullish<SatelliteDid.AuthenticationConfig>;
 	}
 
 	let { satellite, customDomain, displayState, config }: Props = $props();

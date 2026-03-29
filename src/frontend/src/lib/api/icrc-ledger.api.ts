@@ -1,6 +1,6 @@
 import { getAgent } from '$lib/api/_agent/_agent.api';
 import type { LedgerId, LedgerIds } from '$lib/schemas/wallet.schema';
-import type { OptionIdentity } from '$lib/types/itentity';
+import type { NullishIdentity } from '$lib/types/itentity';
 import { assertNonNullish, nowInBigIntNanoSeconds } from '@dfinity/utils';
 import {
 	IcrcLedgerCanister,
@@ -20,7 +20,7 @@ export const approveIcrcTransfer = async ({
 	validity = ONE_MINUTE,
 	...rest
 }: {
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 	ledgerId: LedgerId;
 	validity?: bigint;
 } & Pick<ApproveParams, 'amount' | 'spender' | 'memo'>): Promise<IcrcLedgerDid.BlockIndex> => {
@@ -40,7 +40,7 @@ export const icrcTransfer = async ({
 	request,
 	...rest
 }: {
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 	ledgerId: LedgerId;
 	request: TransferParams;
 }): Promise<IcrcLedgerDid.BlockIndex> => {
@@ -52,7 +52,7 @@ const icrcLedgerCanister = async ({
 	identity,
 	ledgerId
 }: {
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 	ledgerId: Principal;
 }): Promise<IcrcLedgerCanister> => {
 	assertNonNullish(identity, 'No internet identity to initialize the ICRC Ledger actor.');
@@ -71,7 +71,7 @@ export const getUncertifiedBalance = async ({
 	ledgerId
 }: {
 	account: IcrcAccount;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 } & Pick<LedgerIds, 'ledgerId'>): Promise<bigint> => {
 	assertNonNullish(identity, 'No internet identity to initialize the ICRC Index actor.');
 

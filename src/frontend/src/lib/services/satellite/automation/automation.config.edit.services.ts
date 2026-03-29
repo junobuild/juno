@@ -5,7 +5,7 @@ import {
 	updateConfig
 } from '$lib/services/satellite/automation/_automation.config.services';
 import type { AddAccessKeyScope } from '$lib/types/access-keys';
-import type { OptionIdentity } from '$lib/types/itentity';
+import type { NullishIdentity } from '$lib/types/itentity';
 import type { Satellite } from '$lib/types/satellite';
 import type { WorkflowReferences } from '$lib/types/workflow';
 import { toNullable } from '@dfinity/utils';
@@ -23,7 +23,7 @@ export const updateAutomationKeysConfig = async ({
 	automationConfig: SatelliteDid.AutomationConfig;
 	providerConfig: SatelliteDid.OpenIdAutomationProviderConfig;
 	satellite: Satellite;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<UpdateAutomationConfigResult> => {
 	const updateProviderConfig: SatelliteDid.OpenIdAutomationProviderConfig = {
 		...providerConfig,
@@ -60,7 +60,7 @@ export const updateAutomationConnectRepositoryConfig = async ({
 	automationConfig: SatelliteDid.AutomationConfig;
 	providerConfig: SatelliteDid.OpenIdAutomationProviderConfig;
 	satellite: Satellite;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<UpdateAutomationConfigResult> => {
 	const updateProviderConfig: SatelliteDid.OpenIdAutomationProviderConfig = {
 		...providerConfig,

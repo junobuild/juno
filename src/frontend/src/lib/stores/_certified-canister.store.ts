@@ -1,11 +1,13 @@
 import type { CanisterStore } from '$lib/stores/_canister.store';
 import type { CanisterIdText } from '$lib/types/canister';
 import type { CertifiedData } from '$lib/types/store';
-import type { Option } from '$lib/types/utils';
 import { nonNullish } from '@dfinity/utils';
+import type { Nullish } from '@dfinity/zod-schemas';
 import { writable, type Readable } from 'svelte/store';
 
-export type CertifiedCanisterStoreData<T> = Option<Record<CanisterIdText, CertifiedData<T> | null>>;
+export type CertifiedCanisterStoreData<T> = Nullish<
+	Record<CanisterIdText, CertifiedData<T> | null>
+>;
 
 export interface CertifiedCanisterStore<T> extends Readable<CertifiedCanisterStoreData<T>> {
 	set: (params: { canisterId: CanisterIdText; data: CertifiedData<T> }) => void;

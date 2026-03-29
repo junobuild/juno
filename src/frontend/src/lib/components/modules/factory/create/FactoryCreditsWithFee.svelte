@@ -1,4 +1,5 @@
 <script lang="ts">
+	import type { Nullish } from '@dfinity/zod-schemas';
 	import type { Snippet } from 'svelte';
 	import FactoryWalletInfo from '$lib/components/modules/factory/create/FactoryWalletInfo.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
@@ -13,7 +14,6 @@
 	} from '$lib/derived/wallet/balance.derived';
 	import { icpToUsd } from '$lib/derived/wallet/exchange.derived';
 	import type { SelectedToken, SelectedWallet } from '$lib/schemas/wallet.schema';
-	import type { Option } from '$lib/types/utils';
 	import { formatCyclesToHTML } from '$lib/utils/cycles.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { formatICPToHTML } from '$lib/utils/icp.utils';
@@ -23,7 +23,7 @@
 		fee: bigint;
 		priceLabel: string;
 		selectedWallet: SelectedWallet | undefined;
-		withFee: Option<bigint>;
+		withFee: Nullish<bigint>;
 		insufficientFunds?: boolean;
 		children: Snippet;
 		onclose: () => void;

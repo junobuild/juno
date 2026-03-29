@@ -1,9 +1,9 @@
 import type { CanisterIdText } from '$lib/types/canister';
-import type { Option } from '$lib/types/utils';
 import { nonNullish } from '@dfinity/utils';
+import type { Nullish } from '@dfinity/zod-schemas';
 import { writable, type Readable } from 'svelte/store';
 
-export type CanisterStoreData<T> = Option<Record<CanisterIdText, T | null>>;
+export type CanisterStoreData<T> = Nullish<Record<CanisterIdText, T | null>>;
 
 export interface CanisterStore<T> extends Readable<CanisterStoreData<T>> {
 	set: (params: { canisterId: CanisterIdText; data: T }) => void;

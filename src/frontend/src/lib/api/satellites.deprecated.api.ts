@@ -6,7 +6,7 @@ import {
 	getSatelliteActor009
 } from '$lib/api/actors/actor.deprecated.api';
 import { PAGINATION } from '$lib/constants/app.constants';
-import type { OptionIdentity } from '$lib/types/itentity';
+import type { NullishIdentity } from '$lib/types/itentity';
 import type { ListParams } from '$lib/types/list';
 import { toListParams } from '$lib/utils/satellite.utils';
 import { isNullish, toNullable } from '@dfinity/utils';
@@ -50,7 +50,7 @@ export const listDocs008 = async ({
 	satelliteId: Principal;
 	collection: string;
 	params: ListParams;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<SatelliteDid.ListResults_1> => {
 	const actor = await getSatelliteActor008({ satelliteId, identity });
 	const {
@@ -79,7 +79,7 @@ export const listAssets008 = async ({
 	satelliteId: Principal;
 	collection: string;
 	params: ListParams;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<SatelliteDid.ListResults> => {
 	const actor = await getSatelliteActor008({ satelliteId, identity });
 	const {
@@ -108,7 +108,7 @@ export const listAssets009 = async ({
 	satelliteId: Principal;
 	collection: string;
 	params: ListParams;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<SatelliteDid.ListResults> => {
 	const actor = await getSatelliteActor009({ satelliteId, identity });
 	const { items, ...rest } = await actor.list_assets(toNullable(collection), toListParams(params));
@@ -128,7 +128,7 @@ export const listRulesDeprecated = async ({
 }: {
 	satelliteId: Principal;
 	type: SatelliteDid.CollectionType;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<[string, SatelliteDid.Rule][]> => {
 	const actor = await getSatelliteActor008({ satelliteId, identity });
 	const rules = await actor.list_rules(type);
@@ -150,7 +150,7 @@ export const satelliteVersion = async ({
 	identity
 }: {
 	satelliteId: Principal;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<string> => {
 	// For simplicity reason we just use an old actor (21 instead of 22) as the API did not change until it was fully deprecated.
 	const { version } = await getSatelliteActor0021({ satelliteId, identity });
@@ -165,7 +165,7 @@ export const satelliteBuildVersion = async ({
 	identity
 }: {
 	satelliteId: Principal;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<string> => {
 	// For simplicity reason we just use an old actor (21 instead of 22) as the API did not change until it was fully deprecated.
 	const { build_version } = await getSatelliteActor0021({ satelliteId, identity });
@@ -182,7 +182,7 @@ export const listRules0022 = async ({
 }: {
 	satelliteId: Principal;
 	type: SatelliteDid.CollectionType;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<[string, SatelliteDid.Rule][]> => {
 	const actor = await getSatelliteActor0022({ satelliteId, identity });
 	return actor.list_rules(type);

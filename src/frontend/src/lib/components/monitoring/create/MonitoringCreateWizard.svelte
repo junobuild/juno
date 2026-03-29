@@ -20,7 +20,6 @@
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { MissionControlId } from '$lib/types/mission-control';
 	import type { MonitoringStrategyProgress } from '$lib/types/progress-strategy';
-	import type { Option } from '$lib/types/utils';
 	import { metadataEmail } from '$lib/utils/metadata.utils';
 
 	interface Props {
@@ -94,7 +93,7 @@
 	let metadata = $derived(user.metadata);
 	let missionControlEmail = $derived(metadataEmail(metadata));
 	let hasMissionControlEmail = $derived(nonNullish(missionControlEmail));
-	let userEmail: Option<string> = $state(undefined);
+	let userEmail = $state(undefined);
 
 	// Strategy choice
 

@@ -1,6 +1,6 @@
 import { getAgent } from '$lib/api/_agent/_agent.api';
 import type { LedgerIds } from '$lib/schemas/wallet.schema';
-import type { OptionIdentity } from '$lib/types/itentity';
+import type { NullishIdentity } from '$lib/types/itentity';
 import { assertNonNullish } from '@dfinity/utils';
 import {
 	type IcrcAccount,
@@ -17,7 +17,7 @@ export const getIcrcTransactions = async ({
 	certified
 }: {
 	account: IcrcAccount;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 	start?: bigint;
 	maxResults?: bigint;
 	certified: boolean;

@@ -42,7 +42,7 @@ import type {
 	CreateWithConfig,
 	CreateWithConfigAndName
 } from '$lib/types/factory';
-import type { OptionIdentity } from '$lib/types/itentity';
+import type { NullishIdentity } from '$lib/types/itentity';
 import type { MissionControlId } from '$lib/types/mission-control';
 import type { JunoModal, JunoModalCreateSegmentDetail } from '$lib/types/modal';
 import type { OrbiterId } from '$lib/types/orbiter';
@@ -51,10 +51,10 @@ import {
 	FactoryCreateProgressStep
 } from '$lib/types/progress-factory-create';
 import type { SatelliteId } from '$lib/types/satellite';
-import type { Option } from '$lib/types/utils';
 import { emit } from '$lib/utils/events.utils';
 import { waitAndRestartWallet } from '$lib/utils/wallet.utils';
 import { assertNonNullish, isEmptyString, isNullish, nonNullish, toNullable } from '@dfinity/utils';
+import type { Nullish } from '@dfinity/zod-schemas';
 import type { Identity } from '@icp-sdk/core/agent';
 import { Principal } from '@icp-sdk/core/principal';
 import type { PrincipalText } from '@junobuild/schema';
@@ -64,14 +64,14 @@ type GetFeeBalance =
 	| Omit<JunoModalCreateSegmentDetail, 'monitoringConfig' | 'monitoringEnabled'>
 	| { error: null | string };
 
-type GetFeeBalanceFn = (params: { identity: OptionIdentity }) => Promise<GetFeeBalance>;
+type GetFeeBalanceFn = (params: { identity: NullishIdentity }) => Promise<GetFeeBalance>;
 
 export const initSatelliteWizard = ({
 	missionControlId,
 	identity
 }: {
-	missionControlId: Option<Principal>;
-	identity: OptionIdentity;
+	missionControlId: Nullish<Principal>;
+	identity: NullishIdentity;
 }): Promise<void> =>
 	initCreateWizard({
 		missionControlId,
@@ -84,8 +84,8 @@ export const initOrbiterWizard = ({
 	missionControlId,
 	identity
 }: {
-	missionControlId: Option<Principal>;
-	identity: OptionIdentity;
+	missionControlId: Nullish<Principal>;
+	identity: NullishIdentity;
 }): Promise<void> =>
 	initCreateWizard({
 		missionControlId,
@@ -97,7 +97,7 @@ export const initOrbiterWizard = ({
 export const initMissionControlWizard = ({
 	identity
 }: {
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<void> =>
 	initCreateWizard({
 		missionControlId: null,
@@ -112,8 +112,8 @@ const initCreateWizard = async ({
 	feeFn,
 	modalType
 }: {
-	missionControlId: Option<MissionControlId>;
-	identity: OptionIdentity;
+	missionControlId: Nullish<MissionControlId>;
+	identity: NullishIdentity;
 	feeFn: GetFeeBalanceFn;
 	modalType: 'create_satellite' | 'create_orbiter' | 'create_mission_control';
 }) => {
@@ -220,8 +220,8 @@ const getCreateFeeBalance = async ({
 	identity,
 	getFee
 }: {
-	identity: OptionIdentity;
-	getFee: (params: { identity: OptionIdentity }) => Promise<ConsoleDid.FactoryFee>;
+	identity: NullishIdentity;
+	getFee: (params: { identity: NullishIdentity }) => Promise<ConsoleDid.FactoryFee>;
 }): Promise<GetFeeBalance> => {
 	const labels = get(i18n);
 
@@ -267,12 +267,12 @@ const getCreateFeeBalance = async ({
 };
 
 interface CreateWizardParams {
-	selectedWallet: Option<SelectedWallet>;
-	missionControlId: Option<Principal>;
-	identity: OptionIdentity;
+	selectedWallet: Nullish<SelectedWallet>;
+	missionControlId: Nullish<Principal>;
+	identity: NullishIdentity;
 	subnetId: PrincipalText | undefined;
 	monitoringStrategy: MissionControlDid.CyclesMonitoringStrategy | undefined;
-	withFee: Option<bigint>;
+	withFee: Nullish<bigint>;
 	onProgress: (progress: FactoryCreateProgress | undefined) => void;
 }
 

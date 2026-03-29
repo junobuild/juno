@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 use std::{cell::RefCell, collections::HashSet, rc::Rc};
 
-use llrt_utils::{
+use crate::js::apis::node::llrt::utils::{
     class::IteratorDef,
     primordials::{BasePrimordials, Primordial},
 };

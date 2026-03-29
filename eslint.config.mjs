@@ -53,7 +53,7 @@ export default [
 	{
 		ignores: [
 			'src/sputnik/resources/index.mjs',
-			'src/sputnik/src/js/apis/node/text_encoding/javy/text-encoding.js'
+			'src/sputnik/src/js/apis/node/javy/text_encoding/text-encoding.js'
 		]
 	}
 ];

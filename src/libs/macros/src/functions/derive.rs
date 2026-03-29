@@ -33,28 +33,29 @@ fn derive_struct(
                 .iter()
                 .filter(|a| a.path().is_ident("serde"))
                 .collect();
-            let skip = unwrap_option(ftype).map(|_| quote! { #[serde(skip_serializing_if = "Option::is_none")] });
+            let skip = unwrap_option(ftype)
+                .map(|_| quote! { #[serde(skip_serializing_if = "Option::is_none")] });
 
             if let Some(with_path) = map_with_path(ftype) {
                 quote! {
-                #skip
-                #[serde(with = #with_path)]
-                #(#serde_attrs)*
-                pub #fname: #ftype,
-            }
+                    #skip
+                    #[serde(with = #with_path)]
+                    #(#serde_attrs)*
+                    pub #fname: #ftype,
+                }
             } else if has_nested_attr(f) {
                 let nested_type = nested_json_data_ident(ftype);
                 quote! {
-                #skip
-                #(#serde_attrs)*
-                pub #fname: #nested_type,
-            }
+                    #skip
+                    #(#serde_attrs)*
+                    pub #fname: #nested_type,
+                }
             } else {
                 quote! {
-                #skip
-                #(#serde_attrs)*
-                pub #fname: #ftype,
-            }
+                    #skip
+                    #(#serde_attrs)*
+                    pub #fname: #ftype,
+                }
             }
         })
         .collect();

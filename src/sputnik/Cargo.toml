@@ -11,6 +11,7 @@ crate-type = ["cdylib"]
 candid.workspace = true
 ic-cdk.workspace = true
 serde.workspace = true
+url.workspace = true
 junobuild-satellite = { path = "../libs/satellite", default-features = false, features = [
 	"on_init_sync",
 	"on_post_upgrade_sync",

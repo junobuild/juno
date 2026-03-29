@@ -121,7 +121,8 @@ export const testNotAllowedCdnMethods = ({
 				rewrites: [],
 				raw_access: toNullable(),
 				max_memory_size: toNullable(),
-				version: toNullable()
+				version: toNullable(),
+				skip_certification: toNullable()
 			})
 		).rejects.toThrow(errorMsgAdminController);
 	});
@@ -211,7 +212,7 @@ export const testCdnConfig = ({
 	it('should set and get config', async () => {
 		const { set_storage_config, get_storage_config } = actor();
 
-		const config: SatelliteDid.SetStorageConfig = {
+		const config: Omit<SatelliteDid.SetStorageConfig, 'skip_certification'> = {
 			headers: [['*', [['cache-control', 'no-cache']]]],
 			iframe: toNullable({ Deny: null }),
 			redirects: [],
@@ -221,7 +222,10 @@ export const testCdnConfig = ({
 			version: toNullable(configBaseVersion)
 		};
 
-		await set_storage_config(config);
+		await set_storage_config({
+			...config,
+			skip_certification: toNullable()
+		});
 
 		const savedConfig = await get_storage_config();
 
@@ -247,7 +251,8 @@ export const testCdnConfig = ({
 			redirects: [],
 			rewrites: [],
 			raw_access: toNullable(),
-			max_memory_size: toNullable()
+			max_memory_size: toNullable(),
+			skip_certification: toNullable()
 		};
 
 		await expect(

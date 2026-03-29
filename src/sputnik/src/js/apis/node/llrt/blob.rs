@@ -1,7 +1,5 @@
-mod llrt;
-
-use crate::js::apis::node::blob::llrt::polyfill::Blob;
-use crate::js::apis::node::blob::llrt::{BasePrimordials, Primordial};
+use crate::js::apis::node::llrt::llrt_buffer::blob::Blob;
+use crate::js::apis::node::llrt::llrt_buffer::{BasePrimordials, Primordial};
 use rquickjs::{atom::PredefinedAtom, prelude::Func, Class, Ctx, Error as JsError};
 
 // ===========================================================================================

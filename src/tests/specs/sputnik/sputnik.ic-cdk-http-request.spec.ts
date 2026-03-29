@@ -52,7 +52,7 @@ describe('Sputnik > ic_cdk > http_request', () => {
 			}
 		});
 
-		return executeHttpRequest();
+		return await executeHttpRequest();
 	};
 
 	beforeAll(async () => {

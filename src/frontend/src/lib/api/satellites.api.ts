@@ -1,7 +1,7 @@
 import type { MissionControlDid, SatelliteDid } from '$declarations';
 import { getSatelliteActor } from '$lib/api/actors/actor.juno.api';
 import type { CustomDomains } from '$lib/types/custom-domain';
-import type { OptionIdentity } from '$lib/types/itentity';
+import type { NullishIdentity } from '$lib/types/itentity';
 import type { ListParams } from '$lib/types/list';
 import { toListParams } from '$lib/utils/satellite.utils';
 import { isNullish, toNullable } from '@dfinity/utils';
@@ -16,7 +16,7 @@ export const listDocs = async ({
 	satelliteId: Principal;
 	collection: string;
 	params: ListParams;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<SatelliteDid.ListResults_1> => {
 	const { list_docs } = await getSatelliteActor({ satelliteId, identity });
 	return list_docs(collection, toListParams(params));
@@ -31,7 +31,7 @@ export const getDoc = async ({
 	satelliteId: Principal;
 	collection: string;
 	key: string;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<[] | [SatelliteDid.Doc]> => {
 	const { get_doc } = await getSatelliteActor({ satelliteId, identity });
 	return get_doc(collection, key);
@@ -48,7 +48,7 @@ export const setDoc = async ({
 	collection: string;
 	key: string;
 	doc: SatelliteDid.SetDoc;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<SatelliteDid.Doc> => {
 	const { set_doc } = await getSatelliteActor({ satelliteId, identity });
 	return set_doc(collection, key, doc);
@@ -63,7 +63,7 @@ export const listAssets = async ({
 	satelliteId: Principal;
 	collection: string;
 	params: ListParams;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<SatelliteDid.ListResults> => {
 	const actor = await getSatelliteActor({ satelliteId, identity });
 	return actor.list_assets(collection, toListParams(params));
@@ -78,7 +78,7 @@ export const listRules = async ({
 	satelliteId: Principal;
 	type: SatelliteDid.CollectionType;
 	filter: SatelliteDid.ListRulesParams;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<SatelliteDid.ListRulesResults> => {
 	const { list_rules } = await getSatelliteActor({ satelliteId, identity });
 	return list_rules(type, filter);
@@ -92,7 +92,7 @@ export const getRule = async ({
 }: {
 	satelliteId: Principal;
 	type: SatelliteDid.CollectionType;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 	collection: string;
 }): Promise<[] | [SatelliteDid.Rule]> => {
 	const { get_rule } = await getSatelliteActor({ satelliteId, identity });
@@ -109,7 +109,7 @@ export const setRule = async ({
 	satelliteId: Principal;
 	collection: string;
 	type: SatelliteDid.CollectionType;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 	rule: SatelliteDid.SetRule;
 }): Promise<SatelliteDid.Rule> => {
 	const { set_rule } = await getSatelliteActor({ satelliteId, identity });
@@ -127,7 +127,7 @@ export const deleteRule = async ({
 	collection: string;
 	type: SatelliteDid.CollectionType;
 	rule: SatelliteDid.Rule;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }) => {
 	const delRule: SatelliteDid.DelRule = {
 		version: rule.version
@@ -142,7 +142,7 @@ export const listControllers = async ({
 	identity
 }: {
 	satelliteId: Principal;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<[Principal, MissionControlDid.AccessKey][]> => {
 	const actor = await getSatelliteActor({ satelliteId, identity });
 	return actor.list_controllers();
@@ -156,7 +156,7 @@ export const setCustomDomain = async ({
 	satelliteId: Principal;
 	domainName: string;
 	boundaryNodesId: string | undefined;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<void> => {
 	const { set_custom_domain } = await getSatelliteActor(rest);
 	await set_custom_domain(domainName, toNullable(boundaryNodesId));
@@ -168,7 +168,7 @@ export const deleteCustomDomain = async ({
 }: {
 	satelliteId: Principal;
 	domainName: string;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<void> => {
 	const { del_custom_domain } = await getSatelliteActor(rest);
 	await del_custom_domain(domainName);
@@ -176,7 +176,7 @@ export const deleteCustomDomain = async ({
 
 export const listCustomDomains = async (params: {
 	satelliteId: Principal;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<CustomDomains> => {
 	const { list_custom_domains } = await getSatelliteActor(params);
 	return list_custom_domains();
@@ -188,7 +188,7 @@ export const setAuthConfig = async ({
 }: {
 	satelliteId: Principal;
 	config: SatelliteDid.SetAuthenticationConfig;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<SatelliteDid.AuthenticationConfig> => {
 	const { set_auth_config } = await getSatelliteActor(rest);
 	return set_auth_config(config);
@@ -200,7 +200,7 @@ export const setAutomationConfig = async ({
 }: {
 	satelliteId: Principal;
 	config: SatelliteDid.SetAutomationConfig;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<SatelliteDid.AutomationConfig> => {
 	const { set_automation_config } = await getSatelliteActor(rest);
 	return set_automation_config(config);
@@ -208,7 +208,7 @@ export const setAutomationConfig = async ({
 
 export const getConfig = async (params: {
 	satelliteId: Principal;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<SatelliteDid.Config> => {
 	const { get_config } = await getSatelliteActor(params);
 	return get_config();
@@ -225,7 +225,7 @@ export const deleteDoc = async ({
 	collection: string;
 	key: string;
 	doc: SatelliteDid.Doc | undefined;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }) => {
 	const { del_doc } = await getSatelliteActor({ satelliteId, identity });
 	return del_doc(collection, key, {
@@ -242,7 +242,7 @@ export const deleteAsset = async ({
 	satelliteId: Principal;
 	collection: string;
 	full_path: string;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }) => {
 	const actor = await getSatelliteActor({ satelliteId, identity });
 	return actor.del_asset(collection, full_path);
@@ -255,7 +255,7 @@ export const deleteDocs = async ({
 }: {
 	satelliteId: Principal;
 	collection: string;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }) => {
 	const { del_docs } = await getSatelliteActor({ satelliteId, identity });
 	return del_docs(collection);
@@ -268,7 +268,7 @@ export const deleteAssets = async ({
 }: {
 	satelliteId: Principal;
 	collection: string;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }) => {
 	const { del_assets } = await getSatelliteActor({ satelliteId, identity });
 	return del_assets(collection);
@@ -283,7 +283,7 @@ export const depositCycles = async ({
 	satelliteId: Principal;
 	cycles: bigint;
 	destinationId: Principal;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }) => {
 	const { deposit_cycles } = await getSatelliteActor({ satelliteId, identity });
 	return deposit_cycles({
@@ -299,7 +299,7 @@ export const countCollectionAssets = async ({
 }: {
 	satelliteId: Principal;
 	collection: string;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<bigint> => {
 	const { count_collection_assets } = await getSatelliteActor({ satelliteId, identity });
 	return count_collection_assets(collection);
@@ -310,7 +310,7 @@ export const switchStorageSystemMemory = async ({
 	identity
 }: {
 	satelliteId: Principal;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<void> => {
 	const { switch_storage_system_memory } = await getSatelliteActor({ satelliteId, identity });
 	await switch_storage_system_memory();
@@ -322,7 +322,7 @@ export const setControllers = async ({
 }: {
 	args: SatelliteDid.SetControllersArgs;
 	satelliteId: Principal;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<[Principal, SatelliteDid.AccessKey][]> => {
 	const { set_controllers } = await getSatelliteActor(rest);
 	return set_controllers(args);
@@ -334,7 +334,7 @@ export const deleteControllers = async ({
 }: {
 	args: SatelliteDid.DeleteControllersArgs;
 	satelliteId: Principal;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<[Principal, SatelliteDid.AccessKey][]> => {
 	const { del_controllers } = await getSatelliteActor(rest);
 	return del_controllers(args);

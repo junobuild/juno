@@ -10,7 +10,7 @@ import { toasts } from '$lib/stores/app/toasts.store';
 import { authStore } from '$lib/stores/auth.store';
 import { customDomainsStore } from '$lib/stores/satellite/custom-domains.store';
 import type { CustomDomainName } from '$lib/types/custom-domain';
-import type { OptionIdentity } from '$lib/types/itentity';
+import type { NullishIdentity } from '$lib/types/itentity';
 import { assertNonNullish, fromNullable, nonNullish } from '@dfinity/utils';
 import type { Principal } from '@icp-sdk/core/principal';
 import { get } from 'svelte/store';
@@ -26,7 +26,7 @@ export const deleteCustomDomain = async ({
 	customDomain: SatelliteDid.CustomDomain;
 	domainName: CustomDomainName;
 	deleteCustomDomain: boolean;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }) => {
 	assertNonNullish(identity, get(i18n).core.not_logged_in);
 

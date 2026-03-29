@@ -1,5 +1,5 @@
 import { getAgent } from '$lib/api/_agent/_agent.api';
-import type { OptionIdentity } from '$lib/types/itentity';
+import type { NullishIdentity } from '$lib/types/itentity';
 import { assertNonNullish, nowInBigIntNanoSeconds } from '@dfinity/utils';
 import {
 	type WithdrawParams,
@@ -14,7 +14,7 @@ export const withdrawCycles = async ({
 	identity
 }: {
 	canisterId: Principal;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 } & Pick<WithdrawParams, 'amount'>): Promise<WithdrawResult> => {
 	const { withdraw } = await getCyclesLedgerActor({ identity });
 
@@ -28,7 +28,7 @@ export const withdrawCycles = async ({
 const getCyclesLedgerActor = async ({
 	identity
 }: {
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<CyclesLedgerCanister> => {
 	assertNonNullish(identity, 'No internet identity to initialize the Cycles Ledger actor.');
 

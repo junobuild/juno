@@ -17,21 +17,21 @@ import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
 import { segmentsUncertifiedStore } from '$lib/stores/console/segments.store';
 import { satellitesUncertifiedStore } from '$lib/stores/mission-control/satellites.store';
-import type { OptionIdentity } from '$lib/types/itentity';
+import type { NullishIdentity } from '$lib/types/itentity';
 import type { Metadata } from '$lib/types/metadata';
 import type { MissionControlId } from '$lib/types/mission-control';
 import type { SatelliteId, SatelliteUiMetadata } from '$lib/types/satellite';
-import type { Option } from '$lib/types/utils';
 import { isNullish, nonNullish, notEmptyString } from '@dfinity/utils';
+import type { Nullish } from '@dfinity/zod-schemas';
 import type { Identity } from '@icp-sdk/core/agent';
 import { get } from 'svelte/store';
 import * as z from 'zod';
 
 interface SetSatelliteMetadataParams {
-	missionControlId: Option<MissionControlId>;
+	missionControlId: Nullish<MissionControlId>;
 	satellite: MissionControlDid.Satellite;
 	metadata: SatelliteUiMetadata;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }
 
 export const setSatelliteMetadata = async ({

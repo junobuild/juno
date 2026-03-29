@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { isEmptyString, isNullish, nonNullish } from '@dfinity/utils';
+	import type { Nullish } from '@dfinity/zod-schemas';
 	import type { Principal } from '@icp-sdk/core/principal';
 	import { onMount, type Snippet, untrack } from 'svelte';
 	import { fade } from 'svelte/transition';
@@ -19,13 +20,12 @@
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
 	import type { MissionControlId } from '$lib/types/mission-control';
-	import type { Option } from '$lib/types/utils';
 	import { orbiterName } from '$lib/utils/orbiter.utils';
 	import { satelliteName } from '$lib/utils/satellite.utils';
 	import { waitReady } from '$lib/utils/timeout.utils';
 
 	interface Props {
-		missionControlId: Option<MissionControlId>;
+		missionControlId: Nullish<MissionControlId>;
 		children?: Snippet;
 		selectedMissionControl?: boolean;
 		selectedSatellites: [Principal, MissionControlDid.Satellite][];

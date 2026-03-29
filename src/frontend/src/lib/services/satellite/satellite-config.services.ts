@@ -8,7 +8,7 @@ import { i18n } from '$lib/stores/app/i18n.store';
 import { satellitesConfigIdbStore } from '$lib/stores/app/idb.store';
 import { toasts } from '$lib/stores/app/toasts.store';
 import { uncertifiedSatellitesConfigsStore } from '$lib/stores/satellite/satellites-configs.store';
-import type { OptionIdentity } from '$lib/types/itentity';
+import type { NullishIdentity } from '$lib/types/itentity';
 import type { SatelliteId } from '$lib/types/satellite';
 import { nonNullish } from '@dfinity/utils';
 import { get } from 'svelte/store';
@@ -33,7 +33,7 @@ export const loadSatelliteConfig = async ({
 	reload = false
 }: {
 	satelliteId: SatelliteId;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 	reload?: boolean;
 }): Promise<{ result: 'skip' | 'success' | 'error' }> => {
 	// We load only once per session or when required.

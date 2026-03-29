@@ -1,7 +1,7 @@
 import { loadConsoleSegments } from '$lib/services/console/segments.services';
 import { loadOrbiters } from '$lib/services/mission-control/mission-control.orbiters.services';
 import { loadSatellites } from '$lib/services/mission-control/mission-control.satellites.services';
-import type { Option } from '$lib/types/utils';
+import type { Nullish } from '@dfinity/zod-schemas';
 import type { Principal } from '@icp-sdk/core/principal';
 
 export const loadSegments = async ({
@@ -10,7 +10,7 @@ export const loadSegments = async ({
 	reloadSatellites = true,
 	reloadOrbiters = true
 }: {
-	missionControlId: Option<Principal>;
+	missionControlId: Nullish<Principal>;
 	reload?: boolean;
 	reloadSatellites?: boolean;
 	reloadOrbiters?: boolean;

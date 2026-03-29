@@ -13,7 +13,7 @@ import {
 } from '$declarations';
 import { ActorApi, type GetActorParams } from '$lib/api/actors/actor.api';
 import { CONSOLE_CANISTER_ID, OBSERVATORY_CANISTER_ID } from '$lib/constants/app.constants';
-import type { OptionIdentity } from '$lib/types/itentity';
+import type { NullishIdentity } from '$lib/types/itentity';
 import type { MissionControlId } from '$lib/types/mission-control';
 import type { Principal } from '@icp-sdk/core/principal';
 
@@ -33,7 +33,7 @@ export const getConsoleActor = async ({
 		identity
 	});
 
-export const getObservatoryActor = async (identity: OptionIdentity): Promise<ObservatoryActor> =>
+export const getObservatoryActor = async (identity: NullishIdentity): Promise<ObservatoryActor> =>
 	await observatoryActor.getActor({
 		canisterId: OBSERVATORY_CANISTER_ID,
 		idlFactory: idlFactoryObservatory,
@@ -45,7 +45,7 @@ export const getSatelliteActor = async ({
 	identity
 }: {
 	satelliteId: Principal;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<SatelliteActor> =>
 	await satelliteActor.getActor({
 		canisterId: satelliteId,
@@ -58,7 +58,7 @@ export const getOrbiterActor = async ({
 	identity
 }: {
 	orbiterId: Principal;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<OrbiterActor> =>
 	await orbiterActor.getActor({
 		canisterId: orbiterId,
@@ -71,7 +71,7 @@ export const getMissionControlActor = async ({
 	missionControlId
 }: {
 	missionControlId: MissionControlId;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<MissionControlActor> =>
 	await missionControlActor.getActor({
 		canisterId: missionControlId,

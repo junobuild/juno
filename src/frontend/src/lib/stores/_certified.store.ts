@@ -1,8 +1,8 @@
 import type { CertifiedData } from '$lib/types/store';
-import type { Option } from '$lib/types/utils';
+import type { Nullish } from '@dfinity/zod-schemas';
 import { writable, type Readable } from 'svelte/store';
 
-type CertifiedStoreData<T> = Option<CertifiedData<T>>;
+type CertifiedStoreData<T> = Nullish<CertifiedData<T>>;
 
 export interface CertifiedStore<T> extends Readable<CertifiedStoreData<T>> {
 	set: (data: CertifiedData<T>) => void;

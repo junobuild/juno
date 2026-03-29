@@ -1,4 +1,4 @@
-import type { OptionIdentity } from '$lib/types/itentity';
+import type { NullishIdentity } from '$lib/types/itentity';
 import { isNullish } from '@dfinity/utils';
 
 export type QueryAndUpdateOnResponse<R> = (options: { certified: boolean; response: R }) => void;
@@ -6,7 +6,7 @@ export type QueryAndUpdateOnResponse<R> = (options: { certified: boolean; respon
 export interface QueryAndUpdateOnErrorOptions<E = unknown> {
 	error: E;
 	// The identity used for the request
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }
 
 export type QueryAndUpdateOnError<E = unknown> = (
@@ -25,7 +25,7 @@ export type QueryAndUpdatePromiseResolution = 'all_settled' | 'race';
 
 export interface QueryAndUpdateRequestParams {
 	certified: boolean;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }
 
 /**
@@ -46,7 +46,7 @@ export const queryAndUpdate = async <R, E = unknown>({
 	onError?: QueryAndUpdateOnError<E>;
 	onCertifiedError?: QueryAndUpdateOnCertifiedError<E>;
 	strategy?: QueryAndUpdateStrategy;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 	resolution?: QueryAndUpdatePromiseResolution;
 }): Promise<void> => {
 	let certifiedDone = false;

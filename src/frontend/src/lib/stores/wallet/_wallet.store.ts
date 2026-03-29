@@ -1,4 +1,4 @@
 import type { IcrcAccountText, LedgerIdText } from '$lib/schemas/wallet.schema';
-import type { Option } from '$lib/types/utils';
+import type { Nullish } from '@dfinity/zod-schemas';
 
-export type CertifiedWalletStoreData<T> = Option<Record<IcrcAccountText, Record<LedgerIdText, T>>>;
+export type CertifiedWalletStoreData<T> = Nullish<Record<IcrcAccountText, Record<LedgerIdText, T>>>;

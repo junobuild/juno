@@ -1,7 +1,7 @@
 import type { SatelliteDid } from '$declarations';
 import { setConfig } from '$lib/services/satellite/automation/_automation.config.services';
 import { loadSatelliteConfig } from '$lib/services/satellite/satellite-config.services';
-import type { OptionIdentity } from '$lib/types/itentity';
+import type { NullishIdentity } from '$lib/types/itentity';
 import type { Satellite } from '$lib/types/satellite';
 import type { WorkflowReferences } from '$lib/types/workflow';
 import { toNullable } from '@dfinity/utils';
@@ -12,7 +12,7 @@ export const createAutomationConfig = async ({
 	...rest
 }: {
 	satellite: Satellite;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 	repoKey: SatelliteDid.RepositoryKey;
 	repoReferences: WorkflowReferences | undefined;
 }): Promise<{
@@ -41,7 +41,7 @@ const setAutomationConfig = async ({
 	repoReferences
 }: {
 	satellite: Satellite;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 	repoKey: SatelliteDid.RepositoryKey;
 	repoReferences: WorkflowReferences | undefined;
 }): Promise<{

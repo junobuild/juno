@@ -1,18 +1,18 @@
 <script lang="ts">
 	import { isEmptyString, nonNullish } from '@dfinity/utils';
+	import type { Nullish } from '@dfinity/zod-schemas';
 	import type { Snippet } from 'svelte';
 	import Segment from '$lib/components/modules/segments/Segment.svelte';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { Orbiter } from '$lib/types/orbiter';
 	import type { Satellite } from '$lib/types/satellite';
-	import type { Option } from '$lib/types/utils';
 	import { orbiterName } from '$lib/utils/orbiter.utils';
 	import { satelliteName } from '$lib/utils/satellite.utils';
 
 	interface Props {
 		label: Snippet;
 		satellites: Satellite[];
-		orbiter: Option<Orbiter>;
+		orbiter: Nullish<Orbiter>;
 	}
 
 	let { label, satellites, orbiter }: Props = $props();

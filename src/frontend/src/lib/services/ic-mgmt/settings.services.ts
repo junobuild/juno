@@ -3,7 +3,7 @@ import { canisterUpdateSettings } from '$lib/api/ic.api';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
 import type { CanisterInfo, CanisterSettings } from '$lib/types/canister';
-import type { OptionIdentity } from '$lib/types/itentity';
+import type { NullishIdentity } from '$lib/types/itentity';
 import { lacksCyclesForFreezingThreshold } from '$lib/utils/canister.utils';
 import { isNullish, toNullable } from '@dfinity/utils';
 import type { Principal } from '@icp-sdk/core/principal';
@@ -17,7 +17,7 @@ export const updateSettings = async ({
 	canisterInfo
 }: {
 	canisterId: Principal;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 	currentSettings: CanisterSettings;
 	canisterInfo: CanisterInfo;
 	newSettings: Omit<CanisterSettings, 'controllers'>;

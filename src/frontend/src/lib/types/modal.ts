@@ -9,7 +9,7 @@ import type { ProposalRecord } from '$lib/types/proposals';
 import type { Satellite, SatelliteIdText } from '$lib/types/satellite';
 import type { User as UserListed } from '$lib/types/user';
 import type { UserUsageCollection } from '$lib/types/user-usage';
-import type { Option } from '$lib/types/utils';
+import type { Nullish } from '@dfinity/zod-schemas';
 import type { Principal } from '@icp-sdk/core/principal';
 import type { BuildType } from '@junobuild/admin';
 
@@ -34,7 +34,7 @@ export type JunoModalUpgradeSatelliteDetail = JunoModalUpgradeDetail &
 export interface JunoModalCreateSegmentDetail {
 	fee: ConsoleDid.FactoryFee;
 	monitoringEnabled: boolean;
-	monitoringConfig: Option<MissionControlDid.MonitoringConfig>;
+	monitoringConfig: Nullish<MissionControlDid.MonitoringConfig>;
 }
 
 export interface JunoModalCustomDomainDetail {

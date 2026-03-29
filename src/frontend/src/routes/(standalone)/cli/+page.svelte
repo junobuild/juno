@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { nonNullish, notEmptyString } from '@dfinity/utils';
+	import type { Nullish } from '@dfinity/zod-schemas';
 	import { fade } from 'svelte/transition';
 	import SignInActions from '$lib/components/auth/sign-in/SignInActions.svelte';
 	import CliAdd from '$lib/components/cli/CliAdd.svelte';
@@ -13,13 +14,12 @@
 	import { onIntersection } from '$lib/directives/intersection.directives';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { onLayoutTitleIntersection } from '$lib/stores/app/layout-intersecting.store';
-	import type { Option } from '$lib/types/utils';
 
 	interface Props {
 		data: {
-			redirect_uri: Option<string>;
-			principal: Option<string>;
-			profile: Option<string>;
+			redirect_uri: Nullish<string>;
+			principal: Nullish<string>;
+			profile: Nullish<string>;
 		};
 	}
 

@@ -82,7 +82,7 @@
 		"@junobuild/cli-tools": "^0.12.4-next-2026-03-22",
 		"@junobuild/config-loader": "^0.4.9-next-2026-03-20.3",
 		"@junobuild/errors": "^0.2.4-next-2026-03-20.3",
-		"@junobuild/functions": "^0.7.2-next-2026-03-20.3",
+		"@junobuild/functions": "^0.7.2-next-2026-03-29.1",
 		"@junobuild/functions-tools": "^0.5.3-next-2026-03-20.3",
 		"@ltd/j-toml": "^1.38.0",
 		"@playwright/test": "^1.58.2",

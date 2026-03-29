@@ -3,15 +3,13 @@ use crate::js::apis::types::http_request::{
     JsHttpHeader, JsHttpMethod, JsHttpRequestArgs, JsHttpRequestResult,
 };
 use crate::js::types::candid::JsUint8Array;
-use crate::js::utils::primitives::into_bigint_from_u128;
+use crate::js::utils::primitives::{from_optional_bigint_js, into_bigint_from_u128};
 use candid::Principal;
 use ic_cdk::management_canister::{
     HttpHeader, HttpMethod, HttpRequestArgs, HttpRequestResult, TransformContext, TransformFunc,
 };
 use junobuild_shared::ic::api::id;
-use rquickjs::{
-    Array, Ctx, Error as JsError, FromJs, IntoJs, Object, Result as JsResult, TypedArray, Value,
-};
+use rquickjs::{Array, BigInt, Ctx, Error as JsError, FromJs, IntoJs, Object, Result as JsResult, TypedArray, Value};
 
 impl<'js> JsUint8Array<'js> {
     pub fn from_bytes(ctx: &Ctx<'js>, bytes: &[u8]) -> JsResult<Self> {
@@ -187,9 +185,12 @@ impl<'js> FromJs<'js> for JsHttpRequestArgs<'js> {
                 .collect::<JsResult<Vec<JsHttpHeader>>>()?
         };
 
+        let max_response_bytes: Option<u64> =
+            from_optional_bigint_js(obj.get::<_, Option<BigInt>>("maxResponseBytes")?)?;
+
         Ok(Self {
             url: obj.get("url")?,
-            max_response_bytes: obj.get("maxResponseBytes")?,
+            max_response_bytes,
             method: obj.get("method")?,
             headers,
             body: obj.get("body")?,

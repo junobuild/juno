@@ -48,8 +48,8 @@ const transformTextEncodingPolyfill = (content) => {
 
 	return `use std::str;
 
-use crate::js::apis::node::text_encoding::javy::impls::Args;
-use crate::js::apis::node::text_encoding::javy::utils::{to_js_error, to_string_lossy};
+use crate::js::apis::node::javy::text_encoding::impls::Args;
+use crate::js::apis::node::javy::text_encoding::utils::{to_js_error, to_string_lossy};
 use crate::{hold, hold_and_release};
 use anyhow::{anyhow, bail, Error, Result};
 use rquickjs::{
@@ -79,56 +79,56 @@ const savePolyfill = async ({ dest, content, transform }) => {
 const resources = [
 	{
 		src: '/bytecodealliance/javy/refs/heads/main/crates/javy/src/apis/text_encoding/text-encoding.js',
-		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/text_encoding/javy/text-encoding.js')
+		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/javy/text_encoding/text-encoding.js')
 	},
 	{
 		src: '/bytecodealliance/javy/refs/heads/main/crates/javy/src/apis/text_encoding/mod.rs',
-		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/text_encoding/javy/polyfill.rs'),
+		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/javy/text_encoding/polyfill.rs'),
 		transform: transformTextEncodingPolyfill
 	},
 	{
 		src: '/awslabs/llrt/refs/heads/main/modules/llrt_buffer/src/blob.rs',
-		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/blob/llrt/polyfill.rs'),
+		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/llrt/buffer/blob.rs'),
 		transform: transformLlrtBlob
 	},
 	{
 		src: '/awslabs/llrt/refs/heads/main/modules/llrt_buffer/src/file.rs',
-		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/blob/llrt/file.rs'),
+		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/llrt/buffer/file.rs'),
 		transform: transformLlrtBlob
 	},
 	{
 		src: '/awslabs/llrt/refs/heads/main/libs/llrt_utils/src/time.rs',
-		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/blob/llrt/utils/time.rs'),
+		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/llrt/utils/time.rs'),
 		transform: transformLlrtUtils
 	},
 	{
 		src: '/awslabs/llrt/refs/heads/main/libs/llrt_utils/src/result.rs',
-		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/blob/llrt/utils/result.rs'),
+		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/llrt/utils/result.rs'),
 		transform: transformLlrtUtils
 	},
 	{
 		src: '/awslabs/llrt/refs/heads/main/libs/llrt_utils/src/primordials.rs',
-		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/blob/llrt/utils/primordials.rs'),
+		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/llrt/utils/primordials.rs'),
 		transform: transformLlrtUtils
 	},
 	{
 		src: '/awslabs/llrt/refs/heads/main/libs/llrt_utils/src/class.rs',
-		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/blob/llrt/utils/class.rs'),
+		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/llrt/utils/class.rs'),
 		transform: transformLlrtUtils
 	},
 	{
 		src: '/awslabs/llrt/refs/heads/main/libs/llrt_utils/src/object.rs',
-		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/blob/llrt/utils/object.rs'),
+		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/llrt/utils/object.rs'),
 		transform: transformLlrtUtils
 	},
 	{
 		src: '/awslabs/llrt/refs/heads/main/libs/llrt_utils/src/error_messages.rs',
-		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/blob/llrt/utils/error_messages.rs'),
+		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/llrt/utils/error_messages.rs'),
 		transform: transformLlrtUtils
 	},
 	{
 		src: '/awslabs/llrt/refs/heads/main/libs/llrt_utils/src/bytes.rs',
-		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/blob/llrt/utils/bytes.rs'),
+		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/llrt/utils/bytes.rs'),
 		transform: transformLlrtUtils
 	}
 ];

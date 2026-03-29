@@ -1,7 +1,9 @@
-mod llrt;
+mod buffer;
+#[rustfmt::skip]
+mod utils;
 
-use crate::js::apis::node::blob::llrt::polyfill::Blob;
-use crate::js::apis::node::blob::llrt::{BasePrimordials, Primordial};
+use crate::js::apis::node::llrt::buffer::blob::Blob;
+use crate::js::apis::node::llrt::buffer::{BasePrimordials, Primordial};
 use rquickjs::{atom::PredefinedAtom, prelude::Func, Class, Ctx, Error as JsError};
 
 // ===========================================================================================

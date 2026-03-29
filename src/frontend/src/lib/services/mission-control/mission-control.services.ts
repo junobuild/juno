@@ -27,13 +27,13 @@ import {
 } from '$lib/stores/mission-control/mission-control.store';
 import { versionStore } from '$lib/stores/version.store';
 import type { AddAccessKeyParams } from '$lib/types/access-keys';
-import type { OptionIdentity } from '$lib/types/itentity';
+import type { NullishIdentity } from '$lib/types/itentity';
 import type { Metadata } from '$lib/types/metadata';
 import type { MissionControlId } from '$lib/types/mission-control';
-import type { Option } from '$lib/types/utils';
 import { isNotValidEmail } from '$lib/utils/email.utils';
 import { container } from '$lib/utils/juno.utils';
 import { fromNullable, isEmptyString, isNullish } from '@dfinity/utils';
+import type { Nullish } from '@dfinity/zod-schemas';
 import type { Identity } from '@icp-sdk/core/agent';
 import type { Principal } from '@icp-sdk/core/principal';
 import { missionControlVersion } from '@junobuild/admin';
@@ -127,7 +127,7 @@ export const loadSettings = async ({
 	skipVersionGuard = false
 }: {
 	missionControlId: MissionControlId;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 	reload?: boolean;
 	skipVersionGuard?: boolean;
 }): Promise<{ success: boolean }> => {
@@ -170,7 +170,7 @@ export const loadUserData = async ({
 	skipVersionGuard = false
 }: {
 	missionControlId: MissionControlId;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 	reload?: boolean;
 	skipVersionGuard?: boolean;
 }): Promise<{ success: boolean }> => {
@@ -207,8 +207,8 @@ export const setMetadataEmail = async ({
 	email,
 	metadata
 }: {
-	missionControlId: Option<Principal>;
-	identity: OptionIdentity;
+	missionControlId: Nullish<Principal>;
+	identity: NullishIdentity;
 	email: string;
 	metadata: Metadata;
 }): Promise<{ success: boolean }> => {

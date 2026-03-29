@@ -14,7 +14,7 @@ import type { SelectedToken, SelectedWallet } from '$lib/schemas/wallet.schema';
 import { execute } from '$lib/services/_progress.services';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
-import type { OptionIdentity } from '$lib/types/itentity';
+import type { NullishIdentity } from '$lib/types/itentity';
 import type { MissionControlId } from '$lib/types/mission-control';
 import { type SendTokensProgress, SendTokensProgressStep } from '$lib/types/progress-send-tokens';
 import { nowInBigIntNanoSeconds } from '$lib/utils/date.utils';
@@ -35,7 +35,7 @@ import { get } from 'svelte/store';
 interface SendTokensParams {
 	destination: string;
 	token: TokenAmountV2 | undefined;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 	selectedWallet: SelectedWallet;
 	selectedToken: SelectedToken;
 	onProgress: (progress: SendTokensProgress | undefined) => void;
@@ -176,7 +176,7 @@ const sendIcrcWithMissionControl = async ({
 }: {
 	destination: string;
 	token: TokenAmountV2;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 	missionControlId: MissionControlId;
 }): Promise<void> => {
 	const { owner, subaccount } = decodeIcrcAccount(destination);
@@ -207,7 +207,7 @@ const sendIcpWithMissionControl = async ({
 }: {
 	destination: string;
 	token: TokenAmountV2;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 	missionControlId: MissionControlId;
 }): Promise<void> => {
 	const args: MissionControlDid.TransferArgs = {
@@ -232,7 +232,7 @@ const sendIcpWithIcrcAndDev = async ({
 }: {
 	destination: string;
 	token: TokenAmountV2;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<void> => {
 	const { owner, subaccount } = decodeIcrcAccount(destination);
 
@@ -259,7 +259,7 @@ const sendIcpWithDev = async ({
 }: {
 	destination: string;
 	token: TokenAmountV2;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<void> => {
 	const request: TransferRequest = {
 		to: AccountIdentifier.fromHex(destination),
@@ -281,7 +281,7 @@ const sendCyclesWithDev = async ({
 }: {
 	destination: string;
 	token: TokenAmountV2;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<void> => {
 	const { owner, subaccount } = decodeIcrcAccount(destination);
 

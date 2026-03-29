@@ -1,6 +1,6 @@
 import type { OrbiterDid007, OrbiterDid008 } from '$declarations';
 import { getOrbiterActor007, getOrbiterActor008 } from '$lib/api/actors/actor.deprecated.api';
-import type { OptionIdentity } from '$lib/types/itentity';
+import type { NullishIdentity } from '$lib/types/itentity';
 import type { PageViewsParams } from '$lib/types/orbiter';
 import { toBigIntNanoSeconds } from '$lib/utils/date.utils';
 import { nonNullish, toNullable } from '@dfinity/utils';
@@ -14,7 +14,7 @@ export const listOrbiterSatelliteConfigs007 = async ({
 	identity
 }: {
 	orbiterId: Principal;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<[Principal, OrbiterDid007.OrbiterSatelliteConfig][]> => {
 	const { list_satellite_configs } = await getOrbiterActor007({ orbiterId, identity });
 	return list_satellite_configs();
@@ -30,7 +30,7 @@ export const setOrbiterSatelliteConfigs007 = async ({
 }: {
 	orbiterId: Principal;
 	config: [Principal, OrbiterDid007.SetSatelliteConfig][];
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<[Principal, OrbiterDid007.OrbiterSatelliteConfig][]> => {
 	const actor = await getOrbiterActor007({ orbiterId, identity });
 	return actor.set_satellite_configs(config);
@@ -44,7 +44,7 @@ export const orbiterVersion = async ({
 	identity
 }: {
 	orbiterId: Principal;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<string> => {
 	const { version } = await getOrbiterActor007({ orbiterId, identity });
 	return version();

@@ -1,5 +1,5 @@
 import { getAgent } from '$lib/api/_agent/_agent.api';
-import type { OptionIdentity } from '$lib/types/itentity';
+import type { NullishIdentity } from '$lib/types/itentity';
 import { assertNonNullish } from '@dfinity/utils';
 import {
 	IcpLedgerCanister,
@@ -12,7 +12,7 @@ export const icpTransfer = async ({
 	identity,
 	request
 }: {
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 	request: TransferRequest;
 }): Promise<BlockHeight> => {
 	const { transfer } = await ipcLedgerCanister({ identity });
@@ -23,7 +23,7 @@ export const icrcTransfer = async ({
 	identity,
 	request
 }: {
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 	request: Icrc1TransferRequest;
 }): Promise<BlockHeight> => {
 	const { icrc1Transfer } = await ipcLedgerCanister({ identity });
@@ -33,7 +33,7 @@ export const icrcTransfer = async ({
 const ipcLedgerCanister = async ({
 	identity
 }: {
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<IcpLedgerCanister> => {
 	assertNonNullish(identity, 'No internet identity to initialize the Ledger actor.');
 

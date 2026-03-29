@@ -11,13 +11,13 @@ import {
 import { loadSegments } from '$lib/services/segments.services';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
-import type { OptionIdentity } from '$lib/types/itentity';
+import type { NullishIdentity } from '$lib/types/itentity';
 import type { MissionControlId } from '$lib/types/mission-control';
 import type { Orbiter } from '$lib/types/orbiter';
 import { type OutOfSyncProgress, OutOfSyncProgressStep } from '$lib/types/progress-out-of-sync';
 import type { Satellite } from '$lib/types/satellite';
-import type { Option } from '$lib/types/utils';
 import { isNullish, toNullable } from '@dfinity/utils';
+import type { Nullish } from '@dfinity/zod-schemas';
 import type { Identity } from '@icp-sdk/core/agent';
 import type { Principal } from '@icp-sdk/core/principal';
 import { get } from 'svelte/store';
@@ -28,8 +28,8 @@ export const reconcileSegments = async ({
 	onProgress,
 	onSyncTextProgress
 }: {
-	identity: OptionIdentity;
-	missionControlId: Option<MissionControlId>;
+	identity: NullishIdentity;
+	missionControlId: Nullish<MissionControlId>;
 	onProgress: (progress: OutOfSyncProgress | undefined) => void;
 	onSyncTextProgress: (text: string) => void;
 }): Promise<{ result: 'ok' } | { result: 'error'; err?: unknown }> => {

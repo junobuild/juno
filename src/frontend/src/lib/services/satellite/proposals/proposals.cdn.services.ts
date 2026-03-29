@@ -3,7 +3,7 @@ import { listAssets } from '$lib/api/satellites.api';
 import { COLLECTION_CDN_RELEASES } from '$lib/constants/storage.constants';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
-import type { OptionIdentity } from '$lib/types/itentity';
+import type { NullishIdentity } from '$lib/types/itentity';
 import type { ListOrder, ListParams } from '$lib/types/list';
 import type { ProposalRecord } from '$lib/types/proposals';
 import type { SatelliteIdText } from '$lib/types/satellite';
@@ -26,7 +26,7 @@ export const findWasmAssetForProposal = async ({
 }: {
 	proposal: ProposalRecord;
 	satelliteId: SatelliteIdText;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<SatelliteDid.AssetNoContent | undefined> => {
 	try {
 		assertNonNullish(identity);

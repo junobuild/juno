@@ -1,6 +1,6 @@
 import { getAgent } from '$lib/api/_agent/_agent.api';
 import { CMC_CANISTER_ID } from '$lib/constants/app.constants';
-import type { OptionIdentity } from '$lib/types/itentity';
+import type { NullishIdentity } from '$lib/types/itentity';
 import { assertNonNullish } from '@dfinity/utils';
 import { type CmcDid, CmcCanister } from '@icp-sdk/canisters/cmc';
 import type { BlockHeight } from '@icp-sdk/canisters/ledger/icp';
@@ -31,7 +31,7 @@ export const notifyTopUp = async ({
 	identity,
 	request
 }: {
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 	request: CmcDid.NotifyTopUpArg;
 }): Promise<BlockHeight> => {
 	const { notifyTopUp } = await cmcCanister({ identity });
@@ -42,14 +42,14 @@ export const notifyMintCycles = async ({
 	identity,
 	request
 }: {
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 	request: CmcDid.NotifyMintCyclesArg;
 }): Promise<CmcDid.NotifyMintCyclesSuccess> => {
 	const { notifyMintCycles } = await cmcCanister({ identity });
 	return await notifyMintCycles(request);
 };
 
-const cmcCanister = async ({ identity }: { identity: OptionIdentity }): Promise<CmcCanister> => {
+const cmcCanister = async ({ identity }: { identity: NullishIdentity }): Promise<CmcCanister> => {
 	assertNonNullish(identity, 'No internet identity to initialize the Cmc actor.');
 
 	const agent = await getAgent({ identity });

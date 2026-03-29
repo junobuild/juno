@@ -8,11 +8,11 @@ import {
 } from '$lib/services/mission-control/mission-control.services';
 import type { AddAccessKeyParams } from '$lib/types/access-keys';
 import type { MissionControlId } from '$lib/types/mission-control';
-import type { Option } from '$lib/types/utils';
 import { bigintStringify } from '$lib/utils/number.utils';
 import { orbiterName } from '$lib/utils/orbiter.utils';
 import { satelliteName } from '$lib/utils/satellite.utils';
 import { nonNullish, notEmptyString } from '@dfinity/utils';
+import type { Nullish } from '@dfinity/zod-schemas';
 import type { Identity } from '@icp-sdk/core/agent';
 import type { Principal } from '@icp-sdk/core/principal';
 import type { PrincipalText } from '@junobuild/schema';
@@ -20,9 +20,9 @@ import type { PrincipalText } from '@junobuild/schema';
 interface SetCliControllersParams {
 	// If set, then controllers are set with the Mission Control
 	// else, they are set directly
-	missionControlId: Option<MissionControlId>;
+	missionControlId: Nullish<MissionControlId>;
 	controllerId: PrincipalText;
-	profile: Option<string>;
+	profile: Nullish<string>;
 	identity: Identity;
 	selectedMissionControl: boolean;
 	selectedSatellites: [Principal, MissionControlDid.Satellite][];
@@ -51,7 +51,7 @@ export const setCliControllers = async ({
 	}
 };
 
-const toMetadata = (profile: Option<string>): Pick<AddAccessKeyParams, 'metadata'> =>
+const toMetadata = (profile: Nullish<string>): Pick<AddAccessKeyParams, 'metadata'> =>
 	notEmptyString(profile) ? { metadata: { profile } } : {};
 
 const setCliControllersWithoutMissionControl = async ({

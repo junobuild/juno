@@ -5,7 +5,7 @@ import { SATELLITE_v0_0_16 } from '$lib/constants/version.constants';
 import { isSatelliteFeatureSupported } from '$lib/services/_feature.services';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
-import type { OptionIdentity } from '$lib/types/itentity';
+import type { NullishIdentity } from '$lib/types/itentity';
 import type { Log, LogDataDid, LogLevel } from '$lib/types/log';
 import { isNullish, nonNullish } from '@dfinity/utils';
 import type { Identity } from '@icp-sdk/core/agent';
@@ -20,7 +20,7 @@ export const listLogs = async ({
 	levels = ['Info', 'Debug', 'Warning', 'Error', 'Unknown']
 }: {
 	satelliteId: Principal;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 	desc?: boolean;
 	levels?: LogLevel[];
 }): Promise<{ results?: [string, Log][]; error?: unknown }> => {

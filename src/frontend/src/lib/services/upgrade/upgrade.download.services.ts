@@ -1,7 +1,7 @@
 import type { SatelliteDid } from '$declarations';
 import { downloadWasm } from '$lib/rest/cdn.dev';
 import { downloadRelease } from '$lib/rest/cdn.rest';
-import type { OptionIdentity } from '$lib/types/itentity';
+import type { NullishIdentity } from '$lib/types/itentity';
 import type { Wasm } from '$lib/types/upgrade';
 import { sha256 } from '$lib/utils/crypto.utils';
 import { container } from '$lib/utils/juno.utils';
@@ -32,7 +32,7 @@ export const downloadWasmFromDevCdn = async ({
 }: {
 	asset: SatelliteDid.AssetNoContent;
 	satelliteId: Principal;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<Omit<Wasm, 'version'>> => {
 	const downloadUrl = downloadUrlLib({
 		assetKey: { fullPath: full_path, token: fromNullable(token) },

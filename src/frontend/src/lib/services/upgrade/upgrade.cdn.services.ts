@@ -3,7 +3,7 @@ import { instantSatelliteVersion } from '$lib/services/_feature.services';
 import { downloadWasmFromDevCdn } from '$lib/services/upgrade/upgrade.download.services';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
-import type { OptionIdentity } from '$lib/types/itentity';
+import type { NullishIdentity } from '$lib/types/itentity';
 import type { Wasm } from '$lib/types/upgrade';
 import { i18nFormat } from '$lib/utils/i18n.utils';
 import { mapJunoPackageMetadata } from '$lib/utils/version.utils';
@@ -21,7 +21,7 @@ export const prepareWasmUpgrade = async ({
 }: {
 	asset: SatelliteDid.AssetNoContent;
 	satelliteId: Principal;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<{ result: 'success'; wasm: Wasm } | { result: 'error'; err?: unknown }> => {
 	try {
 		const result = await downloadWasmFromDevCdn({ asset, satelliteId, identity });

@@ -1,17 +1,17 @@
 <script lang="ts">
 	import { fromNullable, isNullish } from '@dfinity/utils';
+	import type { Nullish } from '@dfinity/zod-schemas';
 	import type { Snippet } from 'svelte';
 	import FactoryCreditsWithFee from '$lib/components/modules/factory/create/FactoryCreditsWithFee.svelte';
 	import FactoryWalletInfo from '$lib/components/modules/factory/create/FactoryWalletInfo.svelte';
 	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
 	import type { JunoModalCreateSegmentDetail, JunoModalDetail } from '$lib/types/modal';
-	import type { Option } from '$lib/types/utils';
 
 	interface Props {
 		detail: JunoModalDetail;
 		priceLabel: string;
 		selectedWallet: SelectedWallet | undefined;
-		withFee: Option<bigint>;
+		withFee: Nullish<bigint>;
 		insufficientFunds?: boolean;
 		children: Snippet;
 		onclose: () => void;

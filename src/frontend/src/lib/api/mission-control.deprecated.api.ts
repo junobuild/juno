@@ -4,7 +4,7 @@ import {
 	getMissionControlActor004
 } from '$lib/api/actors/actor.deprecated.api';
 import type { AddAccessKeyParams } from '$lib/types/access-keys';
-import type { OptionIdentity } from '$lib/types/itentity';
+import type { NullishIdentity } from '$lib/types/itentity';
 import type { MissionControlId } from '$lib/types/mission-control';
 import { nonNullish, toNullable } from '@dfinity/utils';
 import { Principal } from '@icp-sdk/core/principal';
@@ -35,7 +35,7 @@ export const setMissionControlController004 = async ({
 	...rest
 }: {
 	missionControlId: MissionControlId;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 } & AddAccessKeyParams) => {
 	try {
 		const actor = await getMissionControlActor004({ missionControlId, identity });
@@ -59,7 +59,7 @@ export const listSatelliteStatuses = async ({
 	satelliteId
 }: {
 	missionControlId: MissionControlId;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 	satelliteId: Principal;
 }): Promise<[] | [[bigint, MissionControlDid0013.Result_2][]]> => {
 	const { list_satellite_statuses } = await getMissionControlActor0013({
@@ -78,7 +78,7 @@ export const listOrbiterStatuses = async ({
 	orbiterId
 }: {
 	missionControlId: MissionControlId;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 	orbiterId: Principal;
 }): Promise<[] | [[bigint, MissionControlDid0013.Result_2][]]> => {
 	const { list_orbiter_statuses } = await getMissionControlActor0013({
@@ -96,7 +96,7 @@ export const listMissionControlStatuses = async ({
 	identity
 }: {
 	missionControlId: MissionControlId;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<[] | [[bigint, MissionControlDid0013.Result_2][]]> => {
 	const { list_mission_control_statuses } = await getMissionControlActor0013({
 		missionControlId,
@@ -113,7 +113,7 @@ export const missionControlVersion = async ({
 	identity
 }: {
 	missionControlId: MissionControlId;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<string> => {
 	const { version } = await getMissionControlActor0013({ missionControlId, identity });
 	return version();
@@ -130,7 +130,7 @@ export const addSatellitesController003 = async ({
 }: {
 	missionControlId: MissionControlId;
 	satelliteIds: Principal[];
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 } & AddAccessKeyParams) => {
 	try {
 		// We use getMissionControlActor004 actor because the method add_satellites_controllers
@@ -159,7 +159,7 @@ export const addMissionControlController003 = async ({
 	identity
 }: {
 	missionControlId: MissionControlId;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 } & AddAccessKeyParams) => {
 	try {
 		// We use getMissionControlActor004 actor because the method add_mission_control_controllers

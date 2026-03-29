@@ -1,12 +1,11 @@
 import { ICP_LEDGER_CANISTER_ID, SYNC_TOKENS_TIMER_INTERVAL } from '$lib/constants/app.constants';
 import { PRICE_VALIDITY_TIMEFRAME } from '$lib/constants/exchange.constants';
-import { fetchKongSwapToken } from '$lib/rest/kongswap.rest';
+import { fetchExchangePrice } from '$lib/rest/api.rest';
 import { exchangeIdbStore } from '$lib/stores/app/idb.store';
 import type { CanisterIdText } from '$lib/types/canister';
 import type { ExchangePrice } from '$lib/types/exchange';
-import type { KongSwapToken } from '$lib/types/kongswap';
 import type { PostMessageDataResponseExchange, PostMessageRequest } from '$lib/types/post-message';
-import { isNullish, nonNullish } from '@dfinity/utils';
+import { isNullish } from '@dfinity/utils';
 import { del, entries, set } from 'idb-keyval';
 
 export const onExchangeMessage = async ({ data: dataMsg }: MessageEvent<PostMessageRequest>) => {
@@ -85,31 +84,21 @@ const syncExchange = async () => {
 };
 
 const exchangeRateICPToUsd = async (): Promise<ExchangePrice | undefined> => {
-	const icp = await findICPToken();
+	const icp = await fetchExchangePrice({ ledgerId: ICP_LEDGER_CANISTER_ID });
 
 	if (isNullish(icp)) {
 		return undefined;
 	}
 
 	const {
-		metrics: { price, updated_at, market_cap, volume_24h, price_change_24h }
+		exchange: { price, fetchedAt }
 	} = icp;
-
-	if (isNullish(price)) {
-		return undefined;
-	}
 
 	return {
 		usd: Number(price),
-		...(nonNullish(market_cap) && { usdMarketCap: Number(market_cap) }),
-		...(nonNullish(volume_24h) && { usdVolume24h: Number(volume_24h) }),
-		...(nonNullish(price_change_24h) && { usdChange24h: Number(price_change_24h) }),
-		updatedAt: nonNullish(updated_at) ? new Date(updated_at).getTime() : new Date().getTime()
+		updatedAt: new Date(fetchedAt).getTime()
 	};
 };
-
-const findICPToken = async (): Promise<KongSwapToken | undefined> =>
-	await fetchKongSwapToken({ ledgerId: ICP_LEDGER_CANISTER_ID });
 
 const syncExchangePrice = async (exchangePrice: ExchangePrice) => {
 	// Save information in indexed-db as well to load previous values on navigation and refresh

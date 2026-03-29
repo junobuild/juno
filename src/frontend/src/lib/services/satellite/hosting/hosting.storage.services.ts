@@ -5,7 +5,7 @@ import { instantSatelliteVersion } from '$lib/services/_feature.services';
 import { busy } from '$lib/stores/app/busy.store';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
-import type { OptionIdentity } from '$lib/types/itentity';
+import type { NullishIdentity } from '$lib/types/itentity';
 import type { Satellite } from '$lib/types/satellite';
 import { nonNullish } from '@dfinity/utils';
 import { compare } from 'semver';
@@ -16,7 +16,7 @@ export const countHostingAssets = async ({
 	identity
 }: {
 	satellite: Satellite;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<
 	| {
 			result: 'success';
@@ -59,7 +59,7 @@ export const switchHostingMemory = async ({
 	identity
 }: {
 	satellite: Satellite;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<
 	| {
 			result: 'success';

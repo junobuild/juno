@@ -7,10 +7,10 @@ import type {
 	AddAccessKeyParams,
 	AddAccessKeyResult
 } from '$lib/types/access-keys';
-import type { OptionIdentity } from '$lib/types/itentity';
+import type { NullishIdentity } from '$lib/types/itentity';
 import type { MissionControlId } from '$lib/types/mission-control';
-import type { Option } from '$lib/types/utils';
 import { isNullish, nonNullish } from '@dfinity/utils';
+import type { Nullish } from '@dfinity/zod-schemas';
 import { get } from 'svelte/store';
 
 export const addAccessKey = async ({
@@ -18,8 +18,8 @@ export const addAccessKey = async ({
 	addAccessKeyWithDevFn,
 	...rest
 }: {
-	identity: OptionIdentity;
-	missionControlId: Option<MissionControlId>;
+	identity: NullishIdentity;
+	missionControlId: Nullish<MissionControlId>;
 	accessKey: AddAccessKeyParams;
 	addAccessKeyWithMissionControlFn: AccessKeyWithMissionControlFn;
 	addAccessKeyWithDevFn: AccessKeyWithDevFn;
@@ -36,8 +36,8 @@ export const removeAccessKey = async ({
 	removeAccessKeyWithDevFn,
 	...rest
 }: {
-	identity: OptionIdentity;
-	missionControlId: Option<MissionControlId>;
+	identity: NullishIdentity;
+	missionControlId: Nullish<MissionControlId>;
 	accessKey: AccessKeyIdParam;
 	removeAccessKeyWithMissionControlFn: AccessKeyWithMissionControlFn;
 	removeAccessKeyWithDevFn: AccessKeyWithDevFn;
@@ -56,8 +56,8 @@ const executeAccessKey = async <AccessKeyParams>({
 	accessKeyWithDevFn,
 	errorLabel
 }: {
-	identity: OptionIdentity;
-	missionControlId: Option<MissionControlId>;
+	identity: NullishIdentity;
+	missionControlId: Nullish<MissionControlId>;
 	accessKey: AccessKeyParams;
 	accessKeyWithMissionControlFn: AccessKeyWithMissionControlFn;
 	accessKeyWithDevFn: AccessKeyWithDevFn;

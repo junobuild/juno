@@ -70,6 +70,7 @@ pub mod interface {
     use junobuild_cdn::proposals::ProposalId;
     use junobuild_storage::types::config::StorageConfig;
     use serde::{Deserialize, Serialize};
+    use junobuild_storage::types::interface::{CertifyAssetsCursor, CertifyAssetsStrategy};
 
     #[derive(CandidType, Deserialize)]
     pub struct Config {
@@ -127,6 +128,18 @@ pub mod interface {
     pub enum AuthenticateAutomationResultResponse {
         Ok(PreparedAutomation),
         Err(AuthenticationAutomationError),
+    }
+
+    #[derive(CandidType, Serialize, Deserialize)]
+    pub struct CertifyAssetsArgs {
+        pub cursor: CertifyAssetsCursor,
+        pub chunk_size: Option<u32>,
+        pub strategy: CertifyAssetsStrategy,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize)]
+    pub struct CertifyAssetsResult {
+        pub next_cursor: Option<CertifyAssetsCursor>,
     }
 }
 

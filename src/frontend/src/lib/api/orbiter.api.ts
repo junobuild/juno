@@ -1,6 +1,6 @@
 import type { OrbiterDid } from '$declarations';
 import { getOrbiterActor } from '$lib/api/actors/actor.juno.api';
-import type { OptionIdentity } from '$lib/types/itentity';
+import type { NullishIdentity } from '$lib/types/itentity';
 import type { PageViewsParams, PageViewsPeriod } from '$lib/types/orbiter';
 import { toBigIntNanoSeconds } from '$lib/utils/date.utils';
 import { nonNullish, toNullable } from '@dfinity/utils';
@@ -142,7 +142,7 @@ export const listOrbiterControllers = async ({
 	identity
 }: {
 	orbiterId: Principal;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<[Principal, OrbiterDid.AccessKey][]> => {
 	const actor = await getOrbiterActor({ orbiterId, identity });
 	return actor.list_controllers();
@@ -153,7 +153,7 @@ export const listOrbiterSatelliteConfigs = async ({
 	identity
 }: {
 	orbiterId: Principal;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<[Principal, OrbiterDid.OrbiterSatelliteConfig][]> => {
 	const { list_satellite_configs } = await getOrbiterActor({ orbiterId, identity });
 	return list_satellite_configs();
@@ -166,7 +166,7 @@ export const setOrbiterSatelliteConfigs = async ({
 }: {
 	orbiterId: Principal;
 	config: [Principal, OrbiterDid.SetSatelliteConfig][];
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<[Principal, OrbiterDid.OrbiterSatelliteConfig][]> => {
 	const actor = await getOrbiterActor({ orbiterId, identity });
 	return actor.set_satellite_configs(config);
@@ -181,7 +181,7 @@ export const depositCycles = async ({
 	orbiterId: Principal;
 	cycles: bigint;
 	destinationId: Principal;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }) => {
 	const { deposit_cycles } = await getOrbiterActor({ orbiterId, identity });
 	return deposit_cycles({
@@ -196,7 +196,7 @@ export const setControllers = async ({
 }: {
 	args: OrbiterDid.SetControllersArgs;
 	orbiterId: Principal;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<[Principal, OrbiterDid.AccessKey][]> => {
 	const { set_controllers } = await getOrbiterActor(rest);
 	return set_controllers(args);
@@ -208,7 +208,7 @@ export const deleteControllers = async ({
 }: {
 	args: OrbiterDid.DeleteControllersArgs;
 	orbiterId: Principal;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<[Principal, OrbiterDid.AccessKey][]> => {
 	const { del_controllers } = await getOrbiterActor(rest);
 	return del_controllers(args);

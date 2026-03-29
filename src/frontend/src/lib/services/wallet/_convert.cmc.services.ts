@@ -1,14 +1,14 @@
 import { notifyMintCycles } from '$lib/api/cmc.api';
 import { pollNotifyCmc } from '$lib/services/cmc.services';
 import { i18n } from '$lib/stores/app/i18n.store';
-import type { OptionIdentity } from '$lib/types/itentity';
+import type { NullishIdentity } from '$lib/types/itentity';
 import { i18nFormat } from '$lib/utils/i18n.utils';
 import { toNullable } from '@dfinity/utils';
 import { ProcessingError } from '@icp-sdk/canisters/cmc';
 import { get } from 'svelte/store';
 
 interface ConvertIcpWithCmcParams {
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 	blockHeight: bigint;
 }
 

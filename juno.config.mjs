@@ -26,9 +26,9 @@ export default defineConsoleConfig(({ mode }) => ({
 			}
 		}
 	}),
-	...(mode === 'development' && {
+	...(mode !== 'skylab' && {
 		api: {
-			url: 'http://localhost:3000'
+			url: mode === 'development' ? 'http://localhost:3000' : 'https://api.juno.build'
 		}
 	})
 }));

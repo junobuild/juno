@@ -1,9 +1,9 @@
 import type { SatelliteIdText } from '$lib/types/satellite';
-import type { Option } from '$lib/types/utils';
 import type { CertifiedWorkflows, WorkflowProvider } from '$lib/types/workflow';
+import type { Nullish } from '@dfinity/zod-schemas';
 import { type Readable, writable } from 'svelte/store';
 
-type CertifiedWorkflowsStoreData = Option<
+type CertifiedWorkflowsStoreData = Nullish<
 	Record<SatelliteIdText, Record<WorkflowProvider, CertifiedWorkflows>>
 >;
 

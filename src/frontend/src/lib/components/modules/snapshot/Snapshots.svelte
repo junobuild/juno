@@ -13,8 +13,6 @@
 	import { toasts } from '$lib/stores/app/toasts.store';
 	import { snapshotStore } from '$lib/stores/ic-mgmt/snapshot.store';
 	import type { CanisterSegmentWithLabel, Segment } from '$lib/types/canister';
-	import type { Snapshots } from '$lib/types/progress-snapshot';
-	import type { Option } from '$lib/types/utils';
 	import { formatToDate } from '$lib/utils/date.utils';
 	import { emit } from '$lib/utils/events.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
@@ -28,7 +26,7 @@
 
 	let { canisterId, segment, segmentLabel }: Props = $props();
 
-	let snapshots: Option<Snapshots> = $derived($snapshotStore?.[canisterId.toText()]);
+	let snapshots = $derived($snapshotStore?.[canisterId.toText()]);
 
 	let segmentWithLabel: CanisterSegmentWithLabel = $derived({
 		canisterId: canisterId.toText(),

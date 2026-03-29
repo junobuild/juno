@@ -1,5 +1,5 @@
 import type { MissionControlDid, OrbiterDid } from '$declarations';
-import type { OptionIdentity } from '$lib/types/itentity';
+import type { NullishIdentity } from '$lib/types/itentity';
 import type { Principal } from '@icp-sdk/core/principal';
 import type { PrincipalText } from '@junobuild/schema';
 
@@ -20,7 +20,7 @@ export type AnalyticsPeriodicity = 4 | 8 | 12 | 24 | 168 | 720;
 export type PageViewsParams = {
 	satelliteId?: Principal;
 	orbiterId: Principal;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 } & Omit<PageViewsFilters, 'from'> &
 	Required<Pick<PageViewsFilters, 'from'>>;
 

@@ -3,7 +3,7 @@ import { reloadSatelliteProposals } from '$lib/services/satellite/proposals/prop
 import { wizardBusy } from '$lib/stores/app/busy.store';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
-import type { OptionIdentity } from '$lib/types/itentity';
+import type { NullishIdentity } from '$lib/types/itentity';
 import type { ProposalRecord } from '$lib/types/proposals';
 import type { SatelliteIdText } from '$lib/types/satellite';
 import { container } from '$lib/utils/juno.utils';
@@ -23,7 +23,7 @@ import { get } from 'svelte/store';
 interface ExecuteProposalParams {
 	nextSteps: (steps: 'init' | 'in_progress' | 'ready' | 'error') => void;
 	clearProposalAssets: boolean;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 	proposal: ProposalRecord;
 	satelliteId: SatelliteIdText;
 }

@@ -1,11 +1,11 @@
 import { browser } from '$app/environment';
-import type { Option } from '$lib/types/utils';
+import type { Nullish } from '@dfinity/zod-schemas';
 import type { LoadEvent } from '@sveltejs/kit';
 import type { PageLoad } from './$types';
 
 export const load: PageLoad = (
 	$event: LoadEvent
-): { redirect_uri: Option<string>; principal: Option<string>; profile: Option<string> } => {
+): { redirect_uri: Nullish<string>; principal: Nullish<string>; profile: Nullish<string> } => {
 	if (!browser) {
 		return {
 			redirect_uri: undefined,

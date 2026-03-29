@@ -10,7 +10,7 @@ pub use doc::*;
 pub use json::*;
 
 pub use crate::serializers::types::{
-    DocDataBigInt, DocDataPrincipal, DocDataUint8Array, JsonDataBigInt, JsonDataPrincipal,
-    JsonDataUint8Array,
+    DocDataBigInt, DocDataPrincipal, DocDataUint8Array, JsonDataBigInt, JsonDataNat,
+    JsonDataPrincipal, JsonDataUint8Array,
 };
 pub use crate::types::{FromJsonData, IntoJsonData};

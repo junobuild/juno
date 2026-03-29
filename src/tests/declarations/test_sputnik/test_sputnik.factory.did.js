@@ -589,43 +589,28 @@ export const idlFactory = ({ IDL }) => {
 		sub: AppDemoAntonioResultSub,
 		world: IDL.Text
 	});
-	const AppHttpWorldRequestArgsMethod = IDL.Variant({
+	const AppHttpRequestArgsMethod = IDL.Variant({
 		GET: IDL.Null,
 		HEAD: IDL.Null,
 		POST: IDL.Null
 	});
-	const AppHttpWorldRequestArgsHeaders = IDL.Record({
+	const AppHttpRequestArgsHeaders = IDL.Record({
 		value: IDL.Text,
 		name: IDL.Text
 	});
-	const AppHttpWorldRequestArgs = IDL.Record({
+	const AppHttpRequestArgs = IDL.Record({
 		url: IDL.Text,
-		method: AppHttpWorldRequestArgsMethod,
-		body: IDL.Opt(IDL.Vec(IDL.Nat8)),
-		headers: IDL.Vec(AppHttpWorldRequestArgsHeaders)
-	});
-	const AppHttpYoloRequestArgsMethod = IDL.Variant({
-		GET: IDL.Null,
-		HEAD: IDL.Null,
-		POST: IDL.Null
-	});
-	const AppHttpYoloRequestArgsHeaders = IDL.Record({
-		value: IDL.Text,
-		name: IDL.Text
-	});
-	const AppHttpYoloRequestArgs = IDL.Record({
-		url: IDL.Text,
-		method: AppHttpYoloRequestArgsMethod,
+		method: AppHttpRequestArgsMethod,
 		max_response_bytes: IDL.Opt(IDL.Nat64),
 		body: IDL.Opt(IDL.Vec(IDL.Nat8)),
 		transform: IDL.Opt(IDL.Text),
-		headers: IDL.Vec(AppHttpYoloRequestArgsHeaders),
+		headers: IDL.Vec(AppHttpRequestArgsHeaders),
 		is_replicated: IDL.Opt(IDL.Bool)
 	});
-	const AppHttpYoloRequestResult = IDL.Record({
+	const AppHttpRequestResult = IDL.Record({
 		status: IDL.Nat64,
 		body: IDL.Vec(IDL.Nat8),
-		headers: IDL.Vec(AppHttpYoloRequestArgsHeaders)
+		headers: IDL.Vec(AppHttpRequestArgsHeaders)
 	});
 	const AppOnlyAdminArgs = IDL.Record({ value: IDL.Principal });
 	const AppOnlyAdminResult = IDL.Record({
@@ -776,8 +761,7 @@ export const idlFactory = ({ IDL }) => {
 		app_custom_guard: IDL.Func([], [], []),
 		app_demo_antonio: IDL.Func([AppDemoAntonioArgs], [AppDemoAntonioResult], ['query']),
 		app_hello_world: IDL.Func([AppAsyncQueryArgs], [AppAsyncQueryResult], ['query']),
-		app_http_world_request: IDL.Func([AppHttpWorldRequestArgs], [], []),
-		app_http_yolo_request: IDL.Func([AppHttpYoloRequestArgs], [AppHttpYoloRequestResult], []),
+		app_http_request: IDL.Func([AppHttpRequestArgs], [AppHttpRequestResult], []),
 		app_only_admin: IDL.Func([AppOnlyAdminArgs], [AppOnlyAdminResult], ['query']),
 		app_query_no_args: IDL.Func([], [AppOnlyAdminResult], ['query']),
 		app_query_no_args_no_result: IDL.Func([], [], ['query']),

@@ -22,6 +22,17 @@ pub struct JsonDataBigInt {
     pub value: u64,
 }
 
+/// Represents an arbitrary precision natural number for document data,
+/// mirroring Candid's `nat` type. Useful for values that exceed `u64::MAX`
+/// or must be compatible with Candid's `nat` type.
+///
+/// # Fields
+/// - `value`: A `u128` integer representing the natural number.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct JsonDataNat {
+    pub value: u128,
+}
+
 /// Represents a byte array value for document data, mirroring JavaScript's `Uint8Array`.
 ///
 /// This struct is useful for transporting raw binary data across the JSON boundary,

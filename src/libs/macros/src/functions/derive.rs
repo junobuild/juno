@@ -369,6 +369,7 @@ fn map_with_path(ty: &Type) -> Option<String> {
         "Principal" | "candid :: Principal" => Some("junobuild_utils::with::principal".to_string()),
         "Vec < u8 >" => Some("junobuild_utils::with::uint8array".to_string()),
         "u64" => Some("junobuild_utils::with::bigint".to_string()),
+        "u128" => Some("junobuild_utils::with::nat".to_string()),
         _ => None,
     }
 }

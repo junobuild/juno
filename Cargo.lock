@@ -2112,6 +2112,7 @@ dependencies = [
  "rquickjs",
  "ryu",
  "serde",
+ "url",
 ]
 
 [[package]]

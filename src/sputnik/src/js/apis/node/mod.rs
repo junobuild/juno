@@ -1,5 +1,6 @@
 mod blob;
 mod text_encoding;
+mod url;
 
 use crate::js::apis::node::blob::init_blob;
 use crate::js::apis::node::text_encoding::init_text_encoding;

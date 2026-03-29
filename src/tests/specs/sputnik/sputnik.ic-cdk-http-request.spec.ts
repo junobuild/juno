@@ -3,14 +3,15 @@ import type {
 	AppHttpRequestResult,
 	_SERVICE as TestSputnikActor
 } from '$test-declarations/test_sputnik/test_sputnik.did';
-import type { Actor, PocketIc } from '@dfinity/pic';
+import { idlFactory as idlTestFactorySputnik } from '$test-declarations/test_sputnik/test_sputnik.factory.did';
+import type { DeferredActor, PocketIc } from '@dfinity/pic';
 import { assertNonNullish, jsonReplacer } from '@dfinity/utils';
 import { setupTestSputnik } from '../../utils/fixtures-tests.utils';
-import { tick } from '../../utils/pic-tests.utils';
+import { toBodyJson } from '../../utils/orbiter-tests.utils';
 
 describe('Sputnik > ic_cdk > http_request', () => {
 	let pic: PocketIc;
-	let actor: Actor<TestSputnikActor>;
+	let actor: DeferredActor<TestSputnikActor>;
 
 	const baseArgs: AppHttpRequestArgs = {
 		url: 'https://example.com',
@@ -22,12 +23,6 @@ describe('Sputnik > ic_cdk > http_request', () => {
 		is_replicated: [false]
 	};
 
-	const mockHttpResponse = {
-		status: 200n,
-		headers: [{ name: 'Content-Type', value: 'application/json' }],
-		body: new TextEncoder().encode(JSON.stringify({ hello: 'world' }, jsonReplacer))
-	};
-
 	const performHttpRequest = async ({
 		args
 	}: {
@@ -35,12 +30,13 @@ describe('Sputnik > ic_cdk > http_request', () => {
 	}): Promise<AppHttpRequestResult> => {
 		const { app_http_request } = actor;
 
-		const resultPromise = app_http_request(args);
+		const executeHttpRequest = await app_http_request(args);
 
-		await tick(pic);
+		// tick for two rounds to allow the canister message to be processed
+		// and for the HTTPS Outcall to be queued
+		await pic.tick(2);
 
 		const [pendingHttpOutCall] = await pic.getPendingHttpsOutcalls();
-
 		assertNonNullish(pendingHttpOutCall);
 
 		const { requestId, subnetId } = pendingHttpOutCall;
@@ -50,21 +46,22 @@ describe('Sputnik > ic_cdk > http_request', () => {
 			subnetId,
 			response: {
 				type: 'success',
-				body: new TextEncoder().encode(JSON.stringify(mockHttpResponse, jsonReplacer)),
+				body: toBodyJson({ hello: 'world' }),
 				statusCode: 200,
 				headers: []
 			}
 		});
 
-		await tick(pic);
-
-		return resultPromise;
+		return executeHttpRequest();
 	};
 
 	beforeAll(async () => {
-		const { pic: p, actor: a } = await setupTestSputnik();
+		const { pic: p, canisterId, controller } = await setupTestSputnik();
 		pic = p;
-		actor = a;
+
+		actor = pic.createDeferredActor<TestSputnikActor>(idlTestFactorySputnik, canisterId);
+
+		actor.setIdentity(controller);
 	});
 
 	afterAll(async () => {
@@ -128,7 +125,7 @@ describe('Sputnik > ic_cdk > http_request', () => {
 		const result = await performHttpRequest({
 			args: {
 				...baseArgs,
-				transform: ['app_my_http_transform']
+				transform: ['myHttpTransform']
 			}
 		});
 

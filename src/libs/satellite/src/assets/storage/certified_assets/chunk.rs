@@ -2,13 +2,13 @@ use crate::assets::storage::strategy_impls::StorageState;
 use crate::assets::storage::types::state::StableKey;
 use crate::certification::strategy_impls::StorageCertificate;
 use crate::memory::state::STATE;
+use crate::types::interface::{CertifyAssetsArgs, CertifyAssetsResult};
 use crate::types::state::State;
 use junobuild_storage::certification::types::certified::CertifiedAssetHashes;
 use junobuild_storage::types::config::StorageConfig;
+use junobuild_storage::types::interface::CertifyAssetsCursor;
 use junobuild_storage::types::store::AssetKey;
 use std::ops::Bound;
-use junobuild_storage::types::interface::CertifyAssetsCursor;
-use crate::types::interface::{CertifyAssetsArgs, CertifyAssetsResult};
 
 const DEFAULT_CHUNK_SIZE: usize = 1000;
 
@@ -31,9 +31,7 @@ fn certify_assets_chunk_impl(state: &State, args: CertifyAssetsArgs) -> CertifyA
                 config,
                 &StorageState,
                 &StorageCertificate,
-                |asset_hashes| {
-                    process_heap_chunk(state, asset_hashes, config, offset, chunk_size)
-                },
+                |asset_hashes| process_heap_chunk(state, asset_hashes, config, offset, chunk_size),
             )
         }
         CertifyAssetsCursor::Stable { key } => {
@@ -42,9 +40,7 @@ fn certify_assets_chunk_impl(state: &State, args: CertifyAssetsArgs) -> CertifyA
                 config,
                 &StorageState,
                 &StorageCertificate,
-                |asset_hashes| {
-                    process_stable_chunk(state, asset_hashes, config, key, chunk_size)
-                },
+                |asset_hashes| process_stable_chunk(state, asset_hashes, config, key, chunk_size),
             )
         }
     };
@@ -98,7 +94,10 @@ fn process_stable_chunk(
 
     let iter = match &stable_key {
         None => state.stable.assets.iter(),
-        Some(key) => state.stable.assets.range((Bound::Excluded(key.clone()), Bound::Unbounded)),
+        Some(key) => state
+            .stable
+            .assets
+            .range((Bound::Excluded(key.clone()), Bound::Unbounded)),
     };
 
     let mut last_key: Option<AssetKey> = None;

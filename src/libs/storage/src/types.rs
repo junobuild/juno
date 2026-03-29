@@ -235,7 +235,7 @@ pub mod interface {
     pub enum CertifyAssetsStrategy {
         Clear,
         Append,
-        AppendWithRouting
+        AppendWithRouting,
     }
 }
 

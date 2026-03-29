@@ -88,47 +88,47 @@ const resources = [
 	},
 	{
 		src: '/awslabs/llrt/refs/heads/main/modules/llrt_buffer/src/blob.rs',
-		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/llrt/buffer/blob.rs'),
+		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/llrt/llrt_buffer/blob.rs'),
 		transform: transformLlrtBlob
 	},
 	{
 		src: '/awslabs/llrt/refs/heads/main/modules/llrt_buffer/src/file.rs',
-		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/llrt/buffer/file.rs'),
+		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/llrt/llrt_buffer/file.rs'),
 		transform: transformLlrtBlob
 	},
 	{
 		src: '/awslabs/llrt/refs/heads/main/libs/llrt_utils/src/time.rs',
-		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/llrt/utils/time.rs'),
+		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/llrt/llrt_utils/time.rs'),
 		transform: transformLlrtUtils
 	},
 	{
 		src: '/awslabs/llrt/refs/heads/main/libs/llrt_utils/src/result.rs',
-		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/llrt/utils/result.rs'),
+		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/llrt/llrt_utils/result.rs'),
 		transform: transformLlrtUtils
 	},
 	{
 		src: '/awslabs/llrt/refs/heads/main/libs/llrt_utils/src/primordials.rs',
-		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/llrt/utils/primordials.rs'),
+		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/llrt/llrt_utils/primordials.rs'),
 		transform: transformLlrtUtils
 	},
 	{
 		src: '/awslabs/llrt/refs/heads/main/libs/llrt_utils/src/class.rs',
-		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/llrt/utils/class.rs'),
+		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/llrt/llrt_utils/class.rs'),
 		transform: transformLlrtUtils
 	},
 	{
 		src: '/awslabs/llrt/refs/heads/main/libs/llrt_utils/src/object.rs',
-		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/llrt/utils/object.rs'),
+		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/llrt/llrt_utils/object.rs'),
 		transform: transformLlrtUtils
 	},
 	{
 		src: '/awslabs/llrt/refs/heads/main/libs/llrt_utils/src/error_messages.rs',
-		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/llrt/utils/error_messages.rs'),
+		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/llrt/llrt_utils/error_messages.rs'),
 		transform: transformLlrtUtils
 	},
 	{
 		src: '/awslabs/llrt/refs/heads/main/libs/llrt_utils/src/bytes.rs',
-		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/llrt/utils/bytes.rs'),
+		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/llrt/llrt_utils/bytes.rs'),
 		transform: transformLlrtUtils
 	}
 ];

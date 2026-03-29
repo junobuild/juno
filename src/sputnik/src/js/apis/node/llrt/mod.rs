@@ -1,6 +1,6 @@
-mod buffer;
+mod llrt_buffer;
 #[rustfmt::skip]
-mod utils;
+mod llrt_utils;
 mod blob;
 
 pub use blob::*;

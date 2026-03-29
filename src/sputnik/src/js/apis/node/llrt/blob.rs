@@ -1,5 +1,5 @@
-use crate::js::apis::node::llrt::buffer::blob::Blob;
-use crate::js::apis::node::llrt::buffer::{BasePrimordials, Primordial};
+use crate::js::apis::node::llrt::llrt_buffer::blob::Blob;
+use crate::js::apis::node::llrt::llrt_buffer::{BasePrimordials, Primordial};
 use rquickjs::{atom::PredefinedAtom, prelude::Func, Class, Ctx, Error as JsError};
 
 // ===========================================================================================

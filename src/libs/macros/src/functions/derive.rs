@@ -33,23 +33,28 @@ fn derive_struct(
                 .iter()
                 .filter(|a| a.path().is_ident("serde"))
                 .collect();
+            let skip = unwrap_option(ftype).map(|_| quote! { #[serde(skip_serializing_if = "Option::is_none")] });
+
             if let Some(with_path) = map_with_path(ftype) {
                 quote! {
-                    #[serde(with = #with_path)]
-                    #(#serde_attrs)*
-                    pub #fname: #ftype,
-                }
+                #skip
+                #[serde(with = #with_path)]
+                #(#serde_attrs)*
+                pub #fname: #ftype,
+            }
             } else if has_nested_attr(f) {
                 let nested_type = nested_json_data_ident(ftype);
                 quote! {
-                    #(#serde_attrs)*
-                    pub #fname: #nested_type,
-                }
+                #skip
+                #(#serde_attrs)*
+                pub #fname: #nested_type,
+            }
             } else {
                 quote! {
-                    #(#serde_attrs)*
-                    pub #fname: #ftype,
-                }
+                #skip
+                #(#serde_attrs)*
+                pub #fname: #ftype,
+            }
             }
         })
         .collect();
@@ -80,6 +85,7 @@ fn derive_struct(
 
     quote! {
         #[derive(serde::Serialize, serde::Deserialize)]
+        #[serde(rename_all = "camelCase")]
         struct #serialized_name {
             #(#serialized_fields)*
         }

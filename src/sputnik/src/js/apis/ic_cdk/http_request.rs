@@ -17,6 +17,10 @@ async fn ic_cdk_http_request<'js>(
     ctx: Ctx<'js>,
     args: JsHttpRequestArgs<'js>,
 ) -> JsResult<JsHttpRequestResult<'js>> {
+
+
+    ic_cdk::api::debug_print(format!("http_request args url: {}", args.url));
+    
     let result = http_request(&args.to_args()?).await;
 
     match result {

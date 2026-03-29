@@ -45,25 +45,29 @@ type AppDemoAntonioResult = record {
   world : text;
 };
 type AppDemoAntonioResultSub = record { arr : opt blob; value : opt nat64 };
-type AppHttpRequestArgs = record {
+type AppHttpWorldRequestArgs = record {
   url : text;
-  method : AppHttpRequestArgsMethod;
-  maxResponseBytes : opt nat64;
+  method : AppHttpWorldRequestArgsMethod;
+  body : opt blob;
+  headers : vec AppHttpWorldRequestArgsHeaders;
+};
+type AppHttpWorldRequestArgsHeaders = record { value : text; name : text };
+type AppHttpWorldRequestArgsMethod = variant { GET; HEAD; POST };
+type AppHttpYoloRequestArgs = record {
+  url : text;
+  method : AppHttpYoloRequestArgsMethod;
+  max_response_bytes : opt nat64;
   body : opt blob;
   transform : opt text;
-  headers : vec AppHttpRequestArgsHeaders;
-  isReplicated : opt bool;
+  headers : vec AppHttpYoloRequestArgsHeaders;
+  is_replicated : opt bool;
 };
-type AppHttpRequestArgsHeaders = record { value : text; name : text };
-type AppHttpRequestArgsMethod = variant { GET; HEAD; POST };
-type AppHttpRequestResult = record {
+type AppHttpYoloRequestArgsHeaders = record { value : text; name : text };
+type AppHttpYoloRequestArgsMethod = variant { GET; HEAD; POST };
+type AppHttpYoloRequestResult = record {
   status : nat64;
   body : blob;
-  headers : vec AppHttpRequestArgsHeaders;
-};
-type AppMyHttpTransformArgs = record {
-  context : blob;
-  response : AppHttpRequestResult;
+  headers : vec AppHttpYoloRequestArgsHeaders;
 };
 type AppOnlyAdminArgs = record { value : principal };
 type AppOnlyAdminResult = record { value : principal; "text" : text };
@@ -98,10 +102,10 @@ service : {
   app_custom_guard : () -> ();
   app_demo_antonio : (AppDemoAntonioArgs) -> (AppDemoAntonioResult) query;
   app_hello_world : (AppAsyncQueryArgs) -> (AppAsyncQueryResult) query;
-  app_http_request : (AppHttpRequestArgs) -> (AppHttpRequestResult);
-  app_my_http_transform : (AppMyHttpTransformArgs) -> (
-      AppHttpRequestResult,
-    ) query;
+  app_http_world_request : (AppHttpWorldRequestArgs) -> ();
+  app_http_yolo_request : (AppHttpYoloRequestArgs) -> (
+      AppHttpYoloRequestResult,
+    );
   app_only_admin : (AppOnlyAdminArgs) -> (AppOnlyAdminResult) query;
   app_query_no_args : () -> (AppOnlyAdminResult) query;
   app_query_no_args_no_result : () -> () query;

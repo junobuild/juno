@@ -1,7 +1,7 @@
 pub mod url_class;
 pub mod url_search_params;
 
-use url::{Url};
+use url::Url;
 
 // https://url.spec.whatwg.org/#cannot-be-a-base-url-path-state
 pub fn convert_trailing_space(url: &mut Url) {

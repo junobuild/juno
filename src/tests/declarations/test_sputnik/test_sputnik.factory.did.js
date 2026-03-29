@@ -608,7 +608,7 @@ export const idlFactory = ({ IDL }) => {
 		is_replicated: IDL.Opt(IDL.Bool)
 	});
 	const AppHttpRequestResult = IDL.Record({
-		status: IDL.Nat64,
+		status: IDL.Nat,
 		body: IDL.Vec(IDL.Nat8),
 		headers: IDL.Vec(AppHttpRequestArgsHeaders)
 	});

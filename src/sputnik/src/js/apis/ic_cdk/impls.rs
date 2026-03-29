@@ -11,7 +11,7 @@ use junobuild_shared::ic::api::id;
 use rquickjs::{
     Array, Ctx, Error as JsError, FromJs, IntoJs, Object, Result as JsResult, TypedArray, Value,
 };
-use crate::js::utils::primitives::into_bigint_js;
+use crate::js::utils::primitives::{into_bigint_from_u128};
 
 impl<'js> JsUint8Array<'js> {
     pub fn from_bytes(ctx: &Ctx<'js>, bytes: &[u8]) -> JsResult<Self> {
@@ -117,7 +117,7 @@ impl<'js> FromJs<'js> for JsHttpMethod {
 impl<'js> JsHttpRequestResult<'js> {
     pub fn from_result(ctx: &Ctx<'js>, result: &HttpRequestResult) -> JsResult<Self> {
         Ok(Self {
-            status: u64::try_from(&result.status.0).unwrap_or(0),
+            status: u128::try_from(&result.status.0).unwrap_or(0),
             headers: result
                 .headers
                 .iter()
@@ -131,7 +131,7 @@ impl<'js> JsHttpRequestResult<'js> {
 impl<'js> IntoJs<'js> for JsHttpRequestResult<'js> {
     fn into_js(self, ctx: &Ctx<'js>) -> JsResult<Value<'js>> {
         let obj = Object::new(ctx.clone())?;
-        obj.set("status", into_bigint_js(ctx, self.status)?)?;
+        obj.set("status", into_bigint_from_u128(ctx, self.status)?)?;
 
         let headers_arr = Array::new(ctx.clone())?;
         for (i, h) in self.headers.into_iter().enumerate() {

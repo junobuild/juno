@@ -39,7 +39,7 @@ pub mod http_request {
 
     #[derive(Clone)]
     pub struct JsHttpRequestResult<'js> {
-        pub status: u64,
+        pub status: u128,
         pub headers: Vec<JsHttpHeader>,
         pub body: JsUint8Array<'js>,
     }

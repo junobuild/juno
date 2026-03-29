@@ -57,7 +57,7 @@ type AppHttpRequestArgs = record {
 type AppHttpRequestArgsHeaders = record { value : text; name : text };
 type AppHttpRequestArgsMethod = variant { GET; HEAD; POST };
 type AppHttpRequestResult = record {
-  status : nat64;
+  status : nat;
   body : blob;
   headers : vec AppHttpRequestArgsHeaders;
 };

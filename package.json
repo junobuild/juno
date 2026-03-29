@@ -79,11 +79,11 @@
 		"@dfinity/pic": "^0.21.0",
 		"@dfinity/response-verification": "^3.0.3",
 		"@icp-sdk/bindgen": "^0.2.1",
-		"@junobuild/cli-tools": "^0.12.4-next-2026-03-29.8",
+		"@junobuild/cli-tools": "^0.12.4-next-2026-03-29.9",
 		"@junobuild/config-loader": "^0.4.9-next-2026-03-29.6",
 		"@junobuild/errors": "^0.2.4-next-2026-03-29.6",
-		"@junobuild/functions": "^0.7.2-next-2026-03-29.8",
-		"@junobuild/functions-tools": "^0.5.3-next-2026-03-29.8",
+		"@junobuild/functions": "^0.7.2-next-2026-03-29.9",
+		"@junobuild/functions-tools": "^0.5.3-next-2026-03-29.9",
 		"@ltd/j-toml": "^1.38.0",
 		"@playwright/test": "^1.58.2",
 		"@sveltejs/adapter-static": "^3.0.10",
@@ -127,7 +127,7 @@
 		"@junobuild/config": "2.15.0-next-2026-03-29.6",
 		"@junobuild/core": "^5.2.2-next-2026-03-29.6",
 		"@junobuild/ic-client": "^8.0.2-next-2026-03-29.6",
-		"@junobuild/schema": "1.1.1-next-2026-03-29.6",
+		"@junobuild/schema": "1.1.1-next-2026-03-29.9",
 		"@junobuild/storage": "^2.3.1-next-2026-03-29.6",
 		"@junobuild/utils": "^0.3.1-next-2026-03-29.6",
 		"@zip.js/zip.js": "^2.8.23",
@@ -149,6 +149,6 @@
 	"overrides": {
 		"cookie": "^0.7.0",
 		"@junobuild/config": "2.15.0-next-2026-03-29.6",
-		"@junobuild/schema": "1.1.1-next-2026-03-29.6"
+		"@junobuild/schema": "1.1.1-next-2026-03-29.9"
 	}
 }

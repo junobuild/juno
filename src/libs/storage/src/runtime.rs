@@ -17,9 +17,7 @@ use std::collections::HashMap;
 // Certified assets
 // ---------------------------------------------------------
 
-pub fn init_certified_assets(
-    asset_hashes: &CertifiedAssetHashes,
-) {
+pub fn init_certified_assets(asset_hashes: &CertifiedAssetHashes) {
     STATE.with(|state| {
         init_certified_assets_impl(asset_hashes, &mut state.borrow_mut().runtime.storage)
     });

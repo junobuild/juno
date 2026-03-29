@@ -69,8 +69,8 @@ pub mod interface {
     use junobuild_auth::state::types::config::AuthenticationConfig;
     use junobuild_cdn::proposals::ProposalId;
     use junobuild_storage::types::config::StorageConfig;
-    use serde::{Deserialize, Serialize};
     use junobuild_storage::types::interface::{CertifyAssetsCursor, CertifyAssetsStrategy};
+    use serde::{Deserialize, Serialize};
 
     #[derive(CandidType, Deserialize)]
     pub struct Config {

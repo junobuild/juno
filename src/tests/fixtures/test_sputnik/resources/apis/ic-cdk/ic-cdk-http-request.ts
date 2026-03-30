@@ -21,8 +21,6 @@ export const myHttpTransform = defineQuery({
 	handler: (raw) => {
 		const { response } = raw;
 
-		console.log('myHttpTransform', response);
-
 		return {
 			status: response.status,
 			body: response.body,

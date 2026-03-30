@@ -4,7 +4,7 @@ import type {
 	_SERVICE as TestSputnikActor
 } from '$test-declarations/test_sputnik/test_sputnik.did';
 import { idlFactory as idlTestFactorySputnik } from '$test-declarations/test_sputnik/test_sputnik.factory.did';
-import type { DeferredActor, PocketIc } from '@dfinity/pic';
+import type { CanisterHttpHeader, DeferredActor, PocketIc } from '@dfinity/pic';
 import { assertNonNullish, jsonReplacer } from '@dfinity/utils';
 import { setupTestSputnik } from '../../utils/fixtures-tests.utils';
 import { toBodyJson } from '../../utils/orbiter-tests.utils';
@@ -24,9 +24,11 @@ describe('Sputnik > ic_cdk > http_request', () => {
 	};
 
 	const performHttpRequest = async ({
-		args
+		args,
+		mockHeaders = []
 	}: {
 		args: AppHttpRequestArgs;
+		mockHeaders?: CanisterHttpHeader[];
 	}): Promise<AppHttpRequestResult> => {
 		const { app_http_request } = actor;
 
@@ -48,7 +50,7 @@ describe('Sputnik > ic_cdk > http_request', () => {
 				type: 'success',
 				body: toBodyJson({ hello: 'world' }),
 				statusCode: 200,
-				headers: []
+				headers: mockHeaders
 			}
 		});
 
@@ -73,6 +75,12 @@ describe('Sputnik > ic_cdk > http_request', () => {
 
 		expect(result.status).toEqual(200n);
 		expect(result.body).toBeDefined();
+		expect(result.body.length).toBeGreaterThan(0);
+
+		const decoder = new TextDecoder();
+		const responseBody = decoder.decode(result.body);
+
+		expect(responseBody).toEqual({ hello: 'world' });
 	});
 
 	it('should perform a GET request with headers', async () => {
@@ -126,7 +134,8 @@ describe('Sputnik > ic_cdk > http_request', () => {
 			args: {
 				...baseArgs,
 				transform: ['myHttpTransform']
-			}
+			},
+			mockHeaders: [['X-Custom-Header', 'should-be-stripped']]
 		});
 
 		expect(result.status).toEqual(200n);

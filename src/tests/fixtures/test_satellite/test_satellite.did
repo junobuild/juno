@@ -400,7 +400,11 @@ type SetStorageConfig = record {
   max_memory_size : opt ConfigMaxMemorySize;
   raw_access : opt StorageConfigRawAccess;
   redirects : opt vec record { text; StorageConfigRedirect };
-  skip_certification : opt bool;
+};
+type SetStorageConfigOptions = record { skip_certification : opt bool };
+type SetStorageConfigWithOptions = record {
+  config : SetStorageConfig;
+  options : SetStorageConfigOptions;
 };
 type SignedDelegation = record { signature : blob; delegation : Delegation };
 type StorageConfig = record {
@@ -527,6 +531,9 @@ service : (InitSatelliteArgs) -> {
     );
   set_rule : (CollectionType, text, SetRule) -> (Rule);
   set_storage_config : (SetStorageConfig) -> (StorageConfig);
+  set_storage_config_with_options : (SetStorageConfigWithOptions) -> (
+      StorageConfig,
+    );
   submit_proposal : (nat) -> (nat, Proposal);
   switch_storage_system_memory : () -> ();
   upload_asset_chunk : (UploadChunk) -> (UploadChunkResult);

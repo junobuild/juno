@@ -88,8 +88,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 						rewrites: [],
 						raw_access: toNullable(),
 						max_memory_size: toNullable(),
-						version: toNullable(),
-						skip_certification: toNullable()
+						version: toNullable()
 					})
 				).rejects.toThrow(JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER);
 			});
@@ -181,7 +180,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 			it('should set and get config', async () => {
 				const { set_storage_config, get_config } = actor;
 
-				const storage: Omit<SatelliteDid.SetStorageConfig, 'skip_certification'> = {
+				const storage: SatelliteDid.SetStorageConfig = {
 					headers: [['*', [['cache-control', 'no-cache']]]],
 					iframe: toNullable({ Deny: null }),
 					redirects: [],
@@ -191,10 +190,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 					version: toNullable()
 				};
 
-				await set_storage_config({
-					...storage,
-					skip_certification: toNullable()
-				});
+				await set_storage_config(storage);
 
 				const configs = await get_config();
 
@@ -224,8 +220,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 					rewrites: [],
 					raw_access: toNullable(),
 					max_memory_size: toNullable(),
-					version: toNullable(1n),
-					skip_certification: toNullable()
+					version: toNullable(1n)
 				};
 
 				await expect(
@@ -541,7 +536,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 				it('should set a config for a rewrite and redirect', async () => {
 					const { set_storage_config, get_config } = actor;
 
-					const storage: Omit<SatelliteDid.SetStorageConfig, 'skip_certification'> = {
+					const storage: SatelliteDid.SetStorageConfig = {
 						headers: [['*', [['cache-control', 'no-cache']]]],
 						iframe: toNullable({ Deny: null }),
 						redirects: [
@@ -561,10 +556,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 						version: toNullable(1n)
 					};
 
-					await set_storage_config({
-						...storage,
-						skip_certification: toNullable()
-					});
+					await set_storage_config(storage);
 
 					const configs = await get_config();
 
@@ -648,8 +640,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 						rewrites: [],
 						raw_access: toNullable({ Allow: null }),
 						max_memory_size: toNullable(),
-						version: toNullable(2n),
-						skip_certification: toNullable()
+						version: toNullable(2n)
 					};
 
 					await set_storage_config(storage);
@@ -679,8 +670,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 						rewrites: [],
 						raw_access: toNullable({ Deny: null }),
 						max_memory_size: toNullable(),
-						version: toNullable(3n),
-						skip_certification: toNullable()
+						version: toNullable(3n)
 					};
 
 					await set_storage_config(storage);
@@ -706,8 +696,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 						rewrites: [],
 						raw_access: toNullable({ Allow: null }),
 						max_memory_size: toNullable(),
-						version: toNullable(4n),
-						skip_certification: toNullable()
+						version: toNullable(4n)
 					};
 
 					await set_storage_config(storage);
@@ -1349,8 +1338,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 								heap: max === 'heap' ? [maxHeapMemorySize] : [],
 								stable: max === 'stable' ? [maxStableMemorySize] : []
 							}),
-							version: toNullable(version),
-							skip_certification: toNullable()
+							version: toNullable(version)
 						};
 
 						await set_storage_config(storage);
@@ -1460,8 +1448,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 						heap: [],
 						stable: []
 					}),
-					version: toNullable(15n),
-					skip_certification: toNullable()
+					version: toNullable(15n)
 				};
 
 				await set_storage_config(storage);
@@ -1554,7 +1541,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 			it('should return config after set', async () => {
 				const { set_storage_config } = actor;
 
-				const config: Omit<SatelliteDid.SetStorageConfig, 'skip_certification'> = {
+				const config: SatelliteDid.SetStorageConfig = {
 					headers: [['*', [['cache-control', 'no-cache']]]],
 					iframe: toNullable({ Deny: null }),
 					redirects: [],
@@ -1564,10 +1551,7 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 					version: toNullable(16n)
 				};
 
-				const result = await set_storage_config({
-					...config,
-					skip_certification: toNullable()
-				});
+				const result = await set_storage_config(config);
 
 				expect(result).toEqual(
 					expect.objectContaining({

@@ -344,7 +344,6 @@ type SetStorageConfig = record {
   max_memory_size : opt ConfigMaxMemorySize;
   raw_access : opt StorageConfigRawAccess;
   redirects : opt vec record { text; StorageConfigRedirect };
-  skip_certification : opt bool;
 };
 type SignedDelegation = record { signature : blob; delegation : Delegation };
 type StorableSegmentKind = variant { Orbiter; Satellite };

@@ -523,8 +523,14 @@ export const idlFactory = ({ IDL }) => {
 		version: IDL.Opt(IDL.Nat64),
 		max_memory_size: IDL.Opt(ConfigMaxMemorySize),
 		raw_access: IDL.Opt(StorageConfigRawAccess),
-		redirects: IDL.Opt(IDL.Vec(IDL.Tuple(IDL.Text, StorageConfigRedirect))),
+		redirects: IDL.Opt(IDL.Vec(IDL.Tuple(IDL.Text, StorageConfigRedirect)))
+	});
+	const SetStorageConfigOptions = IDL.Record({
 		skip_certification: IDL.Opt(IDL.Bool)
+	});
+	const SetStorageConfigWithOptions = IDL.Record({
+		config: SetStorageConfig,
+		options: SetStorageConfigOptions
 	});
 	const UploadChunk = IDL.Record({
 		content: IDL.Vec(IDL.Nat8),
@@ -629,6 +635,7 @@ export const idlFactory = ({ IDL }) => {
 		),
 		set_rule: IDL.Func([CollectionType, IDL.Text, SetRule], [Rule], []),
 		set_storage_config: IDL.Func([SetStorageConfig], [StorageConfig], []),
+		set_storage_config_with_options: IDL.Func([SetStorageConfigWithOptions], [StorageConfig], []),
 		submit_proposal: IDL.Func([IDL.Nat], [IDL.Nat, Proposal], []),
 		switch_storage_system_memory: IDL.Func([], [], []),
 		upload_asset_chunk: IDL.Func([UploadChunk], [UploadChunkResult], []),

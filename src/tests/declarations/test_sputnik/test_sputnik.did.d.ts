@@ -562,7 +562,13 @@ export interface SetStorageConfig {
 	max_memory_size: [] | [ConfigMaxMemorySize];
 	raw_access: [] | [StorageConfigRawAccess];
 	redirects: [] | [Array<[string, StorageConfigRedirect]>];
+}
+export interface SetStorageConfigOptions {
 	skip_certification: [] | [boolean];
+}
+export interface SetStorageConfigWithOptions {
+	config: SetStorageConfig;
+	options: SetStorageConfigOptions;
 }
 export interface SignedDelegation {
 	signature: Uint8Array;
@@ -689,6 +695,7 @@ export interface _SERVICE {
 	set_many_docs: ActorMethod<[Array<[string, string, SetDoc]>], Array<[string, Doc]>>;
 	set_rule: ActorMethod<[CollectionType, string, SetRule], Rule>;
 	set_storage_config: ActorMethod<[SetStorageConfig], StorageConfig>;
+	set_storage_config_with_options: ActorMethod<[SetStorageConfigWithOptions], StorageConfig>;
 	submit_proposal: ActorMethod<[bigint], [bigint, Proposal]>;
 	switch_storage_system_memory: ActorMethod<[], undefined>;
 	upload_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;

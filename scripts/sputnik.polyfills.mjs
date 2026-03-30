@@ -70,6 +70,14 @@ const transformLlrtUtils = (content) => {
 	return `#![allow(dead_code)]\n\n${parsedContent}`;
 };
 
+const transformLlrtUrlClass = (content) => {
+	const filteredContent = content.replace(
+		'pub fn url_to_http_options',
+		'#[allow(dead_code)]\npub fn url_to_http_options'
+	);
+	return transformLlrtUtilsPath(filteredContent);
+};
+
 const transformLlrtUrlSearchParams = (content) => {
 	const filteredContent = transformFilterTest(content);
 	return transformLlrtUtilsPath(filteredContent);
@@ -139,7 +147,7 @@ const resources = [
 	{
 		src: '/awslabs/llrt/refs/heads/main/modules/llrt_url/src/url_class.rs',
 		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/llrt/llrt_url/url_class.rs'),
-		transform: transformLlrtUtilsPath
+		transform: transformLlrtUrlClass
 	},
 	{
 		src: '/awslabs/llrt/refs/heads/main/modules/llrt_url/src/url_search_params.rs',

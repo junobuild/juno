@@ -83,6 +83,25 @@ export interface AppDemoAntonioResultSub {
 	arr: [] | [Uint8Array];
 	value: [] | [bigint];
 }
+export interface AppHttpRequestArgs {
+	url: string;
+	method: AppHttpRequestArgsMethod;
+	max_response_bytes: [] | [bigint];
+	body: [] | [Uint8Array];
+	transform: [] | [string];
+	headers: Array<AppHttpRequestArgsHeaders>;
+	is_replicated: [] | [boolean];
+}
+export interface AppHttpRequestArgsHeaders {
+	value: string;
+	name: string;
+}
+export type AppHttpRequestArgsMethod = { GET: null } | { HEAD: null } | { POST: null };
+export interface AppHttpRequestResult {
+	status: bigint;
+	body: Uint8Array;
+	headers: Array<AppHttpRequestArgsHeaders>;
+}
 export interface AppOnlyAdminArgs {
 	value: Principal;
 }
@@ -714,6 +733,7 @@ export interface _SERVICE {
 	app_custom_guard: ActorMethod<[], undefined>;
 	app_demo_antonio: ActorMethod<[AppDemoAntonioArgs], AppDemoAntonioResult>;
 	app_hello_world: ActorMethod<[AppAsyncQueryArgs], AppAsyncQueryResult>;
+	app_http_request: ActorMethod<[AppHttpRequestArgs], AppHttpRequestResult>;
 	app_only_admin: ActorMethod<[AppOnlyAdminArgs], AppOnlyAdminResult>;
 	app_query_no_args: ActorMethod<[], AppOnlyAdminResult>;
 	app_query_no_args_no_result: ActorMethod<[], undefined>;

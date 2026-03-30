@@ -589,6 +589,29 @@ export const idlFactory = ({ IDL }) => {
 		sub: AppDemoAntonioResultSub,
 		world: IDL.Text
 	});
+	const AppHttpRequestArgsMethod = IDL.Variant({
+		GET: IDL.Null,
+		HEAD: IDL.Null,
+		POST: IDL.Null
+	});
+	const AppHttpRequestArgsHeaders = IDL.Record({
+		value: IDL.Text,
+		name: IDL.Text
+	});
+	const AppHttpRequestArgs = IDL.Record({
+		url: IDL.Text,
+		method: AppHttpRequestArgsMethod,
+		max_response_bytes: IDL.Opt(IDL.Nat64),
+		body: IDL.Opt(IDL.Vec(IDL.Nat8)),
+		transform: IDL.Opt(IDL.Text),
+		headers: IDL.Vec(AppHttpRequestArgsHeaders),
+		is_replicated: IDL.Opt(IDL.Bool)
+	});
+	const AppHttpRequestResult = IDL.Record({
+		status: IDL.Nat,
+		body: IDL.Vec(IDL.Nat8),
+		headers: IDL.Vec(AppHttpRequestArgsHeaders)
+	});
 	const AppOnlyAdminArgs = IDL.Record({ value: IDL.Principal });
 	const AppOnlyAdminResult = IDL.Record({
 		value: IDL.Principal,
@@ -738,6 +761,7 @@ export const idlFactory = ({ IDL }) => {
 		app_custom_guard: IDL.Func([], [], []),
 		app_demo_antonio: IDL.Func([AppDemoAntonioArgs], [AppDemoAntonioResult], ['query']),
 		app_hello_world: IDL.Func([AppAsyncQueryArgs], [AppAsyncQueryResult], ['query']),
+		app_http_request: IDL.Func([AppHttpRequestArgs], [AppHttpRequestResult], []),
 		app_only_admin: IDL.Func([AppOnlyAdminArgs], [AppOnlyAdminResult], ['query']),
 		app_query_no_args: IDL.Func([], [AppOnlyAdminResult], ['query']),
 		app_query_no_args_no_result: IDL.Func([], [], ['query']),

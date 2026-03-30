@@ -45,6 +45,22 @@ type AppDemoAntonioResult = record {
   world : text;
 };
 type AppDemoAntonioResultSub = record { arr : opt blob; value : opt nat64 };
+type AppHttpRequestArgs = record {
+  url : text;
+  method : AppHttpRequestArgsMethod;
+  max_response_bytes : opt nat64;
+  body : opt blob;
+  transform : opt text;
+  headers : vec AppHttpRequestArgsHeaders;
+  is_replicated : opt bool;
+};
+type AppHttpRequestArgsHeaders = record { value : text; name : text };
+type AppHttpRequestArgsMethod = variant { GET; HEAD; POST };
+type AppHttpRequestResult = record {
+  status : nat;
+  body : blob;
+  headers : vec AppHttpRequestArgsHeaders;
+};
 type AppOnlyAdminArgs = record { value : principal };
 type AppOnlyAdminResult = record { value : principal; "text" : text };
 type AppReadDocTestArgs = record { key : text; collection : text };
@@ -78,6 +94,7 @@ service : {
   app_custom_guard : () -> ();
   app_demo_antonio : (AppDemoAntonioArgs) -> (AppDemoAntonioResult) query;
   app_hello_world : (AppAsyncQueryArgs) -> (AppAsyncQueryResult) query;
+  app_http_request : (AppHttpRequestArgs) -> (AppHttpRequestResult);
   app_only_admin : (AppOnlyAdminArgs) -> (AppOnlyAdminResult) query;
   app_query_no_args : () -> (AppOnlyAdminResult) query;
   app_query_no_args_no_result : () -> () query;

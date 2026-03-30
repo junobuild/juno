@@ -15,7 +15,7 @@
 	 * App sync
 	 */
 
-	const syncAuthStore = async () => {
+	const sync = async () => {
 		if (!browser) {
 			return;
 		}
@@ -27,10 +27,6 @@
 		}
 
 		displayAndCleanLogoutMsg();
-	};
-
-	const sync = async () => {
-		await syncAuthStore();
 	};
 
 	$effect(() => {

@@ -15,7 +15,7 @@
 	 * App sync
 	 */
 
-	const syncAuthStore = async () => {
+	const sync = async () => {
 		if (!browser) {
 			return;
 		}
@@ -29,16 +29,10 @@
 		displayAndCleanLogoutMsg();
 	};
 
-	const sync = async () => {
-		await syncAuthStore();
-	};
-
 	$effect(() => {
 		initAccount($authStore);
 	});
 </script>
-
-<svelte:window onstorage={syncAuthStore} />
 
 {#await sync()}
 	<!-- No animation as initializing the auth should be fast -->

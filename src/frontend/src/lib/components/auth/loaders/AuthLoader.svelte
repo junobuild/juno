@@ -38,8 +38,6 @@
 	});
 </script>
 
-<svelte:window onstorage={syncAuthStore} />
-
 {#await sync()}
 	<!-- No animation as initializing the auth should be fast -->
 {:then _}

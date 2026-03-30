@@ -294,6 +294,7 @@ impl<'js> URL<'js> {
     }
 }
 
+#[allow(dead_code)]
 pub fn url_to_http_options<'js>(ctx: Ctx<'js>, url: Class<'js, URL<'js>>) -> Result<Object<'js>> {
     let obj = Object::new(ctx)?;
 

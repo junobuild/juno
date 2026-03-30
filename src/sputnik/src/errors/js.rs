@@ -26,3 +26,5 @@ pub const JUNO_SPUTNIK_ERROR_JS_API_TEXT_ENCODING: &str = "juno.sputnik.error.js
 
 // The canister call failed.
 pub const JUNO_SPUTNIK_ERROR_IC_CDK_CALL_RAW: &str = "juno.sputnik.error.ic_cdk.call_raw";
+// The http_request failed.
+pub const JUNO_SPUTNIK_ERROR_IC_CDK_HTTP_REQUEST: &str = "juno.sputnik.error.ic_cdk.http_request";

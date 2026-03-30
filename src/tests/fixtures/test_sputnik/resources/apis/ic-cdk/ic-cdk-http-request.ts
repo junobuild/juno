@@ -1,4 +1,4 @@
-/* eslint-disable require-await, no-console */
+/* eslint-disable no-console */
 
 import { defineQuery, defineUpdate } from '@junobuild/functions';
 import {
@@ -19,7 +19,7 @@ export const myHttpTransform = defineQuery({
 	args: TransformArgsSchema,
 	result: HttpRequestResultSchema,
 	handler: (raw) => {
-		const {response} = raw;
+		const { response } = raw;
 
 		console.log('myHttpTransform', response);
 

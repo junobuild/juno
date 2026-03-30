@@ -80,7 +80,7 @@ describe('Sputnik > ic_cdk > http_request', () => {
 		const decoder = new TextDecoder();
 		const responseBody = decoder.decode(result.body);
 
-		expect(responseBody).toEqual({ hello: 'world' });
+		expect(JSON.parse(responseBody)).toEqual({ hello: 'world' });
 	});
 
 	it('should perform a GET request with headers', async () => {

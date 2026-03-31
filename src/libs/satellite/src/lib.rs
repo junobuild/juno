@@ -56,8 +56,8 @@ use junobuild_storage::http::types::{
 };
 use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::interface::{
-    AssetNoContent, CommitBatch, InitAssetKey, InitUploadResult, SetStorageConfig, UploadChunk,
-    UploadChunkResult,
+    AssetNoContent, CommitBatch, InitAssetKey, InitUploadResult, SetStorageConfig,
+    SetStorageConfigWithOptions, UploadChunk, UploadChunkResult,
 };
 use junobuild_storage::types::state::{AssetAccessToken, FullPath};
 use memory::lifecycle;
@@ -426,6 +426,12 @@ pub fn set_storage_config(config: SetStorageConfig) -> StorageConfig {
 }
 
 #[doc(hidden)]
+#[update(guard = "caller_is_admin")]
+pub fn set_storage_config_with_options(options: SetStorageConfigWithOptions) -> StorageConfig {
+    api::config::set_storage_config_with_options(options)
+}
+
+#[doc(hidden)]
 #[query(guard = "caller_is_admin")]
 pub fn get_storage_config() -> StorageConfig {
     api::config::get_storage_config()
@@ -590,8 +596,8 @@ macro_rules! include_satellite {
             list_docs, list_proposals, list_rules, post_upgrade, pre_upgrade, reject_proposal,
             set_asset_token, set_auth_config, set_automation_config, set_controllers,
             set_custom_domain, set_db_config, set_doc, set_many_docs, set_rule, set_storage_config,
-            submit_proposal, switch_storage_system_memory, upload_asset_chunk,
-            upload_proposal_asset_chunk,
+            set_storage_config_with_options, submit_proposal, switch_storage_system_memory,
+            upload_asset_chunk, upload_proposal_asset_chunk,
         };
 
         ic_cdk::export_candid!();

@@ -223,7 +223,17 @@ pub mod interface {
         pub raw_access: Option<StorageConfigRawAccess>,
         pub max_memory_size: Option<StorageConfigMaxMemorySize>,
         pub version: Option<Version>,
+    }
+
+    #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
+    pub struct SetStorageConfigOptions {
         pub skip_certification: Option<bool>,
+    }
+
+    #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
+    pub struct SetStorageConfigWithOptions {
+        pub config: SetStorageConfig,
+        pub options: SetStorageConfigOptions,
     }
 
     #[derive(CandidType, Serialize, Deserialize)]

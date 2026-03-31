@@ -1,5 +1,3 @@
-/* eslint-disable no-console */
-
 import { defineQuery, defineUpdate } from '@junobuild/functions';
 import {
 	HttpRequestArgsSchema,
@@ -28,5 +26,3 @@ export const myHttpTransform = defineQuery({
 		};
 	}
 });
-
-/* eslint-enable */

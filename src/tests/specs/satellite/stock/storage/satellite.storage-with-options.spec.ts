@@ -7,7 +7,7 @@ import { testStorageAndConfig } from '../../../../utils/satellite-storage-suite-
 import { setupSatelliteStock } from '../../../../utils/satellite-tests.utils';
 
 describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
-	'Satellite > Storage > $title',
+	'Satellite > Storage with Options > $title',
 	({ memory }) => {
 		let pic: PocketIc;
 		let canisterId: Principal;
@@ -45,8 +45,13 @@ describe.each([{ title: 'Heap (default)', memory: null }, ...MEMORIES])(
 			actor: () => actor,
 			canisterId: () => canisterId,
 			setStorageConfig: async ({ actor, config }) => {
-				const { set_storage_config } = actor;
-				return await set_storage_config(config);
+				const { set_storage_config_with_options } = actor;
+				return await set_storage_config_with_options({
+					config,
+					options: {
+						skip_certification: [false]
+					}
+				});
 			}
 		});
 	}

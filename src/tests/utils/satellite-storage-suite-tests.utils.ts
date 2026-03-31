@@ -37,13 +37,18 @@ export const testStorageAndConfig = ({
 	canisterId: getCanisterId,
 	actor: getActor,
 	currentDate: getCurrentDate,
-	controller: getController
+	controller: getController,
+	setStorageConfig
 }: {
 	pic: () => PocketIc;
 	canisterId: () => Principal;
 	actor: () => Actor<SatelliteActor>;
 	currentDate: () => Date;
 	controller: () => Ed25519KeyIdentity;
+	setStorageConfig: (args: {
+		config: SatelliteDid.SetStorageConfig;
+		actor: Actor<SatelliteActor>;
+	}) => Promise<SatelliteDid.StorageConfig>;
 }) => {
 	let pic: PocketIc;
 	let canisterId: Principal;
@@ -86,17 +91,18 @@ export const testStorageAndConfig = ({
 		});
 
 		it('should throw errors on setting config', async () => {
-			const { set_storage_config } = actor;
-
 			await expect(
-				set_storage_config({
-					headers: [],
-					iframe: toNullable(),
-					redirects: toNullable(),
-					rewrites: [],
-					raw_access: toNullable(),
-					max_memory_size: toNullable(),
-					version: toNullable()
+				setStorageConfig({
+					actor,
+					config: {
+						headers: [],
+						iframe: toNullable(),
+						redirects: toNullable(),
+						rewrites: [],
+						raw_access: toNullable(),
+						max_memory_size: toNullable(),
+						version: toNullable()
+					}
 				})
 			).rejects.toThrow(JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER);
 		});
@@ -174,7 +180,7 @@ export const testStorageAndConfig = ({
 		});
 
 		it('should set and get config', async () => {
-			const { set_storage_config, get_config } = actor;
+			const { get_config } = actor;
 
 			const storage: SatelliteDid.SetStorageConfig = {
 				headers: [['*', [['cache-control', 'no-cache']]]],
@@ -186,7 +192,7 @@ export const testStorageAndConfig = ({
 				version: toNullable()
 			};
 
-			await set_storage_config(storage);
+			await setStorageConfig({ actor, config: storage });
 
 			const configs = await get_config();
 
@@ -207,8 +213,6 @@ export const testStorageAndConfig = ({
 		});
 
 		it('should not set db config if incorrect version', async () => {
-			const { set_storage_config } = actor;
-
 			const storage: SatelliteDid.SetStorageConfig = {
 				headers: [['*', [['cache-control', 'no-cache']]]],
 				iframe: toNullable({ Deny: null }),
@@ -220,23 +224,32 @@ export const testStorageAndConfig = ({
 			};
 
 			await expect(
-				set_storage_config({
-					...storage,
-					version: [0n]
+				setStorageConfig({
+					actor,
+					config: {
+						...storage,
+						version: [0n]
+					}
 				})
 			).rejects.toThrow(JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE);
 
 			await expect(
-				set_storage_config({
-					...storage,
-					version: [99n]
+				setStorageConfig({
+					actor,
+					config: {
+						...storage,
+						version: [99n]
+					}
 				})
 			).rejects.toThrow(JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE);
 
 			await expect(
-				set_storage_config({
-					...storage,
-					version: []
+				setStorageConfig({
+					actor,
+					config: {
+						...storage,
+						version: []
+					}
 				})
 			).rejects.toThrow(JUNO_ERROR_NO_VERSION_PROVIDED);
 		});
@@ -529,7 +542,7 @@ export const testStorageAndConfig = ({
 			});
 
 			it('should set a config for a rewrite and redirect', async () => {
-				const { set_storage_config, get_config } = actor;
+				const { get_config } = actor;
 
 				const storage: SatelliteDid.SetStorageConfig = {
 					headers: [['*', [['cache-control', 'no-cache']]]],
@@ -551,7 +564,7 @@ export const testStorageAndConfig = ({
 					version: toNullable(1n)
 				};
 
-				await set_storage_config(storage);
+				await setStorageConfig({ actor, config: storage });
 
 				const configs = await get_config();
 
@@ -626,7 +639,7 @@ export const testStorageAndConfig = ({
 			);
 
 			it('should be able to access on raw if allowed', async () => {
-				const { http_request, set_storage_config } = actor;
+				const { http_request } = actor;
 
 				const storage: SatelliteDid.SetStorageConfig = {
 					headers: [],
@@ -638,7 +651,7 @@ export const testStorageAndConfig = ({
 					version: toNullable(2n)
 				};
 
-				await set_storage_config(storage);
+				await setStorageConfig({ actor, config: storage });
 
 				const { status_code, body } = await http_request({
 					body: Uint8Array.from([]),
@@ -656,7 +669,7 @@ export const testStorageAndConfig = ({
 			});
 
 			it('should not be able to access on raw if explicitly disabled', async () => {
-				const { http_request, set_storage_config } = actor;
+				const { http_request } = actor;
 
 				const storage: SatelliteDid.SetStorageConfig = {
 					headers: [],
@@ -668,7 +681,7 @@ export const testStorageAndConfig = ({
 					version: toNullable(3n)
 				};
 
-				await set_storage_config(storage);
+				await setStorageConfig({ actor, config: storage });
 
 				const { status_code } = await http_request({
 					body: Uint8Array.from([]),
@@ -682,7 +695,7 @@ export const testStorageAndConfig = ({
 			});
 
 			it('should be able to access content if not raw', async () => {
-				const { http_request, set_storage_config } = actor;
+				const { http_request } = actor;
 
 				const storage: SatelliteDid.SetStorageConfig = {
 					headers: [],
@@ -694,7 +707,7 @@ export const testStorageAndConfig = ({
 					version: toNullable(4n)
 				};
 
-				await set_storage_config(storage);
+				await setStorageConfig({ actor, config: storage });
 
 				const { status_code, body } = await http_request({
 					body: Uint8Array.from([]),
@@ -1312,8 +1325,6 @@ export const testStorageAndConfig = ({
 					max: 'heap' | 'stable' | 'none';
 					version: bigint;
 				}) => {
-					const { set_storage_config } = actor;
-
 					const storage: SatelliteDid.SetStorageConfig = {
 						headers: [['*', [['cache-control', 'no-cache']]]],
 						iframe: toNullable({ Deny: null }),
@@ -1327,7 +1338,7 @@ export const testStorageAndConfig = ({
 						version: toNullable(version)
 					};
 
-					await set_storage_config(storage);
+					await setStorageConfig({ actor, config: storage });
 				};
 
 				describe('should limit max memory size', () => {
@@ -1422,8 +1433,6 @@ export const testStorageAndConfig = ({
 
 	describe('Headers assertions', () => {
 		const unsetConfigMaxMemory = async () => {
-			const { set_storage_config } = actor;
-
 			const storage: SatelliteDid.SetStorageConfig = {
 				headers: [['*', [['cache-control', 'no-cache']]]],
 				iframe: toNullable({ Deny: null }),
@@ -1437,7 +1446,7 @@ export const testStorageAndConfig = ({
 				version: toNullable(15n)
 			};
 
-			await set_storage_config(storage);
+			await setStorageConfig({ actor, config: storage });
 		};
 
 		beforeAll(async () => {
@@ -1525,8 +1534,6 @@ export const testStorageAndConfig = ({
 		});
 
 		it('should return config after set', async () => {
-			const { set_storage_config } = actor;
-
 			const config: SatelliteDid.SetStorageConfig = {
 				headers: [['*', [['cache-control', 'no-cache']]]],
 				iframe: toNullable({ Deny: null }),
@@ -1537,7 +1544,7 @@ export const testStorageAndConfig = ({
 				version: toNullable(16n)
 			};
 
-			const result = await set_storage_config(config);
+			const result = await setStorageConfig({ actor, config });
 
 			expect(result).toEqual(
 				expect.objectContaining({

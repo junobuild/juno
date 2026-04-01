@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { jsonReplacer, nonNullish } from '@dfinity/utils';
-import { CMCCanister } from '@icp-sdk/canisters/cmc';
+import { CmcCanister } from '@icp-sdk/canisters/cmc';
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { icAnonymousAgent } from './actor.mjs';
@@ -21,7 +21,7 @@ if (!existsSync(DATA_FOLDER)) {
 const listSubnetIds = async () => {
 	const agent = await icAnonymousAgent();
 
-	const { getDefaultSubnets } = CMCCanister.create({
+	const { getDefaultSubnets } = CmcCanister.create({
 		agent,
 		canisterId: CMC_ID
 	});
@@ -37,7 +37,7 @@ const listSubnetIds = async () => {
 const listSpecifiedSubnetIds = async () => {
 	const agent = await icAnonymousAgent();
 
-	const { getSubnetTypesToSubnets } = CMCCanister.create({
+	const { getSubnetTypesToSubnets } = CmcCanister.create({
 		agent,
 		canisterId: CMC_ID
 	});

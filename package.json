@@ -120,7 +120,7 @@
 		"@dfinity/zod-schemas": "^3.2.0",
 		"@icp-sdk/auth": "^5.0.0",
 		"@icp-sdk/canisters": "^3.4.0",
-		"@icp-sdk/core": "5.0.0",
+		"@icp-sdk/core": "5.2.1",
 		"@junobuild/admin": "^4.3.2",
 		"@junobuild/auth": "^4.1.1",
 		"@junobuild/cdn": "^2.4.2",

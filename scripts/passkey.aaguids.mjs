@@ -52,13 +52,13 @@ await Promise.all(entries.map(([key, value]) => saveIcons({ aaguid: key, value }
 const destJson = join(ENV_DEST_FOLDER, 'aaguids.json');
 const cleanJson = entries.reduce((acc, [key, value]) => {
 	const { name, icon_dark, icon_light } = value;
-	const withoutLogo = isNullish(icon_dark) || isNullish(icon_light);
+	const noLogo = isNullish(icon_dark) || isNullish(icon_light);
 
 	return {
 		...acc,
 		[key]: {
 			name,
-			...(withoutLogo && { noLogo: true })
+			...(noLogo && { noLogo: true })
 		}
 	};
 }, {});

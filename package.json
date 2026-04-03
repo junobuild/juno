@@ -78,7 +78,7 @@
 		"@dfinity/eslint-config-oisy-wallet": "^0.3.0",
 		"@dfinity/pic": "^0.21.0",
 		"@dfinity/response-verification": "^3.0.4",
-		"@icp-sdk/bindgen": "^0.2.1",
+		"@icp-sdk/bindgen": "^0.3.0",
 		"@junobuild/cli-tools": "^0.13.3",
 		"@junobuild/config": "^2.15.1",
 		"@junobuild/config-loader": "^0.4.10",

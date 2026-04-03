@@ -84,8 +84,8 @@ jobs:
     needs: docker-build
     strategy:
       matrix:
-        shardIndex: [1, 2, 3, 4, 5, 6]
-        shardTotal: [6]
+        shardIndex: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+        shardTotal: [9]
 
     steps:
       - name: Checkout

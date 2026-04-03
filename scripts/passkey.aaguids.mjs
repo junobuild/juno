@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { notEmptyString } from '@dfinity/utils';
+import { isNullish, notEmptyString } from '@dfinity/utils';
 import { downloadFromURL } from '@junobuild/cli-tools';
 import { writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
@@ -51,11 +51,15 @@ await Promise.all(entries.map(([key, value]) => saveIcons({ aaguid: key, value }
 
 const destJson = join(ENV_DEST_FOLDER, 'aaguids.json');
 const cleanJson = entries.reduce((acc, [key, value]) => {
-	const { name } = value;
+	const { name, icon_dark, icon_light } = value;
+	const withoutLogo = isNullish(icon_dark) || isNullish(icon_light);
 
 	return {
 		...acc,
-		[key]: name
+		[key]: {
+			name,
+			...(withoutLogo && { noLogo: true })
+		}
 	};
 }, {});
 await writeFile(destJson, JSON.stringify(cleanJson, null, 2), 'utf-8');

@@ -4,7 +4,7 @@
 	import { bytesToAAGUID } from '@junobuild/ic-client/webauthn';
 	import Value from '$lib/components/ui/Value.svelte';
 	import aaguids from '$lib/env/aaguids.json';
-	import { type Aaguid, type AaguidName, PasskeyAaguidsSchema } from '$lib/schemas/passkey-aaguids';
+	import { type AaguidKey, type Aaguid, PasskeyAaguidsSchema } from '$lib/schemas/passkey-aaguids';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { theme } from '$lib/stores/app/theme.store';
 	import { Theme } from '$lib/types/theme';
@@ -16,7 +16,7 @@
 
 	let { user }: Props = $props();
 
-	const mapAaguid = (user: User): Nullish<Aaguid> => {
+	const mapAaguidKey = (user: User): Nullish<AaguidKey> => {
 		const {
 			data: { providerData }
 		} = user;
@@ -44,7 +44,7 @@
 		return aaguidText;
 	};
 
-	const mapAaguidText = (aaguid: Nullish<Aaguid>): Nullish<AaguidName> => {
+	const mapAaguid = (aaguid: Nullish<AaguidKey>): Nullish<Aaguid> => {
 		if (isNullish(aaguid)) {
 			return null;
 		}
@@ -60,17 +60,18 @@
 		return data[aaguid];
 	};
 
-	let aaguid = $derived(mapAaguid(user));
-	let authenticator = $derived(mapAaguidText(aaguid));
+	let aaguidKey = $derived(mapAaguidKey(user));
+	let aaguid = $derived(mapAaguid(aaguidKey));
+	let authenticator = $derived(aaguid?.name);
 
 	let iconSrc = $derived(
-		notEmptyString(aaguid)
-			? `/aaguids/${aaguid}-${$theme === Theme.DARK ? 'dark' : 'light'}.svg`
+		notEmptyString(aaguidKey) && aaguid?.noLogo !== true
+			? `/aaguids/${aaguidKey}-${$theme === Theme.DARK ? 'dark' : 'light'}.svg`
 			: undefined
 	);
 </script>
 
-{#if notEmptyString(aaguid)}
+{#if notEmptyString(aaguidKey)}
 	<div>
 		<Value>
 			{#snippet label()}

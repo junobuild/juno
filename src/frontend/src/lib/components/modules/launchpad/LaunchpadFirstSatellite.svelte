@@ -16,7 +16,7 @@
 	};
 </script>
 
-<LaunchpadHeader withoutGreetingsReturningLabel />
+<LaunchpadHeader newUser />
 
 <LaunchpadButton onclick={createSatellite} testId={testIds.launchpad.launch}>
 	<div class="new">

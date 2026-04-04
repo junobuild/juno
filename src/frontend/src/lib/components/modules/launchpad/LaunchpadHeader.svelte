@@ -1,10 +1,10 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
+	import LaunchpadGettingStarted from '$lib/components/modules/launchpad/LaunchpadGettingStarted.svelte';
 	import LaunchpadGreetings from '$lib/components/modules/launchpad/LaunchpadGreetings.svelte';
 	import { providerDataUi } from '$lib/derived/console/account.provider.derived';
 	import { onIntersection } from '$lib/directives/intersection.directives';
 	import { onLayoutTitleIntersection } from '$lib/stores/app/layout-intersecting.store';
-	import LaunchpadGettingStarted from '$lib/components/modules/launchpad/LaunchpadGettingStarted.svelte';
 
 	interface Props {
 		children?: Snippet;

@@ -1,7 +1,7 @@
 <script lang="ts">
+	import { nonNullish } from '@dfinity/utils';
 	import type { Snippet } from 'svelte';
 	import IconInfo from '$lib/components/icons/IconInfo.svelte';
-	import { nonNullish } from '@dfinity/utils';
 
 	interface Props {
 		children: Snippet;

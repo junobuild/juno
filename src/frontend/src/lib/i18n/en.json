@@ -992,8 +992,11 @@
 	},
 	"preferences": {
 		"title": "Preferences",
-		"dev_id": "Developer ID",
 		"session_expires_in": "Your session expires in"
+	},
+	"profile": {
+		"title": "Profile",
+		"dev_id": "Developer ID"
 	},
 	"emulator": {
 		"get_icp": "Get ICP",

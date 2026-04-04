@@ -994,8 +994,11 @@
 	},
 	"preferences": {
 		"title": "偏好设置",
-		"dev_id": "开发者ID",
 		"session_expires_in": "会话剩余时间"
+	},
+	"profile": {
+		"title": "个人资料",
+		"dev_id": "开发者ID"
 	},
 	"emulator": {
 		"get_icp": "获取 ICP",

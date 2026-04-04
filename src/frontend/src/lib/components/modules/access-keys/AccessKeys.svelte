@@ -107,7 +107,7 @@
 						>{#if mic}
 							{$i18n.mission_control.title}
 						{:else if dev}
-							{$i18n.preferences.dev_id}
+							{$i18n.profile.dev_id}
 						{:else}
 							{metadataProfile(nonNullish(controller) ? controller.metadata : [])}
 						{/if}

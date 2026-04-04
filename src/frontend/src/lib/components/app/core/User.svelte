@@ -39,6 +39,7 @@
 	};
 
 	let preferences = $derived(page.route.id === '/(single)/preferences');
+	let profile = $derived(page.route.id === '/(single)/profile');
 	let wallet = $derived(page.route.id === '/(single)/wallet');
 
 	let openIdPicture = $derived(providerData?.picture);
@@ -60,6 +61,13 @@
 	<div class="container">
 		<UserProviderData {providerData} />
 
+		{#if !profile}
+			<a class="menu" aria-haspopup="menu" href="/profile" onclick={close} role="menuitem">
+				<IconUser />
+				<span>{$i18n.profile.title}</span>
+			</a>
+		{/if}
+
 		{#if !preferences}
 			<a class="menu" aria-haspopup="menu" href="/preferences" onclick={close} role="menuitem">
 				<IconRaygun />
@@ -74,7 +82,7 @@
 			</a>
 		{/if}
 
-		{#if !preferences || !wallet}
+		{#if !profile || !preferences || !wallet}
 			<Hr />
 		{/if}
 

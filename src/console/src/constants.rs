@@ -18,6 +18,8 @@ pub const MISSION_CONTROL_CREATION_FEE_CYCLES: CyclesTokens =
 // A credit which can be used to start one satellite or one orbiter.
 pub const E8S_PER_ICP: Tokens = Tokens::from_e8s(100_000_000);
 
+pub const NO_CREDITS: Tokens = Tokens::from_e8s(0);
+
 pub const RELEASES_METADATA_JSON: &str = "/releases/metadata.json";
 
 // Default freezing threshold to create Satellites and Mission Controls

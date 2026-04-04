@@ -1,4 +1,4 @@
-use crate::constants::E8S_PER_ICP;
+use crate::constants::{NO_CREDITS};
 use crate::types::state::{Account, OpenIdData, Provider};
 use ic_cdk::api::time;
 use junobuild_auth::openid::credentials::delegation::types::interface::OpenIdDelegationCredential;
@@ -74,7 +74,7 @@ impl Account {
             mission_control_id: None,
             provider: provider.clone(),
             owner: *user,
-            credits: E8S_PER_ICP,
+            credits: NO_CREDITS,
             created_at: now,
             updated_at: now,
         }

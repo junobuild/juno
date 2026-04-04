@@ -18,6 +18,11 @@ pub const MISSION_CONTROL_CREATION_FEE_CYCLES: CyclesTokens =
 // A credit which can be used to start one satellite or one orbiter.
 pub const E8S_PER_ICP: Tokens = Tokens::from_e8s(100_000_000);
 
+// On Apr. 4, 2026, someone exploited the free tier to spin up free canisters.
+// They created roughly 60-70 identities to spin up the same number of canisters.
+// The rate limiter worked as expected — they had to wait a few minutes before creating more users.
+// Unfortunately, until further notice, credits must be requested on demand to prevent this
+// kind of abuse and protect the integrity of the Console.
 pub const NO_CREDITS: Tokens = Tokens::from_e8s(0);
 
 pub const RELEASES_METADATA_JSON: &str = "/releases/metadata.json";

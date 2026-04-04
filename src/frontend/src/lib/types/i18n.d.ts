@@ -1020,8 +1020,12 @@ interface I18nMonitoring {
 
 interface I18nPreferences {
 	title: string;
-	dev_id: string;
 	session_expires_in: string;
+}
+
+interface I18nProfile {
+	title: string;
+	dev_id: string;
 }
 
 interface I18nEmulator {
@@ -1211,6 +1215,7 @@ interface I18n {
 	users: I18nUsers;
 	monitoring: I18nMonitoring;
 	preferences: I18nPreferences;
+	profile: I18nProfile;
 	emulator: I18nEmulator;
 	dev: I18nDev;
 	upgrade: I18nUpgrade;

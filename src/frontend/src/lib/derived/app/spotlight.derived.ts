@@ -90,6 +90,15 @@ const preferenceItem: Readable<SpotlightNavItem> = derived([i18n], ([$i18n]) => 
 		signedIn && $i18n.preferences.title.toLowerCase().includes(query)
 }));
 
+const profileItem: Readable<SpotlightNavItem> = derived([i18n], ([$i18n]) => ({
+	type: 'nav' as const,
+	icon: IconRaygun,
+	text: $i18n.profile.title,
+	href: '/profile',
+	filter: ({ signedIn, query }: SpotlightItemFilterParams) =>
+		signedIn && $i18n.profile.title.toLowerCase().includes(query)
+}));
+
 const homeItem: Readable<SpotlightNavItem> = derived(
 	[i18n, authNotSignedIn],
 	([$i18n, $authNotSignedIn]) => ({
@@ -252,7 +261,8 @@ export const spotlightItems: Readable<SpotlightItems> = derived(
 		managementItems,
 		analyticsItems,
 		satellitesItems,
-		preferenceItem
+		preferenceItem,
+		profileItem
 	],
 	([
 		$homeItem,
@@ -262,7 +272,8 @@ export const spotlightItems: Readable<SpotlightItems> = derived(
 		$managementItems,
 		$analyticsItems,
 		$satellitesItems,
-		$preferenceItem
+		$preferenceItem,
+		$profileItem
 	]) => [
 		$homeItem,
 		...$missionControlItems,
@@ -270,6 +281,7 @@ export const spotlightItems: Readable<SpotlightItems> = derived(
 		...$satellitesItems,
 		...$analyticsItems,
 		$preferenceItem,
+		$profileItem,
 		$themeItem,
 		...$externalItems
 	]

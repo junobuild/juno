@@ -311,7 +311,8 @@
 		"greetings": "Greetings",
 		"commander": "Commander",
 		"spacebuilder": "Spacebuilder",
-		"captain": "Captain"
+		"captain": "Captain",
+		"getting_started_credits": "Welcome to Juno! Getting started is free — reach out on <a href=\"https://discord.gg/wHZ57Z2RAG\" rel=\"external noopener noreferrer\" target=\"_blank\"><strong>Discord</strong></a> and we'll set you up with your first credits."
 	},
 	"satellites": {
 		"title": "Satellites",

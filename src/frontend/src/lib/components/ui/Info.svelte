@@ -1,15 +1,21 @@
 <script lang="ts">
+	import { nonNullish } from '@dfinity/utils';
 	import type { Snippet } from 'svelte';
 	import IconInfo from '$lib/components/icons/IconInfo.svelte';
 
 	interface Props {
 		children: Snippet;
+		icon?: Snippet;
 	}
 
-	let { children }: Props = $props();
+	let { children, icon }: Props = $props();
 </script>
 
-<p><span class="icon"><IconInfo size="32px" /></span> <span>{@render children()}</span></p>
+<p>
+	<span class="icon"
+		>{#if nonNullish(icon)}{@render icon()}{:else}<IconInfo size="32px" />{/if}</span
+	> <span>{@render children()}</span>
+</p>
 
 <style lang="scss">
 	@use '../../styles/mixins/info';

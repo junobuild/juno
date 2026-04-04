@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
+	import LaunchpadGettingStarted from '$lib/components/modules/launchpad/LaunchpadGettingStarted.svelte';
 	import LaunchpadGreetings from '$lib/components/modules/launchpad/LaunchpadGreetings.svelte';
 	import { providerDataUi } from '$lib/derived/console/account.provider.derived';
 	import { onIntersection } from '$lib/directives/intersection.directives';
@@ -8,10 +9,10 @@
 	interface Props {
 		children?: Snippet;
 		filter?: string;
-		withoutGreetingsReturningLabel?: boolean;
+		newUser?: boolean;
 	}
 
-	let { filter = $bindable(''), children, withoutGreetingsReturningLabel }: Props = $props();
+	let { filter = $bindable(''), children, newUser }: Props = $props();
 
 	const customOnIntersection = (element: HTMLElement) =>
 		onIntersection(element, {
@@ -21,10 +22,11 @@
 </script>
 
 <div class="header" onjunoIntersecting={onLayoutTitleIntersection} use:customOnIntersection>
-	<LaunchpadGreetings
-		providerData={$providerDataUi}
-		withoutReturningLabel={withoutGreetingsReturningLabel}
-	/>
+	{#if newUser}
+		<LaunchpadGettingStarted />
+	{:else}
+		<LaunchpadGreetings providerData={$providerDataUi} withoutReturningLabel={newUser} />
+	{/if}
 
 	{@render children?.()}
 </div>

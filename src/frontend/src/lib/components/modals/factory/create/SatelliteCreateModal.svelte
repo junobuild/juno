@@ -106,10 +106,6 @@
 	{:else}
 		<h2>{$i18n.satellites.start}</h2>
 
-		<p>
-			{$i18n.satellites.description}
-		</p>
-
 		<FactoryCredits
 			{detail}
 			{onclose}

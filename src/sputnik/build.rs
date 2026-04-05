@@ -21,6 +21,7 @@ fn main() {
         println!("cargo:rerun-if-changed={source}");
         fs::copy(&source, "src/generated.rs").expect("Failed to copy generated.rs");
     } else {
-        fs::copy("resources/functions.rs", "src/generated.rs").expect("Failed to copy generated.rs");
+        fs::copy("resources/functions.rs", "src/generated.rs")
+            .expect("Failed to copy generated.rs");
     }
 }

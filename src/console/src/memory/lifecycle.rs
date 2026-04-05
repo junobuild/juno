@@ -25,6 +25,7 @@ fn init() {
         storage: init_cdn_storage_heap_state(),
         authentication: None,
         releases_metadata: ReleasesMetadata::default(),
+        account_config: None,
     };
 
     STATE.with(|state| {

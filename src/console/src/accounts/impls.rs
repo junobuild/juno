@@ -76,7 +76,7 @@ impl Account {
             mission_control_id: None,
             provider: provider.clone(),
             owner: *user,
-            credits: credits.clone(),
+            credits: *credits,
             created_at: now,
             updated_at: now,
         }

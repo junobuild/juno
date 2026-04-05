@@ -17,7 +17,7 @@ async fn ic_cdk_http_request<'js>(
     ctx: Ctx<'js>,
     args: JsHttpRequestArgs<'js>,
 ) -> JsResult<JsHttpRequestResult<'js>> {
-    let result = http_request(&args.to_args()?).await;
+    let result = http_request(&args.into_args()?).await;
 
     match result {
         Err(err) => Err(throw_js_exception(

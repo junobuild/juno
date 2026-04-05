@@ -52,7 +52,7 @@ impl<'js> JsRawPrincipal<'js> {
     }
 }
 
-/// JsHttpHeader <> HttpHeader
+// JsHttpHeader <> HttpHeader
 
 impl JsHttpHeader {
     pub fn from_header(header: &HttpHeader) -> Self {
@@ -62,7 +62,7 @@ impl JsHttpHeader {
         }
     }
 
-    pub fn to_header(self) -> HttpHeader {
+    pub fn into_header(self) -> HttpHeader {
         HttpHeader {
             name: self.name,
             value: self.value,
@@ -89,10 +89,10 @@ impl<'js> FromJs<'js> for JsHttpHeader {
     }
 }
 
-/// JsHttpMethod <> HttpMethod
+// JsHttpMethod <> HttpMethod
 
 impl JsHttpMethod {
-    pub fn to_method(self) -> HttpMethod {
+    pub fn into_method(self) -> HttpMethod {
         match self {
             Self::Get => HttpMethod::GET,
             Self::Post => HttpMethod::POST,
@@ -113,7 +113,7 @@ impl<'js> FromJs<'js> for JsHttpMethod {
     }
 }
 
-/// JsHttpRequestResult <> HttpRequestResult
+// JsHttpRequestResult <> HttpRequestResult
 
 impl<'js> JsHttpRequestResult<'js> {
     pub fn from_result(ctx: &Ctx<'js>, result: &HttpRequestResult) -> JsResult<Self> {
@@ -146,10 +146,10 @@ impl<'js> IntoJs<'js> for JsHttpRequestResult<'js> {
     }
 }
 
-/// JsHttpRequestArgs <> HttpRequestArgs
+// JsHttpRequestArgs <> HttpRequestArgs
 
 impl<'js> JsHttpRequestArgs<'js> {
-    pub fn to_args(self) -> JsResult<HttpRequestArgs> {
+    pub fn into_args(self) -> JsResult<HttpRequestArgs> {
         let transform = self.transform.map(|method| TransformContext {
             function: TransformFunc(candid::Func {
                 principal: id(),
@@ -161,11 +161,11 @@ impl<'js> JsHttpRequestArgs<'js> {
         Ok(HttpRequestArgs {
             url: self.url,
             max_response_bytes: self.max_response_bytes,
-            method: self.method.to_method(),
+            method: self.method.into_method(),
             headers: self
                 .headers
                 .into_iter()
-                .map(JsHttpHeader::to_header)
+                .map(JsHttpHeader::into_header)
                 .collect(),
             body: self
                 .body

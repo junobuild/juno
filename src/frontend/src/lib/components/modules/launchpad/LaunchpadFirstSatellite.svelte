@@ -1,14 +1,14 @@
 <script lang="ts">
+	import { nonNullish } from '@dfinity/utils';
 	import IconRocket from '$lib/components/icons/IconRocket.svelte';
 	import LaunchpadButton from '$lib/components/modules/launchpad/LaunchpadButton.svelte';
 	import LaunchpadHeader from '$lib/components/modules/launchpad/LaunchpadHeader.svelte';
 	import { testIds } from '$lib/constants/test-ids.constants';
 	import { authIdentity } from '$lib/derived/auth.derived';
+	import { account } from '$lib/derived/console/account.derived';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import { initSatelliteWizard } from '$lib/services/factory/factory.create.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import { account } from '$lib/derived/console/account.derived';
-	import { nonNullish } from '@dfinity/utils';
 
 	const createSatellite = async () => {
 		await initSatelliteWizard({
@@ -26,7 +26,7 @@
 	);
 </script>
 
-<LaunchpadHeader withoutGreetingsReturningLabel userGettingStarted={userNoFirstCredits} />
+<LaunchpadHeader userGettingStarted={userNoFirstCredits} withoutGreetingsReturningLabel />
 
 <LaunchpadButton onclick={createSatellite} testId={testIds.launchpad.launch}>
 	<div class="new">

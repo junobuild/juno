@@ -70,9 +70,7 @@ const transformLlrtUtils = (content) => {
 	return `#![allow(dead_code)]\n\n${parsedContent}`;
 };
 
-const transformLlrtUrl = (content) => {
-	return `#![allow(clippy::inherent_to_string)]\n\n${content}`;
-};
+const transformLlrtUrl = (content) => `#![allow(clippy::inherent_to_string)]\n\n${content}`;
 
 const transformLlrtUrlClass = (content) => {
 	const filteredContent = content.replace(

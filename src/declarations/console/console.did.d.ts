@@ -28,6 +28,12 @@ export interface Account {
 	owner: Principal;
 	created_at: bigint;
 }
+export interface AccountConfig {
+	updated_at: [] | [bigint];
+	init_credits: Tokens;
+	created_at: [] | [bigint];
+	version: [] | [bigint];
+}
 export interface Account_1 {
 	owner: Principal;
 	subaccount: [] | [Uint8Array];
@@ -379,6 +385,10 @@ export interface SetAccessKey {
 	scope: AccessKeyScope;
 	expires_at: [] | [bigint];
 }
+export interface SetAccountConfig {
+	init_credits: Tokens;
+	version: [] | [bigint];
+}
 export interface SetAuthenticationConfig {
 	openid: [] | [AuthenticationConfigOpenId];
 	version: [] | [bigint];
@@ -485,6 +495,7 @@ export interface _SERVICE {
 	del_custom_domain: ActorMethod<[string], undefined>;
 	delete_proposal_assets: ActorMethod<[DeleteProposalAssets], undefined>;
 	get_account: ActorMethod<[], [] | [Account]>;
+	get_account_config: ActorMethod<[], [] | [AccountConfig]>;
 	get_auth_config: ActorMethod<[], [] | [AuthenticationConfig]>;
 	get_config: ActorMethod<[], Config>;
 	get_create_orbiter_fee: ActorMethod<[GetCreateCanisterFeeArgs], [] | [Tokens]>;
@@ -516,6 +527,7 @@ export interface _SERVICE {
 	list_proposals: ActorMethod<[ListProposalsParams], ListProposalResults>;
 	list_segments: ActorMethod<[ListSegmentsArgs], Array<[SegmentKey, Segment]>>;
 	reject_proposal: ActorMethod<[CommitProposal], null>;
+	set_account_config: ActorMethod<[SetAccountConfig], AccountConfig>;
 	set_auth_config: ActorMethod<[SetAuthenticationConfig], AuthenticationConfig>;
 	set_controllers: ActorMethod<[SetControllersArgs], undefined>;
 	set_custom_domain: ActorMethod<[string, [] | [string]], undefined>;

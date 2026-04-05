@@ -67,6 +67,17 @@ describe('Console > Storage', () => {
 			await expect(set_auth_config(config)).rejects.toThrow(CONTROLLER_ERROR_MSG);
 		});
 
+		it('should throw errors on setting account config', async () => {
+			const { set_account_config } = actor;
+
+			const config: ConsoleDid.SetAccountConfig = {
+				init_credits: { e8s: 0n },
+				version: []
+			};
+
+			await expect(set_account_config(config)).rejects.toThrow(CONTROLLER_ERROR_MSG);
+		});
+
 		it('should throw errors on getting storage config', async () => {
 			const { get_storage_config } = actor;
 
@@ -77,6 +88,12 @@ describe('Console > Storage', () => {
 			const { get_auth_config } = actor;
 
 			await expect(get_auth_config()).rejects.toThrow(CONTROLLER_ERROR_MSG);
+		});
+
+		it('should throw errors on getting account config', async () => {
+			const { get_account_config } = actor;
+
+			await expect(get_account_config()).rejects.toThrow(CONTROLLER_ERROR_MSG);
 		});
 
 		it('should throw errors on getting config', async () => {

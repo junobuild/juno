@@ -70,17 +70,21 @@ const transformLlrtUtils = (content) => {
 	return `#![allow(dead_code)]\n\n${parsedContent}`;
 };
 
+const transformLlrtUrl = (content) => {
+	return `#![allow(clippy::inherent_to_string)]\n\n${content}`;
+};
+
 const transformLlrtUrlClass = (content) => {
 	const filteredContent = content.replace(
 		'pub fn url_to_http_options',
 		'#[allow(dead_code)]\npub fn url_to_http_options'
 	);
-	return transformLlrtUtilsPath(filteredContent);
+	return transformLlrtUrl(transformLlrtUtilsPath(filteredContent));
 };
 
 const transformLlrtUrlSearchParams = (content) => {
 	const filteredContent = transformFilterTest(content);
-	return transformLlrtUtilsPath(filteredContent);
+	return transformLlrtUrl(transformLlrtUtilsPath(filteredContent));
 };
 
 const savePolyfill = async ({ dest, content, transform }) => {

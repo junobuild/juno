@@ -324,7 +324,6 @@
 		"ready": "Your Satellite is ready!",
 		"initializing": "Initializing your new Satellite...",
 		"start": "Create a Satellite",
-		"description": "A Satellite is a container for your project. It provides features like a simple key pair store, file storage, hosting, and authentication.",
 		"name": "Name",
 		"satellite_name": "Satellite name",
 		"what_are_you_building": "What are you building",

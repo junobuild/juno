@@ -332,7 +332,6 @@ interface I18nSatellites {
 	ready: string;
 	initializing: string;
 	start: string;
-	description: string;
 	name: string;
 	satellite_name: string;
 	what_are_you_building: string;

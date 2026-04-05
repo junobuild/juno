@@ -7,6 +7,8 @@
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import { initSatelliteWizard } from '$lib/services/factory/factory.create.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
+	import { account } from '$lib/derived/console/account.derived';
+	import { nonNullish } from '@dfinity/utils';
 
 	const createSatellite = async () => {
 		await initSatelliteWizard({
@@ -14,9 +16,17 @@
 			missionControlId: $missionControlId
 		});
 	};
+
+	// If the user was never updated, they never received credits.
+	// We do this check to e.g. not display the getting started banner on Skylab.
+	let userNoFirstCredits = $derived(
+		nonNullish($account) &&
+			$account.created_at === $account.updated_at &&
+			$account.credits.e8s === 0n
+	);
 </script>
 
-<LaunchpadHeader newUser />
+<LaunchpadHeader withoutGreetingsReturningLabel userGettingStarted={userNoFirstCredits} />
 
 <LaunchpadButton onclick={createSatellite} testId={testIds.launchpad.launch}>
 	<div class="new">

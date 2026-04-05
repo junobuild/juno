@@ -9,10 +9,16 @@
 	interface Props {
 		children?: Snippet;
 		filter?: string;
-		newUser?: boolean;
+		userGettingStarted?: boolean;
+		withoutGreetingsReturningLabel?: boolean;
 	}
 
-	let { filter = $bindable(''), children, newUser }: Props = $props();
+	let {
+		filter = $bindable(''),
+		children,
+		userGettingStarted,
+		withoutGreetingsReturningLabel
+	}: Props = $props();
 
 	const customOnIntersection = (element: HTMLElement) =>
 		onIntersection(element, {
@@ -22,10 +28,13 @@
 </script>
 
 <div class="header" onjunoIntersecting={onLayoutTitleIntersection} use:customOnIntersection>
-	{#if newUser}
+	{#if userGettingStarted}
 		<LaunchpadGettingStarted />
 	{:else}
-		<LaunchpadGreetings providerData={$providerDataUi} withoutReturningLabel={newUser} />
+		<LaunchpadGreetings
+			providerData={$providerDataUi}
+			withoutReturningLabel={withoutGreetingsReturningLabel}
+		/>
 	{/if}
 
 	{@render children?.()}

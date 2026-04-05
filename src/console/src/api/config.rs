@@ -1,17 +1,20 @@
+use crate::accounts::{
+    get_account_config as get_account_config_store, set_account_config as set_account_config_store,
+};
 use crate::auth::store::{
     get_config as get_auth_config_store, set_config as set_auth_config_store,
 };
 use crate::cdn::strategies_impls::cdn::CdnHeap;
 use crate::cdn::strategies_impls::storage::StorageState;
 use crate::guards::caller_is_admin_controller;
-use crate::types::interface::Config;
+use crate::types::interface::{Config, SetAccountConfig};
+use crate::types::state::AccountConfig;
 use ic_cdk_macros::{query, update};
 use junobuild_auth::state::types::config::AuthenticationConfig;
 use junobuild_auth::state::types::interface::SetAuthenticationConfig;
 use junobuild_shared::ic::UnwrapOrTrap;
 use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::interface::SetStorageConfig;
-
 // ---------------------------------------------------------
 // Config
 // ---------------------------------------------------------
@@ -53,4 +56,18 @@ pub async fn set_auth_config(config: SetAuthenticationConfig) -> AuthenticationC
 #[query(guard = "caller_is_admin_controller")]
 pub fn get_auth_config() -> Option<AuthenticationConfig> {
     get_auth_config_store()
+}
+
+// ---------------------------------------------------------
+// Account config
+// ---------------------------------------------------------
+
+#[query(guard = "caller_is_admin_controller")]
+pub fn get_account_config() -> Option<AccountConfig> {
+    get_account_config_store()
+}
+
+#[update(guard = "caller_is_admin_controller")]
+pub fn set_account_config(config: SetAccountConfig) -> AccountConfig {
+    set_account_config_store(&config)
 }

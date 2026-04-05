@@ -16,6 +16,12 @@ type Account = record {
   owner : principal;
   created_at : nat64;
 };
+type AccountConfig = record {
+  updated_at : opt nat64;
+  init_credits : Tokens;
+  created_at : opt nat64;
+  version : opt nat64;
+};
 type Account_1 = record { owner : principal; subaccount : opt blob };
 type AssertMissionControlCenterArgs = record {
   mission_control_id : principal;
@@ -316,6 +322,7 @@ type SetAccessKey = record {
   scope : AccessKeyScope;
   expires_at : opt nat64;
 };
+type SetAccountConfig = record { init_credits : Tokens; version : opt nat64 };
 type SetAuthenticationConfig = record {
   openid : opt AuthenticationConfigOpenId;
   version : opt nat64;
@@ -413,6 +420,7 @@ service : () -> {
   del_custom_domain : (text) -> ();
   delete_proposal_assets : (DeleteProposalAssets) -> ();
   get_account : () -> (opt Account) query;
+  get_account_config : () -> (opt AccountConfig) query;
   get_auth_config : () -> (opt AuthenticationConfig) query;
   get_config : () -> (Config) query;
   get_create_orbiter_fee : (GetCreateCanisterFeeArgs) -> (opt Tokens) query;
@@ -444,6 +452,7 @@ service : () -> {
       vec record { SegmentKey; Segment },
     ) query;
   reject_proposal : (CommitProposal) -> (null);
+  set_account_config : (SetAccountConfig) -> (AccountConfig);
   set_auth_config : (SetAuthenticationConfig) -> (AuthenticationConfig);
   set_controllers : (SetControllersArgs) -> ();
   set_custom_domain : (text, opt text) -> ();

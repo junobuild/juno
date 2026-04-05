@@ -134,6 +134,12 @@ export const idlFactory = ({ IDL }) => {
 	const DeleteProposalAssets = IDL.Record({
 		proposal_ids: IDL.Vec(IDL.Nat)
 	});
+	const AccountConfig = IDL.Record({
+		updated_at: IDL.Opt(IDL.Nat64),
+		init_credits: Tokens,
+		created_at: IDL.Opt(IDL.Nat64),
+		version: IDL.Opt(IDL.Nat64)
+	});
 	const OpenIdAuthProviderDelegationConfig = IDL.Record({
 		targets: IDL.Opt(IDL.Vec(IDL.Principal)),
 		max_time_to_live: IDL.Opt(IDL.Nat64)
@@ -451,6 +457,10 @@ export const idlFactory = ({ IDL }) => {
 		segment_id: IDL.Principal,
 		created_at: IDL.Nat64
 	});
+	const SetAccountConfig = IDL.Record({
+		init_credits: Tokens,
+		version: IDL.Opt(IDL.Nat64)
+	});
 	const SetAuthenticationConfig = IDL.Record({
 		openid: IDL.Opt(AuthenticationConfigOpenId),
 		version: IDL.Opt(IDL.Nat64),
@@ -517,6 +527,7 @@ export const idlFactory = ({ IDL }) => {
 		del_custom_domain: IDL.Func([IDL.Text], [], []),
 		delete_proposal_assets: IDL.Func([DeleteProposalAssets], [], []),
 		get_account: IDL.Func([], [IDL.Opt(Account)], ['query']),
+		get_account_config: IDL.Func([], [IDL.Opt(AccountConfig)], ['query']),
 		get_auth_config: IDL.Func([], [IDL.Opt(AuthenticationConfig)], ['query']),
 		get_config: IDL.Func([], [Config], ['query']),
 		get_create_orbiter_fee: IDL.Func([GetCreateCanisterFeeArgs], [IDL.Opt(Tokens)], ['query']),
@@ -554,6 +565,7 @@ export const idlFactory = ({ IDL }) => {
 			['query']
 		),
 		reject_proposal: IDL.Func([CommitProposal], [IDL.Null], []),
+		set_account_config: IDL.Func([SetAccountConfig], [AccountConfig], []),
 		set_auth_config: IDL.Func([SetAuthenticationConfig], [AuthenticationConfig], []),
 		set_controllers: IDL.Func([SetControllersArgs], [], []),
 		set_custom_domain: IDL.Func([IDL.Text, IDL.Opt(IDL.Text)], [], []),

@@ -9,7 +9,10 @@ use ic_cdk::management_canister::{
     HttpHeader, HttpMethod, HttpRequestArgs, HttpRequestResult, TransformContext, TransformFunc,
 };
 use junobuild_shared::ic::api::id;
-use rquickjs::{Array, BigInt, Ctx, Error as JsError, FromJs, IntoJs, Object, Result as JsResult, TypedArray, Value};
+use rquickjs::{
+    Array, BigInt, Ctx, Error as JsError, FromJs, IntoJs, Object, Result as JsResult, TypedArray,
+    Value,
+};
 
 impl<'js> JsUint8Array<'js> {
     pub fn from_bytes(ctx: &Ctx<'js>, bytes: &[u8]) -> JsResult<Self> {

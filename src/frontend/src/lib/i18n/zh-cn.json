@@ -313,7 +313,7 @@
 		"commander": "指挥官",
 		"spacebuilder": "太空建造者",
 		"captain": "船长",
-		"getting_started_credits": "欢迎来到 Juno！入门免费 — 在 <a href=\"https://discord.gg/wHZ57Z2RAG\" rel=\"external noopener noreferrer\" target=\"_blank\"><strong>Discord</strong></a> 上联系我们，我们将为您提供积分。"
+		"getting_started_credits": "欢迎来到 Juno！在 <a href=\"https://discord.gg/wHZ57Z2RAG\" rel=\"external noopener noreferrer\" target=\"_blank\"><strong>Discord</strong></a> 上联系我们，免费开始您的旅程。"
 	},
 	"satellites": {
 		"title": "所有卫星",

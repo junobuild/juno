@@ -69,6 +69,10 @@
 	});
 </script>
 
+{#snippet walletPicker({ display }: { display: boolean })}
+	<InlineWalletPicker bind:selectedWallet {display} />
+{/snippet}
+
 {#if notEnoughCredits}
 	<p>
 		<Html
@@ -82,7 +86,7 @@
 			])}
 		/>
 		{$i18n.wallet.your_wallet}
-		<InlineWalletPicker bind:selectedWallet />
+		{@render walletPicker({ display: true })}
 		<Html
 			text={i18nFormat($i18n.wallet.current_balance, [
 				{
@@ -94,6 +98,8 @@
 			])}
 		/>
 	</p>
+{:else}
+	{@render walletPicker({ display: false })}
 {/if}
 
 {#if insufficientFunds}

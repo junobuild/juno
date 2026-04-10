@@ -46,20 +46,24 @@ export class ConsolePage {
 
 		// Initial step
 		await expect(this.#page.getByTestId(testIds.createSatellite.continueToMetadata)).toBeVisible();
+
 		await this.#page.getByTestId(testIds.createSatellite.continueToMetadata).click();
 
 		// Metadata step
 		await expect(this.#page.getByTestId(testIds.createSatellite.continueToOptions)).toBeVisible();
+
 		await this.#page.getByTestId(testIds.createSatellite.input).fill('Test');
 		await this.#page.getByTestId(testIds.createSatellite.continueToOptions).click();
 
 		// Options step
 		await expect(this.#page.getByTestId(testIds.createSatellite.continueToReview)).toBeVisible();
+
 		await this.#page.getByTestId(testIds.createSatellite[kind]).click();
 		await this.#page.getByTestId(testIds.createSatellite.continueToReview).click();
 
 		// Review step
 		await expect(this.#page.getByTestId(testIds.createSatellite.create)).toBeVisible();
+
 		await this.#page.getByTestId(testIds.createSatellite.create).click();
 
 		await expect(this.#page.getByTestId(testIds.createSatellite.continue)).toBeVisible(

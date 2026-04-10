@@ -2,7 +2,6 @@
 	import { nonNullish } from '@dfinity/utils';
 	import { getContext } from 'svelte';
 	import type { SatelliteDid } from '$declarations';
-	import Confirmation from '$lib/components/app/core/Confirmation.svelte';
 	import IconRefresh from '$lib/components/icons/IconRefresh.svelte';
 	import CdnAsset from '$lib/components/satellites/cdn/list/CdnAsset.svelte';
 	import CdnClear from '$lib/components/satellites/cdn/list/CdnClear.svelte';

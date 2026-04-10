@@ -430,6 +430,9 @@ interface I18nWallet {
 	convert_transferring: string;
 	convert_minting: string;
 	convert_done: string;
+	your_wallet: string;
+	current_balance: string;
+	toggle_wallet: string;
 }
 
 interface I18nAuthentication {

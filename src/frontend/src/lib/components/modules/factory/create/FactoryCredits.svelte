@@ -20,7 +20,7 @@
 	let {
 		detail,
 		priceLabel,
-		selectedWallet,
+		selectedWallet = $bindable(undefined),
 		insufficientFunds = $bindable(true),
 		withFee = $bindable(undefined),
 		children,
@@ -43,7 +43,7 @@
 		{fee}
 		{onclose}
 		{priceLabel}
-		{selectedWallet}
+		bind:selectedWallet
 		bind:insufficientFunds
 		bind:withFee
 	>

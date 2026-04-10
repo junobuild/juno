@@ -11,7 +11,6 @@
 
 	interface Props {
 		detail: JunoModalDetail;
-		selectedWallet: SelectedWallet | undefined;
 		satelliteKind: 'website' | 'application' | undefined;
 		subnetId: PrincipalText | undefined;
 		monitoringStrategy: MissionControlDid.CyclesMonitoringStrategy | undefined;
@@ -22,7 +21,6 @@
 	let {
 		satelliteKind = $bindable(),
 		detail,
-		selectedWallet = $bindable(),
 		subnetId = $bindable(),
 		monitoringStrategy = $bindable(),
 		oncontinue,
@@ -74,7 +72,7 @@
 		</div>
 	</div>
 
-	<FactoryAdvancedOptions {detail} bind:selectedWallet bind:subnetId bind:monitoringStrategy />
+	<FactoryAdvancedOptions {detail} bind:subnetId bind:monitoringStrategy />
 
 	<div class="toolbar">
 		<button onclick={onback} type="button">{$i18n.core.back}</button>

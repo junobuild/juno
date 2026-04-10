@@ -36,12 +36,15 @@
 	let withFee = $state<Nullish<bigint>>(undefined);
 	let insufficientFunds = $state(true);
 
-	let step: 'init' | 'options' | 'review' | 'in_progress' | 'ready' | 'error' = $state('init');
+	let step: 'init' | 'metadata' | 'options' | 'review' | 'in_progress' | 'ready' | 'error' = $state('init');
 	let satelliteId = $state<SatelliteId | undefined>(undefined);
 
 	const oncontinue = () => {
 		switch (step) {
 			case 'init':
+				step = 'metadata';
+				break;
+			case 'metadata':
 				step = 'options';
 				break;
 			case 'options':
@@ -52,8 +55,11 @@
 
 	const onback = () => {
 		switch (step) {
-			case 'options':
+			case 'metadata':
 				step = 'init';
+				break;
+			case 'options':
+				step = 'metadata';
 				break;
 			case 'review':
 				step = 'options';
@@ -131,7 +137,6 @@
 	{:else if step === 'options'}
 		<CreateSatelliteOptions
 			{detail}
-			{selectedWallet}
 			bind:satelliteKind
 			bind:subnetId
 			bind:monitoringStrategy
@@ -156,7 +161,7 @@
 			{detail}
 			{onclose}
 			priceLabel={$i18n.satellites.create_satellite_price}
-			{selectedWallet}
+			bind:selectedWallet
 			bind:withFee
 			bind:insufficientFunds
 		>

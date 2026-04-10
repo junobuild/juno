@@ -337,7 +337,7 @@
 		"tags_placeholder": "逗号分隔或每行一个，留空则不添加标签。",
 		"enter_name": "输入卫星名称",
 		"edit_details": "编辑详情",
-		"create_satellite_price": "启动新的 Satellite 需要 {0}。您当前的余额为 {1}。",
+		"create_satellite_price": "启动新的 Satellite 需要 {0}。",
 		"loading_satellites": "正在加载所有卫星",
 		"overview": "概览",
 		"id": "卫星ID",
@@ -355,7 +355,7 @@
 		"edit_email": "编辑您的电子邮件地址",
 		"empty": "Mission Control 是管理模块的中心枢纽。激活监控功能需要 Mission Control。未来将添加更多高级功能。",
 		"description": "获取 Mission Control 以解锁监控等高级功能。",
-		"create_price": "启动 Mission Control 需要 {0}。您当前的余额为 {1}。",
+		"create_price": "启动 Mission Control 需要 {0}。",
 		"initializing": "正在初始化 Mission Control...",
 		"ready": "您的 Mission Control 已就绪！",
 		"attaching": "正在与任务控制中心共享现有模块...",
@@ -418,7 +418,10 @@
 		"convert_preparing": "准备兑换中...",
 		"convert_transferring": "转账 ICP 中...",
 		"convert_minting": "将 ICP 兑换为 Cycles 中...",
-		"convert_done": "您的 Cycles 已成功兑换。"
+		"convert_done": "您的 Cycles 已成功兑换。",
+		"your_wallet": "您的钱包",
+		"current_balance": "当前余额为 {0}。",
+		"toggle_wallet": "切换钱包"
 	},
 	"authentication": {
 		"title": "身份认证",
@@ -466,7 +469,7 @@
 		"error_msg": "处理所选过滤器的统计时发生错误。请调整过滤条件后重试。",
 		"description": "获取统计数据以衡量和分析用户如何与您的应用互动。",
 		"initializing": "正在初始化统计...",
-		"create_orbiter_price": "启动分析功能需要 {0}。您当前的余额为 {1}。",
+		"create_orbiter_price": "启动分析功能需要 {0}。",
 		"create": "创建统计",
 		"ready": "您的统计已就绪！",
 		"satellites": "卫星",

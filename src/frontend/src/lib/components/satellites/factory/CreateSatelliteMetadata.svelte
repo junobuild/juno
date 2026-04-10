@@ -8,6 +8,7 @@
 	interface Props {
 		satelliteName: string | undefined;
 		oncontinue: () => void;
+		onback: () => void;
 	}
 
 	let { satelliteName = $bindable(), oncontinue }: Props = $props();

@@ -46,7 +46,7 @@
 	<div class="toolbar">
 		<button onclick={onback} type="button">{$i18n.core.back}</button>
 
-		<button {...testId(testIds.createSatellite.create)} {disabled} type="submit">
+		<button {...testId(testIds.createSatellite.continueToOptions)} {disabled} type="submit">
 			{$i18n.core.continue}
 		</button>
 	</div>

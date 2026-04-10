@@ -13,6 +13,9 @@ export const testIds = {
 		actions: 'btn-open-actions'
 	},
 	createSatellite: {
+		continueToMetadata: 'btn-continue-metadata',
+		continueToOptions: 'btn-continue-options',
+		continueToReview: 'btn-continue-review',
 		create: 'btn-create-satellite',
 		input: 'input-satellite-name',
 		website: 'input-radio-satellite-website',

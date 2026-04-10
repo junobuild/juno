@@ -24,7 +24,7 @@
 	import { testId } from '$lib/utils/test.utils';
 	import CreateSatelliteMetadata from '$lib/components/satellites/factory/CreateSatelliteMetadata.svelte';
 	import CreateSatelliteOptions from '$lib/components/satellites/factory/CreateSatelliteOptions.svelte';
-	import CreateSatelliteReview from "$lib/components/satellites/factory/CreateSatelliteReview.svelte";
+	import CreateSatelliteReview from '$lib/components/satellites/factory/CreateSatelliteReview.svelte';
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -36,7 +36,8 @@
 	let withFee = $state<Nullish<bigint>>(undefined);
 	let insufficientFunds = $state(true);
 
-	let step: 'init' | 'metadata' | 'options' | 'review' | 'in_progress' | 'ready' | 'error' = $state('init');
+	let step: 'init' | 'metadata' | 'options' | 'review' | 'in_progress' | 'ready' | 'error' =
+		$state('init');
 	let satelliteId = $state<SatelliteId | undefined>(undefined);
 
 	const oncontinue = () => {
@@ -73,7 +74,7 @@
 	const onProgress = (applyProgress: FactoryCreateProgress | undefined) =>
 		(progress = applyProgress);
 
-	const onSubmit = async ($event: SubmitEvent) => {
+	const onsubmit = async ($event: SubmitEvent) => {
 		$event.preventDefault();
 
 		onProgress(undefined);
@@ -140,22 +141,21 @@
 			bind:satelliteKind
 			bind:subnetId
 			bind:monitoringStrategy
-			{oncontinue} {onback}
+			{oncontinue}
+			{onback}
 		/>
 	{:else if step === 'metadata'}
 		<CreateSatelliteMetadata bind:satelliteName {oncontinue} {onback} />
 	{:else if step === 'review'}
-		<form onsubmit={onSubmit}>
-			<CreateSatelliteReview {satelliteName} {satelliteKind} {subnetId} />
-
-			<button
-				{...testId(testIds.createSatellite.create)}
-				disabled={$authSignedOut || insufficientFunds}
-				type="submit"
-			>
-				{$i18n.satellites.create}
-			</button>
-		</form>
+		<CreateSatelliteReview
+			{satelliteName}
+			{satelliteKind}
+			{subnetId}
+			{monitoringStrategy}
+			{onback}
+			{onsubmit}
+			disabled={$authSignedOut || insufficientFunds}
+		/>
 	{:else}
 		<h2>{$i18n.satellites.start}</h2>
 
@@ -167,8 +167,14 @@
 			bind:withFee
 			bind:insufficientFunds
 		>
+			{#snippet withCreditsMsg()}
+				<p>{$i18n.satellites.hooray_free_satellite}</p>
+			{/snippet}
+
 			<button onclick={onclose}>{$i18n.core.cancel}</button>
-			<button onclick={oncontinue}>{$i18n.core.lets_go}</button>
+			<button onclick={oncontinue}
+				>{nonNullish(withFee) ? $i18n.core.ok : $i18n.core.lets_go}</button
+			>
 		</FactoryCredits>
 	{/if}
 </Modal>

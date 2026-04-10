@@ -5,55 +5,78 @@
 	import { nonNullish } from '@dfinity/utils';
 	import type { MissionControlDid } from '$declarations';
 	import MonitoringSentence from '$lib/components/modals/monitoring/MonitoringSentence.svelte';
+	import { testId } from '$lib/utils/test.utils';
+	import { testIds } from '$lib/constants/test-ids.constants';
 
 	interface Props {
 		satelliteName: string | undefined;
 		satelliteKind: 'website' | 'application' | undefined;
 		subnetId: PrincipalText | undefined;
 		monitoringStrategy: MissionControlDid.CyclesMonitoringStrategy | undefined;
+		disabled: boolean;
+		onsubmit: ($event: SubmitEvent) => Promise<void>;
+		onback: () => void;
 	}
 
-	let { satelliteName, satelliteKind, subnetId, monitoringStrategy }: Props = $props();
+	let {
+		satelliteName,
+		satelliteKind,
+		subnetId,
+		monitoringStrategy,
+		onback,
+		onsubmit,
+		disabled
+	}: Props = $props();
 </script>
 
 <h2>{$i18n.core.review}</h2>
 
-<Value>
-	{#snippet label()}
-		{$i18n.satellites.satellite_name}
-	{/snippet}
-
-	<p>{satelliteName ?? ''}</p>
-</Value>
-
-<Value>
-	{#snippet label()}
-		{$i18n.core.config}
-	{/snippet}
-
-	<p>
-		{satelliteKind === 'application'
-			? $i18n.satellites.application_hint
-			: $i18n.satellites.website_hint}
-	</p>
-</Value>
-
-{#if nonNullish(subnetId)}
+<form {onsubmit}>
 	<Value>
 		{#snippet label()}
-			{$i18n.canisters.subnet}
+			{$i18n.satellites.satellite_name}
 		{/snippet}
 
-		<p>{subnetId}</p>
+		<p>{satelliteName ?? ''}</p>
 	</Value>
-{/if}
 
-{#if nonNullish(monitoringStrategy)}
-    <Value>
-        {#snippet label()}
-			{$i18n.monitoring.auto_refill}
-        {/snippet}
+	<Value>
+		{#snippet label()}
+			{$i18n.core.config}
+		{/snippet}
 
-		<MonitoringSentence {monitoringStrategy} />
-    </Value>
-{/if}
+		<p>
+			{satelliteKind === 'application'
+				? $i18n.satellites.application_hint
+				: $i18n.satellites.website_hint}
+		</p>
+	</Value>
+
+	{#if nonNullish(subnetId)}
+		<Value>
+			{#snippet label()}
+				{$i18n.canisters.subnet}
+			{/snippet}
+
+			<p>{subnetId}</p>
+		</Value>
+	{/if}
+
+	{#if nonNullish(monitoringStrategy)}
+		<Value>
+			{#snippet label()}
+				{$i18n.monitoring.auto_refill}
+			{/snippet}
+
+			<MonitoringSentence {monitoringStrategy} />
+		</Value>
+	{/if}
+
+	<div class="toolbar">
+		<button onclick={onback} type="button">{$i18n.core.back}</button>
+
+		<button {...testId(testIds.createSatellite.create)} type="submit" {disabled}>
+			{$i18n.core.launch}
+		</button>
+	</div>
+</form>

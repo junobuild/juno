@@ -327,7 +327,6 @@ interface I18nSatellites {
 	title: string;
 	launch: string;
 	launch_first: string;
-	create: string;
 	search: string;
 	satellite: string;
 	ready: string;
@@ -355,6 +354,11 @@ interface I18nSatellites {
 	extended_version: string;
 	build: string;
 	attaching: string;
+	hooray_free_satellite: string;
+	get_started: string;
+	choose_name: string;
+	options: string;
+	fine_tune_config: string;
 }
 
 interface I18nMission_control {

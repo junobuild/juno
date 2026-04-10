@@ -22,10 +22,16 @@
 	let disabled = $derived(isEmptyString(satelliteName));
 </script>
 
-<h2>{$i18n.satellites.satellite_name}</h2>
+<h2>{$i18n.satellites.get_started}</h2>
+
+<p>{$i18n.satellites.choose_name}</p>
 
 <form {onsubmit}>
-	<input
+	<Value>
+		{#snippet label()}
+			{$i18n.satellites.name}
+		{/snippet}
+		<input
 			name="satellite_name"
 			autocomplete="off"
 			data-1p-ignore
@@ -34,13 +40,14 @@
 			required
 			type="text"
 			bind:value={satelliteName}
-	/>
+		/>
+	</Value>
 
 	<div class="toolbar">
 		<button onclick={onback} type="button">{$i18n.core.back}</button>
 
 		<button {...testId(testIds.createSatellite.create)} type="submit" {disabled}>
-			{$i18n.core.review}
+			{$i18n.core.continue}
 		</button>
 	</div>
 </form>

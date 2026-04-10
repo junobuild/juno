@@ -2,7 +2,6 @@
 	import type { SatelliteDid } from '$declarations';
 	import Confirmation from '$lib/components/app/core/Confirmation.svelte';
 	import ButtonTableAction from '$lib/components/ui/ButtonTableAction.svelte';
-	import Popover from '$lib/components/ui/Popover.svelte';
 	import Text from '$lib/components/ui/Text.svelte';
 	import { authIdentity } from '$lib/derived/auth.derived';
 	import { deleteWasmAsset } from '$lib/services/satellite/functions/cdn.services';

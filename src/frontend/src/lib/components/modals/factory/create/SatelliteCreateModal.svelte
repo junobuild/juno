@@ -3,13 +3,14 @@
 	import type { Nullish } from '@dfinity/zod-schemas';
 	import type { PrincipalText } from '@junobuild/schema';
 	import type { MissionControlDid } from '$declarations';
-	import FactoryAdvancedOptions from '$lib/components/modules/factory/create/FactoryAdvancedOptions.svelte';
 	import FactoryContinue from '$lib/components/modules/factory/create/FactoryContinue.svelte';
 	import FactoryCredits from '$lib/components/modules/factory/create/FactoryCredits.svelte';
 	import FactoryProgressCreate from '$lib/components/modules/factory/create/FactoryProgressCreate.svelte';
+	import CreateSatelliteMetadata from '$lib/components/satellites/factory/CreateSatelliteMetadata.svelte';
+	import CreateSatelliteOptions from '$lib/components/satellites/factory/CreateSatelliteOptions.svelte';
+	import CreateSatelliteReview from '$lib/components/satellites/factory/CreateSatelliteReview.svelte';
 	import Confetti from '$lib/components/ui/Confetti.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
-	import Value from '$lib/components/ui/Value.svelte';
 	import { testIds } from '$lib/constants/test-ids.constants';
 	import { authSignedOut, authIdentity } from '$lib/derived/auth.derived';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
@@ -21,10 +22,6 @@
 	import type { FactoryCreateProgress } from '$lib/types/progress-factory-create';
 	import type { SatelliteId } from '$lib/types/satellite';
 	import { navigateToSatellite } from '$lib/utils/nav.utils';
-	import { testId } from '$lib/utils/test.utils';
-	import CreateSatelliteMetadata from '$lib/components/satellites/factory/CreateSatelliteMetadata.svelte';
-	import CreateSatelliteOptions from '$lib/components/satellites/factory/CreateSatelliteOptions.svelte';
-	import CreateSatelliteReview from '$lib/components/satellites/factory/CreateSatelliteReview.svelte';
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -138,23 +135,25 @@
 	{:else if step === 'options'}
 		<CreateSatelliteOptions
 			{detail}
+			{onback}
+			{oncontinue}
 			bind:satelliteKind
 			bind:subnetId
 			bind:monitoringStrategy
-			{oncontinue}
-			{onback}
 		/>
 	{:else if step === 'metadata'}
-		<CreateSatelliteMetadata bind:satelliteName {oncontinue} {onback} />
+		<CreateSatelliteMetadata {onback} {oncontinue} bind:satelliteName />
 	{:else if step === 'review'}
 		<CreateSatelliteReview
-			{satelliteName}
-			{satelliteKind}
-			{subnetId}
+			disabled={$authSignedOut || insufficientFunds}
 			{monitoringStrategy}
 			{onback}
 			{onsubmit}
-			disabled={$authSignedOut || insufficientFunds}
+			{satelliteKind}
+			{satelliteName}
+			{selectedWallet}
+			{subnetId}
+			{withFee}
 		/>
 	{:else}
 		<h2>{$i18n.satellites.start}</h2>
@@ -173,7 +172,7 @@
 
 			<button onclick={onclose}>{$i18n.core.cancel}</button>
 			<button onclick={oncontinue}
-				>{nonNullish(withFee) ? $i18n.core.ok : $i18n.core.lets_go}</button
+				>{nonNullish(withFee) ? $i18n.core.continue : $i18n.core.lets_go}</button
 			>
 		</FactoryCredits>
 	{/if}

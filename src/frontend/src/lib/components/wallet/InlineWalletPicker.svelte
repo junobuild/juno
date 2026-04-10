@@ -18,8 +18,6 @@
 
 	let walletIdText = $state<WalletIdText | undefined>($devId?.toText());
 
-	$inspect(walletIdText);
-
 	$effect(() => {
 		walletIdText;
 

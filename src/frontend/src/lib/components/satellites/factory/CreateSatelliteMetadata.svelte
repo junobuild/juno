@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { testId } from '$lib/utils/test.utils';
-	import { testIds } from '$lib/constants/test-ids.constants';
-	import Value from '$lib/components/ui/Value.svelte';
-	import { i18n } from '$lib/stores/app/i18n.store';
 	import { isEmptyString } from '@dfinity/utils';
+	import Value from '$lib/components/ui/Value.svelte';
+	import { testIds } from '$lib/constants/test-ids.constants';
+	import { i18n } from '$lib/stores/app/i18n.store';
+	import { testId } from '$lib/utils/test.utils';
 
 	interface Props {
 		satelliteName: string | undefined;
@@ -46,7 +46,7 @@
 	<div class="toolbar">
 		<button onclick={onback} type="button">{$i18n.core.back}</button>
 
-		<button {...testId(testIds.createSatellite.create)} type="submit" {disabled}>
+		<button {...testId(testIds.createSatellite.create)} {disabled} type="submit">
 			{$i18n.core.continue}
 		</button>
 	</div>

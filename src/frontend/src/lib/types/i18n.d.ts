@@ -359,6 +359,8 @@ interface I18nSatellites {
 	choose_name: string;
 	options: string;
 	fine_tune_config: string;
+	review_cost: string;
+	go_for_launch: string;
 }
 
 interface I18nMission_control {

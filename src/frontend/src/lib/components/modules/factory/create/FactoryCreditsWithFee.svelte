@@ -101,7 +101,7 @@
 		/>
 	</p>
 {:else}
-    {@render walletPicker({ display: false })}
+	{@render walletPicker({ display: false })}
 
 	{@render withCreditsMsg?.()}
 {/if}

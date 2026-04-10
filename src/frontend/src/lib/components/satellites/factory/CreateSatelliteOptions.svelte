@@ -1,13 +1,13 @@
 <script lang="ts">
-	import FactoryAdvancedOptions from '$lib/components/modules/factory/create/FactoryAdvancedOptions.svelte';
-	import { testIds } from '$lib/constants/test-ids.constants';
-	import { i18n } from '$lib/stores/app/i18n.store';
-	import { testId } from '$lib/utils/test.utils';
-	import type { JunoModalDetail } from '$lib/types/modal';
+	import { isNullish } from '@dfinity/utils';
 	import type { PrincipalText } from '@junobuild/schema';
 	import type { MissionControlDid } from '$declarations';
-	import { isNullish } from '@dfinity/utils';
-	import Value from "$lib/components/ui/Value.svelte";
+	import FactoryAdvancedOptions from '$lib/components/modules/factory/create/FactoryAdvancedOptions.svelte';
+	import Value from '$lib/components/ui/Value.svelte';
+	import { testIds } from '$lib/constants/test-ids.constants';
+	import { i18n } from '$lib/stores/app/i18n.store';
+	import type { JunoModalDetail } from '$lib/types/modal';
+	import { testId } from '$lib/utils/test.utils';
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -50,30 +50,30 @@
 			<div class="options">
 				<label>
 					<input
-							name="kind"
-							type="radio"
-							{...testId(testIds.createSatellite.website)}
-							value="website"
-							bind:group={satelliteKind}
+						name="kind"
+						type="radio"
+						{...testId(testIds.createSatellite.website)}
+						value="website"
+						bind:group={satelliteKind}
 					/>
 					<span class="option">
-									<span>{$i18n.satellites.website}</span>
-									<span>({$i18n.satellites.website_description})</span>
-								</span>
+						<span>{$i18n.satellites.website}</span>
+						<span>({$i18n.satellites.website_description})</span>
+					</span>
 				</label>
 
 				<label>
 					<input
-							name="kind"
-							type="radio"
-							{...testId(testIds.createSatellite.application)}
-							value="application"
-							bind:group={satelliteKind}
+						name="kind"
+						type="radio"
+						{...testId(testIds.createSatellite.application)}
+						value="application"
+						bind:group={satelliteKind}
 					/>
 					<span class="option">
-									<span>{$i18n.satellites.application}</span>
-									<span>({$i18n.satellites.application_description})</span>
-								</span>
+						<span>{$i18n.satellites.application}</span>
+						<span>({$i18n.satellites.application_description})</span>
+					</span>
 				</label>
 			</div>
 		</Value>
@@ -84,7 +84,7 @@
 	<div class="toolbar">
 		<button onclick={onback} type="button">{$i18n.core.back}</button>
 
-		<button {...testId(testIds.createSatellite.create)} type="submit" {disabled}>
+		<button {...testId(testIds.createSatellite.create)} {disabled} type="submit">
 			{$i18n.core.review}
 		</button>
 	</div>

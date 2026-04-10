@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
 	import type { SatelliteDid } from '$declarations';
+	import CdnActions from '$lib/components/satellites/cdn/list/CdnActions.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import type { Satellite } from '$lib/types/satellite';
 	import { formatToDate } from '$lib/utils/date.utils';
-	import CdnActions from '$lib/components/satellites/cdn/list/CdnActions.svelte';
 
 	interface Props {
 		asset: SatelliteDid.AssetNoContent;
@@ -20,7 +20,7 @@
 
 <tr>
 	<td class="actions">
-		<CdnActions {asset} {satellite} {reload} />
+		<CdnActions {asset} {reload} {satellite} />
 	</td>
 	<td><Identifier identifier={full_path} shortenLength={15} small={false} /></td>
 	<td class="description">

@@ -1,14 +1,14 @@
 <script lang="ts">
-	import { i18n } from '$lib/stores/app/i18n.store';
-	import ButtonTableAction from '$lib/components/ui/ButtonTableAction.svelte';
 	import type { SatelliteDid } from '$declarations';
-	import type { Satellite } from '$lib/types/satellite';
+	import Confirmation from '$lib/components/app/core/Confirmation.svelte';
+	import ButtonTableAction from '$lib/components/ui/ButtonTableAction.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import Text from '$lib/components/ui/Text.svelte';
-	import Confirmation from '$lib/components/app/core/Confirmation.svelte';
-	import { busy } from '$lib/stores/app/busy.store';
-	import { deleteWasmAsset } from '$lib/services/satellite/functions/cdn.services';
 	import { authIdentity } from '$lib/derived/auth.derived';
+	import { deleteWasmAsset } from '$lib/services/satellite/functions/cdn.services';
+	import { busy } from '$lib/stores/app/busy.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
+	import type { Satellite } from '$lib/types/satellite';
 
 	interface Props {
 		asset: SatelliteDid.AssetNoContent;

@@ -1,8 +1,8 @@
 <script lang="ts">
 	import type { SatelliteDid } from '$declarations';
-	import type { Satellite } from '$lib/types/satellite';
 	import CdnDelete from '$lib/components/satellites/cdn/list/CdnDelete.svelte';
 	import CdnUpgrade from '$lib/components/satellites/cdn/list/CdnUpgrade.svelte';
+	import type { Satellite } from '$lib/types/satellite';
 
 	interface Props {
 		asset: SatelliteDid.AssetNoContent;

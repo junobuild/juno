@@ -142,6 +142,8 @@
 			bind:monitoringStrategy
 			{oncontinue} {onback}
 		/>
+	{:else if step === 'metadata'}
+		<CreateSatelliteMetadata bind:satelliteName {oncontinue} {onback} />
 	{:else if step === 'review'}
 		<form onsubmit={onSubmit}>
 			<CreateSatelliteReview {satelliteName} {satelliteKind} {subnetId} />
@@ -165,7 +167,8 @@
 			bind:withFee
 			bind:insufficientFunds
 		>
-			<CreateSatelliteMetadata bind:satelliteName {oncontinue} />
+			<button onclick={onclose}>{$i18n.core.cancel}</button>
+			<button onclick={oncontinue}>{$i18n.core.lets_go}</button>
 		</FactoryCredits>
 	{/if}
 </Modal>

@@ -11,7 +11,7 @@
 		onback: () => void;
 	}
 
-	let { satelliteName = $bindable(), oncontinue }: Props = $props();
+	let { satelliteName = $bindable(), oncontinue, onback }: Props = $props();
 
 	const onsubmit = ($event: SubmitEvent) => {
 		$event.preventDefault();
@@ -22,12 +22,10 @@
 	let disabled = $derived(isEmptyString(satelliteName));
 </script>
 
+<h2>{$i18n.satellites.satellite_name}</h2>
+
 <form {onsubmit}>
-	<Value>
-		{#snippet label()}
-			{$i18n.satellites.satellite_name}
-		{/snippet}
-		<input
+	<input
 			name="satellite_name"
 			autocomplete="off"
 			data-1p-ignore
@@ -36,12 +34,15 @@
 			required
 			type="text"
 			bind:value={satelliteName}
-		/>
-	</Value>
+	/>
 
-	<button {...testId(testIds.createSatellite.create)} type="submit" {disabled}>
-		{$i18n.core.continue}
-	</button>
+	<div class="toolbar">
+		<button onclick={onback} type="button">{$i18n.core.back}</button>
+
+		<button {...testId(testIds.createSatellite.create)} type="submit" {disabled}>
+			{$i18n.core.review}
+		</button>
+	</div>
 </form>
 
 <style lang="scss">

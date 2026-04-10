@@ -120,7 +120,8 @@
 		"five_years": "Five years",
 		"custom": "Custom",
 		"launch": "Launch",
-		"redirecting": "Redirecting, hold on..."
+		"redirecting": "Redirecting, hold on...",
+		"lets_go": "Let's go!"
 	},
 	"canisters": {
 		"top_up": "Top-up",

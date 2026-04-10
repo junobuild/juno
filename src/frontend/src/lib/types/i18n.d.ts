@@ -124,6 +124,7 @@ interface I18nCore {
 	custom: string;
 	launch: string;
 	redirecting: string;
+	lets_go: string;
 }
 
 interface I18nCanisters {

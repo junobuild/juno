@@ -22,6 +22,9 @@
 	import type { SatelliteId } from '$lib/types/satellite';
 	import { navigateToSatellite } from '$lib/utils/nav.utils';
 	import { testId } from '$lib/utils/test.utils';
+	import CreateSatelliteMetadata from '$lib/components/satellites/factory/CreateSatelliteMetadata.svelte';
+	import CreateSatelliteOptions from '$lib/components/satellites/factory/CreateSatelliteOptions.svelte';
+	import CreateSatelliteReview from "$lib/components/satellites/factory/CreateSatelliteReview.svelte";
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -33,8 +36,30 @@
 	let withFee = $state<Nullish<bigint>>(undefined);
 	let insufficientFunds = $state(true);
 
-	let step: 'init' | 'in_progress' | 'ready' | 'error' = $state('init');
+	let step: 'init' | 'options' | 'review' | 'in_progress' | 'ready' | 'error' = $state('init');
 	let satelliteId = $state<SatelliteId | undefined>(undefined);
+
+	const oncontinue = () => {
+		switch (step) {
+			case 'init':
+				step = 'options';
+				break;
+			case 'options':
+				step = 'review';
+				break;
+		}
+	};
+
+	const onback = () => {
+		switch (step) {
+			case 'options':
+				step = 'init';
+				break;
+			case 'review':
+				step = 'options';
+				break;
+		}
+	};
 
 	// Submit
 
@@ -103,6 +128,27 @@
 			withAttach={selectedWallet?.type === 'dev' && nonNullish($missionControlId)}
 			withMonitoring={nonNullish(monitoringStrategy)}
 		/>
+	{:else if step === 'options'}
+		<CreateSatelliteOptions
+			{detail}
+			{selectedWallet}
+			bind:satelliteKind
+			bind:subnetId
+			bind:monitoringStrategy
+			{oncontinue} {onback}
+		/>
+	{:else if step === 'review'}
+		<form onsubmit={onSubmit}>
+			<CreateSatelliteReview {satelliteName} {satelliteKind} {subnetId} />
+
+			<button
+				{...testId(testIds.createSatellite.create)}
+				disabled={$authSignedOut || insufficientFunds}
+				type="submit"
+			>
+				{$i18n.satellites.create}
+			</button>
+		</form>
 	{:else}
 		<h2>{$i18n.satellites.start}</h2>
 
@@ -114,76 +160,7 @@
 			bind:withFee
 			bind:insufficientFunds
 		>
-			<form onsubmit={onSubmit}>
-				<Value>
-					{#snippet label()}
-						{$i18n.satellites.satellite_name}
-					{/snippet}
-					<input
-						name="satellite_name"
-						autocomplete="off"
-						data-1p-ignore
-						{...testId(testIds.createSatellite.input)}
-						placeholder={$i18n.satellites.enter_name}
-						required
-						type="text"
-						bind:value={satelliteName}
-					/>
-				</Value>
-
-				<div class="building">
-					<Value suffix="?">
-						{#snippet label()}
-							{$i18n.satellites.what_are_you_building}
-						{/snippet}
-
-						<div class="options">
-							<label>
-								<input
-									name="kind"
-									type="radio"
-									{...testId(testIds.createSatellite.website)}
-									value="website"
-									bind:group={satelliteKind}
-								/>
-								<span class="option">
-									<span>{$i18n.satellites.website}</span>
-									<span>({$i18n.satellites.website_description})</span>
-								</span>
-							</label>
-
-							<label>
-								<input
-									name="kind"
-									type="radio"
-									{...testId(testIds.createSatellite.application)}
-									value="application"
-									bind:group={satelliteKind}
-								/>
-								<span class="option">
-									<span>{$i18n.satellites.application}</span>
-									<span>({$i18n.satellites.application_description})</span>
-								</span>
-							</label>
-						</div>
-					</Value>
-				</div>
-
-				<FactoryAdvancedOptions
-					{detail}
-					bind:selectedWallet
-					bind:subnetId
-					bind:monitoringStrategy
-				/>
-
-				<button
-					{...testId(testIds.createSatellite.create)}
-					disabled={$authSignedOut || insufficientFunds}
-					type="submit"
-				>
-					{$i18n.satellites.create}
-				</button>
-			</form>
+			<CreateSatelliteMetadata bind:satelliteName {oncontinue} />
 		</FactoryCredits>
 	{/if}
 </Modal>
@@ -204,25 +181,5 @@
 
 	button {
 		margin-top: var(--padding-2x);
-	}
-
-	.building {
-		margin: var(--padding-2x) 0 0;
-	}
-
-	.options {
-		display: flex;
-		flex-direction: column;
-		padding: var(--padding) 0 var(--padding-6x);
-	}
-
-	.option {
-		span:last-child {
-			font-size: var(--font-size-very-small);
-		}
-	}
-
-	input {
-		vertical-align: middle;
 	}
 </style>

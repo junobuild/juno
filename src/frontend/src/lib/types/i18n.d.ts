@@ -337,8 +337,10 @@ interface I18nSatellites {
 	what_are_you_building: string;
 	website: string;
 	website_description: string;
+	website_hint: string;
 	application: string;
 	application_description: string;
+	application_hint: string;
 	environment: string;
 	tags: string;
 	tags_placeholder: string;

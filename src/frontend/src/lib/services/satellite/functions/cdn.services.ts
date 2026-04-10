@@ -1,5 +1,5 @@
 import type { SatelliteDid } from '$declarations';
-import { deleteAsset, listAssets } from '$lib/api/satellites.api';
+import { deleteAsset, deleteAssets, listAssets } from '$lib/api/satellites.api';
 import { COLLECTION_CDN_RELEASES } from '$lib/constants/storage.constants';
 import type { ListDocsParams, ListDocsResult } from '$lib/services/satellite/_list-docs.services';
 import type { NullishIdentity } from '$lib/types/itentity';
@@ -39,6 +39,26 @@ export const deleteWasmAsset = async ({
 			satelliteId: satellite.satellite_id,
 			collection: COLLECTION_CDN_RELEASES,
 			full_path,
+			identity
+		});
+
+		return { status: 'success', result: undefined };
+	} catch (err: unknown) {
+		return { status: 'error', err };
+	}
+};
+
+export const deleteWasmAssets = async ({
+	satellite,
+	identity
+}: {
+	satellite: Satellite;
+	identity: NullishIdentity;
+}): Promise<Result<undefined>> => {
+	try {
+		await deleteAssets({
+			satelliteId: satellite.satellite_id,
+			collection: COLLECTION_CDN_RELEASES,
 			identity
 		});
 

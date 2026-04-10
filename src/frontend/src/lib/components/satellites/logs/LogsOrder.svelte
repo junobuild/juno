@@ -26,7 +26,7 @@
 
 <PopoverApply ariaLabel={$i18n.sort.title} direction="ltr" onapply={apply} bind:visible>
 	{#snippet icon()}
-		<IconSort size="20px" />
+		<IconSort size="18px" />
 	{/snippet}
 
 	<p class="category sort">{$i18n.functions.sort}</p>

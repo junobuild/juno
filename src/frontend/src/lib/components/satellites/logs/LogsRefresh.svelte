@@ -73,7 +73,7 @@
 	class="icon"
 	aria-label={$i18n.core.more}
 	onclick={() => (visible = true)}
-	type="button"><IconMore size="20px" /></button
+	type="button"><IconMore size="18px" /></button
 >
 
 <Popover anchor={button} direction="ltr" bind:visible>

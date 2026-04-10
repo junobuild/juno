@@ -1,5 +1,4 @@
 <script lang="ts">
-	import type { Principal } from '@icp-sdk/core/principal';
 	import type { SatelliteDid } from '$declarations';
 	import Cdn from '$lib/components/satellites/cdn/list/Cdn.svelte';
 	import ListContext from '$lib/components/satellites/list/ListContext.svelte';

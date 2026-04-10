@@ -1,10 +1,7 @@
 import type { SatelliteDid } from '$declarations';
 import { listAssets } from '$lib/api/satellites.api';
 import { COLLECTION_CDN_RELEASES } from '$lib/constants/storage.constants';
-import type {
-	ListDocsParams,
-	ListDocsResult
-} from '$lib/services/satellite/_list-docs.services';
+import type { ListDocsParams, ListDocsResult } from '$lib/services/satellite/_list-docs.services';
 
 export const listWasmAssets = async ({
 	satelliteId,

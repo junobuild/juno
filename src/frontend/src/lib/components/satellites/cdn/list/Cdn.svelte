@@ -14,7 +14,7 @@
 		reload: () => void;
 	}
 
-	let { satellite, reload }: Props = $props();
+	let { satellite, reload: _ }: Props = $props();
 
 	const { store: paginationStore }: PaginationContext<SatelliteDid.AssetNoContent> =
 		getContext<PaginationContext<SatelliteDid.AssetNoContent>>(PAGINATION_CONTEXT_KEY);

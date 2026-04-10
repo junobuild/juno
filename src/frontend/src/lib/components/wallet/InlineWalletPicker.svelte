@@ -11,11 +11,14 @@
 
 	interface Props {
 		selectedWallet: SelectedWallet | undefined;
+		display?: boolean;
 	}
 
-	let { selectedWallet = $bindable(undefined) }: Props = $props();
+	let { selectedWallet = $bindable(undefined), display = true }: Props = $props();
 
 	let walletIdText = $state<WalletIdText | undefined>($devId?.toText());
+
+	$inspect(walletIdText);
 
 	$effect(() => {
 		walletIdText;
@@ -54,10 +57,12 @@
 	</button>
 {/snippet}
 
-{#if pickerEnabled}
-	{@render walletWithToggle()}
-{:else}
-	{@render devWallet()}
+{#if display}
+	{#if pickerEnabled}
+		{@render walletWithToggle()}
+	{:else}
+		{@render devWallet()}
+	{/if}
 {/if}
 
 <style lang="scss">

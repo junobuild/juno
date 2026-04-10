@@ -22,6 +22,7 @@
 	import type { FactoryCreateProgress } from '$lib/types/progress-factory-create';
 	import type { SatelliteId } from '$lib/types/satellite';
 	import { navigateToSatellite } from '$lib/utils/nav.utils';
+	import { testId } from '$lib/utils/test.utils';
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -171,7 +172,7 @@
 			{/snippet}
 
 			<button onclick={onclose}>{$i18n.core.cancel}</button>
-			<button onclick={oncontinue}
+			<button onclick={oncontinue} {...testId(testIds.createSatellite.continueToMetadata)}
 				>{nonNullish(withFee) ? $i18n.core.continue : $i18n.core.lets_go}</button
 			>
 		</FactoryCredits>

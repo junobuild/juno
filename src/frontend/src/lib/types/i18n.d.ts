@@ -1100,6 +1100,8 @@ interface I18nCdn {
 	empty: string;
 	delete_asset: string;
 	delete_question: string;
+	clear_cdn: string;
+	clear_cdn_question: string;
 }
 
 interface I18nNotifications {

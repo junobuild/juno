@@ -2,8 +2,10 @@
 	import { nonNullish } from '@dfinity/utils';
 	import { getContext } from 'svelte';
 	import type { SatelliteDid } from '$declarations';
+	import Confirmation from '$lib/components/app/core/Confirmation.svelte';
 	import IconRefresh from '$lib/components/icons/IconRefresh.svelte';
 	import CdnAsset from '$lib/components/satellites/cdn/list/CdnAsset.svelte';
+	import CdnClear from '$lib/components/satellites/cdn/list/CdnClear.svelte';
 	import CdnFilter from '$lib/components/satellites/cdn/list/CdnFilter.svelte';
 	import DataActions from '$lib/components/satellites/data/DataActions.svelte';
 	import DataCount from '$lib/components/satellites/data/DataCount.svelte';
@@ -43,10 +45,12 @@
 						<CdnFilter />
 						<DataOrder />
 
-						<DataActions>
+						<DataActions direction="ltr">
 							<button class="menu" onclick={reload} type="button"
 								><IconRefresh size="20px" /> {$i18n.core.reload}</button
 							>
+
+							<CdnClear {reload} {satellite} />
 						</DataActions>
 					</div>
 				</th>

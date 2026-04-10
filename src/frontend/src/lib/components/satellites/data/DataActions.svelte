@@ -7,9 +7,10 @@
 	interface Props {
 		visible?: boolean | undefined;
 		children: Snippet;
+		direction?: 'ltr' | 'rtl';
 	}
 
-	let { visible = $bindable(false), children }: Props = $props();
+	let { visible = $bindable(false), children, direction = 'rtl' }: Props = $props();
 
 	let button: HTMLButtonElement | undefined = $state();
 </script>
@@ -24,7 +25,7 @@
 	type="button"><IconMore size="18px" /></button
 >
 
-<Popover anchor={button} direction="rtl" bind:visible>
+<Popover anchor={button} {direction} bind:visible>
 	<div class="container">
 		{@render children()}
 	</div>

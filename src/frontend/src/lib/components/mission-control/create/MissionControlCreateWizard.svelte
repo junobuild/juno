@@ -94,12 +94,12 @@
 		{detail}
 		{onclose}
 		priceLabel={$i18n.mission_control.create_price}
-		{selectedWallet}
+		bind:selectedWallet
 		bind:withFee
 		bind:insufficientFunds
 	>
 		<form onsubmit={onSubmit}>
-			<FactoryAdvancedOptions {detail} withMonitoring={false} bind:selectedWallet bind:subnetId />
+			<FactoryAdvancedOptions {detail} withMonitoring={false} bind:subnetId />
 
 			<button disabled={$authSignedOut || insufficientFunds} type="submit">
 				{$i18n.core.create}

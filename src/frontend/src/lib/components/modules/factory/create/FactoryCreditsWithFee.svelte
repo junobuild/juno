@@ -70,7 +70,7 @@
 </script>
 
 {#snippet walletPicker({ display }: { display: boolean })}
-	<InlineWalletPicker bind:selectedWallet {display} />
+	<InlineWalletPicker {display} bind:selectedWallet />
 {/snippet}
 
 {#if notEnoughCredits}

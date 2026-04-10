@@ -1065,7 +1065,9 @@
 	},
 	"cdn": {
 		"title": "CDN",
-		"empty": "未找到无服务器函数的WASM"
+		"empty": "未找到无服务器函数的WASM",
+		"delete_asset": "删除资源",
+		"delete_question": "您确定要从 CDN 中删除 <mark>{0}</mark> 吗？"
 	},
 	"notifications": {
 		"title": "通知",

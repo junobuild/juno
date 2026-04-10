@@ -1098,6 +1098,8 @@ interface I18nChanges {
 interface I18nCdn {
 	title: string;
 	empty: string;
+	delete_asset: string;
+	delete_question: string;
 }
 
 interface I18nNotifications {

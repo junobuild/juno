@@ -1063,7 +1063,9 @@
 	},
 	"cdn": {
 		"title": "CDN",
-		"empty": "No WASM found for your serverless functions."
+		"empty": "No WASM found for your serverless functions.",
+		"delete_asset": "Delete asset",
+		"delete_question": "Are you sure you want to delete <mark>{0}</mark> from your CDN?"
 	},
 	"notifications": {
 		"title": "Notifications",

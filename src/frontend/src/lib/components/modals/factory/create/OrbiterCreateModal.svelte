@@ -107,17 +107,12 @@
 			{detail}
 			{onclose}
 			priceLabel={$i18n.analytics.create_orbiter_price}
-			{selectedWallet}
+			bind:selectedWallet
 			bind:withFee
 			bind:insufficientFunds
 		>
 			<form onsubmit={onSubmit}>
-				<FactoryAdvancedOptions
-					{detail}
-					bind:selectedWallet
-					bind:subnetId
-					bind:monitoringStrategy
-				/>
+				<FactoryAdvancedOptions {detail} bind:subnetId bind:monitoringStrategy />
 
 				<button
 					{...testId(testIds.createAnalytics.create)}

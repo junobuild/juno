@@ -110,7 +110,7 @@
 			{detail}
 			{onclose}
 			priceLabel={$i18n.satellites.create_satellite_price}
-			{selectedWallet}
+			bind:selectedWallet
 			bind:withFee
 			bind:insufficientFunds
 		>
@@ -169,12 +169,7 @@
 					</Value>
 				</div>
 
-				<FactoryAdvancedOptions
-					{detail}
-					bind:selectedWallet
-					bind:subnetId
-					bind:monitoringStrategy
-				/>
+				<FactoryAdvancedOptions {detail} bind:subnetId bind:monitoringStrategy />
 
 				<button
 					{...testId(testIds.createSatellite.create)}

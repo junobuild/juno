@@ -14,7 +14,7 @@
 
 ## ⭐️ Description
 
-[Juno] is an open-source serverless platform for hosting static websites, building web applications, and running serverless functions with the privacy and control of self-hosting.
+[Juno] is a full-stack platform for hosting static websites, building web applications, and running serverless functions with the privacy and control of self-hosting.
 
 It provides a familiar cloud experience with strong security and zero operational complexity. Each project runs in its own WASM container, fully owned and controlled by you.
 
@@ -24,7 +24,7 @@ Think of it as **Vercel + Firebase + Self-Hosting** - without the compromises.
 - 📦 Datastore [[Docs](https://juno.build/docs/build/datastore)]
 - 📂 File Storage [[Docs](https://juno.build/docs/build/storage)]
 - 🌐 Hosting [[Docs](https://juno.build/docs/build/hosting)]
-- ⚙️ Serverless Functions (Rust & TypeScript) [[Docs](https://juno.build/docs/build/functions)]
+- ⚙️ Serverless Functions [[Docs](https://juno.build/docs/build/functions)]
 - 📊 Analytics [[Docs](https://juno.build/docs/build/analytics)]
 - 👀 Monitoring [[Docs](https://juno.build/docs/management/monitoring)]
 - 💾 Snapshots [[Docs](https://juno.build/docs/management/snapshots)]
@@ -38,6 +38,7 @@ Think of it as **Vercel + Firebase + Self-Hosting** - without the compromises.
 ## ⚡️ Why Juno?
 
 - **Zero DevOps** - No servers to manage, no infrastructure to maintain
+- **Full-stack** - Every service you need runs in your container, no third party needed
 - **True Ownership** - Your code, data, and infrastructure are fully yours
 - **Local-First Development** - Full production-like emulator for rapid iteration
 
@@ -103,6 +104,16 @@ juno functions publish
 Or integrate with GitHub Actions → [Setup CI/CD](https://juno.build/docs/guides/github-actions)
 
 ![A screenshot of the GitHub integration in the Console UI](https://private-user-images.githubusercontent.com/16886711/552243302-30460b15-11dd-47bc-8a44-e255ba12fc00.png?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NzM1ODQ5MTksIm5iZiI6MTc3MzU4NDYxOSwicGF0aCI6Ii8xNjg4NjcxMS81NTIyNDMzMDItMzA0NjBiMTUtMTFkZC00N2JjLThhNDQtZTI1NWJhMTJmYzAwLnBuZz9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNjAzMTUlMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjYwMzE1VDE0MjMzOVomWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPWI4NDM0NWU5N2UwOGY2MWRmMWRiY2MyY2U5NDdjOWQ5NDllOTk4MDQ2M2FjYTYxYTFiY2MwOGMzNDVhMDM1MWImWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0In0.5t7ZDmHDNbTIbq2fbyZ0UKfk2zXHdCMjMH3R7sh7x3g)
+
+## 🧪 Local Development
+
+Spin up a full production-like environment locally using the Juno [emulator](github.com/junobuild/juno-docker):
+
+```bash
+juno emulator start
+```
+
+Run with Docker or Podman → [Emulator Docs](https://juno.build/docs/guides/local-development)
 
 ## 💁‍♂️️ Links & Resources
 

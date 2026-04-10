@@ -12,7 +12,7 @@
 	"bugs": {
 		"url": "https://github.com/junobuild/juno/issues"
 	},
-	"description": "Build serverless apps with self-hosting control",
+	"description": "Open-Source SDK for building apps",
 	"scripts": {
 		"build:subnets": "node scripts/cmc.subnets.mjs && npm run format",
 		"build:passkey:aaguids": "node scripts/passkey.aaguids.mjs && npm run format",

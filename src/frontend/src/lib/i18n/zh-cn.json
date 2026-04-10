@@ -121,7 +121,8 @@
 		"five_years": "五年",
 		"custom": "自定义",
 		"launch": "启动",
-		"redirecting": "正在跳转..."
+		"redirecting": "正在跳转...",
+		"lets_go": "出发吧!"
 	},
 	"canisters": {
 		"top_up": "充值",
@@ -319,7 +320,6 @@
 		"title": "所有卫星",
 		"launch": "部署新卫星",
 		"launch_first": "启动您的第一个 Satellite",
-		"create": "创建卫星",
 		"search": "搜索",
 		"satellite": "卫星",
 		"ready": "卫星部署完成！",
@@ -330,8 +330,10 @@
 		"what_are_you_building": "您正在构建什么",
 		"website": "网站",
 		"website_description": "落地页、博客、作品集",
+		"website_hint": "您的 Satellite 将使用针对网站优化的设置进行初始化。",
 		"application": "应用程序",
 		"application_description": "数据存储、用户管理、无服务器函数",
+		"application_hint": "您的 Satellite 将使用针对应用程序优化的设置进行初始化。",
 		"environment": "运行环境",
 		"tags": "标签",
 		"tags_placeholder": "逗号分隔或每行一个，留空则不添加标签。",
@@ -344,7 +346,14 @@
 		"stock_version": "标准版",
 		"extended_version": "增强版",
 		"build": "构建",
-		"attaching": "正在与任务控制中心共享卫星..."
+		"attaching": "正在与任务控制中心共享卫星...",
+		"hooray_free_satellite": "🎉 太棒了 - 创建新的 Satellite 完全免费！",
+		"get_started": "开始",
+		"choose_name": "为您的 Satellite 选择一个在控制台中显示的名称。",
+		"options": "选项",
+		"fine_tune_config": "在启动前微调您的配置。",
+		"review_cost": "{0} 将从您的 {1} 钱包中扣除。",
+		"go_for_launch": "发射准备就绪 — 确认您的配置。"
 	},
 	"mission_control": {
 		"title": "任务控制中心",

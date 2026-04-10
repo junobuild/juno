@@ -124,6 +124,7 @@ interface I18nCore {
 	custom: string;
 	launch: string;
 	redirecting: string;
+	lets_go: string;
 }
 
 interface I18nCanisters {
@@ -326,7 +327,6 @@ interface I18nSatellites {
 	title: string;
 	launch: string;
 	launch_first: string;
-	create: string;
 	search: string;
 	satellite: string;
 	ready: string;
@@ -337,8 +337,10 @@ interface I18nSatellites {
 	what_are_you_building: string;
 	website: string;
 	website_description: string;
+	website_hint: string;
 	application: string;
 	application_description: string;
+	application_hint: string;
 	environment: string;
 	tags: string;
 	tags_placeholder: string;
@@ -352,6 +354,13 @@ interface I18nSatellites {
 	extended_version: string;
 	build: string;
 	attaching: string;
+	hooray_free_satellite: string;
+	get_started: string;
+	choose_name: string;
+	options: string;
+	fine_tune_config: string;
+	review_cost: string;
+	go_for_launch: string;
 }
 
 interface I18nMission_control {

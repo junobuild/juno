@@ -120,7 +120,8 @@
 		"five_years": "Five years",
 		"custom": "Custom",
 		"launch": "Launch",
-		"redirecting": "Redirecting, hold on..."
+		"redirecting": "Redirecting, hold on...",
+		"lets_go": "Let's go!"
 	},
 	"canisters": {
 		"top_up": "Top-up",
@@ -318,7 +319,6 @@
 		"title": "Satellites",
 		"launch": "Launch a new Satellite",
 		"launch_first": "Launch your first Satellite",
-		"create": "Create Satellite",
 		"search": "Search",
 		"satellite": "Satellite",
 		"ready": "Your Satellite is ready!",
@@ -329,8 +329,10 @@
 		"what_are_you_building": "What are you building",
 		"website": "Website",
 		"website_description": "Landing pages, blogs, portfolios",
+		"website_hint": "Your satellite will be initialized with settings optimized for a website.",
 		"application": "Application",
 		"application_description": "Data storage, user management, serverless functions",
+		"application_hint": "Your satellite will be initialized with settings optimized for an application.",
 		"environment": "Environment",
 		"tags": "Tags",
 		"tags_placeholder": "Comma-separated or one per line. Leave empty for no tags.",
@@ -343,7 +345,14 @@
 		"stock_version": "Stock version",
 		"extended_version": "Extended version",
 		"build": "Build",
-		"attaching": "Sharing Satellite with Mission Control..."
+		"attaching": "Sharing Satellite with Mission Control...",
+		"hooray_free_satellite": "🎉 Hooray - creating a new Satellite is free!",
+		"get_started": "Get started",
+		"choose_name": "Choose a name to identify your Satellite in the console.",
+		"options": "Options",
+		"fine_tune_config": "Fine-tune your config before launch.",
+		"review_cost": "{0} will be deducted from your {1} wallet.",
+		"go_for_launch": "Go for launch - review your setup."
 	},
 	"mission_control": {
 		"title": "Mission Control",

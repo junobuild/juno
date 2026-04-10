@@ -3,13 +3,14 @@
 	import type { Nullish } from '@dfinity/zod-schemas';
 	import type { PrincipalText } from '@junobuild/schema';
 	import type { MissionControlDid } from '$declarations';
-	import FactoryAdvancedOptions from '$lib/components/modules/factory/create/FactoryAdvancedOptions.svelte';
 	import FactoryContinue from '$lib/components/modules/factory/create/FactoryContinue.svelte';
 	import FactoryCredits from '$lib/components/modules/factory/create/FactoryCredits.svelte';
 	import FactoryProgressCreate from '$lib/components/modules/factory/create/FactoryProgressCreate.svelte';
+	import CreateSatelliteMetadata from '$lib/components/satellites/factory/CreateSatelliteMetadata.svelte';
+	import CreateSatelliteOptions from '$lib/components/satellites/factory/CreateSatelliteOptions.svelte';
+	import CreateSatelliteReview from '$lib/components/satellites/factory/CreateSatelliteReview.svelte';
 	import Confetti from '$lib/components/ui/Confetti.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
-	import Value from '$lib/components/ui/Value.svelte';
 	import { testIds } from '$lib/constants/test-ids.constants';
 	import { authSignedOut, authIdentity } from '$lib/derived/auth.derived';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
@@ -21,7 +22,6 @@
 	import type { FactoryCreateProgress } from '$lib/types/progress-factory-create';
 	import type { SatelliteId } from '$lib/types/satellite';
 	import { navigateToSatellite } from '$lib/utils/nav.utils';
-	import { testId } from '$lib/utils/test.utils';
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -33,8 +33,37 @@
 	let withFee = $state<Nullish<bigint>>(undefined);
 	let insufficientFunds = $state(true);
 
-	let step: 'init' | 'in_progress' | 'ready' | 'error' = $state('init');
+	let step: 'init' | 'metadata' | 'options' | 'review' | 'in_progress' | 'ready' | 'error' =
+		$state('init');
 	let satelliteId = $state<SatelliteId | undefined>(undefined);
+
+	const oncontinue = () => {
+		switch (step) {
+			case 'init':
+				step = 'metadata';
+				break;
+			case 'metadata':
+				step = 'options';
+				break;
+			case 'options':
+				step = 'review';
+				break;
+		}
+	};
+
+	const onback = () => {
+		switch (step) {
+			case 'metadata':
+				step = 'init';
+				break;
+			case 'options':
+				step = 'metadata';
+				break;
+			case 'review':
+				step = 'options';
+				break;
+		}
+	};
 
 	// Submit
 
@@ -42,7 +71,7 @@
 	const onProgress = (applyProgress: FactoryCreateProgress | undefined) =>
 		(progress = applyProgress);
 
-	const onSubmit = async ($event: SubmitEvent) => {
+	const onsubmit = async ($event: SubmitEvent) => {
 		$event.preventDefault();
 
 		onProgress(undefined);
@@ -103,6 +132,29 @@
 			withAttach={selectedWallet?.type === 'dev' && nonNullish($missionControlId)}
 			withMonitoring={nonNullish(monitoringStrategy)}
 		/>
+	{:else if step === 'options'}
+		<CreateSatelliteOptions
+			{detail}
+			{onback}
+			{oncontinue}
+			bind:satelliteKind
+			bind:subnetId
+			bind:monitoringStrategy
+		/>
+	{:else if step === 'metadata'}
+		<CreateSatelliteMetadata {onback} {oncontinue} bind:satelliteName />
+	{:else if step === 'review'}
+		<CreateSatelliteReview
+			disabled={$authSignedOut || insufficientFunds}
+			{monitoringStrategy}
+			{onback}
+			{onsubmit}
+			{satelliteKind}
+			{satelliteName}
+			{selectedWallet}
+			{subnetId}
+			{withFee}
+		/>
 	{:else}
 		<h2>{$i18n.satellites.start}</h2>
 
@@ -114,71 +166,14 @@
 			bind:withFee
 			bind:insufficientFunds
 		>
-			<form onsubmit={onSubmit}>
-				<Value>
-					{#snippet label()}
-						{$i18n.satellites.satellite_name}
-					{/snippet}
-					<input
-						name="satellite_name"
-						autocomplete="off"
-						data-1p-ignore
-						{...testId(testIds.createSatellite.input)}
-						placeholder={$i18n.satellites.enter_name}
-						required
-						type="text"
-						bind:value={satelliteName}
-					/>
-				</Value>
+			{#snippet withCreditsMsg()}
+				<p>{$i18n.satellites.hooray_free_satellite}</p>
+			{/snippet}
 
-				<div class="building">
-					<Value suffix="?">
-						{#snippet label()}
-							{$i18n.satellites.what_are_you_building}
-						{/snippet}
-
-						<div class="options">
-							<label>
-								<input
-									name="kind"
-									type="radio"
-									{...testId(testIds.createSatellite.website)}
-									value="website"
-									bind:group={satelliteKind}
-								/>
-								<span class="option">
-									<span>{$i18n.satellites.website}</span>
-									<span>({$i18n.satellites.website_description})</span>
-								</span>
-							</label>
-
-							<label>
-								<input
-									name="kind"
-									type="radio"
-									{...testId(testIds.createSatellite.application)}
-									value="application"
-									bind:group={satelliteKind}
-								/>
-								<span class="option">
-									<span>{$i18n.satellites.application}</span>
-									<span>({$i18n.satellites.application_description})</span>
-								</span>
-							</label>
-						</div>
-					</Value>
-				</div>
-
-				<FactoryAdvancedOptions {detail} bind:subnetId bind:monitoringStrategy />
-
-				<button
-					{...testId(testIds.createSatellite.create)}
-					disabled={$authSignedOut || insufficientFunds}
-					type="submit"
-				>
-					{$i18n.satellites.create}
-				</button>
-			</form>
+			<button onclick={onclose}>{$i18n.core.cancel}</button>
+			<button onclick={oncontinue}
+				>{nonNullish(withFee) ? $i18n.core.continue : $i18n.core.lets_go}</button
+			>
 		</FactoryCredits>
 	{/if}
 </Modal>
@@ -199,25 +194,5 @@
 
 	button {
 		margin-top: var(--padding-2x);
-	}
-
-	.building {
-		margin: var(--padding-2x) 0 0;
-	}
-
-	.options {
-		display: flex;
-		flex-direction: column;
-		padding: var(--padding) 0 var(--padding-6x);
-	}
-
-	.option {
-		span:last-child {
-			font-size: var(--font-size-very-small);
-		}
-	}
-
-	input {
-		vertical-align: middle;
 	}
 </style>

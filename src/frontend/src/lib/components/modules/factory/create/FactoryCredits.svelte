@@ -14,6 +14,7 @@
 		withFee: Nullish<bigint>;
 		insufficientFunds?: boolean;
 		children: Snippet;
+		withCreditsMsg?: Snippet;
 		onclose: () => void;
 	}
 
@@ -24,6 +25,7 @@
 		insufficientFunds = $bindable(true),
 		withFee = $bindable(undefined),
 		children,
+		withCreditsMsg,
 		onclose
 	}: Props = $props();
 
@@ -43,6 +45,7 @@
 		{fee}
 		{onclose}
 		{priceLabel}
+		{withCreditsMsg}
 		bind:selectedWallet
 		bind:insufficientFunds
 		bind:withFee

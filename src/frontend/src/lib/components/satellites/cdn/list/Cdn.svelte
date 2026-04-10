@@ -2,8 +2,12 @@
 	import { nonNullish } from '@dfinity/utils';
 	import { getContext } from 'svelte';
 	import type { SatelliteDid } from '$declarations';
+	import IconRefresh from '$lib/components/icons/IconRefresh.svelte';
 	import CdnAsset from '$lib/components/satellites/cdn/list/CdnAsset.svelte';
+	import CdnFilter from '$lib/components/satellites/cdn/list/CdnFilter.svelte';
+	import DataActions from '$lib/components/satellites/data/DataActions.svelte';
 	import DataCount from '$lib/components/satellites/data/DataCount.svelte';
+	import DataOrder from '$lib/components/satellites/data/DataOrder.svelte';
 	import DataPaginator from '$lib/components/satellites/data/DataPaginator.svelte';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
@@ -14,7 +18,7 @@
 		reload: () => void;
 	}
 
-	let { satellite, reload: _ }: Props = $props();
+	let { satellite, reload }: Props = $props();
 
 	const { store: paginationStore }: PaginationContext<SatelliteDid.AssetNoContent> =
 		getContext<PaginationContext<SatelliteDid.AssetNoContent>>(PAGINATION_CONTEXT_KEY);
@@ -33,6 +37,20 @@
 <div class="table-container">
 	<table>
 		<thead>
+			<tr>
+				<th {colspan}>
+					<div class="actions">
+						<CdnFilter />
+						<DataOrder />
+
+						<DataActions>
+							<button class="menu" onclick={reload} type="button"
+								><IconRefresh size="20px" /> {$i18n.core.reload}</button
+							>
+						</DataActions>
+					</div>
+				</th>
+			</tr>
 			<tr>
 				<th class="tools"></th>
 				<th class="full-path"> {$i18n.asset.full_path} </th>

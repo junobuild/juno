@@ -3,7 +3,7 @@
 	import { writable } from 'svelte/store';
 	import Loaders from '$lib/components/app/loaders/Loaders.svelte';
 	import IdentityGuard from '$lib/components/auth/guards/IdentityGuard.svelte';
-	import Cdn from '$lib/components/satellites/cdn/list/Cdn.svelte';
+	import CdnContext from '$lib/components/satellites/cdn/list/CdnContext.svelte';
 	import SatelliteGuard from '$lib/components/satellites/guards/SatelliteGuard.svelte';
 	import Logs from '$lib/components/satellites/logs/Logs.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
@@ -44,7 +44,7 @@
 					{#if $store.tabId === $store.tabs[0].id}
 						<Logs satelliteId={satellite.satellite_id} />
 					{:else if $store.tabId === $store.tabs[1].id}
-						<Cdn {satellite} />
+						<CdnContext {satellite} />
 					{/if}
 				</Tabs>
 			{/snippet}

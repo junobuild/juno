@@ -1,97 +1,23 @@
 <script lang="ts">
-	import { isNullish, nonNullish } from '@dfinity/utils';
-	import { getContext, setContext, untrack } from 'svelte';
+	import { nonNullish } from '@dfinity/utils';
+	import { getContext } from 'svelte';
 	import type { SatelliteDid } from '$declarations';
 	import CdnAsset from '$lib/components/satellites/cdn/list/CdnAsset.svelte';
 	import DataCount from '$lib/components/satellites/data/DataCount.svelte';
 	import DataPaginator from '$lib/components/satellites/data/DataPaginator.svelte';
-	import { authIdentity } from '$lib/derived/auth.derived';
-	import { listWasmAssets } from '$lib/services/satellite/proposals/proposals.cdn.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import { initListParamsContext } from '$lib/stores/app/list-params.context.store';
-	import { initPaginationContext } from '$lib/stores/app/pagination.context.store';
-	import { toasts } from '$lib/stores/app/toasts.store';
-	import { versionStore } from '$lib/stores/version.store';
-	import {
-		LIST_PARAMS_CONTEXT_KEY,
-		ListParamsKey,
-		type ListParamsContext
-	} from '$lib/types/list-params.context';
 	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
 	import type { Satellite } from '$lib/types/satellite';
 
 	interface Props {
 		satellite: Satellite;
+		reload: () => void;
 	}
 
-	let { satellite }: Props = $props();
+	let { satellite, reload }: Props = $props();
 
-	const list = async () => {
-		if (isNullish(satellite)) {
-			setItems({ items: undefined, matches_length: undefined, items_length: undefined });
-			return;
-		}
-
-		const version = $versionStore?.satellites[satellite.satellite_id.toText()]?.current;
-
-		if (isNullish(version)) {
-			setItems({ items: undefined, matches_length: undefined, items_length: undefined });
-			return;
-		}
-
-		if (isNullish($authIdentity)) {
-			setItems({ items: undefined, matches_length: undefined, items_length: undefined });
-
-			toasts.error({
-				text: $i18n.authentication.not_signed_in
-			});
-			return;
-		}
-
-		try {
-			const { items, matches_length, items_length } = await listWasmAssets({
-				satelliteId: satellite.satellite_id,
-				startAfter: $startAfter,
-				identity: $authIdentity
-			});
-
-			setItems({ items, matches_length, items_length });
-		} catch (err: unknown) {
-			toasts.error({
-				text: $i18n.errors.load_users,
-				detail: err
-			});
-		}
-	};
-
-	setContext<PaginationContext<SatelliteDid.AssetNoContent>>(PAGINATION_CONTEXT_KEY, {
-		...initPaginationContext(),
-		list
-	});
-
-	const {
-		store: paginationStore,
-		setItems,
-		startAfter
-	}: PaginationContext<SatelliteDid.AssetNoContent> = getContext<
-		PaginationContext<SatelliteDid.AssetNoContent>
-	>(PAGINATION_CONTEXT_KEY);
-
-	setContext<ListParamsContext>(
-		LIST_PARAMS_CONTEXT_KEY,
-		initListParamsContext({ key: ListParamsKey.CDN })
-	);
-
-	const { listParams } = getContext<ListParamsContext>(LIST_PARAMS_CONTEXT_KEY);
-
-	$effect(() => {
-		$versionStore;
-		$listParams;
-
-		untrack(() => {
-			list();
-		});
-	});
+	const { store: paginationStore }: PaginationContext<SatelliteDid.AssetNoContent> =
+		getContext<PaginationContext<SatelliteDid.AssetNoContent>>(PAGINATION_CONTEXT_KEY);
 
 	let empty = $derived($paginationStore.items?.length === 0);
 

@@ -624,6 +624,7 @@
 		"load_credits": "无法加载当前积分状态。",
 		"load_documents": "文档加载时发生意外错误。",
 		"load_users": "用户加载时发生意外错误。",
+		"load_cdn": "加载 CDN 资源时发生意外错误",
 		"load_workflows": "加载工作流时发生意外错误。",
 		"load_settings": "设置加载时发生意外错误。",
 		"load_user_data": "加载您的数据（配置、元数据等）时发生意外错误。",

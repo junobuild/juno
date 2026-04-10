@@ -63,7 +63,7 @@
 		<tbody>
 			{#if nonNullish($paginationStore.items)}
 				{#each $paginationStore.items as [key, asset] (key)}
-					<CdnAsset {asset} {satellite} />
+					<CdnAsset {asset} {satellite} {reload} />
 				{/each}
 
 				{#if !empty && ($paginationStore.pages ?? 0) > 1}

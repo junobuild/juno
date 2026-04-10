@@ -1,39 +1,26 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
 	import type { SatelliteDid } from '$declarations';
-	import IconArrowUpward from '$lib/components/icons/IconArrowUpward.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
-	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { Satellite } from '$lib/types/satellite';
 	import { formatToDate } from '$lib/utils/date.utils';
-	import { emit } from '$lib/utils/events.utils';
+	import CdnActions from '$lib/components/satellites/cdn/list/CdnActions.svelte';
 
 	interface Props {
 		asset: SatelliteDid.AssetNoContent;
 		satellite: Satellite;
+		reload: () => void;
 	}
 
-	let { asset, satellite }: Props = $props();
+	let { asset, satellite, reload }: Props = $props();
 
 	let { key, created_at, updated_at } = $derived(asset);
 	let { full_path, description } = $derived(key);
-
-	const openUpgrade = () => {
-		emit({
-			message: 'junoModal',
-			detail: {
-				type: 'upgrade_satellite_with_cdn',
-				detail: { asset, satellite }
-			}
-		});
-	};
 </script>
 
 <tr>
 	<td class="actions">
-		<button class="square" aria-label={$i18n.canisters.upgrade} onclick={openUpgrade}
-			><IconArrowUpward size="20px" /></button
-		>
+		<CdnActions {asset} {satellite} {reload} />
 	</td>
 	<td><Identifier identifier={full_path} shortenLength={15} small={false} /></td>
 	<td class="description">

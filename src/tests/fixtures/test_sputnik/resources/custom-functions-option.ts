@@ -48,3 +48,14 @@ export const testQuery = defineQuery({
 		preferences: undefined
 	})
 });
+
+export const testQuery2 = defineQuery({
+	result: j.strictObject({
+		// Issue: optional enum fields incorrectly emitted #[json_data(nested)] because
+		// needsJsonData was not forwarded when wrapping a composite type in opt.
+		role: j.enum(['admin', 'user'] as const).optional()
+	}),
+	handler: () => ({
+		role: undefined
+	})
+});

@@ -65,7 +65,11 @@ fn derive_struct(
         .map(|f| {
             let fname = &f.ident;
             if has_nested_attr(f) {
-                quote! { #fname: input.#fname.into(), }
+                if unwrap_option(&f.ty).is_some() {
+                    quote! { #fname: input.#fname.map(|v| v.into()), }
+                } else {
+                    quote! { #fname: input.#fname.into(), }
+                }
             } else {
                 quote! { #fname: input.#fname, }
             }
@@ -77,7 +81,11 @@ fn derive_struct(
         .map(|f| {
             let fname = &f.ident;
             if has_nested_attr(f) {
-                quote! { #fname: json_data.#fname.into(), }
+                if unwrap_option(&f.ty).is_some() {
+                    quote! { #fname: json_data.#fname.map(|v| v.into()), }
+                } else {
+                    quote! { #fname: json_data.#fname.into(), }
+                }
             } else {
                 quote! { #fname: json_data.#fname, }
             }

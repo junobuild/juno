@@ -31,3 +31,20 @@ export const demoAntonio = defineQuery({
 		}
 	})
 });
+
+// Assertion which would make the npm run build:test-sputnik fail
+
+const PreferencesSchema = j.strictObject({
+	theme: j.string()
+});
+
+export const testQuery = defineQuery({
+	result: j.strictObject({
+		// Issue: Option<nested struct> fields with #[json_data(nested)] generated `.into()`
+		// instead of `.map(|v| v.into())`, causing a missing From trait bound at compile time.
+		preferences: PreferencesSchema.optional()
+	}),
+	handler: () => ({
+		preferences: undefined
+	})
+});

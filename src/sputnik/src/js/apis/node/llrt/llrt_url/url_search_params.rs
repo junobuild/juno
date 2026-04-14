@@ -414,4 +414,3 @@ fn get_coerced_string_value<'js>(ctx: &Ctx<'js>, value: Opt<Value<'js>>) -> Opti
     };
     None
 }
-

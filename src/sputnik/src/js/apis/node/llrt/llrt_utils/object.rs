@@ -6,7 +6,7 @@ use std::collections::BTreeMap;
 
 use rquickjs::{
     atom::PredefinedAtom, function::IntoJsFunc, prelude::Func, Array, Coerced, Ctx, Error,
-    Exception, FromJs, IntoAtom, IntoJs, Object, Result, Symbol, Undefined, Value,
+    Exception, FromJs, IntoAtom, IntoJs, Object, Result, Undefined, Value,
 };
 
 use super::primordials::{BasePrimordials, Primordial};
@@ -79,18 +79,6 @@ impl<'js> ObjectExt<'js> for Value<'js> {
 
 pub fn not_a_object_error(ctx: &Ctx<'_>, object_name: &str) -> Error {
     Exception::throw_type(ctx, &[object_name, " is not an object"].concat())
-}
-
-pub trait CreateSymbol<'js> {
-    fn for_description(ctx: &Ctx<'js>, description: &str) -> Result<Symbol<'js>>;
-}
-
-impl<'js> CreateSymbol<'js> for Symbol<'js> {
-    fn for_description(ctx: &Ctx<'js>, description: &str) -> Result<Symbol<'js>> {
-        BasePrimordials::get(ctx)?
-            .function_symbol_for
-            .call((description,))
-    }
 }
 
 pub struct Proxy<'js> {

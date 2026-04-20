@@ -4,10 +4,10 @@ use std::any::type_name;
 
 use rquickjs::{
     atom::PredefinedAtom, function::Constructor, runtime::UserDataGuard, Ctx, Function, JsLifetime,
-    Object, Result, Symbol,
+    Object, Result,
 };
 
-use super::{class::CUSTOM_INSPECT_SYMBOL_DESCRIPTION, result::ResultExt};
+use super::result::ResultExt;
 
 #[derive(JsLifetime)]
 pub struct BasePrimordials<'js> {
@@ -41,10 +41,6 @@ pub struct BasePrimordials<'js> {
     pub function_get_own_property_descriptor: Function<'js>,
     pub function_parse_int: Function<'js>,
     pub function_parse_float: Function<'js>,
-    pub function_symbol_for: Function<'js>,
-
-    // Symbols
-    pub symbol_custom_inspect: Symbol<'js>,
 }
 
 pub trait Primordial<'js>
@@ -122,12 +118,6 @@ impl<'js> Primordial<'js> for BasePrimordials<'js> {
 
         let constructor_string: Constructor = globals.get(PredefinedAtom::String)?;
 
-        let constructor_symbol: Constructor = globals.get(PredefinedAtom::Symbol)?;
-        let function_symbol_for: Function = constructor_symbol.get(PredefinedAtom::For)?;
-
-        let symbol_custom_inspect: Symbol<'js> =
-            function_symbol_for.call((CUSTOM_INSPECT_SYMBOL_DESCRIPTION,))?;
-
         Ok(Self {
             constructor_map,
             constructor_set,
@@ -154,8 +144,6 @@ impl<'js> Primordial<'js> for BasePrimordials<'js> {
             function_get_own_property_descriptor,
             function_parse_float,
             function_parse_int,
-            function_symbol_for,
-            symbol_custom_inspect,
         })
     }
 }

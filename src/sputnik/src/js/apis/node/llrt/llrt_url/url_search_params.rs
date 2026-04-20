@@ -1,5 +1,4 @@
 #![allow(clippy::inherent_to_string)]
-
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 use std::{cell::RefCell, collections::HashSet, rc::Rc};

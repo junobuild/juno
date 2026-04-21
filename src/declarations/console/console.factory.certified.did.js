@@ -510,6 +510,7 @@ export const idlFactory = ({ IDL }) => {
 		order_id: IDL.Opt(IDL.Nat)
 	});
 	const UploadChunkResult = IDL.Record({ chunk_id: IDL.Nat });
+	const WithdrawArgs = IDL.Record({ to: IDL.Principal });
 
 	return IDL.Service({
 		add_credits: IDL.Func([IDL.Principal, Tokens], [], []),
@@ -574,7 +575,9 @@ export const idlFactory = ({ IDL }) => {
 		submit_proposal: IDL.Func([IDL.Nat], [IDL.Nat, Proposal], []),
 		unset_many_segments: IDL.Func([IDL.Vec(UnsetSegmentsArgs)], [], []),
 		unset_segment: IDL.Func([UnsetSegmentsArgs], [], []),
-		upload_proposal_asset_chunk: IDL.Func([UploadChunk], [UploadChunkResult], [])
+		upload_proposal_asset_chunk: IDL.Func([UploadChunk], [UploadChunkResult], []),
+		withdraw_icp: IDL.Func([WithdrawArgs], [IDL.Nat64], []),
+		withdraw_icrc: IDL.Func([WithdrawArgs], [IDL.Nat], [])
 	});
 };
 

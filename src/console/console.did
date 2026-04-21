@@ -404,6 +404,7 @@ type UploadChunk = record {
   order_id : opt nat;
 };
 type UploadChunkResult = record { chunk_id : nat };
+type WithdrawArgs = record { to : principal };
 service : () -> {
   add_credits : (principal, Tokens) -> ();
   add_invitation_code : (text) -> ();
@@ -466,4 +467,6 @@ service : () -> {
   unset_many_segments : (vec UnsetSegmentsArgs) -> ();
   unset_segment : (UnsetSegmentsArgs) -> ();
   upload_proposal_asset_chunk : (UploadChunk) -> (UploadChunkResult);
+  withdraw_icp : (WithdrawArgs) -> (nat64);
+  withdraw_icrc : (WithdrawArgs) -> (nat);
 }

@@ -479,6 +479,9 @@ export interface UploadChunk {
 export interface UploadChunkResult {
 	chunk_id: bigint;
 }
+export interface WithdrawArgs {
+	to: Principal;
+}
 export interface _SERVICE {
 	add_credits: ActorMethod<[Principal, Tokens], undefined>;
 	add_invitation_code: ActorMethod<[string], undefined>;
@@ -541,6 +544,8 @@ export interface _SERVICE {
 	unset_many_segments: ActorMethod<[Array<UnsetSegmentsArgs>], undefined>;
 	unset_segment: ActorMethod<[UnsetSegmentsArgs], undefined>;
 	upload_proposal_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;
+	withdraw_icp: ActorMethod<[WithdrawArgs], bigint>;
+	withdraw_icrc: ActorMethod<[WithdrawArgs], bigint>;
 }
 export declare const idlFactory: IDL.InterfaceFactory;
 export declare const init: (args: { IDL: typeof IDL }) => IDL.Type[];

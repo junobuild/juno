@@ -10,7 +10,7 @@ use crate::types::interface::{
 use junobuild_shared::date::calendar_date;
 use junobuild_shared::types::utils::CalendarDate;
 use regex::Regex;
-use std::cmp::Ordering;
+use std::cmp::{Ordering, Reverse};
 use std::collections::{HashMap, HashSet};
 use url::Url;
 
@@ -138,7 +138,7 @@ pub fn analytics_page_views_top_10(
 
     fn top_10(data: HashMap<String, u32>) -> Vec<(String, u32)> {
         let mut entries: Vec<(String, u32)> = data.into_iter().collect();
-        entries.sort_by(|a, b| b.1.cmp(&a.1));
+        entries.sort_by_key(|b| Reverse(b.1));
         entries.into_iter().take(10).collect()
     }
 

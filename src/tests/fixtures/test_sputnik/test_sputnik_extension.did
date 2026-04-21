@@ -51,7 +51,7 @@ type AppHttpRequestArgs = record {
   max_response_bytes : opt nat64;
   body : opt blob;
   transform : opt text;
-  headers : vec AppHttpRequestArgsHeaders;
+  headers : opt vec AppHttpRequestArgsHeaders;
   is_replicated : opt bool;
 };
 type AppHttpRequestArgsHeaders = record { value : text; name : text };
@@ -70,6 +70,12 @@ type AppSetDocTestArgs = record {
   collection : text;
   value : nat64;
 };
+type AppTestQuery2Result = record { role : opt AppTestQuery2ResultRole };
+type AppTestQuery2ResultRole = variant { admin; user };
+type AppTestQueryResult = record {
+  preferences : opt AppTestQueryResultPreferences;
+};
+type AppTestQueryResultPreferences = record { theme : text };
 type AppUpdateArgsOnlyArgs = record { value : text };
 type AppWelcomeArgs = record { value : text };
 type AppWelcomeResult = record { value : nat64; caller : principal };
@@ -101,6 +107,8 @@ service : {
   app_read_doc_test : (AppReadDocTestArgs) -> (AppReadDocTestResult) query;
   app_set_doc_test : (AppSetDocTestArgs) -> ();
   app_sync_update : () -> ();
+  app_test_query : () -> (AppTestQueryResult) query;
+  app_test_query2 : () -> (AppTestQuery2Result) query;
   app_update_args_only : (AppUpdateArgsOnlyArgs) -> ();
   app_welcome : (AppWelcomeArgs) -> (AppWelcomeResult);
   app_welcome_without_args : () -> (AppWelcomeResult);

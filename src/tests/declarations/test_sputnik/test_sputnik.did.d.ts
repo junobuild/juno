@@ -89,7 +89,7 @@ export interface AppHttpRequestArgs {
 	max_response_bytes: [] | [bigint];
 	body: [] | [Uint8Array];
 	transform: [] | [string];
-	headers: Array<AppHttpRequestArgsHeaders>;
+	headers: [] | [Array<AppHttpRequestArgsHeaders>];
 	is_replicated: [] | [boolean];
 }
 export interface AppHttpRequestArgsHeaders {
@@ -120,6 +120,16 @@ export interface AppSetDocTestArgs {
 	key: string;
 	collection: string;
 	value: bigint;
+}
+export interface AppTestQuery2Result {
+	role: [] | [AppTestQuery2ResultRole];
+}
+export type AppTestQuery2ResultRole = { admin: null } | { user: null };
+export interface AppTestQueryResult {
+	preferences: [] | [AppTestQueryResultPreferences];
+}
+export interface AppTestQueryResultPreferences {
+	theme: string;
 }
 export interface AppUpdateArgsOnlyArgs {
 	value: string;
@@ -747,6 +757,8 @@ export interface _SERVICE {
 	app_read_doc_test: ActorMethod<[AppReadDocTestArgs], AppReadDocTestResult>;
 	app_set_doc_test: ActorMethod<[AppSetDocTestArgs], undefined>;
 	app_sync_update: ActorMethod<[], undefined>;
+	app_test_query: ActorMethod<[], AppTestQueryResult>;
+	app_test_query2: ActorMethod<[], AppTestQuery2Result>;
 	app_update_args_only: ActorMethod<[AppUpdateArgsOnlyArgs], undefined>;
 	app_welcome: ActorMethod<[AppWelcomeArgs], AppWelcomeResult>;
 	app_welcome_without_args: ActorMethod<[], AppWelcomeResult>;

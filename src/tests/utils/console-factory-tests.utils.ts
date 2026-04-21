@@ -1,9 +1,8 @@
-import { type ConsoleActor, idlFactoryMissionControl, type MissionControlActor } from '$declarations';
-import type { Actor, PocketIc } from '@dfinity/pic';
+import type { ConsoleActor } from '$declarations';
+import type { Actor } from '@dfinity/pic';
 import { toNullable } from '@dfinity/utils';
 import type { Identity } from '@icp-sdk/core/agent';
 import type { Principal } from '@icp-sdk/core/principal';
-import type { MissionControlId } from '$lib/types/mission-control';
 
 export const createSatelliteWithConsole = async ({
 	user,
@@ -42,27 +41,4 @@ export const createOrbiterWithConsole = async ({
 		name: toNullable(),
 		subnet_id: toNullable()
 	});
-};
-
-export const createSatelliteWithMissionControl = async ({
-	missionControlId,
-	user,
-	pic
-}: {
-	missionControlId: MissionControlId;
-	user: Identity;
-	pic: PocketIc;
-}): Promise<Principal> => {
-	const micActor = pic.createActor<MissionControlActor>(idlFactoryMissionControl, missionControlId);
-	micActor.setIdentity(user);
-
-	const { create_satellite_with_config } = micActor;
-
-	const { satellite_id } = await create_satellite_with_config({
-		name: toNullable(),
-		storage: toNullable(),
-		subnet_id: toNullable()
-	});
-
-	return satellite_id;
 };

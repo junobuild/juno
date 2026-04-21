@@ -2,29 +2,35 @@ import type { ConsoleActor } from '$declarations';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import { AnonymousIdentity } from '@icp-sdk/core/agent';
 import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
+import type { Principal } from '@icp-sdk/core/principal';
 import { CONTROLLER_ERROR_MSG } from '../../constants/console-tests.constants';
+import { CYCLES_LEDGER_ID } from '../../constants/ledger-tests.contants';
 import { setupConsole } from '../../utils/console-tests.utils';
+import { transferToken } from '../../utils/ledger-tests.utils';
 
 describe('Console > Economy', () => {
 	let pic: PocketIc;
 	let actor: Actor<ConsoleActor>;
 	let controller: Ed25519KeyIdentity;
+	let canisterId: Principal;
 
 	beforeAll(async () => {
 		const {
 			pic: p,
 			actor: c,
-			controller: cO
+			controller: cO,
+			canisterId: cId
 		} = await setupConsole({
-			withApplyRateTokens: true,
+			withApplyRateTokens: false,
 			withLedger: true,
-			withSegments: true,
-			withFee: true
+			withSegments: false,
+			withFee: false
 		});
 
 		pic = p;
 
 		controller = cO;
+		canisterId = cId;
 
 		actor = c;
 		actor.setIdentity(controller);
@@ -70,5 +76,51 @@ describe('Console > Economy', () => {
 		});
 
 		assertGuards();
+	});
+
+	describe('Admin', () => {
+		const to = Ed25519KeyIdentity.generate();
+
+		const icpBalance = 600_000_000n;
+		const cyclesBalance = 50_000_000_000_000n;
+
+		beforeAll(async () => {
+			actor.setIdentity(controller);
+
+			await transferToken({
+				pic,
+				owner: canisterId,
+				amount: icpBalance
+			});
+
+			await transferToken({
+				pic,
+				owner: canisterId,
+				ledgerId: CYCLES_LEDGER_ID,
+				amount: cyclesBalance
+			});
+		});
+
+		it('should transfer ICP', async () => {
+			const { withdraw_icp } = actor;
+
+			const result = await withdraw_icp({
+				to: to.getPrincipal()
+			});
+
+			expect(result.block_index).toEqual(4n);
+			expect(result.amount).toEqual(icpBalance - 10_000n);
+		});
+
+		it('should transfer ICRC', async () => {
+			const { withdraw_icrc } = actor;
+
+			const result = await withdraw_icrc({
+				to: to.getPrincipal()
+			});
+
+			expect(result.block_index).toEqual(2n);
+			expect(result.amount).toEqual(cyclesBalance - 100_000_000n);
+		});
 	});
 });

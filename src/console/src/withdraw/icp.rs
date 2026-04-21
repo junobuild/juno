@@ -18,9 +18,11 @@ pub async fn withdraw_icp_balance(
 
     let balance = console_balance().await?;
 
+    let amount = balance - IC_TRANSACTION_FEE_ICP;
+
     let args = TransferArgs {
         memo: Memo(0),
-        amount: balance - IC_TRANSACTION_FEE_ICP,
+        amount,
         fee: IC_TRANSACTION_FEE_ICP,
         from_subaccount: Some(SUB_ACCOUNT),
         to: account_identifier,
@@ -34,7 +36,7 @@ pub async fn withdraw_icp_balance(
 
     let result: WithdrawResult = WithdrawResult {
         block_index,
-        amount: balance.e8s(),
+        amount: amount.e8s(),
     };
 
     Ok(result)

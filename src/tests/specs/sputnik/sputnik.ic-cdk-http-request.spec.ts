@@ -5,7 +5,7 @@ import type {
 } from '$test-declarations/test_sputnik/test_sputnik.did';
 import { idlFactory as idlTestFactorySputnik } from '$test-declarations/test_sputnik/test_sputnik.factory.did';
 import type { CanisterHttpHeader, DeferredActor, PocketIc } from '@dfinity/pic';
-import { assertNonNullish, jsonReplacer } from '@dfinity/utils';
+import { assertNonNullish, jsonReplacer, toNullable } from '@dfinity/utils';
 import { setupTestSputnik } from '../../utils/fixtures-tests.utils';
 import { toBodyJson } from '../../utils/orbiter-tests.utils';
 
@@ -86,7 +86,7 @@ describe('Sputnik > ic_cdk > http_request', () => {
 	it('should perform a GET request with headers', async () => {
 		const args = {
 			...baseArgs,
-			headers: [{ name: 'Accept', value: 'application/json' }]
+			headers: toNullable([{ name: 'Accept', value: 'application/json' }])
 		};
 
 		const result = await performHttpRequest({ args });
@@ -110,7 +110,7 @@ describe('Sputnik > ic_cdk > http_request', () => {
 			args: {
 				...baseArgs,
 				method: { POST: null },
-				headers: [{ name: 'Content-Type', value: 'application/json' }],
+				headers: toNullable([{ name: 'Content-Type', value: 'application/json' }]),
 				body: [new TextEncoder().encode(JSON.stringify({ hello: 'world' }, jsonReplacer))]
 			}
 		});

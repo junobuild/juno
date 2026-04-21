@@ -1,12 +1,14 @@
 import type { ConsoleActor } from '$declarations';
 import type { Actor, PocketIc } from '@dfinity/pic';
+import { toNullable } from '@dfinity/utils';
+import type { IcrcLedgerDid } from '@icp-sdk/canisters/ledger/icrc';
 import { AnonymousIdentity } from '@icp-sdk/core/agent';
 import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import type { Principal } from '@icp-sdk/core/principal';
 import { CONTROLLER_ERROR_MSG } from '../../constants/console-tests.constants';
 import { CYCLES_LEDGER_ID } from '../../constants/ledger-tests.contants';
 import { setupConsole } from '../../utils/console-tests.utils';
-import { transferToken } from '../../utils/ledger-tests.utils';
+import { balanceToken, transferToken } from '../../utils/ledger-tests.utils';
 
 describe('Console > Economy', () => {
 	let pic: PocketIc;
@@ -82,7 +84,10 @@ describe('Console > Economy', () => {
 		const to = Ed25519KeyIdentity.generate();
 
 		const icpBalance = 600_000_000n;
+		const icpFee = 10_000n;
+
 		const cyclesBalance = 50_000_000_000_000n;
+		const cyclesFee = 100_000_000n;
 
 		beforeAll(async () => {
 			actor.setIdentity(controller);
@@ -109,7 +114,7 @@ describe('Console > Economy', () => {
 			});
 
 			expect(result.block_index).toEqual(4n);
-			expect(result.amount).toEqual(icpBalance - 10_000n);
+			expect(result.amount).toEqual(icpBalance - icpFee);
 		});
 
 		it('should transfer ICRC', async () => {
@@ -120,7 +125,49 @@ describe('Console > Economy', () => {
 			});
 
 			expect(result.block_index).toEqual(2n);
-			expect(result.amount).toEqual(cyclesBalance - 100_000_000n);
+			expect(result.amount).toEqual(cyclesBalance - cyclesFee);
+		});
+
+		it('should have balance after transfers', async () => {
+			const consoleAccount: IcrcLedgerDid.Account = {
+				owner: canisterId,
+				subaccount: toNullable()
+			};
+
+			const consoleIcpBalance = await balanceToken({
+				pic,
+				account: consoleAccount
+			});
+
+			expect(consoleIcpBalance).toEqual(0n);
+
+			const consoleCyclesBalance = await balanceToken({
+				pic,
+				account: consoleAccount,
+				ledgerId: CYCLES_LEDGER_ID
+			});
+
+			expect(consoleCyclesBalance).toEqual(0n);
+
+			const toAccount: IcrcLedgerDid.Account = {
+				owner: to.getPrincipal(),
+				subaccount: toNullable()
+			};
+
+			const toIcpBalance = await balanceToken({
+				pic,
+				account: toAccount
+			});
+
+			expect(toIcpBalance).toEqual(icpBalance - icpFee);
+
+			const toIcrcBalance = await balanceToken({
+				pic,
+				account: toAccount,
+				ledgerId: CYCLES_LEDGER_ID
+			});
+
+			expect(toIcrcBalance).toEqual(cyclesBalance - cyclesFee);
 		});
 	});
 });

@@ -18,6 +18,14 @@ pub async fn withdraw_icp_balance(
 
     let balance = console_balance().await?;
 
+    if balance.e8s() == 0 {
+        return Err("Balance is zero.".to_string());
+    }
+
+    if balance <= IC_TRANSACTION_FEE_ICP {
+        return Err("Insufficient balance to cover transaction fee.".to_string());
+    }
+
     let amount = balance - IC_TRANSACTION_FEE_ICP;
 
     let args = TransferArgs {

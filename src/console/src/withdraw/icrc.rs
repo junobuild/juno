@@ -20,6 +20,14 @@ pub async fn withdraw_icrc_balance(
 
     let balance = console_balance().await?;
 
+    if balance.e12s() == 0 {
+        return Err("Balance is zero.".to_string());
+    }
+
+    if balance.e12s() <= IC_TRANSACTION_FEE_CYCLES.e12s() {
+        return Err("Insufficient balance to cover transaction fee.".to_string());
+    }
+
     let balance_without_fee = balance - IC_TRANSACTION_FEE_CYCLES;
     let amount = Nat::from(balance_without_fee.e12s());
 

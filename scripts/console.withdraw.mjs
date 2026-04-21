@@ -26,9 +26,9 @@ const withdrawIcp = async () => {
 
 const withdrawIcrc = async () => {
 	try {
-		const { withdrawIcrc } = actor;
+		const { withdraw_icrc } = actor;
 
-		const result = await withdrawIcrc(withdrawArgs);
+		const result = await withdraw_icrc(withdrawArgs);
 
 		console.log('✅ ICRC successfully withdrawn.');
 		console.table(result);

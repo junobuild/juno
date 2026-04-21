@@ -1,8 +1,8 @@
-use crate::types::interface::WithdrawArgs;
+use crate::types::interface::{WithdrawArgs, WithdrawResult};
 use candid::{Nat, Principal};
 use ic_cdk::call::Call;
 use icrc_ledger_types::icrc1::account::Account;
-use icrc_ledger_types::icrc1::transfer::{BlockIndex, TransferArg};
+use icrc_ledger_types::icrc1::transfer::TransferArg;
 use junobuild_shared::constants::shared::IC_TRANSACTION_FEE_CYCLES;
 use junobuild_shared::env::CYCLES_LEDGER;
 use junobuild_shared::ic::api::id;
@@ -15,7 +15,7 @@ use junobuild_shared::ledger::types::cycles::CyclesTokens;
 /// The destination account for the withdrawal is one passed by the administrator.
 pub async fn withdraw_icrc_balance(
     WithdrawArgs { to }: &WithdrawArgs,
-) -> Result<BlockIndex, String> {
+) -> Result<WithdrawResult, String> {
     let account: Account = Account::from(*to);
 
     let balance = console_balance().await?;
@@ -36,12 +36,20 @@ pub async fn withdraw_icrc_balance(
         memo: None,
     };
 
-    let block_index = icrc_transfer_token(ledger_id, args)
+    let transfer_block_index = icrc_transfer_token(ledger_id, args)
         .await
         .map_err(|e| format!("failed to call ICRC ledger: {e:?}"))?
         .map_err(|e| format!("ICRC ledger transfer error {e:?}"))?;
 
-    Ok(block_index)
+    let block_index: u64 =
+        u64::try_from(transfer_block_index.0).map_err(|_| "Block index too large for u64")?;
+
+    let result: WithdrawResult = WithdrawResult {
+        block_index,
+        amount: balance_without_fee.e12s(),
+    };
+
+    Ok(result)
 }
 
 async fn console_balance() -> Result<CyclesTokens, String> {

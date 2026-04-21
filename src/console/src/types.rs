@@ -170,7 +170,7 @@ pub mod state {
 pub mod interface {
     use crate::types::state::{Account, StorableSegmentKind};
     use candid::{CandidType, Principal};
-    use ic_ledger_types::Tokens;
+    use ic_ledger_types::{BlockIndex, Tokens};
     use junobuild_auth::delegation::types::{
         OpenIdGetDelegationArgs, OpenIdPrepareDelegationArgs, PrepareDelegationError,
         PreparedDelegation,
@@ -258,6 +258,12 @@ pub mod interface {
     #[derive(CandidType, Deserialize)]
     pub struct WithdrawArgs {
         pub to: Principal,
+    }
+
+    #[derive(CandidType, Deserialize)]
+    pub struct WithdrawResult {
+        pub block_index: BlockIndex,
+        pub amount: u64,
     }
 }
 

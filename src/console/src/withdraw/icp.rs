@@ -1,7 +1,7 @@
-use crate::types::interface::WithdrawArgs;
+use crate::types::interface::{WithdrawArgs, WithdrawResult};
 use candid::Principal;
 use ic_ledger_types::{
-    account_balance, AccountBalanceArgs, AccountIdentifier, BlockIndex, Memo, Tokens, TransferArgs,
+    account_balance, AccountBalanceArgs, AccountIdentifier, Memo, Tokens, TransferArgs,
 };
 use junobuild_shared::constants::shared::IC_TRANSACTION_FEE_ICP;
 use junobuild_shared::env::ICP_LEDGER;
@@ -13,7 +13,7 @@ use junobuild_shared::ledger::icp::{principal_to_account_identifier, transfer_to
 /// The destination account for the withdrawal is one passed by the administrator.
 pub async fn withdraw_icp_balance(
     WithdrawArgs { to }: &WithdrawArgs,
-) -> Result<BlockIndex, String> {
+) -> Result<WithdrawResult, String> {
     let account_identifier = principal_to_account_identifier(to, &SUB_ACCOUNT);
 
     let balance = console_balance().await?;
@@ -32,7 +32,12 @@ pub async fn withdraw_icp_balance(
         .map_err(|e| format!("failed to call ledger: {:?}", e))?
         .map_err(|e| format!("ledger transfer error {:?}", e))?;
 
-    Ok(block_index)
+    let result: WithdrawResult = WithdrawResult {
+        block_index,
+        amount: balance.e8s(),
+    };
+
+    Ok(result)
 }
 
 async fn console_balance() -> Result<Tokens, String> {

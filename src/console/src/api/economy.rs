@@ -4,13 +4,13 @@ use crate::accounts::credits::{
 };
 use crate::fees::{get_factory_fee, get_factory_fee_icp, set_factory_fee};
 use crate::guards::caller_is_admin_controller;
-use crate::payments::list_icp_payments as list_icp_payments_state;
+use crate::payments::{list_icp_payments as list_icp_payments_state, withdraw_icp_balance};
 use crate::payments::list_icrc_payments as list_icrc_payments_state;
 use crate::types::interface::FeesArgs;
 use crate::types::ledger::Fee;
 use crate::types::state::{FactoryFee, IcpPayments, IcrcPayments};
 use ic_cdk_macros::{query, update};
-use ic_ledger_types::Tokens;
+use ic_ledger_types::{BlockIndex, Tokens};
 use junobuild_shared::ic::api::caller;
 use junobuild_shared::ic::UnwrapOrTrap;
 use junobuild_shared::types::interface::GetCreateCanisterFeeArgs;
@@ -84,4 +84,9 @@ fn set_fee(segment: SegmentKind, fees: FeesArgs) {
 #[query]
 fn get_fee(segment_kind: SegmentKind) -> FactoryFee {
     get_factory_fee(&segment_kind).unwrap_or_trap()
+}
+
+#[update(guard = "caller_is_admin_controller")]
+async fn withdraw_icp() -> BlockIndex {
+    withdraw_icp_balance().unwrap_or_trap()
 }

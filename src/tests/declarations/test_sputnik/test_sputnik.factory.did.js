@@ -610,7 +610,7 @@ export const idlFactory = ({ IDL }) => {
 		max_response_bytes: IDL.Opt(IDL.Nat64),
 		body: IDL.Opt(IDL.Vec(IDL.Nat8)),
 		transform: IDL.Opt(IDL.Text),
-		headers: IDL.Vec(AppHttpRequestArgsHeaders),
+		headers: IDL.Opt(IDL.Vec(AppHttpRequestArgsHeaders)),
 		is_replicated: IDL.Opt(IDL.Bool)
 	});
 	const AppHttpRequestResult = IDL.Record({
@@ -632,6 +632,17 @@ export const idlFactory = ({ IDL }) => {
 		key: IDL.Text,
 		collection: IDL.Text,
 		value: IDL.Nat64
+	});
+	const AppTestQueryResultPreferences = IDL.Record({ theme: IDL.Text });
+	const AppTestQueryResult = IDL.Record({
+		preferences: IDL.Opt(AppTestQueryResultPreferences)
+	});
+	const AppTestQuery2ResultRole = IDL.Variant({
+		admin: IDL.Null,
+		user: IDL.Null
+	});
+	const AppTestQuery2Result = IDL.Record({
+		role: IDL.Opt(AppTestQuery2ResultRole)
 	});
 	const AppUpdateArgsOnlyArgs = IDL.Record({ value: IDL.Text });
 	const AppWelcomeArgs = IDL.Record({ value: IDL.Text });
@@ -775,6 +786,8 @@ export const idlFactory = ({ IDL }) => {
 		app_read_doc_test: IDL.Func([AppReadDocTestArgs], [AppReadDocTestResult], ['query']),
 		app_set_doc_test: IDL.Func([AppSetDocTestArgs], [], []),
 		app_sync_update: IDL.Func([], [], []),
+		app_test_query: IDL.Func([], [AppTestQueryResult], ['query']),
+		app_test_query2: IDL.Func([], [AppTestQuery2Result], ['query']),
 		app_update_args_only: IDL.Func([AppUpdateArgsOnlyArgs], [], []),
 		app_welcome: IDL.Func([AppWelcomeArgs], [AppWelcomeResult], []),
 		app_welcome_without_args: IDL.Func([], [AppWelcomeResult], []),

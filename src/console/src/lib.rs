@@ -17,7 +17,7 @@ mod rates;
 mod segments;
 mod store;
 mod types;
-mod economy;
+mod withdraw;
 
 use crate::types::interface::AuthenticationArgs;
 use crate::types::interface::AuthenticationResult;
@@ -79,5 +79,8 @@ use junobuild_storage::types::interface::SetStorageConfig;
 use junobuild_storage::types::interface::UploadChunk;
 use junobuild_storage::types::interface::UploadChunkResult;
 use junobuild_storage::types::state::FullPath;
+use crate::types::interface::WithdrawArgs;
+use icrc_ledger_types::icrc1::transfer::BlockIndex as BlockIndexIcrc;
+use ic_ledger_types::BlockIndex as BlockIndexIcp;
 
 export_candid!();

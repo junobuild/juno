@@ -4,17 +4,19 @@ use crate::accounts::credits::{
 };
 use crate::fees::{get_factory_fee, get_factory_fee_icp, set_factory_fee};
 use crate::guards::caller_is_admin_controller;
-use crate::payments::{list_icp_payments as list_icp_payments_state, withdraw_icp_balance};
+use crate::payments::list_icp_payments as list_icp_payments_state;
 use crate::payments::list_icrc_payments as list_icrc_payments_state;
-use crate::types::interface::FeesArgs;
+use crate::types::interface::{FeesArgs, WithdrawArgs};
 use crate::types::ledger::Fee;
 use crate::types::state::{FactoryFee, IcpPayments, IcrcPayments};
 use ic_cdk_macros::{query, update};
-use ic_ledger_types::{BlockIndex, Tokens};
+use ic_ledger_types::{BlockIndex as BlockIndexIcp, Tokens};
+use icrc_ledger_types::icrc1::transfer::BlockIndex as BlockIndexIcrc;
 use junobuild_shared::ic::api::caller;
 use junobuild_shared::ic::UnwrapOrTrap;
 use junobuild_shared::types::interface::GetCreateCanisterFeeArgs;
 use junobuild_shared::types::state::{SegmentKind, UserId};
+use crate::withdraw::{withdraw_icp_balance, withdraw_icrc_balance};
 
 #[query(guard = "caller_is_admin_controller")]
 fn list_icp_payments() -> IcpPayments {
@@ -87,6 +89,11 @@ fn get_fee(segment_kind: SegmentKind) -> FactoryFee {
 }
 
 #[update(guard = "caller_is_admin_controller")]
-async fn withdraw_icp() -> BlockIndex {
-    withdraw_icp_balance().unwrap_or_trap()
+async fn withdraw_icp(args: WithdrawArgs) -> BlockIndexIcp {
+    withdraw_icp_balance(&args).await.unwrap_or_trap()
+}
+
+#[update(guard = "caller_is_admin_controller")]
+async fn withdraw_icrc(args: WithdrawArgs) -> BlockIndexIcrc {
+    withdraw_icrc_balance(&args).await.unwrap_or_trap()
 }

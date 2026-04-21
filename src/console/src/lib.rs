@@ -17,6 +17,7 @@ mod rates;
 mod segments;
 mod store;
 mod types;
+mod withdraw;
 
 use crate::types::interface::AuthenticationArgs;
 use crate::types::interface::AuthenticationResult;
@@ -29,6 +30,8 @@ use crate::types::interface::SetAccountConfig;
 use crate::types::interface::SetSegmentMetadataArgs;
 use crate::types::interface::SetSegmentsArgs;
 use crate::types::interface::UnsetSegmentsArgs;
+use crate::types::interface::WithdrawArgs;
+use crate::types::interface::WithdrawResult;
 use crate::types::state::Account;
 use crate::types::state::AccountConfig;
 use crate::types::state::Accounts;

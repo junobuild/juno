@@ -22,7 +22,11 @@ pub async fn withdraw_icp_balance(
         return Err("Balance is zero.".to_string());
     }
 
-    if balance <= IC_TRANSACTION_FEE_ICP {
+    if balance == IC_TRANSACTION_FEE_ICP {
+        return Err("Balance equals the transaction fee, nothing left to transfer.".to_string());
+    }
+
+    if balance < IC_TRANSACTION_FEE_ICP {
         return Err("Insufficient balance to cover transaction fee.".to_string());
     }
 

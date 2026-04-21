@@ -322,7 +322,7 @@ fn commit_chunks(
     }
 
     // Sort with ordering
-    chunks.sort_by(|a, b| a.order_id.cmp(&b.order_id));
+    chunks.sort_by_key(|a| a.order_id);
 
     let mut content_chunks: Vec<Blob> = vec![];
 
@@ -347,13 +347,11 @@ fn commit_chunks(
     let encoding = AssetEncoding::from(&content_chunks);
 
     match rule.max_size {
-        None => (),
-        Some(max_size) => {
-            if encoding.total_length > max_size {
-                clear_runtime_batch(&batch_id, &chunk_ids);
-                return Err(JUNO_STORAGE_ERROR_ASSET_MAX_ALLOWED_SIZE.to_string());
-            }
+        Some(max_size) if encoding.total_length > max_size => {
+            clear_runtime_batch(&batch_id, &chunk_ids);
+            return Err(JUNO_STORAGE_ERROR_ASSET_MAX_ALLOWED_SIZE.to_string());
         }
+        _ => (),
     }
 
     storage_upload.insert_asset_encoding(

@@ -3,7 +3,9 @@ use crate::constants::FREEZING_THRESHOLD_ONE_YEAR;
 use crate::factory::orchestrator::create_segment_with_account;
 use crate::factory::services::payment::{process_payment_cycles, refund_payment_cycles};
 use crate::factory::types::CanisterCreator;
-use crate::factory::utils::controllers::update_mission_control_controllers;
+use crate::factory::utils::controllers::{
+    remove_console_controller, update_mission_control_controllers,
+};
 use crate::fees::get_factory_fee;
 use crate::rates::increment_ufo_rate;
 use crate::segments::add_segment as add_segment_store;
@@ -48,13 +50,15 @@ async fn create_raw_canister(
     creator: CanisterCreator,
     subnet_id: Option<SubnetId>,
 ) -> Result<Principal, String> {
-    let CanisterCreator::User((user_id, _)) = creator else {
+    let CanisterCreator::User(_) = creator else {
         return Err("Mission Control cannot create an UFO".to_string());
     };
 
+    let controllers = creator.controllers();
+
     // We temporarily use the Console as a controller to create the canister but
     // remove it as soon as it is spin.
-    let temporary_init_controllers = Vec::from([id(), user_id]);
+    let temporary_init_controllers = [id()].into_iter().chain(controllers.clone()).collect();
 
     let create_settings_arg = CreateCanisterInitSettingsArg {
         controllers: temporary_init_controllers,
@@ -67,8 +71,7 @@ async fn create_raw_canister(
         create_canister_with_ic_mgmt(&create_settings_arg, CREATE_UFO_CYCLES).await
     }?;
 
-    // TODO: update controllers only user_id
-    update_mission_control_controllers(&ufo_id, &user_id).await?;
+    remove_console_controller(&ufo_id, &controllers).await?;
 
     Ok(ufo_id)
 }

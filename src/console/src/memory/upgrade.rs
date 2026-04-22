@@ -1,6 +1,6 @@
 use crate::constants::UFO_CREATION_FEE_CYCLES;
 use crate::store::mutate_heap_state;
-use crate::types::state::{FactoryFee, FactoryFees, FactoryRate, FactoryRates, HeapState};
+use crate::types::state::{FactoryFee, FactoryFees, FactoryRate, FactoryRates};
 use ic_cdk::api::time;
 use junobuild_shared::ic::api::print;
 use junobuild_shared::rate::constants::DEFAULT_RATE_CONFIG;

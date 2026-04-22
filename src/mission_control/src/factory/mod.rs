@@ -1,4 +1,4 @@
-pub mod canister;
+mod canister;
 mod msg;
 pub mod orbiter;
 pub mod satellite;

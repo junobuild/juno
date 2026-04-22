@@ -100,6 +100,13 @@ type CreateSatelliteArgs = record {
   name : opt text;
   user : principal;
 };
+type CreateSegmentArgs = variant {
+  Ufo : CreateUfoArgs;
+  Orbiter : CreateOrbiterArgs;
+  MissionControl : CreateMissionControlArgs;
+  Satellite : CreateSatelliteArgs;
+};
+type CreateUfoArgs = record { subnet_id : opt principal; name : opt text };
 type CustomDomain = record {
   updated_at : nat64;
   created_at : nat64;
@@ -310,7 +317,7 @@ type SegmentKey = record {
   segment_id : principal;
   segment_kind : StorableSegmentKind;
 };
-type SegmentKind = variant { Orbiter; MissionControl; Satellite };
+type SegmentKind = variant { Ufo; Orbiter; MissionControl; Satellite };
 type SegmentsDeploymentOptions = record {
   orbiter : opt text;
   mission_control_version : opt text;
@@ -353,7 +360,7 @@ type SetStorageConfig = record {
   redirects : opt vec record { text; StorageConfigRedirect };
 };
 type SignedDelegation = record { signature : blob; delegation : Delegation };
-type StorableSegmentKind = variant { Orbiter; Satellite };
+type StorableSegmentKind = variant { Ufo; Orbiter; Satellite };
 type StorageConfig = record {
   iframe : opt StorageConfigIFrame;
   updated_at : opt nat64;
@@ -418,6 +425,7 @@ service : () -> {
   create_mission_control : (CreateMissionControlArgs) -> (principal);
   create_orbiter : (CreateOrbiterArgs) -> (principal);
   create_satellite : (CreateSatelliteArgs) -> (principal);
+  create_segment : (CreateSegmentArgs) -> (principal);
   del_controllers : (DeleteControllersArgs) -> ();
   del_custom_domain : (text) -> ();
   delete_proposal_assets : (DeleteProposalAssets) -> ();

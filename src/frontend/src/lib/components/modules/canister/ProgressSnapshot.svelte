@@ -9,7 +9,7 @@
 	import { mapProgressState } from '$lib/utils/progress.utils';
 
 	interface Props {
-		segment: 'satellite' | 'mission_control' | 'orbiter';
+		segment: 'satellite' | 'mission_control' | 'orbiter' | 'ufo';
 		progress: SnapshotProgress | undefined;
 		snapshotAction: 'create' | 'restore';
 	}

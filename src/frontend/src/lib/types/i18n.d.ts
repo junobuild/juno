@@ -643,7 +643,7 @@ interface I18nErrors {
 	satellites_not_loaded: string;
 	create_ufo_name_missing: string;
 	create_ufo_unexpected_error: string;
-	ufo_no_found: string;
+	ufo_not_found: string;
 	canister_stop: string;
 	canister_start: string;
 	canister_delete: string;

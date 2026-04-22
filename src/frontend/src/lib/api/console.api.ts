@@ -48,6 +48,12 @@ export const getOrbiterFee = async ({
 	identity: NullishIdentity;
 }): Promise<ConsoleDid.FactoryFee> => await getFee({ identity, segmentKind: { Orbiter: null } });
 
+export const getUfoFee = async ({
+	identity
+}: {
+	identity: NullishIdentity;
+}): Promise<ConsoleDid.FactoryFee> => await getFee({ identity, segmentKind: { Ufo: null } });
+
 export const getMissionControlFee = async ({
 	identity
 }: {
@@ -190,5 +196,26 @@ export const createOrbiterWithConfig = async ({
 		user: identity.getPrincipal(),
 		name: toNullable(name),
 		subnet_id: toNullable(subnetId)
+	});
+};
+
+export const createUfoWithConfig = async ({
+	identity,
+	config: { name, subnetId }
+}: {
+	identity: NullishIdentity;
+	config: CreateWithConfigAndName;
+}): Promise<OrbiterId> => {
+	assertNonNullish(identity);
+
+	const { create_segment } = await getConsoleActor({
+		identity
+	});
+
+	return create_segment({
+		Ufo: {
+			name: toNullable(name),
+			subnet_id: toNullable(subnetId)
+		}
 	});
 };

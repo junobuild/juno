@@ -1,0 +1,178 @@
+<script lang="ts">
+	import { nonNullish } from '@dfinity/utils';
+	import type { Nullish, PrincipalText } from '@dfinity/zod-schemas';
+	import type { MissionControlDid } from '$declarations';
+	import FactoryAdvancedOptions from '$lib/components/modules/factory/create/FactoryAdvancedOptions.svelte';
+	import FactoryContinue from '$lib/components/modules/factory/create/FactoryContinue.svelte';
+	import FactoryCredits from '$lib/components/modules/factory/create/FactoryCredits.svelte';
+	import FactoryProgressCreate from '$lib/components/modules/factory/create/FactoryProgressCreate.svelte';
+	import Confetti from '$lib/components/ui/Confetti.svelte';
+	import Modal from '$lib/components/ui/Modal.svelte';
+	import Value from '$lib/components/ui/Value.svelte';
+	import { testIds } from '$lib/constants/test-ids.constants';
+	import { authSignedOut, authIdentity } from '$lib/derived/auth.derived';
+	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
+	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
+	import { createUfoWizard } from '$lib/services/factory/factory.create.services';
+	import { wizardBusy } from '$lib/stores/app/busy.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
+	import type { JunoModalDetail } from '$lib/types/modal';
+	import type { FactoryCreateProgress } from '$lib/types/progress-factory-create';
+	import type { UfoId } from '$lib/types/ufo';
+	import { navigateToUfo } from '$lib/utils/nav.utils';
+	import { testId } from '$lib/utils/test.utils';
+
+	interface Props {
+		detail: JunoModalDetail;
+		onclose: () => void;
+	}
+
+	let { detail, onclose }: Props = $props();
+
+	let withFee = $state<Nullish<bigint>>(undefined);
+	let insufficientFunds = $state(true);
+
+	let step: 'init' | 'in_progress' | 'ready' | 'error' = $state('init');
+
+	let canisterId = $state<UfoId | undefined>(undefined);
+
+	// Submit
+
+	let progress: FactoryCreateProgress | undefined = $state(undefined);
+	const onProgress = (applyProgress: FactoryCreateProgress | undefined) =>
+		(progress = applyProgress);
+
+	const onSubmit = async ($event: SubmitEvent) => {
+		$event.preventDefault();
+
+		onProgress(undefined);
+
+		wizardBusy.start();
+		step = 'in_progress';
+
+		const result = await createUfoWizard({
+			selectedWallet,
+			identity: $authIdentity,
+			missionControlId: $missionControlId,
+			subnetId,
+			monitoringStrategy,
+			canisterName: ufoName,
+			withFee,
+			onProgress
+		});
+
+		wizardBusy.stop();
+
+		if (result.success !== 'ok') {
+			step = 'error';
+			return;
+		}
+
+		// eslint-disable-next-line prefer-destructuring
+		canisterId = result.canisterId;
+
+		setTimeout(() => (step = 'ready'), 500);
+	};
+
+	const navigate = async () => {
+		await navigateToUfo(canisterId);
+		onclose();
+	};
+
+	let ufoName = $state<string | undefined>(undefined);
+
+	let selectedWallet = $state<SelectedWallet | undefined>(undefined);
+	let subnetId: PrincipalText | undefined = $state();
+	let monitoringStrategy = $state<MissionControlDid.CyclesMonitoringStrategy | undefined>(
+		undefined
+	);
+</script>
+
+<Modal {onclose}>
+	{#if step === 'ready'}
+		<Confetti />
+
+		<FactoryContinue {navigate} {onclose} testId={testIds.createUfo.close}>
+			{$i18n.ufo.ready}
+		</FactoryContinue>
+	{:else if step === 'in_progress'}
+		<FactoryProgressCreate
+			{progress}
+			segment="ufo"
+			withApprove={selectedWallet?.type === 'dev' && nonNullish(withFee)}
+			withAttach={selectedWallet?.type === 'dev' && nonNullish($missionControlId)}
+			withMonitoring={nonNullish(monitoringStrategy)}
+		/>
+	{:else}
+		<h2>{$i18n.core.getting_started}</h2>
+
+		<p>
+			{$i18n.ufo.description}
+		</p>
+
+		<FactoryCredits
+			{detail}
+			{onclose}
+			priceLabel={$i18n.ufo.create_ufo_price}
+			bind:selectedWallet
+			bind:withFee
+			bind:insufficientFunds
+		>
+			<form onsubmit={onSubmit}>
+				<Value>
+					{#snippet label()}
+						{$i18n.ufo.ufo_name}
+					{/snippet}
+
+					<input
+						name="ufo_name"
+						autocomplete="off"
+						data-1p-ignore
+						{...testId(testIds.createUfo.input)}
+						placeholder={$i18n.ufo.enter_name}
+						required
+						type="text"
+						bind:value={ufoName}
+					/>
+				</Value>
+
+				<FactoryAdvancedOptions {detail} bind:subnetId bind:monitoringStrategy />
+
+				<button
+					{...testId(testIds.createUfo.create)}
+					disabled={$authSignedOut || insufficientFunds}
+					type="submit"
+				>
+					{$i18n.ufo.create}
+				</button>
+			</form>
+		</FactoryCredits>
+	{/if}
+</Modal>
+
+<style lang="scss">
+	@use '../../../../styles/mixins/overlay';
+
+	h2 {
+		@include overlay.title;
+	}
+
+	.msg {
+		@include overlay.message;
+
+		p {
+			margin: var(--padding-8x) 0 0;
+		}
+	}
+
+	form {
+		display: flex;
+		flex-direction: column;
+
+		padding: var(--padding) 0 0;
+	}
+
+	button {
+		margin-top: var(--padding-2x);
+	}
+</style>

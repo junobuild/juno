@@ -4,6 +4,7 @@
 	import IconRocket from '$lib/components/icons/IconRocket.svelte';
 	import IconSatellite from '$lib/components/icons/IconSatellite.svelte';
 	import IconTelescope from '$lib/components/icons/IconTelescope.svelte';
+	import IconUfo from '$lib/components/icons/IconUfo.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import { testIds } from '$lib/constants/test-ids.constants';
 	import { authIdentity } from '$lib/derived/auth.derived';
@@ -15,7 +16,8 @@
 	import {
 		initMissionControlWizard,
 		initOrbiterWizard,
-		initSatelliteWizard
+		initSatelliteWizard,
+		initUfoWizard
 	} from '$lib/services/factory/factory.create.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { testId } from '$lib/utils/test.utils';
@@ -43,6 +45,15 @@
 
 		await initMissionControlWizard({
 			identity: $authIdentity
+		});
+	};
+
+	const createUfo = async () => {
+		close();
+
+		await initUfoWizard({
+			identity: $authIdentity,
+			missionControlId: $missionControlId
 		});
 	};
 
@@ -85,6 +96,8 @@
 				><IconTelescope /> {$i18n.monitoring.create}</button
 			>
 		{/if}
+
+		<button class="menu" onclick={createUfo}><IconUfo /> {$i18n.ufo.create}</button>
 	</div>
 </Popover>
 

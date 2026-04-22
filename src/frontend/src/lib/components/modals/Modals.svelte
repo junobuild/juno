@@ -16,6 +16,7 @@
 	import MissionControlCreateModal from '$lib/components/modals/factory/create/MissionControlCreateModal.svelte';
 	import OrbiterCreateModal from '$lib/components/modals/factory/create/OrbiterCreateModal.svelte';
 	import SatelliteCreateModal from '$lib/components/modals/factory/create/SatelliteCreateModal.svelte';
+	import UfoCreateModal from '$lib/components/modals/factory/create/UfoCreateModal.svelte';
 	import OrbiterDeleteModal from '$lib/components/modals/factory/delete/OrbiterDeleteModal.svelte';
 	import SatelliteDeleteModal from '$lib/components/modals/factory/delete/SatelliteDeleteModal.svelte';
 	import CustomDomainModal from '$lib/components/modals/hosting/CustomDomainModal.svelte';
@@ -53,6 +54,10 @@
 
 {#if modal?.type === 'create_mission_control' && nonNullish(modal.detail)}
 	<MissionControlCreateModal detail={modal.detail} onclose={close} />
+{/if}
+
+{#if modal?.type === 'create_ufo' && nonNullish(modal.detail)}
+	<UfoCreateModal detail={modal.detail} onclose={close} />
 {/if}
 
 {#if modal?.type === 'topup_satellite' && nonNullish(modal.detail)}

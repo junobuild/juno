@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { notEmptyString } from '@dfinity/utils';
+	import { nonNullish } from '@dfinity/utils';
 	import { circOut, quintOut } from 'svelte/easing';
 	import { slide, fade } from 'svelte/transition';
 	import { page } from '$app/state';
@@ -16,16 +16,20 @@
 	import IconUpgradeDock from '$lib/components/icons/IconUpgradeDock.svelte';
 	import Menu from '$lib/components/ui/Menu.svelte';
 	import { menuCollapsed, menuExpanded } from '$lib/derived/app/layout-menu.derived';
-	import { pageSatelliteId } from '$lib/derived/app/page.derived.svelte.js';
+	import { pageId } from '$lib/derived/app/page.derived.svelte.js';
 	import { isSatelliteRoute } from '$lib/derived/app/route.derived.svelte.js';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { isRouteSelected } from '$lib/utils/nav.utils';
 
 	let routeId: string | null = $derived(page.route.id);
 
-	let satelliteId: string = $derived($pageSatelliteId ?? '');
-
-	let queryParam = $derived(notEmptyString(satelliteId) ? `/?s=${satelliteId}` : '');
+	let queryParam = $derived(
+		nonNullish($pageId)
+			? 'ufoId' in $pageId
+				? `/?u=${$pageId.ufoId}`
+				: `/?s=${$pageId.satelliteId}`
+			: ''
+	);
 </script>
 
 <Menu>

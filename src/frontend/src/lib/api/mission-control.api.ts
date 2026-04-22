@@ -5,6 +5,7 @@ import type { NullishIdentity } from '$lib/types/itentity';
 import type { Metadata } from '$lib/types/metadata';
 import type { MissionControlId } from '$lib/types/mission-control';
 import type { GetMonitoringParams, MonitoringHistory } from '$lib/types/monitoring';
+import type { UfoId } from '$lib/types/ufo';
 import { toSetController } from '$lib/utils/controllers.utils';
 import { toNullable } from '@dfinity/utils';
 import { Principal } from '@icp-sdk/core/principal';
@@ -259,6 +260,34 @@ export const unsetOrbiter = async ({
 }): Promise<void> => {
 	const { unset_orbiter } = await getMissionControlActor({ missionControlId, identity });
 	return unset_orbiter(orbiterId);
+};
+
+export const setUfo = async ({
+	missionControlId,
+	ufoId,
+	ufoName,
+	identity
+}: {
+	missionControlId: MissionControlId;
+	ufoId: UfoId;
+	ufoName?: string;
+	identity: NullishIdentity;
+}): Promise<MissionControlDid.Ufo> => {
+	const { set_ufo } = await getMissionControlActor({ missionControlId, identity });
+	return set_ufo(ufoId, toNullable(ufoName));
+};
+
+export const unsetUfo = async ({
+	missionControlId,
+	ufoId,
+	identity
+}: {
+	missionControlId: MissionControlId;
+	ufoId: UfoId;
+	identity: NullishIdentity;
+}): Promise<void> => {
+	const { unset_ufo } = await getMissionControlActor({ missionControlId, identity });
+	return unset_ufo(ufoId);
 };
 
 export const setSatellite = async ({

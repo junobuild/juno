@@ -1,5 +1,6 @@
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
+import type { UfoId } from '$lib/types/ufo';
 import { nonNullish } from '@dfinity/utils';
 import type { Nullish } from '@dfinity/zod-schemas';
 import type { Principal } from '@icp-sdk/core/principal';
@@ -23,8 +24,12 @@ export const upgradeDockLink = (satelliteId?: Nullish<Principal>): string =>
 export const upgradeChangesLink = (satelliteId: Nullish<Principal>): string =>
 	`/upgrade-dock/?tab=changes${nonNullish(satelliteId) ? `&s=${satelliteId?.toText() ?? ''}` : ''}`;
 
+export const ufoLink = (ufoId: Nullish<UfoId>): string => `/ufo/?u=${ufoId?.toText() ?? ''}`;
+
 export const navigateToSatellite = async (satelliteId: Nullish<Principal>) =>
 	await goto(overviewLink(satelliteId));
+
+export const navigateToUfo = async (ufoId: Nullish<UfoId>) => await goto(ufoLink(ufoId));
 
 export const navigateToAnalytics = async (satelliteId: Nullish<Principal>) =>
 	await goto(analyticsLink(satelliteId), { replaceState: true });

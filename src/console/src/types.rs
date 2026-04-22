@@ -152,6 +152,7 @@ pub mod state {
         // For historical reasons, MissionControl is not stored in the segments stable tree
         // but within the Account structure
         Orbiter,
+        Ufo,
     }
 
     // On Apr. 4, 2026, someone exploited the free tier to spin up free canisters.

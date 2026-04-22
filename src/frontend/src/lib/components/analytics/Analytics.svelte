@@ -16,8 +16,8 @@
 	import Warning from '$lib/components/ui/Warning.svelte';
 	import { authIdentity } from '$lib/derived/auth.derived';
 	import { orbiterFeatures } from '$lib/derived/orbiter/orbiter-satellites.derived';
-	import { orbitersStore, orbiterStore } from '$lib/derived/orbiter.derived';
-	import { satelliteStore } from '$lib/derived/satellite.derived';
+	import { orbiters, orbiter } from '$lib/derived/orbiter.derived';
+	import { satellite } from '$lib/derived/satellite.derived';
 	import { getAnalyticsPageViewsForPeriods } from '$lib/services/orbiter/orbiter.pagination.page-views.services';
 	import { getAnalyticsPerformanceMetricsForPeriods } from '$lib/services/orbiter/orbiter.pagination.performance-metrics.services';
 	import { getAnalyticsTrackEventsForPeriods } from '$lib/services/orbiter/orbiter.pagination.track-events.services';
@@ -40,7 +40,7 @@
 		$state(undefined);
 
 	const loadAnalytics = async (): Promise<{ result: 'ok' | 'error' | 'skip' }> => {
-		if (isNullish($orbiterStore)) {
+		if (isNullish($orbiter)) {
 			return { result: 'skip' };
 		}
 
@@ -57,8 +57,8 @@
 
 		try {
 			const params: PageViewsParams = {
-				satelliteId: $satelliteStore?.satellite_id,
-				orbiterId: $orbiterStore.orbiter_id,
+				satelliteId: $satellite?.satellite_id,
+				orbiterId: $orbiter.orbiter_id,
 				identity: $authIdentity,
 				from,
 				...restPeriod
@@ -123,11 +123,11 @@
 	};
 
 	const init = async () => {
-		if ($orbitersStore === undefined) {
+		if ($orbiters === undefined) {
 			return;
 		}
 
-		if (isNullish($orbiterStore)) {
+		if (isNullish($orbiter)) {
 			loadingOrbiter = 'done';
 			return;
 		}
@@ -137,7 +137,7 @@
 		}
 
 		const { result } = await loadOrbiterConfigs({
-			orbiterId: $orbiterStore.orbiter_id,
+			orbiterId: $orbiter.orbiter_id,
 			orbiterVersion: $versionStore.orbiter.current,
 			reload: false
 		});
@@ -155,7 +155,7 @@
 	const debounceInit = debounce(init);
 
 	$effect(() => {
-		$orbitersStore;
+		$orbiters;
 		$versionStore;
 
 		debounceInit();
@@ -167,7 +167,7 @@
 		<SpinnerParagraph>{$i18n.analytics.loading}</SpinnerParagraph>
 	</div>
 {:else if loadingOrbiter !== 'error'}
-	{#if isNullish($orbiterStore)}
+	{#if isNullish($orbiter)}
 		<NoAnalytics />
 
 		<AnalyticsNew />
@@ -196,7 +196,7 @@
 			<AnalyticsPageViews {pageViews} />
 
 			{#if nonNullish(pageViews) && pageViews?.metrics.total_page_views > 0}
-				<AnalyticsPagesExport orbiter={$orbiterStore} />
+				<AnalyticsPagesExport orbiter={$orbiter} />
 			{/if}
 
 			{#if nonNullish(performanceMetrics) && performanceMetrics.pages.length > 0}
@@ -210,7 +210,7 @@
 
 				<AnalyticsEvents {trackEvents} />
 
-				<AnalyticsEventsExport orbiter={$orbiterStore} />
+				<AnalyticsEventsExport orbiter={$orbiter} />
 			{/if}
 		{/if}
 	{/if}

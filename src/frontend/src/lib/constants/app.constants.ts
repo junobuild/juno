@@ -9,6 +9,7 @@ export const SYNC_CUSTOM_DOMAIN_TIMER_INTERVAL = 10000;
 export const SYNC_WALLET_TIMER_INTERVAL = 30000;
 export const SYNC_MONITORING_TIMER_INTERVAL = 3600000;
 export const SYNC_TOKENS_TIMER_INTERVAL = 60000;
+export const SYNC_WORKFLOWS_TIMER_INTERVAL = 60000;
 
 // Timer UI
 export const SYNC_LOGS_TIMER_INTERVAL = 60000;
@@ -41,6 +42,9 @@ export const CYCLES_LEDGER_CANISTER_ID = 'um5iw-rqaaa-aaaaq-qaaba-cai';
 export const CYCLES_INDEX_CANISTER_ID = 'ul4oc-4iaaa-aaaaq-qaabq-cai';
 
 export const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+export const GITHUB_CLIENT_ID = import.meta.env.VITE_GITHUB_CLIENT_ID;
+
+export const JUNO_API_URL = import.meta.env.VITE_JUNO_API_URL;
 
 /**
  * Revoked principals that must not be used.

@@ -7,22 +7,22 @@ import {
 } from '$lib/api/mission-control.api';
 import { METADATA_KEY_EMAIL } from '$lib/constants/metadata.constants';
 import {
-	mctrlSatellitesNotLoaded,
-	mctrlSatellitesStore
+	mctrlSatellites,
+	mctrlSatellitesNotLoaded
 } from '$lib/derived/mission-control/mission-control-satellites.derived';
 import {
 	missionControlSettings,
 	missionControlSettingsNotLoaded
 } from '$lib/derived/mission-control/mission-control-settings.derived';
 import { missionControlUserData } from '$lib/derived/mission-control/mission-control-user.derived';
-import { orbiterNotLoaded, orbiterStore } from '$lib/derived/orbiter.derived';
+import { orbiter, orbiterNotLoaded } from '$lib/derived/orbiter.derived';
 import { execute } from '$lib/services/_progress.services';
 import { loadOrbiters } from '$lib/services/mission-control/mission-control.orbiters.services';
 import { loadSatellites } from '$lib/services/mission-control/mission-control.satellites.services';
 import { loadSettings, loadUserData } from '$lib/services/mission-control/mission-control.services';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
-import type { OptionIdentity } from '$lib/types/itentity';
+import type { NullishIdentity } from '$lib/types/itentity';
 import type { Metadata } from '$lib/types/metadata';
 import type { MissionControlId } from '$lib/types/mission-control';
 import type { JunoModal, JunoModalCreateMonitoringStrategyDetail } from '$lib/types/modal';
@@ -30,7 +30,6 @@ import {
 	type MonitoringStrategyProgress,
 	MonitoringStrategyProgressStep
 } from '$lib/types/progress-strategy';
-import type { Option } from '$lib/types/utils';
 import { isNotValidEmail } from '$lib/utils/email.utils';
 import { emit } from '$lib/utils/events.utils';
 import {
@@ -42,13 +41,14 @@ import {
 	notEmptyString,
 	toNullable
 } from '@dfinity/utils';
+import type { Nullish } from '@dfinity/zod-schemas';
 import type { Principal } from '@icp-sdk/core/principal';
 import { get } from 'svelte/store';
 
 type MonitoringStrategyOnProgress = (progress: MonitoringStrategyProgress | undefined) => void;
 
 interface MonitoringCyclesStrategyParams {
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 	missionControlId: MissionControlId;
 	satellites: Principal[];
 	orbiters: Principal[];
@@ -59,7 +59,7 @@ export interface ApplyMonitoringCyclesStrategyOptions {
 	monitoringConfig: MissionControlDid.MonitoringConfig | undefined;
 	saveAsDefaultStrategy: boolean;
 	metadata: Metadata;
-	userEmail: Option<string>;
+	userEmail: Nullish<string>;
 }
 
 interface ApplyMonitoringCyclesStrategyParams extends MonitoringCyclesStrategyParams {
@@ -492,8 +492,8 @@ export const assertAndGetForMonitoringWizard = ():
 		return { valid: 'error' };
 	}
 
-	const $satellitesStore = get(mctrlSatellitesStore);
-	const $orbiterStore = get(orbiterStore);
+	const $satellitesStore = get(mctrlSatellites);
+	const $orbiterStore = get(orbiter);
 	if (($satellitesStore ?? []).length === 0 && isNullish($orbiterStore)) {
 		toasts.warn(get(i18n).errors.monitoring_no_modules);
 		return { valid: 'error' };
@@ -538,8 +538,8 @@ export const setMonitoringNotification = async ({
 	monitoringConfig,
 	enabled
 }: {
-	identity: OptionIdentity;
-	missionControlId: Option<Principal>;
+	identity: NullishIdentity;
+	missionControlId: Nullish<Principal>;
 	monitoringConfig: MissionControlDid.MonitoringConfig | undefined;
 	enabled: boolean;
 }): Promise<{ success: boolean }> => {

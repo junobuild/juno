@@ -2,6 +2,9 @@
 	import { nonNullish } from '@dfinity/utils';
 	import AuthConfigModal from '$lib/components/modals/auth/AuthConfigModal.svelte';
 	import UserDetailsModal from '$lib/components/modals/auth/UserDetailsModal.svelte';
+	import AutomationConnectRepositoryModal from '$lib/components/modals/automation/AutomationConnectRepositoryModal.svelte';
+	import AutomationKeysConfigModal from '$lib/components/modals/automation/AutomationKeysConfigModal.svelte';
+	import CreateAutomationModal from '$lib/components/modals/automation/CreateAutomationModal.svelte';
 	import ApplyChangeModal from '$lib/components/modals/changes/ApplyChangeModal.svelte';
 	import RejectChangeModal from '$lib/components/modals/changes/RejectChangeModal.svelte';
 	import MissionControlTopUpModal from '$lib/components/modals/cycles/top-up/MissionControlTopUpModal.svelte';
@@ -20,6 +23,7 @@
 	import MonitoringDetailsModal from '$lib/components/modals/monitoring/MonitoringDetailsModal.svelte';
 	import MonitoringStrategyCreateModal from '$lib/components/modals/monitoring/MonitoringStrategyCreateModal.svelte';
 	import StopMonitoringStrategyModal from '$lib/components/modals/monitoring/StopMonitoringStrategyModal.svelte';
+	import OutOfSyncSegmentsModal from '$lib/components/modals/out-of-sync/OutOfSyncSegmentsModal.svelte';
 	import AccessKeyCreateModal from '$lib/components/modals/setup/AccessKeyCreateModal.svelte';
 	import CanisterEditSettingsModal from '$lib/components/modals/setup/CanisterEditSettingsModal.svelte';
 	import OrbiterConfigModal from '$lib/components/modals/setup/OrbiterConfigModal.svelte';
@@ -29,6 +33,7 @@
 	import MissionControlUpgradeModal from '$lib/components/modals/upgrade/MissionControlUpgradeModal.svelte';
 	import OrbiterUpgradeModal from '$lib/components/modals/upgrade/OrbiterUpgradeModal.svelte';
 	import SatelliteUpgradeModal from '$lib/components/modals/upgrade/SatelliteUpgradeModal.svelte';
+	import ConvertIcpModal from '$lib/components/modals/wallet/ConvertIcpModal.svelte';
 	import SendTokensModal from '$lib/components/modals/wallet/SendTokensModal.svelte';
 	import type { JunoModal, JunoModalDetail } from '$lib/types/modal';
 
@@ -157,4 +162,24 @@
 
 {#if modal?.type === 'upgrade_satellite_with_cdn' && nonNullish(modal.detail)}
 	<CdnUpgradeModal detail={modal.detail} onclose={close} />
+{/if}
+
+{#if modal?.type === 'convert_icp_to_cycles' && nonNullish(modal.detail)}
+	<ConvertIcpModal detail={modal.detail} onclose={close} />
+{/if}
+
+{#if modal?.type === 'reconcile_out_of_sync_segments'}
+	<OutOfSyncSegmentsModal onclose={close} />
+{/if}
+
+{#if modal?.type === 'create_automation' && nonNullish(modal.detail)}
+	<CreateAutomationModal detail={modal.detail} onclose={close} />
+{/if}
+
+{#if modal?.type === 'edit_automation_keys_config' && nonNullish(modal.detail)}
+	<AutomationKeysConfigModal detail={modal.detail} onclose={close} />
+{/if}
+
+{#if modal?.type === 'edit_automation_connect_repository_config' && nonNullish(modal.detail)}
+	<AutomationConnectRepositoryModal detail={modal.detail} onclose={close} />
 {/if}

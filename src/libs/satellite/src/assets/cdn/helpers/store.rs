@@ -2,7 +2,7 @@ use crate::assets::cdn::helpers::stable::get_proposal;
 use crate::assets::cdn::strategies_impls::storage::CdnStorageAssertions;
 use crate::assets::storage::store::get_config_store;
 use crate::assets::storage::strategy_impls::StorageState;
-use crate::get_controllers;
+use crate::get_access_keys;
 use candid::Principal;
 use junobuild_cdn::proposals::ProposalId;
 use junobuild_cdn::storage::errors::JUNO_CDN_STORAGE_ERROR_NO_PROPOSAL_FOUND;
@@ -23,7 +23,7 @@ pub fn init_asset_upload(
         ));
     }
 
-    let controllers = get_controllers();
+    let controllers = get_access_keys();
     let config = get_config_store();
 
     create_batch(

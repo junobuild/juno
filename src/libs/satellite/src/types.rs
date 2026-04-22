@@ -6,7 +6,7 @@ pub mod state {
     use junobuild_auth::state::types::state::AuthenticationHeapState;
     use junobuild_cdn::proposals::ProposalsStable;
     use junobuild_cdn::storage::{ProposalAssetsStable, ProposalContentChunksStable};
-    use junobuild_shared::types::state::Controllers;
+    use junobuild_shared::types::state::AccessKeys;
     use junobuild_storage::types::state::StorageHeapState;
     use rand::rngs::StdRng;
     use serde::{Deserialize, Serialize};
@@ -36,7 +36,7 @@ pub mod state {
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
     pub struct HeapState {
-        pub controllers: Controllers,
+        pub controllers: AccessKeys,
         pub db: DbHeapState,
         pub storage: StorageHeapState,
         pub authentication: Option<AuthenticationHeapState>,
@@ -56,16 +56,20 @@ pub mod state {
 }
 
 pub mod interface {
+    use crate::automation::types::AuthenticationAutomationError;
     use crate::db::types::config::DbConfig;
     use crate::Doc;
     use candid::CandidType;
+    use junobuild_auth::automation::types::PreparedAutomation;
     use junobuild_auth::delegation::types::{
         GetDelegationError, OpenIdGetDelegationArgs, OpenIdPrepareDelegationArgs,
         PrepareDelegationError, PreparedDelegation, SignedDelegation,
     };
+    use junobuild_auth::state::types::automation::AutomationConfig;
     use junobuild_auth::state::types::config::AuthenticationConfig;
     use junobuild_cdn::proposals::ProposalId;
     use junobuild_storage::types::config::StorageConfig;
+    use junobuild_storage::types::interface::{CertifyAssetsCursor, CertifyAssetsStrategy};
     use serde::{Deserialize, Serialize};
 
     #[derive(CandidType, Deserialize)]
@@ -73,6 +77,7 @@ pub mod interface {
         pub storage: StorageConfig,
         pub db: Option<DbConfig>,
         pub authentication: Option<AuthenticationConfig>,
+        pub automation: Option<AutomationConfig>,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
@@ -118,17 +123,35 @@ pub mod interface {
         Ok(SignedDelegation),
         Err(GetDelegationError),
     }
+
+    #[derive(CandidType, Serialize, Deserialize)]
+    pub enum AuthenticateAutomationResultResponse {
+        Ok(PreparedAutomation),
+        Err(AuthenticationAutomationError),
+    }
+
+    #[derive(CandidType, Serialize, Deserialize)]
+    pub struct CertifyAssetsArgs {
+        pub cursor: CertifyAssetsCursor,
+        pub chunk_size: Option<u32>,
+        pub strategy: CertifyAssetsStrategy,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize)]
+    pub struct CertifyAssetsResult {
+        pub next_cursor: Option<CertifyAssetsCursor>,
+    }
 }
 
 pub mod store {
     use junobuild_auth::state::types::config::AuthenticationConfig;
     use junobuild_collections::types::core::CollectionKey;
     use junobuild_collections::types::rules::Rule;
-    use junobuild_shared::types::state::{Controllers, UserId};
+    use junobuild_shared::types::state::{AccessKeys, UserId};
 
     pub struct StoreContext<'a> {
         pub caller: UserId,
-        pub controllers: &'a Controllers,
+        pub controllers: &'a AccessKeys,
         pub collection: &'a CollectionKey,
     }
 

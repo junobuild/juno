@@ -6,7 +6,7 @@
 		setSatellitesController
 	} from '$lib/api/mission-control.api';
 	import { listControllers } from '$lib/api/satellites.api';
-	import AccessKeys from '$lib/components/access-keys/AccessKeys.svelte';
+	import AccessKeys from '$lib/components/modules/access-keys/AccessKeys.svelte';
 	import { authIdentity } from '$lib/derived/auth.derived';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import { addAccessKey, removeAccessKey } from '$lib/services/access-keys/access-keys.services';
@@ -28,7 +28,7 @@
 
 	let { satellite }: Props = $props();
 
-	const list = (): Promise<[Principal, MissionControlDid.Controller][]> =>
+	const list = (): Promise<[Principal, MissionControlDid.AccessKey][]> =>
 		listControllers({ satelliteId: satellite.satellite_id, identity: $authIdentity });
 
 	const remove = async (accessKey: AccessKeyIdParam): Promise<AddAccessKeyResult> => {

@@ -1,22 +1,29 @@
 #!/usr/bin/env node
 
-import { hasArgs } from '@junobuild/cli-tools';
+import { hasArgs, nextArg } from '@junobuild/cli-tools';
 import { observatoryActorIC, observatoryActorLocal } from './actor.mjs';
 import { targetMainnet } from './utils.mjs';
 
-const toggleOpenIdMonitoring = async ({ mainnet, start }) => {
+const toggleOpenIdMonitoring = async ({ mainnet, provider, start }) => {
 	const { start_openid_monitoring, stop_openid_monitoring } = await (mainnet
 		? observatoryActorIC()
 		: observatoryActorLocal());
 
+	const args =
+		provider === 'gh_auth'
+			? { GitHubAuth: null }
+			: provider === 'gh_actions'
+				? { GitHubActions: null }
+				: { Google: null };
+
 	if (start) {
-		await start_openid_monitoring();
-		console.log('Monitoring started 🟢');
+		await start_openid_monitoring(args);
+		console.log(`Monitoring started for ${provider} 🟢`);
 		return;
 	}
 
-	await stop_openid_monitoring();
-	console.log('Monitoring stopped 🔴');
+	await stop_openid_monitoring(args);
+	console.log(`Monitoring stopped for ${provider} 🔴`);
 };
 
 const mainnet = targetMainnet();
@@ -35,4 +42,11 @@ if (start === true && stop === true) {
 	process.exit(1);
 }
 
-await toggleOpenIdMonitoring({ mainnet, start: start === true });
+const provider = nextArg({ args, option: '-p' }) ?? nextArg({ args, option: '--provider' });
+
+if (!['google', 'gh_auth', 'gh_actions'].includes(provider)) {
+	console.log(`Provider ${provider} is not supported`);
+	process.exit(1);
+}
+
+await toggleOpenIdMonitoring({ mainnet, provider, start: start === true });

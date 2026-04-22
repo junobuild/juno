@@ -5,12 +5,20 @@ import {
 	type SatelliteActor,
 	type SatelliteDid
 } from '$declarations';
+import type {
+	OpenIdAuthProviderConfig,
+	OpenIdDelegationProvider
+} from '$declarations/satellite/satellite.did';
 import type { _SERVICE as TestSatelliteActor } from '$test-declarations/test_satellite/test_satellite.did';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import { ECDSAKeyIdentity, Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import type { Principal } from '@icp-sdk/core/principal';
+import {
+	GITHUB_AUTH_OPEN_ID_PROVIDER,
+	GOOGLE_OPEN_ID_PROVIDER
+} from '../constants/auth-tests.constants';
 import { OBSERVATORY_ID } from '../constants/observatory-tests.constants';
-import { mockCertificateDate, mockClientId } from '../mocks/jwt.mocks';
+import { mockCertificateDate, mockGitHubClientId, mockGoogleClientId } from '../mocks/jwt.mocks';
 import { generateNonce } from './auth-nonce-tests.utils';
 import { deploySegments, setupConsole } from './console-tests.utils';
 import { setupTestSatellite } from './fixtures-tests.utils';
@@ -34,7 +42,9 @@ interface SetupAuth {
 	session: TestSession;
 }
 
-export const setupSatelliteAuth = async (): Promise<
+export const setupSatelliteAuth = async (
+	{ withGitHub }: { withGitHub?: boolean } = { withGitHub: false }
+): Promise<
 	SetupAuth & {
 		satellite: { canisterId: Principal; actor: Actor<SatelliteActor> };
 	}
@@ -58,7 +68,8 @@ export const setupSatelliteAuth = async (): Promise<
 	const common = await setupAuth({
 		pic,
 		controller,
-		actor: satelliteActor
+		actor: satelliteActor,
+		withGitHub
 	});
 
 	return {
@@ -68,7 +79,10 @@ export const setupSatelliteAuth = async (): Promise<
 };
 
 export const setupConsoleAuth = async (
-	{ withApplyRateTokens }: { withApplyRateTokens?: boolean } = { withApplyRateTokens: true }
+	{ withApplyRateTokens, withGitHub }: { withApplyRateTokens?: boolean; withGitHub?: boolean } = {
+		withApplyRateTokens: true,
+		withGitHub: false
+	}
 ): Promise<
 	SetupAuth & {
 		console: { canisterId: Principal; actor: Actor<ConsoleActor> };
@@ -100,7 +114,8 @@ export const setupConsoleAuth = async (
 	const common = await setupAuth({
 		pic,
 		controller,
-		actor: consoleActor
+		actor: consoleActor,
+		withGitHub
 	});
 
 	return {
@@ -112,11 +127,13 @@ export const setupConsoleAuth = async (
 const setupAuth = async ({
 	pic,
 	controller,
-	actor
+	actor,
+	withGitHub = false
 }: {
 	pic: PocketIc;
 	controller: Ed25519KeyIdentity;
 	actor: Actor<SatelliteActor> | Actor<ConsoleActor>;
+	withGitHub?: boolean;
 }): Promise<SetupAuth> => {
 	// User and session
 	const user = Ed25519KeyIdentity.generate();
@@ -148,7 +165,17 @@ const setupAuth = async ({
 		rules: [],
 		openid: [
 			{
-				providers: [[{ Google: null }, { client_id: mockClientId, delegation: [] }]],
+				providers: [
+					[{ Google: null }, { client_id: mockGoogleClientId, delegation: [] }],
+					...(withGitHub
+						? [
+								[{ GitHub: null }, { client_id: mockGitHubClientId, delegation: [] }] as [
+									OpenIdDelegationProvider,
+									OpenIdAuthProviderConfig
+								]
+							]
+						: [])
+				],
 				observatory_id: []
 			}
 		],
@@ -160,7 +187,11 @@ const setupAuth = async ({
 
 	// Start fetching OpenID Jwts in Observatory
 	const { start_openid_monitoring } = observatoryActor;
-	await start_openid_monitoring();
+	await start_openid_monitoring(GOOGLE_OPEN_ID_PROVIDER);
+
+	if (withGitHub) {
+		await start_openid_monitoring(GITHUB_AUTH_OPEN_ID_PROVIDER);
+	}
 
 	await updateRateConfigNoLimit({ actor: observatoryActor });
 

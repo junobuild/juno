@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { fade } from 'svelte/transition';
-	import Launchpad from '$lib/components/launchpad/Launchpad.svelte';
-	import Loaders from '$lib/components/loaders/Loaders.svelte';
-	import SignIn from '$lib/components/sign-in/SignIn.svelte';
+	import Loaders from '$lib/components/app/loaders/Loaders.svelte';
+	import SignIn from '$lib/components/auth/sign-in/SignIn.svelte';
+	import Launchpad from '$lib/components/modules/launchpad/Launchpad.svelte';
 	import { authSignedIn } from '$lib/derived/auth.derived';
 </script>
 

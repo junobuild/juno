@@ -6,12 +6,12 @@ use crate::types::interface::{Authentication, AuthenticationError, Authenticatio
 use junobuild_auth::delegation::types::{
     GetDelegationResult, OpenIdGetDelegationArgs, OpenIdPrepareDelegationArgs,
 };
-use junobuild_auth::state::get_providers;
+use junobuild_auth::state::get_auth_providers;
 
 pub async fn openid_authenticate(
     args: &OpenIdPrepareDelegationArgs,
 ) -> Result<AuthenticationResult, String> {
-    let providers = get_providers(&AuthHeap)?;
+    let providers = get_auth_providers(&AuthHeap)?;
 
     // Guard too many requests
     increment_mission_controls_rate()?;
@@ -19,10 +19,10 @@ pub async fn openid_authenticate(
     let prepared_delegation = delegation::openid_prepare_delegation(args, &providers).await;
 
     let result = match prepared_delegation {
-        Ok((delegation, credential)) => {
+        Ok((delegation, provider, credential)) => {
             let key = &delegation.user_key;
 
-            register_account(key, &credential)
+            register_account(key, &provider, &credential)
                 .await
                 .map(|account| Authentication {
                     delegation,
@@ -39,7 +39,7 @@ pub async fn openid_authenticate(
 pub fn openid_get_delegation(
     args: &OpenIdGetDelegationArgs,
 ) -> Result<GetDelegationResult, String> {
-    let providers = get_providers(&AuthHeap)?;
+    let providers = get_auth_providers(&AuthHeap)?;
 
     let result = delegation::openid_get_delegation(args, &providers);
 

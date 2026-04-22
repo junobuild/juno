@@ -9,8 +9,9 @@ import type { Actor, PocketIc } from '@dfinity/pic';
 import { ECDSAKeyIdentity, Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import { JUNO_AUTH_ERROR_NOT_CONFIGURED, JUNO_AUTH_ERROR_OPENID_DISABLED } from '@junobuild/errors';
 import { nanoid } from 'nanoid';
+import { GOOGLE_OPEN_ID_PROVIDER } from '../constants/auth-tests.constants';
 import { OBSERVATORY_ID } from '../constants/observatory-tests.constants';
-import { mockCertificateDate, mockClientId } from '../mocks/jwt.mocks';
+import { mockCertificateDate, mockGoogleClientId } from '../mocks/jwt.mocks';
 import { generateNonce } from './auth-nonce-tests.utils';
 import { assembleJwt } from './jwt-assemble-tests.utils';
 import { makeMockGoogleOpenIdJwt, type MockOpenIdJwt } from './jwt-tests.utils';
@@ -63,7 +64,7 @@ export const testAuthPrepareDelegation = ({
 
 		describe('Authenticate user fails', async () => {
 			const { jwt: mockJwt } = await makeMockGoogleOpenIdJwt({
-				clientId: mockClientId,
+				clientId: mockGoogleClientId,
 				date: mockCertificateDate,
 				nonce
 			});
@@ -83,7 +84,7 @@ export const testAuthPrepareDelegation = ({
 							salt
 						}
 					})
-				).rejects.toThrowError(JUNO_AUTH_ERROR_NOT_CONFIGURED);
+				).rejects.toThrow(JUNO_AUTH_ERROR_NOT_CONFIGURED);
 			});
 
 			it('should fail when openid configuration is not set', async () => {
@@ -110,7 +111,7 @@ export const testAuthPrepareDelegation = ({
 							salt
 						}
 					})
-				).rejects.toThrowError(JUNO_AUTH_ERROR_OPENID_DISABLED);
+				).rejects.toThrow(JUNO_AUTH_ERROR_OPENID_DISABLED);
 			});
 		});
 
@@ -129,7 +130,7 @@ export const testAuthPrepareDelegation = ({
 								[
 									{ Google: null },
 									{
-										client_id: mockClientId,
+										client_id: mockGoogleClientId,
 										delegation: []
 									}
 								]
@@ -147,7 +148,7 @@ export const testAuthPrepareDelegation = ({
 
 			describe('Errors without Jwts', async () => {
 				const { jwt: mockJwt, payload: mockJwtPayload } = await makeMockGoogleOpenIdJwt({
-					clientId: mockClientId,
+					clientId: mockGoogleClientId,
 					date: mockCertificateDate,
 					nonce
 				});
@@ -317,7 +318,7 @@ export const testAuthPrepareDelegation = ({
 
 					const { start_openid_monitoring } = observatoryActor;
 
-					await start_openid_monitoring();
+					await start_openid_monitoring(GOOGLE_OPEN_ID_PROVIDER);
 
 					actor.setIdentity(user);
 				});
@@ -338,7 +339,7 @@ export const testAuthPrepareDelegation = ({
 					const now = await pic.getTime();
 
 					const { jwks, jwt } = await makeMockGoogleOpenIdJwt({
-						clientId: mockClientId,
+						clientId: mockGoogleClientId,
 						date: new Date(now),
 						nonce,
 						kid
@@ -672,7 +673,7 @@ export const testAuthPrepareDelegation = ({
 					const future60s = new Date(base + 60_000);
 
 					const { jwks, jwt } = await makeMockGoogleOpenIdJwt({
-						clientId: mockClientId,
+						clientId: mockGoogleClientId,
 						date: future60s,
 						nonce
 					});
@@ -695,7 +696,7 @@ export const testAuthPrepareDelegation = ({
 					const future3min = new Date(base + 3 * 60_000);
 
 					const { jwks, jwt } = await makeMockGoogleOpenIdJwt({
-						clientId: mockClientId,
+						clientId: mockGoogleClientId,
 						date: future3min,
 						nonce
 					});
@@ -740,7 +741,7 @@ export const testAuthPrepareDelegation = ({
 
 					const base = await pic.getTime();
 					const { jwks, jwt } = await makeMockGoogleOpenIdJwt({
-						clientId: mockClientId,
+						clientId: mockGoogleClientId,
 						date: new Date(base),
 						nonce
 					});
@@ -786,7 +787,7 @@ export const testAuthPrepareDelegation = ({
 					const now = await pic.getTime();
 
 					const { payload } = await makeMockGoogleOpenIdJwt({
-						clientId: mockClientId,
+						clientId: mockGoogleClientId,
 						date: new Date(now),
 						nonce
 					});
@@ -832,7 +833,7 @@ export const testAuthPrepareDelegation = ({
 
 					const now = await pic.getTime();
 					const { jwt, kid } = await makeMockGoogleOpenIdJwt({
-						clientId: mockClientId,
+						clientId: mockGoogleClientId,
 						date: new Date(now),
 						nonce
 					});
@@ -892,7 +893,7 @@ export const testAuthPrepareDelegation = ({
 					const base = Math.floor(now / 1000);
 
 					const { jwks, kid } = await makeMockGoogleOpenIdJwt({
-						clientId: mockClientId,
+						clientId: mockGoogleClientId,
 						date: new Date(now),
 						nonce
 					});
@@ -903,7 +904,7 @@ export const testAuthPrepareDelegation = ({
 						sub: 'sub',
 						email: 'user@example.com',
 						email_verified: true,
-						aud: mockClientId,
+						aud: mockGoogleClientId,
 						iat: base,
 						exp: base + 3600,
 						nbf: base + 300,

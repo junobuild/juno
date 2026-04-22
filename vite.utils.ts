@@ -23,19 +23,26 @@ const readConsoleConfig = async (env: JunoConfigEnv): Promise<JunoConsoleConfig>
 const defineJunoEnv = async ({
 	mode
 }: JunoConfigEnv): Promise<Omit<ViteReplacements, 'VITE_APP_VERSION'>> => {
-	const { id, ids, authentication } = await readConsoleConfig({ mode });
+	const { id, ids, authentication, api } = await readConsoleConfig({ mode });
 
 	const consoleId = id ?? ids[mode];
 
 	assertNonNullish(consoleId, 'Console ID not defined.');
 
 	const googleClientId = authentication?.google?.clientId;
+	const githubClientId = authentication?.github?.clientId;
+
+	const apiUrl = api?.url;
 
 	return {
 		VITE_CONSOLE_ID: JSON.stringify(consoleId),
 		VITE_GOOGLE_CLIENT_ID: notEmptyString(googleClientId)
 			? JSON.stringify(googleClientId)
-			: undefined
+			: undefined,
+		VITE_GITHUB_CLIENT_ID: notEmptyString(githubClientId)
+			? JSON.stringify(githubClientId)
+			: undefined,
+		VITE_JUNO_API_URL: notEmptyString(apiUrl) ? JSON.stringify(apiUrl) : undefined
 	};
 };
 
@@ -52,6 +59,8 @@ const defineAppVersion = (): Pick<ViteReplacements, 'VITE_APP_VERSION'> => {
 interface ViteReplacements {
 	VITE_CONSOLE_ID: string;
 	VITE_GOOGLE_CLIENT_ID: string | undefined;
+	VITE_GITHUB_CLIENT_ID: string | undefined;
+	VITE_JUNO_API_URL: string | undefined;
 	VITE_APP_VERSION: string;
 }
 

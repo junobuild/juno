@@ -1,37 +1,3 @@
-pub mod interface {
-    pub struct OpenIdCredentialKey<'a> {
-        pub iss: &'a String,
-        pub sub: &'a String,
-    }
-
-    pub struct OpenIdCredential {
-        pub iss: String,
-        pub sub: String,
-
-        pub email: Option<String>,
-        pub name: Option<String>,
-        pub given_name: Option<String>,
-        pub family_name: Option<String>,
-        pub picture: Option<String>,
-        pub locale: Option<String>,
-    }
-}
-
-pub(crate) mod errors {
-    use crate::openid::jwkset::types::errors::GetOrRefreshJwksError;
-    use crate::openid::jwt::types::errors::{JwtFindProviderError, JwtVerifyError};
-    use candid::{CandidType, Deserialize};
-    use serde::Serialize;
-
-    #[derive(CandidType, Serialize, Deserialize, Debug)]
-    pub enum VerifyOpenidCredentialsError {
-        GetOrFetchJwks(GetOrRefreshJwksError),
-        GetCachedJwks,
-        JwtFindProvider(JwtFindProviderError),
-        JwtVerify(JwtVerifyError),
-    }
-}
-
 pub mod provider {
     use crate::openid::jwt::types::cert::Jwks;
     use candid::{CandidType, Deserialize};
@@ -43,6 +9,23 @@ pub mod provider {
     )]
     pub enum OpenIdProvider {
         Google,
+        GitHubAuth, // GitHub user authentication (OAuth) via Juno API proxy
+        GitHubActions,
+    }
+
+    #[derive(
+        CandidType, Serialize, Deserialize, Clone, Hash, PartialEq, Eq, PartialOrd, Ord, Debug,
+    )]
+    pub enum OpenIdDelegationProvider {
+        Google,
+        GitHub,
+    }
+
+    #[derive(
+        CandidType, Serialize, Deserialize, Clone, Hash, PartialEq, Eq, PartialOrd, Ord, Debug,
+    )]
+    pub enum OpenIdAutomationProvider {
+        GitHub,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]

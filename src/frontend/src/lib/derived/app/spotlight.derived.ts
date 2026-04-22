@@ -17,7 +17,8 @@ import IconUpgradeDock from '$lib/components/icons/IconUpgradeDock.svelte';
 import IconWallet from '$lib/components/icons/IconWallet.svelte';
 import { authNotSignedIn } from '$lib/derived/auth.derived';
 import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
-import { satelliteStore } from '$lib/derived/satellite.derived';
+import { orbiter } from '$lib/derived/orbiter.derived';
+import { satellite } from '$lib/derived/satellite.derived';
 import { sortedSatelliteUis } from '$lib/derived/satellites.derived';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { theme } from '$lib/stores/app/theme.store';
@@ -46,17 +47,9 @@ const withMissionControlItems: Readable<SpotlightItems> = derived(
 						type: 'nav' as const,
 						icon: IconMissionControl,
 						text: $i18n.mission_control.title,
-						href: '/monitoring/?tab=service',
+						href: '/monitoring/?tab=mission+control',
 						filter: ({ signedIn, query }: SpotlightItemFilterParams) =>
 							signedIn && $i18n.mission_control.title.toLowerCase().includes(query)
-					},
-					{
-						type: 'nav' as const,
-						icon: IconWallet,
-						text: $i18n.wallet.title,
-						href: '/wallet',
-						filter: ({ signedIn, query }: SpotlightItemFilterParams) =>
-							signedIn && $i18n.wallet.title.toLowerCase().includes(query)
 					},
 					{
 						type: 'nav' as const,
@@ -65,17 +58,28 @@ const withMissionControlItems: Readable<SpotlightItems> = derived(
 						href: '/monitoring',
 						filter: ({ signedIn, query }: SpotlightItemFilterParams) =>
 							signedIn && $i18n.monitoring.title.toLowerCase().includes(query)
-					},
-					{
-						type: 'nav' as const,
-						icon: IconUpgradeDock,
-						text: $i18n.upgrade.title,
-						href: upgradeDockLink(),
-						filter: ({ signedIn, query }: SpotlightItemFilterParams) =>
-							signedIn && $i18n.upgrade.title.toLowerCase().includes(query)
 					}
 				]
 );
+
+const managementItems: Readable<SpotlightItems> = derived([i18n], ([$i18n]) => [
+	{
+		type: 'nav' as const,
+		icon: IconWallet,
+		text: $i18n.wallet.title,
+		href: '/wallet',
+		filter: ({ signedIn, query }: SpotlightItemFilterParams) =>
+			signedIn && $i18n.wallet.title.toLowerCase().includes(query)
+	},
+	{
+		type: 'nav' as const,
+		icon: IconUpgradeDock,
+		text: $i18n.upgrade.title,
+		href: upgradeDockLink(),
+		filter: ({ signedIn, query }: SpotlightItemFilterParams) =>
+			signedIn && $i18n.upgrade.title.toLowerCase().includes(query)
+	}
+]);
 
 const preferenceItem: Readable<SpotlightNavItem> = derived([i18n], ([$i18n]) => ({
 	type: 'nav' as const,
@@ -84,6 +88,15 @@ const preferenceItem: Readable<SpotlightNavItem> = derived([i18n], ([$i18n]) => 
 	href: '/preferences',
 	filter: ({ signedIn, query }: SpotlightItemFilterParams) =>
 		signedIn && $i18n.preferences.title.toLowerCase().includes(query)
+}));
+
+const profileItem: Readable<SpotlightNavItem> = derived([i18n], ([$i18n]) => ({
+	type: 'nav' as const,
+	icon: IconRaygun,
+	text: $i18n.profile.title,
+	href: '/profile',
+	filter: ({ signedIn, query }: SpotlightItemFilterParams) =>
+		signedIn && $i18n.profile.title.toLowerCase().includes(query)
 }));
 
 const homeItem: Readable<SpotlightNavItem> = derived(
@@ -115,19 +128,33 @@ const themeItem: Readable<SpotlightActionItem> = derived([i18n, theme], ([$i18n,
 	};
 });
 
-const analyticsItem: Readable<SpotlightNavItem | undefined> = derived(
-	[i18n, authNotSignedIn],
-	([$i18n, $authNotSignedIn]) =>
+const analyticsItems: Readable<SpotlightItems> = derived(
+	[i18n, authNotSignedIn, orbiter],
+	([$i18n, $authNotSignedIn, $orbiter]) =>
 		$authNotSignedIn
-			? undefined
-			: {
-					type: 'nav' as const,
-					icon: IconAnalytics,
-					text: $i18n.analytics.title,
-					href: analyticsLink(),
-					filter: ({ query }: SpotlightItemFilterParams) =>
-						$i18n.analytics.title.toLowerCase().includes(query)
-				}
+			? []
+			: [
+					{
+						type: 'nav' as const,
+						icon: IconAnalytics,
+						text: $i18n.analytics.title,
+						href: analyticsLink(),
+						filter: ({ query }: SpotlightItemFilterParams) =>
+							$i18n.analytics.title.toLowerCase().includes(query)
+					},
+					...(nonNullish($orbiter)
+						? [
+								{
+									type: 'nav' as const,
+									icon: IconAnalytics,
+									text: $i18n.analytics.orbiter,
+									href: '/analytics/?tab=orbiter',
+									filter: ({ query }: SpotlightItemFilterParams) =>
+										$i18n.analytics.orbiter.toLowerCase().includes(query)
+								}
+							]
+						: [])
+				]
 );
 
 const externalItems: Readable<SpotlightItems> = derived([i18n], ([$i18n]) => [
@@ -151,8 +178,8 @@ const externalItems: Readable<SpotlightItems> = derived([i18n], ([$i18n]) => [
 ]);
 
 const satellitesItems: Readable<SpotlightItems> = derived(
-	[i18n, sortedSatelliteUis, satelliteStore],
-	([$i18n, $sortedSatelliteUis, $satelliteStore]) => {
+	[i18n, sortedSatelliteUis, satellite],
+	([$i18n, $sortedSatelliteUis, $satellite]) => {
 		const mapSatelliteNav = (satellite: SatelliteUi): SpotlightNavItem[] => {
 			const {
 				satellite_id,
@@ -167,7 +194,7 @@ const satellitesItems: Readable<SpotlightItems> = derived(
 
 			const queryParam = `/?s=${satelliteId}`;
 
-			const isSelected = $satelliteStore?.satellite_id.toText() === satelliteId;
+			const isSelected = $satellite?.satellite_id.toText() === satelliteId;
 
 			const filter =
 				(section: string): SpotlightItemFilterFn =>
@@ -231,24 +258,30 @@ export const spotlightItems: Readable<SpotlightItems> = derived(
 		themeItem,
 		externalItems,
 		withMissionControlItems,
-		analyticsItem,
+		managementItems,
+		analyticsItems,
 		satellitesItems,
-		preferenceItem
+		preferenceItem,
+		profileItem
 	],
 	([
 		$homeItem,
 		$themeItem,
 		$externalItems,
 		$missionControlItems,
-		$analyticsItem,
+		$managementItems,
+		$analyticsItems,
 		$satellitesItems,
-		$preferenceItem
+		$preferenceItem,
+		$profileItem
 	]) => [
 		$homeItem,
 		...$missionControlItems,
+		...$managementItems,
 		...$satellitesItems,
-		...(nonNullish($analyticsItem) ? [$analyticsItem] : []),
+		...$analyticsItems,
 		$preferenceItem,
+		$profileItem,
 		$themeItem,
 		...$externalItems
 	]

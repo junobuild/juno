@@ -1,3 +1,13 @@
+type AccessKey = record {
+  updated_at : nat64;
+  metadata : vec record { text; text };
+  kind : opt AccessKeyKind;
+  created_at : nat64;
+  scope : AccessKeyScope;
+  expires_at : opt nat64;
+};
+type AccessKeyKind = variant { Emulator; Automation };
+type AccessKeyScope = variant { Write; Admin; Submit };
 type Account = record {
   updated_at : nat64;
   credits : Tokens;
@@ -5,6 +15,12 @@ type Account = record {
   provider : opt Provider;
   owner : principal;
   created_at : nat64;
+};
+type AccountConfig = record {
+  updated_at : opt nat64;
+  init_credits : Tokens;
+  created_at : opt nat64;
+  version : opt nat64;
 };
 type Account_1 = record { owner : principal; subaccount : opt blob };
 type AssertMissionControlCenterArgs = record {
@@ -52,7 +68,7 @@ type AuthenticationConfigInternetIdentity = record {
 };
 type AuthenticationConfigOpenId = record {
   observatory_id : opt principal;
-  providers : vec record { OpenIdProvider; OpenIdProviderConfig };
+  providers : vec record { OpenIdDelegationProvider; OpenIdAuthProviderConfig };
 };
 type AuthenticationError = variant {
   PrepareDelegation : PrepareDelegationError;
@@ -70,15 +86,6 @@ type Config = record {
   storage : StorageConfig;
 };
 type ConfigMaxMemorySize = record { stable : opt nat64; heap : opt nat64 };
-type Controller = record {
-  updated_at : nat64;
-  metadata : vec record { text; text };
-  created_at : nat64;
-  scope : ControllerScope;
-  expires_at : opt nat64;
-};
-type ControllerScope = variant { Write; Admin; Submit };
-type CreateCanisterArgs = record { subnet_id : opt principal; name : opt text };
 type CreateMissionControlArgs = record { subnet_id : opt principal };
 type CreateOrbiterArgs = record {
   block_index : opt nat64;
@@ -92,12 +99,6 @@ type CreateSatelliteArgs = record {
   storage : opt InitStorageArgs;
   name : opt text;
   user : principal;
-};
-type CreateSegmentArgs = variant {
-  Orbiter : CreateOrbiterArgs;
-  MissionControl : CreateMissionControlArgs;
-  Canister : CreateCanisterArgs;
-  Satellite : CreateSatelliteArgs;
 };
 type CustomDomain = record {
   updated_at : nat64;
@@ -128,6 +129,7 @@ type GetDelegationError = variant {
   JwtVerify : JwtVerifyError;
   GetOrFetchJwks : GetOrRefreshJwksError;
   DeriveSeedFailed : text;
+  InvalidObservatoryId : text;
 };
 type GetOrRefreshJwksError = variant {
   InvalidConfig : text;
@@ -230,7 +232,15 @@ type ListSegmentsArgs = record {
   segment_kind : opt StorableSegmentKind;
 };
 type Memory = variant { Heap; Stable };
-type OpenId = record { provider : OpenIdProvider; data : OpenIdData };
+type OpenId = record { provider : OpenIdDelegationProvider; data : OpenIdData };
+type OpenIdAuthProviderConfig = record {
+  delegation : opt OpenIdAuthProviderDelegationConfig;
+  client_id : text;
+};
+type OpenIdAuthProviderDelegationConfig = record {
+  targets : opt vec principal;
+  max_time_to_live : opt nat64;
+};
 type OpenIdData = record {
   name : opt text;
   locale : opt text;
@@ -238,7 +248,9 @@ type OpenIdData = record {
   email : opt text;
   picture : opt text;
   given_name : opt text;
+  preferred_username : opt text;
 };
+type OpenIdDelegationProvider = variant { GitHub; Google };
 type OpenIdGetDelegationArgs = record {
   jwt : text;
   session_key : blob;
@@ -250,15 +262,6 @@ type OpenIdPrepareDelegationArgs = record {
   session_key : blob;
   salt : blob;
 };
-type OpenIdProvider = variant { Google };
-type OpenIdProviderConfig = record {
-  delegation : opt OpenIdProviderDelegationConfig;
-  client_id : text;
-};
-type OpenIdProviderDelegationConfig = record {
-  targets : opt vec principal;
-  max_time_to_live : opt nat64;
-};
 type PaymentStatus = variant { Refunded; Acknowledged; Completed };
 type PrepareDelegationError = variant {
   JwtFindProvider : JwtFindProviderError;
@@ -266,6 +269,7 @@ type PrepareDelegationError = variant {
   JwtVerify : JwtVerifyError;
   GetOrFetchJwks : GetOrRefreshJwksError;
   DeriveSeedFailed : text;
+  InvalidObservatoryId : text;
 };
 type PreparedDelegation = record { user_key : blob; expiration : nat64 };
 type Proposal = record {
@@ -306,25 +310,27 @@ type SegmentKey = record {
   segment_id : principal;
   segment_kind : StorableSegmentKind;
 };
-type SegmentKind = variant { Orbiter; MissionControl; Canister; Satellite };
+type SegmentKind = variant { Orbiter; MissionControl; Satellite };
 type SegmentsDeploymentOptions = record {
   orbiter : opt text;
   mission_control_version : opt text;
   satellite_version : opt text;
 };
+type SetAccessKey = record {
+  metadata : vec record { text; text };
+  kind : opt AccessKeyKind;
+  scope : AccessKeyScope;
+  expires_at : opt nat64;
+};
+type SetAccountConfig = record { init_credits : Tokens; version : opt nat64 };
 type SetAuthenticationConfig = record {
   openid : opt AuthenticationConfigOpenId;
   version : opt nat64;
   internet_identity : opt AuthenticationConfigInternetIdentity;
   rules : opt AuthenticationRules;
 };
-type SetController = record {
-  metadata : vec record { text; text };
-  scope : ControllerScope;
-  expires_at : opt nat64;
-};
 type SetControllersArgs = record {
-  controller : SetController;
+  controller : SetAccessKey;
   controllers : vec principal;
 };
 type SetSegmentMetadataArgs = record {
@@ -347,7 +353,7 @@ type SetStorageConfig = record {
   redirects : opt vec record { text; StorageConfigRedirect };
 };
 type SignedDelegation = record { signature : blob; delegation : Delegation };
-type StorableSegmentKind = variant { Orbiter; Canister; Satellite };
+type StorableSegmentKind = variant { Orbiter; Satellite };
 type StorageConfig = record {
   iframe : opt StorageConfigIFrame;
   updated_at : opt nat64;
@@ -398,6 +404,8 @@ type UploadChunk = record {
   order_id : opt nat;
 };
 type UploadChunkResult = record { chunk_id : nat };
+type WithdrawArgs = record { to : principal };
+type WithdrawResult = record { block_index : nat64; amount : nat64 };
 service : () -> {
   add_credits : (principal, Tokens) -> ();
   add_invitation_code : (text) -> ();
@@ -410,11 +418,11 @@ service : () -> {
   create_mission_control : (CreateMissionControlArgs) -> (principal);
   create_orbiter : (CreateOrbiterArgs) -> (principal);
   create_satellite : (CreateSatelliteArgs) -> (principal);
-  create_segment : (CreateSegmentArgs) -> (principal);
   del_controllers : (DeleteControllersArgs) -> ();
   del_custom_domain : (text) -> ();
   delete_proposal_assets : (DeleteProposalAssets) -> ();
   get_account : () -> (opt Account) query;
+  get_account_config : () -> (opt AccountConfig) query;
   get_auth_config : () -> (opt AuthenticationConfig) query;
   get_config : () -> (Config) query;
   get_create_orbiter_fee : (GetCreateCanisterFeeArgs) -> (opt Tokens) query;
@@ -437,7 +445,7 @@ service : () -> {
     );
   list_accounts : () -> (vec record { principal; Account }) query;
   list_assets : (text, ListParams) -> (ListResults) query;
-  list_controllers : () -> (vec record { principal; Controller }) query;
+  list_controllers : () -> (vec record { principal; AccessKey }) query;
   list_custom_domains : () -> (vec record { text; CustomDomain }) query;
   list_icp_payments : () -> (vec record { nat64; IcpPayment }) query;
   list_icrc_payments : () -> (vec record { IcrcPaymentKey; IcrcPayment }) query;
@@ -446,15 +454,20 @@ service : () -> {
       vec record { SegmentKey; Segment },
     ) query;
   reject_proposal : (CommitProposal) -> (null);
+  set_account_config : (SetAccountConfig) -> (AccountConfig);
   set_auth_config : (SetAuthenticationConfig) -> (AuthenticationConfig);
   set_controllers : (SetControllersArgs) -> ();
   set_custom_domain : (text, opt text) -> ();
   set_fee : (SegmentKind, FeesArgs) -> ();
+  set_many_segments : (vec SetSegmentsArgs) -> (vec Segment);
   set_rate_config : (SegmentKind, RateConfig) -> ();
   set_segment : (SetSegmentsArgs) -> (Segment);
   set_segment_metadata : (SetSegmentMetadataArgs) -> (Segment);
   set_storage_config : (SetStorageConfig) -> (StorageConfig);
   submit_proposal : (nat) -> (nat, Proposal);
+  unset_many_segments : (vec UnsetSegmentsArgs) -> ();
   unset_segment : (UnsetSegmentsArgs) -> ();
   upload_proposal_asset_chunk : (UploadChunk) -> (UploadChunkResult);
+  withdraw_icp : (WithdrawArgs) -> (WithdrawResult);
+  withdraw_icrc : (WithdrawArgs) -> (WithdrawResult);
 }

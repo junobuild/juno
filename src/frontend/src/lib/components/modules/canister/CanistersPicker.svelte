@@ -1,0 +1,46 @@
+<script lang="ts">
+	import { isNullish, nonNullish } from '@dfinity/utils';
+	import type { Principal } from '@icp-sdk/core/principal';
+	import { onMount } from 'svelte';
+	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
+	import { orbiter } from '$lib/derived/orbiter.derived';
+	import { sortedSatellites } from '$lib/derived/satellites.derived';
+	import { loadSegments } from '$lib/services/segments.services';
+	import { i18n } from '$lib/stores/app/i18n.store';
+	import { satelliteName } from '$lib/utils/satellite.utils';
+
+	interface Props {
+		excludeSegmentId: Principal;
+		segmentIdText?: string | undefined;
+	}
+
+	let { excludeSegmentId, segmentIdText = $bindable(undefined) }: Props = $props();
+
+	let excludeSegmentIdText: string = $derived(excludeSegmentId.toText());
+
+	let satellites = $derived(
+		$sortedSatellites.filter(({ satellite_id }) => satellite_id.toText() !== excludeSegmentIdText)
+	);
+
+	onMount(async () => await loadSegments({ missionControlId: $missionControlId }));
+</script>
+
+<select id="segment" name="segment" bind:value={segmentIdText}>
+	{#if isNullish(segmentIdText)}
+		<option value={undefined}>{$i18n.canisters.select_destination}</option>
+	{/if}
+
+	{#if nonNullish($missionControlId) && $missionControlId.toText() !== excludeSegmentIdText}
+		<option value={$missionControlId.toText()}>{$i18n.mission_control.title}</option>
+	{/if}
+
+	{#if nonNullish($orbiter) && $orbiter.orbiter_id.toText() !== excludeSegmentIdText}
+		<option value={$orbiter.orbiter_id.toText()}>{$i18n.analytics.title}</option>
+	{/if}
+
+	{#each satellites as satellite (satellite.satellite_id.toText())}
+		{@const satName = satelliteName(satellite)}
+
+		<option value={satellite.satellite_id.toText()}>{satName}</option>
+	{/each}
+</select>

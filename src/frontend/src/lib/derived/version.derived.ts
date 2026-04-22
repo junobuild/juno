@@ -1,13 +1,13 @@
-import { satellitesStore } from '$lib/derived/satellites.derived';
+import { satellites } from '$lib/derived/satellites.derived';
 import { versionStore } from '$lib/stores/version.store';
 import type { SatelliteIdText } from '$lib/types/satellite';
-import type { Option } from '$lib/types/utils';
 import type { SatelliteVersionMetadataUi, VersionMetadataUi } from '$lib/types/version';
 import { isNullish, nonNullish } from '@dfinity/utils';
+import type { Nullish } from '@dfinity/zod-schemas';
 import { compare } from 'semver';
 import { derived, type Readable } from 'svelte/store';
 
-export const missionControlVersion: Readable<Option<VersionMetadataUi>> = derived(
+export const missionControlVersion: Readable<Nullish<VersionMetadataUi>> = derived(
 	[versionStore],
 	([$versionStore]) => {
 		if (isNullish($versionStore.missionControl)) {
@@ -24,7 +24,7 @@ export const missionControlVersion: Readable<Option<VersionMetadataUi>> = derive
 	}
 );
 
-export const orbiterVersion: Readable<Option<VersionMetadataUi>> = derived(
+export const orbiterVersion: Readable<Nullish<VersionMetadataUi>> = derived(
 	[versionStore],
 	([$versionStore]) => {
 		if (isNullish($versionStore.orbiter)) {
@@ -43,7 +43,7 @@ export const orbiterVersion: Readable<Option<VersionMetadataUi>> = derived(
 
 export const satellitesVersion = derived([versionStore], ([$versionStore]) =>
 	Object.entries($versionStore.satellites).reduce<
-		Record<SatelliteIdText, Option<SatelliteVersionMetadataUi>>
+		Record<SatelliteIdText, Nullish<SatelliteVersionMetadataUi>>
 	>(
 		(acc, [key, value]) => ({
 			...acc,
@@ -79,7 +79,7 @@ export const orbiterVersionNotLoaded = derived(
 );
 
 export const satellitesVersionLoaded = derived(
-	[satellitesStore, satellitesVersion],
+	[satellites, satellitesVersion],
 	([$satellitesStore, $satellitesVersion]) =>
 		nonNullish($satellitesStore) &&
 		$satellitesStore.every(

@@ -1,6 +1,7 @@
 pub mod state {
     use crate::delegation::types::Timestamp;
     use crate::openid::types::provider::{OpenIdCertificate, OpenIdProvider};
+    use crate::state::types::automation::AutomationConfig;
     use crate::state::types::config::AuthenticationConfig;
     use candid::CandidType;
     use serde::{Deserialize, Serialize};
@@ -10,7 +11,11 @@ pub mod state {
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
     pub struct AuthenticationHeapState {
+        /// Configuration for user authentication via delegation (Internet Identity, Google, GitHub).
+        /// Note: Field name kept as "config" for backward compatibility during upgrades.
         pub config: AuthenticationConfig,
+        /// Configuration for CI/CD authentication.
+        pub automation: Option<AutomationConfig>,
         pub salt: Option<Salt>,
         pub openid: Option<OpenIdState>,
     }
@@ -53,7 +58,7 @@ pub(crate) mod runtime_state {
 
 pub mod config {
     use crate::delegation::types::DelegationTargets;
-    use crate::openid::types::provider::OpenIdProvider;
+    use crate::openid::types::provider::OpenIdDelegationProvider;
     use candid::{CandidType, Deserialize, Principal};
     use junobuild_shared::types::core::DomainName;
     use junobuild_shared::types::state::{Timestamp, Version};
@@ -72,7 +77,7 @@ pub mod config {
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
     pub struct AuthenticationConfigOpenId {
-        pub providers: OpenIdProviders,
+        pub providers: OpenIdAuthProviders,
         pub observatory_id: Option<Principal>,
     }
 
@@ -87,24 +92,83 @@ pub mod config {
         pub allowed_callers: Vec<Principal>,
     }
 
-    pub type OpenIdProviders = BTreeMap<OpenIdProvider, OpenIdProviderConfig>;
+    pub type OpenIdAuthProviders = BTreeMap<OpenIdDelegationProvider, OpenIdAuthProviderConfig>;
 
-    pub type OpenIdProviderClientId = String;
+    pub type OpenIdAuthProviderClientId = String;
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone, Debug)]
-    pub struct OpenIdProviderConfig {
-        pub client_id: OpenIdProviderClientId,
-        pub delegation: Option<OpenIdProviderDelegationConfig>,
+    pub struct OpenIdAuthProviderConfig {
+        pub client_id: OpenIdAuthProviderClientId,
+        pub delegation: Option<OpenIdAuthProviderDelegationConfig>,
     }
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone, Debug)]
-    pub struct OpenIdProviderDelegationConfig {
+    pub struct OpenIdAuthProviderDelegationConfig {
         pub targets: Option<DelegationTargets>,
         pub max_time_to_live: Option<u64>,
     }
 }
 
+pub mod automation {
+    use crate::automation::types::AutomationScope;
+    use crate::openid::types::provider::OpenIdAutomationProvider;
+    use candid::{CandidType, Deserialize, Principal};
+    use junobuild_shared::types::state::{Timestamp, Version};
+    use serde::Serialize;
+    use std::collections::{BTreeMap, HashMap};
+
+    #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
+    pub struct AutomationConfig {
+        pub openid: Option<AutomationConfigOpenId>,
+        pub version: Option<Version>,
+        pub created_at: Option<Timestamp>,
+        pub updated_at: Option<Timestamp>,
+    }
+
+    #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
+    pub struct AutomationConfigOpenId {
+        pub providers: OpenIdAutomationProviders,
+        pub observatory_id: Option<Principal>,
+    }
+
+    pub type OpenIdAutomationProviders =
+        BTreeMap<OpenIdAutomationProvider, OpenIdAutomationProviderConfig>;
+
+    // Repository identifier for GitHub automation.
+    // Corresponds to the `repository` claim in GitHub OIDC tokens (e.g., "octo-org/octo-repo").
+    // See: https://docs.github.com/en/actions/concepts/security/openid-connect#understanding-the-oidc-token
+    #[derive(CandidType, Serialize, Deserialize, Clone, Debug, Hash, Eq, PartialEq)]
+    pub struct RepositoryKey {
+        // Repository owner (e.g. "octo-org")
+        pub owner: String,
+        // Repository name (e.g. "octo-repo")
+        pub name: String,
+    }
+
+    pub type OpenIdAutomationRepositories =
+        HashMap<RepositoryKey, OpenIdAutomationRepositoryConfig>;
+
+    #[derive(Default, CandidType, Serialize, Deserialize, Clone, Debug)]
+    pub struct OpenIdAutomationProviderConfig {
+        pub repositories: OpenIdAutomationRepositories,
+        pub controller: Option<OpenIdAutomationProviderControllerConfig>,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone, Debug)]
+    pub struct OpenIdAutomationRepositoryConfig {
+        // Optionally restrict to specific references / branches (e.g. ["refs/heads/main", "refs/pull/74/merge"])
+        pub refs: Option<Vec<String>>,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone, Debug)]
+    pub struct OpenIdAutomationProviderControllerConfig {
+        pub scope: Option<AutomationScope>,
+        pub max_time_to_live: Option<u64>,
+    }
+}
+
 pub mod interface {
+    use crate::state::types::automation::AutomationConfigOpenId;
     use crate::state::types::config::{
         AuthenticationConfigInternetIdentity, AuthenticationConfigOpenId, AuthenticationRules,
     };
@@ -117,6 +181,12 @@ pub mod interface {
         pub internet_identity: Option<AuthenticationConfigInternetIdentity>,
         pub openid: Option<AuthenticationConfigOpenId>,
         pub rules: Option<AuthenticationRules>,
+        pub version: Option<Version>,
+    }
+
+    #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
+    pub struct SetAutomationConfig {
+        pub openid: Option<AutomationConfigOpenId>,
         pub version: Option<Version>,
     }
 }

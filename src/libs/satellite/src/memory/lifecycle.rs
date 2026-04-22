@@ -6,10 +6,11 @@ use crate::memory::internal::{get_memory_for_upgrade, init_stable_state};
 use crate::memory::state::STATE;
 use crate::memory::utils::init_storage_heap_state;
 use crate::random::init::defer_init_random_seed;
+use crate::rules::upgrade::init_system_collections;
 use crate::types::state::{HeapState, RuntimeState, State};
 use ciborium::{from_reader, into_writer};
 use junobuild_shared::memory::upgrade::{read_post_upgrade, write_pre_upgrade};
-use junobuild_shared::segments::controllers::init_admin_controllers;
+use junobuild_shared::segments::access_keys::init_admin_access_keys;
 use junobuild_shared::types::interface::InitSatelliteArgs;
 use junobuild_shared::types::memory::Memory;
 
@@ -20,7 +21,7 @@ pub fn init(args: InitSatelliteArgs) {
     } = args;
 
     let heap = HeapState {
-        controllers: init_admin_controllers(&controllers),
+        controllers: init_admin_access_keys(&controllers),
         storage: init_storage_heap_state(&storage),
         ..HeapState::default()
     };
@@ -61,4 +62,6 @@ pub fn post_upgrade() {
     invoke_on_post_upgrade_sync();
 
     invoke_on_post_upgrade();
+
+    init_system_collections();
 }

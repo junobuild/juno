@@ -89,3 +89,7 @@ export const toListParams = ({
 	],
 	owner: toNullable(owner === '' || isNullish(owner) ? null : Principal.fromText(owner))
 });
+
+// eslint-disable-next-line local-rules/prefer-object-params
+export const sortSatellites = (a: Satellite, b: Satellite): number =>
+	satelliteName(a).localeCompare(satelliteName(b));

@@ -1,5 +1,6 @@
 import { resetSnapshots } from '$lib/services/ic-mgmt/snapshots.services';
 import { resetSubnets } from '$lib/services/ic-mgmt/subnets.services';
+import { resetSatellitesConfig } from '$lib/services/satellite/satellite-config.services';
 import { busy } from '$lib/stores/app/busy.store';
 import { i18n } from '$lib/stores/app/i18n.store';
 import {
@@ -9,7 +10,8 @@ import {
 	monitoringIdbStore,
 	releasesIdbStore,
 	versionIdbStore,
-	walletIdbStore
+	walletIdbStore,
+	workflowsIdbStore
 } from '$lib/stores/app/idb.store';
 import { toasts } from '$lib/stores/app/toasts.store';
 import { authStore } from '$lib/stores/auth.store';
@@ -84,12 +86,14 @@ const logout = async ({
 			clear(monitoringIdbStore),
 			clear(exchangeIdbStore),
 			clear(walletIdbStore),
+			clear(workflowsIdbStore),
 			clear(versionIdbStore),
 			clear(releasesIdbStore),
 			clear(icpToCyclesRateIdbStore),
 			resetSnapshots(),
 			resetSubnets(),
-			resetLocalStorage()
+			resetLocalStorage(),
+			resetSatellitesConfig()
 		]);
 	}
 

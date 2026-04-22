@@ -1,6 +1,7 @@
 import type { ConsoleDid, ICDid, MissionControlDid, OrbiterDid, SatelliteDid } from '$declarations';
 import type { SelectedToken, SelectedWallet } from '$lib/schemas/wallet.schema';
 import type { AddAccessKeyParams, AddAccessKeyResult } from '$lib/types/access-keys';
+import type { OpenIdAuthProvider } from '$lib/types/auth';
 import type { CanisterInfo, CanisterSegmentWithLabel, CanisterSettings } from '$lib/types/canister';
 import type { MissionControlId } from '$lib/types/mission-control';
 import type { OrbiterSatelliteConfigEntry } from '$lib/types/orbiter';
@@ -8,7 +9,7 @@ import type { ProposalRecord } from '$lib/types/proposals';
 import type { Satellite, SatelliteIdText } from '$lib/types/satellite';
 import type { User as UserListed } from '$lib/types/user';
 import type { UserUsageCollection } from '$lib/types/user-usage';
-import type { Option } from '$lib/types/utils';
+import type { Nullish } from '@dfinity/zod-schemas';
 import type { Principal } from '@icp-sdk/core/principal';
 import type { BuildType } from '@junobuild/admin';
 
@@ -33,13 +34,13 @@ export type JunoModalUpgradeSatelliteDetail = JunoModalUpgradeDetail &
 export interface JunoModalCreateSegmentDetail {
 	fee: ConsoleDid.FactoryFee;
 	monitoringEnabled: boolean;
-	monitoringConfig: Option<MissionControlDid.MonitoringConfig>;
+	monitoringConfig: Nullish<MissionControlDid.MonitoringConfig>;
 }
 
 export interface JunoModalCustomDomainDetail {
 	editDomainName?: string;
 	satellite: Satellite;
-	config: SatelliteDid.AuthenticationConfig | undefined;
+	config: SatelliteDid.AuthenticationConfig | null | undefined;
 }
 
 export interface JunoModalCycles {
@@ -91,10 +92,10 @@ export interface JunoModalEditAuthConfigDetailCore {
 export type JunoModalEditAuthConfigDetailType =
 	| JunoModalEditAuthConfigDetailCore
 	| JunoModalEditAuthConfigDetailII
-	| JunoModalEditAuthConfigDetailGoogle;
+	| JunoModalEditAuthConfigDetailOpenId;
 
-export interface JunoModalEditAuthConfigDetailGoogle {
-	google: null;
+export interface JunoModalEditAuthConfigDetailOpenId {
+	openid: { provider: OpenIdAuthProvider };
 }
 
 export interface JunoModalEditAuthConfigDetailII {
@@ -129,6 +130,13 @@ export interface JunoModalWalletDetail {
 	selectedToken: SelectedToken;
 }
 
+export type JunoModalConvertIcpToCyclesDetails = Pick<JunoModalWalletDetail, 'selectedWallet'>;
+
+export interface JunoModalAutomationConfigDetail extends JunoModalWithSatellite {
+	automationConfig: SatelliteDid.AutomationConfig;
+	providerConfig: SatelliteDid.OpenIdAutomationProviderConfig;
+}
+
 export type JunoModalDetail =
 	| JunoModalUpgradeSatelliteDetail
 	| JunoModalUpgradeDetail
@@ -148,7 +156,8 @@ export type JunoModalDetail =
 	| JunoModalChangeDetail
 	| JunoModalCdnUpgradeDetail
 	| JunoModalEditAuthConfigDetail
-	| JunoModalWalletDetail;
+	| JunoModalWalletDetail
+	| JunoModalAutomationConfigDetail;
 
 export interface JunoModal<T extends JunoModalDetail> {
 	type:
@@ -181,6 +190,11 @@ export interface JunoModal<T extends JunoModalDetail> {
 		| 'show_user_details'
 		| 'apply_change'
 		| 'reject_change'
-		| 'upgrade_satellite_with_cdn';
+		| 'upgrade_satellite_with_cdn'
+		| 'convert_icp_to_cycles'
+		| 'reconcile_out_of_sync_segments'
+		| 'create_automation'
+		| 'edit_automation_keys_config'
+		| 'edit_automation_connect_repository_config';
 	detail?: T;
 }

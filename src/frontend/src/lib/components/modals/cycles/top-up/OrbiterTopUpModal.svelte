@@ -2,7 +2,7 @@
 	import { nonNullish } from '@dfinity/utils';
 	import CanisterTopUpModal from '$lib/components/modals/cycles/top-up/CanisterTopUpModal.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
-	import { orbiterStore } from '$lib/derived/orbiter.derived';
+	import { orbiter } from '$lib/derived/orbiter.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 
@@ -13,12 +13,12 @@
 	let { onclose }: Props = $props();
 </script>
 
-{#if nonNullish($orbiterStore)}
+{#if nonNullish($orbiter)}
 	<CanisterTopUpModal
 		{onclose}
 		segment={{
 			segment: 'orbiter',
-			canisterId: $orbiterStore.orbiter_id.toText(),
+			canisterId: $orbiter.orbiter_id.toText(),
 			label: $i18n.analytics.orbiter
 		}}
 	>

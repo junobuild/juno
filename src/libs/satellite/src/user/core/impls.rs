@@ -9,7 +9,8 @@ use crate::user::core::types::state::{
     AuthProvider, OpenIdData, ProviderData, UserData, WebAuthnData,
 };
 use crate::{Doc, SetDoc};
-use junobuild_auth::openid::types::interface::OpenIdCredential;
+use junobuild_auth::openid::credentials::delegation::types::interface::OpenIdDelegationCredential;
+use junobuild_auth::openid::types::provider::OpenIdDelegationProvider;
 use junobuild_auth::profile::types::{OpenIdProfile, Validated};
 use junobuild_utils::encode_doc_data;
 
@@ -40,6 +41,9 @@ impl OpenIdProfile for OpenIdData {
     fn family_name(&self) -> Option<&str> {
         self.family_name.as_deref()
     }
+    fn preferred_username(&self) -> Option<&str> {
+        self.preferred_username.as_deref()
+    }
     fn picture(&self) -> Option<&str> {
         self.picture.as_deref()
     }
@@ -61,6 +65,7 @@ impl ProviderData {
         match (self, provider) {
             (ProviderData::WebAuthn(_), &AuthProvider::WebAuthn) => true,
             (ProviderData::OpenId(_), &AuthProvider::Google) => true,
+            (ProviderData::OpenId(_), &AuthProvider::GitHub) => true,
             _ => false,
         }
     }
@@ -80,12 +85,12 @@ impl UserData {
 
                 provider_data.validate()
             }
-            Some(AuthProvider::Google) => {
+            Some(ref provider @ (AuthProvider::Google | AuthProvider::GitHub)) => {
                 let provider_data = self.provider_data.as_ref().ok_or_else(|| {
                     JUNO_DATASTORE_ERROR_USER_REGISTER_PROVIDER_INVALID_DATA.to_string()
                 })?;
 
-                if !provider_data.matches_provider(&AuthProvider::Google) {
+                if !provider_data.matches_provider(provider) {
                     return Err(JUNO_DATASTORE_ERROR_USER_PROVIDER_INVALID_DATA.to_string());
                 }
 
@@ -119,7 +124,7 @@ impl UserData {
 }
 
 impl OpenIdData {
-    pub fn merge(existing: &OpenIdData, credential: &OpenIdCredential) -> Self {
+    pub fn merge(existing: &OpenIdData, credential: &OpenIdDelegationCredential) -> Self {
         Self {
             email: credential.email.clone().or(existing.email.clone()),
             name: credential.name.clone().or(existing.name.clone()),
@@ -131,21 +136,35 @@ impl OpenIdData {
                 .family_name
                 .clone()
                 .or(existing.family_name.clone()),
+            preferred_username: credential
+                .preferred_username
+                .clone()
+                .or(existing.preferred_username.clone()),
             picture: credential.picture.clone().or(existing.picture.clone()),
             locale: credential.locale.clone().or(existing.locale.clone()),
         }
     }
 }
 
-impl From<&OpenIdCredential> for OpenIdData {
-    fn from(credential: &OpenIdCredential) -> Self {
+impl From<&OpenIdDelegationCredential> for OpenIdData {
+    fn from(credential: &OpenIdDelegationCredential) -> Self {
         Self {
             email: credential.email.clone(),
             name: credential.name.clone(),
             given_name: credential.given_name.clone(),
             family_name: credential.family_name.clone(),
+            preferred_username: credential.preferred_username.clone(),
             picture: credential.picture.clone(),
             locale: credential.locale.clone(),
+        }
+    }
+}
+
+impl From<&OpenIdDelegationProvider> for AuthProvider {
+    fn from(provider: &OpenIdDelegationProvider) -> Self {
+        match provider {
+            OpenIdDelegationProvider::Google => AuthProvider::Google,
+            OpenIdDelegationProvider::GitHub => AuthProvider::GitHub,
         }
     }
 }
@@ -211,6 +230,7 @@ mod tests {
             name: Some("User".to_string()),
             given_name: None,
             family_name: None,
+            preferred_username: None,
             picture: Some("https://example.com/avatar.png".to_string()),
             locale: Some("en".to_string()),
         });
@@ -231,6 +251,7 @@ mod tests {
             name: Some("User".to_string()),
             given_name: None,
             family_name: None,
+            preferred_username: None,
             picture: Some("http://example.com/avatar.png".to_string()),
             locale: Some("en".to_string()),
         });
@@ -262,5 +283,69 @@ mod tests {
             provider_data: Some(ProviderData::WebAuthn(WebAuthnData { aaguid: None })),
         };
         assert!(user.assert_provider_data().is_err());
+    }
+
+    #[test]
+    fn test_userdata_github_valid() {
+        let provider_data = ProviderData::OpenId(OpenIdData {
+            email: Some("user@example.com".to_string()),
+            name: Some("Peter Peter Parker".to_string()),
+            given_name: None,
+            family_name: None,
+            preferred_username: Some("peterpeterparker".to_string()),
+            picture: Some("https://avatars.githubusercontent.com/u/16886711".to_string()),
+            locale: None,
+        });
+
+        let user = UserData {
+            provider: Some(AuthProvider::GitHub),
+            banned: None,
+            provider_data: Some(provider_data),
+        };
+
+        assert!(user.assert_provider_data().is_ok());
+    }
+
+    #[test]
+    fn test_userdata_github_missing_data() {
+        let user = UserData {
+            provider: Some(AuthProvider::GitHub),
+            banned: None,
+            provider_data: None,
+        };
+        assert!(user.assert_provider_data().is_err());
+    }
+
+    #[test]
+    fn test_userdata_github_invalid_picture_scheme() {
+        let provider_data = ProviderData::OpenId(OpenIdData {
+            email: Some("user@example.com".to_string()),
+            name: None,
+            given_name: None,
+            family_name: None,
+            preferred_username: Some("octocat".to_string()),
+            picture: Some("http://example.com/avatar.png".to_string()), // https is required
+            locale: None,
+        });
+
+        let user = UserData {
+            provider: Some(AuthProvider::GitHub),
+            banned: None,
+            provider_data: Some(provider_data),
+        };
+
+        assert!(user.assert_provider_data().is_err());
+    }
+
+    #[test]
+    fn test_openid_provider_to_auth_provider() {
+        assert!(matches!(
+            AuthProvider::from(&OpenIdDelegationProvider::Google),
+            AuthProvider::Google
+        ));
+        assert!(matches!(
+            AuthProvider::from(&OpenIdDelegationProvider::GitHub),
+            AuthProvider::GitHub
+        ));
     }
 }

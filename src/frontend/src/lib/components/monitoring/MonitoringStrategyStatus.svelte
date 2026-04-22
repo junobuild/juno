@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { nonNullish, fromNullishNullable } from '@dfinity/utils';
 	import type { MissionControlDid } from '$declarations';
-	import CanisterValue from '$lib/components/canister/CanisterValue.svelte';
+	import CanisterValue from '$lib/components/modules/canister/CanisterValue.svelte';
 	import MonitoringDisabled from '$lib/components/monitoring/MonitoringDisabled.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import { i18n } from '$lib/stores/app/i18n.store';

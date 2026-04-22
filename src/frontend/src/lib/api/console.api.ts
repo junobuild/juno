@@ -1,9 +1,16 @@
 import type { ConsoleDid } from '$declarations';
 import type { GetActorParams } from '$lib/api/actors/actor.api';
 import { getConsoleActor } from '$lib/api/actors/actor.juno.api';
-import type { OptionIdentity } from '$lib/types/itentity';
+import type {
+	CreateSatelliteConfig,
+	CreateWithConfig,
+	CreateWithConfigAndName
+} from '$lib/types/factory';
+import type { NullishIdentity } from '$lib/types/itentity';
 import type { Metadata } from '$lib/types/metadata';
-import { fromNullable } from '@dfinity/utils';
+import type { OrbiterId } from '$lib/types/orbiter';
+import type { SatelliteId } from '$lib/types/satellite';
+import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
 import type { Principal } from '@icp-sdk/core/principal';
 
 export const getOrInitAccount = async (
@@ -23,7 +30,7 @@ export const getAccount = async (
 	return fromNullable(await get_account());
 };
 
-export const getCredits = async (identity: OptionIdentity): Promise<bigint> => {
+export const getCredits = async (identity: NullishIdentity): Promise<bigint> => {
 	const { get_credits } = await getConsoleActor({ identity });
 	const { e8s } = await get_credits();
 	return e8s;
@@ -32,19 +39,19 @@ export const getCredits = async (identity: OptionIdentity): Promise<bigint> => {
 export const getSatelliteFee = async ({
 	identity
 }: {
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<ConsoleDid.FactoryFee> => await getFee({ identity, segmentKind: { Satellite: null } });
 
 export const getOrbiterFee = async ({
 	identity
 }: {
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<ConsoleDid.FactoryFee> => await getFee({ identity, segmentKind: { Orbiter: null } });
 
 export const getMissionControlFee = async ({
 	identity
 }: {
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<ConsoleDid.FactoryFee> =>
 	await getFee({ identity, segmentKind: { MissionControl: null } });
 
@@ -58,7 +65,7 @@ const getFee = async ({
 	identity,
 	segmentKind
 }: {
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 	segmentKind: ConsoleDid.SegmentKind;
 }): Promise<ConsoleDid.FactoryFee> => {
 	const { get_fee } = await getConsoleActor({ identity });
@@ -74,7 +81,7 @@ export const setSegmentMetadata = async ({
 	segmentId: Principal;
 	segmentKind: ConsoleDid.StorableSegmentKind;
 	metadata: Metadata;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<ConsoleDid.Segment> => {
 	const { set_segment_metadata } = await getConsoleActor({ identity });
 	return set_segment_metadata({
@@ -89,7 +96,7 @@ export const unsetSegment = async ({
 	identity
 }: {
 	args: ConsoleDid.UnsetSegmentsArgs;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<void> => {
 	const { unset_segment } = await getConsoleActor({ identity });
 	await unset_segment(args);
@@ -100,8 +107,94 @@ export const setSegment = async ({
 	identity
 }: {
 	args: ConsoleDid.SetSegmentsArgs;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<ConsoleDid.Segment> => {
 	const { set_segment } = await getConsoleActor({ identity });
 	return set_segment(args);
+};
+
+export const setManySegments = async ({
+	args,
+	identity
+}: {
+	args: ConsoleDid.SetSegmentsArgs[];
+	identity: NullishIdentity;
+}): Promise<ConsoleDid.Segment[]> => {
+	const { set_many_segments } = await getConsoleActor({ identity });
+	return set_many_segments(args);
+};
+
+export const createMissionControlWithConfig = async ({
+	identity,
+	config: { subnetId }
+}: {
+	identity: NullishIdentity;
+	config: CreateWithConfig;
+}): Promise<SatelliteId> => {
+	assertNonNullish(identity);
+
+	const { create_mission_control } = await getConsoleActor({
+		identity
+	});
+
+	return create_mission_control({
+		subnet_id: toNullable(subnetId)
+	});
+};
+
+export const createSatelliteWithConfig = async ({
+	identity,
+	config: { name, subnetId, kind }
+}: {
+	identity: NullishIdentity;
+	config: CreateSatelliteConfig;
+}): Promise<SatelliteId> => {
+	assertNonNullish(identity);
+
+	const { create_satellite } = await getConsoleActor({
+		identity
+	});
+
+	return create_satellite({
+		// Unused
+		block_index: toNullable(),
+		// We use the same API as the one use by the Mission Control.
+		// The backend fetches the account for that user and then assert its owner is equals to the caller.
+		user: identity.getPrincipal(),
+		name: toNullable(name),
+		subnet_id: toNullable(subnetId),
+		storage: toNullable(
+			kind === 'application'
+				? {
+						system_memory: toNullable({
+							Stable: null
+						})
+					}
+				: undefined
+		)
+	});
+};
+
+export const createOrbiterWithConfig = async ({
+	identity,
+	config: { name, subnetId }
+}: {
+	identity: NullishIdentity;
+	config: CreateWithConfigAndName;
+}): Promise<OrbiterId> => {
+	assertNonNullish(identity);
+
+	const { create_orbiter } = await getConsoleActor({
+		identity
+	});
+
+	return create_orbiter({
+		// Unused
+		block_index: toNullable(),
+		// We use the same API as the one use by the Mission Control.
+		// The backend fetches the account for that user and then assert its owner is equals to the caller.
+		user: identity.getPrincipal(),
+		name: toNullable(name),
+		subnet_id: toNullable(subnetId)
+	});
 };

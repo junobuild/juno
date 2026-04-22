@@ -1,14 +1,15 @@
 <script lang="ts">
 	import { Principal } from '@icp-sdk/core/principal';
 	import { fade } from 'svelte/transition';
-	import ProgressSnapshot from '$lib/components/canister/ProgressSnapshot.svelte';
+	import ProgressSnapshot from '$lib/components/modules/canister/ProgressSnapshot.svelte';
 	import Confetti from '$lib/components/ui/Confetti.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import Warning from '$lib/components/ui/Warning.svelte';
+	import { isBusy } from '$lib/derived/app/busy.derived';
 	import { authIdentity } from '$lib/derived/auth.derived';
 	import { createSnapshot } from '$lib/services/ic-mgmt/snapshots.services';
-	import { isBusy, wizardBusy } from '$lib/stores/app/busy.store';
+	import { wizardBusy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
 	import { snapshotStore } from '$lib/stores/ic-mgmt/snapshot.store';

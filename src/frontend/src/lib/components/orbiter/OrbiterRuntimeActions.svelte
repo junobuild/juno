@@ -1,9 +1,9 @@
 <script lang="ts">
-	import CanisterTransferCycles from '$lib/components/canister/cycles/CanisterTransferCycles.svelte';
-	import CanisterDelete from '$lib/components/canister/lifecycle/CanisterDelete.svelte';
-	import CanisterStopStart from '$lib/components/canister/lifecycle/CanisterStopStart.svelte';
-	import TopUp from '$lib/components/canister/top-up/TopUp.svelte';
-	import SegmentActions from '$lib/components/segments/SegmentActions.svelte';
+	import CanisterTransferCycles from '$lib/components/modules/canister/cycles/CanisterTransferCycles.svelte';
+	import CanisterDelete from '$lib/components/modules/canister/lifecycle/CanisterDelete.svelte';
+	import CanisterStopStart from '$lib/components/modules/canister/lifecycle/CanisterStopStart.svelte';
+	import TopUp from '$lib/components/modules/canister/top-up/TopUp.svelte';
+	import SegmentActions from '$lib/components/modules/segments/SegmentActions.svelte';
 	import type { CanisterSyncData as CanisterSyncDataType } from '$lib/types/canister';
 	import { emit } from '$lib/utils/events.utils';
 

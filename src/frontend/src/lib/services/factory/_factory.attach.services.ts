@@ -17,9 +17,7 @@ import type { Identity } from '@icp-sdk/core/agent';
 import type { Principal } from '@icp-sdk/core/principal';
 import { get } from 'svelte/store';
 
-const CONTROLLER_PARAMS: Omit<AddAdminAccessKeyParams, 'accessKeyId'> = {
-	profile: undefined
-};
+const CONTROLLER_PARAMS: Omit<AddAdminAccessKeyParams, 'accessKeyId'> = {};
 
 export class AttachToMissionControlError extends Error {
 	// eslint-disable-next-line local-rules/prefer-object-params
@@ -169,7 +167,7 @@ const attachSatellites = async ({
 	for (const satellite of satellites) {
 		incrementProgress();
 
-		const result = await attachSatellite({
+		const result = await setMissionControlAsControllerAndAttachSatellite({
 			satellite,
 			missionControlId,
 			identity
@@ -201,7 +199,7 @@ const attachOrbiters = async ({
 	for (const orbiter of orbiters) {
 		incrementProgress();
 
-		const result = await attachOrbiter({
+		const result = await setMissionControlAsControllerAndAttachOrbiter({
 			orbiter,
 			missionControlId,
 			identity
@@ -217,7 +215,7 @@ const attachOrbiters = async ({
 	return canisterIds;
 };
 
-const attachSatellite = async ({
+export const setMissionControlAsControllerAndAttachSatellite = async ({
 	satellite,
 	missionControlId,
 	identity
@@ -255,7 +253,7 @@ const attachSatellite = async ({
 	});
 };
 
-const attachOrbiter = async ({
+export const setMissionControlAsControllerAndAttachOrbiter = async ({
 	orbiter,
 	missionControlId,
 	identity

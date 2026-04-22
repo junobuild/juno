@@ -1,8 +1,10 @@
 import type { LedgerIdText, WalletId } from '$lib/schemas/wallet.schema';
 import { i18n } from '$lib/stores/app/i18n.store';
+import type { OpenIdAuthProvider } from '$lib/types/auth';
+import { assertResponseOk } from '$lib/utils/rest.utils';
 import { assertNonNullish, isNullish } from '@dfinity/utils';
-import { type PrincipalText, PrincipalTextSchema } from '@dfinity/zod-schemas';
 import { encodeIcrcAccount } from '@icp-sdk/canisters/ledger/icrc';
+import { type PrincipalText, PrincipalTextSchema } from '@junobuild/schema';
 import { get } from 'svelte/store';
 
 export const getEmulatorMainIdentity = async (): Promise<PrincipalText> => {
@@ -17,9 +19,7 @@ export const getEmulatorMainIdentity = async (): Promise<PrincipalText> => {
 		}
 	});
 
-	if (!response.ok) {
-		throw new Error(get(i18n).emulator.error_fetching_emulator, { cause: response });
-	}
+	assertResponseOk(response, get(i18n).emulator.error_fetching_emulator);
 
 	const result: Record<string, string> = await response.json();
 
@@ -49,25 +49,23 @@ export const emulatorLedgerTransfer = async ({
 		`${VITE_EMULATOR_ADMIN_URL}/ledger/transfer/?to=${encodeIcrcAccount(walletId)}&ledgerId=${ledgerId}&amount=${amount}`
 	);
 
-	if (!response.ok) {
-		throw new Error(get(i18n).emulator.error_fetching_emulator, { cause: response });
-	}
+	assertResponseOk(response, get(i18n).emulator.error_fetching_emulator);
 };
 
 export const emulatorObservatoryMonitoringOpenId = async ({
-	action
+	action,
+	provider
 }: {
 	action: 'start' | 'stop';
+	provider: OpenIdAuthProvider;
 }) => {
 	const { VITE_EMULATOR_ADMIN_URL } = import.meta.env;
 
 	assertNonNullish(VITE_EMULATOR_ADMIN_URL);
 
 	const response = await fetch(
-		`${VITE_EMULATOR_ADMIN_URL}/observatory/monitoring/openid/?action=${action}`
+		`${VITE_EMULATOR_ADMIN_URL}/observatory/monitoring/openid/?action=${action}&provider=${provider}`
 	);
 
-	if (!response.ok) {
-		throw new Error(get(i18n).emulator.error_fetching_emulator, { cause: response });
-	}
+	assertResponseOk(response, get(i18n).emulator.error_fetching_emulator);
 };

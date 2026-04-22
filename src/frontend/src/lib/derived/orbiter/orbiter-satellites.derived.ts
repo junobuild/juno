@@ -1,6 +1,6 @@
 import type { OrbiterDid } from '$declarations';
 import { orbiterConfigs } from '$lib/derived/orbiter.derived';
-import { satellitesStore } from '$lib/derived/satellites.derived';
+import { satellites } from '$lib/derived/satellites.derived';
 import type { OrbiterSatelliteConfigEntry } from '$lib/types/orbiter';
 import type { SatelliteIdText } from '$lib/types/satellite';
 import { satelliteName } from '$lib/utils/satellite.utils';
@@ -11,7 +11,7 @@ import { derived, type Readable } from 'svelte/store';
 
 export const orbiterSatellitesConfig: Readable<
 	Record<SatelliteIdText, OrbiterSatelliteConfigEntry>
-> = derived([orbiterConfigs, satellitesStore], ([orbiterConfigsStore, satellitesStore]) =>
+> = derived([orbiterConfigs, satellites], ([orbiterConfigsStore, satellitesStore]) =>
 	(satellitesStore ?? []).reduce((acc, satellite) => {
 		const config: [Principal, OrbiterDid.OrbiterSatelliteConfig] | undefined = (
 			orbiterConfigsStore ?? []

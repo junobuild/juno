@@ -9,4 +9,4 @@
 	let { selectedToken }: Props = $props();
 </script>
 
-<small>{isTokenIcp(selectedToken) ? 'ICP' : 'T Cycles'}</small>
+<small>{isTokenIcp(selectedToken) ? 'ICP' : 'TCycles'}</small>

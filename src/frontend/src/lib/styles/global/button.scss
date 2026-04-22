@@ -22,4 +22,8 @@ button {
 	&.article {
 		@include button.article;
 	}
+
+	&.badge {
+		@include button.badge;
+	}
 }

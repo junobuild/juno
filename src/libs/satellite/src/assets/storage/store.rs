@@ -1,8 +1,8 @@
+use crate::access_keys::store::get_access_keys;
 use crate::assets::storage::assert::{
     assert_create_batch, assert_delete_asset, assert_get_asset, assert_list_assets,
     assert_set_config, assert_write_asset,
 };
-use crate::assets::storage::certified_assets::runtime::init_certified_assets as init_runtime_certified_assets;
 use crate::assets::storage::state::{
     count_assets_stable, delete_asset as delete_state_asset, delete_domain as delete_state_domain,
     get_asset as get_state_asset, get_assets_stable, get_config as get_state_config, get_config,
@@ -14,7 +14,6 @@ use crate::assets::storage::state::{
 use crate::assets::storage::strategy_impls::{StorageAssertions, StorageState, StorageUpload};
 use crate::auth::store::get_config as get_auth_config;
 use crate::certification::strategy_impls::StorageCertificate;
-use crate::controllers::store::get_controllers;
 use crate::memory::state::STATE;
 use crate::types::store::{AssertContext, StoreContext};
 use candid::Principal;
@@ -25,7 +24,7 @@ use junobuild_shared::data::list::list_values;
 use junobuild_shared::types::core::{Blob, DomainName};
 use junobuild_shared::types::domain::CustomDomains;
 use junobuild_shared::types::list::{ListParams, ListResults};
-use junobuild_shared::types::state::Controllers;
+use junobuild_shared::types::state::AccessKeys;
 use junobuild_storage::constants::{ROOT_404_HTML, ROOT_INDEX_HTML};
 use junobuild_storage::errors::JUNO_STORAGE_ERROR_ASSET_NOT_FOUND;
 use junobuild_storage::heap_utils::{
@@ -101,7 +100,7 @@ pub fn delete_asset_store(
     collection: &CollectionKey,
     full_path: FullPath,
 ) -> Result<Option<Asset>, String> {
-    let controllers: Controllers = get_controllers();
+    let controllers: AccessKeys = get_access_keys();
     let config = get_config_store();
 
     let context = StoreContext {
@@ -173,7 +172,7 @@ pub fn list_assets_store(
     collection: &CollectionKey,
     filters: &ListParams,
 ) -> Result<ListResults<AssetNoContent>, String> {
-    let controllers: Controllers = get_controllers();
+    let controllers: AccessKeys = get_access_keys();
 
     let context = StoreContext {
         caller,
@@ -235,7 +234,7 @@ pub fn get_asset_store(
     collection: &CollectionKey,
     full_path: FullPath,
 ) -> Result<Option<Asset>, String> {
-    let controllers: Controllers = get_controllers();
+    let controllers: AccessKeys = get_access_keys();
 
     let context = StoreContext {
         caller,
@@ -527,7 +526,7 @@ pub fn delete_filtered_assets_store(
     collection: CollectionKey,
     filters: &ListParams,
 ) -> Result<Vec<Option<Asset>>, String> {
-    let controllers: Controllers = get_controllers();
+    let controllers: AccessKeys = get_access_keys();
 
     let context = StoreContext {
         caller,
@@ -594,7 +593,7 @@ pub fn set_asset_token_store(
     full_path: &FullPath,
     token: &AssetAccessToken,
 ) -> Result<(), String> {
-    let controllers: Controllers = get_controllers();
+    let controllers: AccessKeys = get_access_keys();
     let config = get_config_store();
 
     let context = StoreContext {
@@ -658,7 +657,7 @@ fn set_asset_token_impl(
 // ---------------------------------------------------------
 
 pub fn create_batch_store(caller: Principal, init: InitAssetKey) -> Result<BatchId, String> {
-    let controllers: Controllers = get_controllers();
+    let controllers: AccessKeys = get_access_keys();
     let config = get_config();
 
     secure_create_batch_impl(caller, &controllers, &config, init)
@@ -671,7 +670,7 @@ pub fn create_chunk_store(caller: Principal, chunk: UploadChunk) -> Result<Chunk
 }
 
 pub fn commit_batch_store(caller: Principal, commit_batch: CommitBatch) -> Result<Asset, String> {
-    let controllers: Controllers = get_controllers();
+    let controllers: AccessKeys = get_access_keys();
     let config = get_config();
 
     let asset = commit_batch_storage(
@@ -693,7 +692,7 @@ pub fn commit_batch_store(caller: Principal, commit_batch: CommitBatch) -> Resul
 
 fn secure_create_batch_impl(
     caller: Principal,
-    controllers: &Controllers,
+    controllers: &AccessKeys,
     config: &StorageConfig,
     init: InitAssetKey,
 ) -> Result<BatchId, String> {
@@ -730,8 +729,6 @@ pub fn set_config_store(proposed_config: &SetStorageConfig) -> Result<StorageCon
     let config = StorageConfig::prepare(&current_config, proposed_config);
 
     insert_state_config(&config);
-
-    init_runtime_certified_assets();
 
     Ok(config)
 }

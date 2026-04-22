@@ -4,6 +4,7 @@ import {
 	type ConsoleActor008,
 	type ConsoleActor015,
 	type ConsoleActor020,
+	type ConsoleActor033,
 	type ConsoleDid,
 	type MissionControlActor,
 	idlFactoryConsole,
@@ -81,7 +82,9 @@ const uploadSegment = async ({
 }: {
 	segment: 'satellite' | 'mission_control' | 'orbiter';
 	version: string;
-	actor: Actor<ConsoleActor | ConsoleActor0014 | ConsoleActor015 | ConsoleActor020>;
+	actor: Actor<
+		ConsoleActor | ConsoleActor0014 | ConsoleActor015 | ConsoleActor020 | ConsoleActor033
+	>;
 	proposalId: bigint;
 }) => {
 	const init_proposal_asset_upload =
@@ -200,7 +203,9 @@ export const deploySegments = async ({
 	withMissionControl = true,
 	withSatellite = true
 }: {
-	actor: Actor<ConsoleActor | ConsoleActor0014 | ConsoleActor015 | ConsoleActor020>;
+	actor: Actor<
+		ConsoleActor | ConsoleActor0014 | ConsoleActor015 | ConsoleActor020 | ConsoleActor033
+	>;
 	withOrbiter?: boolean;
 	withMissionControl?: boolean;
 	withSatellite?: boolean;

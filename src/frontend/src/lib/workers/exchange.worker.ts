@@ -1,12 +1,11 @@
 import { ICP_LEDGER_CANISTER_ID, SYNC_TOKENS_TIMER_INTERVAL } from '$lib/constants/app.constants';
 import { PRICE_VALIDITY_TIMEFRAME } from '$lib/constants/exchange.constants';
-import { fetchKongSwapTokens } from '$lib/rest/kongswap.rest';
+import { fetchExchangePrice } from '$lib/rest/api.rest';
 import { exchangeIdbStore } from '$lib/stores/app/idb.store';
 import type { CanisterIdText } from '$lib/types/canister';
 import type { ExchangePrice } from '$lib/types/exchange';
-import type { KongSwapToken } from '$lib/types/kongswap';
 import type { PostMessageDataResponseExchange, PostMessageRequest } from '$lib/types/post-message';
-import { isNullish, nonNullish } from '@dfinity/utils';
+import { isNullish } from '@dfinity/utils';
 import { del, entries, set } from 'idb-keyval';
 
 export const onExchangeMessage = async ({ data: dataMsg }: MessageEvent<PostMessageRequest>) => {
@@ -84,53 +83,21 @@ const syncExchange = async () => {
 	}
 };
 
-// It seems KongSwap always returns ICP currently in second position. Maybe the answer is sorted?
-const limit = 2;
-
 const exchangeRateICPToUsd = async (): Promise<ExchangePrice | undefined> => {
-	const icp = await findICPToken();
+	const icp = await fetchExchangePrice({ ledgerId: ICP_LEDGER_CANISTER_ID });
 
 	if (isNullish(icp)) {
 		return undefined;
 	}
 
 	const {
-		metrics: { price, updated_at, market_cap, volume_24h, price_change_24h }
+		exchange: { price, fetchedAt }
 	} = icp;
-
-	if (isNullish(price)) {
-		return undefined;
-	}
 
 	return {
 		usd: Number(price),
-		...(nonNullish(market_cap) && { usdMarketCap: Number(market_cap) }),
-		...(nonNullish(volume_24h) && { usdVolume24h: Number(volume_24h) }),
-		...(nonNullish(price_change_24h) && { usdChange24h: Number(price_change_24h) }),
-		updatedAt: nonNullish(updated_at) ? new Date(updated_at).getTime() : new Date().getTime()
+		updatedAt: new Date(fetchedAt).getTime()
 	};
-};
-
-const findICPToken = async (page = 1): Promise<KongSwapToken | undefined> => {
-	const kongTokens = await fetchKongSwapTokens({ page, limit });
-
-	if (isNullish(kongTokens)) {
-		return undefined;
-	}
-
-	const { items, total_count } = kongTokens;
-
-	const icp = items.find(({ canister_id }) => canister_id === ICP_LEDGER_CANISTER_ID);
-
-	if (nonNullish(icp)) {
-		return icp;
-	}
-
-	if (page * limit < total_count) {
-		return await findICPToken(page + 1);
-	}
-
-	return undefined;
 };
 
 const syncExchangePrice = async (exchangePrice: ExchangePrice) => {

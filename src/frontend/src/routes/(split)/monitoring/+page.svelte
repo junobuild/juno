@@ -2,16 +2,16 @@
 	import { nonNullish } from '@dfinity/utils';
 	import { setContext, untrack } from 'svelte';
 	import { writable } from 'svelte/store';
-	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
-	import MissionControlGuard from '$lib/components/guards/MissionControlGuard.svelte';
-	import Loaders from '$lib/components/loaders/Loaders.svelte';
+	import Loaders from '$lib/components/app/loaders/Loaders.svelte';
+	import IdentityGuard from '$lib/components/auth/guards/IdentityGuard.svelte';
 	import MissionControl from '$lib/components/mission-control/MissionControl.svelte';
 	import MissionControlDataLoader from '$lib/components/mission-control/MissionControlDataLoader.svelte';
+	import MissionControlGuard from '$lib/components/mission-control/guards/MissionControlGuard.svelte';
+	import Warnings from '$lib/components/modules/warning/Warnings.svelte';
 	import MonitoringDashboard from '$lib/components/monitoring/MonitoringDashboard.svelte';
 	import MonitoringSettings from '$lib/components/monitoring/MonitoringSettings.svelte';
 	import NoTabs from '$lib/components/ui/NoTabs.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
-	import Warnings from '$lib/components/warning/Warnings.svelte';
 	import { authSignedIn } from '$lib/derived/auth.derived';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import { hasMissionControlSettings } from '$lib/derived/mission-control/mission-control-settings.derived';
@@ -32,13 +32,13 @@
 			? [
 					{
 						id: Symbol('2'),
-						labelKey: 'core.setup'
+						labelKey: 'core.config'
 					}
 				]
 			: []),
 		{
 			id: Symbol('3'),
-			labelKey: 'core.service'
+			labelKey: 'mission_control.title'
 		}
 	]);
 
@@ -71,21 +71,21 @@
 
 		<Loaders monitoring>
 			<MissionControlGuard>
-				{#if nonNullish($missionControlId)}
-					<MissionControlDataLoader missionControlId={$missionControlId} reload>
+				{#snippet content(missionControlId)}
+					<MissionControlDataLoader {missionControlId} reload>
 						{#if $store.tabId === $store.tabs[0].id}
-							<MonitoringDashboard missionControlId={$missionControlId} />
+							<MonitoringDashboard {missionControlId} />
 						{:else if $hasMissionControlSettings}
 							{#if $store.tabId === $store.tabs[1].id}
-								<MonitoringSettings missionControlId={$missionControlId} />
+								<MonitoringSettings {missionControlId} />
 							{:else if $store.tabId === $store.tabs[2].id}
-								<MissionControl missionControlId={$missionControlId} />
+								<MissionControl {missionControlId} />
 							{/if}
 						{:else if $store.tabId === $store.tabs[1].id}
-							<MissionControl missionControlId={$missionControlId} />
+							<MissionControl {missionControlId} />
 						{/if}
 					</MissionControlDataLoader>
-				{/if}
+				{/snippet}
 			</MissionControlGuard>
 		</Loaders>
 	</TabsCmp>

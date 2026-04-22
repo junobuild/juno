@@ -1,0 +1,116 @@
+type AppAsyncQueryArgs = record { value : principal };
+type AppAsyncQueryResult = record { value : principal; "text" : text };
+type AppCheckDiscriminatedPrimitivesArgs = record {
+  data : AppCheckDiscriminatedPrimitivesArgsData;
+};
+type AppCheckDiscriminatedPrimitivesArgsData = variant {
+  flag : record { value : bool };
+  "text" : record { value : text };
+  number : record { value : float64 };
+};
+type AppCheckDiscriminatedUnionEchoArgs = record {
+  status : AppCheckDiscriminatedUnionEchoArgsStatus;
+};
+type AppCheckDiscriminatedUnionEchoArgsStatus = variant {
+  active : record { owner : principal };
+  pending : record { assignee : principal };
+  inactive;
+};
+type AppCheckEnumsArgs = record {
+  status : AppCheckEnumsArgsStatus;
+  username : text;
+};
+type AppCheckEnumsArgsStatus = variant {
+  active : record { owner : principal };
+  pending : record { assignee : principal };
+  inactive;
+};
+type AppCheckEnumsResult = record { status : text };
+type AppCheckNestedDiscriminatedArgs = record {
+  id : text;
+  status : AppCheckEnumsArgsStatus;
+};
+type AppCheckSimpleVariantArgs = record {
+  value : AppCheckSimpleVariantArgsValue;
+};
+type AppCheckSimpleVariantArgsValue = variant { active; pending; inactive };
+type AppDemoAntonioArgs = record {
+  id : opt principal;
+  sub : AppDemoAntonioArgsSub;
+};
+type AppDemoAntonioArgsSub = record { arr : blob };
+type AppDemoAntonioResult = record {
+  id : opt principal;
+  sub : AppDemoAntonioResultSub;
+  world : text;
+};
+type AppDemoAntonioResultSub = record { arr : opt blob; value : opt nat64 };
+type AppHttpRequestArgs = record {
+  url : text;
+  method : AppHttpRequestArgsMethod;
+  max_response_bytes : opt nat64;
+  body : opt blob;
+  transform : opt text;
+  headers : opt vec AppHttpRequestArgsHeaders;
+  is_replicated : opt bool;
+};
+type AppHttpRequestArgsHeaders = record { value : text; name : text };
+type AppHttpRequestArgsMethod = variant { GET; HEAD; POST };
+type AppHttpRequestResult = record {
+  status : nat;
+  body : blob;
+  headers : vec AppHttpRequestArgsHeaders;
+};
+type AppOnlyAdminArgs = record { value : principal };
+type AppOnlyAdminResult = record { value : principal; "text" : text };
+type AppReadDocTestArgs = record { key : text; collection : text };
+type AppReadDocTestResult = record { value : nat64 };
+type AppSetDocTestArgs = record {
+  key : text;
+  collection : text;
+  value : nat64;
+};
+type AppTestQuery2Result = record { role : opt AppTestQuery2ResultRole };
+type AppTestQuery2ResultRole = variant { admin; user };
+type AppTestQueryResult = record {
+  preferences : opt AppTestQueryResultPreferences;
+};
+type AppTestQueryResultPreferences = record { theme : text };
+type AppUpdateArgsOnlyArgs = record { value : text };
+type AppWelcomeArgs = record { value : text };
+type AppWelcomeResult = record { value : nat64; caller : principal };
+service : {
+  app_admin_or_writer : () -> () query;
+  app_admin_or_writer_or_submit : () -> ();
+  app_async_query : (AppAsyncQueryArgs) -> (AppAsyncQueryResult) query;
+  app_check_caller : () -> ();
+  app_check_discriminated_primitives : (
+      AppCheckDiscriminatedPrimitivesArgs,
+    ) -> (AppCheckDiscriminatedPrimitivesArgs);
+  app_check_discriminated_union_echo : (AppCheckDiscriminatedUnionEchoArgs) -> (
+      AppCheckDiscriminatedUnionEchoArgs,
+    );
+  app_check_enums : (AppCheckEnumsArgs) -> (AppCheckEnumsResult);
+  app_check_nested_discriminated : (AppCheckNestedDiscriminatedArgs) -> (
+      AppCheckNestedDiscriminatedArgs,
+    );
+  app_check_simple_variant : (AppCheckSimpleVariantArgs) -> (
+      AppCheckSimpleVariantArgs,
+    );
+  app_custom_guard : () -> ();
+  app_demo_antonio : (AppDemoAntonioArgs) -> (AppDemoAntonioResult) query;
+  app_hello_world : (AppAsyncQueryArgs) -> (AppAsyncQueryResult) query;
+  app_http_request : (AppHttpRequestArgs) -> (AppHttpRequestResult);
+  app_only_admin : (AppOnlyAdminArgs) -> (AppOnlyAdminResult) query;
+  app_query_no_args : () -> (AppOnlyAdminResult) query;
+  app_query_no_args_no_result : () -> () query;
+  app_read_doc_test : (AppReadDocTestArgs) -> (AppReadDocTestResult) query;
+  app_set_doc_test : (AppSetDocTestArgs) -> ();
+  app_sync_update : () -> ();
+  app_test_query : () -> (AppTestQueryResult) query;
+  app_test_query2 : () -> (AppTestQuery2Result) query;
+  app_update_args_only : (AppUpdateArgsOnlyArgs) -> ();
+  app_welcome : (AppWelcomeArgs) -> (AppWelcomeResult);
+  app_welcome_without_args : () -> (AppWelcomeResult);
+  app_yolo : () -> ();
+}

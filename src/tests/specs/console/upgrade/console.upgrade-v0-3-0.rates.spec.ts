@@ -11,11 +11,7 @@ import { inject } from 'vitest';
 import { CONSOLE_ID } from '../../../constants/console-tests.constants';
 import { updateRateConfig } from '../../../utils/console-tests.utils';
 import { tick } from '../../../utils/pic-tests.utils';
-import {
-	CONSOLE_WASM_PATH,
-	controllersInitArgs,
-	downloadConsole
-} from '../../../utils/setup-tests.utils';
+import { controllersInitArgs, downloadConsole } from '../../../utils/setup-tests.utils';
 
 describe('Console > Upgrade > Rates > v0.2.0 -> v0.3.0', () => {
 	let pic: PocketIc;
@@ -24,12 +20,14 @@ describe('Console > Upgrade > Rates > v0.2.0 -> v0.3.0', () => {
 
 	const controller = Ed25519KeyIdentity.generate();
 
-	const upgradeCurrent = async () => {
+	const upgrade = async () => {
 		await tick(pic);
+
+		const destination = await downloadConsole({ junoVersion: '0.0.64', version: '0.3.0' });
 
 		await pic.upgradeCanister({
 			canisterId,
-			wasm: CONSOLE_WASM_PATH,
+			wasm: destination,
 			sender: controller.getPrincipal()
 		});
 	};
@@ -60,7 +58,7 @@ describe('Console > Upgrade > Rates > v0.2.0 -> v0.3.0', () => {
 	it('should provide rates with new interfaces and default of new factory_fees', async () => {
 		await updateRateConfig({ actor });
 
-		await upgradeCurrent();
+		await upgrade();
 
 		const newActor = pic.createActor<ConsoleActor>(idlFactoryConsole, canisterId);
 		newActor.setIdentity(controller);

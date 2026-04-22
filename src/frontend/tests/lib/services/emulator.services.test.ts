@@ -49,7 +49,7 @@ describe('emulator.services', () => {
 					satelliteId: mockSatelliteId,
 					identity: mockIdentity
 				})
-			).rejects.toThrowError(i18Mock.emulator.error_never_execute_set_controller);
+			).rejects.toThrow(i18Mock.emulator.error_never_execute_set_controller);
 
 			expect(setControllers).not.toHaveBeenCalled();
 			expect(getEmulatorMainIdentity).not.toHaveBeenCalled();
@@ -68,7 +68,8 @@ describe('emulator.services', () => {
 				args: {
 					controller: {
 						expires_at: [],
-						metadata: [['profile', '👾 Emulator']],
+						kind: [{ Emulator: null }],
+						metadata: [],
 						scope: {
 							Admin: null
 						}
@@ -82,10 +83,12 @@ describe('emulator.services', () => {
 	});
 
 	describe('emulatorToggleOpenIdMonitoring', () => {
+		const provider = 'google';
+
 		it('should throw an error when mode is production', async () => {
 			vi.stubEnv('MODE', 'production');
 
-			await expect(emulatorToggleOpenIdMonitoring({ enable: true })).rejects.toThrowError(
+			await expect(emulatorToggleOpenIdMonitoring({ enable: true, provider })).rejects.toThrow(
 				i18Mock.emulator.error_never_execute_openid_monitoring
 			);
 		});
@@ -94,20 +97,28 @@ describe('emulator.services', () => {
 			vi.stubEnv('MODE', 'skylab');
 
 			await emulatorToggleOpenIdMonitoring({
-				enable: true
+				enable: true,
+				provider
 			});
 
-			expect(emulatorObservatoryMonitoringOpenId).toHaveBeenCalledWith({ action: 'start' });
+			expect(emulatorObservatoryMonitoringOpenId).toHaveBeenCalledWith({
+				action: 'start',
+				provider
+			});
 		});
 
 		it('should stop observatory monitoring openid when in skylab mode', async () => {
 			vi.stubEnv('MODE', 'skylab');
 
 			await emulatorToggleOpenIdMonitoring({
-				enable: false
+				enable: false,
+				provider
 			});
 
-			expect(emulatorObservatoryMonitoringOpenId).toHaveBeenCalledWith({ action: 'stop' });
+			expect(emulatorObservatoryMonitoringOpenId).toHaveBeenCalledWith({
+				action: 'stop',
+				provider
+			});
 		});
 
 		it('should toasts an error in skylab mode if admin server cannot be reached', async () => {
@@ -122,7 +133,8 @@ describe('emulator.services', () => {
 			const spy = vi.spyOn(toasts, 'error').mockImplementation(vi.fn());
 
 			await emulatorToggleOpenIdMonitoring({
-				enable: true
+				enable: true,
+				provider
 			});
 
 			expect(spy).toHaveBeenCalledWith({

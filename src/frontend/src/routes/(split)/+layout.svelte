@@ -1,8 +1,8 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import { page } from '$app/state';
-	import Navbar from '$lib/components/core/Navbar.svelte';
-	import Navmenu from '$lib/components/core/Navmenu.svelte';
+	import Navbar from '$lib/components/app/core/Navbar.svelte';
+	import Navmenu from '$lib/components/app/core/Navmenu.svelte';
 	import Layout from '$lib/components/ui/Layout.svelte';
 
 	interface Props {

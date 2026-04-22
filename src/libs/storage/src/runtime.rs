@@ -17,17 +17,10 @@ use std::collections::HashMap;
 // Certified assets
 // ---------------------------------------------------------
 
-pub fn init_certified_assets(
-    asset_hashes: &CertifiedAssetHashes,
-    certificate: &impl StorageCertificateStrategy,
-) {
-    // 1. Init all asset in tree
+pub fn init_certified_assets(asset_hashes: &CertifiedAssetHashes) {
     STATE.with(|state| {
         init_certified_assets_impl(asset_hashes, &mut state.borrow_mut().runtime.storage)
     });
-
-    // 2. Update the root hash and the canister certified data
-    certificate.update_certified_data();
 }
 
 pub fn update_certified_asset(

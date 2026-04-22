@@ -6,7 +6,7 @@ use crate::constants::{ASSET_ENCODING_NO_COMPRESSION, ENCODING_CERTIFICATION_ORD
 use crate::errors::{
     JUNO_STORAGE_ERROR_ASSET_MAX_ALLOWED_SIZE, JUNO_STORAGE_ERROR_BATCH_NOT_FOUND,
     JUNO_STORAGE_ERROR_CANNOT_COMMIT_BATCH, JUNO_STORAGE_ERROR_CHUNK_NOT_FOUND,
-    JUNO_STORAGE_ERROR_CHUNK_NOT_INCLUDED_IN_BATCH, JUNO_STORAGE_ERROR_CHUNK_TO_COMMIT_NOT_FOUND,
+    JUNO_STORAGE_ERROR_CHUNK_NOT_INCLUDED_IN_BATCH,
 };
 use crate::runtime::{
     clear_batch as clear_runtime_batch, clear_expired_batches as clear_expired_runtime_batches,
@@ -25,7 +25,7 @@ use candid::Principal;
 use ic_cdk::api::time;
 use junobuild_collections::types::rules::Rule;
 use junobuild_shared::types::core::Blob;
-use junobuild_shared::types::state::Controllers;
+use junobuild_shared::types::state::AccessKeys;
 use std::ptr::addr_of;
 
 // ---------------------------------------------------------
@@ -39,7 +39,7 @@ static mut NEXT_CHUNK_ID: ChunkId = 0;
 
 pub fn create_batch(
     caller: Principal,
-    controllers: &Controllers,
+    controllers: &AccessKeys,
     config: &StorageConfig,
     init: InitAssetKey,
     reference_id: Option<ReferenceId>,
@@ -150,7 +150,7 @@ pub fn create_chunk(
 
 pub fn commit_batch(
     caller: Principal,
-    controllers: &Controllers,
+    controllers: &AccessKeys,
     config: &StorageConfig,
     commit_batch: CommitBatch,
     assertions: &impl StorageAssertionsStrategy,
@@ -180,7 +180,7 @@ pub fn commit_batch(
 #[allow(clippy::too_many_arguments)]
 fn secure_commit_chunks(
     caller: Principal,
-    controllers: &Controllers,
+    controllers: &AccessKeys,
     config: &StorageConfig,
     commit_batch: CommitBatch,
     batch: &Batch,
@@ -236,7 +236,7 @@ fn secure_commit_chunks(
 #[allow(clippy::too_many_arguments)]
 fn secure_commit_chunks_update(
     caller: Principal,
-    controllers: &Controllers,
+    controllers: &AccessKeys,
     config: &StorageConfig,
     commit_batch: CommitBatch,
     batch: &Batch,
@@ -270,7 +270,7 @@ fn secure_commit_chunks_update(
 #[allow(clippy::too_many_arguments)]
 fn commit_chunks(
     caller: Principal,
-    controllers: &Controllers,
+    controllers: &AccessKeys,
     commit_batch: CommitBatch,
     batch: &Batch,
     rule: &Rule,
@@ -322,17 +322,13 @@ fn commit_chunks(
     }
 
     // Sort with ordering
-    chunks.sort_by(|a, b| a.order_id.cmp(&b.order_id));
+    chunks.sort_by_key(|a| a.order_id);
 
     let mut content_chunks: Vec<Blob> = vec![];
 
     // Collect content
     for c in chunks.iter() {
         content_chunks.push(c.content.clone());
-    }
-
-    if content_chunks.is_empty() {
-        return Err(JUNO_STORAGE_ERROR_CHUNK_TO_COMMIT_NOT_FOUND.to_string());
     }
 
     // We clone the key with the new information provided by the upload (name, full_path, token, etc.) to set the new key.
@@ -351,13 +347,11 @@ fn commit_chunks(
     let encoding = AssetEncoding::from(&content_chunks);
 
     match rule.max_size {
-        None => (),
-        Some(max_size) => {
-            if encoding.total_length > max_size {
-                clear_runtime_batch(&batch_id, &chunk_ids);
-                return Err(JUNO_STORAGE_ERROR_ASSET_MAX_ALLOWED_SIZE.to_string());
-            }
+        Some(max_size) if encoding.total_length > max_size => {
+            clear_runtime_batch(&batch_id, &chunk_ids);
+            return Err(JUNO_STORAGE_ERROR_ASSET_MAX_ALLOWED_SIZE.to_string());
         }
+        _ => (),
     }
 
     storage_upload.insert_asset_encoding(

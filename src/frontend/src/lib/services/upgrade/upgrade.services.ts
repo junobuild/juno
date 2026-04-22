@@ -2,7 +2,7 @@ import { loadSnapshots } from '$lib/services/ic-mgmt/snapshots.services';
 import { wizardBusy } from '$lib/stores/app/busy.store';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
-import type { OptionIdentity } from '$lib/types/itentity';
+import type { NullishIdentity } from '$lib/types/itentity';
 import type { Wasm } from '$lib/types/upgrade';
 import { isNullish } from '@dfinity/utils';
 import type { Principal } from '@icp-sdk/core/principal';
@@ -21,7 +21,7 @@ export interface UpgradeParams {
 	) => void;
 	takeSnapshot: boolean;
 	canisterId: Principal;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }
 
 export const upgrade = async ({

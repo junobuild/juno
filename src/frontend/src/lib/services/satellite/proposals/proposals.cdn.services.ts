@@ -3,13 +3,12 @@ import { listAssets } from '$lib/api/satellites.api';
 import { COLLECTION_CDN_RELEASES } from '$lib/constants/storage.constants';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
-import type { OptionIdentity } from '$lib/types/itentity';
-import type { ListOrder, ListParams } from '$lib/types/list';
+import type { NullishIdentity } from '$lib/types/itentity';
+import type { ListOrder } from '$lib/types/list';
 import type { ProposalRecord } from '$lib/types/proposals';
 import type { SatelliteIdText } from '$lib/types/satellite';
 import { container } from '$lib/utils/juno.utils';
 import { assertNonNullish, fromNullable, isEmptyString, isNullish } from '@dfinity/utils';
-import type { Identity } from '@icp-sdk/core/agent';
 import { Principal } from '@icp-sdk/core/principal';
 import { getProposal } from '@junobuild/cdn';
 import { get } from 'svelte/store';
@@ -26,7 +25,7 @@ export const findWasmAssetForProposal = async ({
 }: {
 	proposal: ProposalRecord;
 	satelliteId: SatelliteIdText;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<SatelliteDid.AssetNoContent | undefined> => {
 	try {
 		assertNonNullish(identity);
@@ -130,30 +129,4 @@ export const findWasmAssetForProposal = async ({
 
 		return undefined;
 	}
-};
-
-export const listWasmAssets = async ({
-	startAfter,
-	satelliteId,
-	identity
-}: Pick<ListParams, 'startAfter'> & {
-	satelliteId: Principal;
-	identity: Identity;
-}): Promise<{
-	items: [string, SatelliteDid.AssetNoContent][];
-	matches_length: bigint;
-	items_length: bigint;
-}> => {
-	const { items, matches_length, items_length } = await listAssets({
-		collection: COLLECTION_CDN_RELEASES,
-		satelliteId,
-		params: {
-			startAfter,
-			order: LIST_PROPOSALS_ORDER,
-			filter: {}
-		},
-		identity
-	});
-
-	return { items, matches_length, items_length };
 };

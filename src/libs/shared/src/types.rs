@@ -1,16 +1,15 @@
 pub mod state {
     use crate::types::core::DomainName;
     use crate::types::monitoring::{CyclesBalance, FundingFailure};
+    use candid::CandidType;
     use candid::Principal;
-    use candid::{CandidType, Nat};
-    use ic_cdk::management_canister::CanisterStatusType;
     use serde::{Deserialize, Serialize};
     use std::cmp::Ordering;
     use std::collections::HashMap;
 
     pub type UserId = Principal;
 
-    pub type ControllerId = Principal;
+    pub type AccessKeyId = Principal;
 
     pub type SegmentId = Principal;
     pub type MissionControlId = SegmentId;
@@ -19,7 +18,7 @@ pub mod state {
 
     pub type Metadata = HashMap<String, String>;
 
-    pub type Controllers = HashMap<ControllerId, Controller>;
+    pub type AccessKeys = HashMap<AccessKeyId, AccessKey>;
 
     pub type Timestamp = u64;
 
@@ -37,39 +36,26 @@ pub mod state {
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub struct Controller {
+    pub struct AccessKey {
         pub metadata: Metadata,
         pub created_at: Timestamp,
         pub updated_at: Timestamp,
         pub expires_at: Option<Timestamp>,
-        pub scope: ControllerScope,
+        pub scope: AccessKeyScope,
+        pub kind: Option<AccessKeyKind>,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub enum ControllerScope {
+    pub enum AccessKeyScope {
         Write,
         Admin,
         Submit,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub struct SegmentCanisterStatus {
-        pub status: CanisterStatusType,
-        pub settings: SegmentCanisterSettings,
-        pub module_hash: Option<Vec<u8>>,
-        pub memory_size: Nat,
-        pub cycles: Nat,
-        pub idle_cycles_burned_per_day: Nat,
-    }
-
-    // Prevent breaking changes in DefiniteCanisterSettings which we do not use
-    #[deprecated]
-    #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub struct SegmentCanisterSettings {
-        pub controllers: Vec<Principal>,
-        pub compute_allocation: Nat,
-        pub memory_allocation: Nat,
-        pub freezing_threshold: Nat,
+    pub enum AccessKeyKind {
+        Automation,
+        Emulator,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Copy, Clone, Debug, PartialEq, Eq, Hash)]
@@ -125,8 +111,8 @@ pub mod state {
 pub mod interface {
     use crate::mgmt::types::cmc::SubnetId;
     use crate::types::state::{
-        ControllerId, ControllerScope, Metadata, MissionControlId, NotificationKind, Segment,
-        Timestamp, UserId,
+        AccessKeyId, AccessKeyKind, AccessKeyScope, Metadata, MissionControlId, NotificationKind,
+        Segment, Timestamp, UserId,
     };
     use candid::{CandidType, Principal};
     use ic_ledger_types::BlockIndex;
@@ -180,12 +166,12 @@ pub mod interface {
 
     #[derive(CandidType, Deserialize)]
     pub struct InitOrbiterArgs {
-        pub controllers: Vec<ControllerId>,
+        pub controllers: Vec<AccessKeyId>,
     }
 
     #[derive(CandidType, Deserialize)]
     pub struct InitSatelliteArgs {
-        pub controllers: Vec<ControllerId>,
+        pub controllers: Vec<AccessKeyId>,
         pub storage: Option<InitStorageArgs>,
     }
 
@@ -201,21 +187,35 @@ pub mod interface {
     }
 
     #[derive(CandidType, Deserialize, Clone)]
-    pub struct SetController {
+    pub struct SetAccessKey {
         pub metadata: Metadata,
         pub expires_at: Option<Timestamp>,
-        pub scope: ControllerScope,
+        pub scope: AccessKeyScope,
+        pub kind: Option<AccessKeyKind>,
     }
 
+    #[derive(CandidType, Deserialize)]
+    pub struct SetAccessKeysArgs {
+        pub access_key_ids: Vec<AccessKeyId>,
+        pub access_key: SetAccessKey,
+    }
+
+    #[deprecated(note = "use SetAccessKeysArgs instead")]
     #[derive(CandidType, Deserialize)]
     pub struct SetControllersArgs {
-        pub controllers: Vec<ControllerId>,
-        pub controller: SetController,
+        pub controllers: Vec<AccessKeyId>,
+        pub controller: SetAccessKey,
     }
 
     #[derive(CandidType, Deserialize)]
+    pub struct DeleteAccessKeysArgs {
+        pub access_key_ids: Vec<AccessKeyId>,
+    }
+
+    #[deprecated(note = "use DeleteAccessKeysArgs instead")]
+    #[derive(CandidType, Deserialize)]
     pub struct DeleteControllersArgs {
-        pub controllers: Vec<ControllerId>,
+        pub controllers: Vec<AccessKeyId>,
     }
 
     #[derive(CandidType, Deserialize)]

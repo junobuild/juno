@@ -85,6 +85,7 @@ where
     Err("Unknown caller".to_string())
 }
 
+#[allow(clippy::too_many_arguments)]
 pub async fn create_segment_with_account<F, Fut, P, Pay, R, Refund>(
     create: F,
     process_payment: P,
@@ -151,7 +152,7 @@ where
     R: FnOnce(Principal, Fee) -> Refund,
     Refund: Future<Output = Result<BlockIndex, String>>,
 {
-    let refund_block_index = refund_payment(purchaser.clone(), fee).await?;
+    let refund_block_index = refund_payment(*purchaser, fee).await?;
 
     // We record the refund in the payment list
     update_icrc_payment_refunded(payment_key, &refund_block_index)

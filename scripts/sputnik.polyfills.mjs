@@ -30,6 +30,11 @@ const saveJS = async ({ dest, content }) => {
 	await writeFile(dest, noCheckContent, 'utf-8');
 };
 
+const transformFilterTest = (content) => {
+	const startTest = content.indexOf('#[cfg(test)]');
+	return startTest > -1 ? content.slice(0, startTest) : content;
+};
+
 const transformTextEncodingPolyfill = (content) => {
 	const startIndex = content.indexOf('/// Register `TextDecoder` and `TextEncoder` classes.');
 
@@ -41,15 +46,12 @@ const transformTextEncodingPolyfill = (content) => {
 
 	const withoutUseContent = content.slice(startIndex);
 
-	const startTest = withoutUseContent.indexOf('#[cfg(test)]');
-
-	const filteredContent =
-		startTest > -1 ? withoutUseContent.slice(0, startTest) : withoutUseContent;
+	const filteredContent = transformFilterTest(withoutUseContent);
 
 	return `use std::str;
 
-use crate::js::apis::node::text_encoding::javy::impls::Args;
-use crate::js::apis::node::text_encoding::javy::utils::{to_js_error, to_string_lossy};
+use crate::js::apis::node::javy::text_encoding::impls::Args;
+use crate::js::apis::node::javy::text_encoding::utils::{to_js_error, to_string_lossy};
 use crate::{hold, hold_and_release};
 use anyhow::{anyhow, bail, Error, Result};
 use rquickjs::{
@@ -60,14 +62,28 @@ ${filteredContent.trim()}
 `;
 };
 
-const transformLlrtBlob = (content) =>
-	content
-		.replace(/^use llrt_utils::\s*\n?/m, 'use crate::js::apis::node::blob::llrt::utils::')
-		.replace(/^use super::blob::Blob;\s*\n?/m, 'use super::polyfill::Blob;\n\n');
+const transformLlrtUtilsPath = (content) =>
+	content.replace(/^use llrt_utils::\s*\n?/m, 'use crate::js::apis::node::llrt::llrt_utils::');
 
 const transformLlrtUtils = (content) => {
 	const parsedContent = content.replace(/^use crate::\s*\n?/m, 'use super::');
 	return `#![allow(dead_code)]\n\n${parsedContent}`;
+};
+
+const transformLlrtUrl = (content) =>
+	`#![allow(clippy::inherent_to_string)]\n${content.trim()}`.trim();
+
+const transformLlrtUrlClass = (content) => {
+	const filteredContent = content.replace(
+		'pub fn url_to_http_options',
+		'#[allow(dead_code)]\npub fn url_to_http_options'
+	);
+	return transformLlrtUrl(transformLlrtUtilsPath(filteredContent));
+};
+
+const transformLlrtUrlSearchParams = (content) => {
+	const filteredContent = transformFilterTest(content);
+	return transformLlrtUrl(transformLlrtUtilsPath(filteredContent));
 };
 
 const savePolyfill = async ({ dest, content, transform }) => {
@@ -79,57 +95,67 @@ const savePolyfill = async ({ dest, content, transform }) => {
 const resources = [
 	{
 		src: '/bytecodealliance/javy/refs/heads/main/crates/javy/src/apis/text_encoding/text-encoding.js',
-		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/text_encoding/javy/text-encoding.js')
+		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/javy/text_encoding/text-encoding.js')
 	},
 	{
 		src: '/bytecodealliance/javy/refs/heads/main/crates/javy/src/apis/text_encoding/mod.rs',
-		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/text_encoding/javy/polyfill.rs'),
+		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/javy/text_encoding/polyfill.rs'),
 		transform: transformTextEncodingPolyfill
 	},
 	{
 		src: '/awslabs/llrt/refs/heads/main/modules/llrt_buffer/src/blob.rs',
-		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/blob/llrt/polyfill.rs'),
-		transform: transformLlrtBlob
+		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/llrt/llrt_buffer/blob.rs'),
+		transform: transformLlrtUtilsPath
 	},
 	{
 		src: '/awslabs/llrt/refs/heads/main/modules/llrt_buffer/src/file.rs',
-		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/blob/llrt/file.rs'),
-		transform: transformLlrtBlob
+		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/llrt/llrt_buffer/file.rs'),
+		transform: transformLlrtUtilsPath
 	},
 	{
 		src: '/awslabs/llrt/refs/heads/main/libs/llrt_utils/src/time.rs',
-		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/blob/llrt/utils/time.rs'),
+		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/llrt/llrt_utils/time.rs'),
 		transform: transformLlrtUtils
 	},
 	{
 		src: '/awslabs/llrt/refs/heads/main/libs/llrt_utils/src/result.rs',
-		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/blob/llrt/utils/result.rs'),
+		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/llrt/llrt_utils/result.rs'),
 		transform: transformLlrtUtils
 	},
 	{
 		src: '/awslabs/llrt/refs/heads/main/libs/llrt_utils/src/primordials.rs',
-		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/blob/llrt/utils/primordials.rs'),
+		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/llrt/llrt_utils/primordials.rs'),
 		transform: transformLlrtUtils
 	},
 	{
 		src: '/awslabs/llrt/refs/heads/main/libs/llrt_utils/src/class.rs',
-		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/blob/llrt/utils/class.rs'),
+		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/llrt/llrt_utils/class.rs'),
 		transform: transformLlrtUtils
 	},
 	{
 		src: '/awslabs/llrt/refs/heads/main/libs/llrt_utils/src/object.rs',
-		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/blob/llrt/utils/object.rs'),
+		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/llrt/llrt_utils/object.rs'),
 		transform: transformLlrtUtils
 	},
 	{
 		src: '/awslabs/llrt/refs/heads/main/libs/llrt_utils/src/error_messages.rs',
-		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/blob/llrt/utils/error_messages.rs'),
+		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/llrt/llrt_utils/error_messages.rs'),
 		transform: transformLlrtUtils
 	},
 	{
 		src: '/awslabs/llrt/refs/heads/main/libs/llrt_utils/src/bytes.rs',
-		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/blob/llrt/utils/bytes.rs'),
+		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/llrt/llrt_utils/bytes.rs'),
 		transform: transformLlrtUtils
+	},
+	{
+		src: '/awslabs/llrt/refs/heads/main/modules/llrt_url/src/url_class.rs',
+		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/llrt/llrt_url/url_class.rs'),
+		transform: transformLlrtUrlClass
+	},
+	{
+		src: '/awslabs/llrt/refs/heads/main/modules/llrt_url/src/url_search_params.rs',
+		dest: join(process.cwd(), 'src/sputnik/src/js/apis/node/llrt/llrt_url/url_search_params.rs'),
+		transform: transformLlrtUrlSearchParams
 	}
 ];
 

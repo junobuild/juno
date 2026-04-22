@@ -2,7 +2,7 @@ import type { ConsoleActor, SatelliteActor } from '$declarations';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import type { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import type { Principal } from '@icp-sdk/core/principal';
-import { mockClientId } from '../mocks/jwt.mocks';
+import { mockGoogleClientId } from '../mocks/jwt.mocks';
 import type { TestSession } from './auth-tests.utils';
 import { stopCanister } from './ic-management-tests.utils';
 import { makeMockGoogleOpenIdJwt } from './jwt-tests.utils';
@@ -62,7 +62,7 @@ export const testAuthUpgrade = ({
 			const now = await pic.getTime();
 
 			const { jwks, jwt } = await makeMockGoogleOpenIdJwt({
-				clientId: mockClientId,
+				clientId: mockGoogleClientId,
 				date: new Date(now),
 				nonce
 			});

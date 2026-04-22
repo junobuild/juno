@@ -1,6 +1,6 @@
 import type { SatelliteDid } from '$declarations';
-import { reloadContextRules } from '$lib/services/satellite/rules.loader.services';
-import type { OptionIdentity } from '$lib/types/itentity';
+import { reloadContextRules } from '$lib/services/satellite/collection/rules.loader.services';
+import type { NullishIdentity } from '$lib/types/itentity';
 import type { RulesContext, RulesData } from '$lib/types/rules.context';
 import type { Principal } from '@icp-sdk/core/principal';
 import { derived, get, writable } from 'svelte/store';
@@ -18,7 +18,7 @@ export const initRulesContext = ({
 		rule: undefined
 	});
 
-	const reloadRules = async ({ identity }: { identity: OptionIdentity }) =>
+	const reloadRules = async ({ identity }: { identity: NullishIdentity }) =>
 		await reloadContextRules({
 			satelliteId: get(store).satelliteId,
 			type,
@@ -31,7 +31,7 @@ export const initRulesContext = ({
 		identity
 	}: {
 		satelliteId: Principal;
-		identity: OptionIdentity;
+		identity: NullishIdentity;
 	}) => {
 		store.set({
 			satelliteId,

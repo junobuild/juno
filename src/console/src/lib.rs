@@ -17,7 +17,7 @@ mod rates;
 mod segments;
 mod store;
 mod types;
-mod upgrade;
+mod withdraw;
 
 use crate::types::interface::AuthenticationArgs;
 use crate::types::interface::AuthenticationResult;
@@ -26,10 +26,14 @@ use crate::types::interface::DeleteProposalAssets;
 use crate::types::interface::FeesArgs;
 use crate::types::interface::GetDelegationArgs;
 use crate::types::interface::ListSegmentsArgs;
+use crate::types::interface::SetAccountConfig;
 use crate::types::interface::SetSegmentMetadataArgs;
 use crate::types::interface::SetSegmentsArgs;
 use crate::types::interface::UnsetSegmentsArgs;
+use crate::types::interface::WithdrawArgs;
+use crate::types::interface::WithdrawResult;
 use crate::types::state::Account;
+use crate::types::state::AccountConfig;
 use crate::types::state::Accounts;
 use crate::types::state::FactoryFee;
 use crate::types::state::IcpPayments;
@@ -64,7 +68,7 @@ use junobuild_shared::types::interface::{
     SetControllersArgs,
 };
 use junobuild_shared::types::list::{ListParams, ListResults};
-use junobuild_shared::types::state::Controllers;
+use junobuild_shared::types::state::AccessKeys;
 use junobuild_shared::types::state::{SegmentKind, UserId};
 use junobuild_storage::http::types::StreamingCallbackHttpResponse;
 use junobuild_storage::http::types::StreamingCallbackToken;

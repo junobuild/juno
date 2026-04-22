@@ -153,7 +153,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 						...doc,
 						version: []
 					})
-				).rejects.toThrowError(JUNO_ERROR_NO_VERSION_PROVIDED);
+				).rejects.toThrow(JUNO_ERROR_NO_VERSION_PROVIDED);
 			});
 
 			it('should not update a document if invalid version', async () => {
@@ -172,7 +172,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 						...doc,
 						version: [123n]
 					})
-				).rejects.toThrowError(new RegExp(JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE, 'i'));
+				).rejects.toThrow(new RegExp(JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE, 'i'));
 			});
 		});
 
@@ -242,21 +242,21 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 						max_memory_size: [],
 						version: [1n]
 					})
-				).rejects.toThrowError(JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE);
+				).rejects.toThrow(JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE);
 
 				await expect(
 					set_db_config({
 						max_memory_size: [],
 						version: [99n]
 					})
-				).rejects.toThrowError(JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE);
+				).rejects.toThrow(JUNO_ERROR_VERSION_OUTDATED_OR_FUTURE);
 
 				await expect(
 					set_db_config({
 						max_memory_size: [],
 						version: []
 					})
-				).rejects.toThrowError(JUNO_ERROR_NO_VERSION_PROVIDED);
+				).rejects.toThrow(JUNO_ERROR_NO_VERSION_PROVIDED);
 			});
 		});
 
@@ -825,7 +825,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 			describe.each([
 				{
 					memory: { Heap: null },
-					expectMemory: 3_932_160n
+					expectMemory: 3_997_696n
 				},
 				{
 					memory: { Stable: null },
@@ -853,7 +853,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 				});
 
 				it('should not allow to set a document', async () => {
-					await expect(createDoc()).rejects.toThrowError(
+					await expect(createDoc()).rejects.toThrow(
 						expect.objectContaining({
 							message: expect.stringContaining(errorMsg)
 						})
@@ -875,7 +875,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 								}
 							])
 						)
-					).rejects.toThrowError(errorMsg);
+					).rejects.toThrow(errorMsg);
 				});
 			});
 

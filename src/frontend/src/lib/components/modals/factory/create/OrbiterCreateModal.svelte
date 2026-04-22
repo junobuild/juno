@@ -1,10 +1,12 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
-	import type { PrincipalText } from '@dfinity/zod-schemas';
+	import type { Nullish } from '@dfinity/zod-schemas';
+	import type { PrincipalText } from '@junobuild/schema';
 	import type { MissionControlDid } from '$declarations';
-	import FactoryAdvancedOptions from '$lib/components/factory/create/FactoryAdvancedOptions.svelte';
-	import FactoryCredits from '$lib/components/factory/create/FactoryCredits.svelte';
-	import FactoryProgressCreate from '$lib/components/factory/create/FactoryProgressCreate.svelte';
+	import FactoryAdvancedOptions from '$lib/components/modules/factory/create/FactoryAdvancedOptions.svelte';
+	import FactoryContinue from '$lib/components/modules/factory/create/FactoryContinue.svelte';
+	import FactoryCredits from '$lib/components/modules/factory/create/FactoryCredits.svelte';
+	import FactoryProgressCreate from '$lib/components/modules/factory/create/FactoryProgressCreate.svelte';
 	import Confetti from '$lib/components/ui/Confetti.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import { testIds } from '$lib/constants/test-ids.constants';
@@ -17,7 +19,6 @@
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { JunoModalDetail } from '$lib/types/modal';
 	import type { FactoryCreateProgress } from '$lib/types/progress-factory-create';
-	import type { Option } from '$lib/types/utils';
 	import { navigateToAnalytics } from '$lib/utils/nav.utils';
 	import { testId } from '$lib/utils/test.utils';
 
@@ -28,7 +29,7 @@
 
 	let { detail, onclose }: Props = $props();
 
-	let withFee = $state<Option<bigint>>(undefined);
+	let withFee = $state<Nullish<bigint>>(undefined);
 	let insufficientFunds = $state(true);
 
 	let step: 'init' | 'in_progress' | 'ready' | 'error' = $state('init');
@@ -77,8 +78,6 @@
 		if ($isLaunchpadRoute) {
 			await navigateToAnalytics(null);
 		}
-
-		onclose();
 	};
 </script>
 
@@ -86,13 +85,9 @@
 	{#if step === 'ready'}
 		<Confetti />
 
-		<div class="msg">
-			<p>{$i18n.analytics.ready}</p>
-
-			<button onclick={navigate} {...testId(testIds.createAnalytics.close)}
-				>{$isLaunchpadRoute ? $i18n.core.continue : $i18n.core.close}</button
-			>
-		</div>
+		<FactoryContinue {navigate} {onclose} testId={testIds.createAnalytics.close}>
+			{$i18n.analytics.ready}
+		</FactoryContinue>
 	{:else if step === 'in_progress'}
 		<FactoryProgressCreate
 			{progress}
@@ -112,17 +107,12 @@
 			{detail}
 			{onclose}
 			priceLabel={$i18n.analytics.create_orbiter_price}
-			{selectedWallet}
+			bind:selectedWallet
 			bind:withFee
 			bind:insufficientFunds
 		>
 			<form onsubmit={onSubmit}>
-				<FactoryAdvancedOptions
-					{detail}
-					bind:selectedWallet
-					bind:subnetId
-					bind:monitoringStrategy
-				/>
+				<FactoryAdvancedOptions {detail} bind:subnetId bind:monitoringStrategy />
 
 				<button
 					{...testId(testIds.createAnalytics.create)}
@@ -141,13 +131,5 @@
 
 	h2 {
 		@include overlay.title;
-	}
-
-	.msg {
-		@include overlay.message;
-
-		p {
-			margin: var(--padding-8x) 0 0;
-		}
 	}
 </style>

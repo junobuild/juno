@@ -1,0 +1,180 @@
+<script lang="ts">
+	import { fromNullable, isNullish } from '@dfinity/utils';
+	import { AnonymousIdentity } from '@icp-sdk/core/agent';
+	import { Principal } from '@icp-sdk/core/principal';
+	import { type UpgradeCodeParams, upgradeSatellite } from '@junobuild/admin';
+	import type { SatelliteDid } from '$declarations';
+	import CanisterUpgradeWizard, {
+		type CanisterUpgradeWizardProps,
+		type CanisterUpgradeWizardStep
+	} from '$lib/components/modules/canister/upgrade/CanisterUpgradeWizard.svelte';
+	import CanisterUpgradeOptions from '$lib/components/modules/upgrade/wizard/CanisterUpgradeOptions.svelte';
+	import Html from '$lib/components/ui/Html.svelte';
+	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
+	import { authIdentity } from '$lib/derived/auth.derived';
+	import { prepareWasmUpgrade } from '$lib/services/upgrade/upgrade.cdn.services';
+	import { reloadSatelliteVersion } from '$lib/services/version/version.satellite.services';
+	import { wizardBusy } from '$lib/stores/app/busy.store';
+	import { i18n } from '$lib/stores/app/i18n.store';
+	import { toasts } from '$lib/stores/app/toasts.store';
+	import type { Satellite } from '$lib/types/satellite';
+	import type { Wasm } from '$lib/types/upgrade';
+	import { i18nFormat } from '$lib/utils/i18n.utils';
+	import { container } from '$lib/utils/juno.utils';
+	import { satelliteName } from '$lib/utils/satellite.utils';
+
+	interface Props {
+		satellite: Satellite;
+		asset: SatelliteDid.AssetNoContent | undefined;
+		onclose: () => void;
+	}
+
+	let { onclose, satellite, asset }: Props = $props();
+
+	let satelliteId = $derived(satellite.satellite_id.toText());
+
+	let upgradeBaseParams = $derived<
+		Pick<
+			CanisterUpgradeWizardProps,
+			'showUpgradeExtendedWarning' | 'segment' | 'onclose' | 'canisterId'
+		>
+	>({
+		showUpgradeExtendedWarning: false,
+		segment: 'satellite',
+		canisterId: Principal.fromText(satelliteId),
+		onclose
+	});
+
+	const upgradeSatelliteWasm = async (
+		params: Pick<UpgradeCodeParams, 'wasmModule' | 'onProgress'>
+	) =>
+		await upgradeSatellite({
+			satellite: {
+				satelliteId,
+				identity: $authIdentity ?? new AnonymousIdentity(),
+				...container()
+			},
+			...params,
+			// TODO: option to be removed
+			deprecated: false, // Proposals supported > SATELLITE_v0_0_7,
+			deprecatedNoScope: false // Proposals supported >  SATELLITE_v0_0_9
+		});
+
+	const reloadVersion = async () => {
+		await reloadSatelliteVersion({
+			satelliteId: satellite.satellite_id
+		});
+	};
+
+	let takeSnapshot = $state(true);
+
+	let wasm: Wasm | undefined = $state(undefined);
+
+	let upgradeStep = $state<CanisterUpgradeWizardStep>('init');
+
+	const onnext = ({
+		steps: s,
+		wasm: w
+	}: {
+		steps: 'review' | 'error' | 'download';
+		wasm?: Wasm;
+	}) => {
+		wasm = w;
+		upgradeStep = s;
+	};
+
+	const onSubmit = async ($event: SubmitEvent) => {
+		$event.preventDefault();
+
+		// TS guard. The form is not rendered if the asset is undefined.
+		if (isNullish(asset)) {
+			toasts.error({
+				text: $i18n.errors.find_wasm_asset_for_proposal_asset_not_found
+			});
+
+			return;
+		}
+
+		wizardBusy.start();
+
+		onnext({ steps: 'download' });
+
+		const result = await prepareWasmUpgrade({
+			asset,
+			satelliteId: satellite.satellite_id,
+			identity: $authIdentity
+		});
+
+		if (result.result === 'error') {
+			onnext({ steps: 'error' });
+			wizardBusy.stop();
+
+			return;
+		}
+
+		const { wasm } = result;
+
+		onnext({ steps: 'review', wasm });
+		wizardBusy.stop();
+	};
+</script>
+
+{#if isNullish(asset)}
+	<SpinnerModal>
+		<p>{$i18n.canisters.upgrade_preparing}</p>
+	</SpinnerModal>
+{:else}
+	<CanisterUpgradeWizard
+		{...upgradeBaseParams}
+		{reloadVersion}
+		{takeSnapshot}
+		upgrade={upgradeSatelliteWasm}
+		{wasm}
+		bind:step={upgradeStep}
+	>
+		{#snippet intro()}
+			<h2>
+				<Html
+					text={i18nFormat($i18n.canisters.upgrade_title, [
+						{
+							placeholder: '{0}',
+							value: satelliteName(satellite)
+						}
+					])}
+				/>
+			</h2>
+
+			<form onsubmit={onSubmit}>
+				<p>
+					<Html
+						text={i18nFormat($i18n.changes.upgrade_cdn_source, [
+							{
+								placeholder: '{0}',
+								value: asset?.key.full_path ?? ''
+							},
+							{
+								placeholder: '{1}',
+								value: fromNullable(asset?.key.description) ?? ''
+							}
+						])}
+					/>
+				</p>
+
+				<CanisterUpgradeOptions bind:takeSnapshot />
+
+				<div class="toolbar">
+					<button onclick={onclose} type="button">{$i18n.core.cancel}</button>
+					<button type="submit">{$i18n.core.continue}</button>
+				</div>
+			</form>
+		{/snippet}
+	</CanisterUpgradeWizard>
+{/if}
+
+<style lang="scss">
+	form {
+		:global(code) {
+			word-break: break-word;
+		}
+	}
+</style>

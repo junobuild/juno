@@ -1,5 +1,5 @@
 import { nonNullish } from '@dfinity/utils';
-import * as z from 'zod/v4';
+import * as z from 'zod';
 
 const DATA_URL_REGEX = /^data:([a-z]+\/[a-z0-9.+-]+);base64,([A-Za-z0-9+/]+={0,2})$/i;
 

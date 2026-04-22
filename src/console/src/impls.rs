@@ -132,7 +132,7 @@ impl Segment {
 
         Self {
             segment_id: *segment_id,
-            metadata: metadata.unwrap_or(HashMap::new()),
+            metadata: metadata.unwrap_or_default(),
             created_at: now,
             updated_at: now,
         }

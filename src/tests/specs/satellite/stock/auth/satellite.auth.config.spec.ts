@@ -1,17 +1,20 @@
 import type { SatelliteActor, SatelliteDid } from '$declarations';
 import type { Actor, PocketIc } from '@dfinity/pic';
-import { toNullable } from '@dfinity/utils';
+import { fromNullable, toNullable } from '@dfinity/utils';
 import { AnonymousIdentity } from '@icp-sdk/core/agent';
-import type { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
+import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import type { Principal } from '@icp-sdk/core/principal';
-import { JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER } from '@junobuild/errors';
+import {
+	JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER,
+	JUNO_STORAGE_ERROR_RESERVED_ASSET
+} from '@junobuild/errors';
 import {
 	EXTERNAL_ALTERNATIVE_ORIGINS,
 	EXTERNAL_ALTERNATIVE_ORIGINS_URLS
 } from '../../../../constants/auth-tests.constants';
 import {
 	testAuthConfig,
-	testAuthGoogleConfig,
+	testAuthOpenIdConfig,
 	testReturnAuthConfig
 } from '../../../../utils/auth-assertions-tests.utils';
 import { setupSatelliteStock } from '../../../../utils/satellite-tests.utils';
@@ -96,6 +99,22 @@ describe('Satellite > Authentication > Configuration', () => {
 				}).toStrictEqual({
 					alternativeOrigins: [...httpsUrls, canisterIdUrl].sort()
 				});
+			});
+
+			it('should not delete reserved /.well-known/ii-alternative-origins', async () => {
+				const { del_asset, get_asset } = actor;
+
+				const full_path = '/.well-known/ii-alternative-origins';
+
+				const collection = '#dapp';
+
+				await expect(del_asset(collection, full_path)).rejects.toThrow(
+					`${JUNO_STORAGE_ERROR_RESERVED_ASSET} (/.well-known/ii-alternative-origins)`
+				);
+
+				const asset = fromNullable(await get_asset(collection, full_path));
+
+				expect(asset).not.toBeUndefined();
 			});
 
 			it('should not expose canister id if canister id is the derivation origin', async () => {
@@ -330,7 +349,7 @@ describe('Satellite > Authentication > Configuration', () => {
 			version: 11n
 		});
 
-		testAuthGoogleConfig({
+		testAuthOpenIdConfig({
 			actor: () => actor,
 			pic: () => pic,
 			canisterId: () => canisterId,
@@ -339,11 +358,7 @@ describe('Satellite > Authentication > Configuration', () => {
 		});
 	});
 
-	describe('anonymous', () => {
-		beforeAll(() => {
-			actor.setIdentity(new AnonymousIdentity());
-		});
-
+	const assertGuards = () => {
 		it('should throw errors on setting config', async () => {
 			const { set_auth_config } = actor;
 
@@ -356,13 +371,30 @@ describe('Satellite > Authentication > Configuration', () => {
 					openid: [],
 					version: [10n]
 				})
-			).rejects.toThrowError(JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER);
+			).rejects.toThrow(JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER);
 		});
 
 		it('should throw errors on getting config', async () => {
 			const { get_auth_config } = actor;
 
-			await expect(get_auth_config()).rejects.toThrowError(JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER);
+			await expect(get_auth_config()).rejects.toThrow(JUNO_AUTH_ERROR_NOT_ADMIN_CONTROLLER);
 		});
+	};
+
+	describe('anonymous', () => {
+		beforeAll(() => {
+			actor.setIdentity(new AnonymousIdentity());
+		});
+
+		assertGuards();
+	});
+
+	describe('Some identity', () => {
+		beforeAll(() => {
+			const user = Ed25519KeyIdentity.generate();
+			actor.setIdentity(user);
+		});
+
+		assertGuards();
 	});
 });

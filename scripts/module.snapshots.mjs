@@ -1,4 +1,4 @@
-import { encodeSnapshotId, ICManagementCanister } from '@icp-sdk/canisters/ic-management';
+import { encodeSnapshotId, IcManagementCanister } from '@icp-sdk/canisters/ic-management';
 import { icAgent, localAgent } from './actor.mjs';
 import { targetMainnet } from './utils.mjs';
 
@@ -6,7 +6,7 @@ const fnAgent = targetMainnet() ? icAgent : localAgent;
 const agent = await fnAgent();
 
 export const listSnapshots = async ({ canisterId }) => {
-	const { listCanisterSnapshots } = ICManagementCanister.create({
+	const { listCanisterSnapshots } = IcManagementCanister.create({
 		agent
 	});
 

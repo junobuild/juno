@@ -44,9 +44,7 @@ describe('Console > Fees', () => {
 
 			const { set_fee } = newActor;
 
-			await expect(set_fee({ Satellite: null }, TEST_FEES)).rejects.toThrowError(
-				CONTROLLER_ERROR_MSG
-			);
+			await expect(set_fee({ Satellite: null }, TEST_FEES)).rejects.toThrow(CONTROLLER_ERROR_MSG);
 		};
 
 		it('should throw on set_fee with some identity', async () => {
@@ -71,16 +69,14 @@ describe('Console > Fees', () => {
 		it('should throw on set_fee with user', async () => {
 			const { set_fee } = randomIdentityActor;
 
-			await expect(set_fee({ Satellite: null }, TEST_FEES)).rejects.toThrowError(
-				CONTROLLER_ERROR_MSG
-			);
+			await expect(set_fee({ Satellite: null }, TEST_FEES)).rejects.toThrow(CONTROLLER_ERROR_MSG);
 		});
 
 		it('should provide default segments fees', async () => {
 			const { get_fee } = randomIdentityActor;
 
 			const defaultFees = {
-				fee_icp: toNullable({ e8s: 1_500_000_000n }),
+				fee_icp: toNullable({ e8s: 150_000_000n }),
 				fee_cycles: { e12s: 3_000_000_000_000n },
 				updated_at: expect.any(BigInt)
 			};

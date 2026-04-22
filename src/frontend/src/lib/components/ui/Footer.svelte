@@ -1,5 +1,5 @@
 <script lang="ts">
-	import AppLang from '$lib/components/core/AppLang.svelte';
+	import AppLang from '$lib/components/app/core/AppLang.svelte';
 	import ExternalLink from '$lib/components/ui/ExternalLink.svelte';
 	import Theme from '$lib/components/ui/Theme.svelte';
 </script>

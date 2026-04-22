@@ -1,19 +1,27 @@
 #!/usr/bin/env node
 
 import { fromNullable, isNullish } from '@dfinity/utils';
+import { nextArg } from '@junobuild/cli-tools';
 import { observatoryActorIC, observatoryActorLocal } from './actor.mjs';
 import { targetMainnet } from './utils.mjs';
 
 const fromBigIntNanoSeconds = (nanoseconds) => new Date(Number(nanoseconds / 1_000_000n));
 
-const getGoogleCertificate = async (mainnet) => {
+const getGoogleCertificate = async ({ mainnet, provider: cmdProvider }) => {
 	const { get_openid_certificate } = await (mainnet
 		? observatoryActorIC()
 		: observatoryActorLocal());
 
-	const certificate = await get_openid_certificate({ provider: { Google: null } });
+	const provider =
+		cmdProvider === 'gh_auth'
+			? { GitHubAuth: null }
+			: cmdProvider === 'gh_actions'
+				? { GitHubActions: null }
+				: { Google: null };
 
-	console.log('📥 Google certificate:', certificate);
+	const certificate = await get_openid_certificate({ provider });
+
+	console.log(`📥  ${cmdProvider} certificate:`, certificate);
 
 	const cert = fromNullable(certificate);
 	if (isNullish(cert)) {
@@ -25,4 +33,12 @@ const getGoogleCertificate = async (mainnet) => {
 
 const mainnet = targetMainnet();
 
-await getGoogleCertificate(mainnet);
+const args = process.argv.slice(2);
+const provider = nextArg({ args, option: '-p' }) ?? nextArg({ args, option: '--provider' });
+
+if (!['google', 'gh_auth', 'gh_actions'].includes(provider)) {
+	console.log(`Provider ${provider} is not supported`);
+	process.exit(1);
+}
+
+await getGoogleCertificate({ mainnet, provider });

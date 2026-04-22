@@ -1,6 +1,7 @@
 use crate::proposals::state::stable::list_proposals as list_proposals_stable;
 use crate::proposals::{count_proposals, ListProposalResults, ListProposalsParams};
 use crate::strategies::CdnStableStrategy;
+use std::cmp::Reverse;
 
 const FIRST_PROPOSAL_ID: u128 = 1;
 
@@ -55,9 +56,7 @@ pub fn list_proposals(
     let mut proposals = list_proposals_stable(cdn_stable, &filters);
 
     if desc {
-        proposals
-            .items
-            .sort_by(|a, b| b.0.proposal_id.cmp(&a.0.proposal_id));
+        proposals.items.sort_by_key(|b| Reverse(b.0.proposal_id));
     }
 
     proposals

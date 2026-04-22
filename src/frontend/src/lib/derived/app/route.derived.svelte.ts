@@ -8,7 +8,8 @@ const satellitePaths = [
 	'datastore',
 	'storage',
 	'functions',
-	'hosting'
+	'hosting',
+	'deployments'
 ];
 
 const routeId: string | null = $derived(page.route.id);

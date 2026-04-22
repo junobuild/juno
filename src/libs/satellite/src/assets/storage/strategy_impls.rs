@@ -1,6 +1,6 @@
 use crate::assets::assert::assert_cdn_asset_keys;
 use crate::assets::storage::assert::assert_storage_list_permission;
-use crate::assets::storage::certified_assets::runtime::init_certified_assets;
+use crate::assets::storage::certified_assets::all::certify_all_assets;
 use crate::assets::storage::state::{
     delete_asset, get_asset, get_config, get_domains, get_rule, insert_asset, insert_asset_encoding,
 };
@@ -11,10 +11,10 @@ use candid::Principal;
 use junobuild_collections::assert::stores::{assert_create_permission, assert_permission};
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::{Memory, Permission, Rule};
-use junobuild_shared::segments::controllers::controller_can_write;
+use junobuild_shared::segments::access_keys::is_write_access_key;
 use junobuild_shared::types::core::Blob;
 use junobuild_shared::types::domain::CustomDomains;
-use junobuild_shared::types::state::Controllers;
+use junobuild_shared::types::state::AccessKeys;
 use junobuild_storage::strategies::{
     StorageAssertionsStrategy, StorageStateStrategy, StorageUploadStrategy,
 };
@@ -36,21 +36,17 @@ impl StorageAssertionsStrategy for StorageAssertions {
         assert_cdn_asset_keys(full_path, description, collection)
     }
 
-    fn assert_write_on_dapp_collection(
-        &self,
-        caller: Principal,
-        controllers: &Controllers,
-    ) -> bool {
-        controller_can_write(caller, controllers)
+    fn assert_write_on_dapp_collection(&self, caller: Principal, controllers: &AccessKeys) -> bool {
+        is_write_access_key(caller, controllers)
     }
 
     fn assert_write_on_system_collection(
         &self,
         caller: Principal,
         _collection: &CollectionKey,
-        controllers: &Controllers,
+        controllers: &AccessKeys,
     ) -> bool {
-        controller_can_write(caller, controllers)
+        is_write_access_key(caller, controllers)
     }
 
     fn assert_create_permission(
@@ -58,7 +54,7 @@ impl StorageAssertionsStrategy for StorageAssertions {
         permission: &Permission,
         caller: Principal,
         _collection: &CollectionKey,
-        controllers: &Controllers,
+        controllers: &AccessKeys,
     ) -> bool {
         assert_create_permission(permission, caller, controllers)
     }
@@ -69,7 +65,7 @@ impl StorageAssertionsStrategy for StorageAssertions {
         owner: Principal,
         caller: Principal,
         _collection: &CollectionKey,
-        controllers: &Controllers,
+        controllers: &AccessKeys,
     ) -> bool {
         assert_permission(permission, owner, caller, controllers)
     }
@@ -80,7 +76,7 @@ impl StorageAssertionsStrategy for StorageAssertions {
         owner: Principal,
         caller: Principal,
         collection: &CollectionKey,
-        controllers: &Controllers,
+        controllers: &AccessKeys,
     ) -> bool {
         assert_storage_list_permission(permission, owner, caller, collection, controllers)
     }
@@ -96,7 +92,7 @@ impl StorageAssertionsStrategy for StorageAssertions {
     fn increment_and_assert_storage_usage(
         &self,
         caller: &Principal,
-        controllers: &Controllers,
+        controllers: &AccessKeys,
         collection: &CollectionKey,
         max_changes_per_user: Option<u32>,
     ) -> Result<(), String> {
@@ -175,8 +171,8 @@ impl StorageStateStrategy for StorageState {
         delete_asset(collection, full_path, rule)
     }
 
-    fn init_certified_assets(&self) {
-        init_certified_assets();
+    fn certify_all_assets(&self) {
+        certify_all_assets();
     }
 }
 

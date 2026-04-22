@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
-	import UserOpenId from '$lib/components/auth/UserOpenId.svelte';
-	import UserPasskeyAuthenticator from '$lib/components/auth/UserPasskeyAuthenticator.svelte';
-	import UserProvider from '$lib/components/auth/UserProvider.svelte';
-	import UserStatus from '$lib/components/auth/UserStatus.svelte';
+	import UserOpenId from '$lib/components/satellites/auth/UserOpenId.svelte';
+	import UserPasskeyAuthenticator from '$lib/components/satellites/auth/UserPasskeyAuthenticator.svelte';
+	import UserProvider from '$lib/components/satellites/auth/UserProvider.svelte';
+	import UserStatus from '$lib/components/satellites/auth/UserStatus.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import InlineWarning from '$lib/components/ui/InlineWarning.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';

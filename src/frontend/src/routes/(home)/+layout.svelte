@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount, type Snippet } from 'svelte';
-	import Navbar from '$lib/components/core/Navbar.svelte';
+	import Navbar from '$lib/components/app/core/Navbar.svelte';
 	import Footer from '$lib/components/ui/Footer.svelte';
 	import Layout from '$lib/components/ui/Layout.svelte';
 	import { layoutNavigation } from '$lib/stores/app/layout-navigation.store';

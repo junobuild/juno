@@ -4,7 +4,7 @@ use candid::Principal;
 use junobuild_shared::types::interface::{
     CreateCanisterArgs, CreateMissionControlArgs, CreateOrbiterArgs, CreateSatelliteArgs,
 };
-use junobuild_shared::types::state::{ControllerId, UserId};
+use junobuild_shared::types::state::{AccessKeyId, UserId};
 
 impl CanisterCreator {
     pub fn purchaser(&self) -> &Principal {
@@ -21,7 +21,7 @@ impl CanisterCreator {
         }
     }
 
-    pub fn controllers(&self) -> Vec<ControllerId> {
+    pub fn controllers(&self) -> Vec<AccessKeyId> {
         match self {
             CanisterCreator::User((user, mission_control)) => {
                 let mut controllers = Vec::from([*user]);

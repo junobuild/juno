@@ -1,12 +1,12 @@
 import type { MissionControlDid } from '$declarations';
-import { orbiterStore } from '$lib/derived/orbiter.derived';
+import { orbiter } from '$lib/derived/orbiter.derived';
 import { canistersSyncDataStore } from '$lib/stores/ic-mgmt/canister-sync-data.store';
 import type { SegmentWithSyncData } from '$lib/types/segment';
 import { isNullish } from '@dfinity/utils';
 import { derived } from 'svelte/store';
 
 export const orbiterWithSyncData = derived(
-	[orbiterStore, canistersSyncDataStore],
+	[orbiter, canistersSyncDataStore],
 	([$orbiterStore, $canistersSyncDataStore]) => {
 		if (isNullish($orbiterStore)) {
 			return undefined;

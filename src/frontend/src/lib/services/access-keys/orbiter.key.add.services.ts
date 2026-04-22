@@ -19,7 +19,7 @@ export const addOrbiterAccessKey = async ({
 	orbiterIds,
 	accessKeyId,
 	scope,
-	profile
+	metadata
 }: {
 	orbiterIds: OrbiterId[];
 	identity: Identity;
@@ -29,7 +29,7 @@ export const addOrbiterAccessKey = async ({
 			identity,
 			orbiterIds,
 			accessKeyId,
-			profile
+			metadata
 		});
 		return;
 	}
@@ -38,7 +38,7 @@ export const addOrbiterAccessKey = async ({
 		identity,
 		orbiterIds,
 		accessKeyId,
-		profile,
+		metadata,
 		scope
 	});
 };
@@ -79,7 +79,7 @@ const setOrbitersNonAdminAccessKey = async ({
 	orbiterIds,
 	accessKeyId,
 	identity,
-	profile,
+	metadata,
 	scope
 }: {
 	orbiterIds: OrbiterId[];
@@ -90,7 +90,7 @@ const setOrbitersNonAdminAccessKey = async ({
 		await setOrbiterControllers({
 			args: {
 				controller: toSetController({
-					profile,
+					metadata,
 					scope: scope as AddAccessKeyScope // Safe case, the param is explicit to avoid passing admin to the function
 				}),
 				controllers: [Principal.from(accessKeyId)]

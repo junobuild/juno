@@ -2,6 +2,7 @@ import { idlFactory as idlFactoryLedgerIcrc } from '$declarations/ledger/icrc/le
 import type { PocketIc } from '@dfinity/pic';
 import { nowInBigIntNanoSeconds } from '@dfinity/utils';
 import type { IcpLedgerCanisterOptions } from '@icp-sdk/canisters/ledger/icp';
+import type { IcrcLedgerDid } from '@icp-sdk/canisters/ledger/icrc';
 import { AnonymousIdentity, type Identity } from '@icp-sdk/core/agent';
 import type { Principal } from '@icp-sdk/core/principal';
 import { ICP_LEDGER_ID } from '../constants/ledger-tests.contants';
@@ -67,4 +68,23 @@ export const approveToken = async ({
 		from_subaccount: [],
 		memo: []
 	});
+};
+
+export const balanceToken = async ({
+	pic,
+	ledgerId = ICP_LEDGER_ID,
+	account
+}: {
+	pic: PocketIc;
+	ledgerId?: Principal;
+	account: IcrcLedgerDid.Account;
+}): Promise<IcrcLedgerDid.Tokens> => {
+	const ledgerActor = pic.createActor<LedgerActor>(idlFactoryLedgerIcrc, ledgerId);
+
+	// Balance query is public data
+	ledgerActor.setIdentity(new AnonymousIdentity());
+
+	const { icrc1_balance_of } = ledgerActor;
+
+	return await icrc1_balance_of(account);
 };

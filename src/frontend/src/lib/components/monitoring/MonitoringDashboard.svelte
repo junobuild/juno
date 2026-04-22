@@ -13,7 +13,7 @@
 		missionControlMonitoring,
 		missionControlSettingsNotLoaded
 	} from '$lib/derived/mission-control/mission-control-settings.derived';
-	import { orbitersStore } from '$lib/derived/orbiter.derived';
+	import { orbiters } from '$lib/derived/orbiter.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { MissionControlId } from '$lib/types/mission-control';
 	import { satelliteName } from '$lib/utils/satellite.utils';
@@ -55,7 +55,7 @@
 			</MonitoringArticle>
 		{/each}
 
-		{#each $orbitersStore ?? [] as orbiter (orbiter.orbiter_id.toText())}
+		{#each $orbiters ?? [] as orbiter (orbiter.orbiter_id.toText())}
 			<MonitoringArticle
 				canisterId={orbiter.orbiter_id}
 				monitoring={fromNullishNullable(fromNullable(orbiter.settings)?.monitoring)}

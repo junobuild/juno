@@ -1,6 +1,6 @@
 <script lang="ts">
-	import ApplyChangeWizard from '$lib/components/changes/wizard/ApplyChangeWizard.svelte';
-	import UpgradeChangeWizard from '$lib/components/changes/wizard/UpgradeChangeWizard.svelte';
+	import ApplyChangeWizard from '$lib/components/satellites/changes/wizard/ApplyChangeWizard.svelte';
+	import UpgradeChangeWizard from '$lib/components/satellites/changes/wizard/UpgradeChangeWizard.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import type { JunoModalChangeDetail, JunoModalDetail } from '$lib/types/modal';
 

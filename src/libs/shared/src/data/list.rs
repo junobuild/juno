@@ -122,7 +122,7 @@ fn order_values_with_keys<'a, T: Clone + Timestamped>(
         return sorted_matches;
     }
 
-    sorted_matches.sort_by(|(key_a, _), (key_b, _)| key_a.cmp(key_b));
+    sorted_matches.sort_by_key(|(key_a, _)| *key_a);
     sorted_matches
 }
 

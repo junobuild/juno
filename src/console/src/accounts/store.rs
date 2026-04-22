@@ -1,5 +1,6 @@
 use crate::store::{with_accounts, with_accounts_mut};
 use crate::types::state::{Account, Accounts, AccountsStable, Provider};
+use ic_ledger_types::Tokens;
 use junobuild_shared::data::collect::collect_stable_map_from;
 use junobuild_shared::types::state::{MissionControlId, UserId};
 use junobuild_shared::utils::principal_equal;
@@ -61,16 +62,17 @@ fn get_account_with_existing_mission_control_impl(
     Err("User does not have the permission to access the mission control center.")
 }
 
-pub fn init_account(user: &UserId, provider: &Option<Provider>) -> Account {
-    with_accounts_mut(|accounts| init_account_impl(user, provider, accounts))
+pub fn init_account(user: &UserId, provider: &Option<Provider>, credits: &Tokens) -> Account {
+    with_accounts_mut(|accounts| init_account_impl(user, provider, credits, accounts))
 }
 
 fn init_account_impl(
     user: &UserId,
     provider: &Option<Provider>,
+    credits: &Tokens,
     accounts: &mut AccountsStable,
 ) -> Account {
-    let account = Account::init(user, provider);
+    let account = Account::init(user, provider, credits);
     accounts.insert(*user, account.clone());
 
     account

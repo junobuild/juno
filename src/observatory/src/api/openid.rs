@@ -8,22 +8,22 @@ use crate::openid::scheduler::{
 use crate::store::heap::get_certificate;
 use ic_cdk_macros::update;
 use junobuild_auth::openid::jwkset::types::interface::GetOpenIdCertificateArgs;
-use junobuild_auth::openid::types::provider::OpenIdCertificate;
+use junobuild_auth::openid::types::provider::{OpenIdCertificate, OpenIdProvider};
 use junobuild_shared::ic::UnwrapOrTrap;
 
 #[update(guard = "caller_is_admin_controller")]
-fn start_openid_monitoring() {
-    start_openid_scheduler().unwrap_or_trap()
+fn start_openid_monitoring(provider: OpenIdProvider) {
+    start_openid_scheduler(provider).unwrap_or_trap()
 }
 
 #[update(guard = "caller_is_admin_controller")]
-fn stop_openid_monitoring() {
-    stop_openid_scheduler().unwrap_or_trap()
+fn stop_openid_monitoring(provider: OpenIdProvider) {
+    stop_openid_scheduler(provider).unwrap_or_trap()
 }
 
 #[update(guard = "caller_is_admin_controller")]
-fn is_openid_monitoring_enabled() -> bool {
-    is_openid_scheduler_enabled()
+fn is_openid_monitoring_enabled(provider: OpenIdProvider) -> bool {
+    is_openid_scheduler_enabled(provider)
 }
 
 #[update(guard = "caller_is_not_anonymous")]

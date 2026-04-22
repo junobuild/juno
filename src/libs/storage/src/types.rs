@@ -224,6 +224,30 @@ pub mod interface {
         pub max_memory_size: Option<StorageConfigMaxMemorySize>,
         pub version: Option<Version>,
     }
+
+    #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
+    pub struct SetStorageConfigOptions {
+        pub skip_certification: Option<bool>,
+    }
+
+    #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
+    pub struct SetStorageConfigWithOptions {
+        pub config: SetStorageConfig,
+        pub options: SetStorageConfigOptions,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize)]
+    pub enum CertifyAssetsCursor {
+        Heap { offset: usize },
+        Stable { key: Option<AssetKey> },
+    }
+
+    #[derive(CandidType, Serialize, Deserialize)]
+    pub enum CertifyAssetsStrategy {
+        Clear,
+        Append,
+        AppendWithRouting,
+    }
 }
 
 pub mod config {

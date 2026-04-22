@@ -4,8 +4,10 @@ use crate::delegation::types::{
 use crate::delegation::utils::seed::calculate_seed;
 use crate::delegation::utils::signature::{build_signature_inputs, build_signature_msg};
 use crate::delegation::utils::targets::build_targets;
-use crate::openid::types::interface::{OpenIdCredential, OpenIdCredentialKey};
-use crate::openid::types::provider::OpenIdProvider;
+use crate::openid::credentials::delegation::types::interface::{
+    OpenIdDelegationCredential, OpenIdDelegationCredentialKey,
+};
+use crate::openid::types::provider::OpenIdDelegationProvider;
 use crate::state::get_salt;
 use crate::state::services::read_state;
 use crate::strategies::{AuthCertificateStrategy, AuthHeapStrategy};
@@ -14,15 +16,15 @@ use serde_bytes::ByteBuf;
 pub fn openid_get_delegation(
     session_key: &SessionKey,
     expiration: Timestamp,
-    credential: &OpenIdCredential,
-    provider: &OpenIdProvider,
+    credential: &OpenIdDelegationCredential,
+    provider: &OpenIdDelegationProvider,
     auth_heap: &impl AuthHeapStrategy,
     certificate: &impl AuthCertificateStrategy,
 ) -> GetDelegationResult {
     get_delegation(
         session_key,
         expiration,
-        &OpenIdCredentialKey::from(credential),
+        &OpenIdDelegationCredentialKey::from(credential),
         provider,
         auth_heap,
         certificate,
@@ -32,8 +34,8 @@ pub fn openid_get_delegation(
 pub fn get_delegation(
     session_key: &SessionKey,
     expiration: Timestamp,
-    key: &OpenIdCredentialKey,
-    provider: &OpenIdProvider,
+    key: &OpenIdDelegationCredentialKey,
+    provider: &OpenIdDelegationProvider,
     auth_heap: &impl AuthHeapStrategy,
     certificate: &impl AuthCertificateStrategy,
 ) -> GetDelegationResult {

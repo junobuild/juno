@@ -1,9 +1,11 @@
-use crate::constants::E8S_PER_ICP;
-use crate::types::state::{Account, OpenIdData, Provider};
+use crate::types::interface::SetAccountConfig;
+use crate::types::state::{Account, AccountConfig, OpenIdData, Provider};
 use ic_cdk::api::time;
-use junobuild_auth::openid::types::interface::OpenIdCredential;
+use ic_ledger_types::Tokens;
+use junobuild_auth::openid::credentials::delegation::types::interface::OpenIdDelegationCredential;
 use junobuild_auth::profile::types::OpenIdProfile;
-use junobuild_shared::types::state::{MissionControlId, UserId};
+use junobuild_shared::data::version::next_version;
+use junobuild_shared::types::state::{MissionControlId, Timestamp, UserId, Version, Versioned};
 
 impl OpenIdProfile for OpenIdData {
     fn email(&self) -> Option<&str> {
@@ -18,6 +20,9 @@ impl OpenIdProfile for OpenIdData {
     fn family_name(&self) -> Option<&str> {
         self.family_name.as_deref()
     }
+    fn preferred_username(&self) -> Option<&str> {
+        self.preferred_username.as_deref()
+    }
     fn picture(&self) -> Option<&str> {
         self.picture.as_deref()
     }
@@ -27,7 +32,7 @@ impl OpenIdProfile for OpenIdData {
 }
 
 impl OpenIdData {
-    pub fn merge(existing: &OpenIdData, credential: &OpenIdCredential) -> Self {
+    pub fn merge(existing: &OpenIdData, credential: &OpenIdDelegationCredential) -> Self {
         Self {
             email: credential.email.clone().or(existing.email.clone()),
             name: credential.name.clone().or(existing.name.clone()),
@@ -39,19 +44,24 @@ impl OpenIdData {
                 .family_name
                 .clone()
                 .or(existing.family_name.clone()),
+            preferred_username: credential
+                .preferred_username
+                .clone()
+                .or(existing.preferred_username.clone()),
             picture: credential.picture.clone().or(existing.picture.clone()),
             locale: credential.locale.clone().or(existing.locale.clone()),
         }
     }
 }
 
-impl From<&OpenIdCredential> for OpenIdData {
-    fn from(credential: &OpenIdCredential) -> Self {
+impl From<&OpenIdDelegationCredential> for OpenIdData {
+    fn from(credential: &OpenIdDelegationCredential) -> Self {
         Self {
             email: credential.email.clone(),
             name: credential.name.clone(),
             given_name: credential.given_name.clone(),
             family_name: credential.family_name.clone(),
+            preferred_username: credential.preferred_username.clone(),
             picture: credential.picture.clone(),
             locale: credential.locale.clone(),
         }
@@ -59,14 +69,14 @@ impl From<&OpenIdCredential> for OpenIdData {
 }
 
 impl Account {
-    pub fn init(user: &UserId, provider: &Option<Provider>) -> Self {
+    pub fn init(user: &UserId, provider: &Option<Provider>, credits: &Tokens) -> Self {
         let now = time();
 
         Account {
             mission_control_id: None,
             provider: provider.clone(),
             owner: *user,
-            credits: E8S_PER_ICP,
+            credits: *credits,
             created_at: now,
             updated_at: now,
         }
@@ -85,6 +95,34 @@ impl Account {
             mission_control_id: Some(*mission_control_id),
             updated_at: time(),
             ..self.clone()
+        }
+    }
+}
+
+impl Versioned for AccountConfig {
+    fn version(&self) -> Option<Version> {
+        self.version
+    }
+}
+
+impl AccountConfig {
+    pub fn prepare(current_config: &Option<AccountConfig>, user_config: &SetAccountConfig) -> Self {
+        let now = time();
+
+        let created_at: Timestamp = match current_config {
+            None => now,
+            Some(current_config) => current_config.created_at.unwrap_or(now),
+        };
+
+        let version = next_version(current_config);
+
+        let updated_at: Timestamp = now;
+
+        AccountConfig {
+            init_credits: user_config.init_credits,
+            created_at: Some(created_at),
+            updated_at: Some(updated_at),
+            version: Some(version),
         }
     }
 }

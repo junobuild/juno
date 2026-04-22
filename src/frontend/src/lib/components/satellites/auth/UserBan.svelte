@@ -1,0 +1,98 @@
+<script lang="ts">
+	import type { Principal } from '@icp-sdk/core/principal';
+	import { getContext } from 'svelte';
+	import ButtonTableAction from '$lib/components/ui/ButtonTableAction.svelte';
+	import Popover from '$lib/components/ui/Popover.svelte';
+	import { authIdentity } from '$lib/derived/auth.derived';
+	import { banUser, unbanUser } from '$lib/services/satellite/user/user.services';
+	import { i18n } from '$lib/stores/app/i18n.store';
+	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
+	import type { User } from '$lib/types/user';
+	import { shortenWithMiddleEllipsis } from '$lib/utils/format.utils';
+	import { i18nFormat } from '$lib/utils/i18n.utils';
+
+	interface Props {
+		user: User;
+		satelliteId: Principal;
+	}
+
+	let { user, satelliteId }: Props = $props();
+
+	let { data } = $derived(user);
+
+	let { banned } = $derived(data);
+
+	let isBanned = $derived(banned === 'indefinite');
+
+	let visible: boolean = $state(false);
+
+	const open = () => (visible = true);
+	const close = () => (visible = false);
+
+	const { setItem } = getContext<PaginationContext<User>>(PAGINATION_CONTEXT_KEY);
+
+	const handleSubmit = async ($event: SubmitEvent) => {
+		$event.preventDefault();
+
+		const fn = isBanned ? unbanUser : banUser;
+
+		const { success } = await fn({
+			identity: $authIdentity,
+			satelliteId,
+			user,
+			setItem
+		});
+
+		if (!success) {
+			return;
+		}
+
+		visible = false;
+	};
+</script>
+
+<ButtonTableAction
+	ariaLabel={isBanned ? $i18n.users.unban_user : $i18n.users.ban_user}
+	errorStyle={isBanned}
+	icon={isBanned ? 'block' : 'check'}
+	onaction={open}
+/>
+
+<Popover backdrop="dark" center bind:visible>
+	<form class="container" onsubmit={handleSubmit}>
+		<p class="title">
+			{i18nFormat(isBanned ? $i18n.users.user_banned : $i18n.users.user_active, [
+				{
+					placeholder: '{0}',
+					value: shortenWithMiddleEllipsis({ text: user.owner.toText() })
+				}
+			])}
+		</p>
+
+		<p>{isBanned ? $i18n.users.unban_explanation : $i18n.users.ban_explanation}</p>
+
+		<p>{isBanned ? $i18n.users.are_you_sure_unban : $i18n.users.are_you_sure_ban}</p>
+
+		<div class="toolbar">
+			<button onclick={close} type="button">{$i18n.core.cancel}</button>
+			<button type="submit">{$i18n.core.confirm}</button>
+		</div>
+	</form>
+</Popover>
+
+<style lang="scss">
+	@use '../../../styles/mixins/dialog';
+
+	@include dialog.edit;
+
+	.title {
+		font-weight: var(--font-weight-bold);
+	}
+
+	p {
+		white-space: initial;
+		word-break: break-word;
+
+		margin: 0 0 var(--padding-2_5x);
+	}
+</style>

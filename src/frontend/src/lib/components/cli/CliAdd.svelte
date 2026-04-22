@@ -1,9 +1,10 @@
 <script lang="ts">
 	import { isNullish, notEmptyString } from '@dfinity/utils';
+	import type { Nullish } from '@dfinity/zod-schemas';
 	import type { Principal } from '@icp-sdk/core/principal';
 	import { fade } from 'svelte/transition';
 	import type { MissionControlDid } from '$declarations';
-	import SegmentsTable from '$lib/components/segments/SegmentsTable.svelte';
+	import SegmentsTable from '$lib/components/modules/segments/SegmentsTable.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import Warning from '$lib/components/ui/Warning.svelte';
 	import { REVOKED_CONTROLLERS } from '$lib/constants/app.constants';
@@ -14,13 +15,12 @@
 	import { toasts } from '$lib/stores/app/toasts.store';
 	import type { MissionControlId } from '$lib/types/mission-control';
 	import type { Satellite } from '$lib/types/satellite';
-	import type { Option } from '$lib/types/utils';
 
 	interface Props {
-		missionControlId: Option<MissionControlId>;
+		missionControlId: Nullish<MissionControlId>;
 		principal: string;
 		redirect_uri: string;
-		profile: Option<string>;
+		profile: Nullish<string>;
 	}
 
 	let { missionControlId, principal, redirect_uri, profile }: Props = $props();

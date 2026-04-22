@@ -8,8 +8,8 @@ pub fn collect_assets_heap<'a>(
     assets: &'a AssetsHeap,
 ) -> Vec<(&'a FullPath, &'a Asset)> {
     assets
-        .iter()
-        .filter_map(|(_, asset)| filter_assets_heap(asset, collection))
+        .values()
+        .filter_map(|asset| filter_assets_heap(asset, collection))
         .collect()
 }
 
@@ -26,8 +26,8 @@ pub fn collect_delete_assets_heap(
 
 pub fn count_assets_heap(collection: &CollectionKey, assets: &AssetsHeap) -> usize {
     assets
-        .iter()
-        .filter_map(|(_, asset)| filter_assets_heap(asset, collection))
+        .values()
+        .filter_map(|asset| filter_assets_heap(asset, collection))
         .count()
 }
 

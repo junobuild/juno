@@ -73,25 +73,21 @@ pub fn assert_page_view_length(page_view: &SetPageView) -> Result<(), String> {
     }
 
     match page_view.referrer.clone() {
-        None => {}
-        Some(referrer) => {
-            if referrer.len() > LONG_STRING_MAX_LENGTH {
-                return Err(format!(
-                    "Page event referrer {referrer} is longer than {LONG_STRING_MAX_LENGTH}."
-                ));
-            }
+        Some(referrer) if referrer.len() > LONG_STRING_MAX_LENGTH => {
+            return Err(format!(
+                "Page event referrer {referrer} is longer than {LONG_STRING_MAX_LENGTH}."
+            ));
         }
+        _ => {}
     }
 
     match page_view.user_agent.clone() {
-        None => {}
-        Some(user_agent) => {
-            if user_agent.len() > STRING_MAX_LENGTH {
-                return Err(format!(
-                    "Page event user_agent {user_agent} is longer than {STRING_MAX_LENGTH}."
-                ));
-            }
+        Some(user_agent) if user_agent.len() > STRING_MAX_LENGTH => {
+            return Err(format!(
+                "Page event user_agent {user_agent} is longer than {STRING_MAX_LENGTH}."
+            ));
         }
+        _ => {}
     }
 
     if page_view.time_zone.len() > SHORT_STRING_MAX_LENGTH {

@@ -3,7 +3,7 @@
 	import type { MissionControlDid } from '$declarations';
 	import { deleteOrbitersController, setOrbitersController } from '$lib/api/mission-control.api';
 	import { listOrbiterControllers } from '$lib/api/orbiter.api';
-	import AccessKeys from '$lib/components/access-keys/AccessKeys.svelte';
+	import AccessKeys from '$lib/components/modules/access-keys/AccessKeys.svelte';
 	import { authIdentity } from '$lib/derived/auth.derived';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import { addAccessKey, removeAccessKey } from '$lib/services/access-keys/access-keys.services';
@@ -24,7 +24,7 @@
 
 	let { orbiterId }: Props = $props();
 
-	const list = (): Promise<[Principal, MissionControlDid.Controller][]> =>
+	const list = (): Promise<[Principal, MissionControlDid.AccessKey][]> =>
 		listOrbiterControllers({ orbiterId, identity: $authIdentity });
 
 	const remove = async (accessKey: AccessKeyIdParam): Promise<AddAccessKeyResult> => {

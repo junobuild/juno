@@ -4,12 +4,11 @@ use crate::fees::init_factory_fees;
 use crate::memory::manager::{get_memory_upgrades, init_stable_state, STATE};
 use crate::rates::init::init_factory_rates;
 use crate::types::state::{HeapState, ReleasesMetadata, State};
-use crate::upgrade::{upgrade_init_canister_fees_and_rates, upgrade_init_factory_fees_and_rates};
 use ciborium::{from_reader, into_writer};
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade};
 use junobuild_shared::ic::api::caller;
 use junobuild_shared::memory::upgrade::{read_post_upgrade, write_pre_upgrade};
-use junobuild_shared::segments::controllers::init_admin_controllers;
+use junobuild_shared::segments::access_keys::init_admin_access_keys;
 use std::collections::HashMap;
 
 #[init]
@@ -20,12 +19,13 @@ fn init() {
         mission_controls: HashMap::new(),
         payments: HashMap::new(),
         invitation_codes: HashMap::new(),
-        controllers: init_admin_controllers(&[manager]),
+        controllers: init_admin_access_keys(&[manager]),
         factory_fees: Some(init_factory_fees()),
         factory_rates: Some(init_factory_rates()),
         storage: init_cdn_storage_heap_state(),
         authentication: None,
         releases_metadata: ReleasesMetadata::default(),
+        account_config: None,
     };
 
     STATE.with(|state| {
@@ -57,10 +57,4 @@ fn post_upgrade() {
     STATE.with(|s| *s.borrow_mut() = state);
 
     defer_init_certified_assets();
-
-    // TODO: to be removed, one time upgrade
-    upgrade_init_factory_fees_and_rates();
-
-    // TODO: to be removed, one time upgrade
-    upgrade_init_canister_fees_and_rates();
 }

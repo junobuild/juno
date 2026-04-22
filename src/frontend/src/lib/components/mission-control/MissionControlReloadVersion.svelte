@@ -1,5 +1,5 @@
 <script lang="ts">
-	import SegmentReload from '$lib/components/segments/SegmentReload.svelte';
+	import SegmentReload from '$lib/components/modules/segments/SegmentReload.svelte';
 	import { reloadMissionControlVersion } from '$lib/services/version/version.mission-control.services';
 	import type { MissionControlId } from '$lib/types/mission-control';
 

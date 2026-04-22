@@ -2,7 +2,7 @@ import { approveIcrcTransfer } from '$lib/api/icrc-ledger.api';
 import { CONSOLE_CANISTER_ID, CYCLES_LEDGER_CANISTER_ID } from '$lib/constants/app.constants';
 import { CYCLES_TRANSACTION_FEE } from '$lib/constants/token.constants';
 import { MEMO_CANISTER_APPROVE } from '$lib/constants/wallet.constants';
-import type { OptionIdentity } from '$lib/types/itentity';
+import type { NullishIdentity } from '$lib/types/itentity';
 import type { IcpLedgerDid } from '@icp-sdk/canisters/ledger/icp';
 import { Principal } from '@icp-sdk/core/principal';
 
@@ -10,7 +10,7 @@ export const approveCreateCanisterWithCycles = async ({
 	identity,
 	amount: effectiveAmount
 }: {
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 	amount: bigint;
 }): Promise<void> => {
 	const spender: IcpLedgerDid.Account = {

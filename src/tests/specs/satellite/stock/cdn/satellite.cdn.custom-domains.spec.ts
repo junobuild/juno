@@ -1,6 +1,6 @@
 import type { SatelliteActor } from '$declarations';
 import type { Actor, PocketIc } from '@dfinity/pic';
-import { toNullable } from '@dfinity/utils';
+import { fromNullable, toNullable } from '@dfinity/utils';
 import { AnonymousIdentity } from '@icp-sdk/core/agent';
 import type { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import {
@@ -78,6 +78,36 @@ describe.each(MEMORIES)('Satellite > Custom domains > $title', ({ memory }) => {
 			expect(asset[0]?.key.full_path).toEqual('/.well-known/ic-domains');
 		});
 
+		describe('should not delete reserved /.well-known/ic-domains', () => {
+			const full_path = '/.well-known/ic-domains';
+
+			const collection = '#dapp';
+
+			it('should not delete asset', async () => {
+				const { del_asset, get_asset } = actor;
+
+				await expect(del_asset(collection, full_path)).rejects.toThrow(
+					`${JUNO_STORAGE_ERROR_RESERVED_ASSET} (/.well-known/ic-domains)`
+				);
+
+				const asset = fromNullable(await get_asset(collection, full_path));
+
+				expect(asset).not.toBeUndefined();
+			});
+
+			it('should not delete many assets', async () => {
+				const { del_many_assets, get_asset } = actor;
+
+				await expect(del_many_assets([[collection, full_path]])).rejects.toThrow(
+					`${JUNO_STORAGE_ERROR_RESERVED_ASSET} (/.well-known/ic-domains)`
+				);
+
+				const asset = fromNullable(await get_asset(collection, full_path));
+
+				expect(asset).not.toBeUndefined();
+			});
+		});
+
 		it('should throw error if try to upload ic-domains', async () => {
 			const { init_asset_upload } = actor;
 
@@ -90,7 +120,7 @@ describe.each(MEMORIES)('Satellite > Custom domains > $title', ({ memory }) => {
 					name: 'ic-domains',
 					token: toNullable()
 				})
-			).rejects.toThrowError(`${JUNO_STORAGE_ERROR_RESERVED_ASSET} (/.well-known/ic-domains)`);
+			).rejects.toThrow(`${JUNO_STORAGE_ERROR_RESERVED_ASSET} (/.well-known/ic-domains)`);
 		});
 
 		it('should not expose /.well-known/ic-domains after all domains are deleted', async () => {

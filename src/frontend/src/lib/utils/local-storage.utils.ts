@@ -44,17 +44,25 @@ export const getLocalStorageLang = (): Languages => {
 	}
 };
 
-export const getLocalListParams = (key: ListParamsKey): ListParamsData => {
+export const getLocalListParams = ({
+	key,
+	defaultListParams
+}: {
+	key: ListParamsKey;
+	defaultListParams?: ListParamsData;
+}): ListParamsData => {
+	const listParams = defaultListParams ?? DEFAULT_LIST_PARAMS;
+
 	try {
 		const { [`list_params_${key}`]: list_params }: Storage = browser
 			? localStorage
-			: ({ [`list_params_${key}`]: JSON.stringify(DEFAULT_LIST_PARAMS) } as unknown as Storage);
+			: ({ [`list_params_${key}`]: JSON.stringify(listParams) } as unknown as Storage);
 
-		return nonNullish(list_params) ? JSON.parse(list_params) : DEFAULT_LIST_PARAMS;
+		return nonNullish(list_params) ? JSON.parse(list_params) : listParams;
 	} catch (err: unknown) {
 		// We use the local storage for the operational part of the app but, not crucial
 		console.error(err);
-		return DEFAULT_LIST_PARAMS;
+		return listParams;
 	}
 };
 

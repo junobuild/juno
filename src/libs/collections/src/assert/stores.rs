@@ -1,30 +1,33 @@
 use crate::types::rules::Permission;
 use candid::Principal;
-use junobuild_shared::segments::controllers::controller_can_write;
-use junobuild_shared::types::state::{Controllers, UserId};
+use junobuild_shared::segments::access_keys::is_write_access_key;
+use junobuild_shared::types::state::{AccessKeys, UserId};
 use junobuild_shared::utils::{principal_not_anonymous, principal_not_anonymous_and_equal};
 
 pub fn assert_permission(
     permission: &Permission,
     owner: Principal,
     caller: Principal,
-    controllers: &Controllers,
+    controllers: &AccessKeys,
 ) -> bool {
-    assert_permission_with(permission, owner, caller, controllers, controller_can_write)
+    assert_permission_with(permission, owner, caller, controllers, is_write_access_key)
 }
 
 pub fn assert_permission_with(
     permission: &Permission,
     owner: Principal,
     caller: Principal,
-    controllers: &Controllers,
-    is_allowed_controller: fn(UserId, &Controllers) -> bool,
+    controllers: &AccessKeys,
+    is_allowed_controller: fn(UserId, &AccessKeys) -> bool,
 ) -> bool {
     match permission {
         Permission::Public => true,
-        Permission::Private => assert_caller(caller, owner),
+        Permission::Private => is_owner_and_valid(caller, owner, controllers),
         Permission::Managed => {
-            assert_caller(caller, owner) || controller_can_write(caller, controllers)
+            // if owner, then it's either not a controller or a valid controller
+            // else if valid controller
+            is_owner_and_valid(caller, owner, controllers)
+                || is_write_access_key(caller, controllers)
         }
         Permission::Controllers => is_allowed_controller(caller, controllers),
     }
@@ -35,26 +38,29 @@ pub fn assert_permission_with(
 pub fn assert_create_permission(
     permission: &Permission,
     caller: Principal,
-    controllers: &Controllers,
+    controllers: &AccessKeys,
 ) -> bool {
-    assert_create_permission_with(permission, caller, controllers, controller_can_write)
+    assert_create_permission_with(permission, caller, controllers, is_write_access_key)
 }
 
 pub fn assert_create_permission_with(
     permission: &Permission,
     caller: Principal,
-    controllers: &Controllers,
-    is_allowed_controller: fn(UserId, &Controllers) -> bool,
+    controllers: &AccessKeys,
+    is_allowed_controller: fn(UserId, &AccessKeys) -> bool,
 ) -> bool {
     match permission {
         Permission::Public => true,
-        Permission::Private => assert_not_anonymous(caller),
-        Permission::Managed => assert_not_anonymous(caller),
         Permission::Controllers => is_allowed_controller(caller, controllers),
+        _ => {
+            assert_not_anonymous(caller)
+                && (is_not_controller(caller, controllers)
+                    || is_write_access_key(caller, controllers))
+        }
     }
 }
 
-fn assert_caller(caller: Principal, owner: Principal) -> bool {
+fn is_owner(caller: Principal, owner: Principal) -> bool {
     principal_not_anonymous_and_equal(caller, owner)
 }
 
@@ -64,4 +70,377 @@ fn assert_not_anonymous(caller: Principal) -> bool {
 
 pub fn public_permission(permission: &Permission) -> bool {
     matches!(permission, Permission::Public)
+}
+
+fn is_controller(caller: Principal, controllers: &AccessKeys) -> bool {
+    controllers.contains_key(&caller)
+}
+
+fn is_not_controller(caller: Principal, controllers: &AccessKeys) -> bool {
+    !is_controller(caller, controllers)
+}
+
+fn is_owner_and_valid(caller: Principal, owner: Principal, controllers: &AccessKeys) -> bool {
+    is_owner(caller, owner)
+        && (is_not_controller(caller, controllers) || is_write_access_key(caller, controllers))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use junobuild_shared::types::state::{AccessKey, AccessKeyScope, AccessKeys};
+    use std::collections::HashMap;
+
+    fn test_principal(id: u8) -> Principal {
+        Principal::from_slice(&[id])
+    }
+
+    fn create_controller(scope: AccessKeyScope, expires_at: Option<u64>) -> AccessKey {
+        AccessKey {
+            metadata: HashMap::new(),
+            created_at: 1000,
+            updated_at: 1000,
+            expires_at,
+            scope,
+            kind: None,
+        }
+    }
+
+    fn mock_time() -> u64 {
+        1_000_000_000_000
+    }
+
+    #[test]
+    fn test_is_owner() {
+        let owner = test_principal(1);
+        let caller = test_principal(1);
+        let other = test_principal(2);
+
+        assert!(is_owner(caller, owner));
+        assert!(!is_owner(other, owner));
+        assert!(!is_owner(Principal::anonymous(), owner));
+    }
+
+    #[test]
+    fn test_is_controller() {
+        let mut controllers = AccessKeys::new();
+        let controller_principal = test_principal(1);
+        let non_controller = test_principal(2);
+
+        controllers.insert(
+            controller_principal,
+            create_controller(AccessKeyScope::Write, None),
+        );
+
+        assert!(is_controller(controller_principal, &controllers));
+        assert!(!is_controller(non_controller, &controllers));
+    }
+
+    #[test]
+    fn test_public_permission_allows_anyone() {
+        let controllers = AccessKeys::new();
+        let owner = test_principal(1);
+        let caller = test_principal(2);
+
+        assert!(assert_permission(
+            &Permission::Public,
+            owner,
+            caller,
+            &controllers
+        ));
+    }
+
+    #[test]
+    fn test_private_permission_allows_owner_not_controller() {
+        let controllers = AccessKeys::new();
+        let owner = test_principal(1);
+
+        assert!(assert_permission(
+            &Permission::Private,
+            owner,
+            owner,
+            &controllers
+        ));
+    }
+
+    #[test]
+    fn test_private_permission_allows_owner_valid_controller() {
+        let mut controllers = AccessKeys::new();
+        let owner = test_principal(1);
+
+        controllers.insert(
+            owner,
+            create_controller(AccessKeyScope::Write, Some(mock_time() + 1000)),
+        );
+
+        assert!(assert_permission(
+            &Permission::Private,
+            owner,
+            owner,
+            &controllers
+        ));
+    }
+
+    #[test]
+    fn test_private_permission_rejects_owner_expired_controller() {
+        let mut controllers = AccessKeys::new();
+        let owner = test_principal(1);
+
+        controllers.insert(
+            owner,
+            create_controller(AccessKeyScope::Write, Some(mock_time() - 1)),
+        );
+
+        assert!(!assert_permission(
+            &Permission::Private,
+            owner,
+            owner,
+            &controllers
+        ));
+    }
+
+    #[test]
+    fn test_private_permission_rejects_non_owner() {
+        let controllers = AccessKeys::new();
+        let owner = test_principal(1);
+        let caller = test_principal(2);
+
+        assert!(!assert_permission(
+            &Permission::Private,
+            owner,
+            caller,
+            &controllers
+        ));
+    }
+
+    #[test]
+    fn test_managed_permission_allows_owner_not_controller() {
+        let controllers = AccessKeys::new();
+        let owner = test_principal(1);
+
+        assert!(assert_permission(
+            &Permission::Managed,
+            owner,
+            owner,
+            &controllers
+        ));
+    }
+
+    #[test]
+    fn test_managed_permission_allows_owner_valid_controller() {
+        let mut controllers = AccessKeys::new();
+        let owner = test_principal(1);
+
+        controllers.insert(
+            owner,
+            create_controller(AccessKeyScope::Write, Some(mock_time() + 1000)),
+        );
+
+        assert!(assert_permission(
+            &Permission::Managed,
+            owner,
+            owner,
+            &controllers
+        ));
+    }
+
+    #[test]
+    fn test_managed_permission_rejects_owner_expired_controller() {
+        let mut controllers = AccessKeys::new();
+        let owner = test_principal(1);
+
+        controllers.insert(
+            owner,
+            create_controller(AccessKeyScope::Write, Some(mock_time() - 1)),
+        );
+
+        assert!(!assert_permission(
+            &Permission::Managed,
+            owner,
+            owner,
+            &controllers
+        ));
+    }
+
+    #[test]
+    fn test_managed_permission_allows_valid_write_controller() {
+        let mut controllers = AccessKeys::new();
+        let owner = test_principal(1);
+        let controller = test_principal(2);
+
+        controllers.insert(
+            controller,
+            create_controller(AccessKeyScope::Write, Some(mock_time() + 1000)),
+        );
+
+        assert!(assert_permission(
+            &Permission::Managed,
+            owner,
+            controller,
+            &controllers
+        ));
+    }
+
+    #[test]
+    fn test_managed_permission_rejects_expired_write_controller() {
+        let mut controllers = AccessKeys::new();
+        let owner = test_principal(1);
+        let controller = test_principal(2);
+
+        controllers.insert(
+            controller,
+            create_controller(AccessKeyScope::Write, Some(mock_time() - 1)),
+        );
+
+        assert!(!assert_permission(
+            &Permission::Managed,
+            owner,
+            controller,
+            &controllers
+        ));
+    }
+
+    #[test]
+    fn test_managed_permission_rejects_submit_controller() {
+        let mut controllers = AccessKeys::new();
+        let owner = test_principal(1);
+        let controller = test_principal(2);
+
+        controllers.insert(controller, create_controller(AccessKeyScope::Submit, None));
+
+        assert!(!assert_permission(
+            &Permission::Managed,
+            owner,
+            controller,
+            &controllers
+        ));
+    }
+
+    #[test]
+    fn test_controllers_permission_allows_valid_controller() {
+        let mut controllers = AccessKeys::new();
+        let owner = test_principal(1);
+        let controller = test_principal(2);
+
+        controllers.insert(
+            controller,
+            create_controller(AccessKeyScope::Write, Some(mock_time() + 1000)),
+        );
+
+        assert!(assert_permission(
+            &Permission::Controllers,
+            owner,
+            controller,
+            &controllers
+        ));
+    }
+
+    #[test]
+    fn test_controllers_permission_rejects_expired_controller() {
+        let mut controllers = AccessKeys::new();
+        let owner = test_principal(1);
+        let controller = test_principal(2);
+
+        controllers.insert(
+            controller,
+            create_controller(AccessKeyScope::Write, Some(mock_time() - 1)),
+        );
+
+        assert!(!assert_permission(
+            &Permission::Controllers,
+            owner,
+            controller,
+            &controllers
+        ));
+    }
+
+    // Create permission tests
+    #[test]
+    fn test_create_public_allows_anyone() {
+        let controllers = AccessKeys::new();
+        let caller = test_principal(1);
+
+        assert!(assert_create_permission(
+            &Permission::Public,
+            caller,
+            &controllers
+        ));
+    }
+
+    #[test]
+    fn test_create_private_allows_non_controller() {
+        let controllers = AccessKeys::new();
+        let caller = test_principal(1);
+
+        assert!(assert_create_permission(
+            &Permission::Private,
+            caller,
+            &controllers
+        ));
+    }
+
+    #[test]
+    fn test_create_private_allows_valid_controller() {
+        let mut controllers = AccessKeys::new();
+        let caller = test_principal(1);
+
+        controllers.insert(
+            caller,
+            create_controller(AccessKeyScope::Write, Some(mock_time() + 1000)),
+        );
+
+        assert!(assert_create_permission(
+            &Permission::Private,
+            caller,
+            &controllers
+        ));
+    }
+
+    #[test]
+    fn test_create_private_rejects_expired_controller() {
+        let mut controllers = AccessKeys::new();
+        let caller = test_principal(1);
+
+        controllers.insert(
+            caller,
+            create_controller(AccessKeyScope::Write, Some(mock_time() - 1)),
+        );
+
+        assert!(!assert_create_permission(
+            &Permission::Private,
+            caller,
+            &controllers
+        ));
+    }
+
+    #[test]
+    fn test_create_controllers_allows_valid_write_controller() {
+        let mut controllers = AccessKeys::new();
+        let caller = test_principal(1);
+
+        controllers.insert(
+            caller,
+            create_controller(AccessKeyScope::Write, Some(mock_time() + 1000)),
+        );
+
+        assert!(assert_create_permission(
+            &Permission::Controllers,
+            caller,
+            &controllers
+        ));
+    }
+
+    #[test]
+    fn test_create_controllers_rejects_submit_controller() {
+        let mut controllers = AccessKeys::new();
+        let caller = test_principal(1);
+
+        controllers.insert(caller, create_controller(AccessKeyScope::Submit, None));
+
+        assert!(!assert_create_permission(
+            &Permission::Controllers,
+            caller,
+            &controllers
+        ));
+    }
 }

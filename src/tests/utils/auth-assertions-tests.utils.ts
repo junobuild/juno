@@ -1,4 +1,8 @@
 import type { ConsoleActor, SatelliteActor, SatelliteDid } from '$declarations';
+import type {
+	OpenIdAuthProviderConfig,
+	OpenIdDelegationProvider
+} from '$declarations/satellite/satellite.did';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import { fromNullable, nonNullish, toNullable } from '@dfinity/utils';
 import type { Identity } from '@icp-sdk/core/agent';
@@ -10,7 +14,7 @@ import {
 	LOG_SALT_ALREADY_INITIALIZED,
 	LOG_SALT_INITIALIZED
 } from '../constants/auth-tests.constants';
-import { mockClientId } from '../mocks/jwt.mocks';
+import { mockGitHubClientId, mockGoogleClientId } from '../mocks/jwt.mocks';
 import { fetchLogs } from './mgmt-tests.utils';
 
 /* eslint-disable vitest/require-top-level-describe */
@@ -73,7 +77,7 @@ export const testAuthConfig = ({
 			version: []
 		};
 
-		await expect(set_auth_config(config)).rejects.toThrowError(
+		await expect(set_auth_config(config)).rejects.toThrow(
 			`${JUNO_AUTH_ERROR_INVALID_ORIGIN} (${invalidDomain})`
 		);
 	});
@@ -93,7 +97,7 @@ export const testAuthConfig = ({
 			version: []
 		};
 
-		await expect(set_auth_config(config)).rejects.toThrowError(
+		await expect(set_auth_config(config)).rejects.toThrow(
 			`${JUNO_AUTH_ERROR_INVALID_ORIGIN} (${invalidDomain})`
 		);
 	});
@@ -311,7 +315,7 @@ export const testReturnAuthConfig = ({
 	});
 };
 
-export const testAuthGoogleConfig = ({
+export const testAuthOpenIdConfig = ({
 	actor,
 	version,
 	pic,
@@ -324,6 +328,22 @@ export const testAuthGoogleConfig = ({
 	controller: () => Identity;
 	version: bigint;
 }) => {
+	const googleConfig: [OpenIdDelegationProvider, OpenIdAuthProviderConfig] = [
+		{ Google: null },
+		{
+			client_id: mockGoogleClientId,
+			delegation: []
+		}
+	];
+
+	const githubConfig: [OpenIdDelegationProvider, OpenIdAuthProviderConfig] = [
+		{ GitHub: null },
+		{
+			client_id: mockGitHubClientId,
+			delegation: []
+		}
+	] as const;
+
 	const assertLog = async (logMessage: string) => {
 		const logs = await fetchLogs({
 			pic: pic(),
@@ -344,15 +364,7 @@ export const testAuthGoogleConfig = ({
 			rules: [],
 			openid: [
 				{
-					providers: [
-						[
-							{ Google: null },
-							{
-								client_id: mockClientId,
-								delegation: []
-							}
-						]
-					],
+					providers: [googleConfig],
 					observatory_id: []
 				}
 			],
@@ -367,7 +379,7 @@ export const testAuthGoogleConfig = ({
 			([key]) => 'Google' in key
 		)?.[1];
 
-		expect(google?.client_id).toEqual(mockClientId);
+		expect(google?.client_id).toEqual(mockGoogleClientId);
 
 		await assertLog(LOG_SALT_INITIALIZED);
 	});
@@ -401,15 +413,7 @@ export const testAuthGoogleConfig = ({
 			rules: [],
 			openid: [
 				{
-					providers: [
-						[
-							{ Google: null },
-							{
-								client_id: mockClientId,
-								delegation: []
-							}
-						]
-					],
+					providers: [googleConfig],
 					observatory_id: []
 				}
 			],
@@ -419,5 +423,33 @@ export const testAuthGoogleConfig = ({
 		await set_auth_config(config);
 
 		await assertLog(LOG_SALT_ALREADY_INITIALIZED);
+	});
+
+	it('should set github client id as well', async () => {
+		const { set_auth_config, get_auth_config } = actor();
+
+		const config: SatelliteDid.SetAuthenticationConfig = {
+			internet_identity: [],
+			rules: [],
+			openid: [
+				{
+					providers: [googleConfig, githubConfig],
+					observatory_id: []
+				}
+			],
+			version: [version + 3n]
+		};
+
+		await set_auth_config(config);
+
+		const updatedConfig = await get_auth_config();
+
+		expect(fromNullable(fromNullable(updatedConfig)?.openid ?? [])?.providers).toHaveLength(2);
+
+		const github = fromNullable(fromNullable(updatedConfig)?.openid ?? [])?.providers.find(
+			([key]) => 'GitHub' in key
+		)?.[1];
+
+		expect(github?.client_id).toEqual(mockGitHubClientId);
 	});
 };

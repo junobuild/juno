@@ -11,7 +11,7 @@ import { isSatelliteFeatureSupported } from '$lib/services/_feature.services';
 import { busy } from '$lib/stores/app/busy.store';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
-import type { OptionIdentity } from '$lib/types/itentity';
+import type { NullishIdentity } from '$lib/types/itentity';
 import type { PaginationContext } from '$lib/types/pagination.context';
 import type { User } from '$lib/types/user';
 import type { UserUsage, UserUsageCollection } from '$lib/types/user-usage';
@@ -27,7 +27,7 @@ import { get } from 'svelte/store';
 interface OpenUserDetailParams {
 	user: User;
 	satelliteId: Principal;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }
 
 export const openUserDetail = async ({ user, satelliteId, identity }: OpenUserDetailParams) => {
@@ -107,7 +107,7 @@ const loadUserUsages = async ({
 			: listRules0022({ satelliteId, type: DbCollectionType, identity }),
 		newestListRules
 			? modernListRules(StorageCollectionType)
-			: listRules0022({ satelliteId, type: DbCollectionType, identity })
+			: listRules0022({ satelliteId, type: StorageCollectionType, identity })
 	]);
 
 	const loadUsage = async ({
@@ -162,7 +162,7 @@ const loadUserUsages = async ({
 
 export type BanUser = {
 	user: User;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 	satelliteId: Principal;
 } & Pick<PaginationContext<User>, 'setItem'>;
 

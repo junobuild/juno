@@ -12,7 +12,7 @@ use junobuild_collections::types::rules::Permission;
 use junobuild_shared::data::list::{filter_timestamps, matcher_regex};
 use junobuild_shared::types::core::Blob;
 use junobuild_shared::types::list::ListParams;
-use junobuild_shared::types::state::{Controllers, UserId};
+use junobuild_shared::types::state::{AccessKeys, UserId};
 use regex::Regex;
 
 pub fn map_asset_no_content(asset: &Asset) -> (FullPath, AssetNoContent) {
@@ -21,7 +21,7 @@ pub fn map_asset_no_content(asset: &Asset) -> (FullPath, AssetNoContent) {
 
 pub fn filter_values<'a>(
     caller: Principal,
-    controllers: &'a Controllers,
+    controllers: &'a AccessKeys,
     permission: &'a Permission,
     collection: CollectionKey,
     ListParams {
@@ -161,8 +161,11 @@ pub fn create_asset_with_content(
     (asset, encoding)
 }
 
-pub fn clone_asset_encoding_content_chunks(encoding: &AssetEncoding, chunk_index: usize) -> Blob {
-    encoding.content_chunks[chunk_index].clone()
+pub fn clone_asset_encoding_content_chunks(
+    encoding: &AssetEncoding,
+    chunk_index: usize,
+) -> Option<Blob> {
+    encoding.content_chunks.get(chunk_index).cloned()
 }
 
 /// With heap memory the encodings are part of the asset struct.

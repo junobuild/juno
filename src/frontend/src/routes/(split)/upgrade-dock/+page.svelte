@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { setContext } from 'svelte';
 	import { writable } from 'svelte/store';
-	import ChangesDock from '$lib/components/changes/list/ChangesDock.svelte';
-	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
-	import Loaders from '$lib/components/loaders/Loaders.svelte';
+	import Loaders from '$lib/components/app/loaders/Loaders.svelte';
+	import IdentityGuard from '$lib/components/auth/guards/IdentityGuard.svelte';
+	import UpgradeDock from '$lib/components/modules/upgrade/list/UpgradeDock.svelte';
+	import ChangesDock from '$lib/components/satellites/changes/list/ChangesDock.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
-	import UpgradeDock from '$lib/components/upgrade/list/UpgradeDock.svelte';
 	import {
 		type Tab,
 		TABS_CONTEXT_KEY,

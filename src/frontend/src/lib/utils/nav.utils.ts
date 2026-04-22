@@ -1,43 +1,39 @@
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
-import type { Option } from '$lib/types/utils';
 import { nonNullish } from '@dfinity/utils';
+import type { Nullish } from '@dfinity/zod-schemas';
 import type { Principal } from '@icp-sdk/core/principal';
 import type { LoadEvent } from '@sveltejs/kit';
 
-// TODO: rename to reflect Satellite or use same page for canister?
-export const overviewLink = (satelliteId: Option<Principal>): string =>
+export const overviewLink = (satelliteId: Nullish<Principal>): string =>
 	`/satellite/?s=${satelliteId?.toText() ?? ''}`;
 
-export const monitoringLink = (satelliteId?: Option<Principal>): string =>
+export const deploymentsLink = (satelliteId: Nullish<Principal>): string =>
+	`/deployments/?s=${satelliteId?.toText() ?? ''}`;
+
+export const monitoringLink = (satelliteId?: Nullish<Principal>): string =>
 	`/monitoring/${nonNullish(satelliteId) ? `?s=${satelliteId?.toText() ?? ''}` : ''}`;
 
-export const analyticsLink = (satelliteId?: Option<Principal>): string =>
+export const analyticsLink = (satelliteId?: Nullish<Principal>): string =>
 	`/analytics/${nonNullish(satelliteId) ? `?s=${satelliteId?.toText() ?? ''}` : ''}`;
 
-export const upgradeDockLink = (satelliteId?: Option<Principal>): string =>
+export const upgradeDockLink = (satelliteId?: Nullish<Principal>): string =>
 	`/upgrade-dock/${nonNullish(satelliteId) ? `?s=${satelliteId?.toText() ?? ''}` : ''}`;
 
-export const upgradeChangesLink = (satelliteId: Option<Principal>): string =>
+export const upgradeChangesLink = (satelliteId: Nullish<Principal>): string =>
 	`/upgrade-dock/?tab=changes${nonNullish(satelliteId) ? `&s=${satelliteId?.toText() ?? ''}` : ''}`;
 
-export const canisterLink = (canisterId?: Option<Principal>): string =>
-	`/canister/${nonNullish(canisterId) ? `?c=${canisterId?.toText() ?? ''}` : ''}`;
-
-export const navigateToSatellite = async (satelliteId: Option<Principal>) =>
+export const navigateToSatellite = async (satelliteId: Nullish<Principal>) =>
 	await goto(overviewLink(satelliteId));
 
-export const navigateToAnalytics = async (satelliteId: Option<Principal>) =>
+export const navigateToAnalytics = async (satelliteId: Nullish<Principal>) =>
 	await goto(analyticsLink(satelliteId), { replaceState: true });
 
-export const navigateToMonitoring = async (satelliteId: Option<Principal>) =>
+export const navigateToMonitoring = async (satelliteId: Nullish<Principal>) =>
 	await goto(monitoringLink(satelliteId), { replaceState: true });
 
-export const navigateToChangesDock = async (satelliteId: Option<Principal>) =>
+export const navigateToChangesDock = async (satelliteId: Nullish<Principal>) =>
 	await goto(upgradeChangesLink(satelliteId), { replaceState: true });
-
-export const navigateToCanister = async (canisterId: Option<Principal>) =>
-	await goto(canisterLink(canisterId));
 
 export const back = async ({ pop }: { pop: boolean }) => {
 	if (pop) {
@@ -49,15 +45,10 @@ export const back = async ({ pop }: { pop: boolean }) => {
 };
 
 export interface RouteSatellite {
-	satellite: Option<string>;
+	satellite: Nullish<string>;
 }
-
-export interface RouteCanister {
-	canister: Option<string>;
-}
-
 export interface RouteTab {
-	tab: Option<string>;
+	tab: Nullish<string>;
 }
 
 export const loadRouteSatellite = ($event: LoadEvent): RouteSatellite => {
@@ -73,23 +64,6 @@ export const loadRouteSatellite = ($event: LoadEvent): RouteSatellite => {
 
 	return {
 		satellite: searchParams?.get('s'),
-		...loadRouteTab($event)
-	};
-};
-
-export const loadRouteCanister = ($event: LoadEvent): RouteCanister => {
-	if (!browser) {
-		return {
-			canister: undefined
-		};
-	}
-
-	const {
-		url: { searchParams }
-	} = $event;
-
-	return {
-		canister: searchParams?.get('c'),
 		...loadRouteTab($event)
 	};
 };

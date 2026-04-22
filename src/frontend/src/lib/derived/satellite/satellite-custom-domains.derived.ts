@@ -1,11 +1,11 @@
-import { satelliteStore } from '$lib/derived/satellite.derived';
+import { satellite } from '$lib/derived/satellite.derived';
 import { customDomainsStore } from '$lib/stores/satellite/custom-domains.store';
 import type { CustomDomainName, CustomDomains } from '$lib/types/custom-domain';
 import { isNullish, nonNullish } from '@dfinity/utils';
 import { derived, type Readable } from 'svelte/store';
 
 export const satelliteCustomDomains: Readable<CustomDomains> = derived(
-	[customDomainsStore, satelliteStore],
+	[customDomainsStore, satellite],
 	([$customDomainsStore, $satelliteStore]) =>
 		isNullish($satelliteStore)
 			? []
@@ -13,7 +13,7 @@ export const satelliteCustomDomains: Readable<CustomDomains> = derived(
 );
 
 export const satelliteCustomDomainsLoaded: Readable<boolean> = derived(
-	[customDomainsStore, satelliteStore],
+	[customDomainsStore, satellite],
 	([$customDomainsStore, $satelliteStore]) =>
 		nonNullish($satelliteStore) &&
 		nonNullish($customDomainsStore[$satelliteStore.satellite_id.toText()])

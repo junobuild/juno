@@ -260,7 +260,7 @@ async fn blocks_since(
 
         // Adapt original code .archived_blocks.into_iter().sorted_by_key(|a| a.start)
         let mut order_archived_blocks = response.archived_blocks;
-        order_archived_blocks.sort_by(|a, b| a.start.cmp(&b.start));
+        order_archived_blocks.sort_by_key(|a| a.start);
 
         // Get the transactions from the archive canisters
         let futures: Vec<_> = order_archived_blocks

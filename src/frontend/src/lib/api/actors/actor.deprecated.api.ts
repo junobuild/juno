@@ -17,7 +17,7 @@ import {
 	idlFactorySatellite009
 } from '$declarations';
 import { ActorApi } from '$lib/api/actors/actor.api';
-import type { OptionIdentity } from '$lib/types/itentity';
+import type { NullishIdentity } from '$lib/types/itentity';
 import type { MissionControlId } from '$lib/types/mission-control';
 import type { Principal } from '@icp-sdk/core/principal';
 
@@ -38,7 +38,7 @@ export const getMissionControlActor004 = ({
 	missionControlId
 }: {
 	missionControlId: MissionControlId;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<MissionControlActor004> =>
 	missionControl004Actor.getActor({
 		canisterId: missionControlId,
@@ -54,7 +54,7 @@ export const getMissionControlActor0013 = ({
 	missionControlId
 }: {
 	missionControlId: MissionControlId;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<MissionControlActor0013> =>
 	missionControl0013Actor.getActor({
 		canisterId: missionControlId,
@@ -70,7 +70,7 @@ export const getSatelliteActor008 = ({
 	identity
 }: {
 	satelliteId: Principal;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<SatelliteActor008> =>
 	satellite008Actor.getActor({
 		canisterId: satelliteId,
@@ -86,7 +86,7 @@ export const getSatelliteActor009 = ({
 	identity
 }: {
 	satelliteId: Principal;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<SatelliteActor009> =>
 	satellite009Actor.getActor({
 		canisterId: satelliteId,
@@ -102,7 +102,7 @@ export const getSatelliteActor0021 = ({
 	identity
 }: {
 	satelliteId: Principal;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<SatelliteActor0021> =>
 	satellite0021Actor.getActor({
 		canisterId: satelliteId,
@@ -118,7 +118,7 @@ export const getSatelliteActor0022 = ({
 	identity
 }: {
 	satelliteId: Principal;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<SatelliteActor0022> =>
 	satellite0022Actor.getActor({
 		canisterId: satelliteId,
@@ -134,7 +134,7 @@ export const getOrbiterActor007 = ({
 	identity
 }: {
 	orbiterId: Principal;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<OrbiterActor007> =>
 	orbiter007Actor.getActor({
 		canisterId: orbiterId,
@@ -150,7 +150,7 @@ export const getOrbiterActor008 = ({
 	identity
 }: {
 	orbiterId: Principal;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<OrbiterActor008> =>
 	orbiter008Actor.getActor({
 		canisterId: orbiterId,

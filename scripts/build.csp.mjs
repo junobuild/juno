@@ -177,12 +177,13 @@ const updateCSP = (indexHtml) => {
 	}
 
 	const JUNO_CDN = 'https://cdn.juno.build';
+	const JUNO_API = 'https://api.juno.build';
 
 	const csp = `<meta
         http-equiv="Content-Security-Policy"
         content="default-src 'none';
-        connect-src 'self' https://ic0.app https://icp0.io https://icp-api.io https://*.icp0.io ${JUNO_CDN};
-        img-src 'self' data: https://*.googleusercontent.com;;
+        connect-src 'self' https://ic0.app https://icp0.io https://icp-api.io https://*.icp0.io ${JUNO_CDN} ${JUNO_API};
+        img-src 'self' data: https://*.googleusercontent.com https://avatars.githubusercontent.com;
         child-src 'self';
         manifest-src 'self';
         script-src 'wasm-unsafe-eval' 'strict-dynamic' ${indexHashes.join(' ')} ${JUNO_CDN};

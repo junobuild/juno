@@ -1,5 +1,5 @@
 <script lang="ts">
-	import FactoryDeleteWizard from '$lib/components/factory/delete/FactoryDeleteWizard.svelte';
+	import FactoryDeleteWizard from '$lib/components/modules/factory/delete/FactoryDeleteWizard.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import { satelliteCustomDomains } from '$lib/derived/satellite/satellite-custom-domains.derived';

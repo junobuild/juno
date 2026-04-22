@@ -2,7 +2,10 @@ import type { TestIds } from '$lib/types/test-id';
 
 export const testIds = {
 	auth: {
-		signInII: 'btn-sign-in-ii'
+		signInDev: 'btn-sign-in-dev',
+		switchDevAccount: 'btn-switch-account-dev',
+		inputDevIdentifier: 'input-dev-identifier',
+		continueDevAccount: 'btn-continue-dev'
 	},
 	launchpad: {
 		launch: 'btn-launch-first-satellite',
@@ -10,6 +13,9 @@ export const testIds = {
 		actions: 'btn-open-actions'
 	},
 	createSatellite: {
+		continueToMetadata: 'btn-continue-metadata',
+		continueToOptions: 'btn-continue-options',
+		continueToReview: 'btn-continue-review',
 		create: 'btn-create-satellite',
 		input: 'input-satellite-name',
 		website: 'input-radio-satellite-website',

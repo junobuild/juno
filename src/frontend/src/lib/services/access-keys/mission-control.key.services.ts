@@ -9,7 +9,7 @@ import type {
 	AddAccessKeyParams,
 	AddAccessKeyResult
 } from '$lib/types/access-keys';
-import type { OptionIdentity } from '$lib/types/itentity';
+import type { NullishIdentity } from '$lib/types/itentity';
 import type { MissionControlId } from '$lib/types/mission-control';
 import { isNullish } from '@dfinity/utils';
 import type { Identity } from '@icp-sdk/core/agent';
@@ -21,11 +21,11 @@ export const addMissionControlAccessKey = async ({
 	missionControlId,
 	accessKeyId,
 	scope,
-	profile,
+	metadata,
 	...rest
 }: {
 	missionControlId: MissionControlId;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 } & AddAccessKeyParams): Promise<AddAccessKeyResult> => {
 	const applyAccessKeyFn: ApplyAccessKeyFn = async ({ identity }) => {
 		await setMissionControlController({
@@ -33,7 +33,7 @@ export const addMissionControlAccessKey = async ({
 			missionControlId,
 			accessKeyId,
 			scope,
-			profile
+			metadata
 		});
 	};
 
@@ -49,7 +49,7 @@ export const removeMissionControlAccessKey = async ({
 	...rest
 }: {
 	missionControlId: MissionControlId;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 } & AccessKeyIdParam): Promise<AddAccessKeyResult> => {
 	const applyAccessKeyFn: ApplyAccessKeyFn = async ({ identity }) => {
 		await deleteMissionControlController({
@@ -69,7 +69,7 @@ const executeAccessKey = async ({
 	identity,
 	applyAccessKeyFn
 }: {
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 	applyAccessKeyFn: ApplyAccessKeyFn;
 }): Promise<AddAccessKeyResult> => {
 	// TODO: indentity check service

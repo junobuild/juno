@@ -14,6 +14,10 @@ pub const JUNO_ERROR_CONTROLLERS_ANONYMOUS_NOT_ALLOWED: &str =
 // Revoked controller not allowed.
 pub const JUNO_ERROR_CONTROLLERS_REVOKED_NOT_ALLOWED: &str =
     "juno.error.controllers.revoked_not_allowed";
+// Admin controller cannot expires.
+pub const JUNO_ERROR_CONTROLLERS_ADMIN_NO_EXPIRY: &str = "juno.error.controllers.admin_no_expire";
+// New controller cannot expire in the past.
+pub const JUNO_ERROR_CONTROLLERS_EXPIRY_IN_PAST: &str = "juno.error.controllers.expiry_in_past";
 // Stable memory usage exceeded: {} bytes used, {} bytes allowed.
 pub const JUNO_ERROR_MEMORY_STABLE_EXCEEDED: &str = "juno.error.memory.stable_exceeded";
 // Heap memory usage exceeded: {} bytes used, {} bytes allowed.

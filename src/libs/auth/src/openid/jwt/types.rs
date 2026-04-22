@@ -1,24 +1,9 @@
 pub(crate) mod token {
     use candid::Deserialize;
-    use serde::Serialize;
 
-    #[derive(Debug, Clone, Deserialize, Serialize)]
-    pub struct Claims {
-        pub iss: String,
-        pub sub: String,
-        pub aud: String,
-        pub exp: Option<u64>,
-        pub nbf: Option<u64>,
-        pub iat: Option<u64>,
-
-        pub nonce: Option<String>,
-
-        pub email: Option<String>,
-        pub name: Option<String>,
-        pub given_name: Option<String>,
-        pub family_name: Option<String>,
-        pub picture: Option<String>,
-        pub locale: Option<String>,
+    pub trait JwtClaims {
+        fn iat(&self) -> Option<u64>;
+        fn nonce(&self) -> Option<&str>;
     }
 
     #[derive(Clone, Deserialize)]
@@ -190,5 +175,11 @@ pub(crate) mod errors {
     pub enum JwtHeaderError {
         BadSig(String),
         BadClaim(String),
+    }
+}
+
+pub mod provider {
+    pub trait JwtIssuers {
+        fn issuers(&self) -> &[&'static str];
     }
 }

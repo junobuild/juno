@@ -5,3 +5,5 @@ export const mctrlOrbiters = derived(
 	[orbitersUncertifiedStore],
 	([$orbitersDataStore]) => $orbitersDataStore?.data
 );
+
+export const mctrlOrbiter = derived([mctrlOrbiters], ([$mctrlOrbiters]) => $mctrlOrbiters?.[0]);

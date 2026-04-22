@@ -1,0 +1,33 @@
+use crate::access_keys::store::set_access_keys;
+use crate::automation::workflow::build_automation_workflow_key;
+use junobuild_auth::automation::types::PreparedAutomation;
+use junobuild_auth::openid::credentials::automation::types::interface::OpenIdAutomationCredential;
+use junobuild_auth::openid::types::provider::OpenIdAutomationProvider;
+use junobuild_shared::types::interface::SetAccessKey;
+use junobuild_shared::types::state::{AccessKeyId, AccessKeyKind, Metadata};
+
+pub fn register_controller(
+    automation: &PreparedAutomation,
+    provider: &OpenIdAutomationProvider,
+    credential: &OpenIdAutomationCredential,
+) -> Result<(), String> {
+    let PreparedAutomation(controller_id, controller) = automation;
+
+    let controllers: [AccessKeyId; 1] = [*controller_id];
+
+    let automation_workflow_key = build_automation_workflow_key(provider, credential)?;
+
+    let mut metadata: Metadata = Default::default();
+    metadata.insert("workflow_key".to_string(), automation_workflow_key.to_key());
+
+    let controller: SetAccessKey = SetAccessKey {
+        scope: controller.scope.clone().into(),
+        metadata,
+        expires_at: Some(controller.expires_at),
+        kind: Some(AccessKeyKind::Automation),
+    };
+
+    set_access_keys(&controllers, &controller);
+
+    Ok(())
+}

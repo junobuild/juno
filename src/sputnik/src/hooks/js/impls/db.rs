@@ -1,10 +1,10 @@
-use crate::hooks::js::types::db::JsDoc;
-use crate::hooks::js::types::hooks::JsRawData;
-use crate::hooks::js::types::interface::{JsDelDoc, JsSetDoc};
 use crate::js::types::candid::JsRawPrincipal;
 use crate::js::utils::primitives::{
     from_optional_bigint_js, into_bigint_js, into_optional_bigint_js,
 };
+use crate::sdk::js::types::db::JsDoc;
+use crate::sdk::js::types::hooks::JsRawData;
+use crate::sdk::js::types::interface::{JsDelDoc, JsSetDoc};
 use junobuild_satellite::{DelDoc, Doc, SetDoc};
 use rquickjs::{BigInt, Ctx, Error as JsError, FromJs, IntoJs, Object, Result as JsResult, Value};
 

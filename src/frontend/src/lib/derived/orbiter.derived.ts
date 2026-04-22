@@ -9,7 +9,7 @@ import type { Orbiter } from '$lib/types/orbiter';
 import { nonNullish } from '@dfinity/utils';
 import { derived, type Readable } from 'svelte/store';
 
-export const orbitersStore = derived(
+export const orbiters = derived(
 	[consoleOrbiters, mctrlOrbiters],
 	([$consoleOrbiters, $mctrlOrbiters]): Orbiter[] | undefined | null => {
 		// Not yet fully loaded
@@ -34,8 +34,8 @@ export const orbitersStore = derived(
 	}
 );
 
-export const orbiterStore: Readable<Orbiter | undefined | null> = derived(
-	[orbitersStore],
+export const orbiter: Readable<Orbiter | undefined | null> = derived(
+	[orbiters],
 	([$orbitersStore]) => $orbitersStore?.[0]
 );
 
@@ -47,7 +47,7 @@ export const orbiterLoaded = derived(
 export const orbiterNotLoaded = derived([orbiterLoaded], ([$orbiterLoaded]) => !$orbiterLoaded);
 
 export const orbiterConfigs: Readable<OrbiterConfigs | undefined> = derived(
-	[orbiterStore, orbitersConfigsStore],
+	[orbiter, orbitersConfigsStore],
 	([orbiterStore, orbitersConfigsStore]) =>
 		nonNullish(orbiterStore) ? orbitersConfigsStore?.[orbiterStore.orbiter_id.toText()] : undefined
 );

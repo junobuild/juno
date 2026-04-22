@@ -1,13 +1,17 @@
 import type * as ConsoleDid from '$declarations/console/console.did';
 import type * as ConsoleDid020 from '$declarations/deprecated/console-0-2-0.did';
+import type * as ConsoleDid033 from '$declarations/deprecated/console-0-3-3.did';
 import type * as MissionControlDid0013 from '$declarations/deprecated/mission_control-0-0-13.did';
 import type * as MissionControlDid004 from '$declarations/deprecated/mission_control-0-0-4.did';
+import type * as ObservatoryDid040 from '$declarations/deprecated/observatory-0-4-0.did';
 import type * as OrbiterDid006 from '$declarations/deprecated/orbiter-0-0-6.did';
 import type * as OrbiterDid007 from '$declarations/deprecated/orbiter-0-0-7.did';
 import type * as OrbiterDid008 from '$declarations/deprecated/orbiter-0-0-8.did';
+import type * as OrbiterDid020 from '$declarations/deprecated/orbiter-0-2-0.did';
 import type * as SatelliteDid0016 from '$declarations/deprecated/satellite-0-0-16.did';
 import type * as SatelliteDid0017 from '$declarations/deprecated/satellite-0-0-17.did';
 import type * as SatelliteDid008 from '$declarations/deprecated/satellite-0-0-8.did';
+import type * as SatelliteDid016 from '$declarations/deprecated/satellite-0-1-6.did';
 import type * as ICDid from '$declarations/ic-management/ic-management.did';
 import type * as MissionControlDid from '$declarations/mission_control/mission_control.did';
 import type * as ObservatoryDid from '$declarations/observatory/observatory.did';
@@ -18,18 +22,22 @@ import type * as SputnikDid from '$declarations/sputnik/sputnik.did';
 export type {
 	ConsoleDid,
 	ConsoleDid020,
+	ConsoleDid033,
 	ICDid,
 	MissionControlDid,
 	MissionControlDid0013,
 	MissionControlDid004,
 	ObservatoryDid,
+	ObservatoryDid040,
 	OrbiterDid,
 	OrbiterDid006,
 	OrbiterDid007,
 	OrbiterDid008,
+	OrbiterDid020,
 	SatelliteDid,
 	SatelliteDid0016,
 	SatelliteDid0017,
 	SatelliteDid008,
+	SatelliteDid016,
 	SputnikDid
 };

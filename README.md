@@ -14,7 +14,7 @@
 
 ## ⭐️ Description
 
-[Juno] is an open-source serverless platform for hosting static websites, building web applications, and running serverless functions with the privacy and control of self-hosting.
+[Juno] is a platform for hosting static websites, building web applications, and running serverless functions with the privacy and control of self-hosting.
 
 It provides a familiar cloud experience with strong security and zero operational complexity. Each project runs in its own WASM container, fully owned and controlled by you.
 
@@ -24,7 +24,7 @@ Think of it as **Vercel + Firebase + Self-Hosting** - without the compromises.
 - 📦 Datastore [[Docs](https://juno.build/docs/build/datastore)]
 - 📂 File Storage [[Docs](https://juno.build/docs/build/storage)]
 - 🌐 Hosting [[Docs](https://juno.build/docs/build/hosting)]
-- ⚙️ Serverless Functions (Rust & TypeScript) [[Docs](https://juno.build/docs/build/functions)]
+- ⚙️ Serverless Functions [[Docs](https://juno.build/docs/build/functions)]
 - 📊 Analytics [[Docs](https://juno.build/docs/build/analytics)]
 - 👀 Monitoring [[Docs](https://juno.build/docs/management/monitoring)]
 - 💾 Snapshots [[Docs](https://juno.build/docs/management/snapshots)]
@@ -38,6 +38,7 @@ Think of it as **Vercel + Firebase + Self-Hosting** - without the compromises.
 ## ⚡️ Why Juno?
 
 - **Zero DevOps** - No servers to manage, no infrastructure to maintain
+- **Full-stack** - Every service you need runs in your container, no third party needed
 - **True Ownership** - Your code, data, and infrastructure are fully yours
 - **Local-First Development** - Full production-like emulator for rapid iteration
 
@@ -59,6 +60,35 @@ await setDoc({
 });
 ```
 
+## ⚙️ Serverless Functions
+
+Write serverless functions in TypeScript or Rust and deploy them to your own WASM container.
+
+**TypeScript:**
+
+```typescript
+import { j } from '@junobuild/schema';
+import { defineQuery } from '@junobuild/functions';
+
+export const hello = defineQuery({
+	args: j.strictObject({
+		name: j.string()
+	}),
+	handler: ({ data }) => {
+		return { message: `Hello, ${data.name}!` };
+	}
+});
+```
+
+**Rust:**
+
+```rust
+#[ic_cdk::query]
+fn hello(name: String) -> String {
+    format!("Hello, {}!", name)
+}
+```
+
 ## 🚢 Deploy
 
 Deploy to production with a single command:
@@ -72,6 +102,16 @@ juno functions publish
 ```
 
 Or integrate with GitHub Actions → [Setup CI/CD](https://juno.build/docs/guides/github-actions)
+
+## 🧪 Local Development
+
+Spin up a full production-like environment locally using the Juno [emulator](github.com/junobuild/juno-docker):
+
+```bash
+juno emulator start
+```
+
+Run with Docker or Podman → [Emulator Docs](https://juno.build/docs/guides/local-development)
 
 ## 💁‍♂️️ Links & Resources
 

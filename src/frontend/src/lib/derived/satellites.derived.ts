@@ -1,11 +1,11 @@
 import { consoleSatellites } from '$lib/derived/console/segments.derived';
-import { mctrlSatellitesStore } from '$lib/derived/mission-control/mission-control-satellites.derived';
+import { mctrlSatellites } from '$lib/derived/mission-control/mission-control-satellites.derived';
 import type { Satellite, SatelliteUi } from '$lib/types/satellite';
 import { satelliteMetadata, satelliteName } from '$lib/utils/satellite.utils';
 import { derived } from 'svelte/store';
 
-export const satellitesStore = derived(
-	[consoleSatellites, mctrlSatellitesStore],
+export const satellites = derived(
+	[consoleSatellites, mctrlSatellites],
 	([$consoleSatellites, $mctrlSatellitesStore]): Satellite[] | undefined => {
 		// Not yet fully loaded
 		if ($consoleSatellites === undefined || $mctrlSatellitesStore === undefined) {
@@ -25,7 +25,7 @@ export const satellitesStore = derived(
 );
 
 export const satellitesLoaded = derived(
-	[satellitesStore],
+	[satellites],
 	([$satellitesStore]) => $satellitesStore !== undefined
 );
 
@@ -34,7 +34,7 @@ export const satellitesNotLoaded = derived(
 	([$satellitesLoaded]) => !$satellitesLoaded
 );
 
-export const sortedSatellites = derived([satellitesStore], ([$satellitesStore]) =>
+export const sortedSatellites = derived([satellites], ([$satellitesStore]) =>
 	($satellitesStore ?? []).sort((a, b) => satelliteName(a).localeCompare(satelliteName(b)))
 );
 

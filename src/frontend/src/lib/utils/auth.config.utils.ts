@@ -1,12 +1,13 @@
 import type { SatelliteDid } from '$declarations';
 import { fromNullable, isNullish, nonNullish, toNullable } from '@dfinity/utils';
+import type { Nullish } from '@dfinity/zod-schemas';
 
 export const buildSetAuthenticationConfig = ({
 	config,
 	domainName,
 	externalOrigins
 }: {
-	config: SatelliteDid.AuthenticationConfig | undefined;
+	config: Nullish<SatelliteDid.AuthenticationConfig>;
 	domainName: string;
 	externalOrigins?: string[];
 }): Omit<SatelliteDid.SetAuthenticationConfig, 'version'> => {

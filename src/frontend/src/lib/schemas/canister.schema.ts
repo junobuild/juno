@@ -1,5 +1,4 @@
-import { PrincipalSchema } from '$lib/schemas/principal.schema';
-import { PrincipalTextSchema } from '@dfinity/zod-schemas';
+import { PrincipalTextSchema, PrincipalSchema } from '@junobuild/schema';
 
 export const CanisterIdTextSchema = PrincipalTextSchema;
 export const CanisterIdSchema = PrincipalSchema;

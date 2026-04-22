@@ -1,0 +1,37 @@
+<script lang="ts" module>
+	import type { Nullish } from '@dfinity/zod-schemas';
+	import type { SatelliteDid } from '$declarations';
+
+	export interface AddCustomDomainAuthProps {
+		config: Nullish<SatelliteDid.AuthenticationConfig>;
+		useDomainForDerivationOrigin: boolean;
+	}
+</script>
+
+<script lang="ts">
+	import { fromNullishNullable, isEmptyString } from '@dfinity/utils';
+	import CheckboxInline from '$lib/components/ui/CheckboxInline.svelte';
+	import Collapsible from '$lib/components/ui/Collapsible.svelte';
+	import { i18n } from '$lib/stores/app/i18n.store';
+
+	let { config, useDomainForDerivationOrigin = $bindable(false) }: AddCustomDomainAuthProps =
+		$props();
+
+	let existingDerivationOrigin = $derived(
+		fromNullishNullable(fromNullishNullable(config?.internet_identity)?.derivation_origin)
+	);
+
+	let noExistingDerivationOrigin = $derived(isEmptyString(existingDerivationOrigin));
+</script>
+
+{#if noExistingDerivationOrigin}
+	<Collapsible>
+		{#snippet header()}
+			{$i18n.core.advanced_options}
+		{/snippet}
+
+		<CheckboxInline bind:checked={useDomainForDerivationOrigin}>
+			{$i18n.hosting.set_auth_domain_question}
+		</CheckboxInline>
+	</Collapsible>
+{/if}

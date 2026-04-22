@@ -8,18 +8,14 @@ import {
 	listSnapshots,
 	restoreSnapshot as restoreSnapshotApi
 } from '$lib/api/ic.api';
-import {
-	resetAllIdbStore,
-	resetIdbStore,
-	setIdbStore,
-	syncIdbStore
-} from '$lib/services/_idb-store.services';
+import { setIdbStore, syncIdbStore } from '$lib/services/_idb-store.canister.services';
+import { resetAllIdbStore, resetIdbStore } from '$lib/services/_idb-store.services';
 import { execute } from '$lib/services/_progress.services';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { snapshotsIdbStore } from '$lib/stores/app/idb.store';
 import { toasts } from '$lib/stores/app/toasts.store';
 import { snapshotStore } from '$lib/stores/ic-mgmt/snapshot.store';
-import type { OptionIdentity } from '$lib/types/itentity';
+import type { NullishIdentity } from '$lib/types/itentity';
 import { type SnapshotProgress, SnapshotProgressStep } from '$lib/types/progress-snapshot';
 import { assertNonNullish, nonNullish } from '@dfinity/utils';
 import type { Identity } from '@icp-sdk/core/agent';
@@ -44,7 +40,7 @@ type SnapshotOnProgress = (progress: SnapshotProgress | undefined) => void;
 
 interface SnapshotParams {
 	canisterId: Principal;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 	onProgress: SnapshotOnProgress;
 }
 
@@ -255,7 +251,7 @@ export const loadSnapshots = async ({
 	reload = false
 }: {
 	canisterId: Principal;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 	reload?: boolean;
 }): Promise<{ success: boolean }> => {
 	const canisterIdText = canisterId.toText();

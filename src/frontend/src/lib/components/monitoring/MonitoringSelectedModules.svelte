@@ -2,7 +2,7 @@
 	import { isEmptyString } from '@dfinity/utils';
 	import type { Principal } from '@icp-sdk/core/principal';
 	import type { MissionControlDid } from '$declarations';
-	import Segment from '$lib/components/segments/Segment.svelte';
+	import Segment from '$lib/components/modules/segments/Segment.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { orbiterName } from '$lib/utils/orbiter.utils';

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import Logo from '$lib/components/core/Logo.svelte';
+	import Logo from '$lib/components/app/core/Logo.svelte';
 	import IconBack from '$lib/components/icons/IconBack.svelte';
 	import ButtonIcon from '$lib/components/ui/ButtonIcon.svelte';
 	import { menuCollapsed, menuExpanded } from '$lib/derived/app/layout-menu.derived';

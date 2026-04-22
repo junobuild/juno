@@ -8,7 +8,8 @@
 		"resolveJsonModule": true,
 		"skipLibCheck": true,
 		"sourceMap": true,
-		"strict": true
+		"strict": true,
+		"types": ["node", "wicg-file-system-access"]
 	},
 	"exclude": ["src/tests/**/*", "src/**/*.test.ts", "src/**/*.spec.ts"]
 }

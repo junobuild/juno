@@ -1,7 +1,7 @@
 import type { MissionControlDid } from '$declarations';
 import { getMissionControlActor } from '$lib/api/actors/actor.juno.api';
 import type { AccessKeyIdParam, AddAccessKeyParams } from '$lib/types/access-keys';
-import type { OptionIdentity } from '$lib/types/itentity';
+import type { NullishIdentity } from '$lib/types/itentity';
 import type { Metadata } from '$lib/types/metadata';
 import type { MissionControlId } from '$lib/types/mission-control';
 import type { GetMonitoringParams, MonitoringHistory } from '$lib/types/monitoring';
@@ -18,7 +18,7 @@ export const setSatellitesController = async ({
 }: {
 	missionControlId: MissionControlId;
 	satelliteIds: Principal[];
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 } & AddAccessKeyParams) => {
 	try {
 		const { set_satellites_controllers } = await getMissionControlActor({
@@ -49,7 +49,7 @@ export const deleteSatellitesController = async ({
 }: {
 	missionControlId: MissionControlId;
 	satelliteIds: Principal[];
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 } & AccessKeyIdParam) => {
 	const { del_satellites_controllers } = await getMissionControlActor({
 		missionControlId,
@@ -65,7 +65,7 @@ export const setMissionControlController = async ({
 	...rest
 }: {
 	missionControlId: MissionControlId;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 } & AddAccessKeyParams) => {
 	try {
 		const { set_mission_control_controllers } = await getMissionControlActor({
@@ -86,7 +86,7 @@ export const deleteMissionControlController = async ({
 	accessKeyId
 }: {
 	missionControlId: MissionControlId;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 } & AccessKeyIdParam) => {
 	const { del_mission_control_controllers } = await getMissionControlActor({
 		missionControlId,
@@ -100,8 +100,8 @@ export const listMissionControlControllers = async ({
 	identity
 }: {
 	missionControlId: MissionControlId;
-	identity: OptionIdentity;
-}): Promise<[Principal, MissionControlDid.Controller][]> => {
+	identity: NullishIdentity;
+}): Promise<[Principal, MissionControlDid.AccessKey][]> => {
 	const { list_mission_control_controllers } = await getMissionControlActor({
 		missionControlId,
 		identity
@@ -118,7 +118,7 @@ export const topUp = async ({
 	missionControlId: MissionControlId;
 	canisterId: Principal;
 	e8s: bigint;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }) => {
 	const { top_up } = await getMissionControlActor({ missionControlId, identity });
 	await top_up(canisterId, { e8s });
@@ -133,7 +133,7 @@ export const setSatelliteMetadata = async ({
 	missionControlId: MissionControlId;
 	satelliteId: Principal;
 	metadata: Metadata;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<MissionControlDid.Satellite> => {
 	const { set_satellite_metadata } = await getMissionControlActor({ missionControlId, identity });
 	return set_satellite_metadata(satelliteId, metadata);
@@ -148,7 +148,7 @@ export const setOrbitersController = async ({
 }: {
 	missionControlId: MissionControlId;
 	orbiterIds: Principal[];
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 } & AddAccessKeyParams) => {
 	try {
 		const { set_orbiters_controllers } = await getMissionControlActor({
@@ -179,7 +179,7 @@ export const deleteOrbitersController = async ({
 }: {
 	missionControlId: MissionControlId;
 	orbiterIds: Principal[];
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 } & AccessKeyIdParam) => {
 	const { del_orbiters_controllers } = await getMissionControlActor({ missionControlId, identity });
 	await del_orbiters_controllers(orbiterIds, [Principal.from(accessKeyId)]);
@@ -194,7 +194,7 @@ export const deleteSatellite = async ({
 	missionControlId: MissionControlId;
 	satelliteId: Principal;
 	cyclesToDeposit: bigint;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }) => {
 	const { del_satellite } = await getMissionControlActor({ missionControlId, identity });
 	await del_satellite(satelliteId, cyclesToDeposit);
@@ -209,7 +209,7 @@ export const deleteOrbiter = async ({
 	missionControlId: MissionControlId;
 	orbiterId: Principal;
 	cyclesToDeposit: bigint;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }) => {
 	const { del_orbiter } = await getMissionControlActor({ missionControlId, identity });
 	await del_orbiter(orbiterId, cyclesToDeposit);
@@ -224,7 +224,7 @@ export const depositCycles = async ({
 	missionControlId: MissionControlId;
 	cycles: bigint;
 	destinationId: Principal;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }) => {
 	const { deposit_cycles } = await getMissionControlActor({ missionControlId, identity });
 	return deposit_cycles({
@@ -242,7 +242,7 @@ export const setOrbiter = async ({
 	missionControlId: MissionControlId;
 	orbiterId: Principal;
 	orbiterName?: string;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<MissionControlDid.Orbiter> => {
 	const { set_orbiter } = await getMissionControlActor({ missionControlId, identity });
 	return set_orbiter(orbiterId, toNullable(orbiterName));
@@ -255,7 +255,7 @@ export const unsetOrbiter = async ({
 }: {
 	missionControlId: MissionControlId;
 	orbiterId: Principal;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<void> => {
 	const { unset_orbiter } = await getMissionControlActor({ missionControlId, identity });
 	return unset_orbiter(orbiterId);
@@ -270,7 +270,7 @@ export const setSatellite = async ({
 	missionControlId: MissionControlId;
 	satelliteId: Principal;
 	satelliteName?: string;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<MissionControlDid.Satellite> => {
 	const { set_satellite } = await getMissionControlActor({ missionControlId, identity });
 	return set_satellite(satelliteId, toNullable(satelliteName));
@@ -283,7 +283,7 @@ export const unsetSatellite = async ({
 }: {
 	missionControlId: MissionControlId;
 	satelliteId: Principal;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<void> => {
 	const { unset_satellite } = await getMissionControlActor({ missionControlId, identity });
 	return unset_satellite(satelliteId);
@@ -296,7 +296,7 @@ export const icpTransfer = async ({
 }: {
 	missionControlId: MissionControlId;
 	args: MissionControlDid.TransferArgs;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<MissionControlDid.Result> => {
 	const { icp_transfer } = await getMissionControlActor({ missionControlId, identity });
 	return icp_transfer(args);
@@ -311,7 +311,7 @@ export const icrcTransfer = async ({
 	ledgerId: Principal;
 	missionControlId: MissionControlId;
 	args: MissionControlDid.TransferArg;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<MissionControlDid.Result_1> => {
 	const { icrc_transfer } = await getMissionControlActor({ missionControlId, identity });
 	return icrc_transfer(ledgerId, args);
@@ -322,7 +322,7 @@ export const getUserData = async ({
 	identity
 }: {
 	missionControlId: MissionControlId;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<MissionControlDid.User> => {
 	const { get_user_data } = await getMissionControlActor({ missionControlId, identity });
 	return get_user_data();
@@ -334,7 +334,7 @@ export const getSettings = async ({
 	identity
 }: {
 	missionControlId: MissionControlId;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<[] | [MissionControlDid.MissionControlSettings]> => {
 	const { get_settings } = await getMissionControlActor({ missionControlId, identity });
 	return get_settings();
@@ -346,7 +346,7 @@ export const updateAndStartMonitoring = async ({
 	config
 }: {
 	missionControlId: MissionControlId;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 	config: MissionControlDid.MonitoringStartConfig;
 }): Promise<void> => {
 	const { update_and_start_monitoring } = await getMissionControlActor({
@@ -363,7 +363,7 @@ export const updateAndStopMonitoring = async ({
 	config
 }: {
 	missionControlId: MissionControlId;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 	config: MissionControlDid.MonitoringStopConfig;
 }): Promise<void> => {
 	const { update_and_stop_monitoring } = await getMissionControlActor({
@@ -380,7 +380,7 @@ export const getMonitoringHistory = async ({
 	params: { from, to, segmentId }
 }: {
 	missionControlId: MissionControlId;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 	params: GetMonitoringParams;
 }): Promise<MonitoringHistory> => {
 	const { get_monitoring_history } = await getMissionControlActor({
@@ -401,7 +401,7 @@ export const setConfig = async ({
 	config
 }: {
 	missionControlId: MissionControlId;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 	config: MissionControlDid.Config | undefined;
 }): Promise<void> => {
 	const { set_config } = await getMissionControlActor({
@@ -419,7 +419,7 @@ export const setMetadata = async ({
 }: {
 	missionControlId: MissionControlId;
 	metadata: Metadata;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }): Promise<void> => {
 	const { set_metadata } = await getMissionControlActor({ missionControlId, identity });
 	await set_metadata(metadata);

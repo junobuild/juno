@@ -1,9 +1,10 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
-	import type { PrincipalText } from '@dfinity/zod-schemas';
-	import FactoryAdvancedOptions from '$lib/components/factory/create/FactoryAdvancedOptions.svelte';
-	import FactoryCredits from '$lib/components/factory/create/FactoryCredits.svelte';
-	import FactoryProgressCreate from '$lib/components/factory/create/FactoryProgressCreate.svelte';
+	import type { Nullish } from '@dfinity/zod-schemas';
+	import type { PrincipalText } from '@junobuild/schema';
+	import FactoryAdvancedOptions from '$lib/components/modules/factory/create/FactoryAdvancedOptions.svelte';
+	import FactoryCredits from '$lib/components/modules/factory/create/FactoryCredits.svelte';
+	import FactoryProgressCreate from '$lib/components/modules/factory/create/FactoryProgressCreate.svelte';
 	import Confetti from '$lib/components/ui/Confetti.svelte';
 	import { authSignedOut, authIdentity } from '$lib/derived/auth.derived';
 	import type { SelectedWallet } from '$lib/schemas/wallet.schema';
@@ -12,7 +13,6 @@
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { JunoModalDetail } from '$lib/types/modal';
 	import type { FactoryCreateProgress } from '$lib/types/progress-factory-create';
-	import type { Option } from '$lib/types/utils';
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -22,7 +22,7 @@
 
 	let { detail, onclose, oncontinue }: Props = $props();
 
-	let withFee = $state<Option<bigint>>(undefined);
+	let withFee = $state<Nullish<bigint>>(undefined);
 	let insufficientFunds = $state(true);
 
 	let step: 'init' | 'in_progress' | 'ready' | 'error' = $state('init');
@@ -94,12 +94,12 @@
 		{detail}
 		{onclose}
 		priceLabel={$i18n.mission_control.create_price}
-		{selectedWallet}
+		bind:selectedWallet
 		bind:withFee
 		bind:insufficientFunds
 	>
 		<form onsubmit={onSubmit}>
-			<FactoryAdvancedOptions {detail} withMonitoring={false} bind:selectedWallet bind:subnetId />
+			<FactoryAdvancedOptions {detail} withMonitoring={false} bind:subnetId />
 
 			<button disabled={$authSignedOut || insufficientFunds} type="submit">
 				{$i18n.core.create}

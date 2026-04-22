@@ -1,3 +1,13 @@
+type AccessKey = record {
+  updated_at : nat64;
+  metadata : vec record { text; text };
+  kind : opt AccessKeyKind;
+  created_at : nat64;
+  scope : AccessKeyScope;
+  expires_at : opt nat64;
+};
+type AccessKeyKind = variant { Emulator; Automation };
+type AccessKeyScope = variant { Write; Admin; Submit };
 type AnalyticKey = record { key : text; collected_at : nat64 };
 type AnalyticsBrowsersPageViews = record {
   safari : float64;
@@ -54,14 +64,6 @@ type AnalyticsWebVitalsPerformanceMetrics = record {
   pages : vec record { text; AnalyticsWebVitalsPageMetrics };
 };
 type CalendarDate = record { day : nat8; month : nat8; year : int32 };
-type Controller = record {
-  updated_at : nat64;
-  metadata : vec record { text; text };
-  created_at : nat64;
-  scope : ControllerScope;
-  expires_at : opt nat64;
-};
-type ControllerScope = variant { Write; Admin; Submit };
 type DelSatelliteConfig = record { version : opt nat64 };
 type DeleteControllersArgs = record { controllers : vec principal };
 type DepositCyclesArgs = record { cycles : nat; destination_id : principal };
@@ -150,13 +152,14 @@ type Result = variant { Ok : PageView; Err : text };
 type Result_1 = variant { Ok; Err : vec record { AnalyticKey; text } };
 type Result_2 = variant { Ok : PerformanceMetric; Err : text };
 type Result_3 = variant { Ok : TrackEvent; Err : text };
-type SetController = record {
+type SetAccessKey = record {
   metadata : vec record { text; text };
-  scope : ControllerScope;
+  kind : opt AccessKeyKind;
+  scope : AccessKeyScope;
   expires_at : opt nat64;
 };
 type SetControllersArgs = record {
-  controller : SetController;
+  controller : SetAccessKey;
   controllers : vec principal;
 };
 type SetPageView = record {
@@ -213,7 +216,7 @@ type WebVitalsMetric = record {
 };
 service : (InitOrbiterArgs) -> {
   del_controllers : (DeleteControllersArgs) -> (
-      vec record { principal; Controller },
+      vec record { principal; AccessKey },
     );
   del_satellite_config : (principal, DelSatelliteConfig) -> ();
   deposit_cycles : (DepositCyclesArgs) -> ();
@@ -241,13 +244,13 @@ service : (InitOrbiterArgs) -> {
   get_track_events_analytics : (GetAnalytics) -> (AnalyticsTrackEvents) query;
   http_request : (HttpRequest) -> (HttpResponse) query;
   http_request_update : (HttpRequest) -> (HttpResponse);
-  list_controllers : () -> (vec record { principal; Controller }) query;
+  list_controllers : () -> (vec record { principal; AccessKey }) query;
   list_satellite_configs : () -> (
       vec record { principal; OrbiterSatelliteConfig },
     ) query;
   memory_size : () -> (MemorySize) query;
   set_controllers : (SetControllersArgs) -> (
-      vec record { principal; Controller },
+      vec record { principal; AccessKey },
     );
   set_page_view : (AnalyticKey, SetPageView) -> (Result);
   set_page_views : (vec record { AnalyticKey; SetPageView }) -> (Result_1);

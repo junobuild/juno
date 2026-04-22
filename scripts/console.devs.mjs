@@ -5,29 +5,62 @@ import { format, startOfDay, toDate } from 'date-fns';
 import { consoleActorIC, consoleActorLocal } from './actor.mjs';
 import { targetMainnet } from './utils.mjs';
 
-const statsDevs = (allDevs) => {
-	const startDate = startOfDay(toDate('2025-10-25T08:00:00'));
+const prepareStats = ({ allDevs, from }) => {
+	const startDate = startOfDay(toDate(from));
 	const startDateBigIntNanoSeconds = BigInt(startDate.getTime()) * BigInt(1e6);
 
 	const devs = allDevs.filter(([_, dev]) => dev.created_at > startDateBigIntNanoSeconds);
 
-	const [ii, google] = devs.reduce(
+	return { devs, formattedDate: format(startDate, 'MM/dd/yyyy') };
+};
+
+const statsGoogleDevs = (allDevs) => {
+	const { devs, formattedDate } = prepareStats({ allDevs, from: '2025-10-25T08:00:00' });
+
+	const [ii, openid] = devs.reduce(
 		(acc, current) => {
-			const [ii, google] = acc;
+			const [ii, openid] = acc;
 
 			const provider = fromNullable(current[1]?.provider);
 
 			return [
 				[...ii, ...('OpenId' in (provider ?? {}) ? [] : [current])],
-				[...google, ...('OpenId' in (provider ?? {}) ? [current] : [])]
+				[...openid, ...('OpenId' in (provider ?? {}) ? [current] : [])]
 			];
 		},
 		[[], []]
 	);
 
-	console.log(`Developers since ${format(startDate, 'MM/dd/yyyy')}:`, devs.length);
+	console.log(`Developers since ${formattedDate}:`, devs.length);
+	console.log('Internet Identity:', ii.length);
+	console.log('Google & GitHub:', openid.length);
+};
+
+const statsWithGitHubDevs = ({ allDevs, from = '2026-01-23T15:00:00' }) => {
+	const { devs, formattedDate } = prepareStats({ allDevs, from });
+
+	const [ii, google, github] = devs.reduce(
+		(acc, current) => {
+			const [ii, google, github] = acc;
+
+			const provider = fromNullable(current[1]?.provider);
+
+			const isGoogle = 'OpenId' in (provider ?? {}) && 'Google' in provider.OpenId.provider;
+			const isGitHub = 'OpenId' in (provider ?? {}) && 'GitHub' in provider.OpenId.provider;
+
+			return [
+				[...ii, ...(isGoogle || isGitHub ? [] : [current])],
+				[...google, ...(isGoogle ? [current] : [])],
+				[...github, ...(isGitHub ? [current] : [])]
+			];
+		},
+		[[], [], []]
+	);
+
+	console.log(`Developers since ${formattedDate}:`, devs.length);
 	console.log('Internet Identity:', ii.length);
 	console.log('Google:', google.length);
+	console.log('GitHub:', github.length);
 };
 
 const countDevs = (devs) => {
@@ -46,5 +79,11 @@ const devs = await fetchDevs(mainnet);
 console.log('----------------------------');
 countDevs(devs);
 
-console.log('----------------------------');
-statsDevs(devs);
+console.log('------- Google launch ------');
+statsGoogleDevs(devs);
+
+console.log('------- GitHub launch ------');
+statsWithGitHubDevs({ allDevs: devs });
+
+console.log('------- Malicious day ------');
+statsWithGitHubDevs({ allDevs: devs, from: '2026-04-04T00:00:00' });

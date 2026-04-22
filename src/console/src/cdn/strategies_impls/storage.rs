@@ -5,7 +5,7 @@ use crate::cdn::helpers::heap::{
 use crate::cdn::helpers::stable::{
     get_asset_stable, insert_asset_encoding_stable, insert_asset_stable,
 };
-use crate::cdn::storage::init_certified_assets;
+use crate::cdn::storage::certify_all_assets;
 use candid::Principal;
 use junobuild_cdn::storage::errors::{
     JUNO_CDN_STORAGE_ERROR_CANNOT_GET_ASSET_UNKNOWN_REFERENCE_ID,
@@ -15,10 +15,10 @@ use junobuild_cdn::storage::errors::{
 use junobuild_collections::assert::stores::{assert_create_permission, assert_permission};
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::{Memory, Permission, Rule};
-use junobuild_shared::segments::controllers::controller_can_write;
+use junobuild_shared::segments::access_keys::is_write_access_key;
 use junobuild_shared::types::core::Blob;
 use junobuild_shared::types::domain::CustomDomains;
-use junobuild_shared::types::state::Controllers;
+use junobuild_shared::types::state::AccessKeys;
 use junobuild_storage::strategies::{
     StorageAssertionsStrategy, StorageStateStrategy, StorageUploadStrategy,
 };
@@ -41,21 +41,17 @@ impl StorageAssertionsStrategy for StorageAssertions {
         assert_cdn_asset_keys(full_path, description, collection)
     }
 
-    fn assert_write_on_dapp_collection(
-        &self,
-        caller: Principal,
-        controllers: &Controllers,
-    ) -> bool {
-        controller_can_write(caller, controllers)
+    fn assert_write_on_dapp_collection(&self, caller: Principal, controllers: &AccessKeys) -> bool {
+        is_write_access_key(caller, controllers)
     }
 
     fn assert_write_on_system_collection(
         &self,
         caller: Principal,
         _collection: &CollectionKey,
-        controllers: &Controllers,
+        controllers: &AccessKeys,
     ) -> bool {
-        controller_can_write(caller, controllers)
+        is_write_access_key(caller, controllers)
     }
 
     fn assert_create_permission(
@@ -63,7 +59,7 @@ impl StorageAssertionsStrategy for StorageAssertions {
         permission: &Permission,
         caller: Principal,
         _collection: &CollectionKey,
-        controllers: &Controllers,
+        controllers: &AccessKeys,
     ) -> bool {
         assert_create_permission(permission, caller, controllers)
     }
@@ -74,7 +70,7 @@ impl StorageAssertionsStrategy for StorageAssertions {
         owner: Principal,
         caller: Principal,
         _collection: &CollectionKey,
-        controllers: &Controllers,
+        controllers: &AccessKeys,
     ) -> bool {
         assert_permission(permission, owner, caller, controllers)
     }
@@ -85,7 +81,7 @@ impl StorageAssertionsStrategy for StorageAssertions {
         owner: Principal,
         caller: Principal,
         _collection: &CollectionKey,
-        controllers: &Controllers,
+        controllers: &AccessKeys,
     ) -> bool {
         assert_permission(permission, owner, caller, controllers)
     }
@@ -102,7 +98,7 @@ impl StorageAssertionsStrategy for StorageAssertions {
     fn increment_and_assert_storage_usage(
         &self,
         _caller: &Principal,
-        _controllers: &Controllers,
+        _controllers: &AccessKeys,
         _collection: &CollectionKey,
         _max_changes_per_user: Option<u32>,
     ) -> Result<(), String> {
@@ -120,8 +116,7 @@ impl StorageStateStrategy for StorageState {
         chunk_index: usize,
         _memory: &Memory,
     ) -> Option<Blob> {
-        let content_chunks = clone_asset_encoding_content_chunks(encoding, chunk_index);
-        Some(content_chunks)
+        clone_asset_encoding_content_chunks(encoding, chunk_index)
     }
 
     fn get_public_asset(
@@ -183,8 +178,8 @@ impl StorageStateStrategy for StorageState {
         delete_asset(full_path)
     }
 
-    fn init_certified_assets(&self) {
-        init_certified_assets();
+    fn certify_all_assets(&self) {
+        certify_all_assets();
     }
 }
 

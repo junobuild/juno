@@ -1,5 +1,5 @@
 use crate::guards::caller_has_account;
-use crate::segments::{attach_segment, detach_segment};
+use crate::segments::{attach_many_segments, attach_segment, detach_many_segments, detach_segment};
 use crate::segments::{
     list_segments as list_segments_store, set_segment_metadata as set_segment_metadata_store,
 };
@@ -29,6 +29,16 @@ fn set_segment(args: SetSegmentsArgs) -> Segment {
 }
 
 #[update(guard = "caller_has_account")]
+fn set_many_segments(args: Vec<SetSegmentsArgs>) -> Vec<Segment> {
+    attach_many_segments(args).unwrap_or_trap()
+}
+
+#[update(guard = "caller_has_account")]
 fn unset_segment(args: UnsetSegmentsArgs) {
     detach_segment(args).unwrap_or_trap()
+}
+
+#[update(guard = "caller_has_account")]
+fn unset_many_segments(args: Vec<UnsetSegmentsArgs>) {
+    detach_many_segments(args).unwrap_or_trap()
 }

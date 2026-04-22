@@ -36,10 +36,10 @@ use icrc_ledger_types::icrc1::transfer::TransferArg;
 use junobuild_shared::ledger::types::icrc::IcrcTransferResult;
 use junobuild_shared::types::interface::DepositCyclesArgs;
 use junobuild_shared::types::interface::InitMissionControlArgs;
-use junobuild_shared::types::interface::SetController;
+use junobuild_shared::types::interface::SetAccessKey;
 use junobuild_shared::types::state::Metadata;
 use junobuild_shared::types::state::SatelliteId;
 use junobuild_shared::types::state::UserId;
-use junobuild_shared::types::state::{ControllerId, Controllers, OrbiterId};
+use junobuild_shared::types::state::{AccessKeyId, AccessKeys, OrbiterId};
 
 export_candid!();

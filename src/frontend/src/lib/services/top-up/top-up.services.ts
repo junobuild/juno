@@ -5,7 +5,7 @@ import { execute } from '$lib/services/_progress.services';
 import { topUpWithCmc } from '$lib/services/top-up/_top-up.cmc.services';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
-import type { OptionIdentity } from '$lib/types/itentity';
+import type { NullishIdentity } from '$lib/types/itentity';
 import { type TopUpProgress, TopUpProgressStep } from '$lib/types/progress-topup';
 import { emit } from '$lib/utils/events.utils';
 import { assertAndConvertAmountToToken, isTokenCycles, isTokenIcp } from '$lib/utils/token.utils';
@@ -23,7 +23,7 @@ export const topUp = async ({
 	canisterId,
 	onProgress
 }: {
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 	selectedWallet: SelectedWallet | undefined;
 	selectedToken: SelectedToken;
 	balance: bigint;

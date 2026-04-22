@@ -5,8 +5,7 @@ import {
 	fromNullable,
 	fromNullishNullable,
 	jsonReplacer,
-	nonNullish,
-	uint8ArrayToBigInt
+	nonNullish
 } from '@dfinity/utils';
 import {
 	encodeIcrcAccount,
@@ -64,7 +63,7 @@ export const mapIcrcTransaction = ({
 		const icrc1Memo = fromNullable(data?.memo);
 
 		if (nonNullish(icrc1Memo)) {
-			return { memo: uint8ArrayToBigInt(icrc1Memo) };
+			return { memo: icrc1Memo };
 		}
 
 		return { memo: 0n };

@@ -1,0 +1,223 @@
+import type { ConsoleActor, ConsoleDid } from '$declarations';
+import type { Actor, PocketIc } from '@dfinity/pic';
+import { assertNonNullish, fromNullable, toNullable } from '@dfinity/utils';
+import type { DelegationIdentity } from '@icp-sdk/core/identity';
+import { authenticateAndMakeIdentity } from '../../../utils/auth-identity-tests.utils';
+import { setupConsoleAuth, type TestSession } from '../../../utils/auth-tests.utils';
+import { createSatelliteWithConsole } from '../../../utils/console-factory-tests.utils';
+import { makeJwt, type MockOpenIdJwt } from '../../../utils/jwt-tests.utils';
+import { tick } from '../../../utils/pic-tests.utils';
+
+describe('Satellite > Auth > User', () => {
+	let pic: PocketIc;
+
+	let consoleActor: Actor<ConsoleActor>;
+
+	let session: TestSession;
+
+	let mockJwt: MockOpenIdJwt;
+	let mockIdentity: DelegationIdentity;
+
+	const mockGoogleUserData = {
+		email: toNullable('user@example.com'),
+		name: toNullable('Hello World'),
+		given_name: toNullable('Hello'),
+		family_name: toNullable('World'),
+		preferred_username: toNullable(),
+		picture: toNullable(),
+		locale: toNullable()
+	};
+
+	const mockGitHubUserData = {
+		email: toNullable('user@example.com'),
+		name: toNullable('Hello World'),
+		given_name: toNullable(),
+		family_name: toNullable(),
+		preferred_username: toNullable('helloworld'),
+		picture: toNullable(),
+		locale: toNullable()
+	};
+
+	beforeAll(async () => {
+		const {
+			pic: p,
+			console: { actor },
+			session: s
+		} = await setupConsoleAuth({
+			withApplyRateTokens: true,
+			withGitHub: true
+		});
+
+		pic = p;
+		consoleActor = actor;
+
+		session = s;
+	});
+
+	afterAll(async () => {
+		await pic?.tearDown();
+	});
+
+	describe.each([
+		{
+			method: 'Google',
+			userData: mockGoogleUserData
+		},
+		{
+			method: 'GitHub',
+			userData: mockGitHubUserData
+		}
+	])('With method $method', ({ method, userData }) => {
+		it('should register a new user', async () => {
+			const { identity, account, jwt } = await authenticateAndMakeIdentity<{
+				account: ConsoleDid.Account;
+			}>({
+				pic,
+				session,
+				actor: consoleActor,
+				method: method.toLowerCase() as 'google' | 'github'
+			});
+
+			mockJwt = jwt;
+			mockIdentity = identity;
+
+			expect(account.owner.toText()).toEqual(identity.getPrincipal().toText());
+
+			const provider = fromNullable(account.provider);
+
+			assertNonNullish(provider);
+
+			if ('InternetIdentity' in provider) {
+				expect(true).toBeFalsy();
+
+				return;
+			}
+
+			const {
+				OpenId: { data, provider: provider_name }
+			} = provider;
+
+			expect(method in provider_name).toBeTruthy();
+
+			expect(data).toEqual(userData);
+
+			const missionControlId = fromNullable(account.mission_control_id);
+
+			expect(missionControlId).toBeUndefined();
+		});
+
+		it('should return same user', async () => {
+			await pic.advanceTime(1000 * 30); // 30s for cooldown guard
+			await tick(pic);
+
+			const { authenticate } = consoleActor;
+
+			const result = await authenticate({
+				OpenId: {
+					jwt: mockJwt.jwt,
+					session_key: session.publicKey,
+					salt: session.salt
+				}
+			});
+
+			if (!('Ok' in result)) {
+				expect(true).toBeFalsy();
+
+				return;
+			}
+
+			const { account } = result.Ok;
+
+			expect(account.owner.toText()).toEqual(mockIdentity.getPrincipal().toText());
+
+			const provider = fromNullable(account.provider);
+
+			assertNonNullish(provider);
+
+			if ('InternetIdentity' in provider) {
+				expect(true).toBeFalsy();
+
+				return;
+			}
+
+			const {
+				OpenId: { data, provider: provider_name }
+			} = provider;
+
+			expect(method in provider_name).toBeTruthy();
+
+			expect(data).toEqual(userData);
+		});
+
+		it('should update user data', async () => {
+			await pic.advanceTime(1000 * 30); // 30s for cooldown guard
+			await tick(pic);
+
+			const updatePayload = {
+				...mockJwt.payload,
+				name: 'Super Duper',
+				given_name: 'Super',
+				family_name: 'Duper',
+				email: 'test@test1.com'
+			};
+
+			const newJwt = await makeJwt({
+				payload: updatePayload,
+				pubJwk: mockJwt.pubJwk,
+				privateKey: mockJwt.privateKey
+			});
+
+			const { authenticate } = consoleActor;
+
+			const result = await authenticate({
+				OpenId: {
+					jwt: newJwt,
+					session_key: session.publicKey,
+					salt: session.salt
+				}
+			});
+
+			if (!('Ok' in result)) {
+				expect(true).toBeFalsy();
+
+				return;
+			}
+
+			const { account } = result.Ok;
+
+			expect(account.owner.toText()).toEqual(mockIdentity.getPrincipal().toText());
+
+			const provider = fromNullable(account.provider);
+
+			assertNonNullish(provider);
+
+			if ('InternetIdentity' in provider) {
+				expect(true).toBeFalsy();
+
+				return;
+			}
+
+			const {
+				OpenId: { data, provider: provider_name }
+			} = provider;
+
+			expect(method in provider_name).toBeTruthy();
+
+			expect(data).toEqual({
+				...userData,
+				name: toNullable(updatePayload.name),
+				given_name: toNullable(updatePayload.given_name),
+				family_name: toNullable(updatePayload.family_name),
+				email: toNullable(updatePayload.email)
+			});
+		});
+	});
+
+	it('should be able to spin module', async () => {
+		assertNonNullish(mockIdentity);
+
+		await expect(
+			createSatelliteWithConsole({ user: mockIdentity, actor: consoleActor })
+		).resolves.not.toThrow();
+	});
+});

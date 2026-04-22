@@ -1,15 +1,13 @@
 <script lang="ts">
-	import { nonNullish } from '@dfinity/utils';
 	import { setContext } from 'svelte';
 	import { writable } from 'svelte/store';
-	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
-	import SatelliteGuard from '$lib/components/guards/SatelliteGuard.svelte';
-	import Loaders from '$lib/components/loaders/Loaders.svelte';
-	import SatelliteOverview from '$lib/components/satellites/SatelliteOverview.svelte';
+	import Loaders from '$lib/components/app/loaders/Loaders.svelte';
+	import IdentityGuard from '$lib/components/auth/guards/IdentityGuard.svelte';
+	import Warnings from '$lib/components/modules/warning/Warnings.svelte';
+	import SatelliteGuard from '$lib/components/satellites/guards/SatelliteGuard.svelte';
+	import SatelliteOverview from '$lib/components/satellites/overview/SatelliteOverview.svelte';
 	import SatelliteSettings from '$lib/components/satellites/setup/SatelliteSettings.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
-	import Warnings from '$lib/components/warning/Warnings.svelte';
-	import { satelliteStore } from '$lib/derived/satellite.derived';
 	import {
 		type Tab,
 		TABS_CONTEXT_KEY,
@@ -21,7 +19,11 @@
 	const tabs: Tab[] = [
 		{
 			id: Symbol('1'),
-			labelKey: 'core.service'
+			labelKey: 'satellites.satellite'
+		},
+		{
+			id: Symbol('2'),
+			labelKey: 'core.setup'
 		}
 	];
 
@@ -36,23 +38,21 @@
 </script>
 
 <IdentityGuard>
-	<Loaders monitoring>
+	<Loaders monitoring satelliteConfig>
 		<SatelliteGuard>
-			<Tabs>
-				{#snippet info()}
-					{#if nonNullish($satelliteStore)}
-						<Warnings satellite={$satelliteStore} />
-					{/if}
-				{/snippet}
+			{#snippet content(satellite)}
+				<Tabs>
+					{#snippet info()}
+						<Warnings {satellite} />
+					{/snippet}
 
-				{#if nonNullish($satelliteStore)}
 					{#if $store.tabId === $store.tabs[0].id}
-						<SatelliteOverview satellite={$satelliteStore} />
-
-						<SatelliteSettings satellite={$satelliteStore} />
+						<SatelliteOverview {satellite} />
+					{:else if $store.tabId === $store.tabs[1].id}
+						<SatelliteSettings {satellite} />
 					{/if}
-				{/if}
-			</Tabs>
+				</Tabs>
+			{/snippet}
 		</SatelliteGuard>
 	</Loaders>
 </IdentityGuard>

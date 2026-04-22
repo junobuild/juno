@@ -1,6 +1,6 @@
 <script lang="ts">
-	import InputCycles from '$lib/components/core/InputCycles.svelte';
-	import InputIcp from '$lib/components/core/InputIcp.svelte';
+	import InputCycles from '$lib/components/app/core/InputCycles.svelte';
+	import InputIcp from '$lib/components/app/core/InputIcp.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
@@ -111,7 +111,7 @@
 		</Value>
 	</div>
 
-	<InputAmount {balance} bind:amount />
+	<InputAmount amountLabel="token" {balance} bind:amount />
 
 	<button class="action" type="submit">
 		{$i18n.core.review}

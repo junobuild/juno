@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { isNullish } from '@dfinity/utils';
 	import { Principal } from '@icp-sdk/core/principal';
-	import CanisterTransferCyclesForm from '$lib/components/canister/cycles/CanisterTransferCyclesForm.svelte';
-	import CanisterTransferCyclesReview from '$lib/components/canister/cycles/CanisterTransferCyclesReview.svelte';
+	import CanisterTransferCyclesForm from '$lib/components/modules/canister/cycles/CanisterTransferCyclesForm.svelte';
+	import CanisterTransferCyclesReview from '$lib/components/modules/canister/cycles/CanisterTransferCyclesReview.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import { authSignedOut } from '$lib/derived/auth.derived';

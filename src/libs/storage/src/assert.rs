@@ -1,8 +1,6 @@
-use crate::constants::{WELL_KNOWN_CUSTOM_DOMAINS, WELL_KNOWN_II_ALTERNATIVE_ORIGINS};
 use crate::errors::{
     JUNO_STORAGE_ERROR_CANNOT_COMMIT_BATCH, JUNO_STORAGE_ERROR_CANNOT_COMMIT_INVALID_COLLECTION,
-    JUNO_STORAGE_ERROR_RESERVED_ASSET, JUNO_STORAGE_ERROR_UPLOAD_NOT_ALLOWED,
-    JUNO_STORAGE_ERROR_UPLOAD_PATH_COLLECTION_PREFIX,
+    JUNO_STORAGE_ERROR_UPLOAD_NOT_ALLOWED, JUNO_STORAGE_ERROR_UPLOAD_PATH_COLLECTION_PREFIX,
 };
 use crate::runtime::increment_and_assert_rate;
 use crate::strategies::{StorageAssertionsStrategy, StorageStateStrategy};
@@ -10,6 +8,7 @@ use crate::types::config::StorageConfig;
 use crate::types::interface::{CommitBatch, InitAssetKey};
 use crate::types::state::FullPath;
 use crate::types::store::{Asset, AssetAssertUpload, Batch};
+use crate::well_known::assert::assert_not_well_known_asset;
 use candid::Principal;
 use junobuild_collections::assert::collection::is_system_collection;
 use junobuild_collections::constants::assets::COLLECTION_ASSET_KEY;
@@ -17,12 +16,12 @@ use junobuild_collections::constants::core::SYS_COLLECTION_PREFIX;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::Rule;
 use junobuild_shared::assert::{assert_description_length, assert_max_memory_size};
-use junobuild_shared::types::state::Controllers;
+use junobuild_shared::types::state::AccessKeys;
 use junobuild_shared::utils::principal_not_equal;
 
 pub fn assert_create_batch(
     caller: Principal,
-    controllers: &Controllers,
+    controllers: &AccessKeys,
     config: &StorageConfig,
     init: &InitAssetKey,
     assertions: &impl StorageAssertionsStrategy,
@@ -64,7 +63,7 @@ pub fn assert_create_chunk(
 
 pub fn assert_commit_batch(
     caller: Principal,
-    controllers: &Controllers,
+    controllers: &AccessKeys,
     batch: &Batch,
     assertions: &impl StorageAssertionsStrategy,
     storage_state: &impl StorageStateStrategy,
@@ -96,7 +95,7 @@ pub fn assert_commit_batch(
 pub fn assert_commit_chunks_new_asset(
     caller: Principal,
     collection: &CollectionKey,
-    controllers: &Controllers,
+    controllers: &AccessKeys,
     config: &StorageConfig,
     rule: &Rule,
     assertions: &impl StorageAssertionsStrategy,
@@ -112,7 +111,7 @@ pub fn assert_commit_chunks_new_asset(
 
 pub fn assert_commit_chunks_update(
     caller: Principal,
-    controllers: &Controllers,
+    controllers: &AccessKeys,
     config: &StorageConfig,
     batch: &Batch,
     rule: &Rule,
@@ -141,7 +140,7 @@ pub fn assert_commit_chunks_update(
 
 pub fn assert_commit_chunks(
     caller: Principal,
-    controllers: &Controllers,
+    controllers: &AccessKeys,
     commit_batch: &CommitBatch,
     batch: &Batch,
     current: &Option<Asset>,
@@ -203,13 +202,9 @@ fn assert_key(
     description: &Option<String>,
     collection: &CollectionKey,
     assertions: &impl StorageAssertionsStrategy,
-    controllers: &Controllers,
+    controllers: &AccessKeys,
 ) -> Result<(), String> {
-    // /.well-known/ic-domains is automatically generated for custom domains
-    assert_well_known_key(full_path, WELL_KNOWN_CUSTOM_DOMAINS)?;
-
-    // /.well-known/ii-alternative-origins is automatically generated for alternative origins
-    assert_well_known_key(full_path, WELL_KNOWN_II_ALTERNATIVE_ORIGINS)?;
+    assert_not_well_known_asset(full_path)?;
 
     let dapp_collection = COLLECTION_ASSET_KEY;
 
@@ -240,14 +235,5 @@ fn assert_key(
 
     assertions.assert_key(full_path, description, collection)?;
 
-    Ok(())
-}
-
-fn assert_well_known_key(full_path: &str, reserved_path: &str) -> Result<(), String> {
-    if full_path == reserved_path {
-        return Err(format!(
-            "{JUNO_STORAGE_ERROR_RESERVED_ASSET} ({reserved_path})"
-        ));
-    }
     Ok(())
 }

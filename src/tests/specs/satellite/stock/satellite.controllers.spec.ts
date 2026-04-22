@@ -2,6 +2,7 @@ import { type SatelliteActor, idlFactorySatellite } from '$declarations';
 import { type Actor, PocketIc } from '@dfinity/pic';
 import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
 import { inject } from 'vitest';
+import { CONTROLLER_METADATA } from '../../../constants/controller-tests.constants';
 import { mockListParams } from '../../../mocks/list.mocks';
 import { uploadAsset } from '../../../utils/satellite-storage-tests.utils';
 import { controllersInitArgs, SATELLITE_WASM_PATH } from '../../../utils/setup-tests.utils';
@@ -59,9 +60,8 @@ describe('Satellite > Controllers', () => {
 
 			await set_controllers({
 				controller: {
-					scope: { Submit: null },
-					metadata: [],
-					expires_at: []
+					...CONTROLLER_METADATA,
+					scope: { Submit: null }
 				},
 				controllers: [controllerSubmit.getPrincipal()]
 			});

@@ -1,7 +1,7 @@
-import type { Option } from '$lib/types/utils';
+import type { Nullish } from '@dfinity/zod-schemas';
 import { writable, type Readable } from 'svelte/store';
 
-type Data<T> = Option<{ data: T }>;
+type Data<T> = Nullish<{ data: T }>;
 
 export interface DataStore<T> extends Readable<Data<T>> {
 	set: (data: T) => void;

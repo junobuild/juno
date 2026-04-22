@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { toNullable } from '@dfinity/utils';
-import { ICManagementCanister } from '@icp-sdk/canisters/ic-management';
+import { IcManagementCanister } from '@icp-sdk/canisters/ic-management';
 import { uploadAssetsWithProposal } from '@junobuild/cdn';
 import { deploy as cliDeploy, hasArgs } from '@junobuild/cli-tools';
 import { consoleActor, icAgent, localAgent } from './actor.mjs';
@@ -109,7 +109,7 @@ const deployWithCli = async (proposalId) => {
 		const fnAgent = targetMainnet() ? icAgent : localAgent;
 		const agent = await fnAgent();
 
-		const { canisterStatus } = ICManagementCanister.create({
+		const { canisterStatus } = IcManagementCanister.create({
 			agent
 		});
 

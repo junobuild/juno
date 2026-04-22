@@ -8,7 +8,7 @@ import {
 	METADATA_KEY_TAGS
 } from '$lib/constants/metadata.constants';
 import { segments } from '$lib/derived/console/segments.derived';
-import { mctrlSatellitesStore } from '$lib/derived/mission-control/mission-control-satellites.derived';
+import { mctrlSatellites } from '$lib/derived/mission-control/mission-control-satellites.derived';
 import {
 	SatelliteUiMetadataSchema,
 	SatelliteUiMetadataSerializer
@@ -17,21 +17,21 @@ import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
 import { segmentsUncertifiedStore } from '$lib/stores/console/segments.store';
 import { satellitesUncertifiedStore } from '$lib/stores/mission-control/satellites.store';
-import type { OptionIdentity } from '$lib/types/itentity';
+import type { NullishIdentity } from '$lib/types/itentity';
 import type { Metadata } from '$lib/types/metadata';
 import type { MissionControlId } from '$lib/types/mission-control';
 import type { SatelliteId, SatelliteUiMetadata } from '$lib/types/satellite';
-import type { Option } from '$lib/types/utils';
 import { isNullish, nonNullish, notEmptyString } from '@dfinity/utils';
+import type { Nullish } from '@dfinity/zod-schemas';
 import type { Identity } from '@icp-sdk/core/agent';
 import { get } from 'svelte/store';
 import * as z from 'zod';
 
 interface SetSatelliteMetadataParams {
-	missionControlId: Option<MissionControlId>;
+	missionControlId: Nullish<MissionControlId>;
 	satellite: MissionControlDid.Satellite;
 	metadata: SatelliteUiMetadata;
-	identity: OptionIdentity;
+	identity: NullishIdentity;
 }
 
 export const setSatelliteMetadata = async ({
@@ -175,7 +175,7 @@ const setMetadataWithMissionControl = async ({
 	metadata: Metadata;
 	identity: Identity;
 }): Promise<{ result: 'success' | 'warn' | 'error' }> => {
-	const currentState = get(mctrlSatellitesStore);
+	const currentState = get(mctrlSatellites);
 	const satellite = currentState?.find(
 		({ satellite_id }) => satellite_id.toText() === satelliteId.toText()
 	);
@@ -193,7 +193,7 @@ const setMetadataWithMissionControl = async ({
 			...rest
 		});
 
-		const updateState = get(mctrlSatellitesStore);
+		const updateState = get(mctrlSatellites);
 		satellitesUncertifiedStore.set([
 			...(updateState ?? []).filter(
 				({ satellite_id }) => updatedSatellite.satellite_id.toText() !== satellite_id.toText()

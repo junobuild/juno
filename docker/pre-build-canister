@@ -22,8 +22,10 @@ function pre_build_canister() {
 
 function export_test_sputnik_fixtures() {
   export DEV_SCRIPT_PATH="$PWD/target/fixtures/index.mjs"
+  export DEV_FUNCTIONS_PATH="$PWD/target/fixtures/index.rs"
 
   echo "[test_sputnik] DEV_SCRIPT_PATH set to $DEV_SCRIPT_PATH"
+  echo "[test_sputnik] DEV_FUNCTIONS_PATH set to $DEV_FUNCTIONS_PATH"
   echo
 }
 

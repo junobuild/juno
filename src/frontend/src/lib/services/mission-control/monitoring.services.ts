@@ -20,6 +20,7 @@ import { execute } from '$lib/services/_progress.services';
 import { loadOrbiters } from '$lib/services/mission-control/mission-control.orbiters.services';
 import { loadSatellites } from '$lib/services/mission-control/mission-control.satellites.services';
 import { loadSettings, loadUserData } from '$lib/services/mission-control/mission-control.services';
+import { loadUfos } from '$lib/services/mission-control/mission-control.ufos.services';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
 import type { NullishIdentity } from '$lib/types/itentity';
@@ -421,6 +422,7 @@ const reloadData = async ({
 	await Promise.all([
 		loadSatellites(reloadParams),
 		loadOrbiters(reloadParams),
+		loadUfos(reloadParams),
 		loadSettings({
 			...reloadParams,
 			identity

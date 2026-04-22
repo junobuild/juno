@@ -19,7 +19,7 @@ import { get } from 'svelte/store';
 
 interface DeleteWizardParams {
 	segmentId: Principal;
-	segment: 'satellite' | 'orbiter';
+	segment: 'satellite' | 'orbiter' | 'ufo';
 	missionControlId: Nullish<Principal>;
 	identity: NullishIdentity;
 	cyclesToDeposit: bigint;
@@ -106,6 +106,8 @@ export const deleteSegmentWizard = async ({
 		return { result: 'warn' };
 	}
 
+	// TODO: deposit cycles with ufo
+
 	try {
 		// 1. deposit_cycles to move out the cycles the devs want to keep
 		const depositFn = async () => {
@@ -173,7 +175,8 @@ export const deleteSegmentWizard = async ({
 				missionControlId,
 				reload: true,
 				reloadSatellites: segment === 'satellite',
-				reloadOrbiters: segment === 'orbiter'
+				reloadOrbiters: segment === 'orbiter',
+				reloadUfos: segment === 'ufo'
 			});
 		};
 

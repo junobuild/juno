@@ -448,7 +448,12 @@ export const createSatelliteWizard = async ({
 	};
 
 	const reloadFn: ReloadFn = async () => {
-		await loadSegments({ missionControlId, reload: true, reloadOrbiters: false });
+		await loadSegments({
+			missionControlId,
+			reload: true,
+			reloadOrbiters: false,
+			reloadUfos: false
+		});
 	};
 
 	return await createWizard({
@@ -568,7 +573,12 @@ export const createOrbiterWizard = async ({
 	const monitoringFn = buildMonitoringFn();
 
 	const reloadFn = async () => {
-		await loadSegments({ missionControlId, reload: true, reloadSatellites: false });
+		await loadSegments({
+			missionControlId,
+			reload: true,
+			reloadSatellites: false,
+			reloadUfos: false
+		});
 	};
 
 	return await createWizard({
@@ -746,7 +756,12 @@ export const createUfoWizard = async ({
 	const monitoringFn = buildMonitoringFn();
 
 	const reloadFn: ReloadFn = async () => {
-		await loadSegments({ missionControlId, reload: true, reloadOrbiters: false });
+		await loadSegments({
+			missionControlId,
+			reload: true,
+			reloadOrbiters: false,
+			reloadSatellites: false
+		});
 	};
 
 	return await createWizard({

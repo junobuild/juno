@@ -75,7 +75,8 @@ export const reconcileSegments = async ({
 				missionControlId,
 				reload: true,
 				reloadOrbiters: true,
-				reloadSatellites: true
+				reloadSatellites: true,
+				reloadUfos: true
 			});
 		};
 		await execute({ fn: reload, onProgress, step: OutOfSyncProgressStep.Reload });
@@ -101,6 +102,8 @@ const reconcileAllSegments = async (params: ReconcileParams) => {
 	await reconcileSatellites(params);
 
 	await reconcileOrbiters(params);
+
+	// TODO: reconcileUfos
 };
 
 const reconcileSatellites = async ({

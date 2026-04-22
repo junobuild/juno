@@ -1,5 +1,5 @@
 import { setSegment } from '$lib/api/console.api';
-import { setOrbiter, setSatellite } from '$lib/api/mission-control.api';
+import { setOrbiter, setSatellite, setUfo } from '$lib/api/mission-control.api';
 import { loadSegments } from '$lib/services/segments.services';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
@@ -17,7 +17,7 @@ import { get } from 'svelte/store';
 interface AttachParams {
 	identity: NullishIdentity;
 	missionControlId: Nullish<MissionControlId>;
-	segment: 'satellite' | 'orbiter';
+	segment: 'satellite' | 'orbiter' | 'ufo';
 	segmentId: Principal;
 }
 
@@ -71,7 +71,8 @@ export const attachSegment = async ({
 			missionControlId,
 			reload: true,
 			reloadSatellites: segment === 'satellite',
-			reloadOrbiters: segment === 'orbiter'
+			reloadOrbiters: segment === 'orbiter',
+			reloadUfos: segment === 'ufo'
 		});
 	}
 };
@@ -130,7 +131,12 @@ const attachWithConsole = async ({
 		identity,
 		args: {
 			segment_id,
-			segment_kind: segment === 'orbiter' ? { Orbiter: null } : { Satellite: null },
+			segment_kind:
+				segment === 'orbiter'
+					? { Orbiter: null }
+					: segment === 'ufo'
+						? { Ufo: null }
+						: { Satellite: null },
 			metadata: toNullable()
 		}
 	});
@@ -143,11 +149,15 @@ const attachWithMissionControl = async ({
 }: {
 	missionControlId: MissionControlId;
 	identity: Identity;
-	segment: 'satellite' | 'orbiter';
+	segment: 'satellite' | 'orbiter' | 'ufo';
 	segmentId: Principal;
 }) => {
 	const attachOrbiter = async ({ canisterId, ...rest }: AttachWithMissionControlParams) => {
 		await setOrbiter({ ...rest, orbiterId: canisterId });
+	};
+
+	const attachUfo = async ({ canisterId, ...rest }: AttachWithMissionControlParams) => {
+		await setUfo({ ...rest, ufoId: canisterId });
 	};
 
 	const attachSatellite = async ({
@@ -158,7 +168,8 @@ const attachWithMissionControl = async ({
 		await setSatellite({ missionControlId, satelliteId: canisterId, identity });
 	};
 
-	const fn = segment === 'orbiter' ? attachOrbiter : attachSatellite;
+	const fn =
+		segment === 'orbiter' ? attachOrbiter : segment === 'ufo' ? attachUfo : attachSatellite;
 
 	await fn({
 		...rest,

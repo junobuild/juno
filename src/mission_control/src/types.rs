@@ -4,13 +4,16 @@ pub mod state {
     use ic_stable_structures::StableBTreeMap;
     use junobuild_shared::types::memory::Memory;
     use junobuild_shared::types::monitoring::{CyclesBalance, FundingFailure};
-    use junobuild_shared::types::state::{AccessKeys, Metadata, OrbiterId, SegmentId, Timestamp};
+    use junobuild_shared::types::state::{
+        AccessKeys, Metadata, OrbiterId, SegmentId, Timestamp, UfoId,
+    };
     use junobuild_shared::types::state::{SatelliteId, UserId};
     use serde::{Deserialize, Serialize};
     use std::collections::HashMap;
 
     pub type Satellites = HashMap<SatelliteId, Satellite>;
     pub type Orbiters = HashMap<OrbiterId, Orbiter>;
+    pub type Ufos = HashMap<UfoId, Ufo>;
 
     pub type MonitoringHistoryStable =
         StableBTreeMap<MonitoringHistoryKey, MonitoringHistory, Memory>;
@@ -35,6 +38,7 @@ pub mod state {
         pub controllers: AccessKeys,
         pub orbiters: Orbiters,
         pub settings: Option<MissionControlSettings>,
+        pub ufos: Option<Ufos>,
     }
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
@@ -83,6 +87,15 @@ pub mod state {
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct Orbiter {
         pub orbiter_id: OrbiterId,
+        pub metadata: Metadata,
+        pub settings: Option<Settings>,
+        pub created_at: Timestamp,
+        pub updated_at: Timestamp,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct Ufo {
+        pub ufo_id: UfoId,
         pub metadata: Metadata,
         pub settings: Option<Settings>,
         pub created_at: Timestamp,
@@ -171,7 +184,7 @@ pub mod interface {
     use candid::CandidType;
     use junobuild_shared::mgmt::types::cmc::SubnetId;
     use junobuild_shared::types::interface::InitStorageArgs;
-    use junobuild_shared::types::state::{OrbiterId, SatelliteId, SegmentId, Timestamp};
+    use junobuild_shared::types::state::{OrbiterId, SatelliteId, SegmentId, Timestamp, UfoId};
     use serde::{Deserialize, Serialize};
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
@@ -198,6 +211,7 @@ pub mod interface {
         pub mission_control_strategy: Option<CyclesMonitoringStrategy>,
         pub satellites_strategy: Option<SegmentsMonitoringStrategy>,
         pub orbiters_strategy: Option<SegmentsMonitoringStrategy>,
+        pub ufos_strategy: Option<SegmentsMonitoringStrategy>,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
@@ -205,6 +219,7 @@ pub mod interface {
         pub try_mission_control: Option<bool>,
         pub satellite_ids: Option<Vec<SatelliteId>>,
         pub orbiter_ids: Option<Vec<OrbiterId>>,
+        pub ufo_ids: Option<Vec<UfoId>>,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]

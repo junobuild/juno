@@ -1,7 +1,7 @@
 use crate::memory::manager::STATE;
 use crate::types::core::Segment;
-use crate::types::state::{Orbiter, Orbiters, Satellite, Satellites};
-use junobuild_shared::types::state::{Metadata, OrbiterId, SatelliteId};
+use crate::types::state::{Orbiter, Orbiters, Satellite, Satellites, Ufo, Ufos};
+use junobuild_shared::types::state::{Metadata, OrbiterId, SatelliteId, UfoId};
 use std::collections::HashMap;
 use std::hash::Hash;
 
@@ -76,6 +76,66 @@ pub fn set_orbiter_metadata(
 ) -> Result<Orbiter, String> {
     STATE.with(|state| {
         set_metadata_impl(orbiter_id, metadata, &mut state.borrow_mut().heap.orbiters)
+    })
+}
+
+// ---------------------------------------------------------
+// UFOs
+// ---------------------------------------------------------
+
+pub fn get_ufos() -> Ufos {
+    STATE.with(|state| state.borrow().heap.ufos.clone().unwrap_or_default())
+}
+
+pub fn get_ufo(ufo_id: &UfoId) -> Option<Ufo> {
+    STATE.with(|state| {
+        state
+            .borrow()
+            .heap
+            .ufos
+            .as_ref()
+            .and_then(|ufos| get_segment_impl(ufo_id, ufos))
+    })
+}
+
+pub fn delete_ufo(ufo_id: &UfoId) -> Option<Ufo> {
+    STATE.with(|state| {
+        delete_segment_impl(
+            ufo_id,
+            state
+                .borrow_mut()
+                .heap
+                .ufos
+                .get_or_insert_with(HashMap::new),
+        )
+    })
+}
+
+pub fn add_ufo(ufo_id: &UfoId, name: &Option<String>) -> Ufo {
+    STATE.with(|state| {
+        add_segment_impl(
+            ufo_id,
+            &Ufo::from(ufo_id, name),
+            state
+                .borrow_mut()
+                .heap
+                .ufos
+                .get_or_insert_with(HashMap::new),
+        )
+    })
+}
+
+pub fn set_ufo_metadata(ufo_id: &UfoId, metadata: &Metadata) -> Result<Ufo, String> {
+    STATE.with(|state| {
+        set_metadata_impl(
+            ufo_id,
+            metadata,
+            state
+                .borrow_mut()
+                .heap
+                .ufos
+                .get_or_insert_with(HashMap::new),
+        )
     })
 }
 

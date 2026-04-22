@@ -1,9 +1,11 @@
-use crate::factory::store::{get_orbiters, get_satellites};
+use crate::factory::store::{get_orbiters, get_satellites, get_ufos};
 use crate::monitoring::cycles::scheduler::{assert_scheduler_running, stop_scheduler};
 use crate::monitoring::cycles::unregister::{
     unregister_mission_control_monitoring, unregister_modules_monitoring,
 };
-use crate::monitoring::store::heap::{disable_orbiter_monitoring, disable_satellite_monitoring};
+use crate::monitoring::store::heap::{
+    disable_orbiter_monitoring, disable_satellite_monitoring, disable_ufo_monitoring,
+};
 use crate::types::core::SettingsMonitoring;
 use junobuild_shared::types::state::SegmentId;
 
@@ -20,6 +22,7 @@ pub fn stop_cycles_monitoring() -> Result<(), String> {
 fn unregister_strategies() -> Result<(), String> {
     let satellites = get_satellites();
     let orbiters = get_orbiters();
+    let ufos = get_ufos();
 
     fn filter_enabled_strategy<T>(segment_id: &SegmentId, settings: &Option<T>) -> Option<SegmentId>
     where
@@ -43,6 +46,10 @@ fn unregister_strategies() -> Result<(), String> {
         .iter()
         .filter_map(|(orbiter_id, orbiter)| filter_enabled_strategy(orbiter_id, &orbiter.settings))
         .collect();
+    let ufo_ids: Vec<SegmentId> = ufos
+        .iter()
+        .filter_map(|(ufo_id, ufo)| filter_enabled_strategy(ufo_id, &ufo.settings))
+        .collect();
 
     if !satellite_ids.is_empty() {
         unregister_modules_monitoring(&satellite_ids, disable_satellite_monitoring)?;
@@ -50,6 +57,10 @@ fn unregister_strategies() -> Result<(), String> {
 
     if !orbiter_ids.is_empty() {
         unregister_modules_monitoring(&orbiter_ids, disable_orbiter_monitoring)?;
+    }
+
+    if !ufo_ids.is_empty() {
+        unregister_modules_monitoring(&ufo_ids, disable_ufo_monitoring)?;
     }
 
     unregister_mission_control_monitoring()?;

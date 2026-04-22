@@ -136,6 +136,7 @@ impl Notification {
                 "https://console.juno.build/satellite/?s={}",
                 self.segment.id
             ),
+            SegmentKind::Ufo => format!("https://console.juno.build/ufo/?u={}", self.segment.id),
         }
     }
 

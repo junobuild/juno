@@ -119,7 +119,11 @@ export interface Segment {
 	metadata: [] | [Array<[string, string]>];
 	kind: SegmentKind;
 }
-export type SegmentKind = { Orbiter: null } | { MissionControl: null } | { Satellite: null };
+export type SegmentKind =
+	| { Ufo: null }
+	| { Orbiter: null }
+	| { MissionControl: null }
+	| { Satellite: null };
 export interface SetAccessKey {
 	metadata: Array<[string, string]>;
 	kind: [] | [AccessKeyKind];

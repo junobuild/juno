@@ -104,6 +104,7 @@ export const idlFactory = ({ IDL }) => {
 		FailedCyclesDepositEmail: FailedCyclesDepositEmailNotification
 	});
 	const SegmentKind = IDL.Variant({
+		Ufo: IDL.Null,
 		Orbiter: IDL.Null,
 		MissionControl: IDL.Null,
 		Satellite: IDL.Null

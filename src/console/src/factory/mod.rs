@@ -5,4 +5,5 @@ mod orchestrator;
 pub mod satellite;
 mod services;
 mod types;
+pub mod ufo;
 mod utils;

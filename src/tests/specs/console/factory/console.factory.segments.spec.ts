@@ -1,4 +1,4 @@
-import { type ConsoleActor, type ConsoleDid } from '$declarations';
+import type { ConsoleActor, ConsoleDid } from '$declarations';
 import type { Actor, PocketIc } from '@dfinity/pic';
 import { fromNullable, fromNullishNullable, toNullable } from '@dfinity/utils';
 import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
@@ -152,6 +152,7 @@ describe('Console > Factory > Segment', () => {
 		describe('Assertions', () => {
 			it('should fail with unknown account', async () => {
 				const { create_segment } = actor;
+
 				await expect(create_segment(args({ user }))).rejects.toThrow(NO_ACCOUNT_ERROR_MSG);
 			});
 		});
@@ -291,6 +292,7 @@ describe('Console > Factory > Segment', () => {
 		describe('Assertions', () => {
 			it('should fail with unknown account', async () => {
 				const { create_segment } = actor;
+
 				await expect(create_segment(args)).rejects.toThrow(NO_ACCOUNT_ERROR_MSG);
 			});
 		});

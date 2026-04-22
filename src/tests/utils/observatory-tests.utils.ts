@@ -1,8 +1,8 @@
-import {
-	type ObservatoryActor,
-	type ObservatoryActor009,
-	type ObservatoryDid,
-	type ObservatoryDid040
+import type {
+	ObservatoryActor,
+	ObservatoryActor009,
+	ObservatoryDid,
+	ObservatoryDid040
 } from '$declarations';
 import type { PocketIc } from '@dfinity/pic';
 import { assertNonNullish, nonNullish } from '@dfinity/utils';

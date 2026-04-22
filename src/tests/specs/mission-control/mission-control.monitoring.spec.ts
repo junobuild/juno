@@ -403,7 +403,7 @@ describe('Mission Control > Monitoring', () => {
 			};
 
 			await expect(update_and_start_monitoring(config)).rejects.toThrow(
-				`Orbiter ${satelliteId.toText()} not found. Strategy cannot be saved.`
+				`UFO ${satelliteId.toText()} not found. Strategy cannot be saved.`
 			);
 		});
 
@@ -460,7 +460,7 @@ describe('Mission Control > Monitoring', () => {
 			};
 
 			await expect(update_and_stop_monitoring(config)).rejects.toThrow(
-				`Orbiter ${satelliteId.toText()} not found. Monitoring cannot be disabled.`
+				`UFO ${satelliteId.toText()} not found. Monitoring cannot be disabled.`
 			);
 		});
 

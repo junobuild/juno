@@ -404,7 +404,8 @@ export const createSatelliteWizard = async ({
 							strategy: monitoringStrategy,
 							ids: [canisterId]
 						}),
-						orbiters_strategy: toNullable()
+						orbiters_strategy: toNullable(),
+						ufos_strategy: toNullable()
 					})
 				}
 			});
@@ -536,7 +537,8 @@ export const createOrbiterWizard = async ({
 						orbiters_strategy: toNullable({
 							strategy: monitoringStrategy,
 							ids: [canisterId]
-						})
+						}),
+						ufos_strategy: toNullable()
 					})
 				}
 			});

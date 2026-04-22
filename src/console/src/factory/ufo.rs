@@ -4,7 +4,7 @@ use crate::factory::orchestrator::create_segment_with_account;
 use crate::factory::services::payment::{process_payment_cycles, refund_payment_cycles};
 use crate::factory::types::CanisterCreator;
 use crate::factory::utils::controllers::{
-    remove_console_controller, update_mission_control_controllers,
+    remove_console_controller,
 };
 use crate::fees::get_factory_fee;
 use crate::rates::increment_ufo_rate;

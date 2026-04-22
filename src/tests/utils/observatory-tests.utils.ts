@@ -1,4 +1,9 @@
-import type { ObservatoryActor, ObservatoryActor009, ObservatoryDid } from '$declarations';
+import {
+	type ObservatoryActor,
+	type ObservatoryActor009,
+	type ObservatoryDid,
+	type ObservatoryDid040
+} from '$declarations';
 import type { PocketIc } from '@dfinity/pic';
 import { assertNonNullish, nonNullish } from '@dfinity/utils';
 import { Ed25519KeyIdentity } from '@icp-sdk/core/identity';
@@ -61,7 +66,8 @@ export const testDepositedCyclesNotification = async ({
 		segment: {
 			id: mockMissionControlId,
 			metadata: nonNullish(metadataName) ? [[['name', metadataName]]] : [],
-			kind
+			// TODO: cast was added for simplicity reasons when introducing Kind Ufo
+			kind: kind as ObservatoryDid040.SegmentKind
 		},
 		user: Ed25519KeyIdentity.generate().getPrincipal()
 	});

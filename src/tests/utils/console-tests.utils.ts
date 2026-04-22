@@ -701,6 +701,7 @@ export const setupConsole = async ({
 		await set_fee({ Satellite: null }, TEST_FEES);
 		await set_fee({ Orbiter: null }, TEST_FEES);
 		await set_fee({ MissionControl: null }, TEST_FEES);
+		await set_fee({ Ufo: null }, TEST_FEES);
 	}
 
 	return { pic, controller, actor, canisterId };

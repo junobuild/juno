@@ -625,7 +625,7 @@
 		"satellites_not_loaded": "The Satellites data are not yet loaded.",
 		"create_ufo_name_missing": "A name for the UFO must be provided.",
 		"create_ufo_unexpected_error": "Unexpected error(s) while creating the UFO.",
-		"ufo_no_found": "Nothing here. Return to your launchpad to find your UFOs.",
+		"ufo_not_found": "Nothing here. Return to your launchpad to find your UFOs.",
 		"canister_stop": "Unexpected error(s) while trying to stop the module.",
 		"canister_start": "Unexpected error(s) while trying to start the module.",
 		"canister_delete": "Unexpected error(s) while trying to delete the module.",
@@ -1180,6 +1180,6 @@
 		"ready": "Your UFO is ready!",
 		"overview": "Overview",
 		"loading_ufos": "Loading your UFOs",
-		"id": "Ufo ID"
+		"id": "UFO ID"
 	}
 }

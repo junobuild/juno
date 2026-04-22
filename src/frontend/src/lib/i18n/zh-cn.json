@@ -624,6 +624,9 @@
 		"satellite_metadata_update": "更新卫星元数据时发生意外错误。",
 		"satellite_missing_name": "必须提供名称。",
 		"satellites_not_loaded": "卫星数据未加载。",
+		"create_ufo_name_missing": "必须提供 UFO 的名称。",
+		"create_ufo_unexpected_error": "创建 UFO 时发生意外错误。",
+		"ufo_not_found": "这里什么都没有。返回发射台查找您的 UFO。",
 		"canister_stop": "停止模块时发生意外错误。",
 		"canister_start": "启动模块时发生意外错误。",
 		"canister_delete": "删除模块时发生意外错误。",
@@ -1164,5 +1167,20 @@
 		"last_deployments": "最近部署",
 		"deployments_not_configured": "休斯顿，我们还没有部署记录。<a href=\"{0}\">配置自动化</a>以启动发射序列。",
 		"no_deployments_yet": "发射器已<a href=\"{0}\">配置</a>。等待发射。"
+	},
+	"ufo": {
+		"title": "UFO",
+		"launch": "启动 UFO",
+		"initializing": "正在启动您的 UFO...",
+		"attaching": "正在与任务控制共享 UFO...",
+		"description": "UFO 是一个等待您编写代码的原始容器。从头开始实现您的想法。",
+		"create_ufo_price": "启动 UFO 需要 {0}。",
+		"ufo_name": "UFO 名称",
+		"enter_name": "为您的 UFO 输入名称",
+		"create": "创建 UFO",
+		"ready": "您的 UFO 已准备就绪！",
+		"overview": "概览",
+		"loading_ufos": "正在加载您的 UFO",
+		"id": "UFO ID"
 	}
 }

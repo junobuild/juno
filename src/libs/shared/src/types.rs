@@ -15,6 +15,7 @@ pub mod state {
     pub type MissionControlId = SegmentId;
     pub type SatelliteId = SegmentId;
     pub type OrbiterId = SegmentId;
+    pub type UfoId = SegmentId;
 
     pub type Metadata = HashMap<String, String>;
 

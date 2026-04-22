@@ -52,6 +52,7 @@ export interface CyclesMonitoringStartConfig {
 	orbiters_strategy: [] | [SegmentsMonitoringStrategy];
 	mission_control_strategy: [] | [CyclesMonitoringStrategy];
 	satellites_strategy: [] | [SegmentsMonitoringStrategy];
+	ufos_strategy: [] | [SegmentsMonitoringStrategy];
 }
 export interface CyclesMonitoringStatus {
 	monitored_ids: Array<Principal>;
@@ -61,6 +62,7 @@ export interface CyclesMonitoringStopConfig {
 	satellite_ids: [] | [Array<Principal>];
 	try_mission_control: [] | [boolean];
 	orbiter_ids: [] | [Array<Principal>];
+	ufo_ids: [] | [Array<Principal>];
 }
 export type CyclesMonitoringStrategy = { BelowThreshold: CyclesThreshold };
 export interface CyclesThreshold {
@@ -200,6 +202,13 @@ export type TransferError_1 =
 	| { CreatedInFuture: { ledger_time: bigint } }
 	| { TooOld: null }
 	| { InsufficientFunds: { balance: bigint } };
+export interface Ufo {
+	updated_at: bigint;
+	metadata: Array<[string, string]>;
+	created_at: bigint;
+	settings: [] | [Settings];
+	ufo_id: Principal;
+}
 export interface User {
 	updated_at: bigint;
 	metadata: Array<[string, string]>;
@@ -233,6 +242,7 @@ export interface _SERVICE {
 	list_mission_control_controllers: ActorMethod<[], Array<[Principal, AccessKey]>>;
 	list_orbiters: ActorMethod<[], Array<[Principal, Orbiter]>>;
 	list_satellites: ActorMethod<[], Array<[Principal, Satellite]>>;
+	list_ufos: ActorMethod<[], Array<[Principal, Ufo]>>;
 	set_config: ActorMethod<[[] | [Config]], undefined>;
 	set_metadata: ActorMethod<[Array<[string, string]>], undefined>;
 	set_mission_control_controllers: ActorMethod<[Array<Principal>, SetAccessKey], undefined>;
@@ -248,11 +258,14 @@ export interface _SERVICE {
 		[Array<Principal>, Array<Principal>, SetAccessKey],
 		undefined
 	>;
+	set_ufo: ActorMethod<[Principal, [] | [string]], Ufo>;
+	set_ufo_metadata: ActorMethod<[Principal, Array<[string, string]>], Ufo>;
 	start_monitoring: ActorMethod<[], undefined>;
 	stop_monitoring: ActorMethod<[], undefined>;
 	top_up: ActorMethod<[Principal, Tokens], undefined>;
 	unset_orbiter: ActorMethod<[Principal], undefined>;
 	unset_satellite: ActorMethod<[Principal], undefined>;
+	unset_ufo: ActorMethod<[Principal], undefined>;
 	update_and_start_monitoring: ActorMethod<[MonitoringStartConfig], undefined>;
 	update_and_stop_monitoring: ActorMethod<[MonitoringStopConfig], undefined>;
 }

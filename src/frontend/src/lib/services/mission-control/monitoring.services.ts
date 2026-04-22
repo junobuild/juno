@@ -283,7 +283,9 @@ const setMonitoringCyclesStrategy = async ({
 									strategy: moduleStrategy
 								}
 							]
-						: []
+						: [],
+				// TODO: support for ufo
+				ufos_strategy: toNullable()
 			})
 		}
 	});
@@ -398,7 +400,9 @@ const stopMonitoringCycles = async ({
 			cycles_config: toNullable({
 				try_mission_control: toNullable(stopMissionControl),
 				satellite_ids: satellites.length > 0 ? toNullable(satellites) : [],
-				orbiter_ids: orbiters.length > 0 ? toNullable(orbiters) : []
+				orbiter_ids: orbiters.length > 0 ? toNullable(orbiters) : [],
+				// TODO: support for ufo
+				ufo_ids: toNullable()
 			})
 		}
 	});

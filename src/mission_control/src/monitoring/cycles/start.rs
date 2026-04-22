@@ -1,4 +1,4 @@
-use crate::factory::store::{get_orbiters, get_satellites};
+use crate::factory::store::{get_orbiters, get_satellites, get_ufos};
 use crate::memory::manager::RUNTIME_STATE;
 use crate::monitoring::cycles::funding::init_funding_manager;
 use crate::monitoring::cycles::funding::register_cycles_monitoring;
@@ -7,6 +7,7 @@ use crate::monitoring::cycles::scheduler::{
 };
 use crate::monitoring::store::heap::{
     enable_mission_control_monitoring, enable_orbiter_monitoring, enable_satellite_monitoring,
+    enable_ufo_monitoring,
 };
 use crate::types::core::SettingsMonitoring;
 use crate::types::runtime::RuntimeState;
@@ -39,6 +40,7 @@ pub fn start_cycles_monitoring(enabled_only: bool) -> Result<(), String> {
 fn register_strategies(enabled_only: bool) -> Result<(), String> {
     let satellites = get_satellites();
     let orbiters = get_orbiters();
+    let ufos = get_ufos();
 
     fn map_strategy<T>(
         segment_id: &SegmentId,
@@ -67,6 +69,10 @@ fn register_strategies(enabled_only: bool) -> Result<(), String> {
         .iter()
         .flat_map(|(orbiter_id, orbiter)| map_strategy(orbiter_id, &orbiter.settings, enabled_only))
         .collect();
+    let ufos_strategies: Vec<SegmentCyclesMonitoryStrategyPair> = ufos
+        .iter()
+        .flat_map(|(ufo_id, ufo)| map_strategy(ufo_id, &ufo.settings, enabled_only))
+        .collect();
 
     if !satellites_strategies.is_empty() {
         register_cycles_monitoring_with_settings(
@@ -86,6 +92,17 @@ fn register_strategies(enabled_only: bool) -> Result<(), String> {
                 None
             } else {
                 Some(enable_orbiter_monitoring)
+            },
+        )?;
+    }
+
+    if !ufos_strategies.is_empty() {
+        register_cycles_monitoring_with_settings(
+            &ufos_strategies,
+            if enabled_only {
+                None
+            } else {
+                Some(enable_ufo_monitoring)
             },
         )?;
     }

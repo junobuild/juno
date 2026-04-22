@@ -5,7 +5,7 @@ use crate::types::state::CyclesMonitoringStrategy::BelowThreshold;
 use crate::types::state::{
     Config, CyclesMonitoring, CyclesMonitoringStrategy, HeapState, MissionControlSettings,
     Monitoring, MonitoringHistory, MonitoringHistoryKey, Orbiter, Orbiters, Satellite, Settings,
-    State, User,
+    State, Ufo, User,
 };
 use canfund::manager::options::{CyclesThreshold, FundStrategy};
 use ic_cdk::api::time;
@@ -14,7 +14,7 @@ use ic_stable_structures::Storable;
 use junobuild_shared::memory::serializers::{
     deserialize_from_bytes, serialize_into_bytes, serialize_to_bytes,
 };
-use junobuild_shared::types::state::{Metadata, OrbiterId, SatelliteId, UserId};
+use junobuild_shared::types::state::{Metadata, OrbiterId, SatelliteId, UfoId, UserId};
 use std::borrow::Cow;
 use std::collections::HashMap;
 
@@ -35,6 +35,7 @@ impl From<&UserId> for HeapState {
             controllers: HashMap::new(),
             orbiters: Orbiters::new(),
             settings: None,
+            ufos: None,
         }
     }
 }
@@ -166,6 +167,59 @@ impl Orbiter {
     }
 }
 
+impl Ufo {
+    pub fn from(ufo_id: &UfoId, name: &Option<String>) -> Self {
+        let now = time();
+
+        Ufo {
+            ufo_id: *ufo_id,
+            metadata: init_metadata(name),
+            settings: None,
+            created_at: now,
+            updated_at: now,
+        }
+    }
+
+    pub fn clone_with_settings(&self, settings: &Settings) -> Self {
+        let now = time();
+
+        Ufo {
+            settings: Some(settings.clone()),
+            updated_at: now,
+            ..self.clone()
+        }
+    }
+
+    pub fn toggle_cycles_monitoring(&self, enabled: bool) -> Result<Self, String> {
+        let settings = self
+            .settings
+            .clone()
+            .ok_or_else(|| "Settings not found.".to_string())?;
+
+        let monitoring = settings
+            .monitoring
+            .clone()
+            .ok_or_else(|| "Monitoring configuration not found.".to_string())?;
+
+        let cycles = monitoring
+            .cycles
+            .clone()
+            .ok_or_else(|| "Cycles monitoring configuration not found.".to_string())?;
+
+        let now = time();
+
+        Ok(Ufo {
+            settings: Some(Settings {
+                monitoring: Some(Monitoring {
+                    cycles: Some(CyclesMonitoring { enabled, ..cycles }),
+                }),
+            }),
+            updated_at: now,
+            ..self.clone()
+        })
+    }
+}
+
 impl Settings {
     pub fn from(strategy: &CyclesMonitoringStrategy) -> Self {
         Settings {
@@ -208,6 +262,18 @@ impl Segment<OrbiterId> for Orbiter {
         let now = time();
 
         Orbiter {
+            metadata: metadata.clone(),
+            updated_at: now,
+            ..self.clone()
+        }
+    }
+}
+
+impl Segment<UfoId> for Ufo {
+    fn set_metadata(&self, metadata: &Metadata) -> Self {
+        let now = time();
+
+        Ufo {
             metadata: metadata.clone(),
             updated_at: now,
             ..self.clone()

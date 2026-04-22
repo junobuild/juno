@@ -1,8 +1,10 @@
 use crate::memory::manager::STATE;
 use crate::types::state::{
     CyclesMonitoringStrategy, HeapState, MissionControlSettings, Orbiters, Satellites, Settings,
+    Ufos,
 };
-use junobuild_shared::types::state::{OrbiterId, SatelliteId};
+use junobuild_shared::types::state::{OrbiterId, SatelliteId, UfoId};
+use std::collections::HashMap;
 
 pub fn set_mission_control_strategy(strategy: &CyclesMonitoringStrategy) {
     STATE.with(|state| set_mission_control_strategy_impl(strategy, &mut state.borrow_mut().heap))
@@ -38,6 +40,20 @@ pub fn set_orbiter_strategy(
     })
 }
 
+pub fn set_ufo_strategy(ufo_id: &UfoId, strategy: &CyclesMonitoringStrategy) -> Result<(), String> {
+    STATE.with(|state| {
+        set_ufo_setting_impl(
+            ufo_id,
+            strategy,
+            state
+                .borrow_mut()
+                .heap
+                .ufos
+                .get_or_insert_with(HashMap::new),
+        )
+    })
+}
+
 pub fn enable_satellite_monitoring(satellite_id: &SatelliteId) -> Result<(), String> {
     STATE.with(|state| {
         toggle_satellite_monitoring_impl(
@@ -54,6 +70,20 @@ pub fn enable_orbiter_monitoring(orbiter_id: &OrbiterId) -> Result<(), String> {
     })
 }
 
+pub fn enable_ufo_monitoring(ufo_id: &UfoId) -> Result<(), String> {
+    STATE.with(|state| {
+        toggle_ufo_monitoring_impl(
+            ufo_id,
+            true,
+            state
+                .borrow_mut()
+                .heap
+                .ufos
+                .get_or_insert_with(HashMap::new),
+        )
+    })
+}
+
 pub fn disable_satellite_monitoring(satellite_id: &SatelliteId) -> Result<(), String> {
     STATE.with(|state| {
         toggle_satellite_monitoring_impl(
@@ -67,6 +97,20 @@ pub fn disable_satellite_monitoring(satellite_id: &SatelliteId) -> Result<(), St
 pub fn disable_orbiter_monitoring(orbiter_id: &OrbiterId) -> Result<(), String> {
     STATE.with(|state| {
         toggle_orbiter_monitoring_impl(orbiter_id, false, &mut state.borrow_mut().heap.orbiters)
+    })
+}
+
+pub fn disable_ufo_monitoring(ufo_id: &UfoId) -> Result<(), String> {
+    STATE.with(|state| {
+        toggle_ufo_monitoring_impl(
+            ufo_id,
+            false,
+            state
+                .borrow_mut()
+                .heap
+                .ufos
+                .get_or_insert_with(HashMap::new),
+        )
     })
 }
 
@@ -153,6 +197,25 @@ fn set_orbiter_setting_impl(
     Ok(())
 }
 
+fn set_ufo_setting_impl(
+    ufo_id: &UfoId,
+    strategy: &CyclesMonitoringStrategy,
+    ufos: &mut Ufos,
+) -> Result<(), String> {
+    let ufo = ufos.get(ufo_id).ok_or_else(|| {
+        format!(
+            "UFO {} not found. Strategy cannot be saved.",
+            ufo_id.to_text()
+        )
+    })?;
+
+    let update_ufo = ufo.clone_with_settings(&Settings::from(strategy));
+
+    ufos.insert(*ufo_id, update_ufo);
+
+    Ok(())
+}
+
 fn toggle_orbiter_monitoring_impl(
     orbiter_id: &OrbiterId,
     enabled: bool,
@@ -168,6 +231,25 @@ fn toggle_orbiter_monitoring_impl(
     let update_orbiter = orbiter.toggle_cycles_monitoring(enabled)?;
 
     orbiters.insert(*orbiter_id, update_orbiter);
+
+    Ok(())
+}
+
+fn toggle_ufo_monitoring_impl(
+    ufo_id: &UfoId,
+    enabled: bool,
+    ufos: &mut Ufos,
+) -> Result<(), String> {
+    let ufo = ufos.get(ufo_id).ok_or_else(|| {
+        format!(
+            "UFO {} not found. Monitoring cannot be disabled.",
+            ufo_id.to_text()
+        )
+    })?;
+
+    let update_ufo = ufo.toggle_cycles_monitoring(enabled)?;
+
+    ufos.insert(*ufo_id, update_ufo);
 
     Ok(())
 }

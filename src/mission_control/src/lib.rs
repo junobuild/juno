@@ -26,6 +26,8 @@ use crate::types::state::Orbiter;
 use crate::types::state::Orbiters;
 use crate::types::state::Satellite;
 use crate::types::state::Satellites;
+use crate::types::state::Ufo;
+use crate::types::state::Ufos;
 use crate::types::state::User;
 use candid::Principal;
 use ic_cdk_macros::export_candid;
@@ -39,6 +41,7 @@ use junobuild_shared::types::interface::InitMissionControlArgs;
 use junobuild_shared::types::interface::SetAccessKey;
 use junobuild_shared::types::state::Metadata;
 use junobuild_shared::types::state::SatelliteId;
+use junobuild_shared::types::state::UfoId;
 use junobuild_shared::types::state::UserId;
 use junobuild_shared::types::state::{AccessKeyId, AccessKeys, OrbiterId};
 

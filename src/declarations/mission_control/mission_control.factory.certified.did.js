@@ -180,6 +180,13 @@ export const idlFactory = ({ IDL }) => {
 		scope: AccessKeyScope,
 		expires_at: IDL.Opt(IDL.Nat64)
 	});
+	const Ufo = IDL.Record({
+		updated_at: IDL.Nat64,
+		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
+		created_at: IDL.Nat64,
+		settings: IDL.Opt(Settings),
+		ufo_id: IDL.Principal
+	});
 	const SetAccessKey = IDL.Record({
 		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
 		kind: IDL.Opt(AccessKeyKind),
@@ -193,7 +200,8 @@ export const idlFactory = ({ IDL }) => {
 	const CyclesMonitoringStartConfig = IDL.Record({
 		orbiters_strategy: IDL.Opt(SegmentsMonitoringStrategy),
 		mission_control_strategy: IDL.Opt(CyclesMonitoringStrategy),
-		satellites_strategy: IDL.Opt(SegmentsMonitoringStrategy)
+		satellites_strategy: IDL.Opt(SegmentsMonitoringStrategy),
+		ufos_strategy: IDL.Opt(SegmentsMonitoringStrategy)
 	});
 	const MonitoringStartConfig = IDL.Record({
 		cycles_config: IDL.Opt(CyclesMonitoringStartConfig)
@@ -201,7 +209,8 @@ export const idlFactory = ({ IDL }) => {
 	const CyclesMonitoringStopConfig = IDL.Record({
 		satellite_ids: IDL.Opt(IDL.Vec(IDL.Principal)),
 		try_mission_control: IDL.Opt(IDL.Bool),
-		orbiter_ids: IDL.Opt(IDL.Vec(IDL.Principal))
+		orbiter_ids: IDL.Opt(IDL.Vec(IDL.Principal)),
+		ufo_ids: IDL.Opt(IDL.Vec(IDL.Principal))
 	});
 	const MonitoringStopConfig = IDL.Record({
 		cycles_config: IDL.Opt(CyclesMonitoringStopConfig)
@@ -238,6 +247,7 @@ export const idlFactory = ({ IDL }) => {
 		),
 		list_orbiters: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Principal, Orbiter))], []),
 		list_satellites: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Principal, Satellite))], []),
+		list_ufos: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Principal, Ufo))], []),
 		set_config: IDL.Func([IDL.Opt(Config)], [], []),
 		set_metadata: IDL.Func([IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))], [], []),
 		set_mission_control_controllers: IDL.Func([IDL.Vec(IDL.Principal), SetAccessKey], [], []),
@@ -263,11 +273,14 @@ export const idlFactory = ({ IDL }) => {
 			[],
 			[]
 		),
+		set_ufo: IDL.Func([IDL.Principal, IDL.Opt(IDL.Text)], [Ufo], []),
+		set_ufo_metadata: IDL.Func([IDL.Principal, IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))], [Ufo], []),
 		start_monitoring: IDL.Func([], [], []),
 		stop_monitoring: IDL.Func([], [], []),
 		top_up: IDL.Func([IDL.Principal, Tokens], [], []),
 		unset_orbiter: IDL.Func([IDL.Principal], [], []),
 		unset_satellite: IDL.Func([IDL.Principal], [], []),
+		unset_ufo: IDL.Func([IDL.Principal], [], []),
 		update_and_start_monitoring: IDL.Func([MonitoringStartConfig], [], []),
 		update_and_stop_monitoring: IDL.Func([MonitoringStopConfig], [], [])
 	});

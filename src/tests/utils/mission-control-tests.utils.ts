@@ -28,7 +28,7 @@ export const setupMissionControlModules = async ({
 	pic: PocketIc;
 	controller: Identity;
 	missionControlId: Principal;
-}): Promise<{ satelliteId: Principal; orbiterId: Principal }> => {
+}): Promise<{ satelliteId: Principal; orbiterId: Principal; ufoId: Principal }> => {
 	const { canisterId: orbiterId } = await pic.setupCanister<OrbiterActor>({
 		idlFactory: idlFactoryOrbiter,
 		wasm: ORBITER_WASM_PATH,
@@ -55,5 +55,15 @@ export const setupMissionControlModules = async ({
 		sender: controller.getPrincipal()
 	});
 
-	return { satelliteId, orbiterId };
+	const ufoId = await pic.createCanister({
+		sender: controller.getPrincipal()
+	});
+
+	await pic.updateCanisterSettings({
+		canisterId: ufoId,
+		controllers: [controller.getPrincipal(), missionControlId],
+		sender: controller.getPrincipal()
+	});
+
+	return { satelliteId, orbiterId, ufoId };
 };

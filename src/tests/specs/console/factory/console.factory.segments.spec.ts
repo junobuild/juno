@@ -10,6 +10,7 @@ import {
 } from '../../../constants/console-tests.constants';
 import { CYCLES_LEDGER_ID } from '../../../constants/ledger-tests.contants';
 import { setupConsole } from '../../../utils/console-tests.utils';
+import { canisterStatus } from '../../../utils/ic-management-tests.utils';
 import { approveToken, transferToken } from '../../../utils/ledger-tests.utils';
 import { tick } from '../../../utils/pic-tests.utils';
 
@@ -81,6 +82,32 @@ describe('Console > Factory > Segment', () => {
 		}
 	};
 
+	const assertController = async ({
+		user,
+		canisterId,
+		controllers
+	}: {
+		user: Ed25519KeyIdentity;
+		canisterId: Principal;
+		controllers: Principal[];
+	}) => {
+		const result = await canisterStatus({
+			sender: user,
+			pic,
+			canisterId
+		});
+
+		const settings = result?.settings;
+
+		expect(settings?.controllers).toHaveLength(controllers.length);
+
+		for (const controller of controllers) {
+			expect(
+				settings?.controllers.find((c) => c.toText() === controller.toText())
+			).not.toBeUndefined();
+		}
+	};
+
 	describe.each([
 		{
 			title: 'Satellite',
@@ -143,6 +170,23 @@ describe('Console > Factory > Segment', () => {
 				await assertSegments({
 					title,
 					segmentIds: [id]
+				});
+			});
+
+			it('should create with expected controllers', async () => {
+				const { get_or_init_account } = actor;
+				await get_or_init_account();
+
+				const { create_segment } = actor;
+
+				const id = await create_segment(args({ user }));
+
+				expect(id).not.toBeUndefined();
+
+				await assertController({
+					user,
+					canisterId: id,
+					controllers: [user.getPrincipal()]
 				});
 			});
 
@@ -235,7 +279,9 @@ describe('Console > Factory > Segment', () => {
 		let user: Ed25519KeyIdentity;
 
 		const args: ConsoleDid.CreateSegmentArgs = { MissionControl: { subnet_id: toNullable() } };
-		const ufoArgs: ConsoleDid.CreateSegmentArgs = {Ufo: {name: toNullable(), subnet_id: toNullable()}};
+		const ufoArgs: ConsoleDid.CreateSegmentArgs = {
+			Ufo: { name: toNullable(), subnet_id: toNullable() }
+		};
 
 		beforeEach(() => {
 			user = Ed25519KeyIdentity.generate();
@@ -261,6 +307,23 @@ describe('Console > Factory > Segment', () => {
 				expect(id).not.toBeUndefined();
 
 				await assertMissionControl();
+			});
+
+			it('should create with expected controllers', async () => {
+				const { get_or_init_account } = actor;
+				await get_or_init_account();
+
+				const { create_segment } = actor;
+
+				const id = await create_segment(args);
+
+				expect(id).not.toBeUndefined();
+
+				await assertController({
+					user,
+					canisterId: id,
+					controllers: [user.getPrincipal(), id]
+				});
 			});
 
 			it('should fail with without credits and payment', async () => {

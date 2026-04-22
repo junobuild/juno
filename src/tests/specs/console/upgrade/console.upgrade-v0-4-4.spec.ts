@@ -84,7 +84,7 @@ describe('Console > Upgrade > v0.4.3 -> v0.4.4', () => {
 
 	it('should provide rates config for ufo', async () => {
 		await upgrade();
-		
+
 		const newActor = pic.createActor<ConsoleActor>(idlFactoryConsole, canisterId);
 		newActor.setIdentity(controller);
 

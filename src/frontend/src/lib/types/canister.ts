@@ -37,7 +37,7 @@ export interface CanisterMemoryMetrics {
 	customSectionsSize: bigint;
 }
 
-export type Segment = 'satellite' | 'mission_control' | 'orbiter';
+export type Segment = 'satellite' | 'mission_control' | 'orbiter' | 'ufo';
 
 export interface CanisterSegment {
 	canisterId: string;

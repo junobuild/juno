@@ -6,6 +6,9 @@
 	import LaunchpadToolbar from '$lib/components/modules/launchpad/LaunchpadToolbar.svelte';
 	import { sortedSatelliteUis } from '$lib/derived/satellites.derived';
 	import { satelliteMatchesFilter } from '$lib/utils/satellite.utils';
+	import { sortedUfoUis } from '$lib/derived/ufos.derived';
+	import { ufoMatchesFilter } from '$lib/utils/ufo.utils';
+	import LaunchpadUfo from '$lib/components/modules/launchpad/LaunchpadUfo.svelte';
 
 	let filter = $state('');
 
@@ -13,6 +16,10 @@
 		$sortedSatelliteUis.filter((satellite) =>
 			satelliteMatchesFilter({ satellite, filter: filter.toLowerCase() })
 		)
+	);
+
+	let ufos = $derived(
+		$sortedUfoUis.filter((ufo) => ufoMatchesFilter({ ufo, filter: filter.toLowerCase() }))
 	);
 </script>
 
@@ -26,4 +33,8 @@
 
 {#each satellites as satellite (satellite.satellite_id.toText())}
 	<LaunchpadSatellite {satellite} />
+{/each}
+
+{#each ufos as ufo (ufo.ufo_id.toText())}
+	<LaunchpadUfo {ufo} />
 {/each}

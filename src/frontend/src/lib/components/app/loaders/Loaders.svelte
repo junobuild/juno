@@ -6,6 +6,7 @@
 	import SatelliteConfigLoader from '$lib/components/satellites/loaders/SatelliteConfigLoader.svelte';
 	import WalletLoader from '$lib/components/wallet/loaders/WalletLoader.svelte';
 	import { sortedSatellites } from '$lib/derived/satellites.derived';
+	import { sortedUfos } from '$lib/derived/ufos.derived';
 
 	interface Props {
 		children: Snippet;
@@ -22,7 +23,7 @@
 
 <WalletLoader>
 	<SegmentsLoader>
-		<MetadataLoader {monitoring} satellites={$sortedSatellites}>
+		<MetadataLoader {monitoring} satellites={$sortedSatellites} ufos={$sortedUfos}>
 			<SatelliteConfigLoaderComponent>
 				{@render children()}
 			</SatelliteConfigLoaderComponent>

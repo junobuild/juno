@@ -378,7 +378,7 @@ describe('Console > Factory > Segment', () => {
 				await get_or_init_account();
 
 				// First module works out
-				const firstId = await create_segment(ufoArgs);
+				await create_segment(ufoArgs);
 
 				await pic.advanceTime(60_000);
 				await tick(pic);

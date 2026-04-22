@@ -1,15 +1,15 @@
 <script lang="ts">
 	import IconSatellite from '$lib/components/icons/IconSatellite.svelte';
+	import IconUfo from '$lib/components/icons/IconUfo.svelte';
 	import Canister from '$lib/components/modules/canister/Canister.svelte';
 	import LaunchpadArticle from '$lib/components/modules/launchpad/LaunchpadArticle.svelte';
+	import UfoEnvironment from '$lib/components/ufos/UfoEnvironment.svelte';
 	import Badge from '$lib/components/ui/Badge.svelte';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { layoutLaunchpad } from '$lib/stores/app/layout-launchpad.store';
 	import { LaunchpadLayout } from '$lib/types/layout';
-	import { overviewLink, ufoLink } from '$lib/utils/nav.utils';
 	import type { UfoUi } from '$lib/types/ufo';
-	import UfoEnvironment from '$lib/components/ufos/UfoEnvironment.svelte';
-	import IconUfo from '$lib/components/icons/IconUfo.svelte';
+	import { overviewLink, ufoLink } from '$lib/utils/nav.utils';
 
 	interface Props {
 		ufo: UfoUi;

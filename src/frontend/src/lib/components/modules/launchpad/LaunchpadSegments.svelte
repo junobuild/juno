@@ -4,11 +4,11 @@
 	import LaunchpadMonitoring from '$lib/components/modules/launchpad/LaunchpadMonitoring.svelte';
 	import LaunchpadSatellite from '$lib/components/modules/launchpad/LaunchpadSatellite.svelte';
 	import LaunchpadToolbar from '$lib/components/modules/launchpad/LaunchpadToolbar.svelte';
-	import { sortedSatelliteUis } from '$lib/derived/satellites.derived';
-	import { satelliteMatchesFilter } from '$lib/utils/satellite.utils';
-	import { sortedUfoUis } from '$lib/derived/ufos.derived';
-	import { ufoMatchesFilter } from '$lib/utils/ufo.utils';
 	import LaunchpadUfo from '$lib/components/modules/launchpad/LaunchpadUfo.svelte';
+	import { sortedSatelliteUis } from '$lib/derived/satellites.derived';
+	import { sortedUfoUis } from '$lib/derived/ufos.derived';
+	import { satelliteMatchesFilter } from '$lib/utils/satellite.utils';
+	import { ufoMatchesFilter } from '$lib/utils/ufo.utils';
 
 	let filter = $state('');
 

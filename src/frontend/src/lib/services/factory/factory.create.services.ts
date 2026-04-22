@@ -3,9 +3,11 @@ import {
 	createMissionControlWithConfig as createMissionControlWithConsoleAndConfig,
 	createOrbiterWithConfig as createOrbiterWithConsoleAndConfig,
 	createSatelliteWithConfig as createSatelliteWithConsoleAndConfig,
+	createUfoWithConfig as createUfoWithConsoleAndConfig,
 	getMissionControlFee,
 	getOrbiterFee,
-	getSatelliteFee
+	getSatelliteFee,
+	getUfoFee
 } from '$lib/api/console.api';
 import { updateAndStartMonitoring } from '$lib/api/mission-control.api';
 import { missionControlMonitored } from '$lib/derived/mission-control/mission-control-settings.derived';
@@ -20,7 +22,8 @@ import {
 	attachOrbiterToMissionControl,
 	attachSatelliteToMissionControl,
 	attachSegmentsToMissionControl,
-	AttachToMissionControlError
+	AttachToMissionControlError,
+	attachUfoToMissionControl
 } from '$lib/services/factory/_factory.attach.services';
 import {
 	createOrbiter,
@@ -106,6 +109,20 @@ export const initMissionControlWizard = ({
 		modalType: 'create_mission_control'
 	});
 
+export const initUfoWizard = ({
+	missionControlId,
+	identity
+}: {
+	missionControlId: Nullish<Principal>;
+	identity: NullishIdentity;
+}): Promise<void> =>
+	initCreateWizard({
+		missionControlId,
+		identity,
+		feeFn: getCreateUfoFeeBalance,
+		modalType: 'create_ufo'
+	});
+
 const initCreateWizard = async ({
 	missionControlId,
 	identity,
@@ -115,7 +132,7 @@ const initCreateWizard = async ({
 	missionControlId: Nullish<MissionControlId>;
 	identity: NullishIdentity;
 	feeFn: GetFeeBalanceFn;
-	modalType: 'create_satellite' | 'create_orbiter' | 'create_mission_control';
+	modalType: 'create_satellite' | 'create_orbiter' | 'create_mission_control' | 'create_ufo';
 }) => {
 	if (missionControlId === undefined) {
 		toasts.warn(get(i18n).errors.mission_control_not_loaded);
@@ -192,7 +209,7 @@ const initCreateWizardWithoutMissionControl = ({
 	modalType
 }: {
 	fee: ConsoleDid.FactoryFee;
-	modalType: 'create_satellite' | 'create_orbiter' | 'create_mission_control';
+	modalType: 'create_satellite' | 'create_orbiter' | 'create_mission_control' | 'create_ufo';
 }) => {
 	emit<JunoModal<JunoModalCreateSegmentDetail>>({
 		message: 'junoModal',
@@ -215,6 +232,9 @@ const getCreateOrbiterFeeBalance: GetFeeBalanceFn = async (params): Promise<GetF
 
 const getCreateMissionControlFeeBalance: GetFeeBalanceFn = async (params): Promise<GetFeeBalance> =>
 	await getCreateFeeBalance({ ...params, getFee: getMissionControlFee });
+
+const getCreateUfoFeeBalance: GetFeeBalanceFn = async (params): Promise<GetFeeBalance> =>
+	await getCreateFeeBalance({ ...params, getFee: getUfoFee });
 
 const getCreateFeeBalance = async ({
 	identity,
@@ -499,7 +519,7 @@ export const createOrbiterWizard = async ({
 				return;
 			}
 
-			// Attach the Satellite to the existing Mission Control.
+			// Attach the Orbiter to the existing Mission Control.
 			// The controller for the Mission Control to the Satellite has been set by the Console backend.
 			await attachOrbiterToMissionControl({
 				missionControlId,
@@ -618,6 +638,125 @@ export const createMissionControlWizard = async ({
 		attachFn,
 		monitoringFn: undefined,
 		errorLabel: 'mission_control_unexpected_error'
+	});
+};
+
+export const createUfoWizard = async ({
+	missionControlId,
+	onProgress,
+	subnetId,
+	canisterName,
+	monitoringStrategy,
+	...rest
+}: CreateWizardParams & {
+	canisterName: string | undefined;
+}): Promise<CreateWizardResult> => {
+	if (isEmptyString(canisterName)) {
+		toasts.error({
+			text: get(i18n).errors.create_ufo_name_missing
+		});
+		return { success: 'error' };
+	}
+
+	const createFn: CreateFn = async ({ identity, selectedWallet: { type: walletType } }) => {
+		if (walletType === 'mission_control') {
+			// TODO:
+			throw new Error('Mission Control wallet not supported');
+		}
+
+		return await createWithConsoleFn({ identity });
+	};
+
+	const createConfig: CreateWithConfigAndName = {
+		name: canisterName,
+		...(nonNullish(subnetId) && { subnetId: Principal.fromText(subnetId) })
+	};
+
+	const createWithConsoleFn = async ({ identity }: { identity: Identity }): Promise<SatelliteId> =>
+		await createUfoWithConsoleAndConfig({
+			identity,
+			config: createConfig
+		});
+
+	const buildAttachFn = (): AttachFn | undefined => {
+		if (isNullish(missionControlId)) {
+			return undefined;
+		}
+
+		const attachFn: AttachFn = async ({
+			identity,
+			canisterId,
+			selectedWallet: { type: walletType }
+		}) => {
+			// Mission Control already knowns the newly created module
+			if (walletType === 'mission_control') {
+				// TODO:
+				// 1. Handle error
+				// 2. Do not show Mission Control wallet in the UI if defined - in the dropdown
+				throw new Error('Mission Control wallet not supported');
+			}
+
+			// Attach the Satellite to the existing Mission Control.
+			// The controller for the Mission Control to the Satellite has been set by the Console backend.
+			await attachUfoToMissionControl({
+				missionControlId,
+				ufoId: canisterId,
+				identity,
+				ufoName: canisterName
+			});
+		};
+
+		return attachFn;
+	};
+
+	const attachFn = buildAttachFn();
+
+	const buildMonitoringFn = (): MonitoringFn | undefined => {
+		if (isNullish(monitoringStrategy)) {
+			return undefined;
+		}
+
+		return async ({
+			identity,
+			canisterId
+		}: {
+			identity: Identity;
+			canisterId: Principal;
+		}): Promise<void> => {
+			assertNonNullish(missionControlId);
+
+			await updateAndStartMonitoring({
+				identity,
+				missionControlId,
+				config: {
+					cycles_config: toNullable({
+						mission_control_strategy: toNullable(),
+						satellites_strategy: toNullable(),
+						orbiters_strategy: toNullable(),
+						ufos_strategy: toNullable({
+							strategy: monitoringStrategy,
+							ids: [canisterId]
+						})
+					})
+				}
+			});
+		};
+	};
+
+	const monitoringFn = buildMonitoringFn();
+
+	const reloadFn: ReloadFn = async () => {
+		await loadSegments({ missionControlId, reload: true, reloadOrbiters: false });
+	};
+
+	return await createWizard({
+		...rest,
+		onProgress,
+		createFn,
+		reloadFn,
+		attachFn,
+		monitoringFn,
+		errorLabel: 'create_ufo_unexpected_error'
 	});
 };
 

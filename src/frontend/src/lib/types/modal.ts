@@ -163,6 +163,7 @@ export interface JunoModal<T extends JunoModalDetail> {
 	type:
 		| 'create_satellite'
 		| 'create_orbiter'
+		| 'create_ufo'
 		| 'create_mission_control'
 		| 'delete_satellite'
 		| 'delete_orbiter'

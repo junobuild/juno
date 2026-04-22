@@ -641,6 +641,9 @@ interface I18nErrors {
 	satellite_metadata_update: string;
 	satellite_missing_name: string;
 	satellites_not_loaded: string;
+	create_ufo_name_missing: string;
+	create_ufo_unexpected_error: string;
+	ufo_not_found: string;
 	canister_stop: string;
 	canister_start: string;
 	canister_delete: string;
@@ -1203,6 +1206,22 @@ interface I18nAutomation {
 	no_deployments_yet: string;
 }
 
+interface I18nUfo {
+	title: string;
+	launch: string;
+	initializing: string;
+	attaching: string;
+	description: string;
+	create_ufo_price: string;
+	ufo_name: string;
+	enter_name: string;
+	create: string;
+	ready: string;
+	overview: string;
+	loading_ufos: string;
+	id: string;
+}
+
 interface I18n {
 	lang: Languages;
 	core: I18nCore;
@@ -1242,4 +1261,5 @@ interface I18n {
 	spotlight: I18nSpotlight;
 	out_of_sync: I18nOut_of_sync;
 	automation: I18nAutomation;
+	ufo: I18nUfo;
 }

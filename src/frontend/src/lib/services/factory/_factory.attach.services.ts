@@ -1,4 +1,4 @@
-import { setOrbiter, setSatellite } from '$lib/api/mission-control.api';
+import { setOrbiter, setSatellite, setUfo } from '$lib/api/mission-control.api';
 import { setControllers as setOrbiterControllers } from '$lib/api/orbiter.api';
 import { setControllers as setSatelliteControllers } from '$lib/api/satellites.api';
 import { consoleOrbiters, consoleSatellites } from '$lib/derived/console/segments.derived';
@@ -11,6 +11,7 @@ import type { AddAdminAccessKeyParams } from '$lib/types/access-keys';
 import type { MissionControlId } from '$lib/types/mission-control';
 import type { Orbiter } from '$lib/types/orbiter';
 import type { Satellite } from '$lib/types/satellite';
+import type { UfoId } from '$lib/types/ufo';
 import { orbiterName } from '$lib/utils/orbiter.utils';
 import { satelliteName } from '$lib/utils/satellite.utils';
 import type { Identity } from '@icp-sdk/core/agent';
@@ -69,6 +70,29 @@ export const attachOrbiterToMissionControl = async ({
 		});
 	} catch (err: unknown) {
 		throw AttachToMissionControlError.init([orbiterId], { cause: err });
+	}
+};
+
+export const attachUfoToMissionControl = async ({
+	ufoId,
+	missionControlId,
+	identity,
+	ufoName
+}: {
+	ufoId: UfoId;
+	missionControlId: MissionControlId;
+	identity: Identity;
+	ufoName: string;
+}) => {
+	try {
+		await setUfo({
+			missionControlId,
+			ufoId,
+			identity,
+			ufoName
+		});
+	} catch (err: unknown) {
+		throw AttachToMissionControlError.init([ufoId], { cause: err });
 	}
 };
 

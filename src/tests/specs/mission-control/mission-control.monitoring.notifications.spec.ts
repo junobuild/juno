@@ -198,6 +198,7 @@ describe('Mission Control > Notifications', () => {
 							strategy: satelliteStrategy
 						}),
 						orbiters_strategy: toNullable(),
+						ufos_strategy: toNullable(),
 						mission_control_strategy: toNullable(missionControlStrategy)
 					}
 				]
@@ -212,6 +213,7 @@ describe('Mission Control > Notifications', () => {
 					{
 						satellite_ids: toNullable([satelliteId]),
 						orbiter_ids: toNullable(),
+						ufo_ids: toNullable(),
 						try_mission_control: toNullable(true)
 					}
 				]
@@ -347,6 +349,7 @@ describe('Mission Control > Notifications', () => {
 					{
 						satellites_strategy: toNullable(),
 						orbiters_strategy: toNullable(),
+						ufos_strategy: toNullable(),
 						mission_control_strategy: toNullable(missionControlStrategy)
 					}
 				]
@@ -361,6 +364,7 @@ describe('Mission Control > Notifications', () => {
 					{
 						satellite_ids: toNullable(),
 						orbiter_ids: toNullable(),
+						ufo_ids: toNullable(),
 						try_mission_control: toNullable(true)
 					}
 				]

@@ -194,7 +194,10 @@ describe('Mission control > Upgrade', () => {
 							ids: [orbiterId],
 							strategy
 						}),
-						mission_control_strategy: toNullable(strategy)
+						mission_control_strategy: toNullable(strategy),
+						// ufos_strategy was technically not part of v0.1.0 but for simplicity reasons
+						// and to avoid duplicating did files just for this test, we set it to none
+						ufos_strategy: toNullable()
 					}
 				]
 			};

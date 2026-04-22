@@ -23,6 +23,7 @@ describe('Mission Control > History', () => {
 	let missionControlId: Principal;
 	let orbiterId: Principal;
 	let satelliteId: Principal;
+	let ufoId: Principal;
 
 	const controller = Ed25519KeyIdentity.generate();
 
@@ -46,7 +47,11 @@ describe('Mission Control > History', () => {
 
 		actor.setIdentity(controller);
 
-		const { orbiterId: oId, satelliteId: sId } = await setupMissionControlModules({
+		const {
+			orbiterId: oId,
+			satelliteId: sId,
+			ufoId: uId
+		} = await setupMissionControlModules({
 			pic,
 			controller,
 			missionControlId
@@ -54,11 +59,13 @@ describe('Mission Control > History', () => {
 
 		orbiterId = oId;
 		satelliteId = sId;
+		ufoId = uId;
 
-		const { set_orbiter, set_satellite } = actor;
+		const { set_orbiter, set_satellite, set_ufo } = actor;
 
 		await set_orbiter(orbiterId, []);
 		await set_satellite(satelliteId, []);
+		await set_ufo(ufoId, []);
 
 		await tick(pic);
 	});
@@ -93,6 +100,10 @@ describe('Mission Control > History', () => {
 		it('should not have monitoring history for orbiter', async () => {
 			await testEmptyHistory(orbiterId);
 		});
+
+		it('should not have monitoring history for ufo', async () => {
+			await testEmptyHistory(ufoId);
+		});
 	});
 
 	describe('with history', () => {
@@ -115,6 +126,10 @@ describe('Mission Control > History', () => {
 						}),
 						orbiters_strategy: toNullable({
 							ids: [orbiterId],
+							strategy
+						}),
+						ufos_strategy: toNullable({
+							ids: [ufoId],
 							strategy
 						}),
 						mission_control_strategy: toNullable(strategy)
@@ -145,6 +160,10 @@ describe('Mission Control > History', () => {
 			it('should have monitoring history for orbiter', async () => {
 				await testMonitoringHistory({ segmentId: orbiterId, expectedLength: 1, actor });
 			});
+
+			it('should have monitoring history for ufo', async () => {
+				await testMonitoringHistory({ segmentId: ufoId, expectedLength: 1, actor });
+			});
 		});
 
 		describe('collect entries over time', () => {
@@ -165,6 +184,10 @@ describe('Mission Control > History', () => {
 
 				it('should have monitoring history for orbiter', async () => {
 					await testMonitoringHistory({ segmentId: orbiterId, expectedLength: 2, actor });
+				});
+
+				it('should have monitoring history for ufo', async () => {
+					await testMonitoringHistory({ segmentId: ufoId, expectedLength: 2, actor });
 				});
 			});
 
@@ -188,6 +211,10 @@ describe('Mission Control > History', () => {
 				it('should have monitoring history for orbiter', async () => {
 					await testMonitoringHistory({ segmentId: orbiterId, expectedLength: 3, actor });
 				});
+
+				it('should have monitoring history for ufo', async () => {
+					await testMonitoringHistory({ segmentId: ufoId, expectedLength: 3, actor });
+				});
 			});
 		});
 
@@ -201,6 +228,10 @@ describe('Mission Control > History', () => {
 				MissionControlDid.MonitoringHistory
 			][];
 			let orbiterHistory: [
+				MissionControlDid.MonitoringHistoryKey,
+				MissionControlDid.MonitoringHistory
+			][];
+			let ufoHistory: [
 				MissionControlDid.MonitoringHistoryKey,
 				MissionControlDid.MonitoringHistory
 			][];
@@ -251,6 +282,11 @@ describe('Mission Control > History', () => {
 					expectedLength: 3,
 					actor
 				});
+				ufoHistory = await testMonitoringHistory({
+					segmentId: ufoId,
+					expectedLength: 3,
+					actor
+				});
 
 				const thirtyDays = 1000 * 60 * 60 * 24 * 30;
 
@@ -288,6 +324,16 @@ describe('Mission Control > History', () => {
 				});
 
 				testCleanedHistory({ before: orbiterHistory, after: updatedHistory });
+			});
+
+			it('should have monitoring history for ufo', async () => {
+				const updatedHistory = await testMonitoringHistory({
+					segmentId: ufoId,
+					expectedLength: 3,
+					actor
+				});
+
+				testCleanedHistory({ before: ufoHistory, after: updatedHistory });
 			});
 		});
 	});

@@ -23,6 +23,7 @@ describe.skip('Mission control > Upgrade > Monitoring', () => {
 	let missionControlId: Principal;
 	let orbiterId: Principal;
 	let satelliteId: Principal;
+	let ufoId: Principal;
 
 	const controller = Ed25519KeyIdentity.generate();
 
@@ -51,7 +52,11 @@ describe.skip('Mission control > Upgrade > Monitoring', () => {
 
 		actor.setIdentity(controller);
 
-		const { orbiterId: oId, satelliteId: sId } = await setupMissionControlModules({
+		const {
+			orbiterId: oId,
+			satelliteId: sId,
+			ufoId: uId
+		} = await setupMissionControlModules({
 			pic,
 			controller,
 			missionControlId
@@ -59,11 +64,13 @@ describe.skip('Mission control > Upgrade > Monitoring', () => {
 
 		orbiterId = oId;
 		satelliteId = sId;
+		ufoId = uId;
 
-		const { set_orbiter, set_satellite } = actor;
+		const { set_orbiter, set_satellite, set_ufo } = actor;
 
 		await set_orbiter(orbiterId, []);
 		await set_satellite(satelliteId, []);
+		await set_ufo(ufoId, []);
 	});
 
 	afterEach(async () => {
@@ -86,6 +93,10 @@ describe.skip('Mission control > Upgrade > Monitoring', () => {
 						ids: [orbiterId],
 						strategy
 					}),
+					ufos_strategy: toNullable({
+						ids: [ufoId],
+						strategy
+					}),
 					mission_control_strategy: toNullable(strategy)
 				}
 			]
@@ -104,6 +115,7 @@ describe.skip('Mission control > Upgrade > Monitoring', () => {
 				{
 					satellite_ids: toNullable(),
 					orbiter_ids: toNullable([orbiterId]),
+					ufo_ids: toNullable(),
 					try_mission_control: toNullable()
 				}
 			]

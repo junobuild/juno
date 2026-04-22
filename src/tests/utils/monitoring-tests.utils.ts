@@ -83,6 +83,25 @@ export const testOrbiterMonitoring = async ({
 	testMonitoring({ monitoring, expectedEnabled, expectedStrategy });
 };
 
+export const testUfoMonitoring = async ({
+	expectedEnabled,
+	expectedStrategy,
+	actor
+}: {
+	expectedEnabled: boolean;
+	expectedStrategy: MissionControlDid.CyclesMonitoringStrategy;
+	actor: Actor<MissionControlActor>;
+}) => {
+	const { list_ufos } = actor;
+
+	const [[_, ufo]] = await list_ufos();
+
+	const settings = fromNullable(ufo.settings);
+	const monitoring = fromNullable(settings?.monitoring ?? []);
+
+	testMonitoring({ monitoring, expectedEnabled, expectedStrategy });
+};
+
 export const testMonitoringHistory = async ({
 	segmentId,
 	expectedLength,

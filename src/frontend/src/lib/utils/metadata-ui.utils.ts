@@ -2,20 +2,24 @@ import { MetadataDeserializer } from '$lib/schemas/metadata.schema';
 import type { Metadata, MetadataUi, MetadataUiTags } from '$lib/types/metadata';
 import { metadataEnvironment, metadataName, metadataTags } from '$lib/utils/metadata.utils';
 
-export const metadataUi = <T extends { metadata: Metadata }>(obj: T): MetadataUi => ({
+interface WithMetadata {
+	metadata: Metadata;
+}
+
+export const metadataUi = <T extends WithMetadata>(obj: T): MetadataUi => ({
 	name: metadataUiName(obj),
 	environment: metadataUiEnvironment(obj),
 	tags: metadataUiTags(obj)
 });
 
-export const metadataUiName = <T extends { metadata: Metadata }>({ metadata }: T): string =>
+export const metadataUiName = <T extends WithMetadata>({ metadata }: T): string =>
 	metadataName(metadata);
 
-export const metadataUiEnvironment = <T extends { metadata: Metadata }>({
+export const metadataUiEnvironment = <T extends WithMetadata>({
 	metadata
 }: T): string | undefined => metadataEnvironment(metadata);
 
-export const metadataUiTags = <T extends { metadata: Metadata }>({
+export const metadataUiTags = <T extends WithMetadata>({
 	metadata
 }: T): MetadataUiTags | undefined => {
 	const tags = metadataTags(metadata);

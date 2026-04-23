@@ -15,9 +15,9 @@ import { toasts } from '$lib/stores/app/toasts.store';
 import { segmentsUncertifiedStore } from '$lib/stores/console/segments.store';
 import { satellitesUncertifiedStore } from '$lib/stores/mission-control/satellites.store';
 import type { NullishIdentity } from '$lib/types/itentity';
-import type { Metadata } from '$lib/types/metadata';
+import type { Metadata, MetadataUi } from '$lib/types/metadata';
 import type { MissionControlId } from '$lib/types/mission-control';
-import type { SatelliteId, SatelliteUiMetadata } from '$lib/types/satellite';
+import type { SatelliteId } from '$lib/types/satellite';
 import { isNullish, nonNullish, notEmptyString } from '@dfinity/utils';
 import type { Nullish } from '@dfinity/zod-schemas';
 import type { Identity } from '@icp-sdk/core/agent';
@@ -27,7 +27,7 @@ import * as z from 'zod';
 interface SetSatelliteMetadataParams {
 	missionControlId: Nullish<MissionControlId>;
 	satellite: MissionControlDid.Satellite;
-	metadata: SatelliteUiMetadata;
+	metadata: MetadataUi;
 	identity: NullishIdentity;
 }
 
@@ -82,7 +82,7 @@ const prepareMetadata = ({
 	data,
 	currentMetadata
 }: {
-	data: SatelliteUiMetadata;
+	data: MetadataUi;
 	currentMetadata: Metadata;
 }): Metadata => {
 	const { name: satelliteName, environment: satelliteEnv, tags: satelliteTags } = data;

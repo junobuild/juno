@@ -228,6 +228,7 @@
 		"warning_mission_control_low_cycles": "您的任务控制中心cycles不足。",
 		"warning_satellite_low_cycles": "您的卫星cycles不足。",
 		"warning_orbiter_low_cycles": "您的轨道器cycles不足。",
+		"warning_ufo_low_cycles": "您的 UFO 周期数不足。",
 		"warning_satellite_heap_memory": "您的卫星堆内存即将达到1 GB。",
 		"warning_orbiter_heap_memory": "您的轨道器堆内存即将达到1 GB。",
 		"warning_indicator": "警告：此模块需要您关注。可能已停止或cycles不足。",

@@ -7,6 +7,7 @@
 	import { orbiter } from '$lib/derived/orbiter.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { Satellite } from '$lib/types/satellite';
+	import { ufo } from '$lib/derived/ufo.derived';
 
 	interface Props {
 		satellite?: Satellite | undefined;
@@ -43,6 +44,14 @@
 		{/snippet}
 		{#snippet heap()}
 			{$i18n.canisters.warning_orbiter_heap_memory}
+		{/snippet}
+	</LoaderWarnings>
+{/if}
+
+{#if nonNullish($ufo)}
+	<LoaderWarnings canisterId={$ufo.ufo_id}>
+		{#snippet cycles()}
+			{$i18n.canisters.warning_ufo_low_cycles}
 		{/snippet}
 	</LoaderWarnings>
 {/if}

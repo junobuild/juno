@@ -13,6 +13,7 @@
 	import IconSatellite from '$lib/components/icons/IconSatellite.svelte';
 	import IconStorage from '$lib/components/icons/IconStorage.svelte';
 	import IconTelescope from '$lib/components/icons/IconTelescope.svelte';
+	import IconUfo from '$lib/components/icons/IconUfo.svelte';
 	import IconUpgradeDock from '$lib/components/icons/IconUpgradeDock.svelte';
 	import Menu from '$lib/components/ui/Menu.svelte';
 	import { menuCollapsed, menuExpanded } from '$lib/derived/app/layout-menu.derived';
@@ -151,6 +152,17 @@
 			>
 				<IconUpgradeDock size="22px" />
 				<span>{$i18n.upgrade.title}</span>
+			</a>
+
+			<a
+				class="link not-themed smaller-icon"
+				class:collapsed={$menuCollapsed}
+				class:selected={isRouteSelected({ routeId, path: 'ufo' })}
+				href={`/ufo${queryParam}`}
+				role="menuitem"
+			>
+				<IconUfo size="24px" />
+				<span>{$i18n.ufo.title}</span>
 			</a>
 		</div>
 	</nav>

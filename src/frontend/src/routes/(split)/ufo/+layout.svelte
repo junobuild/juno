@@ -2,7 +2,6 @@
 	import { nonNullish } from '@dfinity/utils';
 	import { onMount, type Snippet } from 'svelte';
 	import IconUfo from '$lib/components/icons/IconUfo.svelte';
-	import { satellite } from '$lib/derived/satellite.derived';
 	import { ufo } from '$lib/derived/ufo.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { layoutNavigation } from '$lib/stores/app/layout-navigation.store';

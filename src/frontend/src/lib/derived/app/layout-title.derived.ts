@@ -9,6 +9,10 @@ export const layoutTitle: Readable<string | undefined> = derived(
 			return metadataUiName($layoutNavigation.data.satellite.satellite);
 		}
 
+		if ($layoutNavigation?.data.ufo?.useInPageTitle === true) {
+			return metadataUiName($layoutNavigation.data.ufo.ufo);
+		}
+
 		return $layoutNavigation?.data.title;
 	}
 );

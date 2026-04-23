@@ -1,25 +1,12 @@
 <script lang="ts">
 	import { fromNullishNullable } from '@dfinity/utils';
-	import { onMount } from 'svelte';
 	import CanisterSyncData from '$lib/components/modules/canister/CanisterSyncData.svelte';
 	import CanisterOverview from '$lib/components/modules/canister/display/CanisterOverview.svelte';
 	import CanisterSubnet from '$lib/components/modules/canister/display/CanisterSubnet.svelte';
-	import SatelliteEnvText from '$lib/components/satellites/SatelliteEnvironmentText.svelte';
-	import SatelliteName from '$lib/components/satellites/overview/SatelliteName.svelte';
-	import SatelliteOverviewActions from '$lib/components/satellites/overview/SatelliteOverviewActions.svelte';
-	import SatelliteOverviewCustomDomains from '$lib/components/satellites/overview/SatelliteOverviewCustomDomains.svelte';
-	import SatelliteOverviewVersion from '$lib/components/satellites/overview/SatelliteOverviewVersion.svelte';
-	import SatelliteRuntimeActions from '$lib/components/satellites/overview/SatelliteRuntimeActions.svelte';
-	import SatelliteTags from '$lib/components/satellites/overview/SatelliteTags.svelte';
-	import SatelliteLastDeployments from '$lib/components/satellites/overview/deployments/SatelliteLastDeployments.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
-	import { testIds } from '$lib/constants/test-ids.constants';
-	import { isNotSkylab } from '$lib/env/app.env';
-	import { listCustomDomains } from '$lib/services/satellite/hosting/custom-domain.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { CanisterSyncData as CanisterSyncDataType } from '$lib/types/canister';
-	import type { Satellite, SatelliteIdText } from '$lib/types/satellite';
 	import type { Ufo } from '$lib/types/ufo';
 
 	interface Props {

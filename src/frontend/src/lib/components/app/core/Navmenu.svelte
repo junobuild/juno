@@ -13,6 +13,7 @@
 	import IconSatellite from '$lib/components/icons/IconSatellite.svelte';
 	import IconStorage from '$lib/components/icons/IconStorage.svelte';
 	import IconTelescope from '$lib/components/icons/IconTelescope.svelte';
+	import IconUfo from '$lib/components/icons/IconUfo.svelte';
 	import IconUpgradeDock from '$lib/components/icons/IconUpgradeDock.svelte';
 	import Menu from '$lib/components/ui/Menu.svelte';
 	import { menuCollapsed, menuExpanded } from '$lib/derived/app/layout-menu.derived';
@@ -20,7 +21,6 @@
 	import { isSatelliteRoute } from '$lib/derived/app/route.derived.svelte.js';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { isRouteSelected } from '$lib/utils/nav.utils';
-	import IconUfo from "$lib/components/icons/IconUfo.svelte";
 
 	let routeId: string | null = $derived(page.route.id);
 

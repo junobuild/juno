@@ -140,6 +140,21 @@ export const setSatelliteMetadata = async ({
 	return set_satellite_metadata(satelliteId, metadata);
 };
 
+export const setUfoMetadata = async ({
+	missionControlId,
+	ufoId,
+	metadata,
+	identity
+}: {
+	missionControlId: MissionControlId;
+	ufoId: UfoId;
+	metadata: Metadata;
+	identity: NullishIdentity;
+}): Promise<MissionControlDid.Ufo> => {
+	const { set_ufo_metadata } = await getMissionControlActor({ missionControlId, identity });
+	return set_ufo_metadata(ufoId, metadata);
+};
+
 export const setOrbitersController = async ({
 	missionControlId,
 	orbiterIds,

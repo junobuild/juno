@@ -1,7 +1,10 @@
 import type { MissionControlDid } from '$declarations';
 import type { SegmentKey } from '$declarations/console/console.did';
 import { setSegmentMetadata } from '$lib/api/console.api';
-import { setSatelliteMetadata as setSatelliteMetadataApi } from '$lib/api/mission-control.api';
+import {
+	setSatelliteMetadata as setSatelliteMetadataApi,
+	setUfoMetadata as setUfoMetadataApi
+} from '$lib/api/mission-control.api';
 import {
 	METADATA_KEY_ENVIRONMENT,
 	METADATA_KEY_NAME,
@@ -9,26 +12,41 @@ import {
 } from '$lib/constants/metadata.constants';
 import { segments } from '$lib/derived/console/segments.derived';
 import { mctrlSatellites } from '$lib/derived/mission-control/mission-control-satellites.derived';
+import { mctrlUfos } from '$lib/derived/mission-control/mission-control-ufos.derived';
 import { MetadataSerializer, MetadataUiSchema } from '$lib/schemas/metadata.schema';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
 import { segmentsUncertifiedStore } from '$lib/stores/console/segments.store';
 import { satellitesUncertifiedStore } from '$lib/stores/mission-control/satellites.store';
+import { ufosUncertifiedStore } from '$lib/stores/mission-control/ufos.store';
 import type { NullishIdentity } from '$lib/types/itentity';
 import type { Metadata, MetadataUi } from '$lib/types/metadata';
 import type { MissionControlId } from '$lib/types/mission-control';
 import type { SatelliteId } from '$lib/types/satellite';
+import type { UfoId } from '$lib/types/ufo';
 import { isNullish, nonNullish, notEmptyString } from '@dfinity/utils';
 import type { Nullish } from '@dfinity/zod-schemas';
 import type { Identity } from '@icp-sdk/core/agent';
+import type { Principal } from '@icp-sdk/core/principal';
 import { get } from 'svelte/store';
 import * as z from 'zod';
 
-interface SetSatelliteMetadataParams {
+export interface SetMetadataParams {
 	missionControlId: Nullish<MissionControlId>;
-	satellite: MissionControlDid.Satellite;
 	metadata: MetadataUi;
 	identity: NullishIdentity;
+}
+
+export interface SetMetadataResult {
+	success: boolean;
+}
+
+interface SetSatelliteMetadataParams extends SetMetadataParams {
+	satellite: MissionControlDid.Satellite;
+}
+
+interface SetUfoMetadataParams extends SetMetadataParams {
+	ufo: MissionControlDid.Ufo;
 }
 
 export const setSatelliteMetadata = async ({
@@ -36,7 +54,7 @@ export const setSatelliteMetadata = async ({
 	satellite: { satellite_id: satelliteId, metadata: currentMetadata },
 	metadata,
 	identity
-}: SetSatelliteMetadataParams): Promise<{ success: boolean }> => {
+}: SetSatelliteMetadataParams): Promise<SetMetadataResult> => {
 	// TODO: indentity check service
 	if (isNullish(identity) || isNullish(identity?.getPrincipal())) {
 		toasts.error({ text: get(i18n).core.not_logged_in });
@@ -56,17 +74,72 @@ export const setSatelliteMetadata = async ({
 	const updateMetadata = prepareMetadata({ data, currentMetadata });
 
 	const payload = {
-		satelliteId,
 		metadata: updateMetadata,
 		identity
 	};
 
 	const results = await Promise.all([
-		setMetadataWithConsole(payload),
+		setMetadataWithConsole({
+			...payload,
+			segmentId: satelliteId,
+			segmentKindText: 'Satellite'
+		}),
 		...(nonNullish(missionControlId)
 			? [
-					setMetadataWithMissionControl({
+					setSatelliteMetadataWithMissionControl({
 						missionControlId,
+						satelliteId,
+						...payload
+					})
+				]
+			: [])
+	]);
+
+	const hasError = results.find(({ result }) => result === 'error') !== undefined;
+
+	return { success: !hasError };
+};
+
+export const setUfoMetadata = async ({
+	missionControlId,
+	ufo: { ufo_id: ufoId, metadata: currentMetadata },
+	metadata,
+	identity
+}: SetUfoMetadataParams): Promise<SetMetadataResult> => {
+	// TODO: indentity check service
+	if (isNullish(identity) || isNullish(identity?.getPrincipal())) {
+		toasts.error({ text: get(i18n).core.not_logged_in });
+		return { success: false };
+	}
+
+	const { error, success, data } = MetadataUiSchema.safeParse(metadata);
+
+	if (!success) {
+		toasts.error({
+			text: get(i18n).errors.invalid_metadata,
+			detail: z.prettifyError(error)
+		});
+		return { success: false };
+	}
+
+	const updateMetadata = prepareMetadata({ data, currentMetadata });
+
+	const payload = {
+		metadata: updateMetadata,
+		identity
+	};
+
+	const results = await Promise.all([
+		setMetadataWithConsole({
+			...payload,
+			segmentId: ufoId,
+			segmentKindText: 'Ufo'
+		}),
+		...(nonNullish(missionControlId)
+			? [
+					setUfoMetadataWithMissionControl({
+						missionControlId,
+						ufoId,
 						...payload
 					})
 				]
@@ -108,22 +181,24 @@ const prepareMetadata = ({
 };
 
 const setMetadataWithConsole = async ({
-	satelliteId,
+	segmentId,
+	segmentKindText,
 	metadata,
 	identity
 }: {
-	satelliteId: SatelliteId;
+	segmentId: Principal;
+	segmentKindText: 'Satellite' | 'Ufo';
 	metadata: Metadata;
 	identity: Identity;
 }): Promise<{ result: 'skip' | 'success' | 'error' }> => {
 	const currentState = get(segments);
 
-	const isKeySatellite = (segmentKey: SegmentKey): boolean =>
-		segmentKey.segment_id.toText() === satelliteId.toText() &&
-		'Satellite' in segmentKey.segment_kind &&
+	const isKeySegment = (segmentKey: SegmentKey): boolean =>
+		segmentKey.segment_id.toText() === segmentId.toText() &&
+		segmentKindText in segmentKey.segment_kind &&
 		segmentKey.user.toText() === identity.getPrincipal().toText();
 
-	const segment = currentState?.find(([segmentKey]) => isKeySatellite(segmentKey));
+	const segment = currentState?.find(([segmentKey]) => isKeySegment(segmentKey));
 
 	// No segment found in the Console. Maybe it's a "legacy" segment that is "only" known by the Mission Control.
 	if (isNullish(segment)) {
@@ -131,29 +206,31 @@ const setMetadataWithConsole = async ({
 	}
 
 	try {
+		const segmentKind = segmentKindText === 'Ufo' ? { Ufo: null } : { Satellite: null };
+
 		const updatedSegment = await setSegmentMetadata({
-			segmentId: satelliteId,
-			segmentKind: { Satellite: null },
+			segmentId,
+			segmentKind,
 			metadata,
 			identity
 		});
 
 		const updateKey: SegmentKey = {
-			segment_id: satelliteId,
-			segment_kind: { Satellite: null },
+			segment_id: segmentId,
+			segment_kind: segmentKind,
 			user: identity.getPrincipal()
 		};
 
 		const updateState = get(segments);
 		segmentsUncertifiedStore.set([
-			...(updateState ?? []).filter(([segmentKey]) => !isKeySatellite(segmentKey)),
+			...(updateState ?? []).filter(([segmentKey]) => !isKeySegment(segmentKey)),
 			[updateKey, updatedSegment]
 		]);
 
 		return { result: 'success' };
 	} catch (err: unknown) {
 		toasts.error({
-			text: get(i18n).errors.satellite_metadata_update,
+			text: get(i18n).errors.update_metadata_error,
 			detail: err
 		});
 
@@ -161,7 +238,7 @@ const setMetadataWithConsole = async ({
 	}
 };
 
-const setMetadataWithMissionControl = async ({
+const setSatelliteMetadataWithMissionControl = async ({
 	missionControlId,
 	metadata,
 	satelliteId,
@@ -202,6 +279,50 @@ const setMetadataWithMissionControl = async ({
 	} catch (err: unknown) {
 		toasts.error({
 			text: get(i18n).errors.satellite_metadata_update,
+			detail: err
+		});
+
+		return { result: 'error' };
+	}
+};
+
+const setUfoMetadataWithMissionControl = async ({
+	missionControlId,
+	metadata,
+	ufoId,
+	...rest
+}: {
+	missionControlId: MissionControlId;
+	ufoId: UfoId;
+	metadata: Metadata;
+	identity: Identity;
+}): Promise<{ result: 'success' | 'warn' | 'error' }> => {
+	const currentState = get(mctrlUfos);
+	const ufo = currentState?.find(({ ufo_id }) => ufo_id.toText() === ufoId.toText());
+
+	if (isNullish(ufo)) {
+		toasts.warn(get(i18n).mission_control.warn_ufo_metadata_update);
+		return { result: 'warn' };
+	}
+
+	try {
+		const updatedUfo = await setUfoMetadataApi({
+			missionControlId,
+			ufoId,
+			metadata,
+			...rest
+		});
+
+		const updateState = get(mctrlUfos);
+		ufosUncertifiedStore.set([
+			...(updateState ?? []).filter(({ ufo_id }) => updatedUfo.ufo_id.toText() !== ufo_id.toText()),
+			updatedUfo
+		]);
+
+		return { result: 'success' };
+	} catch (err: unknown) {
+		toasts.error({
+			text: get(i18n).errors.ufo_metadata_update,
 			detail: err
 		});
 

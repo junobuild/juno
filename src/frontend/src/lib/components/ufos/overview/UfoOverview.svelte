@@ -6,6 +6,7 @@
 	import SegmentWithMetadataEnvironmentText from '$lib/components/modules/segments/SegmentWithMetadataEnvironmentText.svelte';
 	import SegmentWithMetadataName from '$lib/components/modules/segments/SegmentWithMetadataName.svelte';
 	import SegmentWithMetadataTags from '$lib/components/modules/segments/SegmentWithMetadataTags.svelte';
+	import UfoOverviewActions from '$lib/components/ufos/overview/UfoOverviewActions.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/app/i18n.store';
@@ -33,34 +34,32 @@
 
 <CanisterSyncData canisterId={ufo.ufo_id} bind:canister />
 
-<div class="overview">
-	<div class="card-container with-title">
-		<span class="title">{$i18n.satellites.overview}</span>
+<div class="card-container with-title">
+	<span class="title">{$i18n.satellites.overview}</span>
 
-		<div class="columns-3 fit-column-1">
-			<div class="id">
-				<SegmentWithMetadataName segment={ufo} />
+	<div class="columns-3 fit-column-1">
+		<div class="id">
+			<SegmentWithMetadataName segment={ufo} />
 
-				<SegmentWithMetadataEnvironmentText segment={ufo} />
+			<SegmentWithMetadataEnvironmentText segment={ufo} />
 
-				<SegmentWithMetadataTags segment={ufo} />
-			</div>
+			<SegmentWithMetadataTags segment={ufo} />
+		</div>
 
-			<div>
-				<Value>
-					{#snippet label()}
-						{$i18n.ufo.id}
-					{/snippet}
-					<Identifier identifier={ufoId} shorten={false} small={false} />
-				</Value>
+		<div>
+			<Value>
+				{#snippet label()}
+					{$i18n.ufo.id}
+				{/snippet}
+				<Identifier identifier={ufoId} shorten={false} small={false} />
+			</Value>
 
-				<CanisterSubnet canisterId={ufo.ufo_id} />
-			</div>
+			<CanisterSubnet canisterId={ufo.ufo_id} />
 		</div>
 	</div>
-
-	<div class="actions">TODO</div>
 </div>
+
+<UfoOverviewActions {monitoringEnabled} {ufo} />
 
 <div class="card-container with-title">
 	<span class="title">{$i18n.monitoring.runtime}</span>

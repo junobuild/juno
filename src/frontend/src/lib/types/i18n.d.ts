@@ -128,6 +128,8 @@ interface I18nCore {
 	name: string;
 	environment: string;
 	tags: string;
+	edit_details: string;
+	tags_placeholder: string;
 }
 
 interface I18nCanisters {
@@ -344,9 +346,7 @@ interface I18nSatellites {
 	application: string;
 	application_description: string;
 	application_hint: string;
-	tags_placeholder: string;
 	enter_name: string;
-	edit_details: string;
 	create_satellite_price: string;
 	loading_satellites: string;
 	overview: string;
@@ -379,6 +379,7 @@ interface I18nMission_control {
 	attaching: string;
 	warn_attaching: string;
 	warn_satellite_metadata_update: string;
+	warn_ufo_metadata_update: string;
 }
 
 interface I18nWallet {
@@ -635,13 +636,14 @@ interface I18nErrors {
 	cli_missing_params: string;
 	cli_missing_selection: string;
 	cli_unexpected_error: string;
-	satellite_name_missing: string;
+	segment_name_missing: string;
 	satellite_kind: string;
 	satellite_unexpected_error: string;
 	satellite_no_found: string;
 	satellite_metadata_update: string;
 	satellite_missing_name: string;
 	satellites_not_loaded: string;
+	ufo_metadata_update: string;
 	create_ufo_name_missing: string;
 	create_ufo_unexpected_error: string;
 	ufo_not_found: string;
@@ -730,6 +732,7 @@ interface I18nErrors {
 	invalid_email: string;
 	invalid_destination: string;
 	invalid_metadata: string;
+	update_metadata_error: string;
 	empty_amount: string;
 	cycles_transfer_not_supported: string;
 	convert_icp_to_cycles_not_supported: string;

@@ -319,7 +319,7 @@ export const createSatelliteWizard = async ({
 }): Promise<CreateWizardResult> => {
 	if (isEmptyString(satelliteName)) {
 		toasts.error({
-			text: get(i18n).errors.satellite_name_missing
+			text: get(i18n).errors.segment_name_missing
 		});
 		return { success: 'error' };
 	}

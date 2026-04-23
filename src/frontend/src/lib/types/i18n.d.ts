@@ -125,6 +125,9 @@ interface I18nCore {
 	launch: string;
 	redirecting: string;
 	lets_go: string;
+	name: string;
+	environment: string;
+	tags: string;
 }
 
 interface I18nCanisters {
@@ -333,7 +336,6 @@ interface I18nSatellites {
 	ready: string;
 	initializing: string;
 	start: string;
-	name: string;
 	satellite_name: string;
 	what_are_you_building: string;
 	website: string;
@@ -342,8 +344,6 @@ interface I18nSatellites {
 	application: string;
 	application_description: string;
 	application_hint: string;
-	environment: string;
-	tags: string;
 	tags_placeholder: string;
 	enter_name: string;
 	edit_details: string;

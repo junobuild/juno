@@ -122,7 +122,10 @@
 		"custom": "自定义",
 		"launch": "启动",
 		"redirecting": "正在跳转...",
-		"lets_go": "出发吧!"
+		"lets_go": "出发吧!",
+		"name": "名称",
+		"environment": "运行环境",
+		"tags": "标签"
 	},
 	"canisters": {
 		"top_up": "充值",
@@ -326,7 +329,6 @@
 		"ready": "卫星部署完成！",
 		"initializing": "正在初始化新卫星...",
 		"start": "创建卫星",
-		"name": "名称",
 		"satellite_name": "卫星名称",
 		"what_are_you_building": "您正在构建什么",
 		"website": "网站",
@@ -335,8 +337,6 @@
 		"application": "应用程序",
 		"application_description": "数据存储、用户管理、无服务器函数",
 		"application_hint": "您的 Satellite 将使用针对应用程序优化的设置进行初始化。",
-		"environment": "运行环境",
-		"tags": "标签",
 		"tags_placeholder": "逗号分隔或每行一个，留空则不添加标签。",
 		"enter_name": "输入卫星名称",
 		"edit_details": "编辑详情",

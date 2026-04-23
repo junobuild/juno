@@ -3,6 +3,9 @@
 	import CanisterSyncData from '$lib/components/modules/canister/CanisterSyncData.svelte';
 	import CanisterOverview from '$lib/components/modules/canister/display/CanisterOverview.svelte';
 	import CanisterSubnet from '$lib/components/modules/canister/display/CanisterSubnet.svelte';
+	import SegmentWithMetadataEnvironmentText from '$lib/components/modules/segments/SegmentWithMetadataEnvironmentText.svelte';
+	import SegmentWithMetadataName from '$lib/components/modules/segments/SegmentWithMetadataName.svelte';
+	import SegmentWithMetadataTags from '$lib/components/modules/segments/SegmentWithMetadataTags.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/app/i18n.store';
@@ -35,7 +38,13 @@
 		<span class="title">{$i18n.satellites.overview}</span>
 
 		<div class="columns-3 fit-column-1">
-			<div class="id">TODO</div>
+			<div class="id">
+				<SegmentWithMetadataName segment={ufo} />
+
+				<SegmentWithMetadataEnvironmentText segment={ufo} />
+
+				<SegmentWithMetadataTags segment={ufo} />
+			</div>
 
 			<div>
 				<Value>

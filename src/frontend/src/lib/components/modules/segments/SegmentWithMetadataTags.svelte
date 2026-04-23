@@ -3,22 +3,22 @@
 	import Badge from '$lib/components/ui/Badge.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import type { Satellite } from '$lib/types/satellite';
+	import type { SegmentWithMetadata } from '$lib/types/segment';
 	import { metadataUiTags } from '$lib/utils/metadata-ui.utils';
 
 	interface Props {
-		satellite: Satellite;
+		segment: SegmentWithMetadata;
 	}
 
-	let { satellite }: Props = $props();
+	let { segment }: Props = $props();
 
-	let tags = $derived(metadataUiTags(satellite));
+	let tags = $derived(metadataUiTags(segment));
 </script>
 
 {#if nonNullish(tags)}
 	<Value>
 		{#snippet label()}
-			{$i18n.satellites.tags}
+			{$i18n.core.tags}
 		{/snippet}
 
 		<p>

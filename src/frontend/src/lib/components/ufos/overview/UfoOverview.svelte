@@ -7,6 +7,7 @@
 	import SegmentWithMetadataName from '$lib/components/modules/segments/SegmentWithMetadataName.svelte';
 	import SegmentWithMetadataTags from '$lib/components/modules/segments/SegmentWithMetadataTags.svelte';
 	import UfoOverviewActions from '$lib/components/ufos/overview/UfoOverviewActions.svelte';
+	import UfoRuntimeActions from '$lib/components/ufos/overview/UfoRuntimeActions.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/app/i18n.store';
@@ -69,7 +70,7 @@
 	</div>
 </div>
 
-TODO
+<UfoRuntimeActions {canister} {monitoringEnabled} {ufo} />
 
 <style lang="scss">
 	.id {

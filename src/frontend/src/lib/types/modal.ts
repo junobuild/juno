@@ -7,6 +7,7 @@ import type { MissionControlId } from '$lib/types/mission-control';
 import type { OrbiterSatelliteConfigEntry } from '$lib/types/orbiter';
 import type { ProposalRecord } from '$lib/types/proposals';
 import type { Satellite, SatelliteIdText } from '$lib/types/satellite';
+import type { Ufo } from '$lib/types/ufo';
 import type { User as UserListed } from '$lib/types/user';
 import type { UserUsageCollection } from '$lib/types/user-usage';
 import type { Nullish } from '@dfinity/zod-schemas';
@@ -18,6 +19,10 @@ export interface JunoModalWithSatellite {
 }
 
 export type JunoModalTopUpSatelliteDetail = JunoModalWithSatellite;
+
+export interface JunoModalTopUpUfoDetail {
+	ufo: Ufo;
+}
 
 export interface JunoModalTopUpMissionControlDetail {}
 
@@ -142,6 +147,7 @@ export type JunoModalDetail =
 	| JunoModalUpgradeDetail
 	| JunoModalShowMonitoringDetail
 	| JunoModalTopUpSatelliteDetail
+	| JunoModalTopUpUfoDetail
 	| JunoModalTopUpMissionControlDetail
 	| JunoModalCreateSegmentDetail
 	| JunoModalCustomDomainDetail
@@ -173,6 +179,7 @@ export interface JunoModal<T extends JunoModalDetail> {
 		| 'topup_satellite'
 		| 'topup_mission_control'
 		| 'topup_orbiter'
+		| 'topup_ufo'
 		| 'add_custom_domain'
 		| 'restore_snapshot'
 		| 'create_snapshot'

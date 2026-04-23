@@ -1,4 +1,5 @@
 <script lang="ts">
+	import DetachSegment from '$lib/components/modules/attach-detach/DetachSegment.svelte';
 	import SegmentActions from '$lib/components/modules/segments/SegmentActions.svelte';
 	import SegmentWithMetadataEditDetails from '$lib/components/modules/segments/SegmentWithMetadataEditDetails.svelte';
 	import {
@@ -7,7 +8,6 @@
 		setUfoMetadata
 	} from '$lib/services/metadata.services';
 	import type { Ufo } from '$lib/types/ufo';
-	import DetachSegment from '$lib/components/modules/attach-detach/DetachSegment.svelte';
 
 	interface Props {
 		ufo: Ufo;

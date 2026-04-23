@@ -144,17 +144,6 @@
 			</a>
 
 			<a
-				class="link not-themed smaller-icon"
-				class:collapsed={$menuCollapsed}
-				class:selected={isRouteSelected({ routeId, path: 'upgrade-dock' })}
-				href={`/upgrade-dock${queryParam}`}
-				role="menuitem"
-			>
-				<IconUpgradeDock size="22px" />
-				<span>{$i18n.upgrade.title}</span>
-			</a>
-
-			<a
 				class="link not-themed"
 				class:collapsed={$menuCollapsed}
 				class:selected={isRouteSelected({ routeId, path: 'ufo' })}
@@ -163,6 +152,17 @@
 			>
 				<IconUfo size="24px" />
 				<span>{$i18n.ufo.title}</span>
+			</a>
+
+			<a
+				class="link not-themed smaller-icon"
+				class:collapsed={$menuCollapsed}
+				class:selected={isRouteSelected({ routeId, path: 'upgrade-dock' })}
+				href={`/upgrade-dock${queryParam}`}
+				role="menuitem"
+			>
+				<IconUpgradeDock size="22px" />
+				<span>{$i18n.upgrade.title}</span>
 			</a>
 		</div>
 	</nav>

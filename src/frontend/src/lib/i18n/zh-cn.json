@@ -125,7 +125,9 @@
 		"lets_go": "出发吧!",
 		"name": "名称",
 		"environment": "运行环境",
-		"tags": "标签"
+		"tags": "标签",
+		"edit_details": "编辑详情",
+		"tags_placeholder": "逗号分隔或每行一个，留空则不添加标签。"
 	},
 	"canisters": {
 		"top_up": "充值",
@@ -337,9 +339,7 @@
 		"application": "应用程序",
 		"application_description": "数据存储、用户管理、无服务器函数",
 		"application_hint": "您的 Satellite 将使用针对应用程序优化的设置进行初始化。",
-		"tags_placeholder": "逗号分隔或每行一个，留空则不添加标签。",
 		"enter_name": "输入卫星名称",
-		"edit_details": "编辑详情",
 		"create_satellite_price": "启动新的 Satellite 需要 {0}。",
 		"loading_satellites": "正在加载所有卫星",
 		"overview": "概览",
@@ -370,7 +370,8 @@
 		"ready": "您的 Mission Control 已就绪！",
 		"attaching": "正在与任务控制中心共享现有模块...",
 		"warn_attaching": "无法与任务控制中心共享以下模块：",
-		"warn_satellite_metadata_update": "在任务控制中心未找到 Satellite。这是意外情况。"
+		"warn_satellite_metadata_update": "在任务控制中心未找到 Satellite。这是意外情况。",
+		"warn_ufo_metadata_update": "在任务控制中未找到 UFO，这是意外情况。"
 	},
 	"wallet": {
 		"title": "钱包",
@@ -618,13 +619,14 @@
 		"cli_missing_params": "缺少URL参数，未提供重定向URL或主体标识。",
 		"cli_missing_selection": "未选择控制中心或卫星",
 		"cli_unexpected_error": "添加管理员密钥时发生意外错误。",
-		"satellite_name_missing": "必须提供卫星名称。",
+		"segment_name_missing": "必须提供名称。",
 		"satellite_kind": "请选择构建类型以继续。",
 		"satellite_unexpected_error": "创建卫星时发生意外错误。",
 		"satellite_no_found": "未找到卫星，请返回启动台。",
 		"satellite_metadata_update": "更新卫星元数据时发生意外错误。",
 		"satellite_missing_name": "必须提供名称。",
 		"satellites_not_loaded": "卫星数据未加载。",
+		"ufo_metadata_update": "尝试设置 UFO 元数据时发生意外错误。",
 		"create_ufo_name_missing": "必须提供 UFO 的名称。",
 		"create_ufo_unexpected_error": "创建 UFO 时发生意外错误。",
 		"ufo_not_found": "这里什么都没有。返回发射台查找您的 UFO。",
@@ -714,6 +716,7 @@
 		"invalid_email": "请输入有效的邮箱地址。",
 		"invalid_destination": "请输入有效的目标地址。",
 		"invalid_metadata": "提供的元数据无效。",
+		"update_metadata_error": "在控制台更新元数据时发生意外错误。",
 		"empty_amount": "请输入转账金额。",
 		"cycles_transfer_not_supported": "暂不支持从 Mission Control 转移 Cycles。请联系我们!",
 		"convert_icp_to_cycles_not_supported": "尚不支持通过 Mission Control 将 ICP 兑换为 Cycles。请联系我们!",

@@ -8,41 +8,30 @@
 	import {
 		type SetMetadataParams,
 		type SetMetadataResult,
-		setSatelliteMetadata
+		setSatelliteMetadata,
+		setUfoMetadata
 	} from '$lib/services/metadata.services';
+	import type { Ufo } from '$lib/types/ufo';
 
 	interface Props {
-		satellite: Satellite;
+		ufo: Ufo;
 		monitoringEnabled: boolean;
 	}
 
-	let { satellite, monitoringEnabled }: Props = $props();
+	let { ufo, monitoringEnabled }: Props = $props();
 
 	let visible: boolean = $state(false);
 	const close = () => (visible = false);
 
 	const updateMetadata = (params: SetMetadataParams): Promise<SetMetadataResult> =>
-		setSatelliteMetadata({
+		setUfoMetadata({
 			...params,
-			satellite
+			ufo
 		});
 </script>
 
 <SegmentActions bind:visible>
-	{#snippet mainActions()}
-		<SatelliteVisit {satellite} />
-	{/snippet}
-
 	{#snippet moreActions()}
-		<SegmentWithMetadataEditDetails segment={satellite} {updateMetadata} />
-
-		<DetachSegment
-			{monitoringEnabled}
-			ondetach={close}
-			segment="satellite"
-			segmentId={satellite.satellite_id}
-		/>
-
-		<SatelliteReloadVersion onreload={close} {satellite} />
+		<SegmentWithMetadataEditDetails segment={ufo} {updateMetadata} />
 	{/snippet}
 </SegmentActions>

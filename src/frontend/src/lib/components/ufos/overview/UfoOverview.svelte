@@ -11,6 +11,7 @@
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { CanisterSyncData as CanisterSyncDataType } from '$lib/types/canister';
 	import type { Ufo } from '$lib/types/ufo';
+	import UfoOverviewActions from '$lib/components/ufos/overview/UfoOverviewActions.svelte';
 
 	interface Props {
 		ufo: Ufo;
@@ -33,34 +34,32 @@
 
 <CanisterSyncData canisterId={ufo.ufo_id} bind:canister />
 
-<div class="overview">
-	<div class="card-container with-title">
-		<span class="title">{$i18n.satellites.overview}</span>
+<div class="card-container with-title">
+	<span class="title">{$i18n.satellites.overview}</span>
 
-		<div class="columns-3 fit-column-1">
-			<div class="id">
-				<SegmentWithMetadataName segment={ufo} />
+	<div class="columns-3 fit-column-1">
+		<div class="id">
+			<SegmentWithMetadataName segment={ufo} />
 
-				<SegmentWithMetadataEnvironmentText segment={ufo} />
+			<SegmentWithMetadataEnvironmentText segment={ufo} />
 
-				<SegmentWithMetadataTags segment={ufo} />
-			</div>
+			<SegmentWithMetadataTags segment={ufo} />
+		</div>
 
-			<div>
-				<Value>
-					{#snippet label()}
-						{$i18n.ufo.id}
-					{/snippet}
-					<Identifier identifier={ufoId} shorten={false} small={false} />
-				</Value>
+		<div>
+			<Value>
+				{#snippet label()}
+					{$i18n.ufo.id}
+				{/snippet}
+				<Identifier identifier={ufoId} shorten={false} small={false} />
+			</Value>
 
-				<CanisterSubnet canisterId={ufo.ufo_id} />
-			</div>
+			<CanisterSubnet canisterId={ufo.ufo_id} />
 		</div>
 	</div>
-
-	<div class="actions">TODO</div>
 </div>
+
+<UfoOverviewActions {ufo} {monitoringEnabled} />
 
 <div class="card-container with-title">
 	<span class="title">{$i18n.monitoring.runtime}</span>

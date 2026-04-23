@@ -8,8 +8,8 @@
 	} from '$lib/derived/console/segments.derived';
 	import { mctrlOrbiter } from '$lib/derived/mission-control/mission-control-orbiters.derived';
 	import { mctrlSortedSatellites } from '$lib/derived/mission-control/mission-control-satellites.derived';
-	import { i18n } from '$lib/stores/app/i18n.store';
 	import { mctrlSortedUfos } from '$lib/derived/mission-control/mission-control-ufos.derived';
+	import { i18n } from '$lib/stores/app/i18n.store';
 
 	interface Props {
 		onsubmit: ($event: SubmitEvent) => Promise<void>;

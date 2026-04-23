@@ -58,7 +58,7 @@ export const setAdminAccessKey = async ({
 		await attachFn?.();
 	};
 
-	return withSetAdminController({
+	return await withSetAdminController({
 		applyFn: applyAccessKeyFn,
 		...rest
 	});
@@ -66,7 +66,6 @@ export const setAdminAccessKey = async ({
 
 export const setAdminController = async ({
 	attachFn,
-	metadata,
 	...rest
 }: {
 	attachFn?: () => Promise<void>;
@@ -77,7 +76,7 @@ export const setAdminController = async ({
 		await attachFn?.();
 	};
 
-	return withSetAdminController({
+	return await withSetAdminController({
 		applyFn: applyAccessKeyFn,
 		...rest
 	});
@@ -86,13 +85,12 @@ export const setAdminController = async ({
 const withSetAdminController = async ({
 	applyFn,
 	canisterId,
-	metadata,
 	...rest
 }: {
 	applyFn: ApplyAccessKeyFn;
 	canisterId: Principal;
 	identity: Identity;
-} & AddAdminAccessKeyParams): Promise<AdminAccessKeyResult> => {
+} & Omit<AddAdminAccessKeyParams, 'metadata'>): Promise<AdminAccessKeyResult> => {
 	const updateControllersFn: UpdateControllersFn = ({ currentControllers, controllerId }) => {
 		if (currentControllers.length >= MAX_NUMBER_OF_CONTROLLERS - 1) {
 			return { result: 'reject', reason: get(i18n).errors.canister_controllers };

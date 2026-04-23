@@ -6,9 +6,9 @@
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { Orbiter } from '$lib/types/orbiter';
 	import type { Satellite } from '$lib/types/satellite';
+	import type { Ufo } from '$lib/types/ufo';
 	import { metadataUiName } from '$lib/utils/metadata-ui.utils';
 	import { orbiterName } from '$lib/utils/orbiter.utils';
-	import type { Ufo } from '$lib/types/ufo';
 
 	interface Props {
 		label: Snippet;

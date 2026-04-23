@@ -8,9 +8,9 @@
 		outOfSyncSatellites
 	} from '$lib/derived/out-of-sync.derived';
 	import { satellite } from '$lib/derived/satellite.derived';
+	import { ufo } from '$lib/derived/ufo.derived';
 	import { versionsLoaded, versionsUpgradeWarning } from '$lib/derived/version.derived';
 	import type { CanisterData, CanisterWarning } from '$lib/types/canister';
-	import { ufo } from '$lib/derived/ufo.derived';
 
 	interface Props {
 		missionControlCanisterData: CanisterData | undefined;

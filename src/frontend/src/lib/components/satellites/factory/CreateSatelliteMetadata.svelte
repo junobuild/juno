@@ -29,7 +29,7 @@
 <form {onsubmit}>
 	<Value>
 		{#snippet label()}
-			{$i18n.satellites.name}
+			{$i18n.core.name}
 		{/snippet}
 		<input
 			name="satellite_name"

@@ -121,7 +121,10 @@
 		"custom": "Custom",
 		"launch": "Launch",
 		"redirecting": "Redirecting, hold on...",
-		"lets_go": "Let's go!"
+		"lets_go": "Let's go!",
+		"name": "Name",
+		"environment": "Environment",
+		"tags": "Tags"
 	},
 	"canisters": {
 		"top_up": "Top-up",
@@ -325,7 +328,6 @@
 		"ready": "Your Satellite is ready!",
 		"initializing": "Initializing your new Satellite...",
 		"start": "Create a Satellite",
-		"name": "Name",
 		"satellite_name": "Satellite name",
 		"what_are_you_building": "What are you building",
 		"website": "Website",
@@ -334,8 +336,6 @@
 		"application": "Application",
 		"application_description": "Data storage, user management, serverless functions",
 		"application_hint": "Your satellite will be initialized with settings optimized for an application.",
-		"environment": "Environment",
-		"tags": "Tags",
 		"tags_placeholder": "Comma-separated or one per line. Leave empty for no tags.",
 		"enter_name": "Enter a name for your Satellite",
 		"edit_details": "Edit details",

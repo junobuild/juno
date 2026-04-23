@@ -1,22 +1,22 @@
 <script lang="ts">
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import type { Satellite } from '$lib/types/satellite';
+	import type { SegmentWithMetadata } from '$lib/types/segment';
 	import { metadataUiName } from '$lib/utils/metadata-ui.utils';
 
 	interface Props {
-		satellite: Satellite;
+		segment: SegmentWithMetadata;
 	}
 
-	let { satellite }: Props = $props();
+	let { segment }: Props = $props();
 
-	let satName = $derived(metadataUiName(satellite));
+	let segmentName = $derived(metadataUiName(segment));
 </script>
 
 <Value>
 	{#snippet label()}
-		{$i18n.satellites.name}
+		{$i18n.core.name}
 	{/snippet}
 
-	<p>{satName}</p>
+	<p>{segmentName}</p>
 </Value>

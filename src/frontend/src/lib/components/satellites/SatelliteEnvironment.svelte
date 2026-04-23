@@ -19,7 +19,7 @@
 
 {#if nonNullish(env)}
 	<Badge {color}>
-		<span class="visually-hidden">{$i18n.satellites.environment}:</span>
+		<span class="visually-hidden">{$i18n.core.environment}:</span>
 		<span>{env}</span>
 	</Badge>
 {/if}

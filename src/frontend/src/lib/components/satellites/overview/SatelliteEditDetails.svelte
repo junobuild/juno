@@ -103,7 +103,7 @@
 
 		<Value ref="satelliteEnv">
 			{#snippet label()}
-				{$i18n.satellites.environment}
+				{$i18n.core.environment}
 			{/snippet}
 
 			<select id="satelliteEnv" disabled={$isBusy} bind:value={satEnv}>
@@ -116,10 +116,10 @@
 
 		<Value ref="satelliteTags">
 			{#snippet label()}
-				{$i18n.satellites.tags}
+				{$i18n.core.tags}
 			{/snippet}
 
-			<textarea placeholder={$i18n.satellites.tags_placeholder} rows="5" bind:value={satTagsInput}
+			<textarea placeholder={$i18n.core.tags_placeholder} rows="5" bind:value={satTagsInput}
 			></textarea>
 		</Value>
 

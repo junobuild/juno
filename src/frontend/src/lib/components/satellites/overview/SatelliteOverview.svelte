@@ -4,13 +4,13 @@
 	import CanisterSyncData from '$lib/components/modules/canister/CanisterSyncData.svelte';
 	import CanisterOverview from '$lib/components/modules/canister/display/CanisterOverview.svelte';
 	import CanisterSubnet from '$lib/components/modules/canister/display/CanisterSubnet.svelte';
-	import SatelliteEnvText from '$lib/components/satellites/SatelliteEnvironmentText.svelte';
-	import SatelliteName from '$lib/components/satellites/overview/SatelliteName.svelte';
+	import SegmentWithMetadataEnvironmentText from '$lib/components/modules/segments/SegmentWithMetadataEnvironmentText.svelte';
+	import SegmentWithMetadataName from '$lib/components/modules/segments/SegmentWithMetadataName.svelte';
+	import SegmentWithMetadataTags from '$lib/components/modules/segments/SegmentWithMetadataTags.svelte';
 	import SatelliteOverviewActions from '$lib/components/satellites/overview/SatelliteOverviewActions.svelte';
 	import SatelliteOverviewCustomDomains from '$lib/components/satellites/overview/SatelliteOverviewCustomDomains.svelte';
 	import SatelliteOverviewVersion from '$lib/components/satellites/overview/SatelliteOverviewVersion.svelte';
 	import SatelliteRuntimeActions from '$lib/components/satellites/overview/SatelliteRuntimeActions.svelte';
-	import SatelliteTags from '$lib/components/satellites/overview/SatelliteTags.svelte';
 	import SatelliteLastDeployments from '$lib/components/satellites/overview/deployments/SatelliteLastDeployments.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
@@ -55,11 +55,11 @@
 
 		<div class="columns-2">
 			<div>
-				<SatelliteName {satellite} />
+				<SegmentWithMetadataName segment={satellite} />
 
-				<SatelliteEnvText {satellite} />
+				<SegmentWithMetadataEnvironmentText segment={satellite} />
 
-				<SatelliteTags {satellite} />
+				<SegmentWithMetadataTags segment={satellite} />
 
 				<SatelliteOverviewCustomDomains {satellite} />
 			</div>

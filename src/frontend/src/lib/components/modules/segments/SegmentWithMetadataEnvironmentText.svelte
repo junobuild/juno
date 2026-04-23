@@ -2,22 +2,22 @@
 	import { nonNullish } from '@dfinity/utils';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import type { Satellite } from '$lib/types/satellite';
+	import type { SegmentWithMetadata } from '$lib/types/segment';
 	import { metadataUiEnvironment } from '$lib/utils/metadata-ui.utils';
 
 	interface Props {
-		satellite: Satellite;
+		segment: SegmentWithMetadata;
 	}
 
-	let { satellite }: Props = $props();
+	let { segment }: Props = $props();
 
-	let env = $derived(metadataUiEnvironment(satellite));
+	let env = $derived(metadataUiEnvironment(segment));
 </script>
 
 {#if nonNullish(env)}
 	<Value>
 		{#snippet label()}
-			{$i18n.satellites.environment}
+			{$i18n.core.environment}
 		{/snippet}
 
 		<p>{env}</p>

@@ -227,6 +227,7 @@
 		"warning_mission_control_low_cycles": "Your Mission Control center is running low on cycles.",
 		"warning_satellite_low_cycles": "Your Satellite is running low on cycles.",
 		"warning_orbiter_low_cycles": "Your Orbiter is running low on cycles.",
+		"warning_ufo_low_cycles": "Your UFO is running low on cycles.",
 		"warning_satellite_heap_memory": "Your Satellite heap memory is approaching 1 GB.",
 		"warning_orbiter_heap_memory": "Your Orbiter heap memory is approaching 1 GB.",
 		"warning_indicator": "Warning: This module requires your attention. Either stopping or running low on cycles.",

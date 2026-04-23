@@ -26,7 +26,7 @@ export type AdminAccessKeyResult =
 	| { result: 'reject'; reason: string }
 	| { result: 'error'; err: unknown };
 
-type ApplyAccessKeyFn = (params: { controllerId: Principal }) => Promise<void>;
+export type ApplyAccessKeyFn = (params: { controllerId: Principal }) => Promise<void>;
 
 type UpdateControllersFn = (params: {
 	controllerId: Principal;
@@ -36,7 +36,6 @@ type UpdateControllersFn = (params: {
 export const setAdminAccessKey = async ({
 	setAccessKeysFn,
 	attachFn,
-	canisterId,
 	metadata,
 	...rest
 }: {
@@ -59,6 +58,41 @@ export const setAdminAccessKey = async ({
 		await attachFn?.();
 	};
 
+	return withSetAdminController({
+		applyFn: applyAccessKeyFn,
+		...rest
+	});
+};
+
+export const setAdminController = async ({
+	attachFn,
+	metadata,
+	...rest
+}: {
+	attachFn?: () => Promise<void>;
+	canisterId: Principal;
+	identity: Identity;
+} & AddAdminAccessKeyParams): Promise<AdminAccessKeyResult> => {
+	const applyAccessKeyFn: ApplyAccessKeyFn = async () => {
+		await attachFn?.();
+	};
+
+	return withSetAdminController({
+		applyFn: applyAccessKeyFn,
+		...rest
+	});
+};
+
+const withSetAdminController = async ({
+	applyFn,
+	canisterId,
+	metadata,
+	...rest
+}: {
+	applyFn: ApplyAccessKeyFn;
+	canisterId: Principal;
+	identity: Identity;
+} & AddAdminAccessKeyParams): Promise<AdminAccessKeyResult> => {
 	const updateControllersFn: UpdateControllersFn = ({ currentControllers, controllerId }) => {
 		if (currentControllers.length >= MAX_NUMBER_OF_CONTROLLERS - 1) {
 			return { result: 'reject', reason: get(i18n).errors.canister_controllers };
@@ -75,7 +109,7 @@ export const setAdminAccessKey = async ({
 	};
 
 	return await executeAdminAccessKey({
-		applyAccessKeyFn,
+		applyAccessKeyFn: applyFn,
 		updateControllersFn,
 		canisterId,
 		...rest

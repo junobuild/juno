@@ -4,14 +4,15 @@ import { setControllers as setSatelliteControllers } from '$lib/api/satellites.a
 import { consoleOrbiters, consoleSatellites } from '$lib/derived/console/segments.derived';
 import {
 	type SetAccessKeysFn,
-	setAdminAccessKey
+	setAdminAccessKey,
+	setAdminController
 } from '$lib/services/access-keys/key.admin.services';
 import { i18n } from '$lib/stores/app/i18n.store';
 import type { AddAdminAccessKeyParams } from '$lib/types/access-keys';
 import type { MissionControlId } from '$lib/types/mission-control';
 import type { Orbiter } from '$lib/types/orbiter';
 import type { Satellite } from '$lib/types/satellite';
-import type { UfoId } from '$lib/types/ufo';
+import type { Ufo, UfoId } from '$lib/types/ufo';
 import { metadataUiName } from '$lib/utils/metadata-ui.utils';
 import { orbiterName } from '$lib/utils/orbiter.utils';
 import type { Identity } from '@icp-sdk/core/agent';
@@ -305,6 +306,32 @@ export const setMissionControlAsControllerAndAttachOrbiter = async ({
 		attachFn,
 		...CONTROLLER_PARAMS,
 		canisterId: orbiterId,
+		accessKeyId: missionControlId,
+		identity
+	});
+
+	return { result: 'ok' };
+};
+
+export const setMissionControlAsControllerAndAttachUfo = async ({
+	ufo,
+	missionControlId,
+	identity
+}: {
+	ufo: Ufo;
+	missionControlId: MissionControlId;
+	identity: Identity;
+}): Promise<AttachSegmentResult> => {
+	const { ufo_id: ufoId } = ufo;
+
+	const attachFn = async () => {
+		await setUfo({ missionControlId, ufoId, identity, ufoName: metadataUiName(ufo) });
+	};
+
+	await setAdminController({
+		attachFn,
+		...CONTROLLER_PARAMS,
+		canisterId: ufoId,
 		accessKeyId: missionControlId,
 		identity
 	});

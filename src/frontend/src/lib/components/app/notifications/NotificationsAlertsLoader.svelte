@@ -2,10 +2,15 @@
 	import NotificationsCanisterLoader from '$lib/components/app/notifications/NotificationsCanisterLoader.svelte';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import { orbiter } from '$lib/derived/orbiter.derived';
-	import { outOfSyncOrbiters, outOfSyncSatellites } from '$lib/derived/out-of-sync.derived';
+	import {
+		outOfSyncOrbiters,
+		outOfSyncUfos,
+		outOfSyncSatellites
+	} from '$lib/derived/out-of-sync.derived';
 	import { satellite } from '$lib/derived/satellite.derived';
 	import { versionsLoaded, versionsUpgradeWarning } from '$lib/derived/version.derived';
 	import type { CanisterData, CanisterWarning } from '$lib/types/canister';
+	import { ufo } from '$lib/derived/ufo.derived';
 
 	interface Props {
 		missionControlCanisterData: CanisterData | undefined;
@@ -14,6 +19,8 @@
 		orbiterWarnings: CanisterWarning | undefined;
 		satelliteCanisterData: CanisterData | undefined;
 		satelliteWarnings: CanisterWarning | undefined;
+		ufoCanisterData: CanisterData | undefined;
+		ufoWarnings: CanisterWarning | undefined;
 		alerts: boolean;
 		upgradeWarning: boolean;
 		canisterWarnings: boolean;
@@ -27,6 +34,8 @@
 		orbiterWarnings = $bindable(undefined),
 		satelliteCanisterData = $bindable(undefined),
 		satelliteWarnings = $bindable(undefined),
+		ufoCanisterData = $bindable(undefined),
+		ufoWarnings = $bindable(undefined),
 		alerts = $bindable(false),
 		upgradeWarning = $bindable(false),
 		canisterWarnings = $bindable(false),
@@ -39,12 +48,15 @@
 	let hasCanisterWarnings = $derived(
 		hasWarnings(missionControlWarnings) ||
 			hasWarnings(orbiterWarnings) ||
-			hasWarnings(satelliteWarnings)
+			hasWarnings(satelliteWarnings) ||
+			hasWarnings(ufoWarnings)
 	);
 
 	let hasUpgradeWarning = $derived($versionsLoaded && $versionsUpgradeWarning);
 
-	let hasOutOfSyncWarning = $derived($outOfSyncSatellites === true || $outOfSyncOrbiters === true);
+	let hasOutOfSyncWarning = $derived(
+		$outOfSyncSatellites === true || $outOfSyncOrbiters === true || $outOfSyncUfos === true
+	);
 
 	let hasNotifications = $derived(hasCanisterWarnings || hasUpgradeWarning || hasOutOfSyncWarning);
 
@@ -72,4 +84,10 @@
 	canisterId={$satellite?.satellite_id}
 	bind:warnings={satelliteWarnings}
 	bind:data={satelliteCanisterData}
+/>
+
+<NotificationsCanisterLoader
+	canisterId={$ufo?.ufo_id}
+	bind:warnings={ufoWarnings}
+	bind:data={ufoCanisterData}
 />

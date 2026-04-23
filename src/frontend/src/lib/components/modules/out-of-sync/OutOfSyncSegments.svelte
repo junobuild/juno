@@ -8,26 +8,20 @@
 	import type { Satellite } from '$lib/types/satellite';
 	import { metadataUiName } from '$lib/utils/metadata-ui.utils';
 	import { orbiterName } from '$lib/utils/orbiter.utils';
+	import type { Ufo } from '$lib/types/ufo';
 
 	interface Props {
 		label: Snippet;
 		satellites: Satellite[];
+		ufos: Ufo[];
 		orbiter: Nullish<Orbiter>;
 	}
 
-	let { label, satellites, orbiter }: Props = $props();
+	let { label, satellites, ufos, orbiter }: Props = $props();
 </script>
 
 {#snippet withSegments()}
 	<ul class="content">
-		{#each satellites as satellite (satellite.satellite_id.toText())}
-			<li>
-				<Segment id={satellite.satellite_id}>
-					{metadataUiName(satellite)}
-				</Segment>
-			</li>
-		{/each}
-
 		{#if nonNullish(orbiter)}
 			{@const orbName = orbiterName(orbiter)}
 
@@ -37,6 +31,22 @@
 				</Segment>
 			</li>
 		{/if}
+
+		{#each satellites as satellite (satellite.satellite_id.toText())}
+			<li>
+				<Segment id={satellite.satellite_id}>
+					{metadataUiName(satellite)}
+				</Segment>
+			</li>
+		{/each}
+
+		{#each ufos as ufo (ufo.ufo_id.toText())}
+			<li>
+				<Segment id={ufo.ufo_id}>
+					{metadataUiName(ufo)}
+				</Segment>
+			</li>
+		{/each}
 	</ul>
 {/snippet}
 

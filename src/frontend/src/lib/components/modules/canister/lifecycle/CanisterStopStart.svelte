@@ -8,7 +8,7 @@
 	interface Props {
 		canister?: CanisterSyncData | undefined;
 		monitoringEnabled: boolean;
-		segment: 'satellite' | 'orbiter';
+		segment: 'satellite' | 'orbiter' | 'ufo';
 		onstart: () => void;
 		onstop: () => void;
 	}

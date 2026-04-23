@@ -10,6 +10,7 @@
 	import MissionControlTopUpModal from '$lib/components/modals/cycles/top-up/MissionControlTopUpModal.svelte';
 	import OrbiterTopUpModal from '$lib/components/modals/cycles/top-up/OrbiterTopUpModal.svelte';
 	import SatelliteTopUpModal from '$lib/components/modals/cycles/top-up/SatelliteTopUpModal.svelte';
+	import UfoTopUpModal from '$lib/components/modals/cycles/top-up/UfoTopUpModal.svelte';
 	import MissionControlTransferCyclesModal from '$lib/components/modals/cycles/transfer/MissionControlTransferCyclesModal.svelte';
 	import OrbiterTransferCyclesModal from '$lib/components/modals/cycles/transfer/OrbiterTransferCyclesModal.svelte';
 	import SatelliteTransferCyclesModal from '$lib/components/modals/cycles/transfer/SatelliteTransferCyclesModal.svelte';
@@ -70,6 +71,10 @@
 
 {#if modal?.type === 'topup_orbiter'}
 	<OrbiterTopUpModal onclose={close} />
+{/if}
+
+{#if modal?.type === 'topup_ufo' && nonNullish(modal.detail)}
+	<UfoTopUpModal detail={modal.detail} onclose={close} />
 {/if}
 
 {#if modal?.type === 'add_custom_domain' && nonNullish(modal.detail)}

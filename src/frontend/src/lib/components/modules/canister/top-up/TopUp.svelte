@@ -3,12 +3,12 @@
 	import { missionControlIdNotLoaded } from '$lib/derived/console/account.mission-control.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
-	import type { JunoModalWithSatellite } from '$lib/types/modal';
+	import type { JunoModalTopUpUfoDetail, JunoModalWithSatellite } from '$lib/types/modal';
 	import { emit } from '$lib/utils/events.utils';
 
 	interface Props {
-		type: 'topup_satellite' | 'topup_mission_control' | 'topup_orbiter';
-		detail?: JunoModalWithSatellite | undefined;
+		type: 'topup_satellite' | 'topup_mission_control' | 'topup_orbiter' | 'topup_ufo';
+		detail?: JunoModalWithSatellite | JunoModalTopUpUfoDetail | undefined;
 		onclose: () => void;
 	}
 

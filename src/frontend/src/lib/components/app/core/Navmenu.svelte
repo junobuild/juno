@@ -20,6 +20,7 @@
 	import { isSatelliteRoute } from '$lib/derived/app/route.derived.svelte.js';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { isRouteSelected } from '$lib/utils/nav.utils';
+	import IconUfo from "$lib/components/icons/IconUfo.svelte";
 
 	let routeId: string | null = $derived(page.route.id);
 
@@ -151,6 +152,17 @@
 			>
 				<IconUpgradeDock size="22px" />
 				<span>{$i18n.upgrade.title}</span>
+			</a>
+
+			<a
+				class="link not-themed smaller-icon"
+				class:collapsed={$menuCollapsed}
+				class:selected={isRouteSelected({ routeId, path: 'ufo' })}
+				href={`/ufo${queryParam}`}
+				role="menuitem"
+			>
+				<IconUfo size="24px" />
+				<span>{$i18n.ufo.title}</span>
 			</a>
 		</div>
 	</nav>

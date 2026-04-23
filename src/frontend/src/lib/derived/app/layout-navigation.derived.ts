@@ -23,6 +23,14 @@ export const layoutNavigationTitle: Readable<string> = derived(
 			return `${$layoutNavigation?.data.title ?? ''} / ${satName} / ${JUNO_CONSOLE}`;
 		}
 
+		if (
+			nonNullish($layoutNavigation?.data.ufo)
+		) {
+			const ufoName = metadataUiName($layoutNavigation.data.ufo.ufo);
+
+			return `${ufoName} / ${JUNO_CONSOLE}`;
+		}
+
 		return `${$layoutNavigation?.data.title ?? $i18n.launchpad.launchpad} / ${JUNO_CONSOLE}`;
 	}
 );

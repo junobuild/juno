@@ -13,7 +13,7 @@
 		data: CanisterData | undefined;
 		close: () => void;
 		href: string;
-		segment: 'satellite' | 'mission_control' | 'orbiter';
+		segment: 'satellite' | 'mission_control' | 'orbiter' | 'ufo';
 	}
 
 	let { warnings, close, data, href, cyclesIcon, segment }: Props = $props();

@@ -1100,7 +1100,7 @@
 		"upgrade_available": "New upgrades available. Visit the Upgrade Dock to check them out.",
 		"short_freezing_threshold": "Short freezing threshold detected. We recommend a longer grace period to give you more time if cycles run out.",
 		"learn_more": "Learn more",
-		"out_of_sync": "Your satellites and orbiters are out of sync. Reconcile them now."
+		"out_of_sync": "Your modules are out of sync. Reconcile them now."
 	},
 	"not_found": {
 		"title": "Oops! You got lost in space.",
@@ -1124,7 +1124,9 @@
 		"syncing_satellites_to_console": "Syncing Satellites to Console...",
 		"syncing_satellites_to_mctrl": "Syncing Satellites to Mission Control... ({0})",
 		"syncing_orbiters_to_console": "Syncing Orbiters to Console...",
-		"syncing_orbiters_to_mctrl": "Syncing Orbiters to Mission Control... ({0})"
+		"syncing_orbiters_to_mctrl": "Syncing Orbiters to Mission Control... ({0})",
+		"syncing_ufos_to_console": "Syncing UFOs to Console...",
+		"syncing_ufos_to_mctrl": "Syncing UFOs to Mission Control... ({0})"
 	},
 	"automation": {
 		"title": "Deployments",

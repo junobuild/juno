@@ -35,11 +35,11 @@ export const loadUfos = async ({
 	const currentVersion = instantMissionControlVersion();
 
 	if (notEmptyString(currentVersion) && compare(currentVersion, MISSION_CONTROL_v0_1_3) < 0) {
-		ufosUncertifiedStore.set(null);
+		ufosUncertifiedStore.set([]);
 		return { result: 'success' };
 	}
 
-	const load = async (identity: Identity): Promise<MissionControlDid.Ufo[] | null> => {
+	const load = async (identity: Identity): Promise<MissionControlDid.Ufo[]> => {
 		// TODO: Version might not been loading yet. We could refactor to avoid imperatively
 		// loading an additional time the version
 		if (isEmptyString(currentVersion)) {
@@ -49,7 +49,7 @@ export const loadUfos = async ({
 			});
 
 			if (compare(instantVersion?.metadata?.current ?? '0.0.0', MISSION_CONTROL_v0_1_3) < 0) {
-				return null;
+				return [];
 			}
 		}
 

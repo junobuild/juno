@@ -5,10 +5,12 @@
 	import IconAnalytics from '$lib/components/icons/IconAnalytics.svelte';
 	import IconMissionControl from '$lib/components/icons/IconMissionControl.svelte';
 	import IconSatellite from '$lib/components/icons/IconSatellite.svelte';
+	import IconUfo from '$lib/components/icons/IconUfo.svelte';
 	import { satellite } from '$lib/derived/satellite.derived';
+	import { ufo } from '$lib/derived/ufo.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { CanisterData, CanisterWarning } from '$lib/types/canister';
-	import { overviewLink } from '$lib/utils/nav.utils';
+	import { overviewLink, ufoLink } from '$lib/utils/nav.utils';
 
 	interface Props {
 		missionControlCanisterData: CanisterData | undefined;
@@ -17,6 +19,8 @@
 		orbiterWarnings: CanisterWarning | undefined;
 		satelliteCanisterData: CanisterData | undefined;
 		satelliteWarnings: CanisterWarning | undefined;
+		ufoCanisterData: CanisterData | undefined;
+		ufoWarnings: CanisterWarning | undefined;
 		close: () => void;
 		alerts: boolean;
 		upgradeWarning: boolean;
@@ -31,6 +35,8 @@
 		orbiterWarnings,
 		satelliteCanisterData,
 		satelliteWarnings,
+		ufoCanisterData,
+		ufoWarnings,
 		close,
 		alerts,
 		upgradeWarning,
@@ -68,6 +74,15 @@
 			href={overviewLink($satellite?.satellite_id)}
 			segment="satellite"
 			warnings={satelliteWarnings}
+		/>
+
+		<NotificationsCanisterAlert
+			{close}
+			cyclesIcon={IconUfo}
+			data={ufoCanisterData}
+			href={ufoLink($ufo?.ufo_id)}
+			segment="ufo"
+			warnings={ufoWarnings}
 		/>
 	{/if}
 

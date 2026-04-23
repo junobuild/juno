@@ -28,8 +28,6 @@
 	const onsubmit = async ($event: SubmitEvent) => {
 		$event.preventDefault();
 
-		$event.preventDefault();
-
 		onProgress(undefined);
 
 		wizardBusy.start();

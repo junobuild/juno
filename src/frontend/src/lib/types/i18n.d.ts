@@ -1163,6 +1163,8 @@ interface I18nOut_of_sync {
 	syncing_satellites_to_mctrl: string;
 	syncing_orbiters_to_console: string;
 	syncing_orbiters_to_mctrl: string;
+	syncing_ufos_to_console: string;
+	syncing_ufos_to_mctrl: string;
 }
 
 interface I18nAutomation {

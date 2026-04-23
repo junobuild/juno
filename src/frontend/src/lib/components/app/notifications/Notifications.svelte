@@ -34,6 +34,9 @@
 	let satelliteCanisterData = $state<CanisterData | undefined>(undefined);
 	let satelliteWarnings = $state<CanisterWarning | undefined>(undefined);
 
+	let ufoCanisterData = $state<CanisterData | undefined>(undefined);
+	let ufoWarnings = $state<CanisterWarning | undefined>(undefined);
+
 	let upgradeWarning = $state(false);
 	let canisterWarnings = $state(false);
 	let canisterNotifications = $state(false);
@@ -98,6 +101,8 @@
 	{orbiterWarnings}
 	{satelliteCanisterData}
 	{satelliteWarnings}
+	{ufoCanisterData}
+	{ufoWarnings}
 	bind:alerts={hasAlerts}
 	bind:upgradeWarning
 	bind:canisterWarnings
@@ -121,6 +126,8 @@
 					{outOfSyncWarnings}
 					{satelliteCanisterData}
 					{satelliteWarnings}
+					{ufoCanisterData}
+					{ufoWarnings}
 					{upgradeWarning}
 				/>
 			{:else if $store.tabId === $store.tabs[1].id}

@@ -3,10 +3,10 @@
 	import { fade } from 'svelte/transition';
 	import NotFound from '$lib/components/ui/NotFound.svelte';
 	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
+	import { ufo } from '$lib/derived/ufo.derived';
+	import { ufos } from '$lib/derived/ufos.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { Ufo } from '$lib/types/ufo';
-	import { ufos } from '$lib/derived/ufos.derived';
-	import { ufo } from '$lib/derived/ufo.derived';
 
 	interface Props {
 		content: Snippet<[Ufo]>;

@@ -155,7 +155,7 @@
 			</a>
 
 			<a
-				class="link not-themed smaller-icon"
+				class="link not-themed"
 				class:collapsed={$menuCollapsed}
 				class:selected={isRouteSelected({ routeId, path: 'ufo' })}
 				href={`/ufo${queryParam}`}

@@ -7,6 +7,7 @@
 		setUfoMetadata
 	} from '$lib/services/metadata.services';
 	import type { Ufo } from '$lib/types/ufo';
+	import DetachSegment from '$lib/components/modules/attach-detach/DetachSegment.svelte';
 
 	interface Props {
 		ufo: Ufo;
@@ -28,5 +29,7 @@
 <SegmentActions bind:visible>
 	{#snippet moreActions()}
 		<SegmentWithMetadataEditDetails segment={ufo} {updateMetadata} />
+
+		<DetachSegment {monitoringEnabled} ondetach={close} segment="ufo" segmentId={ufo.ufo_id} />
 	{/snippet}
 </SegmentActions>

@@ -1,5 +1,4 @@
 <script lang="ts">
-	import IconSatellite from '$lib/components/icons/IconSatellite.svelte';
 	import IconUfo from '$lib/components/icons/IconUfo.svelte';
 	import Canister from '$lib/components/modules/canister/Canister.svelte';
 	import LaunchpadArticle from '$lib/components/modules/launchpad/LaunchpadArticle.svelte';
@@ -9,7 +8,7 @@
 	import { layoutLaunchpad } from '$lib/stores/app/layout-launchpad.store';
 	import { LaunchpadLayout } from '$lib/types/layout';
 	import type { UfoUi } from '$lib/types/ufo';
-	import { overviewLink, ufoLink } from '$lib/utils/nav.utils';
+	import { ufoLink } from '$lib/utils/nav.utils';
 
 	interface Props {
 		ufo: UfoUi;

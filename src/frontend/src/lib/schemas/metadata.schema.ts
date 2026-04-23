@@ -1,12 +1,12 @@
 import { notEmptyString } from '@dfinity/utils';
 import * as z from 'zod';
 
-export const SatelliteTagSchema = z.string().min(1).max(20);
+export const MetadataUiTagSchema = z.string().min(1).max(20);
 
-export const SatelliteUiTagsSchema = z.array(SatelliteTagSchema).max(10);
+export const MetadataUiTagsSchema = z.array(MetadataUiTagSchema).max(10);
 
 // DID data -> Frontend
-export const SatelliteUiMetadataParser = z.preprocess((val) => {
+export const MetadataDeserializer = z.preprocess((val) => {
 	if (typeof val === 'string') {
 		return val
 			.split(',')
@@ -14,16 +14,16 @@ export const SatelliteUiMetadataParser = z.preprocess((val) => {
 			.filter(notEmptyString);
 	}
 	return val;
-}, SatelliteUiTagsSchema);
+}, MetadataUiTagsSchema);
 
 // Frontend -> DID Data
-export const SatelliteUiMetadataSerializer = SatelliteUiTagsSchema.optional().transform((tags) =>
+export const MetadataSerializer = MetadataUiTagsSchema.optional().transform((tags) =>
 	tags?.join(',')
 );
 
 // Metadata as loaded on the frontend side. See mission-control.did for Metadata Array<[string, string]>
-export const SatelliteUiMetadataSchema = z.strictObject({
+export const MetadataUiSchema = z.strictObject({
 	name: z.string(),
 	environment: z.string().optional(),
-	tags: SatelliteUiTagsSchema.optional()
+	tags: MetadataUiTagsSchema.optional()
 });

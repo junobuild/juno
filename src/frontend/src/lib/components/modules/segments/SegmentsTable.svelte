@@ -20,8 +20,8 @@
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
 	import type { MissionControlId } from '$lib/types/mission-control';
+	import { metadataUiName } from '$lib/utils/metadata-ui.utils';
 	import { orbiterName } from '$lib/utils/orbiter.utils';
-	import { satelliteName } from '$lib/utils/satellite.utils';
 	import { waitReady } from '$lib/utils/timeout.utils';
 
 	interface Props {
@@ -187,7 +187,7 @@
 						<td>
 							<label for={satelliteId}>
 								<Segment id={satellite[0]}>
-									{satelliteName(satellite[1])}
+									{metadataUiName(satellite[1])}
 								</Segment>
 							</label></td
 						>

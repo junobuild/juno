@@ -1,7 +1,7 @@
 import { consoleSatellites } from '$lib/derived/console/segments.derived';
 import { mctrlSatellites } from '$lib/derived/mission-control/mission-control-satellites.derived';
 import type { Satellite, SatelliteUi } from '$lib/types/satellite';
-import { satelliteMetadata, satelliteName } from '$lib/utils/satellite.utils';
+import { metadataUi, metadataUiName } from '$lib/utils/metadata-ui.utils';
 import { derived } from 'svelte/store';
 
 export const satellites = derived(
@@ -35,12 +35,12 @@ export const satellitesNotLoaded = derived(
 );
 
 export const sortedSatellites = derived([satellites], ([$satellitesStore]) =>
-	($satellitesStore ?? []).sort((a, b) => satelliteName(a).localeCompare(satelliteName(b)))
+	($satellitesStore ?? []).sort((a, b) => metadataUiName(a).localeCompare(metadataUiName(b)))
 );
 
 export const sortedSatelliteUis = derived([sortedSatellites], ([$sortedSatellites]) =>
 	$sortedSatellites.map<SatelliteUi>((satellite) => ({
 		...satellite,
-		metadata: satelliteMetadata(satellite)
+		metadata: metadataUi(satellite)
 	}))
 );

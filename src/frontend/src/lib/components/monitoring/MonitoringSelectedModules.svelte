@@ -5,8 +5,8 @@
 	import Segment from '$lib/components/modules/segments/Segment.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/app/i18n.store';
+	import { metadataUiName } from '$lib/utils/metadata-ui.utils';
 	import { orbiterName } from '$lib/utils/orbiter.utils';
-	import { satelliteName } from '$lib/utils/satellite.utils';
 
 	interface Props {
 		selectedSatellites: [Principal, MissionControlDid.Satellite][];
@@ -25,7 +25,7 @@
 		{#each selectedSatellites as [satelliteId, satellite] (satelliteId.toText())}
 			<li>
 				<Segment id={satelliteId}>
-					{satelliteName(satellite)}
+					{metadataUiName(satellite)}
 				</Segment>
 			</li>
 		{/each}

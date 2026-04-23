@@ -9,7 +9,7 @@
 	import { sortedSatellites } from '$lib/derived/satellites.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { formatTCycles } from '$lib/utils/cycles.utils';
-	import { satelliteName } from '$lib/utils/satellite.utils';
+	import { metadataUiName } from '$lib/utils/metadata-ui.utils';
 
 	interface Props {
 		cycles: bigint;
@@ -69,7 +69,7 @@
 							</Segment>
 						{:else if nonNullish(satellite)}
 							<Segment id={satellite.satellite_id}>
-								{satelliteName(satellite)}
+								{metadataUiName(satellite)}
 							</Segment>
 						{:else}
 							{destinationId ?? ''}

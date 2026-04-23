@@ -21,7 +21,7 @@
 	import { findProviderGitHub, findProviderGoogle } from '$lib/utils/auth.openid.utils';
 	import { secondsToDuration } from '$lib/utils/date.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
-	import { satelliteName } from '$lib/utils/satellite.utils';
+	import { metadataUiName } from '$lib/utils/metadata-ui.utils';
 
 	interface Props {
 		satellite: Satellite;
@@ -129,7 +129,7 @@
 						{#if targets === null}
 							<p>{$i18n.authentication.no_restrictions}</p>
 						{:else if targets === undefined || targetsSelf}
-							<p>{$i18n.authentication.target_your_satellite} {satelliteName(satellite)}</p>
+							<p>{$i18n.authentication.target_your_satellite} {metadataUiName(satellite)}</p>
 						{:else}
 							<p>
 								{i18nFormat($i18n.authentication.target_modules, [

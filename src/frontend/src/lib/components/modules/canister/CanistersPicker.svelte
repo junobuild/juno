@@ -7,7 +7,7 @@
 	import { sortedSatellites } from '$lib/derived/satellites.derived';
 	import { loadSegments } from '$lib/services/segments.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import { satelliteName } from '$lib/utils/satellite.utils';
+	import { metadataUiName } from '$lib/utils/metadata-ui.utils';
 
 	interface Props {
 		excludeSegmentId: Principal;
@@ -39,7 +39,7 @@
 	{/if}
 
 	{#each satellites as satellite (satellite.satellite_id.toText())}
-		{@const satName = satelliteName(satellite)}
+		{@const satName = metadataUiName(satellite)}
 
 		<option value={satellite.satellite_id.toText()}>{satName}</option>
 	{/each}

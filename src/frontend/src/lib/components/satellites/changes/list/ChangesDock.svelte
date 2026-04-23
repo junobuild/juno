@@ -7,7 +7,7 @@
 	import { openSatellitesProposals } from '$lib/derived/satellite/proposals.derived';
 	import { satellite } from '$lib/derived/satellite.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import { satelliteName } from '$lib/utils/satellite.utils';
+	import { metadataUiName } from '$lib/utils/metadata-ui.utils';
 
 	let innerWidth = $state(0);
 
@@ -32,7 +32,7 @@
 							<ChangesFilter />
 							{#if nonNullish($satellite)}
 								<ChangesMore satelliteId={$satellite.satellite_id} />
-								{satelliteName($satellite)} ({$satellite.satellite_id.toText()})
+								{metadataUiName($satellite)} ({$satellite.satellite_id.toText()})
 							{/if}
 						</div>
 					</th>

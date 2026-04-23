@@ -1,7 +1,7 @@
 import { authSignedIn } from '$lib/derived/auth.derived';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { layoutNavigation } from '$lib/stores/app/layout-navigation.store';
-import { satelliteName } from '$lib/utils/satellite.utils';
+import { metadataUiName } from '$lib/utils/metadata-ui.utils';
 import { nonNullish, notEmptyString } from '@dfinity/utils';
 import { derived, type Readable } from 'svelte/store';
 
@@ -18,7 +18,7 @@ export const layoutNavigationTitle: Readable<string> = derived(
 			nonNullish($layoutNavigation?.data.satellite) &&
 			notEmptyString($layoutNavigation?.data.title)
 		) {
-			const satName = satelliteName($layoutNavigation.data.satellite.satellite);
+			const satName = metadataUiName($layoutNavigation.data.satellite.satellite);
 
 			return `${$layoutNavigation?.data.title ?? ''} / ${satName} / ${JUNO_CONSOLE}`;
 		}

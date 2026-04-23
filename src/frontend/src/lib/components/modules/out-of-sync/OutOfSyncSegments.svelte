@@ -6,8 +6,8 @@
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { Orbiter } from '$lib/types/orbiter';
 	import type { Satellite } from '$lib/types/satellite';
+	import { metadataUiName } from '$lib/utils/metadata-ui.utils';
 	import { orbiterName } from '$lib/utils/orbiter.utils';
-	import { satelliteName } from '$lib/utils/satellite.utils';
 
 	interface Props {
 		label: Snippet;
@@ -23,7 +23,7 @@
 		{#each satellites as satellite (satellite.satellite_id.toText())}
 			<li>
 				<Segment id={satellite.satellite_id}>
-					{satelliteName(satellite)}
+					{metadataUiName(satellite)}
 				</Segment>
 			</li>
 		{/each}

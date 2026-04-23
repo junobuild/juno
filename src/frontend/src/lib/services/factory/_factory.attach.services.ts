@@ -12,8 +12,8 @@ import type { MissionControlId } from '$lib/types/mission-control';
 import type { Orbiter } from '$lib/types/orbiter';
 import type { Satellite } from '$lib/types/satellite';
 import type { UfoId } from '$lib/types/ufo';
+import { metadataUiName } from '$lib/utils/metadata-ui.utils';
 import { orbiterName } from '$lib/utils/orbiter.utils';
-import { satelliteName } from '$lib/utils/satellite.utils';
 import type { Identity } from '@icp-sdk/core/agent';
 import type { Principal } from '@icp-sdk/core/principal';
 import { get } from 'svelte/store';
@@ -263,7 +263,7 @@ export const setMissionControlAsControllerAndAttachSatellite = async ({
 			missionControlId,
 			satelliteId,
 			identity,
-			satelliteName: satelliteName(satellite)
+			satelliteName: metadataUiName(satellite)
 		});
 	};
 

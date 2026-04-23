@@ -9,8 +9,8 @@
 	import { satellite } from '$lib/derived/satellite.derived';
 	import { satellites } from '$lib/derived/satellites.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
+	import { metadataUiName } from '$lib/utils/metadata-ui.utils';
 	import { navigateToChangesDock } from '$lib/utils/nav.utils';
-	import { satelliteName } from '$lib/utils/satellite.utils';
 
 	let visible = $state(false);
 
@@ -32,7 +32,7 @@
 				...acc,
 				{
 					satelliteId: satellite.satellite_id.toText(),
-					satName: satelliteName(satellite)
+					satName: metadataUiName(satellite)
 				}
 			],
 			[]

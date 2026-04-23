@@ -1,7 +1,8 @@
 import { consoleUfos } from '$lib/derived/console/segments.derived';
 import { mctrlUfos } from '$lib/derived/mission-control/mission-control-ufos.derived';
 import type { Ufo, UfoUi } from '$lib/types/ufo';
-import { ufoMetadata, ufoName } from '$lib/utils/ufo.utils';
+import { metadataUi } from '$lib/utils/metadata-ui.utils';
+import { sortUfos } from '$lib/utils/ufo.utils';
 import { derived } from 'svelte/store';
 
 export const ufos = derived(
@@ -27,13 +28,11 @@ export const ufosLoaded = derived([ufos], ([$ufosStore]) => $ufosStore !== undef
 
 export const ufosNotLoaded = derived([ufosLoaded], ([$ufosLoaded]) => !$ufosLoaded);
 
-export const sortedUfos = derived([ufos], ([$ufosStore]) =>
-	($ufosStore ?? []).sort((a, b) => ufoName(a).localeCompare(ufoName(b)))
-);
+export const sortedUfos = derived([ufos], ([$ufosStore]) => ($ufosStore ?? []).sort(sortUfos));
 
 export const sortedUfoUis = derived([sortedUfos], ([$sortedUfos]) =>
 	$sortedUfos.map<UfoUi>((ufo) => ({
 		...ufo,
-		metadata: ufoMetadata(ufo)
+		metadata: metadataUi(ufo)
 	}))
 );

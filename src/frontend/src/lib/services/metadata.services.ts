@@ -9,10 +9,7 @@ import {
 } from '$lib/constants/metadata.constants';
 import { segments } from '$lib/derived/console/segments.derived';
 import { mctrlSatellites } from '$lib/derived/mission-control/mission-control-satellites.derived';
-import {
-	SatelliteUiMetadataSchema,
-	SatelliteUiMetadataSerializer
-} from '$lib/schemas/satellite.schema';
+import { MetadataSerializer, MetadataUiSchema } from '$lib/schemas/metadata.schema';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
 import { segmentsUncertifiedStore } from '$lib/stores/console/segments.store';
@@ -46,7 +43,7 @@ export const setSatelliteMetadata = async ({
 		return { success: false };
 	}
 
-	const { error, success, data } = SatelliteUiMetadataSchema.safeParse(metadata);
+	const { error, success, data } = MetadataUiSchema.safeParse(metadata);
 
 	if (!success) {
 		toasts.error({
@@ -99,7 +96,7 @@ const prepareMetadata = ({
 		updateData.delete(METADATA_KEY_ENVIRONMENT);
 	}
 
-	const tags = SatelliteUiMetadataSerializer.parse(satelliteTags);
+	const tags = MetadataSerializer.parse(satelliteTags);
 
 	if (notEmptyString(tags)) {
 		updateData.set(METADATA_KEY_TAGS, tags);

@@ -7,9 +7,9 @@
 	import { authSignedIn } from '$lib/derived/auth.derived';
 	import { satellite, satelliteUi } from '$lib/derived/satellite.derived';
 	import { layoutNavigation } from '$lib/stores/app/layout-navigation.store';
-	import { satelliteName } from '$lib/utils/satellite.utils';
+	import { metadataUiName } from '$lib/utils/metadata-ui.utils';
 
-	let label = $derived(nonNullish($satellite) ? satelliteName($satellite) : undefined);
+	let label = $derived(nonNullish($satellite) ? metadataUiName($satellite) : undefined);
 
 	let subNavigation = $derived(
 		notEmptyString($layoutTitle) && $layoutNavigation?.data.satellite?.useInPageTitle === false

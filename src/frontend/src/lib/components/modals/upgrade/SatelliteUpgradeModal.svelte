@@ -11,7 +11,7 @@
 	import type { JunoModalDetail, JunoModalUpgradeSatelliteDetail } from '$lib/types/modal';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { container } from '$lib/utils/juno.utils';
-	import { satelliteName } from '$lib/utils/satellite.utils';
+	import { metadataUiName } from '$lib/utils/metadata-ui.utils';
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -62,7 +62,7 @@
 				text={i18nFormat($i18n.canisters.upgrade_title, [
 					{
 						placeholder: '{0}',
-						value: satelliteName(satellite)
+						value: metadataUiName(satellite)
 					}
 				])}
 			/>

@@ -6,12 +6,12 @@
 	import SegmentWithMetadataEnvironmentText from '$lib/components/modules/segments/SegmentWithMetadataEnvironmentText.svelte';
 	import SegmentWithMetadataName from '$lib/components/modules/segments/SegmentWithMetadataName.svelte';
 	import SegmentWithMetadataTags from '$lib/components/modules/segments/SegmentWithMetadataTags.svelte';
+	import UfoOverviewActions from '$lib/components/ufos/overview/UfoOverviewActions.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { CanisterSyncData as CanisterSyncDataType } from '$lib/types/canister';
 	import type { Ufo } from '$lib/types/ufo';
-	import UfoOverviewActions from '$lib/components/ufos/overview/UfoOverviewActions.svelte';
 
 	interface Props {
 		ufo: Ufo;
@@ -59,7 +59,7 @@
 	</div>
 </div>
 
-<UfoOverviewActions {ufo} {monitoringEnabled} />
+<UfoOverviewActions {monitoringEnabled} {ufo} />
 
 <div class="card-container with-title">
 	<span class="title">{$i18n.monitoring.runtime}</span>

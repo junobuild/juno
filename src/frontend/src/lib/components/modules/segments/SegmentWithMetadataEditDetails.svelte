@@ -6,22 +6,17 @@
 	import { isBusy } from '$lib/derived/app/busy.derived';
 	import { authIdentity } from '$lib/derived/auth.derived';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
-	import {
-		type SetMetadataParams,
-		type SetMetadataResult,
-		setSatelliteMetadata
-	} from '$lib/services/metadata.services';
+	import type { SetMetadataParams, SetMetadataResult } from '$lib/services/metadata.services';
 	import { busy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
-	import type { MetadataUi, MetadataUiTags } from '$lib/types/metadata';
-	import type { Satellite } from '$lib/types/satellite';
+	import type { MetadataUiTags } from '$lib/types/metadata';
+	import type { SegmentWithMetadata } from '$lib/types/segment';
 	import {
 		metadataUiEnvironment,
 		metadataUiName,
 		metadataUiTags
 	} from '$lib/utils/metadata-ui.utils';
-	import type { SegmentWithMetadata } from '$lib/types/segment';
 
 	interface Props {
 		segment: SegmentWithMetadata;

@@ -4,12 +4,12 @@
 	import SegmentWithMetadataEditDetails from '$lib/components/modules/segments/SegmentWithMetadataEditDetails.svelte';
 	import SatelliteReloadVersion from '$lib/components/satellites/overview/SatelliteReloadVersion.svelte';
 	import SatelliteVisit from '$lib/components/satellites/overview/SatelliteVisit.svelte';
-	import type { Satellite } from '$lib/types/satellite';
 	import {
 		type SetMetadataParams,
 		type SetMetadataResult,
 		setSatelliteMetadata
 	} from '$lib/services/metadata.services';
+	import type { Satellite } from '$lib/types/satellite';
 
 	interface Props {
 		satellite: Satellite;

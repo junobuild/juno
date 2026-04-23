@@ -1,7 +1,7 @@
 import { pageId } from '$lib/derived/app/page.derived.svelte.js';
 import { satellites } from '$lib/derived/satellites.derived';
 import type { Satellite, SatelliteUi } from '$lib/types/satellite';
-import { satelliteMetadata } from '$lib/utils/satellite.utils';
+import { metadataUi } from '$lib/utils/metadata-ui.utils';
 import { isNullish } from '@dfinity/utils';
 import type { Nullish } from '@dfinity/zod-schemas';
 import { derived, type Readable } from 'svelte/store';
@@ -36,7 +36,7 @@ export const satelliteUi: Readable<Nullish<SatelliteUi>> = derived(
 
 		return {
 			...$satelliteStore,
-			metadata: satelliteMetadata($satelliteStore)
+			metadata: metadataUi($satelliteStore)
 		};
 	}
 );

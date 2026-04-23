@@ -10,8 +10,13 @@
 	import { busy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
-	import type { Satellite, SatelliteUiTags } from '$lib/types/satellite';
-	import { satelliteEnvironment, satelliteName, satelliteTags } from '$lib/utils/satellite.utils';
+	import type { MetadataUiTags } from '$lib/types/metadata';
+	import type { Satellite } from '$lib/types/satellite';
+	import {
+		metadataUiEnvironment,
+		metadataUiName,
+		metadataUiTags
+	} from '$lib/utils/metadata-ui.utils';
 
 	interface Props {
 		satellite: Satellite;
@@ -20,13 +25,13 @@
 	let { satellite }: Props = $props();
 
 	// svelte-ignore state_referenced_locally
-	let satName = $state(satelliteName(satellite));
+	let satName = $state(metadataUiName(satellite));
 	// svelte-ignore state_referenced_locally
-	let satEnv = $state<string | undefined>(satelliteEnvironment(satellite));
+	let satEnv = $state<string | undefined>(metadataUiEnvironment(satellite));
 
 	// svelte-ignore state_referenced_locally
-	let satTagsInput = $state(satelliteTags(satellite)?.join(',') ?? '');
-	let satTags = $derived<SatelliteUiTags>(
+	let satTagsInput = $state(metadataUiTags(satellite)?.join(',') ?? '');
+	let satTags = $derived<MetadataUiTags>(
 		satTagsInput
 			.split(/[\n,]+/)
 			.map((input) => input.toLowerCase().trim())

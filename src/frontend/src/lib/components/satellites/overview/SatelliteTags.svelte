@@ -4,7 +4,7 @@
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { Satellite } from '$lib/types/satellite';
-	import { satelliteTags } from '$lib/utils/satellite.utils';
+	import { metadataUiTags } from '$lib/utils/metadata-ui.utils';
 
 	interface Props {
 		satellite: Satellite;
@@ -12,7 +12,7 @@
 
 	let { satellite }: Props = $props();
 
-	let tags = $derived(satelliteTags(satellite));
+	let tags = $derived(metadataUiTags(satellite));
 </script>
 
 {#if nonNullish(tags)}

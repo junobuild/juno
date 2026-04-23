@@ -9,7 +9,7 @@
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { Satellite } from '$lib/types/satellite';
-	import { satelliteName } from '$lib/utils/satellite.utils';
+	import { metadataUiName } from '$lib/utils/metadata-ui.utils';
 
 	interface Props {
 		satellite: Satellite;
@@ -92,7 +92,7 @@
 			<div>
 				<select bind:value={targetsType}>
 					<option value="default">
-						{$i18n.authentication.target_your_satellite} {satelliteName(satellite)}</option
+						{$i18n.authentication.target_your_satellite} {metadataUiName(satellite)}</option
 					>
 					<option value="none"> {$i18n.authentication.no_restrictions} </option>
 					<option value="custom"> {$i18n.core.custom} </option>

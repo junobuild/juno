@@ -8,9 +8,9 @@ import {
 } from '$lib/services/mission-control/mission-control.services';
 import type { AddAccessKeyParams } from '$lib/types/access-keys';
 import type { MissionControlId } from '$lib/types/mission-control';
+import { metadataUiName } from '$lib/utils/metadata-ui.utils';
 import { bigintStringify } from '$lib/utils/number.utils';
 import { orbiterName } from '$lib/utils/orbiter.utils';
-import { satelliteName } from '$lib/utils/satellite.utils';
 import { nonNullish, notEmptyString } from '@dfinity/utils';
 import type { Nullish } from '@dfinity/zod-schemas';
 import type { Identity } from '@icp-sdk/core/agent';
@@ -153,7 +153,7 @@ const buildRedirectParameters = ({
 					JSON.stringify(
 						selectedSatellites.map(([p, n]) => ({
 							p: p.toText(),
-							n: satelliteName(n)
+							n: metadataUiName(n)
 						})),
 						bigintStringify
 					)

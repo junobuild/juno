@@ -4,7 +4,7 @@
 	import CanisterTransferCyclesModal from '$lib/components/modals/cycles/transfer/CanisterTransferCyclesModal.svelte';
 	import { authIdentity } from '$lib/derived/auth.derived';
 	import type { JunoModalCyclesSatelliteDetail, JunoModalDetail } from '$lib/types/modal';
-	import { satelliteName } from '$lib/utils/satellite.utils';
+	import { metadataUiName } from '$lib/utils/metadata-ui.utils';
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -32,7 +32,7 @@
 	segment={{
 		segment: 'satellite',
 		canisterId: satellite.satellite_id.toText(),
-		label: satelliteName(satellite)
+		label: metadataUiName(satellite)
 	}}
 	{transferFn}
 />

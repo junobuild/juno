@@ -16,7 +16,7 @@
 	import { orbiters } from '$lib/derived/orbiter.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { MissionControlId } from '$lib/types/mission-control';
-	import { satelliteName } from '$lib/utils/satellite.utils';
+	import { metadataUiName } from '$lib/utils/metadata-ui.utils';
 
 	interface Props {
 		missionControlId: MissionControlId;
@@ -51,7 +51,7 @@
 				segmentLabel={$i18n.satellites.satellite}
 			>
 				<IconSatellite size="24px" />
-				<span>{satelliteName(satellite)}</span>
+				<span>{metadataUiName(satellite)}</span>
 			</MonitoringArticle>
 		{/each}
 

@@ -9,18 +9,15 @@ import {
 } from '$lib/constants/metadata.constants';
 import { segments } from '$lib/derived/console/segments.derived';
 import { mctrlSatellites } from '$lib/derived/mission-control/mission-control-satellites.derived';
-import {
-	SatelliteUiMetadataSchema,
-	SatelliteUiMetadataSerializer
-} from '$lib/schemas/satellite.schema';
+import { MetadataSerializer, MetadataUiSchema } from '$lib/schemas/metadata.schema';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
 import { segmentsUncertifiedStore } from '$lib/stores/console/segments.store';
 import { satellitesUncertifiedStore } from '$lib/stores/mission-control/satellites.store';
 import type { NullishIdentity } from '$lib/types/itentity';
-import type { Metadata } from '$lib/types/metadata';
+import type { Metadata, MetadataUi } from '$lib/types/metadata';
 import type { MissionControlId } from '$lib/types/mission-control';
-import type { SatelliteId, SatelliteUiMetadata } from '$lib/types/satellite';
+import type { SatelliteId } from '$lib/types/satellite';
 import { isNullish, nonNullish, notEmptyString } from '@dfinity/utils';
 import type { Nullish } from '@dfinity/zod-schemas';
 import type { Identity } from '@icp-sdk/core/agent';
@@ -30,7 +27,7 @@ import * as z from 'zod';
 interface SetSatelliteMetadataParams {
 	missionControlId: Nullish<MissionControlId>;
 	satellite: MissionControlDid.Satellite;
-	metadata: SatelliteUiMetadata;
+	metadata: MetadataUi;
 	identity: NullishIdentity;
 }
 
@@ -46,7 +43,7 @@ export const setSatelliteMetadata = async ({
 		return { success: false };
 	}
 
-	const { error, success, data } = SatelliteUiMetadataSchema.safeParse(metadata);
+	const { error, success, data } = MetadataUiSchema.safeParse(metadata);
 
 	if (!success) {
 		toasts.error({
@@ -85,7 +82,7 @@ const prepareMetadata = ({
 	data,
 	currentMetadata
 }: {
-	data: SatelliteUiMetadata;
+	data: MetadataUi;
 	currentMetadata: Metadata;
 }): Metadata => {
 	const { name: satelliteName, environment: satelliteEnv, tags: satelliteTags } = data;
@@ -99,7 +96,7 @@ const prepareMetadata = ({
 		updateData.delete(METADATA_KEY_ENVIRONMENT);
 	}
 
-	const tags = SatelliteUiMetadataSerializer.parse(satelliteTags);
+	const tags = MetadataSerializer.parse(satelliteTags);
 
 	if (notEmptyString(tags)) {
 		updateData.set(METADATA_KEY_TAGS, tags);

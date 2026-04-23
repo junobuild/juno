@@ -50,6 +50,6 @@ export const consoleUfos = derived([segments], ([$segments]) =>
 		}))
 );
 
-export const consoleSortedSUfos = derived([consoleUfos], ([$consoleUfos]) =>
+export const consoleSortedUfos = derived([consoleUfos], ([$consoleUfos]) =>
 	($consoleUfos ?? []).sort(sortUfos)
 );

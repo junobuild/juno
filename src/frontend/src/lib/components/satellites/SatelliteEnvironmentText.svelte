@@ -3,7 +3,7 @@
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { Satellite } from '$lib/types/satellite';
-	import { satelliteEnvironment } from '$lib/utils/satellite.utils';
+	import { metadataUiEnvironment } from '$lib/utils/metadata-ui.utils';
 
 	interface Props {
 		satellite: Satellite;
@@ -11,7 +11,7 @@
 
 	let { satellite }: Props = $props();
 
-	let env = $derived(satelliteEnvironment(satellite));
+	let env = $derived(metadataUiEnvironment(satellite));
 </script>
 
 {#if nonNullish(env)}

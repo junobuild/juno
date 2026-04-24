@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { Principal } from '@icp-sdk/core/principal';
-	import type { Snippet } from 'svelte';
 	import InputCanisterId from '$lib/components/app/core/InputCanisterId.svelte';
 	import IconLink from '$lib/components/icons/IconLink.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';

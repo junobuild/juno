@@ -1,6 +1,6 @@
 [package]
 name = "junobuild-auth"
-version = "0.4.1"
+version = "0.4.2"
 authors.workspace = true
 edition.workspace = true
 repository.workspace = true
@@ -30,7 +30,7 @@ jsonwebtoken = { package = "jsonwebtoken-ic", version = "10.3.0-ic.0", default-f
 	"rust_crypto"
 ] }
 getrandom02 = { package = "getrandom", version = "0.2.16", features = ["custom"] }
-junobuild-shared = "0.8.1"
+junobuild-shared = "0.8.2"
 
 [dev-dependencies]
 jsonwebtoken = { package = "jsonwebtoken-ic", version = "10.3.0-ic.0", default-features = false, features = [

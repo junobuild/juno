@@ -6,6 +6,7 @@
 	import Warnings from '$lib/components/modules/warning/Warnings.svelte';
 	import UfoGuard from '$lib/components/ufos/guards/UfoGuard.svelte';
 	import UfoOverview from '$lib/components/ufos/overview/UfoOverview.svelte';
+	import UfoSettings from '$lib/components/ufos/setup/UfoSettings.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
 	import {
 		type Tab,
@@ -48,7 +49,7 @@
 					{#if $store.tabId === $store.tabs[0].id}
 						<UfoOverview {ufo} />
 					{:else if $store.tabId === $store.tabs[1].id}
-						TODO
+						<UfoSettings {ufo} />
 					{/if}
 				</Tabs>
 			{/snippet}

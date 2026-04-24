@@ -122,11 +122,11 @@
 
 		<div>
 			<a
-					class="link not-themed"
-					class:collapsed={$menuCollapsed}
-					class:selected={isRouteSelected({ routeId, path: 'ufo' })}
-					href={`/ufo${queryParam}`}
-					role="menuitem"
+				class="link not-themed"
+				class:collapsed={$menuCollapsed}
+				class:selected={isRouteSelected({ routeId, path: 'ufo' })}
+				href={`/ufo${queryParam}`}
+				role="menuitem"
 			>
 				<IconUfo size="24px" />
 				<span>{$i18n.ufo.title}</span>

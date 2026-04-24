@@ -3,7 +3,6 @@
 	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import IdentityGuard from '$lib/components/auth/guards/IdentityGuard.svelte';
-	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { authSignedOut } from '$lib/derived/auth.derived';
 	import { credits } from '$lib/derived/console/credits.derived';
@@ -11,6 +10,7 @@
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { authStore } from '$lib/stores/auth.store';
 	import { formatCredits } from '$lib/utils/icp.utils';
+	import DevId from '$lib/components/app/core/DevId.svelte';
 
 	const loadCredits = async () => {
 		if ($authSignedOut) {
@@ -32,12 +32,7 @@
 		<div class="columns-3 fit-column-1">
 			<div>
 				<div class="dev-id">
-					<Value>
-						{#snippet label()}
-							{$i18n.profile.dev_id}
-						{/snippet}
-						<Identifier identifier={$authStore.identity?.getPrincipal().toText() ?? ''} />
-					</Value>
+					<DevId />
 				</div>
 
 				<Value>

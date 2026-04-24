@@ -5,15 +5,14 @@
 	import CanisterOverview from '$lib/components/modules/canister/display/CanisterOverview.svelte';
 	import CanisterSubnet from '$lib/components/modules/canister/display/CanisterSubnet.svelte';
 	import SegmentVersion from '$lib/components/modules/segments/SegmentVersion.svelte';
-	import Identifier from '$lib/components/ui/Identifier.svelte';
-	import Value from '$lib/components/ui/Value.svelte';
 	import { authSignedIn } from '$lib/derived/auth.derived';
 	import { missionControlVersion } from '$lib/derived/version.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
-	import type { MissionControlId } from '$lib/types/mission-control';
+	import type { MissionControlId as MissionControlIdType } from '$lib/types/mission-control';
+	import MissionControlId from '$lib/components/mission-control/MissionControlId.svelte';
 
 	interface Props {
-		missionControlId: MissionControlId;
+		missionControlId: MissionControlIdType;
 	}
 
 	let { missionControlId }: Props = $props();
@@ -26,12 +25,7 @@
 		<div class="columns-3 fit-column-1">
 			<div class="id">
 				<div>
-					<Value>
-						{#snippet label()}
-							{$i18n.mission_control.id}
-						{/snippet}
-						<Identifier identifier={missionControlId.toText()} shorten={false} small={false} />
-					</Value>
+					<MissionControlId {missionControlId} />
 				</div>
 
 				<CanisterSubnet canisterId={missionControlId} />

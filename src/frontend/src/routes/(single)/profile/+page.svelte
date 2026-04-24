@@ -2,8 +2,8 @@
 	import { nonNullish } from '@dfinity/utils';
 	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
+	import DevId from '$lib/components/app/core/DevId.svelte';
 	import IdentityGuard from '$lib/components/auth/guards/IdentityGuard.svelte';
-	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { authSignedOut } from '$lib/derived/auth.derived';
 	import { credits } from '$lib/derived/console/credits.derived';
@@ -32,12 +32,7 @@
 		<div class="columns-3 fit-column-1">
 			<div>
 				<div class="dev-id">
-					<Value>
-						{#snippet label()}
-							{$i18n.profile.dev_id}
-						{/snippet}
-						<Identifier identifier={$authStore.identity?.getPrincipal().toText() ?? ''} />
-					</Value>
+					<DevId />
 				</div>
 
 				<Value>

@@ -678,6 +678,7 @@ interface I18nErrors {
 	controllers_no_selection: string;
 	controllers_add: string;
 	controllers_delete: string;
+	ufo_controller_not_admin: string;
 	data_delete: string;
 	key_invalid: string;
 	full_path_invalid: string;

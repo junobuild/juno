@@ -12,7 +12,7 @@
 	import { addAccessKey, removeAccessKey } from '$lib/services/access-keys/access-keys.services';
 	import { addSatellitesAccessKey } from '$lib/services/access-keys/satellites.key.add.services';
 	import { removeSatellitesAccessKey } from '$lib/services/access-keys/satellites.key.remove.services';
-	import { listUfoControllers } from '$lib/services/access-keys/ufo.key.services';
+	import { addUfoController, listUfoControllers } from '$lib/services/access-keys/ufo.key.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type {
 		AddAccessKeyResult,
@@ -63,30 +63,10 @@
 	};
 
 	const add = async (accessKey: AddAccessKeyParams): Promise<AddAccessKeyResult> => {
-		const satelliteIds = [satellite.satellite_id];
-
-		const addAccessKeyWithMissionControlFn: AccessKeyWithMissionControlFn = async (params) => {
-			await setSatellitesController({
-				...accessKey,
-				...params,
-				satelliteIds
-			});
-		};
-
-		const addAccessKeyWithDevFn: AccessKeyWithDevFn = async (params) => {
-			await addSatellitesAccessKey({
-				...accessKey,
-				...params,
-				satelliteIds
-			});
-		};
-
-		return await addAccessKey({
+		return await addUfoController({
 			identity: $authIdentity,
-			missionControlId: $missionControlId,
 			accessKey,
-			addAccessKeyWithMissionControlFn,
-			addAccessKeyWithDevFn
+			ufoId: ufo.ufo_id
 		});
 	};
 </script>

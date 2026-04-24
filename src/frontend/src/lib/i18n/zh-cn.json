@@ -662,6 +662,7 @@
 		"controllers_no_selection": "未选择要删除的密钥。",
 		"controllers_add": "添加访问密钥时发生意外错误。",
 		"controllers_delete": "删除密钥时发生意外错误。",
+		"ufo_controller_not_admin": "只有具有管理员权限的访问密钥才能添加到 UFO。",
 		"data_delete": "删除时发生意外错误。",
 		"key_invalid": "密钥无效或为空。",
 		"full_path_invalid": "密钥（full_path）无效或为空。",

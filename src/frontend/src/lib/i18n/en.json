@@ -324,7 +324,7 @@
 	},
 	"satellites": {
 		"title": "Satellites",
-		"launch": "Launch a new Satellite",
+		"launch": "Launch a Satellite",
 		"launch_first": "Launch your first Satellite",
 		"search": "Search",
 		"satellite": "Satellite",
@@ -1184,7 +1184,7 @@
 		"create_ufo_price": "Starting a UFO requires {0}.",
 		"ufo_name": "UFO name",
 		"enter_name": "Enter a name for your UFO",
-		"create": "Create UFO",
+		"create": "Spin up a UFO",
 		"ready": "Your UFO is ready!",
 		"overview": "Overview",
 		"loading_ufos": "Loading your UFOs",

@@ -325,7 +325,7 @@
 	},
 	"satellites": {
 		"title": "所有卫星",
-		"launch": "部署新卫星",
+		"launch": "启动一颗卫星",
 		"launch_first": "启动您的第一个 Satellite",
 		"search": "搜索",
 		"satellite": "卫星",
@@ -1186,7 +1186,7 @@
 		"create_ufo_price": "启动 UFO 需要 {0}。",
 		"ufo_name": "UFO 名称",
 		"enter_name": "为您的 UFO 输入名称",
-		"create": "创建 UFO",
+		"create": "启动 UFO",
 		"ready": "您的 UFO 已准备就绪！",
 		"overview": "概览",
 		"loading_ufos": "正在加载您的 UFO",

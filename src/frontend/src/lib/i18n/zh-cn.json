@@ -323,7 +323,8 @@
 		"getting_started_credits": "欢迎来到 Juno！在 <a href=\"https://discord.gg/wHZ57Z2RAG\" rel=\"external noopener noreferrer\" target=\"_blank\"><strong>Discord</strong></a> 上联系我们，免费开始您的旅程。",
 		"attach_title": "附加模块",
 		"attach_description": "将现有的卫星、轨道器或 UFO 连接到您的控制台。",
-		"attach_id": "输入 ID"
+		"attach_id": "输入 ID",
+		"attach_to_mission_control": "同时附加到任务控制"
 	},
 	"satellites": {
 		"title": "所有卫星",

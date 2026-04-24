@@ -1,14 +1,18 @@
 <script lang="ts">
 	import type { Principal } from '@icp-sdk/core/principal';
 	import type { MissionControlDid } from '$declarations';
-	import { deleteOrbitersController, setOrbitersController } from '$lib/api/mission-control.api';
+	import {
+		deleteSatellitesController,
+		setSatellitesController
+	} from '$lib/api/mission-control.api';
+	import { listControllers } from '$lib/api/satellites.api';
 	import AccessKeys from '$lib/components/modules/access-keys/AccessKeys.svelte';
 	import { authIdentity } from '$lib/derived/auth.derived';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 	import { addAccessKey, removeAccessKey } from '$lib/services/access-keys/access-keys.services';
-	import { addOrbiterAccessKey } from '$lib/services/access-keys/orbiter.key.add.services';
-	import { listOrbiterControllers } from '$lib/services/access-keys/orbiter.key.list.services';
-	import { removeOrbiterAccessKey } from '$lib/services/access-keys/orbiter.key.remove.services';
+	import { addSatellitesAccessKey } from '$lib/services/access-keys/satellites.key.add.services';
+	import { removeSatellitesAccessKey } from '$lib/services/access-keys/satellites.key.remove.services';
+	import { listUfoControllers } from '$lib/services/access-keys/ufo.key.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type {
 		AddAccessKeyResult,
@@ -18,32 +22,34 @@
 		AccessKeyIdParam,
 		AccessKeyUi
 	} from '$lib/types/access-keys';
+	import type { Satellite } from '$lib/types/satellite';
+	import type { Ufo } from '$lib/types/ufo';
 
 	interface Props {
-		orbiterId: Principal;
+		ufo: Ufo;
 	}
 
-	let { orbiterId }: Props = $props();
+	let { ufo }: Props = $props();
 
 	const list = (): Promise<[Principal, AccessKeyUi][]> =>
-		listOrbiterControllers({ orbiterId, identity: $authIdentity });
+		listUfoControllers({ ufoId: ufo.ufo_id, identity: $authIdentity });
 
 	const remove = async (accessKey: AccessKeyIdParam): Promise<AddAccessKeyResult> => {
-		const orbiterIds = [orbiterId];
+		const satelliteIds = [satellite.satellite_id];
 
 		const removeAccessKeyWithMissionControlFn: AccessKeyWithMissionControlFn = async (params) => {
-			await deleteOrbitersController({
+			await deleteSatellitesController({
 				...params,
 				...accessKey,
-				orbiterIds
+				satelliteIds
 			});
 		};
 
 		const removeAccessKeyWithDevFn: AccessKeyWithDevFn = async (params) => {
-			await removeOrbiterAccessKey({
+			await removeSatellitesAccessKey({
 				...accessKey,
 				...params,
-				orbiterIds
+				satelliteIds
 			});
 		};
 
@@ -57,21 +63,21 @@
 	};
 
 	const add = async (accessKey: AddAccessKeyParams): Promise<AddAccessKeyResult> => {
-		const orbiterIds = [orbiterId];
+		const satelliteIds = [satellite.satellite_id];
 
 		const addAccessKeyWithMissionControlFn: AccessKeyWithMissionControlFn = async (params) => {
-			await setOrbitersController({
+			await setSatellitesController({
 				...accessKey,
 				...params,
-				orbiterIds
+				satelliteIds
 			});
 		};
 
 		const addAccessKeyWithDevFn: AccessKeyWithDevFn = async (params) => {
-			await addOrbiterAccessKey({
+			await addSatellitesAccessKey({
 				...accessKey,
 				...params,
-				orbiterIds
+				satelliteIds
 			});
 		};
 
@@ -89,5 +95,9 @@
 	{add}
 	{list}
 	{remove}
-	segment={{ label: $i18n.analytics.orbiter, canisterId: orbiterId.toText(), segment: 'orbiter' }}
+	segment={{
+		label: $i18n.ufo.title,
+		canisterId: ufo.ufo_id.toText(),
+		segment: 'ufo'
+	}}
 />

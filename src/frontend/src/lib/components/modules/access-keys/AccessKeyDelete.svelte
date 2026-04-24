@@ -7,11 +7,11 @@
 	import { busy } from '$lib/stores/app/busy.store';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
-	import type { AccessKeyIdParam, AddAccessKeyResult } from '$lib/types/access-keys';
+	import type { AccessKeyIdParam, AccessKeyUi, AddAccessKeyResult } from '$lib/types/access-keys';
 
 	interface Props {
 		visible?: boolean;
-		selectedController: [Principal, SatelliteDid.AccessKey | undefined] | undefined;
+		selectedController: [Principal, AccessKeyUi | undefined] | undefined;
 		remove: (params: AccessKeyIdParam) => Promise<AddAccessKeyResult>;
 		load: () => Promise<void>;
 	}

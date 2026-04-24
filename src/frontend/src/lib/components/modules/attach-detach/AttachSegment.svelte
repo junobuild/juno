@@ -1,7 +1,10 @@
 <script lang="ts">
+	import { nonNullish } from '@dfinity/utils';
 	import { Principal } from '@icp-sdk/core/principal';
 	import InputCanisterId from '$lib/components/app/core/InputCanisterId.svelte';
 	import IconLink from '$lib/components/icons/IconLink.svelte';
+	import CheckboxInline from '$lib/components/ui/CheckboxInline.svelte';
+	import Html from '$lib/components/ui/Html.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { isBusy } from '$lib/derived/app/busy.derived';
@@ -12,9 +15,6 @@
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
 	import { i18nCapitalize, i18nFormat } from '$lib/utils/i18n.utils';
-	import CheckboxInline from '$lib/components/ui/CheckboxInline.svelte';
-	import { nonNullish } from '@dfinity/utils';
-	import Html from '$lib/components/ui/Html.svelte';
 
 	let visible = $state(false);
 

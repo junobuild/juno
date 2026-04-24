@@ -49,11 +49,8 @@ export const back = async ({ pop }: { pop: boolean }) => {
 	await goto('/');
 };
 
-export interface RouteSatellite {
+export interface RouteContext {
 	satellite: Nullish<string>;
-}
-
-export interface RouteUfo {
 	ufo: Nullish<string>;
 }
 
@@ -61,26 +58,10 @@ export interface RouteTab {
 	tab: Nullish<string>;
 }
 
-export const loadRouteSatellite = ($event: LoadEvent): RouteSatellite => {
+export const loadRouteContext = ($event: LoadEvent): RouteContext => {
 	if (!browser) {
 		return {
-			satellite: undefined
-		};
-	}
-
-	const {
-		url: { searchParams }
-	} = $event;
-
-	return {
-		satellite: searchParams?.get('s'),
-		...loadRouteTab($event)
-	};
-};
-
-export const loadRouteUfo = ($event: LoadEvent): RouteUfo => {
-	if (!browser) {
-		return {
+			satellite: undefined,
 			ufo: undefined
 		};
 	}
@@ -90,6 +71,7 @@ export const loadRouteUfo = ($event: LoadEvent): RouteUfo => {
 	} = $event;
 
 	return {
+		satellite: searchParams?.get('s'),
 		ufo: searchParams?.get('u'),
 		...loadRouteTab($event)
 	};

@@ -6,12 +6,12 @@ import { type Readable, writable } from 'svelte/store';
 
 type PageIdStoreData =
 	| {
-			satelliteId: SatelliteIdText;
+			satelliteId?: SatelliteIdText;
+			ufoId?: UfoIdText;
 	  }
-	| { ufoId: UfoIdText }
 	| undefined;
 
-export type PageIdStore = Readable<PageIdStoreData>;
+type PageIdStore = Readable<PageIdStoreData>;
 
 const initPageIdStore = (): PageIdStore => {
 	const { subscribe, set } = writable<PageIdStoreData>(undefined);
@@ -22,11 +22,12 @@ const initPageIdStore = (): PageIdStore => {
 			const ufoId = page.data?.ufo;
 
 			set(
-				notEmptyString(satelliteId)
-					? { satelliteId }
-					: notEmptyString(ufoId)
-						? { ufoId }
-						: undefined
+				notEmptyString(satelliteId) || notEmptyString(ufoId)
+					? {
+							...(notEmptyString(satelliteId) && { satelliteId }),
+							...(notEmptyString(ufoId) && { ufoId })
+						}
+					: undefined
 			);
 		});
 	});

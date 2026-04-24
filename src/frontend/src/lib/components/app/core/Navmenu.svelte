@@ -122,6 +122,17 @@
 
 		<div>
 			<a
+					class="link not-themed"
+					class:collapsed={$menuCollapsed}
+					class:selected={isRouteSelected({ routeId, path: 'ufo' })}
+					href={`/ufo${queryParam}`}
+					role="menuitem"
+			>
+				<IconUfo size="24px" />
+				<span>{$i18n.ufo.title}</span>
+			</a>
+
+			<a
 				class="link not-themed"
 				class:collapsed={$menuCollapsed}
 				class:selected={isRouteSelected({ routeId, path: 'analytics' })}
@@ -141,17 +152,6 @@
 			>
 				<IconTelescope />
 				<span>{$i18n.monitoring.title}</span>
-			</a>
-
-			<a
-				class="link not-themed"
-				class:collapsed={$menuCollapsed}
-				class:selected={isRouteSelected({ routeId, path: 'ufo' })}
-				href={`/ufo${queryParam}`}
-				role="menuitem"
-			>
-				<IconUfo size="24px" />
-				<span>{$i18n.ufo.title}</span>
 			</a>
 
 			<a

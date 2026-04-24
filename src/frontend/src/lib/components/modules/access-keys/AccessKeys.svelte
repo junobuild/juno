@@ -2,7 +2,6 @@
 	import { nonNullish } from '@dfinity/utils';
 	import type { Principal } from '@icp-sdk/core/principal';
 	import { onMount } from 'svelte';
-	import type { MissionControlDid } from '$declarations';
 	import AccessKeyAdd from '$lib/components/modules/access-keys/AccessKeyAdd.svelte';
 	import AccessKeyDelete from '$lib/components/modules/access-keys/AccessKeyDelete.svelte';
 	import AccessKeyInfo from '$lib/components/modules/access-keys/AccessKeyInfo.svelte';

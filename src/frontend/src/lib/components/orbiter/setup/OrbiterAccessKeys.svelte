@@ -1,6 +1,5 @@
 <script lang="ts">
 	import type { Principal } from '@icp-sdk/core/principal';
-	import type { MissionControlDid } from '$declarations';
 	import { deleteOrbitersController, setOrbitersController } from '$lib/api/mission-control.api';
 	import AccessKeys from '$lib/components/modules/access-keys/AccessKeys.svelte';
 	import { authIdentity } from '$lib/derived/auth.derived';

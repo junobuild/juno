@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { isNullish } from '@dfinity/utils';
 	import type { Principal } from '@icp-sdk/core/principal';
-	import type { SatelliteDid } from '$declarations';
 	import Confirmation from '$lib/components/app/core/Confirmation.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { busy } from '$lib/stores/app/busy.store';

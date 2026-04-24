@@ -181,7 +181,7 @@
 					{#snippet label()}
 						{$i18n.controllers.scope}
 					{/snippet}
-					<select name="scope" bind:value={scope} disabled={segment.segment === 'ufo'}>
+					<select name="scope" disabled={segment.segment === 'ufo'} bind:value={scope}>
 						<option value="submit">{$i18n.controllers.submit}</option>
 						<option value="write">{$i18n.controllers.write}</option>
 						<option value="admin">{$i18n.controllers.admin}</option>

@@ -1,52 +1,37 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
-	import { run } from 'svelte/legacy';
-	import { fade } from 'svelte/transition';
-	import LaunchpadFirstSatellite from '$lib/components/modules/launchpad/LaunchpadFirstSatellite.svelte';
+	import LaunchpadGuard from '$lib/components/modules/launchpad/LaunchpadGuard.svelte';
+	import LaunchpadHeader from '$lib/components/modules/launchpad/LaunchpadHeader.svelte';
 	import LaunchpadSegments from '$lib/components/modules/launchpad/LaunchpadSegments.svelte';
-	import Message from '$lib/components/ui/Message.svelte';
-	import Spinner from '$lib/components/ui/Spinner.svelte';
+	import LaunchpadToolbar from '$lib/components/modules/launchpad/LaunchpadToolbar.svelte';
+	import { account } from '$lib/derived/console/account.derived';
 	import { satellites } from '$lib/derived/satellites.derived';
-	import { i18n } from '$lib/stores/app/i18n.store';
 
-	let loading = $state(true);
-	run(() => {
-		(() => {
-			if (nonNullish($satellites)) {
-				setTimeout(() => (loading = false), 500);
-				return;
-			}
+	let filter = $state('');
 
-			loading = true;
-		})();
-	});
+	// If the user was never updated, they never received credits.
+	// We do this check to e.g. not display the getting started banner on Skylab.
+	let userNoFirstCredits = $derived(
+		nonNullish($account) &&
+			$account.created_at === $account.updated_at &&
+			$account.credits.e8s === 0n
+	);
+
+	let withoutGreetingsReturningLabel = $derived(($satellites?.length ?? 0n) === 0n);
 </script>
 
-{#if loading || ($satellites?.length ?? 0n) === 0}
-	{#if loading}
-		<div class="spinner">
-			<Message>
-				{#snippet icon()}
-					<Spinner inline />
-				{/snippet}
+<LaunchpadGuard>
+	<section>
+		<LaunchpadHeader userGettingStarted={userNoFirstCredits} {withoutGreetingsReturningLabel}>
+			<LaunchpadToolbar bind:filter />
+		</LaunchpadHeader>
 
-				<p>{$i18n.launchpad.loading_launchpad}</p>
-			</Message>
-		</div>
-	{:else}
-		<section in:fade>
-			<LaunchpadFirstSatellite />
-		</section>
-	{/if}
-{:else if ($satellites?.length ?? 0) >= 1}
-	<section in:fade>
-		<LaunchpadSegments />
+		<LaunchpadSegments {filter} />
 	</section>
-{/if}
+</LaunchpadGuard>
 
 <style lang="scss">
 	@use '../../../styles/mixins/grid';
-	@use '../../../styles/mixins/media';
 
 	section {
 		@include grid.twelve-columns;
@@ -56,18 +41,5 @@
 		&:first-of-type {
 			margin-top: var(--padding-4x);
 		}
-	}
-
-	section,
-	h1,
-	div {
-		position: relative;
-	}
-
-	.spinner {
-		position: fixed;
-		top: 50%;
-		left: 50%;
-		transform: translate(-50%, -75%);
 	}
 </style>

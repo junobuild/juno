@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { debounce } from '@dfinity/utils';
 	import { run } from 'svelte/legacy';
-	import AttachActions from '$lib/components/modules/attach-detach/AttachActions.svelte';
+	import AttachSegment from '$lib/components/modules/attach-detach/AttachSegment.svelte';
 	import LaunchpadLayout from '$lib/components/modules/launchpad/LaunchpadLayout.svelte';
 	import LaunchpadNewActions from '$lib/components/modules/launchpad/LaunchpadNewActions.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
@@ -37,7 +37,7 @@
 
 		<LaunchpadLayout />
 
-		<AttachActions />
+		<AttachSegment />
 	</div>
 
 	<LaunchpadNewActions />

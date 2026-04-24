@@ -312,7 +312,6 @@
 		"loading_launchpad": "正在加载启动台...",
 		"go_launchpad": "前往启动台",
 		"launchpad": "启动台",
-		"attach": "关联卫星",
 		"morning": "早上好",
 		"afternoon": "下午好",
 		"good_evening": "晚上好",
@@ -321,7 +320,10 @@
 		"commander": "指挥官",
 		"spacebuilder": "太空建造者",
 		"captain": "船长",
-		"getting_started_credits": "欢迎来到 Juno！在 <a href=\"https://discord.gg/wHZ57Z2RAG\" rel=\"external noopener noreferrer\" target=\"_blank\"><strong>Discord</strong></a> 上联系我们，免费开始您的旅程。"
+		"getting_started_credits": "欢迎来到 Juno！在 <a href=\"https://discord.gg/wHZ57Z2RAG\" rel=\"external noopener noreferrer\" target=\"_blank\"><strong>Discord</strong></a> 上联系我们，免费开始您的旅程。",
+		"attach_title": "附加模块",
+		"attach_description": "将现有的卫星、轨道器或 UFO 连接到您的控制台。",
+		"attach_id": "输入 ID"
 	},
 	"satellites": {
 		"title": "所有卫星",
@@ -510,8 +512,6 @@
 		"others": "其他",
 		"browsers": "浏览器",
 		"operating_systems": "操作系统",
-		"attach": "附加统计",
-		"attach_id": "输入轨道器ID",
 		"score": "得分",
 		"rating": "评级",
 		"web_vitals": "网页核心指标",

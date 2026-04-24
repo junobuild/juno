@@ -318,7 +318,6 @@ interface I18nLaunchpad {
 	loading_launchpad: string;
 	go_launchpad: string;
 	launchpad: string;
-	attach: string;
 	morning: string;
 	afternoon: string;
 	good_evening: string;
@@ -328,6 +327,9 @@ interface I18nLaunchpad {
 	spacebuilder: string;
 	captain: string;
 	getting_started_credits: string;
+	attach_title: string;
+	attach_description: string;
+	attach_id: string;
 }
 
 interface I18nSatellites {
@@ -523,8 +525,6 @@ interface I18nAnalytics {
 	others: string;
 	browsers: string;
 	operating_systems: string;
-	attach: string;
-	attach_id: string;
 	score: string;
 	rating: string;
 	web_vitals: string;

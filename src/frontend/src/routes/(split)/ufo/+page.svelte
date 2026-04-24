@@ -14,6 +14,7 @@
 		type TabsData
 	} from '$lib/types/tabs.context';
 	import { initTabId } from '$lib/utils/tabs.utils';
+	import UfoSettings from '$lib/components/ufos/setup/UfoSettings.svelte';
 
 	const tabs: Tab[] = [
 		{
@@ -48,7 +49,7 @@
 					{#if $store.tabId === $store.tabs[0].id}
 						<UfoOverview {ufo} />
 					{:else if $store.tabId === $store.tabs[1].id}
-						TODO
+						<UfoSettings {ufo} />
 					{/if}
 				</Tabs>
 			{/snippet}

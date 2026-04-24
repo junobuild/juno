@@ -2,7 +2,6 @@
 	import { nonNullish } from '@dfinity/utils';
 	import type { Principal } from '@icp-sdk/core/principal';
 	import { onMount } from 'svelte';
-	import type { MissionControlDid } from '$declarations';
 	import AccessKeyAdd from '$lib/components/modules/access-keys/AccessKeyAdd.svelte';
 	import AccessKeyDelete from '$lib/components/modules/access-keys/AccessKeyDelete.svelte';
 	import AccessKeyInfo from '$lib/components/modules/access-keys/AccessKeyInfo.svelte';
@@ -15,23 +14,24 @@
 	import type {
 		AddAccessKeyResult,
 		AddAccessKeyParams,
-		AccessKeyIdParam
+		AccessKeyIdParam,
+		AccessKeyUi
 	} from '$lib/types/access-keys';
 	import type { CanisterSegmentWithLabel } from '$lib/types/canister';
 	import { metadataProfile } from '$lib/utils/metadata.utils';
 
 	interface Props {
-		list: () => Promise<[Principal, MissionControlDid.AccessKey][]>;
+		list: () => Promise<[Principal, AccessKeyUi][]>;
 		remove: (params: AccessKeyIdParam) => Promise<AddAccessKeyResult>;
 		add: (params: AddAccessKeyParams) => Promise<AddAccessKeyResult>;
 		segment: CanisterSegmentWithLabel;
 		// The canister and user are controllers of the mission control but not added in its state per default
-		extraControllers?: [Principal, MissionControlDid.AccessKey][];
+		extraControllers?: [Principal, AccessKeyUi][];
 	}
 
 	let { list, remove, add, segment, extraControllers = [] }: Props = $props();
 
-	let controllers = $state<[Principal, MissionControlDid.AccessKey][]>([]);
+	let controllers = $state<[Principal, AccessKeyUi][]>([]);
 
 	const load = async () => {
 		try {
@@ -52,9 +52,7 @@
 
 	let visibleDelete = $state(false);
 	let visibleInfo = $state(false);
-	let selectedController = $state<[Principal, MissionControlDid.AccessKey | undefined] | undefined>(
-		undefined
-	);
+	let selectedController = $state<[Principal, AccessKeyUi | undefined] | undefined>(undefined);
 
 	const isMissionControl = (controllerId: Principal): boolean =>
 		nonNullish($missionControlId) && $missionControlId.toText() === controllerId.toText();

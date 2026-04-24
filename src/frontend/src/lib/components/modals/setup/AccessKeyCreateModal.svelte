@@ -26,7 +26,8 @@
 	let step: 'init' | 'in_progress' | 'ready' | 'error' = $state('init');
 
 	let accessKeyId = $state('');
-	let scope = $state<AddAccessKeyScope>('write');
+	// svelte-ignore state_referenced_locally
+	let scope = $state<AddAccessKeyScope>(segment.segment === 'ufo' ? 'admin' : 'write');
 	let identity: string | undefined = $state();
 
 	const initAccessKey = (): string | undefined => {
@@ -180,7 +181,7 @@
 					{#snippet label()}
 						{$i18n.controllers.scope}
 					{/snippet}
-					<select name="scope" bind:value={scope}>
+					<select name="scope" disabled={segment.segment === 'ufo'} bind:value={scope}>
 						<option value="submit">{$i18n.controllers.submit}</option>
 						<option value="write">{$i18n.controllers.write}</option>
 						<option value="admin">{$i18n.controllers.admin}</option>

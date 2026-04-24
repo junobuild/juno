@@ -1,3 +1,4 @@
+import type { MissionControlDid } from '$declarations';
 import type { MissionControlId } from '$lib/types/mission-control';
 import type { Identity } from '@icp-sdk/core/agent';
 import type { Principal } from '@icp-sdk/core/principal';
@@ -26,3 +27,12 @@ export type AccessKeyWithMissionControlFn = (params: {
 }) => Promise<void>;
 
 export type AccessKeyWithDevFn = (params: { identity: Identity }) => Promise<void>;
+
+export type AccessKeyUi = Omit<
+	MissionControlDid.AccessKey,
+	'created_at' | 'updated_at' | 'expires_at'
+> & {
+	createdAt?: bigint;
+	updatedAt?: bigint;
+	expiresAt?: bigint;
+};

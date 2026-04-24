@@ -6,6 +6,7 @@
 	import Warnings from '$lib/components/modules/warning/Warnings.svelte';
 	import UfoGuard from '$lib/components/ufos/guards/UfoGuard.svelte';
 	import UfoOverview from '$lib/components/ufos/overview/UfoOverview.svelte';
+	import UfoSettings from '$lib/components/ufos/setup/UfoSettings.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
 	import {
 		type Tab,
@@ -14,7 +15,6 @@
 		type TabsData
 	} from '$lib/types/tabs.context';
 	import { initTabId } from '$lib/utils/tabs.utils';
-	import UfoSettings from '$lib/components/ufos/setup/UfoSettings.svelte';
 
 	const tabs: Tab[] = [
 		{

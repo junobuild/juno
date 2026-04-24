@@ -50,4 +50,8 @@
 	.row {
 		font-size: var(--font-size-small);
 	}
+
+	span {
+		color: var(--value-color);
+	}
 </style>

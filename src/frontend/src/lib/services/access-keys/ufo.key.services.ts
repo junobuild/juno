@@ -1,12 +1,19 @@
-import { canisterStatus } from '$lib/api/ic.api';
+import type { ICDid } from '$declarations';
+import { canisterStatus, canisterUpdateSettings } from '$lib/api/ic.api';
 import { setAdminController } from '$lib/services/access-keys/key.admin.services';
 import { i18n } from '$lib/stores/app/i18n.store';
 import { toasts } from '$lib/stores/app/toasts.store';
-import type { AccessKeyIdParam, AccessKeyUi, AddAccessKeyParams, AddAccessKeyResult } from '$lib/types/access-keys';
+import type {
+	AccessKeyIdParam,
+	AccessKeyUi,
+	AddAccessKeyParams,
+	AddAccessKeyResult
+} from '$lib/types/access-keys';
 import type { NullishIdentity } from '$lib/types/itentity';
 import type { UfoId } from '$lib/types/ufo';
 import { assertNonNullish, isNullish, toNullable } from '@dfinity/utils';
-import type { Principal } from '@icp-sdk/core/principal';
+import type { Identity } from '@icp-sdk/core/agent';
+import { Principal } from '@icp-sdk/core/principal';
 import { get } from 'svelte/store';
 
 export const listUfoControllers = async ({
@@ -89,8 +96,12 @@ export const removeUfoController = async ({
 	}
 
 	try {
-		await setAdminController({
-			...accessKeyRest,
+		const controllerId = Principal.isPrincipal(accessKeyId)
+			? accessKeyId
+			: Principal.fromText(accessKeyId);
+
+		await removeController({
+			controllerId,
 			canisterId: ufoId,
 			identity
 		});
@@ -104,4 +115,48 @@ export const removeUfoController = async ({
 
 		return { result: 'error', err };
 	}
+};
+
+const removeController = async ({
+	controllerId,
+	canisterId,
+	identity
+}: {
+	controllerId: Principal;
+	canisterId: Principal;
+	identity: Identity;
+}): Promise<{ result: 'ok' | 'skip' } | { result: 'reject'; reason: string }> => {
+	const {
+		settings: { controllers: currentControllers }
+	} = await canisterStatus({
+		identity,
+		canisterId: canisterId.toText(),
+		// We need to be sure the list of controllers we get is correct here
+		// as we are using those to update the settings.
+		certified: true
+	});
+
+	const remainingControllers = currentControllers.filter(
+		(cId) => cId.toText() !== controllerId.toText()
+	);
+
+	const updateSettings: ICDid.canister_settings = {
+		environment_variables: toNullable(),
+		compute_allocation: toNullable(),
+		freezing_threshold: toNullable(),
+		log_visibility: toNullable(),
+		memory_allocation: toNullable(),
+		reserved_cycles_limit: toNullable(),
+		wasm_memory_limit: toNullable(),
+		wasm_memory_threshold: toNullable(),
+		controllers: toNullable(remainingControllers)
+	};
+
+	await canisterUpdateSettings({
+		canisterId,
+		identity,
+		settings: updateSettings
+	});
+
+	return { result: 'ok' };
 };

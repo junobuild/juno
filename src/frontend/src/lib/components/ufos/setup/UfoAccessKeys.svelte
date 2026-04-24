@@ -12,7 +12,11 @@
 	import { addAccessKey, removeAccessKey } from '$lib/services/access-keys/access-keys.services';
 	import { addSatellitesAccessKey } from '$lib/services/access-keys/satellites.key.add.services';
 	import { removeSatellitesAccessKey } from '$lib/services/access-keys/satellites.key.remove.services';
-	import { addUfoController, listUfoControllers } from '$lib/services/access-keys/ufo.key.services';
+	import {
+		addUfoController,
+		listUfoControllers,
+		removeUfoController
+	} from '$lib/services/access-keys/ufo.key.services';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type {
 		AddAccessKeyResult,
@@ -35,30 +39,10 @@
 		listUfoControllers({ ufoId: ufo.ufo_id, identity: $authIdentity });
 
 	const remove = async (accessKey: AccessKeyIdParam): Promise<AddAccessKeyResult> => {
-		const satelliteIds = [satellite.satellite_id];
-
-		const removeAccessKeyWithMissionControlFn: AccessKeyWithMissionControlFn = async (params) => {
-			await deleteSatellitesController({
-				...params,
-				...accessKey,
-				satelliteIds
-			});
-		};
-
-		const removeAccessKeyWithDevFn: AccessKeyWithDevFn = async (params) => {
-			await removeSatellitesAccessKey({
-				...accessKey,
-				...params,
-				satelliteIds
-			});
-		};
-
-		return await removeAccessKey({
+		return await removeUfoController({
 			identity: $authIdentity,
-			missionControlId: $missionControlId,
-			accessKey,
-			removeAccessKeyWithMissionControlFn,
-			removeAccessKeyWithDevFn
+			ufoId: ufo.ufo_id,
+			accessKey
 		});
 	};
 

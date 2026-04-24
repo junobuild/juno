@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { fade } from 'svelte/transition';
+	import MissionControlId from '$lib/components/mission-control/MissionControlId.svelte';
 	import MissionControlOverviewActions from '$lib/components/mission-control/MissionControlOverviewActions.svelte';
 	import MissionControlRuntimeActions from '$lib/components/mission-control/MissionControlRuntimeActions.svelte';
 	import CanisterOverview from '$lib/components/modules/canister/display/CanisterOverview.svelte';
@@ -9,7 +10,6 @@
 	import { missionControlVersion } from '$lib/derived/version.derived';
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import type { MissionControlId as MissionControlIdType } from '$lib/types/mission-control';
-	import MissionControlId from '$lib/components/mission-control/MissionControlId.svelte';
 
 	interface Props {
 		missionControlId: MissionControlIdType;

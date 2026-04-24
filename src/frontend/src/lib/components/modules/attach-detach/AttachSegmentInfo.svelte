@@ -1,8 +1,8 @@
 <script lang="ts">
-	import Hr from '$lib/components/ui/Hr.svelte';
+	import { nonNullish } from '@dfinity/utils';
 	import DevId from '$lib/components/app/core/DevId.svelte';
 	import MissionControlId from '$lib/components/mission-control/MissionControlId.svelte';
-	import { nonNullish } from '@dfinity/utils';
+	import Hr from '$lib/components/ui/Hr.svelte';
 	import { missionControlId } from '$lib/derived/console/account.mission-control.derived';
 </script>
 

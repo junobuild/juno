@@ -2,6 +2,7 @@
 	import { nonNullish } from '@dfinity/utils';
 	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
+	import DevId from '$lib/components/app/core/DevId.svelte';
 	import IdentityGuard from '$lib/components/auth/guards/IdentityGuard.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { authSignedOut } from '$lib/derived/auth.derived';
@@ -10,7 +11,6 @@
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { authStore } from '$lib/stores/auth.store';
 	import { formatCredits } from '$lib/utils/icp.utils';
-	import DevId from '$lib/components/app/core/DevId.svelte';
 
 	const loadCredits = async () => {
 		if ($authSignedOut) {

@@ -311,7 +311,6 @@
 		"loading_launchpad": "Loading your launchpad...",
 		"go_launchpad": "Go to launchpad",
 		"launchpad": "Launchpad",
-		"attach": "Attach Satellite",
 		"morning": "Morning",
 		"afternoon": "Afternoon",
 		"good_evening": "Good evening",
@@ -320,7 +319,10 @@
 		"commander": "Commander",
 		"spacebuilder": "Spacebuilder",
 		"captain": "Captain",
-		"getting_started_credits": "Welcome to Juno! Reach out on <a href=\"https://discord.gg/wHZ57Z2RAG\" rel=\"external noopener noreferrer\" target=\"_blank\"><strong>Discord</strong></a> and we'll get you started for free."
+		"getting_started_credits": "Welcome to Juno! Reach out on <a href=\"https://discord.gg/wHZ57Z2RAG\" rel=\"external noopener noreferrer\" target=\"_blank\"><strong>Discord</strong></a> and we'll get you started for free.",
+		"attach_title": "Attach Module",
+		"attach_description": "Connect an existing Satellite, Orbiter, or UFO to your Console.",
+		"attach_id": "Enter ID"
 	},
 	"satellites": {
 		"title": "Satellites",
@@ -509,8 +511,6 @@
 		"others": "Others",
 		"browsers": "Browsers",
 		"operating_systems": "Operating systems",
-		"attach": "Attach analytics",
-		"attach_id": "Enter Orbiter ID",
 		"score": "Score",
 		"rating": "Rating",
 		"web_vitals": "Web Vitals",

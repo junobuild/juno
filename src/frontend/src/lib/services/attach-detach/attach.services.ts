@@ -45,7 +45,11 @@ export const attachSegment = async ({
 		return { result: 'error' };
 	}
 
-	const { valid } = await assertKnowSegmentType({ segment, segmentId, identity });
+	const { valid } =
+		segment === 'ufo'
+			? // No preventive assertion for UFO #yolo
+				{ valid: true }
+			: await assertKnowSegmentType({ segment, segmentId, identity });
 
 	if (!valid) {
 		return { result: 'error' };

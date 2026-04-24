@@ -114,7 +114,7 @@
 		}
 
 		&.center {
-			--popover-min-size: 280px;
+			--popover-min-size: 300px;
 
 			&.wide {
 				--popover-min-size: 540px;

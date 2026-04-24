@@ -330,6 +330,7 @@ interface I18nLaunchpad {
 	attach_title: string;
 	attach_description: string;
 	attach_id: string;
+	attach_to_mission_control: string;
 }
 
 interface I18nSatellites {

@@ -322,7 +322,8 @@
 		"getting_started_credits": "Welcome to Juno! Reach out on <a href=\"https://discord.gg/wHZ57Z2RAG\" rel=\"external noopener noreferrer\" target=\"_blank\"><strong>Discord</strong></a> and we'll get you started for free.",
 		"attach_title": "Attach Module",
 		"attach_description": "Connect an existing Satellite, Orbiter, or UFO to your Console.",
-		"attach_id": "Enter ID"
+		"attach_id": "Enter ID",
+		"attach_to_mission_control": "Attach to Mission Control as well"
 	},
 	"satellites": {
 		"title": "Satellites",

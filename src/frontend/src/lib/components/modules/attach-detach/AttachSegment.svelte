@@ -12,6 +12,9 @@
 	import { i18n } from '$lib/stores/app/i18n.store';
 	import { toasts } from '$lib/stores/app/toasts.store';
 	import { i18nCapitalize, i18nFormat } from '$lib/utils/i18n.utils';
+	import CheckboxInline from '$lib/components/ui/CheckboxInline.svelte';
+	import { nonNullish } from '@dfinity/utils';
+	import Html from '$lib/components/ui/Html.svelte';
 
 	let visible = $state(false);
 
@@ -36,7 +39,8 @@
 		const { result } = await attachSegment({
 			segmentId: Principal.fromText(canisterId),
 			segment,
-			missionControlId: $missionControlId,
+			missionControlId:
+				nonNullish($missionControlId) && attachToMissionControl ? $missionControlId : null,
 			identity: $authIdentity
 		});
 
@@ -59,6 +63,8 @@
 			)
 		});
 	};
+
+	let attachToMissionControl = $state(true);
 </script>
 
 <button class="primary" aria-label={$i18n.core.attach} onclick={() => (visible = true)}
@@ -91,6 +97,12 @@
 			{/snippet}
 		</InputCanisterId>
 
+		{#if nonNullish($missionControlId)}
+			<CheckboxInline bind:checked={attachToMissionControl}>
+				<span>{$i18n.launchpad.attach_to_mission_control}</span>
+			</CheckboxInline>
+		{/if}
+
 		<button class="submit" disabled={$isBusy || !validConfirm} type="submit">
 			{$i18n.core.submit}
 		</button>
@@ -106,7 +118,8 @@
 		margin: var(--padding-1_5x) 0 0;
 	}
 
-	p {
+	p,
+	span {
 		font-size: var(--font-size-small);
 	}
 </style>

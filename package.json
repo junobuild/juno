@@ -125,7 +125,7 @@
 		"@junobuild/auth": "^4.1.2",
 		"@junobuild/cdn": "^2.5.0",
 		"@junobuild/core": "^5.4.0",
-		"@junobuild/ic-client": "^8.1.3",
+		"@junobuild/ic-client": "^8.2.0",
 		"@junobuild/schema": "^1.2.4",
 		"@junobuild/storage": "^2.4.2",
 		"@junobuild/utils": "^1.0.3",

@@ -1240,7 +1240,7 @@ dependencies = [
 
 [[package]]
 name = "junobuild-auth"
-version = "0.4.1"
+version = "0.4.2"
 dependencies = [
  "base64",
  "candid",
@@ -1259,7 +1259,7 @@ dependencies = [
 
 [[package]]
 name = "junobuild-cdn"
-version = "0.7.1"
+version = "0.7.2"
 dependencies = [
  "candid",
  "hex",
@@ -1274,7 +1274,7 @@ dependencies = [
 
 [[package]]
 name = "junobuild-collections"
-version = "0.5.1"
+version = "0.5.2"
 dependencies = [
  "candid",
  "ic-cdk",
@@ -1295,7 +1295,7 @@ dependencies = [
 
 [[package]]
 name = "junobuild-satellite"
-version = "0.6.1"
+version = "0.6.2"
 dependencies = [
  "candid",
  "ciborium",
@@ -1320,7 +1320,7 @@ dependencies = [
 
 [[package]]
 name = "junobuild-shared"
-version = "0.8.1"
+version = "0.8.2"
 dependencies = [
  "candid",
  "ciborium",
@@ -1338,7 +1338,7 @@ dependencies = [
 
 [[package]]
 name = "junobuild-storage"
-version = "0.7.1"
+version = "0.7.2"
 dependencies = [
  "base64",
  "candid",
@@ -1537,7 +1537,7 @@ dependencies = [
 
 [[package]]
 name = "orbiter"
-version = "0.2.3"
+version = "0.2.4"
 dependencies = [
  "candid",
  "ciborium",
@@ -2092,7 +2092,7 @@ dependencies = [
 
 [[package]]
 name = "sputnik"
-version = "0.4.1"
+version = "0.4.2"
 dependencies = [
  "anyhow",
  "candid",

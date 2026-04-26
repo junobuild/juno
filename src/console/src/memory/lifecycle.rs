@@ -2,7 +2,6 @@ use crate::cdn::certified_assets::upgrade::defer_init_certified_assets;
 use crate::cdn::lifecycle::init_cdn_storage_heap_state;
 use crate::fees::init_factory_fees;
 use crate::memory::manager::{get_memory_upgrades, init_stable_state, STATE};
-use crate::memory::upgrade::upgrade_init_ufo_fees_and_rates;
 use crate::rates::init::init_factory_rates;
 use crate::types::state::{HeapState, ReleasesMetadata, State};
 use ciborium::{from_reader, into_writer};
@@ -58,7 +57,4 @@ fn post_upgrade() {
     STATE.with(|s| *s.borrow_mut() = state);
 
     defer_init_certified_assets();
-
-    // TODO: to be removed, one time upgrade
-    upgrade_init_ufo_fees_and_rates();
 }

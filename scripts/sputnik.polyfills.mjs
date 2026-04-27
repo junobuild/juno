@@ -89,7 +89,7 @@ const transformLlrtUrlSearchParams = (content) => {
 const savePolyfill = async ({ dest, content, transform }) => {
 	const customUseContent = nonNullish(transform) ? transform(content) : content;
 
-	await writeFile(dest, customUseContent, 'utf-8');
+	await writeFile(dest, customUseContent.trim(), 'utf-8');
 };
 
 const resources = [

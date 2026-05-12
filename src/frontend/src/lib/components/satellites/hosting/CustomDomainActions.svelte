@@ -86,7 +86,6 @@
 			await deleteCustomDomainService({
 				satelliteId: satellite.satellite_id,
 				domainName: customDomain[0],
-				customDomain: customDomain[1],
 				deleteCustomDomain: !skipDeleteDomain,
 				identity: $authIdentity
 			});

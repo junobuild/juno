@@ -1,10 +1,8 @@
-import type { SatelliteDid } from '$declarations';
 import { SYNC_CUSTOM_DOMAIN_TIMER_INTERVAL } from '$lib/constants/app.constants';
-import { getCustomDomainRegistrationV0 } from '$lib/rest/bn.v0.rest';
 import { getCustomDomainRegistration } from '$lib/rest/bn.v1.rest';
 import type { CustomDomain, CustomDomainName, CustomDomainState } from '$lib/types/custom-domain';
 import type { PostMessageDataRequest, PostMessageRequest } from '$lib/types/post-message';
-import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
+import { isNullish } from '@dfinity/utils';
 
 export const onHostingMessage = async ({ data: dataMsg }: MessageEvent<PostMessageRequest>) => {
 	const { msg, data } = dataMsg;
@@ -55,12 +53,7 @@ const syncCustomDomainRegistration = async ({ customDomain }: { customDomain: Cu
 
 	try {
 		const sync = async (): Promise<CustomDomainState> => {
-			const [domainName, custom] = customDomain;
-
-			if (nonNullish(fromNullable(custom.bn_id))) {
-				return await syncCustomDomainRegistrationV0({ customDomain: custom });
-			}
-
+			const [domainName] = customDomain;
 			return await syncCustomDomainRegistrationV1({ domain: domainName });
 		};
 
@@ -98,30 +91,6 @@ const syncCustomDomainRegistrationV1 = async ({
 	}
 
 	return 'failed';
-};
-
-const syncCustomDomainRegistrationV0 = async ({
-	customDomain
-}: {
-	customDomain: SatelliteDid.CustomDomain;
-}): Promise<CustomDomainState> => {
-	const registration = await getCustomDomainRegistrationV0(customDomain);
-	const registrationState = nonNullish(registration)
-		? typeof registration.state !== 'string' && 'Failed' in registration.state
-			? 'Failed'
-			: registration.state
-		: null;
-
-	switch (registrationState) {
-		case 'PendingOrder':
-		case 'PendingChallengeResponse':
-		case 'PendingAcmeApproval':
-			return 'registering';
-		case 'Available':
-			return 'registered';
-		default:
-			return 'failed';
-	}
 };
 
 // Update ui with registration state

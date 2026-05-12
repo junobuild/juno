@@ -13,7 +13,6 @@ interface ImportMetaEnv {
 	readonly VITE_JUNO_API_URL: string | undefined;
 
 	// .env
-	readonly VITE_BN_REGISTRATIONS_URL: string | '' | undefined;
 	readonly VITE_BN_CUSTOM_DOMAINS_URL: string | '' | undefined;
 	readonly VITE_JUNO_CDN_URL: string | '' | undefined;
 	readonly VITE_CYCLE_EXPRESS_URL: string | '' | undefined;

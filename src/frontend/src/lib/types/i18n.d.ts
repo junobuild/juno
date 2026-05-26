@@ -130,6 +130,7 @@ interface I18nCore {
 	tags: string;
 	edit_details: string;
 	tags_placeholder: string;
+	maintenance: string;
 }
 
 interface I18nCanisters {

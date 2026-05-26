@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { debounce, nonNullish } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
-	import BannerSkylab from '$lib/components/app/core/BannerSkylab.svelte';
+	import Banner from '$lib/components/app/core/Banner.svelte';
 	import Logo from '$lib/components/app/core/Logo.svelte';
 	import NavbarSpotlight from '$lib/components/app/core/NavbarSpotlight.svelte';
 	import NavbarTitle from '$lib/components/app/core/NavbarTitle.svelte';
@@ -37,10 +37,10 @@
 </script>
 
 {#snippet banner()}
-	<BannerSkylab />
+	<Banner display={isSkylab() ? 'dev' : 'maintenance'} />
 {/snippet}
 
-<Header banner={isSkylab() ? banner : undefined} {hide}>
+<Header {banner} {hide}>
 	<div class="start">
 		{#if start === 'menu'}
 			<ButtonMenu />

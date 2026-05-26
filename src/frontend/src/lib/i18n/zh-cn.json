@@ -127,7 +127,8 @@
 		"environment": "运行环境",
 		"tags": "标签",
 		"edit_details": "编辑详情",
-		"tags_placeholder": "逗号分隔或每行一个，留空则不添加标签。"
+		"tags_placeholder": "逗号分隔或每行一个，留空则不添加标签。",
+		"maintenance": "Juno 目前处于<strong>维护模式</strong>，不再积极开发。"
 	},
 	"canisters": {
 		"top_up": "充值",

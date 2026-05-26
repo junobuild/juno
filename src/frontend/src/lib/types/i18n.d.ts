@@ -326,7 +326,6 @@ interface I18nLaunchpad {
 	commander: string;
 	spacebuilder: string;
 	captain: string;
-	getting_started_credits: string;
 	attach_title: string;
 	attach_description: string;
 	attach_id: string;

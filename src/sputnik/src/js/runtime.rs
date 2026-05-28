@@ -7,7 +7,7 @@ use crate::js::apis::init_apis;
 use crate::js::dev::script::declare_dev_script;
 use crate::js::inner_utils::format_js_error;
 use rquickjs::{
-    async_with, AsyncContext, AsyncRuntime, CatchResultExt, Context, Ctx, Error as JsError, Runtime,
+    AsyncContext, AsyncRuntime, CatchResultExt, Context, Ctx, Error as JsError, Runtime,
 };
 
 pub trait RunAsyncJsFn<T = ()> {
@@ -24,16 +24,17 @@ where
         .await
         .map_err(|e| format_js_error(JUNO_SPUTNIK_ERROR_RUNTIME_ASYNC_CONTEXT, e))?;
 
-    let result = async_with!(ctx => |ctx|{
-        init_apis(&ctx).map_err(|e| format_js_error(JUNO_SPUTNIK_ERROR_RUNTIME_API_INIT, e))?;
+    let result = ctx
+        .async_with(async |ctx| {
+            init_apis(&ctx).map_err(|e| format_js_error(JUNO_SPUTNIK_ERROR_RUNTIME_API_INIT, e))?;
 
-        declare_dev_script(&ctx).map_err(|e| e.to_string())?;
+            declare_dev_script(&ctx).map_err(|e| e.to_string())?;
 
-        let result = f.run(&ctx).await.catch(&ctx).map_err(|e| e.to_string())?;
+            let result = f.run(&ctx).await.catch(&ctx).map_err(|e| e.to_string())?;
 
-        Ok::<T, String>(result)
-    })
-    .await?;
+            Ok::<T, String>(result)
+        })
+        .await?;
 
     rt.idle().await;
 

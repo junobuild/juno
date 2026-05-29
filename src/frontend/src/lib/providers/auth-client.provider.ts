@@ -5,7 +5,6 @@ import {
 	KEY_STORAGE_DELEGATION,
 	KEY_STORAGE_KEY
 } from '@icp-sdk/auth/client';
-import type { DelegationChain, ECDSAKeyIdentity } from '@icp-sdk/core/identity';
 
 export class AuthClientProvider {
 	static #instance: AuthClientProvider;
@@ -64,19 +63,6 @@ export class AuthClientProvider {
 		]);
 
 		return await this.createAuthClient();
-	};
-
-	setAuthClientStorage = async ({
-		delegationChain,
-		sessionKey
-	}: {
-		delegationChain: DelegationChain;
-		sessionKey: ECDSAKeyIdentity;
-	}) => {
-		await Promise.all([
-			this.#storage.set(KEY_STORAGE_KEY, sessionKey.getKeyPair()),
-			this.#storage.set(KEY_STORAGE_DELEGATION, JSON.stringify(delegationChain.toJSON()))
-		]);
 	};
 
 	get __test_only_auth_client_storage__(): IdbStorage {

@@ -4,7 +4,6 @@ import {
 	GOOGLE_CLIENT_ID,
 	JUNO_API_URL
 } from '$lib/constants/app.constants';
-import { AuthClientProvider } from '$lib/providers/auth-client.provider';
 import {
 	clearAuthNavOrigin,
 	saveAuthNavOrigin
@@ -14,6 +13,7 @@ import { toasts } from '$lib/stores/app/toasts.store';
 import { authStore } from '$lib/stores/auth.store';
 import type { OpenIdAuthProvider } from '$lib/types/auth';
 import { SignInInitError } from '$lib/types/errors';
+import { saveIdentityToStorage } from '$lib/utils/identity-storage';
 import { container } from '$lib/utils/juno.utils';
 import { isNullish, nonNullish } from '@dfinity/utils';
 import {
@@ -130,7 +130,7 @@ const authenticateWithOpenID = async (params: AuthenticateWithOpenIdRedirectPara
 				}
 	);
 
-	await AuthClientProvider.getInstance().setAuthClientStorage({
+	await saveIdentityToStorage({
 		delegationChain,
 		sessionKey
 	});

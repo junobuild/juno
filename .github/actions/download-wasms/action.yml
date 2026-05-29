@@ -12,49 +12,49 @@ runs:
   using: "composite"
   steps:
     - name: Download satellite.wasm.gz
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
       with:
         name: satellite.wasm.gz
         path: ${{ inputs.path }}
 
     - name: Download orbiter.wasm.gz
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
       with:
         name: orbiter.wasm.gz
         path: ${{ inputs.path }}
 
     - name: Download sputnik.wasm.gz
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
       with:
         name: sputnik.wasm.gz
         path: ${{ inputs.path }}
 
     - name: Download console.wasm.gz
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
       with:
         name: console.wasm.gz
         path: ${{ inputs.path }}
 
     - name: Download observatory.wasm.gz
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
       with:
         name: observatory.wasm.gz
         path: ${{ inputs.path }}
 
     - name: Download mission_control.wasm.gz
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
       with:
         name: mission_control.wasm.gz
         path: ${{ inputs.path }}
 
     - name: Download test_satellite.wasm.gz
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
       with:
         name: test_satellite.wasm.gz
         path: ${{ inputs.path }}
 
     - name: Download test_sputnik.wasm.gz
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
       with:
         name: test_sputnik.wasm.gz
         path: ${{ inputs.path }}

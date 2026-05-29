@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
 
       - name: Build Base Docker Image
         uses: ./.github/actions/docker-build-base
@@ -54,7 +54,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
 
       - name: Build and upload ${{ matrix.name }}
         uses: ./.github/actions/docker-build
@@ -74,7 +74,7 @@ jobs:
           exit 1
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
 
       - name: Prepare
         uses: ./.github/actions/prepare
@@ -94,7 +94,7 @@ jobs:
         run: npm run e2e:ci:snapshots
 
       - name: Commit Playwright updated screenshots
-        uses: EndBug/add-and-commit@v9
+        uses: EndBug/add-and-commit@a94899bca583c204427a224a7af87c02f9b325d5 # v9
         if: ${{ github.ref != 'refs/heads/main' }}
         with:
           add: ./src/e2e

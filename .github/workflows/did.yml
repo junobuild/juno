@@ -9,10 +9,10 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
       - name: Restore Cargo cache
         id: cargo-cache
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
           path: |
             ~/.cargo/bin/
@@ -22,7 +22,7 @@ jobs:
             target/
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
       - name: Add Rust
-        uses: dtolnay/rust-toolchain@stable
+        uses: dtolnay/rust-toolchain@29eef336d9b2848a0b548edc03f92a220660cdb8 # stable
         with:
           toolchain: stable
           targets: wasm32-unknown-unknown
@@ -34,7 +34,7 @@ jobs:
           echo "DIDC_RELEASE=$(echo $release)" >> $GITHUB_ENV
       - name: Restore didc cache
         id: didc-cache
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
           path: /usr/local/bin/didc
           key: ${{ runner.os }}-didc-${{ env.DIDC_RELEASE }}
@@ -44,7 +44,7 @@ jobs:
           curl -SL https://github.com/dfinity/candid/releases/download/$DIDC_RELEASE/didc-linux64 > /usr/local/bin/didc
           chmod +x /usr/local/bin/didc
       - name: Save didc
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         if: steps.didc-cache.outputs.cache-hit != 'true'
         with: 
           path: /usr/local/bin/didc
@@ -55,7 +55,7 @@ jobs:
       - name: Generating candids
         run: ENV=github npm run generate
       - name: Save Cargo
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         if: steps.cargo-cache.outputs.cache-hit != 'true'
         with:
           path: |

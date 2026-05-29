@@ -1,4 +1,4 @@
-import { saveIdentityToStorage } from '$lib/utils/identity-storage';
+import { clearIdentityStorage, saveIdentityToStorage } from '$lib/utils/identity-storage';
 import { IdbStorage, KEY_STORAGE_DELEGATION, KEY_STORAGE_KEY } from '@icp-sdk/auth/client';
 import type { DelegationChain, ECDSAKeyIdentity } from '@icp-sdk/core/identity';
 
@@ -69,6 +69,21 @@ describe('identity-storage', () => {
 				KEY_STORAGE_DELEGATION,
 				JSON.stringify(delegationJson)
 			);
+		});
+	});
+
+	describe('clearIdentityStorage', () => {
+		beforeEach(() => {
+			vi.clearAllMocks();
+			vi.spyOn(IdbStorage.prototype, 'remove').mockResolvedValue(undefined);
+		});
+
+		it('should remove both KEY_STORAGE_KEY and KEY_STORAGE_DELEGATION', async () => {
+			await clearIdentityStorage();
+
+			expect(IdbStorage.prototype.remove).toHaveBeenCalledTimes(2);
+			expect(IdbStorage.prototype.remove).toHaveBeenCalledWith(KEY_STORAGE_KEY);
+			expect(IdbStorage.prototype.remove).toHaveBeenCalledWith(KEY_STORAGE_DELEGATION);
 		});
 	});
 });

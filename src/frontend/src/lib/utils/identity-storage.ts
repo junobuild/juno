@@ -22,3 +22,16 @@ export const saveIdentityToStorage = async ({
 		storage.set(KEY_STORAGE_DELEGATION, JSON.stringify(delegationChain.toJSON()))
 	]);
 };
+
+/**
+ * Remove the session key and delegation chain that the auth store reads
+ * when reconstructing the current identity. Called on sign-out and as a
+ * preamble before starting a fresh Internet Identity login, to avoid
+ * pairing a stale stored key with a freshly issued delegation (which
+ * would otherwise produce ECDSA P256 signature / delegation mismatches).
+ */
+export const clearIdentityStorage = async (): Promise<void> => {
+	const storage = new IdbStorage();
+
+	await Promise.all([storage.remove(KEY_STORAGE_KEY), storage.remove(KEY_STORAGE_DELEGATION)]);
+};

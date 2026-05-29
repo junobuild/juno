@@ -6,35 +6,67 @@ import {
 	LOCAL_REPLICA_HOST
 } from '$lib/constants/app.constants';
 import { isDev } from '$lib/env/app.env';
-import type { SignedInIdentity, SignInWithAuthClient } from '$lib/types/auth';
+import type { SignInWithNewAuthClient } from '$lib/types/auth';
 import { SignInError, SignInUserInterruptError } from '$lib/types/errors';
+import { clearIdentityStorage } from '$lib/utils/identity-storage';
 import { popupCenter } from '$lib/utils/window.utils';
-import { ERROR_USER_INTERRUPT } from '@icp-sdk/auth/client';
+import { AuthClient, ERROR_USER_INTERRUPT, IdbStorage } from '@icp-sdk/auth/client';
 
-export const signInWithII: SignInWithAuthClient = ({ authClient }) =>
-	// eslint-disable-next-line no-async-promise-executor
-	new Promise<SignedInIdentity>(async (resolve, reject) => {
-		const identityProvider = isDev()
-			? /apple/i.test(navigator?.vendor)
-				? `${LOCAL_REPLICA_HOST}?canisterId=${INTERNET_IDENTITY_CANISTER_ID}`
-				: `http://${INTERNET_IDENTITY_CANISTER_ID}.${new URL(LOCAL_REPLICA_HOST).host}`
-			: 'https://id.ai';
+/**
+ * Create a fresh AuthClient for an Internet Identity sign-in.
+ *
+ * Clears any previously stored session key / delegation chain before
+ * creating the client so AuthClient.create() starts on clean IDB.
+ * Otherwise a tampered or out-of-sync stored key would pair with the
+ * freshly issued delegation and produce an ECDSA P256 signature /
+ * delegation mismatch on the next call.
+ *
+ * agent-js prints noisy console.warn during AuthClient.create(); we
+ * silence it locally for the duration of the call.
+ */
+const createAuthClient = async (): Promise<AuthClient> => {
+	await clearIdentityStorage();
 
-		await authClient?.login({
+	const originalWarn = globalThis.console.warn;
+	globalThis.console.warn = (): null => null;
+
+	try {
+		return await AuthClient.create({
+			storage: new IdbStorage(),
+			idleOptions: {
+				disableIdle: true,
+				disableDefaultIdleCallback: true
+			}
+		});
+	} finally {
+		globalThis.console.warn = originalWarn;
+	}
+};
+
+const identityProviderUrl = (): string =>
+	isDev()
+		? /apple/i.test(navigator?.vendor)
+			? `${LOCAL_REPLICA_HOST}?canisterId=${INTERNET_IDENTITY_CANISTER_ID}`
+			: `http://${INTERNET_IDENTITY_CANISTER_ID}.${new URL(LOCAL_REPLICA_HOST).host}`
+		: 'https://id.ai';
+
+export const signInWithII: SignInWithNewAuthClient = async () => {
+	const authClient = await createAuthClient();
+
+	return new Promise<void>((resolve, reject) => {
+		authClient.login({
 			maxTimeToLive: AUTH_MAX_TIME_TO_LIVE,
 			allowPinAuthentication: false,
-			onSuccess: () => {
-				resolve({ identity: authClient?.getIdentity() });
-			},
+			onSuccess: () => resolve(),
 			onError: (error?: string) => {
 				if (error === ERROR_USER_INTERRUPT) {
 					reject(new SignInUserInterruptError(error));
 					return;
 				}
-
 				reject(new SignInError(error));
 			},
-			identityProvider,
+			identityProvider: identityProviderUrl(),
 			windowOpenerFeatures: popupCenter({ width: AUTH_POPUP_WIDTH, height: AUTH_POPUP_HEIGHT })
 		});
 	});
+};

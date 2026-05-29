@@ -56,6 +56,10 @@ const startMonitoringTimer = async ({
 }: {
 	data: PostMessageDataRequest;
 }) => {
+	if (nonNullish(timer)) {
+		return;
+	}
+
 	const identity = await loadIdentity();
 
 	if (isNullish(identity)) {
@@ -69,18 +73,29 @@ const startMonitoringTimer = async ({
 		return;
 	}
 
-	const sync = async () =>
-		await syncMonitoring({
-			identity,
-			segments: segments ?? [],
-			missionControlId,
-			withMonitoringHistory: withMonitoringHistory ?? false
-		});
+	const params = {
+		identity,
+		segments: segments ?? [],
+		missionControlId,
+		withMonitoringHistory: withMonitoringHistory ?? false
+	};
+
+	// Recursive setTimeout (not setInterval) so the monitoring sync cannot
+	// overlap itself. See #2522 / oisy-wallet#9706.
+	const scheduleNext = (): void => {
+		timer = setTimeout(async () => {
+			await syncMonitoring(params);
+
+			if (nonNullish(timer)) {
+				scheduleNext();
+			}
+		}, SYNC_MONITORING_TIMER_INTERVAL);
+	};
 
 	// We sync the cycles now but also schedule the update afterwards
-	await sync();
+	await syncMonitoring(params);
 
-	timer = setInterval(sync, SYNC_MONITORING_TIMER_INTERVAL);
+	scheduleNext();
 };
 
 const stopMonitoringTimer = () => {
@@ -88,11 +103,9 @@ const stopMonitoringTimer = () => {
 		return;
 	}
 
-	clearInterval(timer);
+	clearTimeout(timer);
 	timer = undefined;
 };
-
-let syncing = false;
 
 const syncMonitoring = async ({
 	identity,
@@ -108,23 +121,12 @@ const syncMonitoring = async ({
 		return;
 	}
 
-	// We avoid to relaunch a sync while previous sync is not finished
-	if (syncing) {
-		return;
-	}
-
-	syncing = true;
-
 	await emitSavedCanisters({
 		canisterIds: segments.map(({ canisterId }) => canisterId),
 		customStore: monitoringIdbStore
 	});
 
-	try {
-		await syncMonitoringForSegments({ identity, segments, ...rest });
-	} finally {
-		syncing = false;
-	}
+	await syncMonitoringForSegments({ identity, segments, ...rest });
 };
 
 // eslint-disable-next-line local-rules/prefer-object-params

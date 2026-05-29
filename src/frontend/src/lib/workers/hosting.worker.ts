@@ -2,7 +2,7 @@ import { SYNC_CUSTOM_DOMAIN_TIMER_INTERVAL } from '$lib/constants/app.constants'
 import { getCustomDomainRegistration } from '$lib/rest/bn.v1.rest';
 import type { CustomDomain, CustomDomainName, CustomDomainState } from '$lib/types/custom-domain';
 import type { PostMessageDataRequest, PostMessageRequest } from '$lib/types/post-message';
-import { isNullish } from '@dfinity/utils';
+import { isNullish, nonNullish } from '@dfinity/utils';
 
 export const onHostingMessage = async ({ data: dataMsg }: MessageEvent<PostMessageRequest>) => {
 	const { msg, data } = dataMsg;
@@ -23,34 +23,39 @@ const stopTimer = () => {
 		return;
 	}
 
-	clearInterval(timer);
+	clearTimeout(timer);
 	timer = undefined;
 };
 
+// Recursive setTimeout (not setInterval) so the registration sync cannot
+// overlap itself. See #2522 / oisy-wallet#9706.
+const scheduleNext = ({ customDomain }: { customDomain: CustomDomain }): void => {
+	timer = setTimeout(async () => {
+		await syncCustomDomainRegistration({ customDomain });
+
+		if (nonNullish(timer)) {
+			scheduleNext({ customDomain });
+		}
+	}, SYNC_CUSTOM_DOMAIN_TIMER_INTERVAL);
+};
+
 const startTimer = async ({ data: { customDomain } }: { data: PostMessageDataRequest }) => {
+	if (nonNullish(timer)) {
+		return;
+	}
+
 	if (isNullish(customDomain)) {
 		// No custom domain registration to sync
 		return;
 	}
 
-	const sync = async () => await syncCustomDomainRegistration({ customDomain });
-
 	// We sync the cycles now but also schedule the update afterwards
-	await sync();
+	await syncCustomDomainRegistration({ customDomain });
 
-	timer = setInterval(sync, SYNC_CUSTOM_DOMAIN_TIMER_INTERVAL);
+	scheduleNext({ customDomain });
 };
 
-let syncing = false;
-
 const syncCustomDomainRegistration = async ({ customDomain }: { customDomain: CustomDomain }) => {
-	// We avoid to relaunch a sync while previous sync is not finished
-	if (syncing) {
-		return;
-	}
-
-	syncing = true;
-
 	try {
 		const sync = async (): Promise<CustomDomainState> => {
 			const [domainName] = customDomain;
@@ -72,8 +77,6 @@ const syncCustomDomainRegistration = async ({ customDomain }: { customDomain: Cu
 		// We sync until Available or Failed
 		stopTimer();
 	}
-
-	syncing = false;
 };
 
 const syncCustomDomainRegistrationV1 = async ({

@@ -23,7 +23,7 @@ import type {
 import { loadIdentity } from '$lib/utils/worker.utils';
 import { requestTransactions } from '$lib/workers/_services/wallet-worker.services';
 import { WalletStore, type IndexedTransactions } from '$lib/workers/_stores/wallet-worker.store';
-import { isNullish, jsonReplacer } from '@dfinity/utils';
+import { isNullish, jsonReplacer, nonNullish } from '@dfinity/utils';
 import { decodeIcrcAccount, type IcrcAccount } from '@icp-sdk/canisters/ledger/icrc';
 import type { Identity } from '@icp-sdk/core/agent';
 import { Principal } from '@icp-sdk/core/principal';
@@ -51,7 +51,7 @@ const stopTimer = () => {
 		return;
 	}
 
-	clearInterval(timer);
+	clearTimeout(timer);
 	timer = undefined;
 };
 
@@ -108,26 +108,29 @@ const startTimerWithAccount = async ({
 
 	emitSavedWallet({ store });
 
-	const sync = async () => await syncWallet({ identity, store });
+	// Recursive setTimeout (not setInterval) so each account's sync cannot
+	// overlap itself. See #2522 / oisy-wallet#9706. Each account closes
+	// over its own scheduleNext so multiple accounts still tick in
+	// parallel as before.
+	const scheduleNext = (): void => {
+		timer = setTimeout(async () => {
+			await syncWallet({ identity, store });
+
+			if (nonNullish(timer)) {
+				scheduleNext();
+			}
+		}, SYNC_WALLET_TIMER_INTERVAL);
+	};
 
 	// We sync the cycles now but also schedule the update afterwards
-	await sync();
+	await syncWallet({ identity, store });
 
-	timer = setInterval(sync, SYNC_WALLET_TIMER_INTERVAL);
+	scheduleNext();
 };
-
-const syncing: Record<IcrcAccountText, boolean> = {};
 
 let initialized = false;
 
 const syncWallet = async ({ identity, store }: { identity: Identity; store: WalletStore }) => {
-	// We avoid to relaunch a sync while previous sync is not finished
-	if (syncing[store.idbKey] === true) {
-		return;
-	}
-
-	syncing[store.idbKey] = true;
-
 	const request = ({
 		identity: _,
 		certified
@@ -163,8 +166,6 @@ const syncWallet = async ({ identity, store }: { identity: Identity; store: Wall
 	});
 
 	await store.save();
-
-	syncing[store.idbKey] = false;
 };
 
 const postMessageWallet = ({

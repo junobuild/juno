@@ -16,7 +16,7 @@ import type { CanisterInfo, CanisterSegment, CanisterSyncData, Segment } from '$
 import type { PostMessageDataRequest, PostMessageRequest } from '$lib/types/post-message';
 import { emitCanisters, emitSavedCanisters, loadIdentity } from '$lib/utils/worker.utils';
 import { CanistersStore } from '$lib/workers/_stores/canisters.store';
-import { isNullish } from '@dfinity/utils';
+import { isNullish, nonNullish } from '@dfinity/utils';
 import type { Identity } from '@icp-sdk/core/agent';
 import { set } from 'idb-keyval';
 
@@ -38,7 +38,29 @@ export const onCyclesMessage = async ({ data: dataMsg }: MessageEvent<PostMessag
 
 let timer: NodeJS.Timeout | undefined = undefined;
 
+// Recursive setTimeout (not setInterval) so the canister sync cannot
+// overlap itself. See #2522 / oisy-wallet#9706.
+const scheduleNext = ({
+	identity,
+	segments
+}: {
+	identity: Identity;
+	segments: CanisterSegment[];
+}): void => {
+	timer = setTimeout(async () => {
+		await syncCanisters({ identity, segments });
+
+		if (nonNullish(timer)) {
+			scheduleNext({ identity, segments });
+		}
+	}, SYNC_CYCLES_TIMER_INTERVAL);
+};
+
 const startCyclesTimer = async ({ data: { segments } }: { data: PostMessageDataRequest }) => {
+	if (nonNullish(timer)) {
+		return;
+	}
+
 	const identity = await loadIdentity();
 
 	if (isNullish(identity)) {
@@ -46,12 +68,12 @@ const startCyclesTimer = async ({ data: { segments } }: { data: PostMessageDataR
 		return;
 	}
 
-	const sync = async () => await syncCanisters({ identity, segments: segments ?? [] });
+	const effectiveSegments = segments ?? [];
 
 	// We sync the cycles now but also schedule the update afterwards
-	await sync();
+	await syncCanisters({ identity, segments: effectiveSegments });
 
-	timer = setInterval(sync, SYNC_CYCLES_TIMER_INTERVAL);
+	scheduleNext({ identity, segments: effectiveSegments });
 };
 
 const stopCyclesTimer = () => {
@@ -59,11 +81,9 @@ const stopCyclesTimer = () => {
 		return;
 	}
 
-	clearInterval(timer);
+	clearTimeout(timer);
 	timer = undefined;
 };
-
-let syncing = false;
 
 const syncCanisters = async ({
 	identity,
@@ -77,23 +97,12 @@ const syncCanisters = async ({
 		return;
 	}
 
-	// We avoid to relaunch a sync while previous sync is not finished
-	if (syncing) {
-		return;
-	}
-
-	syncing = true;
-
 	await emitSavedCanisters({
 		canisterIds: segments.map(({ canisterId }) => canisterId),
 		customStore: cyclesIdbStore
 	});
 
-	try {
-		await syncIcStatusCanisters({ identity, segments });
-	} finally {
-		syncing = false;
-	}
+	await syncIcStatusCanisters({ identity, segments });
 };
 
 const syncIcStatusCanisters = async ({

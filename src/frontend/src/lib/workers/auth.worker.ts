@@ -1,6 +1,7 @@
 import { AUTH_TIMER_INTERVAL } from '$lib/constants/app.constants';
 import { AuthClientProvider } from '$lib/providers/auth-client.provider';
 import type { PostMessageRequest } from '$lib/types/post-message';
+import { nonNullish } from '@dfinity/utils';
 import { IdbStorage, KEY_STORAGE_DELEGATION } from '@icp-sdk/auth/client';
 import { DelegationChain, isDelegationValid } from '@icp-sdk/core/identity';
 
@@ -21,18 +22,36 @@ export const onAuthMessage = async ({
 
 let timer: NodeJS.Timeout | undefined = undefined;
 
+// Recursive setTimeout (not setInterval) so the idle check cannot overlap
+// itself: the next tick is scheduled only after the previous onIdleSignOut
+// resolves. See #2522 / oisy-wallet#9706 for the motivation.
+const scheduleNext = (): void => {
+	timer = setTimeout(async () => {
+		await onIdleSignOut();
+
+		if (nonNullish(timer)) {
+			scheduleNext();
+		}
+	}, AUTH_TIMER_INTERVAL);
+};
+
 /**
  * The timer is executed only if user has signed in
  */
-export const startIdleTimer = () =>
-	(timer = setInterval(async () => await onIdleSignOut(), AUTH_TIMER_INTERVAL));
+export const startIdleTimer = () => {
+	if (nonNullish(timer)) {
+		return;
+	}
+
+	scheduleNext();
+};
 
 export const stopIdleTimer = () => {
 	if (!timer) {
 		return;
 	}
 
-	clearInterval(timer);
+	clearTimeout(timer);
 	timer = undefined;
 };
 

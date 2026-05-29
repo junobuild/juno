@@ -17,8 +17,8 @@ import {
 	requestWorkflows,
 	type RequestWorkflowsResponse
 } from '$lib/workers/_services/workflows-worker.services';
-import { type WorkflowsIdbKey, WorkflowsStore } from '$lib/workers/_stores/workflows-worker.store';
-import { isEmptyString, isNullish, jsonReplacer } from '@dfinity/utils';
+import { WorkflowsStore } from '$lib/workers/_stores/workflows-worker.store';
+import { isEmptyString, isNullish, jsonReplacer, nonNullish } from '@dfinity/utils';
 import type { Identity } from '@icp-sdk/core/agent';
 import { Principal } from '@icp-sdk/core/principal';
 
@@ -45,7 +45,7 @@ const stopTimer = () => {
 		return;
 	}
 
-	clearInterval(timer);
+	clearTimeout(timer);
 	timer = undefined;
 };
 
@@ -81,15 +81,23 @@ const startTimerForSatellite = async ({
 
 	emitSavedWorkflows({ store });
 
-	const sync = async () => await syncWorkflows({ identity, store });
+	// Recursive setTimeout (not setInterval) so the workflow sync cannot
+	// overlap itself. See #2522 / oisy-wallet#9706.
+	const scheduleNext = (): void => {
+		timer = setTimeout(async () => {
+			await syncWorkflows({ identity, store });
+
+			if (nonNullish(timer)) {
+				scheduleNext();
+			}
+		}, SYNC_WORKFLOWS_TIMER_INTERVAL);
+	};
 
 	// We sync the cycles now but also schedule the update afterwards
-	await sync();
+	await syncWorkflows({ identity, store });
 
-	timer = setInterval(sync, SYNC_WORKFLOWS_TIMER_INTERVAL);
+	scheduleNext();
 };
-
-const syncing: Record<WorkflowsIdbKey, boolean> = {};
 
 let initialized = false;
 
@@ -100,13 +108,6 @@ const syncWorkflows = async ({
 	identity: Identity;
 	store: WorkflowsStore;
 }) => {
-	// We avoid to relaunch a sync while previous sync is not finished
-	if (syncing[store.idbKey] === true) {
-		return;
-	}
-
-	syncing[store.idbKey] = true;
-
 	const request = ({
 		identity: _,
 		certified
@@ -141,8 +142,6 @@ const syncWorkflows = async ({
 	});
 
 	await store.save();
-
-	syncing[store.idbKey] = false;
 };
 
 const postMessageWorkflows = ({

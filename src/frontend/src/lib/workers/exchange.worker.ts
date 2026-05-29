@@ -5,7 +5,7 @@ import { exchangeIdbStore } from '$lib/stores/app/idb.store';
 import type { CanisterIdText } from '$lib/types/canister';
 import type { ExchangePrice } from '$lib/types/exchange';
 import type { PostMessageDataResponseExchange, PostMessageRequest } from '$lib/types/post-message';
-import { isNullish } from '@dfinity/utils';
+import { isNullish, nonNullish } from '@dfinity/utils';
 import { del, entries, set } from 'idb-keyval';
 
 export const onExchangeMessage = async ({ data: dataMsg }: MessageEvent<PostMessageRequest>) => {
@@ -22,16 +22,30 @@ export const onExchangeMessage = async ({ data: dataMsg }: MessageEvent<PostMess
 
 let timer: NodeJS.Timeout | undefined = undefined;
 
+// Recursive setTimeout (not setInterval) so the exchange sync cannot
+// overlap itself. See #2522 / oisy-wallet#9706.
+const scheduleNext = (): void => {
+	timer = setTimeout(async () => {
+		await syncExchange();
+
+		if (nonNullish(timer)) {
+			scheduleNext();
+		}
+	}, SYNC_TOKENS_TIMER_INTERVAL);
+};
+
 const startTimer = async () => {
-	const sync = async () => await syncExchange();
+	if (nonNullish(timer)) {
+		return;
+	}
 
 	// First we emit the value we already have in IDB
 	await emitSavedExchanges();
 
 	// We sync the cycles now but also schedule the update afterwards
-	await sync();
+	await syncExchange();
 
-	timer = setInterval(sync, SYNC_TOKENS_TIMER_INTERVAL);
+	scheduleNext();
 };
 
 const stopTimer = () => {
@@ -39,22 +53,13 @@ const stopTimer = () => {
 		return;
 	}
 
-	clearInterval(timer);
+	clearTimeout(timer);
 	timer = undefined;
 };
-
-let syncing = false;
 
 let retry = 0;
 
 const syncExchange = async () => {
-	// We avoid to relaunch a sync while previous sync is not finished
-	if (syncing) {
-		return;
-	}
-
-	syncing = true;
-
 	try {
 		const icpExchange = await exchangeRateICPToUsd();
 
@@ -78,8 +83,6 @@ const syncExchange = async () => {
 		}
 
 		retry++;
-	} finally {
-		syncing = false;
 	}
 };
 

@@ -5,7 +5,7 @@ import type {
 	PostMessageDataResponseIcpToCyclesRate,
 	PostMessageRequest
 } from '$lib/types/post-message';
-import { isNullish } from '@dfinity/utils';
+import { isNullish, nonNullish } from '@dfinity/utils';
 import { del, get, set } from 'idb-keyval';
 
 export const onIcpToCyclesRateMessage = async ({
@@ -24,35 +24,40 @@ export const onIcpToCyclesRateMessage = async ({
 
 let timer: NodeJS.Timeout | undefined = undefined;
 
+// Recursive setTimeout (not setInterval) so the rate sync cannot overlap
+// itself. See #2522 / oisy-wallet#9706.
+const scheduleNext = (): void => {
+	timer = setTimeout(async () => {
+		await syncRate();
+
+		if (nonNullish(timer)) {
+			scheduleNext();
+		}
+	}, SYNC_TOKENS_TIMER_INTERVAL);
+};
+
 const startTimer = async () => {
-	const sync = async () => await syncRate();
+	if (nonNullish(timer)) {
+		return;
+	}
 
 	// First we emit the value we already have in IDB
 	await emitSavedRate();
 
 	// We sync the cycles now but also schedule the update afterwards
-	await sync();
+	await syncRate();
 
-	timer = setInterval(sync, SYNC_TOKENS_TIMER_INTERVAL);
+	scheduleNext();
 };
 
 const stopTimer = () => {
-	clearInterval(timer);
+	clearTimeout(timer);
 	timer = undefined;
 };
-
-let syncing = false;
 
 let retry = 0;
 
 const syncRate = async () => {
-	// We avoid to relaunch a sync while previous sync is not finished
-	if (syncing) {
-		return;
-	}
-
-	syncing = true;
-
 	try {
 		const trillionRatio = await getIcpToCyclesConversionRate();
 
@@ -71,8 +76,6 @@ const syncRate = async () => {
 		}
 
 		retry++;
-	} finally {
-		syncing = false;
 	}
 };
 

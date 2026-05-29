@@ -1,7 +1,7 @@
 import { AUTH_TIMER_INTERVAL } from '$lib/constants/app.constants';
-import { AuthClientProvider } from '$lib/providers/auth-client.provider';
 import type { PostMessageRequest } from '$lib/types/post-message';
-import { IdbStorage, KEY_STORAGE_DELEGATION } from '@icp-sdk/auth/client';
+import { nonNullish } from '@dfinity/utils';
+import { IdbStorage, KEY_STORAGE_DELEGATION, KEY_STORAGE_KEY } from '@icp-sdk/auth/client';
 import { DelegationChain, isDelegationValid } from '@icp-sdk/core/identity';
 
 export const onAuthMessage = async ({
@@ -54,8 +54,9 @@ const onIdleSignOut = async () => {
  * @returns true if authenticated
  */
 const checkAuthentication = async (): Promise<boolean> => {
-	const authClient = await AuthClientProvider.getInstance().createAuthClient();
-	return authClient.isAuthenticated();
+	const idbStorage: IdbStorage = new IdbStorage();
+	const keyPair: CryptoKeyPair | null = await idbStorage.get(KEY_STORAGE_KEY);
+	return nonNullish(keyPair);
 };
 
 /**

@@ -1,27 +1,45 @@
-import { AuthClientProvider } from '$lib/providers/auth-client.provider';
 import type { Canister } from '$lib/types/canister';
 import type { CertifiedData } from '$lib/types/store';
 import { isNullish, nonNullish } from '@dfinity/utils';
+import { IdbStorage, KEY_STORAGE_DELEGATION, KEY_STORAGE_KEY } from '@icp-sdk/auth/client';
 import type { Identity } from '@icp-sdk/core/agent';
+import {
+	DelegationChain,
+	DelegationIdentity,
+	ECDSAKeyIdentity,
+	isDelegationValid
+} from '@icp-sdk/core/identity';
 import { getMany, type UseStore } from 'idb-keyval';
 
 export const loadIdentity = async (): Promise<Identity | null> => {
-	const authClient = await AuthClientProvider.getInstance().createAuthClient();
+	const storage: IdbStorage = new IdbStorage();
 
-	if (!(await authClient.isAuthenticated())) {
+	const keyPair: CryptoKeyPair | null = await storage.get(KEY_STORAGE_KEY);
+	const delegationStr: string | null = await storage.get(KEY_STORAGE_DELEGATION);
+
+	if (isNullish(keyPair) || delegationStr === null) {
 		return null;
 	}
 
-	// Should never happens, AuthClient contains either an authenticated user or an anonymous user
-	if (isNullish(authClient.getIdentity())) {
+	let delegationChain: DelegationChain;
+	try {
+		delegationChain = DelegationChain.fromJSON(delegationStr);
+	} catch {
 		return null;
 	}
 
-	if (authClient.getIdentity().getPrincipal().isAnonymous()) {
+	if (!isDelegationValid(delegationChain)) {
 		return null;
 	}
 
-	return authClient.getIdentity();
+	const sessionKey = await ECDSAKeyIdentity.fromKeyPair(keyPair);
+	const identity = DelegationIdentity.fromDelegation(sessionKey, delegationChain);
+
+	if (identity.getPrincipal().isAnonymous()) {
+		return null;
+	}
+
+	return identity;
 };
 
 export const emitSavedCanisters = async <T extends Canister<T>>({

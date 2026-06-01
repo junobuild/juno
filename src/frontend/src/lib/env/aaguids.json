@@ -78,6 +78,9 @@
 	"eaecdef2-1c31-5634-8639-f1cbd9c00a08": {
 		"name": "KeePassDX"
 	},
+	"9addb28c-b46f-4402-808f-019651441ff3": {
+		"name": "KeePassPasskey"
+	},
 	"cc45f64e-52a2-451b-831a-4edd8022a202": {
 		"name": "ToothPic Passkey Provider"
 	},
@@ -123,5 +126,17 @@
 	},
 	"c9cadfc9-89a9-489e-a25a-c7e86a4d5f15": {
 		"name": "Burp Suite Navigation Recorder"
+	},
+	"fa37f553-f9b6-4adb-ac53-8bbb57ebdf0d": {
+		"name": "Norton Password Manager"
+	},
+	"a4a2d88e-9796-4356-9164-e2a5a8bd019c": {
+		"name": "Avast Password Manager"
+	},
+	"e7db2bd3-f2fe-4d71-ad78-7e7aa166cfd1": {
+		"name": "Avira Password Manager"
+	},
+	"6bb49926-160a-4306-a100-4eb39ba6ac45": {
+		"name": "AVG Password Manager"
 	}
 }

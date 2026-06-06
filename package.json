@@ -1,6 +1,6 @@
 {
 	"name": "@junobuild/juno",
-	"version": "0.0.77",
+	"version": "0.0.78",
 	"private": true,
 	"author": "David Dal Busco <david@fluster.io>",
 	"license": "MIT",

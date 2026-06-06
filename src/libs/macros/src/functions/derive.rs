@@ -65,8 +65,12 @@ fn derive_struct(
         .map(|f| {
             let fname = &f.ident;
             if has_nested_attr(f) {
-                if unwrap_option(&f.ty).is_some() {
+                if unwrap_option(&f.ty).and_then(|inner| unwrap_vec(inner)).is_some() {
+                    quote! { #fname: input.#fname.map(|v| v.into_iter().map(|i| i.into()).collect()), }
+                } else if unwrap_option(&f.ty).is_some() {
                     quote! { #fname: input.#fname.map(|v| v.into()), }
+                } else if unwrap_vec(&f.ty).is_some() {
+                    quote! { #fname: input.#fname.into_iter().map(|v| v.into()).collect(), }
                 } else {
                     quote! { #fname: input.#fname.into(), }
                 }
@@ -81,8 +85,12 @@ fn derive_struct(
         .map(|f| {
             let fname = &f.ident;
             if has_nested_attr(f) {
-                if unwrap_option(&f.ty).is_some() {
+                if unwrap_option(&f.ty).and_then(|inner| unwrap_vec(inner)).is_some() {
+                    quote! { #fname: json_data.#fname.map(|v| v.into_iter().map(|i| i.into()).collect()), }
+                } else if unwrap_option(&f.ty).is_some() {
                     quote! { #fname: json_data.#fname.map(|v| v.into()), }
+                } else if unwrap_vec(&f.ty).is_some() {
+                    quote! { #fname: json_data.#fname.into_iter().map(|v| v.into()).collect(), }
                 } else {
                     quote! { #fname: json_data.#fname.into(), }
                 }
@@ -240,7 +248,11 @@ fn derive_enum(
                         .map(|f| {
                             let fname = &f.ident;
                             if has_nested_attr(f) {
-                                quote! { #fname: #fname.into(), }
+                                if unwrap_vec(&f.ty).is_some() {
+                                    quote! { #fname: #fname.into_iter().map(|v| v.into()).collect(), }
+                                } else {
+                                    quote! { #fname: #fname.into(), }
+                                }
                             } else {
                                 quote! { #fname: #fname, }
                             }
@@ -279,7 +291,11 @@ fn derive_enum(
                         .map(|f| {
                             let fname = &f.ident;
                             if has_nested_attr(f) {
-                                quote! { #fname: #fname.into(), }
+                                if unwrap_vec(&f.ty).is_some() {
+                                    quote! { #fname: #fname.into_iter().map(|v| v.into()).collect(), }
+                                } else {
+                                    quote! { #fname: #fname.into(), }
+                                }
                             } else {
                                 quote! { #fname: #fname, }
                             }
@@ -353,7 +369,7 @@ fn has_nested_attr(field: &syn::Field) -> bool {
 fn nested_json_data_ident(ty: &Type) -> Type {
     if let Type::Path(mut tp) = ty.clone() {
         let seg = tp.path.segments.last_mut().unwrap();
-        if seg.ident == "Option" {
+        if seg.ident == "Option" || seg.ident == "Vec" {
             if let syn::PathArguments::AngleBracketed(ref mut args) = seg.arguments {
                 if let Some(syn::GenericArgument::Type(inner)) = args.args.first_mut() {
                     *inner = nested_json_data_ident(inner);
@@ -386,6 +402,20 @@ fn unwrap_option(ty: &Type) -> Option<&Type> {
     if let Type::Path(tp) = ty {
         let seg = tp.path.segments.last()?;
         if seg.ident == "Option" {
+            if let syn::PathArguments::AngleBracketed(ref args) = seg.arguments {
+                if let Some(syn::GenericArgument::Type(inner)) = args.args.first() {
+                    return Some(inner);
+                }
+            }
+        }
+    }
+    None
+}
+
+fn unwrap_vec(ty: &Type) -> Option<&Type> {
+    if let Type::Path(tp) = ty {
+        let seg = tp.path.segments.last()?;
+        if seg.ident == "Vec" {
             if let syn::PathArguments::AngleBracketed(ref args) = seg.arguments {
                 if let Some(syn::GenericArgument::Type(inner)) = args.args.first() {
                     return Some(inner);

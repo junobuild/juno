@@ -8,6 +8,7 @@ export * from './custom-functions';
 export * from './custom-functions-enum';
 export * from './custom-functions-guard';
 export * from './custom-functions-option';
+export * from './custom-functions-vec';
 export * from './on-delete-asset';
 export * from './on-delete-doc';
 export * from './on-delete-filtered-assets';

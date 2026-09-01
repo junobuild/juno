@@ -144,5 +144,26 @@
 	},
 	"d2717a32-9851-48a8-9961-b264c97a411a": {
 		"name": "Fenko Vault"
+	},
+	"65c97700-f5ef-4d5c-8a42-f30e45ac94b7": {
+		"name": "Royal Vault"
+	},
+	"5ca471bb-a56d-46ad-a496-67e70e9ed9fb": {
+		"name": "Parcel"
+	},
+	"45e3057e-b2f9-48ed-912f-9b901e153b16": {
+		"name": "Uniqkey"
+	},
+	"87f5ec51-f721-4feb-9fe4-be18c4971894": {
+		"name": "PassCard"
+	},
+	"477b05cd-7f78-4fe7-b629-27247f296138": {
+		"name": "WALLIX Vault"
+	},
+	"53e7a7a5-e75f-4d3d-9483-12fc779cdf23": {
+		"name": "Password Depot"
+	},
+	"cb6f6666-38ea-4873-9161-ff456a82d316": {
+		"name": "iPass Secure Auth"
 	}
 }

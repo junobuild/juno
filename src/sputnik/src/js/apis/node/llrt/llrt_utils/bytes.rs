@@ -2,15 +2,222 @@
 
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
-use std::rc::Rc;
+use std::{rc::Rc, slice};
 
+use half::f16;
 use rquickjs::{
     atom::PredefinedAtom,
     class::{Trace, Tracer},
     function::Constructor,
-    ArrayBuffer, Coerced, Ctx, Exception, FromJs, IntoJs, JsLifetime, Object, Result, TypedArray,
-    Value,
+    ArrayBuffer, Coerced, Ctx, Error, Exception, FromJs, IntoJs, JsLifetime, Object, Result,
+    TypedArray, U8Clamped, Value,
 };
+
+/// Convert a JS string to a `String`, replacing lone UTF-16 surrogates
+/// with U+FFFD per WHATWG USVString. Use when ill-formed strings must
+/// not fail.
+//
+// SAFETY (module-wide): QuickJS only emits valid WTF-8, so any run
+// without 0xED is valid strict UTF-8.
+pub fn get_lossy_string(string_value: Value) -> Result<String> {
+    let js_str = string_value.into_string().ok_or_else(|| Error::FromJs {
+        from: "Value",
+        to: "JSString",
+        message: Some("Value is not a string".into()),
+    })?;
+    let cstr = js_str.to_cstring()?;
+    let bytes = unsafe { slice::from_raw_parts(cstr.as_ptr() as *const u8, cstr.len()) };
+
+    let first = match memchr::memchr(0xED, bytes) {
+        None => return Ok(unsafe { String::from_utf8_unchecked(bytes.to_vec()) }),
+        Some(idx) => idx,
+    };
+    let mut result = String::with_capacity(bytes.len());
+    result.push_str(unsafe { std::str::from_utf8_unchecked(&bytes[..first]) });
+    qjs_substitute_into(&bytes[first..], &mut result);
+    Ok(result)
+}
+
+fn qjs_substitute_into(bytes: &[u8], result: &mut String) {
+    let mut start = 0;
+    while start < bytes.len() {
+        let next_ed = match memchr::memchr(0xED, &bytes[start..]) {
+            None => {
+                result.push_str(unsafe { std::str::from_utf8_unchecked(&bytes[start..]) });
+                return;
+            },
+            Some(rel) => start + rel,
+        };
+        if next_ed > start {
+            result.push_str(unsafe { std::str::from_utf8_unchecked(&bytes[start..next_ed]) });
+        }
+        if next_ed + 3 > bytes.len() {
+            replace_invalid_utf8_and_utf16_into(&bytes[next_ed..], result);
+            return;
+        }
+        let b1 = bytes[next_ed + 1];
+        let b2 = bytes[next_ed + 2];
+        if (b1 & 0xC0) != 0x80 || (b2 & 0xC0) != 0x80 {
+            replace_invalid_utf8_and_utf16_into(&bytes[next_ed..], result);
+            return;
+        }
+        if (b1 & 0xE0) == 0xA0 {
+            result.push('\u{FFFD}');
+        } else {
+            result.push_str(unsafe { std::str::from_utf8_unchecked(&bytes[next_ed..next_ed + 3]) });
+        }
+        start = next_ed + 3;
+    }
+}
+
+#[doc(hidden)]
+pub fn replace_invalid_utf8_and_utf16(bytes: &[u8]) -> String {
+    let err = match simdutf8::compat::from_utf8(bytes) {
+        Ok(s) => return s.to_owned(),
+        Err(e) => e,
+    };
+    let valid_up_to = err.valid_up_to();
+    let mut result = String::with_capacity(bytes.len());
+    result.push_str(unsafe { std::str::from_utf8_unchecked(&bytes[..valid_up_to]) });
+    replace_invalid_utf8_and_utf16_into(&bytes[valid_up_to..], &mut result);
+    result
+}
+
+fn replace_invalid_utf8_and_utf16_into(bytes: &[u8], result: &mut String) {
+    let mut i = 0;
+
+    while i < bytes.len() {
+        let current = bytes[i];
+        match current {
+            0x00..=0x7F => {
+                result.push(current as char);
+                i += 1;
+            },
+            0xC0..=0xDF if i + 1 < bytes.len() => {
+                let next = bytes[i + 1];
+                if (next & 0xC0) == 0x80 {
+                    let code_point = ((current as u32 & 0x1F) << 6) | (next as u32 & 0x3F);
+                    result.push(char::from_u32(code_point).unwrap_or('\u{FFFD}'));
+                    i += 2;
+                } else {
+                    result.push('\u{FFFD}');
+                    i += 1;
+                }
+            },
+            0xE0..=0xEF if i + 2 < bytes.len() => {
+                let next1 = bytes[i + 1];
+                let next2 = bytes[i + 2];
+                if (next1 & 0xC0) == 0x80 && (next2 & 0xC0) == 0x80 {
+                    let code_point = ((current as u32 & 0x0F) << 12)
+                        | ((next1 as u32 & 0x3F) << 6)
+                        | (next2 as u32 & 0x3F);
+                    result.push(char::from_u32(code_point).unwrap_or('\u{FFFD}'));
+                    i += 3;
+                } else {
+                    result.push('\u{FFFD}');
+                    i += 1;
+                }
+            },
+            0xF0..=0xF7 if i + 3 < bytes.len() => {
+                let next1 = bytes[i + 1];
+                let next2 = bytes[i + 2];
+                let next3 = bytes[i + 3];
+                if (next1 & 0xC0) == 0x80 && (next2 & 0xC0) == 0x80 && (next3 & 0xC0) == 0x80 {
+                    let code_point = ((current as u32 & 0x07) << 18)
+                        | ((next1 as u32 & 0x3F) << 12)
+                        | ((next2 as u32 & 0x3F) << 6)
+                        | (next3 as u32 & 0x3F);
+                    result.push(char::from_u32(code_point).unwrap_or('\u{FFFD}'));
+                    i += 4;
+                } else {
+                    result.push('\u{FFFD}');
+                    i += 1;
+                }
+            },
+            _ => {
+                result.push('\u{FFFD}');
+                i += 1;
+            },
+        }
+    }
+}
+
+#[cfg(test)]
+mod replace_invalid_utf8_tests {
+    use super::replace_invalid_utf8_and_utf16;
+
+    fn cases() -> Vec<(&'static str, Vec<u8>, &'static str)> {
+        vec![
+            ("empty", vec![], ""),
+            ("ascii", b"hello world".to_vec(), "hello world"),
+            (
+                "ascii_with_control",
+                vec![b'a', 0x00, b'b', 0x7f, b'c'],
+                "a\u{0}b\u{7f}c",
+            ),
+            ("two_byte_latin1", vec![0xC3, 0xA9], "\u{00E9}"),
+            ("three_byte_cjk", vec![0xE4, 0xB8, 0x96], "\u{4e16}"),
+            ("four_byte_emoji", vec![0xF0, 0x9F, 0xA6, 0x80], "\u{1f980}"),
+            ("lone_high_surrogate", vec![0xED, 0xA0, 0xBD], "\u{FFFD}"),
+            ("lone_low_surrogate", vec![0xED, 0xB0, 0x80], "\u{FFFD}"),
+            (
+                "surrogate_pair_in_wtf8",
+                vec![0xED, 0xA0, 0xBD, 0xED, 0xB2, 0xA9],
+                "\u{FFFD}\u{FFFD}",
+            ),
+            ("stray_continuation", vec![0x80], "\u{FFFD}"),
+            ("truncated_two_byte", vec![0xC3], "\u{FFFD}"),
+            ("truncated_three_byte", vec![0xE0, 0xA0], "\u{FFFD}\u{FFFD}"),
+            (
+                "truncated_four_byte",
+                vec![0xF0, 0x9F, 0xA6],
+                "\u{FFFD}\u{FFFD}\u{FFFD}",
+            ),
+            (
+                "two_byte_bad_continuation",
+                vec![0xC3, 0x20, b'a'],
+                "\u{FFFD} a",
+            ),
+            (
+                "three_byte_bad_continuation",
+                vec![0xE4, 0xB8, 0x20, b'a'],
+                "\u{FFFD}\u{FFFD} a",
+            ),
+            ("high_byte_above_f7", vec![0xF8, b'a'], "\u{FFFD}a"),
+            (
+                "mixed_valid_and_invalid",
+                {
+                    let mut v = b"hello ".to_vec();
+                    v.extend_from_slice(&[0xED, 0xA0, 0xBD]);
+                    v.extend_from_slice(" world".as_bytes());
+                    v
+                },
+                "hello \u{FFFD} world",
+            ),
+            (
+                "long_ascii",
+                b"the quick brown fox jumps over the lazy dog".repeat(20),
+                &*Box::leak(
+                    "the quick brown fox jumps over the lazy dog"
+                        .repeat(20)
+                        .into_boxed_str(),
+                ),
+            ),
+        ]
+    }
+
+    #[test]
+    fn matches_contract() {
+        for (name, input, expected) in cases() {
+            let got = replace_invalid_utf8_and_utf16(&input);
+            assert_eq!(
+                got, expected,
+                "case `{}`: got {:?}, expected {:?}",
+                name, got, expected
+            );
+        }
+    }
+}
 
 use super::{error_messages::ERROR_MSG_ARRAY_BUFFER_DETACHED, result::ResultExt};
 
@@ -24,9 +231,11 @@ pub enum ObjectBytes<'js> {
     I32Array(TypedArray<'js, i32>),
     U64Array(TypedArray<'js, u64>),
     I64Array(TypedArray<'js, i64>),
+    F16Array(TypedArray<'js, f16>),
     F32Array(TypedArray<'js, f32>),
     F64Array(TypedArray<'js, f64>),
-    DataView(ArrayBuffer<'js>),
+    U8ClampedArray(TypedArray<'js, U8Clamped>),
+    DataView(ArrayBuffer<'js>, usize, usize), // buffer, offset, length
     Vec(Vec<u8>),
 }
 
@@ -46,9 +255,11 @@ impl<'js> Trace<'js> for ObjectBytes<'js> {
             ObjectBytes::I32Array(a) => a.trace(tracer),
             ObjectBytes::U64Array(a) => a.trace(tracer),
             ObjectBytes::I64Array(a) => a.trace(tracer),
+            ObjectBytes::F16Array(a) => a.trace(tracer),
             ObjectBytes::F32Array(a) => a.trace(tracer),
             ObjectBytes::F64Array(a) => a.trace(tracer),
-            ObjectBytes::DataView(d) => d.trace(tracer),
+            ObjectBytes::U8ClampedArray(a) => a.trace(tracer),
+            ObjectBytes::DataView(ab, _, _) => ab.trace(tracer),
             ObjectBytes::Vec(v) => v.trace(tracer),
         }
     }
@@ -65,11 +276,13 @@ impl<'js> IntoJs<'js> for ObjectBytes<'js> {
             ObjectBytes::I32Array(a) => a.into_js(ctx),
             ObjectBytes::U64Array(a) => a.into_js(ctx),
             ObjectBytes::I64Array(a) => a.into_js(ctx),
+            ObjectBytes::F16Array(a) => a.into_js(ctx),
             ObjectBytes::F32Array(a) => a.into_js(ctx),
             ObjectBytes::F64Array(a) => a.into_js(ctx),
-            ObjectBytes::DataView(d) => {
+            ObjectBytes::U8ClampedArray(a) => a.into_js(ctx),
+            ObjectBytes::DataView(ab, _, _) => {
                 let ctor: Constructor = ctx.globals().get(PredefinedAtom::DataView)?;
-                ctor.construct((d,))
+                ctor.construct((ab,))
             },
             ObjectBytes::Vec(v) => v.into_js(ctx),
         }
@@ -137,6 +350,13 @@ impl<'js> ObjectBytes<'js> {
         self.as_bytes_inner().or_throw(ctx)
     }
 
+    /// Returns the underlying bytes, or `None` if the buffer is detached or
+    /// the DataView range is invalid (including arithmetic overflow). Unlike
+    /// [`as_bytes`], does not raise a JS exception.
+    pub fn as_bytes_opt(&self) -> Option<&[u8]> {
+        self.as_bytes_inner().ok()
+    }
+
     fn as_bytes_inner(&self) -> std::result::Result<&[u8], Rc<str>> {
         match self {
             ObjectBytes::U8Array(array) => array.as_bytes(),
@@ -147,9 +367,14 @@ impl<'js> ObjectBytes<'js> {
             ObjectBytes::I32Array(array) => array.as_bytes(),
             ObjectBytes::U64Array(array) => array.as_bytes(),
             ObjectBytes::I64Array(array) => array.as_bytes(),
+            ObjectBytes::F16Array(array) => array.as_bytes(),
             ObjectBytes::F32Array(array) => array.as_bytes(),
             ObjectBytes::F64Array(array) => array.as_bytes(),
-            ObjectBytes::DataView(array_buffer) => array_buffer.as_bytes(),
+            ObjectBytes::U8ClampedArray(array) => array.as_bytes(),
+            ObjectBytes::DataView(ab, offset, length) => ab.as_bytes().and_then(|bytes| {
+                let end = offset.checked_add(*length)?;
+                bytes.get(*offset..end)
+            }),
             ObjectBytes::Vec(bytes) => Some(bytes.as_ref()),
         }
         .ok_or(ERROR_MSG_ARRAY_BUFFER_DETACHED.into())
@@ -173,7 +398,8 @@ impl<'js> ObjectBytes<'js> {
         }
         //second most common
         if let Some(array_buffer) = ArrayBuffer::from_object(obj.clone()) {
-            return Ok(Some(ObjectBytes::DataView(array_buffer)));
+            let len = array_buffer.len();
+            return Ok(Some(ObjectBytes::DataView(array_buffer, 0, len)));
         }
 
         if let Ok(typed_array) = TypedArray::<i8>::from_object(obj.clone()) {
@@ -204,6 +430,10 @@ impl<'js> ObjectBytes<'js> {
             return Ok(Some(ObjectBytes::I64Array(typed_array)));
         }
 
+        if let Ok(typed_array) = TypedArray::<f16>::from_object(obj.clone()) {
+            return Ok(Some(ObjectBytes::F16Array(typed_array)));
+        }
+
         if let Ok(typed_array) = TypedArray::<f32>::from_object(obj.clone()) {
             return Ok(Some(ObjectBytes::F32Array(typed_array)));
         }
@@ -212,8 +442,14 @@ impl<'js> ObjectBytes<'js> {
             return Ok(Some(ObjectBytes::F64Array(typed_array)));
         }
 
-        if let Ok(array_buffer) = obj.get::<_, ArrayBuffer>("buffer") {
-            return Ok(Some(ObjectBytes::DataView(array_buffer)));
+        if let Ok(typed_array) = TypedArray::<U8Clamped>::from_object(obj.clone()) {
+            return Ok(Some(ObjectBytes::U8ClampedArray(typed_array)));
+        }
+
+        if let Ok(ab) = obj.get::<_, ArrayBuffer>("buffer") {
+            let offset: usize = obj.get("byteOffset").unwrap_or(0);
+            let length: usize = obj.get("byteLength").unwrap_or_else(|_| ab.len());
+            return Ok(Some(ObjectBytes::DataView(ab, offset, length)));
         }
 
         Ok(None)
@@ -221,7 +457,6 @@ impl<'js> ObjectBytes<'js> {
 
     pub fn get_array_buffer(&self) -> Result<Option<(ArrayBuffer<'js>, usize, usize)>> {
         let buffer = match self {
-            ObjectBytes::DataView(array_buffer) => (array_buffer.clone(), array_buffer.len(), 0),
             ObjectBytes::U8Array(typed_array) => {
                 let byte_length = typed_array.len();
                 (
@@ -286,6 +521,14 @@ impl<'js> ObjectBytes<'js> {
                     typed_array.get("byteOffset")?,
                 )
             },
+            ObjectBytes::F16Array(typed_array) => {
+                let byte_length = typed_array.len() * 2;
+                (
+                    typed_array.arraybuffer()?,
+                    byte_length,
+                    typed_array.get("byteOffset")?,
+                )
+            },
             ObjectBytes::F32Array(typed_array) => {
                 let byte_length = typed_array.len() * 4;
                 (
@@ -302,10 +545,65 @@ impl<'js> ObjectBytes<'js> {
                     typed_array.get("byteOffset")?,
                 )
             },
+            ObjectBytes::U8ClampedArray(typed_array) => {
+                let byte_length = typed_array.len();
+                (
+                    typed_array.arraybuffer()?,
+                    byte_length,
+                    typed_array.get("byteOffset")?,
+                )
+            },
+            ObjectBytes::DataView(array_buffer, offset, length) => {
+                (array_buffer.clone(), *length, *offset)
+            },
             _ => return Ok(None),
         };
 
         Ok(Some(buffer))
+    }
+}
+
+#[cfg(test)]
+mod object_bytes_tests {
+    use super::{ObjectBytes, ERROR_MSG_ARRAY_BUFFER_DETACHED};
+    use rquickjs::{ArrayBuffer, Context, Runtime};
+
+    #[test]
+    fn data_view_ranges_are_checked() {
+        let rt = Runtime::new().unwrap();
+        let ctx = Context::full(&rt).unwrap();
+
+        ctx.with(|ctx| {
+            let buffer = ArrayBuffer::new_copy(ctx, [1_u8, 2, 3, 4]).unwrap();
+            for (offset, length) in [(3, 2), (usize::MAX, 1)] {
+                let bytes = ObjectBytes::DataView(buffer.clone(), offset, length);
+
+                assert_eq!(
+                    bytes.as_bytes_inner().unwrap_err().as_ref(),
+                    ERROR_MSG_ARRAY_BUFFER_DETACHED
+                );
+            }
+
+            let valid_bytes = ObjectBytes::DataView(buffer, 1, 2);
+            assert_eq!(valid_bytes.as_bytes_inner().unwrap(), &[2, 3]);
+        });
+    }
+
+    #[test]
+    fn data_view_detached_buffer_returns_error() {
+        let rt = Runtime::new().unwrap();
+        let ctx = Context::full(&rt).unwrap();
+
+        ctx.with(|ctx| {
+            let mut buffer = ArrayBuffer::new_copy(ctx, [1_u8, 2, 3, 4]).unwrap();
+            buffer.detach();
+            let bytes = ObjectBytes::DataView(buffer, 0, 4);
+
+            assert_eq!(
+                bytes.as_bytes_inner().unwrap_err().as_ref(),
+                ERROR_MSG_ARRAY_BUFFER_DETACHED
+            );
+        });
     }
 }
 
@@ -370,8 +668,8 @@ pub fn get_string_bytes(
     offset: usize,
     length: Option<usize>,
 ) -> Result<Option<Vec<u8>>> {
-    if let Some(val) = value.as_string() {
-        let string = val.to_string()?;
+    if value.is_string() {
+        let string = get_lossy_string(value.clone())?;
         return Ok(Some(bytes_from_js_string(string, offset, length)));
     }
     Ok(None)

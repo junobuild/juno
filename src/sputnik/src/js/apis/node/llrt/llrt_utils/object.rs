@@ -5,8 +5,12 @@
 use std::collections::BTreeMap;
 
 use rquickjs::{
-    atom::PredefinedAtom, function::IntoJsFunc, prelude::Func, Array, Coerced, Ctx, Error,
-    Exception, FromJs, IntoAtom, IntoJs, Object, Result, Undefined, Value,
+    atom::PredefinedAtom,
+    function::{Constructor, IntoJsFunc},
+    object::Property,
+    prelude::Func,
+    Array, Coerced, Ctx, Error, Exception, FromJs, IntoAtom, IntoJs, Object, Result, Undefined,
+    Value,
 };
 
 use super::primordials::{BasePrimordials, Primordial};
@@ -108,7 +112,7 @@ impl<'js> Proxy<'js> {
         Ok(Self { target, options })
     }
 
-    pub fn setter<T, P>(&self, setter: Func<T, P>) -> Result<()>
+    pub fn setter<T, P: 'js>(&self, setter: Func<T, P>) -> Result<()>
     where
         T: IntoJsFunc<'js, P> + 'js,
     {
@@ -116,30 +120,13 @@ impl<'js> Proxy<'js> {
         Ok(())
     }
 
-    pub fn getter<T, P>(&self, getter: Func<T, P>) -> Result<()>
+    pub fn getter<T, P: 'js>(&self, getter: Func<T, P>) -> Result<()>
     where
         T: IntoJsFunc<'js, P> + 'js,
     {
         self.options.set(PredefinedAtom::Getter, getter)?;
         Ok(())
     }
-}
-
-pub fn map_to_entries<'js, K, V, M>(ctx: &Ctx<'js>, map: M) -> Result<Array<'js>>
-where
-    M: IntoIterator<Item = (K, V)>,
-    K: IntoJs<'js>,
-    V: IntoJs<'js>,
-{
-    let array = Array::new(ctx.clone())?;
-    for (idx, (key, value)) in map.into_iter().enumerate() {
-        let entry = Array::new(ctx.clone())?;
-        entry.set(0, key)?;
-        entry.set(1, value)?;
-        array.set(idx, entry)?;
-    }
-
-    Ok(array)
 }
 
 pub fn array_to_btree_map<'js>(
@@ -163,4 +150,23 @@ pub fn object_from_entries<'js>(ctx: &Ctx<'js>, array: Array<'js>) -> Result<Obj
         }
     }
     Ok(obj)
+}
+
+/// Build a constructor that behaves like `class Name extends Parent`
+pub fn define_subclass<'js, F, P>(
+    ctx: &Ctx<'js>,
+    name: &str,
+    parent: &Constructor<'js>,
+    construct: F,
+) -> Result<Constructor<'js>>
+where
+    F: IntoJsFunc<'js, P> + 'js,
+{
+    let parent_proto: Object = parent.get(PredefinedAtom::Prototype)?;
+    let proto = Object::new(ctx.clone())?;
+    proto.set_prototype(Some(&parent_proto))?;
+    let constructor = Constructor::new_prototype(ctx, proto, construct)?;
+    constructor.set_prototype(parent.as_object())?;
+    constructor.prop(PredefinedAtom::Name, Property::from(name).configurable())?;
+    Ok(constructor)
 }

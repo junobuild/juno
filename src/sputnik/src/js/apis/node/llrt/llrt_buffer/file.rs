@@ -10,17 +10,16 @@ use super::blob::Blob;
 
 #[rquickjs::class]
 #[derive(Trace, Clone, rquickjs::JsLifetime)]
-pub struct File {
-    #[qjs(skip_trace)]
-    blob: Blob,
+pub struct File<'js> {
+    blob: Blob<'js>,
     filename: String,
     last_modified: i64,
 }
 
 #[rquickjs::methods]
-impl File {
+impl<'js> File<'js> {
     #[qjs(constructor)]
-    fn new<'js>(
+    fn new(
         ctx: Ctx<'js>,
         data: Value<'js>,
         filename: Coerced<String>,
@@ -40,7 +39,7 @@ impl File {
             }
         }
 
-        let blob = Blob::new(ctx, Opt(Some(data)), options)?;
+        let blob = Blob::from_parts(ctx, Opt(Some(data)), options)?;
 
         Ok(Self {
             blob,
@@ -69,8 +68,14 @@ impl File {
         self.last_modified
     }
 
-    pub fn slice(&self, start: Opt<isize>, end: Opt<isize>, content_type: Opt<String>) -> Blob {
-        self.blob.slice(start, end, content_type)
+    pub fn slice(
+        &self,
+        ctx: Ctx<'js>,
+        start: Opt<isize>,
+        end: Opt<isize>,
+        content_type: Opt<Value<'js>>,
+    ) -> Result<Blob<'js>> {
+        self.blob.slice_blob(&ctx, start.0, end.0, content_type.0)
     }
 
     pub async fn text(&mut self) -> String {
@@ -78,21 +83,22 @@ impl File {
     }
 
     #[qjs(rename = "arrayBuffer")]
-    pub async fn array_buffer<'js>(&self, ctx: Ctx<'js>) -> Result<ArrayBuffer<'js>> {
+    pub async fn array_buffer(&self, ctx: Ctx<'js>) -> Result<ArrayBuffer<'js>> {
         self.blob.array_buffer(ctx).await
     }
 
-    pub async fn bytes<'js>(&self, ctx: Ctx<'js>) -> Result<Value<'js>> {
+    pub async fn bytes(&self, ctx: Ctx<'js>) -> Result<Value<'js>> {
         self.blob.bytes(ctx).await
     }
 
-    #[qjs(get, rename = PredefinedAtom::SymbolToStringTag)]
-    pub fn to_string_tag(&self) -> &'static str {
+    #[qjs(prop, rename = PredefinedAtom::SymbolToStringTag, configurable)]
+    pub fn to_string_tag() -> &'static str {
         stringify!(File)
     }
 }
-impl File {
-    pub fn from_bytes<'js>(
+
+impl<'js> File<'js> {
+    pub fn from_bytes(
         ctx: &Ctx<'js>,
         data: Vec<u8>,
         filename: String,
@@ -100,16 +106,10 @@ impl File {
     ) -> Result<Self> {
         let options = Opt(Some({
             let obj = Object::new(ctx.clone())?;
-            obj.set(
-                "type",
-                mime_type
-                    .clone()
-                    .unwrap_or("application/octet-stream".into())
-                    .into_js(ctx)?,
-            )?;
+            obj.set("type", mime_type.clone().unwrap_or("".into()).into_js(ctx)?)?;
             obj.into_js(ctx)?
         }));
-        let blob = Blob::new(ctx.clone(), Opt(Some(data.into_js(ctx)?)), options)?;
+        let blob = Blob::from_parts(ctx.clone(), Opt(Some(data.into_js(ctx)?)), options)?;
 
         Ok(Self {
             blob,
@@ -118,7 +118,11 @@ impl File {
         })
     }
 
-    pub fn get_blob(&self) -> Blob {
+    pub fn get_blob(&self) -> Blob<'js> {
         self.blob.clone()
+    }
+
+    pub fn set_filename(&mut self, filename: String) {
+        self.filename = filename;
     }
 }

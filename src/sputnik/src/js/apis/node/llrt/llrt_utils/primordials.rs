@@ -3,8 +3,8 @@
 use std::any::type_name;
 
 use rquickjs::{
-    atom::PredefinedAtom, function::Constructor, runtime::UserDataGuard, Ctx, Function, JsLifetime,
-    Object, Result,
+    atom::PredefinedAtom, function::Constructor, runtime::UserDataGuard, Ctx, Exception, Function,
+    JsLifetime, Object, Result,
 };
 
 use super::result::ResultExt;
@@ -14,6 +14,8 @@ pub struct BasePrimordials<'js> {
     // Constructors
     pub constructor_map: Constructor<'js>,
     pub constructor_set: Constructor<'js>,
+    pub constructor_weak_map: Constructor<'js>,
+    pub constructor_weak_set: Constructor<'js>,
     pub constructor_date: Constructor<'js>,
     pub constructor_error: Constructor<'js>,
     pub constructor_type_error: Constructor<'js>,
@@ -21,6 +23,7 @@ pub struct BasePrimordials<'js> {
     pub constructor_regexp: Constructor<'js>,
     pub constructor_uint8array: Constructor<'js>,
     pub constructor_array_buffer: Constructor<'js>,
+    pub constructor_data_view: Constructor<'js>,
     pub constructor_proxy: Constructor<'js>,
     pub constructor_object: Constructor<'js>,
     pub constructor_bool: Constructor<'js>,
@@ -39,8 +42,11 @@ pub struct BasePrimordials<'js> {
     pub function_array_from: Function<'js>,
     pub function_array_buffer_is_view: Function<'js>,
     pub function_get_own_property_descriptor: Function<'js>,
+    pub function_define_property: Function<'js>,
+    pub function_reflect_own_keys: Function<'js>,
     pub function_parse_int: Function<'js>,
     pub function_parse_float: Function<'js>,
+    pub prototype_iterator: Object<'js>,
 }
 
 pub trait Primordial<'js>
@@ -83,6 +89,8 @@ impl<'js> Primordial<'js> for BasePrimordials<'js> {
 
         let function_get_own_property_descriptor: Function =
             constructor_object.get(PredefinedAtom::GetOwnPropertyDescriptor)?;
+        let function_define_property: Function =
+            constructor_object.get(PredefinedAtom::DefineProperty)?;
 
         let constructor_date: Constructor = globals.get(PredefinedAtom::Date)?;
         let prototype_date: Object = constructor_date.get(PredefinedAtom::Prototype)?;
@@ -92,6 +100,9 @@ impl<'js> Primordial<'js> for BasePrimordials<'js> {
 
         let constructor_set: Constructor = globals.get(PredefinedAtom::Set)?;
         let prototype_set: Object = constructor_set.get(PredefinedAtom::Prototype)?;
+
+        let constructor_weak_map: Constructor = globals.get(PredefinedAtom::WeakMap)?;
+        let constructor_weak_set: Constructor = globals.get(PredefinedAtom::WeakSet)?;
 
         let constructor_regexp: Constructor = globals.get(PredefinedAtom::RegExp)?;
         let prototype_regexp: Object = constructor_regexp.get(PredefinedAtom::Prototype)?;
@@ -109,6 +120,7 @@ impl<'js> Primordial<'js> for BasePrimordials<'js> {
 
         let constructor_array_buffer: Object = globals.get(PredefinedAtom::ArrayBuffer)?;
         let function_array_buffer_is_view: Function = constructor_array_buffer.get("isView")?;
+        let constructor_data_view: Constructor = globals.get("DataView")?;
 
         let constructor_bool: Constructor = globals.get(PredefinedAtom::Boolean)?;
 
@@ -118,9 +130,25 @@ impl<'js> Primordial<'js> for BasePrimordials<'js> {
 
         let constructor_string: Constructor = globals.get(PredefinedAtom::String)?;
 
+        let reflect: Object = globals.get("Reflect")?;
+        let function_reflect_own_keys: Function = reflect.get("ownKeys")?;
+
+        // Walk to %IteratorPrototype% via an array iterator.
+        let array = rquickjs::Array::new(ctx.clone())?;
+        let iter_fn: Function = array
+            .as_object()
+            .get(rquickjs::atom::PredefinedAtom::SymbolIterator)?;
+        let array_iter: Object = iter_fn.call((rquickjs::function::This(array),))?;
+        let prototype_iterator = array_iter
+            .get_prototype()
+            .and_then(|p| p.get_prototype())
+            .ok_or_else(|| Exception::throw_internal(ctx, "missing %IteratorPrototype%"))?;
+
         Ok(Self {
             constructor_map,
             constructor_set,
+            constructor_weak_map,
+            constructor_weak_set,
             constructor_date,
             constructor_proxy,
             constructor_error,
@@ -129,6 +157,7 @@ impl<'js> Primordial<'js> for BasePrimordials<'js> {
             constructor_regexp,
             constructor_uint8array,
             constructor_array_buffer: constructor_arraybuffer,
+            constructor_data_view,
             constructor_object,
             constructor_bool,
             constructor_number,
@@ -142,8 +171,11 @@ impl<'js> Primordial<'js> for BasePrimordials<'js> {
             function_array_from,
             function_array_buffer_is_view,
             function_get_own_property_descriptor,
+            function_define_property,
+            function_reflect_own_keys,
             function_parse_float,
             function_parse_int,
+            prototype_iterator,
         })
     }
 }

@@ -3,26 +3,77 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 use rquickjs::{
-    atom::PredefinedAtom, class::JsClass, object::Accessor, prelude::This, Array, Class, Ctx,
-    Function, Object, Result, Symbol, Value,
+    atom::PredefinedAtom, class::JsClass, object::Accessor, object::Property, prelude::This, Array,
+    Class, Ctx, Function, Object, Result, Symbol, Value,
 };
 
-use super::{object::ObjectExt, result::OptionExt};
+use super::{
+    object::ObjectExt,
+    primordials::{BasePrimordials, Primordial},
+    result::OptionExt,
+};
 
 pub static CUSTOM_INSPECT_SYMBOL_DESCRIPTION: &str = "llrt.inspect.custom";
 
-pub trait IteratorDef<'js>
-where
-    Self: 'js + JsClass<'js> + Sized,
-{
-    fn js_entries(&self, ctx: Ctx<'js>) -> Result<Array<'js>>;
+/// Which view an iterator yields: `keys()`, `values()`, or `entries()`.
+#[derive(Clone, Copy)]
+pub enum IterKind {
+    Keys,
+    Values,
+    Entries,
+}
 
-    fn js_iterator(&self, ctx: Ctx<'js>) -> Result<Value<'js>> {
-        let value = self.js_entries(ctx)?;
-        let obj = value.as_object();
-        let values_fn: Function = obj.get(PredefinedAtom::Values)?;
-        values_fn.call((This(value),))
+/// Wrap an entry into a `{ value, done }` iterator result. `None` means done.
+pub fn iterator_result<'js>(
+    ctx: &Ctx<'js>,
+    kind: IterKind,
+    entry: Option<(Value<'js>, Value<'js>)>,
+) -> Result<Object<'js>> {
+    let obj = Object::new(ctx.clone())?;
+    match entry {
+        Some((key, value)) => {
+            obj.set(PredefinedAtom::Done, false)?;
+            match kind {
+                IterKind::Keys => obj.set(PredefinedAtom::Value, key)?,
+                IterKind::Values => obj.set(PredefinedAtom::Value, value)?,
+                IterKind::Entries => {
+                    let entry = Array::new(ctx.clone())?;
+                    entry.set(0, key)?;
+                    entry.set(1, value)?;
+                    obj.set(PredefinedAtom::Value, entry)?;
+                },
+            }
+        },
+        None => obj.set(PredefinedAtom::Done, true)?,
     }
+    Ok(obj)
+}
+
+/// Create a WebIDL iterator instance, wiring its prototype the first time:
+/// the prototype inherits `%IteratorPrototype%` (so it's tagged
+/// `[object Iterator]`) and `next` becomes enumerable. Idempotent — later
+/// calls skip the setup — so callers just build iterators and never register
+/// anything separately.
+pub fn live_iterator<'js, C>(ctx: &Ctx<'js>, iter: C) -> Result<Class<'js, C>>
+where
+    C: JsClass<'js> + 'js,
+{
+    let instance = Class::<C>::instance(ctx.clone(), iter)?;
+    if let Some(proto) = Class::<C>::prototype(ctx)? {
+        let iterator_proto = &BasePrimordials::get(ctx)?.prototype_iterator;
+        if proto.get_prototype().as_ref() != Some(iterator_proto) {
+            proto.set_prototype(Some(iterator_proto))?;
+            let next_fn: Function = proto.get(PredefinedAtom::Next)?;
+            proto.prop(
+                PredefinedAtom::Next,
+                Property::from(next_fn)
+                    .writable()
+                    .enumerable()
+                    .configurable(),
+            )?;
+        }
+    }
+    Ok(instance)
 }
 
 pub fn get_class_name(value: &Value) -> Result<Option<String>> {

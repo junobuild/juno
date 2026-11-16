@@ -46,8 +46,10 @@ fn decode(args: Args<'_>) -> Result<Value<'_>> {
         .as_object()
         .ok_or_else(|| anyhow!("buffer must be an object"))?
         .as_array_buffer()
-        .ok_or_else(|| anyhow!("buffer must be an ArrayBuffer"))?
-        .as_bytes()
+        .ok_or_else(|| anyhow!("buffer must be an ArrayBuffer"))?;
+    // SAFETY: No JavaScript runs while the slice is alive; it is only read
+    // during UTF-8 decoding below.
+    let buffer = unsafe { buffer.as_bytes() }
         .ok_or_else(|| anyhow!("Couldn't retrive &[u8] from buffer"))?;
 
     let byte_offset = args[1]
@@ -63,8 +65,9 @@ fn decode(args: Args<'_>) -> Result<Value<'_>> {
         .as_bool()
         .ok_or_else(|| anyhow!("ignore_bom must be a boolean"))?;
 
-    let mut view = buffer
-        .get(byte_offset..(byte_offset + byte_length))
+    let mut view = byte_offset
+        .checked_add(byte_length)
+        .and_then(|end| buffer.get(byte_offset..end))
         .ok_or_else(|| anyhow!("Provided offset and length is not valid for provided buffer"))?;
 
     if !ignore_bom {
@@ -103,7 +106,7 @@ fn encode(args: Args<'_>) -> Result<Value<'_>> {
         // This is the fast path.
         // The string is already utf-8.
         .to_string()
-        .unwrap_or_else(|error| to_string_lossy(&cx, js_string, error));
+        .or_else(|error| to_string_lossy(&cx, js_string, error))?;
 
     Ok(TypedArray::new(cx, encoded.into_bytes())?
         .as_value()

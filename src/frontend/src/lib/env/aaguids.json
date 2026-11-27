@@ -1,4 +1,10 @@
 {
+	"7c30bcef-f035-4e21-9175-5c985b4b239c": {
+		"name": "TeamPass"
+	},
+	"6d6f6e69-6361-4d33-a001-706173736b79": {
+		"name": "Monica Pass"
+	},
 	"a11a5faa-9f32-4b8c-8c5d-2f7d13e8c942": {
 		"name": "AliasVault"
 	},
@@ -114,6 +120,9 @@
 	"d49b2120-b865-4191-8cea-be84a52b0485": {
 		"name": "Heimlane Vault"
 	},
+	"93fea28e-9b08-41d0-b663-20c36b008e70": {
+		"name": "Share Credentials"
+	},
 	"e8b7f4a2-c3d5-e6f7-890a-b1c2d3e4f567": {
 		"name": "Sherlocked"
 	},
@@ -177,5 +186,20 @@
 	},
 	"35d5ea15-ab24-4416-bdd1-f204c9bce1b6": {
 		"name": "CyberFOX Password Manager"
+	},
+	"f1d0badc-0def-4f1d-8bad-c0def1d0badc": {
+		"name": "fidont"
+	},
+	"c4ed941c-86d3-4532-a6a9-bc42b80d5c38": {
+		"name": "Authn8"
+	},
+	"441f5bad-a8ec-4572-8094-ee73a1c7cec7": {
+		"name": "Fobb Security"
+	},
+	"16a5a15d-7244-4563-856d-a5167d8b9783": {
+		"name": "Pleasant Password Server"
+	},
+	"7c596f1a-3e42-4b8d-9a0f-5d2ce1b84493": {
+		"name": "Cyclop Passkey"
 	}
 }

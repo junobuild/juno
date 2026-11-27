@@ -127,7 +127,7 @@
 		"tags": "Tags",
 		"edit_details": "Edit details",
 		"tags_placeholder": "Comma-separated or one per line. Leave empty for no tags.",
-		"maintenance": "Juno is in <strong>maintenance</strong> and not actively developed anymore."
+		"maintenance": "Juno is <strong>deprecated</strong> and no longer maintained."
 	},
 	"canisters": {
 		"top_up": "Top-up",

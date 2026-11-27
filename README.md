@@ -12,8 +12,8 @@
   <a href="https://discord.gg/wHZ57Z2RAG"><img src="https://dcbadge.limes.pink/api/server/https://discord.gg/wHZ57Z2RAG?style=flat-square" alt="Discord" /></a>
 </p>
 
-> [!IMPORTANT]  
-> Juno is in **maintenance** and not actively developed anymore. Do not use it for anything serious.
+> [!CAUTION]  
+> Juno is **deprecated** and no longer maintained. Do not use it for new projects, and consider migrating existing ones.
 
 ## ⭐️ Description
 
